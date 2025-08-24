@@ -316,26 +316,33 @@ class PostgresSaver:
         vacancies = []
         for row in rows:
             try:
-                # Создаем объект Salary если есть данные о зарплате
-                salary = None
+                # Создаем словарь salary_data для передачи в конструктор Vacancy
+                salary_data = None
                 if row['salary_from'] or row['salary_to']:
-                    from src.utils.salary import Salary
                     salary_data = {
                         'from': row['salary_from'],
                         'to': row['salary_to'],
                         'currency': row['salary_currency']
                     }
-                    salary = Salary(salary_data)
                 
                 # Convert employer string back to dict format for consistency
                 employer = None
                 if row['employer']:
                     employer = {'name': row['employer']}
                 
+                # Convert published_at string back to proper format
+                published_at = None
+                if row['published_at']:
+                    # Конвертируем datetime объект в строку ISO формата
+                    if hasattr(row['published_at'], 'isoformat'):
+                        published_at = row['published_at'].isoformat()
+                    else:
+                        published_at = str(row['published_at'])
+                
                 vacancy = Vacancy(
                     title=row['title'],
                     url=row['url'],
-                    salary=salary,
+                    salary=salary_data,  # Передаем словарь, а не объект Salary
                     description=row['description'],
                     requirements=row['requirements'],
                     responsibilities=row['responsibilities'],
@@ -343,9 +350,8 @@ class PostgresSaver:
                     employment=row['employment'],
                     schedule=row['schedule'],
                     employer=employer,
-                    # area не включаем в конструктор, т.к. его нет в __slots__
                     vacancy_id=row['vacancy_id'],
-                    published_at=row['published_at']
+                    published_at=published_at
                 )
                 
                 # Устанавливаем area напрямую
