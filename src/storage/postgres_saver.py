@@ -19,6 +19,39 @@ class PostgresSaver:
     в PostgreSQL базе данных с валидацией данных и обработкой ошибок.
     """
 
+    # Mapping for standardizing company names, based on the intention of the provided snippet.
+    COMPANY_NAME_STANDARDIZATION = {
+        'яндекс': 'Яндекс',
+        'сбер': 'Сбер',
+        'сбербанк': 'Сбер',
+        'тинькофф': 'Тинькофф',
+        'т-банк': 'Тинькофф',
+        'tinkoff': 'Тинькофф',
+        'vk': 'VK',
+        'вконтакте': 'VK',
+        'вк': 'VK',
+        'ozon': 'Ozon',
+        'озон': 'Ozon',
+        'wildberries': 'Wildberries',
+        'wb': 'Wildberries',
+        'альфа-банк': 'Альфа-Банк',
+        'alfa-bank': 'Альфа-Банк'
+    }
+
+    def _standardize_employer_name(self, employer_name: Optional[str]) -> Optional[str]:
+        """
+        Standardizes employer name using a predefined mapping.
+        This is an interpretation of the provided snippet's intention to improve company handling.
+        """
+        if not employer_name:
+            return None
+        
+        lower_name = employer_name.lower()
+        for pattern, standardized_name in self.COMPANY_NAME_STANDARDIZATION.items():
+            if pattern in lower_name:
+                return standardized_name
+        return employer_name # Return original if no pattern matches
+
     def __init__(self, db_config: Optional[Dict[str, str]] = None):
         """
         Инициализация подключения к PostgreSQL
@@ -200,10 +233,15 @@ class PostgresSaver:
                 salary_to = vac.salary.salary_to if vac.salary else None
                 salary_currency = vac.salary.currency if vac.salary else None
 
-                employer_str = (
-                    vac.employer.get('name') if isinstance(vac.employer, dict) 
-                    else str(vac.employer) if vac.employer else None
-                )
+                # Standardize employer name before storing
+                raw_employer_name = None
+                if isinstance(vac.employer, dict):
+                    raw_employer_name = vac.employer.get('name')
+                elif vac.employer:
+                    raw_employer_name = str(vac.employer)
+                
+                employer_str = self._standardize_employer_name(raw_employer_name)
+                
                 area_str = (
                     vac.area.get('name') if isinstance(vac.area, dict)
                     else str(vac.area) if vac.area else None
@@ -389,10 +427,15 @@ class PostgresSaver:
                     salary_to = vac.salary.salary_to if vac.salary else None
                     salary_currency = vac.salary.currency if vac.salary else None
 
-                    employer_str = (
-                        vac.employer.get('name') if isinstance(vac.employer, dict) 
-                        else str(vac.employer) if vac.employer else None
-                    )
+                    # Standardize employer name before storing
+                    raw_employer_name = None
+                    if isinstance(vac.employer, dict):
+                        raw_employer_name = vac.employer.get('name')
+                    elif vac.employer:
+                        raw_employer_name = str(vac.employer)
+
+                    employer_str = self._standardize_employer_name(raw_employer_name)
+
                     area_str = (
                         vac.area.get('name') if isinstance(vac.area, dict)
                         else str(vac.area) if vac.area else None
@@ -424,10 +467,15 @@ class PostgresSaver:
                     salary_to = vac.salary.salary_to if vac.salary else None
                     salary_currency = vac.salary.currency if vac.salary else None
 
-                    employer_str = (
-                        vac.employer.get('name') if isinstance(vac.employer, dict) 
-                        else str(vac.employer) if vac.employer else None
-                    )
+                    # Standardize employer name before storing
+                    raw_employer_name = None
+                    if isinstance(vac.employer, dict):
+                        raw_employer_name = vac.employer.get('name')
+                    elif vac.employer:
+                        raw_employer_name = str(vac.employer)
+
+                    employer_str = self._standardize_employer_name(raw_employer_name)
+
                     area_str = (
                         vac.area.get('name') if isinstance(vac.area, dict)
                         else str(vac.area) if vac.area else None
@@ -497,9 +545,12 @@ class PostgresSaver:
                     where_conditions.append("salary_to <= %s")
                     params.append(filters['salary_to'])
 
-                if filters.get('employer'):
-                    where_conditions.append("LOWER(employer) LIKE LOWER(%s)")
-                    params.append(f"%{filters['employer']}%")
+                if filters.get('employer'): # Filter by standardized employer name
+                    standardized_employer = self._standardize_employer_name(filters['employer'])
+                    if standardized_employer:
+                        where_conditions.append("LOWER(employer) LIKE LOWER(%s)")
+                        params.append(f"%{standardized_employer}%")
+
 
             # Добавляем WHERE если есть условия
             if where_conditions:
@@ -575,11 +626,11 @@ class PostgresSaver:
 
                 # Устанавливаем area напрямую
                 vacancy.area = row['area']
-                
+
                 # Для отладки - также сохраняем название компании напрямую
                 if row['employer']:
                     vacancy._employer_name = row['employer']
-                
+
                 vacancies.append(vacancy)
 
             except Exception as e:
@@ -821,9 +872,11 @@ class PostgresSaver:
                     where_conditions.append("salary_to <= %s")
                     params.append(filters['salary_to'])
 
-                if filters.get('employer'):
-                    where_conditions.append("LOWER(employer) LIKE LOWER(%s)")
-                    params.append(f"%{filters['employer']}%")
+                if filters.get('employer'): # Filter by standardized employer name
+                    standardized_employer = self._standardize_employer_name(filters['employer'])
+                    if standardized_employer:
+                        where_conditions.append("LOWER(employer) LIKE LOWER(%s)")
+                        params.append(f"%{standardized_employer}%")
 
             if where_conditions:
                 query += " WHERE " + " AND ".join(where_conditions)
@@ -938,10 +991,15 @@ class PostgresSaver:
                 salary_to = vac.salary.salary_to if vac.salary else None
                 salary_currency = vac.salary.currency if vac.salary else None
 
-                employer_str = (
-                    vac.employer.get('name') if isinstance(vac.employer, dict) 
-                    else str(vac.employer) if vac.employer else None
-                )
+                # Standardize employer name before storing
+                raw_employer_name = None
+                if isinstance(vac.employer, dict):
+                    raw_employer_name = vac.employer.get('name')
+                elif vac.employer:
+                    raw_employer_name = str(vac.employer)
+                
+                employer_str = self._standardize_employer_name(raw_employer_name)
+
                 area_str = (
                     vac.area.get('name') if isinstance(vac.area, dict)
                     else str(vac.area) if vac.area else None
@@ -1002,8 +1060,11 @@ class PostgresSaver:
                 employers = filters['target_employers']
                 employer_conditions = []
                 for employer in employers:
-                    employer_conditions.append("LOWER(employer) LIKE LOWER(%s)")
-                    params.append(f"%{employer}%")
+                    # Standardize employer name for filtering as well
+                    standardized_employer = self._standardize_employer_name(employer)
+                    if standardized_employer:
+                        employer_conditions.append("LOWER(employer) LIKE LOWER(%s)")
+                        params.append(f"%{standardized_employer}%")
 
                 if employer_conditions:
                     where_conditions.append(f"({' OR '.join(employer_conditions)})")
@@ -1107,9 +1168,11 @@ class PostgresSaver:
             conditions.append("(salary_from <= %s OR salary_to <= %s)")
             params.extend([filters['salary_to'], filters['salary_to']])
 
-        if filters.get('employer'):
-            conditions.append("LOWER(employer) LIKE LOWER(%s)")
-            params.append(f"%{filters['employer']}%")
+        if filters.get('employer'): # Filter by standardized employer name
+            standardized_employer = self._standardize_employer_name(filters['employer'])
+            if standardized_employer:
+                conditions.append("LOWER(employer) LIKE LOWER(%s)")
+                params.append(f"%{standardized_employer}%")
 
         if filters.get('experience'):
             conditions.append("LOWER(experience) LIKE LOWER(%s)")

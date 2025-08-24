@@ -338,11 +338,6 @@ class DBManager:
                 with conn.cursor(cursor_factory=RealDictCursor) as cursor:
                     cursor.execute(query)
                     results = cursor.fetchall()
-                    # Преобразуем результат в объекты Vacancy для единообразия
-                    vacancies = []
-                    for row in results:
-                        vacancy_obj = type('Vacancy', (object,), row)() # Создаем объект из словаря
-                        vacancies.append(vacancy_obj)
 
                     # Выводим результаты
                     for i, row in enumerate(results[:10], 1):
@@ -357,7 +352,7 @@ class DBManager:
 
                     print(f"\nВсего вакансий: {len(results)}")
                     
-                    # Возвращаем список словарей вместо объектов Vacancy
+                    # Возвращаем список словарей
                     return [dict(row) for row in results]
 
         except Exception as e:
@@ -457,11 +452,6 @@ class DBManager:
                 with conn.cursor(cursor_factory=RealDictCursor) as cursor:
                     cursor.execute(query, (avg_salary,))
                     results = cursor.fetchall()
-                    # Преобразуем результат в объекты Vacancy для единообразия
-                    high_salary_vacancies = []
-                    for row in results:
-                        vacancy_obj = type('Vacancy', (object,), row)() # Создаем объект из словаря
-                        high_salary_vacancies.append(vacancy_obj)
 
                     # Выводим результаты
                     for i, row in enumerate(results[:10], 1):
@@ -476,7 +466,7 @@ class DBManager:
 
                     print(f"\nВсего вакансий с высокой зарплатой: {len(results)}")
                     
-                    # Возвращаем список словарей вместо объектов Vacancy
+                    # Возвращаем список словарей
                     return [dict(row) for row in results]
 
         except psycopg2.Error as e:
@@ -528,11 +518,6 @@ class DBManager:
                 with conn.cursor(cursor_factory=RealDictCursor) as cursor:
                     cursor.execute(query, (search_pattern,))
                     results = cursor.fetchall()
-                    # Преобразуем результат в объекты Vacancy для единообразия
-                    found_vacancies = []
-                    for row in results:
-                        vacancy_obj = type('Vacancy', (object,), row)() # Создаем объект из словаря
-                        found_vacancies.append(vacancy_obj)
                     
                     # Выводим результаты
                     for i, row in enumerate(results[:5], 1):
@@ -544,7 +529,7 @@ class DBManager:
                     if len(results) > 5:
                         print(f"  ... и еще {len(results) - 5} вакансий")
 
-                    # Возвращаем список словарей вместо объектов Vacancy
+                    # Возвращаем список словарей
                     return [dict(row) for row in results]
 
         except psycopg2.Error as e:
