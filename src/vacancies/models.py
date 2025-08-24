@@ -229,16 +229,18 @@ class Vacancy(AbstractVacancy):
 
             # Определяем источник на основе структуры данных
             source = data.get("source", "unknown")
+            # Fallback логика только если источник не установлен
             if source == "unknown":
-                # Если source не указан, пытаемся определить по URL или структуре данных
-                if "alternate_url" in data or "hh.ru" in url:
+                if "alternate_url" in data and "hh.ru" in str(data.get("alternate_url", "")):
+                    source = "hh.ru"
+                elif "hh.ru" in url:
                     source = "hh.ru"
                 elif "superjob.ru" in url or "sj.ru" in url:
                     source = "superjob.ru"
-                elif "profession" in data and "candidat" in data:
-                    source = "superjob.ru"  # SuperJob использует эти поля
+                elif "payment_to" in data or "payment_from" in data:
+                    source = "superjob.ru"
                 elif "name" in data and "snippet" in data:
-                    source = "hh.ru"  # HH использует эти поля
+                    source = "hh.ru"
 
             return cls(
                 vacancy_id=vacancy_id,

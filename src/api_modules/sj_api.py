@@ -127,6 +127,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             # Добавляем источник и валидируем как в HH API
             validated_items = []
             for item in items:
+                # Устанавливаем источник сразу при получении данных
                 item["source"] = "superjob.ru"
                 if self._validate_vacancy(item):
                     validated_items.append(item)

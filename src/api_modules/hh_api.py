@@ -106,8 +106,9 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             # Добавляем источник к каждой вакансии и валидируем
             validated_items = []
             for item in items:
+                # Устанавливаем источник сразу при получении данных
+                item["source"] = "hh.ru"
                 if self._validate_vacancy(item):
-                    item["source"] = "hh.ru"
                     validated_items.append(item)
             
             return validated_items
