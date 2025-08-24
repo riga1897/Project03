@@ -69,7 +69,7 @@ class Vacancy(AbstractVacancy):
         self.profession = None
         self.company_id = None
         # Используем переданный ID, если есть, иначе генерируем UUID
-        if vacancy_id and str(vacancy_id).strip():
+        if vacancy_id and str(vacancy_id).strip() and str(vacancy_id) != "":
             self.vacancy_id = str(vacancy_id)
         else:
             self.vacancy_id = str(uuid.uuid4())
@@ -179,7 +179,16 @@ class Vacancy(AbstractVacancy):
                 or ""
             )
 
-            vacancy_id = str(data.get("id", ""))
+            # Получаем ID из API данных
+            vacancy_id = data.get("id")
+            if vacancy_id:
+                vacancy_id = str(vacancy_id)
+                # Отладочная информация
+                if vacancy_id in ["124403607", "124403580", "124403642"]:
+                    print(f"DEBUG: Создается вакансия с ID {vacancy_id} из данных: {data.get('name', 'NO_NAME')}")
+            else:
+                vacancy_id = ""
+                print(f"DEBUG: Нет ID в данных API для вакансии: {data.get('name', 'NO_NAME')}")
 
             # Обработка зарплаты (универсальная для всех источников)
             salary = data.get("salary")
