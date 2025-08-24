@@ -148,6 +148,37 @@ class DBManager:
             logger.error(f"Ошибка при заполнении таблицы компаний: {e}")
             raise
 
+    def _create_vacancies_storage_table(self):
+        """
+        Создает таблицу vacancies_storage для совместимости со старыми методами
+        """
+        create_vacancies_storage_table = """
+        CREATE TABLE IF NOT EXISTS vacancies_storage (
+            id SERIAL PRIMARY KEY,
+            vacancy_id VARCHAR(255) UNIQUE,
+            title TEXT,
+            url TEXT,
+            salary_from INTEGER,
+            salary_to INTEGER,
+            salary_currency VARCHAR(10),
+            description TEXT,
+            employer TEXT,
+            area TEXT,
+            source VARCHAR(50),
+            published_at TIMESTAMP,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        """
+        
+        try:
+            with self._get_connection() as conn:
+                with conn.cursor() as cursor:
+                    cursor.execute(create_vacancies_storage_table)
+                    logger.info("Таблица vacancies_storage создана успешно")
+        except Exception as e:
+            logger.error(f"Ошибка при создании таблицы vacancies_storage: {e}")
+            raise
+
     def get_companies_and_vacancies_count(self) -> List[Tuple[str, int]]:
         """
         Получает список всех компаний и количество вакансий у каждой компании
@@ -176,17 +207,20 @@ class DBManager:
             logger.error(f"Ошибка при получении списка компаний и количества вакансий: {e}")
             # Fallback к старому методу если таблица компаний не готова
             try:
-                query_fallback = """
-                SELECT 
-                    COALESCE(employer, 'Не указано') as company_name,
-                    COUNT(*) as vacancy_count
-                FROM vacancies 
-                WHERE employer IS NOT NULL AND employer != ''
-                GROUP BY employer
-                ORDER BY vacancy_count DESC, company_name
-                """
-                cursor.execute(query_fallback)
-                return cursor.fetchall()
+                with self._get_connection() as conn:
+                    with conn.cursor() as cursor:
+                        # Проверяем наличие данных в основной таблице вакансий
+                        query_fallback = """
+                        SELECT 
+                            COALESCE(employer, 'Не указано') as company_name,
+                            COUNT(*) as vacancy_count
+                        FROM vacancies_storage 
+                        WHERE employer IS NOT NULL AND employer != ''
+                        GROUP BY employer
+                        ORDER BY vacancy_count DESC, company_name
+                        """
+                        cursor.execute(query_fallback)
+                        return cursor.fetchall()
             except Exception as e2:
                 logger.error(f"Ошибка в fallback запросе: {e2}")
                 return []
