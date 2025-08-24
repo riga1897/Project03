@@ -54,7 +54,7 @@ class UserInterface:
         self.vacancy_ops = VacancyOperations()
 
         # Инициализируем координатор операций
-        self.coordinator = VacancyOperationsCoordinator(self.unified_api, self.storage)
+        self.coordinator = VacancyOperationsCoordinator(self.unified_api, storage)
 
         # Инициализируем обработчики
         self.display_handler = VacancyDisplayHandler(self.storage)
