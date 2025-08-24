@@ -118,18 +118,14 @@ class VacancyStats:
         print("-" * 60)
     
     @staticmethod
-    def display_combined_stats(hh_vacancies: List[Dict[str, Any]], sj_vacancies: List[Dict[str, Any]]):
+    def display_source_stats(hh_vacancies: List[Dict[str, Any]], sj_vacancies: List[Dict[str, Any]]):
         """
-        Отобразить объединенную статистику по компаниям из разных источников
+        Отобразить статистику по каждому источнику отдельно
         
         Args:
             hh_vacancies: Вакансии с HH.ru
             sj_vacancies: Вакансии с SuperJob
         """
-        print("\n" + "=" * 80)
-        print("📈 ОБЩАЯ СТАТИСТИКА ПО ИСТОЧНИКАМ")
-        print("=" * 80)
-        
         total_hh = len(hh_vacancies)
         total_sj = len(sj_vacancies)
         total_all = total_hh + total_sj
@@ -138,32 +134,13 @@ class VacancyStats:
             print("Нет вакансий для отображения статистики")
             return
         
-        print(f"HH.ru: {total_hh} вакансий ({(total_hh/total_all)*100:.1f}%)")
-        print(f"SuperJob: {total_sj} вакансий ({(total_sj/total_all)*100:.1f}%)")
-        print(f"Всего: {total_all} вакансий")
+        print(f"\n📊 Итого найдено: {total_all} вакансий")
+        print(f"HH.ru: {total_hh} вакансий")
+        print(f"SuperJob: {total_sj} вакансий")
         
-        # Получаем распределения компаний для каждого источника
-        hh_companies = {}
-        sj_companies = {}
-        
+        # Показываем статистику по каждому источнику отдельно
         if hh_vacancies:
-            hh_companies = VacancyStats.get_company_distribution(hh_vacancies)
             VacancyStats.display_company_stats(hh_vacancies, "HH.ru")
             
         if sj_vacancies:
-            sj_companies = VacancyStats.get_company_distribution(sj_vacancies)
             VacancyStats.display_company_stats(sj_vacancies, "SuperJob")
-        
-        # Объединенная статистика - суммируем уже полученные распределения
-        if total_all > 0:
-            combined_companies = defaultdict(int)
-            
-            # Суммируем данные из обоих источников
-            for company, count in hh_companies.items():
-                combined_companies[company] += count
-                
-            for company, count in sj_companies.items():
-                combined_companies[company] += count
-            
-            # Отображаем объединенную статистику
-            VacancyStats._display_company_distribution(dict(combined_companies), total_all, "Все источники")

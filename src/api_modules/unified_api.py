@@ -160,7 +160,7 @@ class UnifiedAPI:
             # Показываем объединенную статистику
             if all_vacancies and (hh_vacancies or sj_vacancies):
                 from src.utils.vacancy_stats import VacancyStats
-                VacancyStats.display_combined_stats(hh_vacancies or [], sj_vacancies or [])
+                VacancyStats.display_source_stats(hh_vacancies or [], sj_vacancies or [])
 
             return self._deduplicate_cross_platform(all_vacancies)
         else:
@@ -319,7 +319,7 @@ class UnifiedAPI:
             # Показываем объединенную статистику
             if all_vacancies or hh_vacancies or sj_vacancies:
                 from src.utils.vacancy_stats import VacancyStats
-                VacancyStats.display_combined_stats(hh_vacancies or [], sj_vacancies or [])
+                VacancyStats.display_source_stats(hh_vacancies or [], sj_vacancies or [])
 
             return all_vacancies
         else:
