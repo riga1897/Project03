@@ -258,9 +258,47 @@ class UnifiedAPI:
             except Exception as e:
                 logger.error(f"Ошибка получения вакансий от целевых компаний с HH.ru: {e}")
 
-        # SuperJob не поддерживает фильтрацию по конкретным компаниям через API
+        # Получение от целевых компаний с SuperJob (пост-фильтрация)
         if "sj" in sources:
-            logger.warning("SuperJob API не поддерживает фильтрацию по целевым компаниям")
+            try:
+                logger.info(f"Получение вакансий от целевых компаний с SuperJob по запросу: '{search_query}'")
+                # Синхронизируем параметры периода между API
+                sj_kwargs = kwargs.copy()
+                if "period" in kwargs:
+                    sj_kwargs["published"] = kwargs["period"]
+                    sj_kwargs.pop("period", None)
+                
+                sj_data = self.sj_api.get_vacancies_from_target_companies(search_query, **sj_kwargs)
+                
+                if sj_data:
+                    from tqdm import tqdm
+                    
+                    # Парсим данные SuperJob в объекты SuperJobVacancy с прогресс-баром
+                    print(f"Парсинг {len(sj_data)} вакансий SuperJob от целевых компаний...")
+                    sj_vacancies_raw = self.parser.parse_vacancies(sj_data)
+                    
+                    # Конвертируем SuperJobVacancy в унифицированный формат с прогресс-баром
+                    sj_vacancies = []
+                    print("Конвертация вакансий SuperJob в унифицированный формат...")
+                    
+                    with tqdm(total=len(sj_vacancies_raw), desc="Конвертация SJ", unit="вакансия") as pbar:
+                        for sj_vac in sj_vacancies_raw:
+                            try:
+                                # Конвертируем SuperJobVacancy в унифицированный формат
+                                unified_data = self.parser.convert_to_unified_format(sj_vac)
+                                vacancy = Vacancy.from_dict(unified_data)
+                                sj_vacancies.append(vacancy.to_dict())
+                            except Exception as e:
+                                logger.warning(f"Ошибка конвертации вакансии SuperJob: {e}")
+                            finally:
+                                pbar.update(1)
+                    
+                    if sj_vacancies:
+                        logger.info(f"Найдено {len(sj_vacancies)} уникальных вакансий от целевых компаний с SuperJob")
+                        all_vacancies.extend(sj_vacancies)
+                    
+            except Exception as e:
+                logger.error(f"Ошибка получения вакансий от целевых компаний с SuperJob: {e}")
 
         # Выводим общую статистику и применяем межплатформенную дедупликацию
         if all_vacancies:
