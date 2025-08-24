@@ -45,12 +45,26 @@ class VacancyStats:
         Returns:
             str: Название компании или "Неизвестная компания"
         """
-        # Для SuperJob
-        if "firm_name" in vacancy:
+        # Проверяем объект Vacancy
+        if hasattr(vacancy, 'employer'):
+            employer = vacancy.employer
+            if isinstance(employer, dict):
+                return employer.get("name", "Неизвестная компания")
+            elif isinstance(employer, str):
+                return employer
+            elif employer:
+                return str(employer)
+        
+        # Проверяем атрибут _employer_name (стандартизированное название из БД)
+        if hasattr(vacancy, '_employer_name') and vacancy._employer_name:
+            return vacancy._employer_name
+            
+        # Для словарей - SuperJob
+        if isinstance(vacancy, dict) and "firm_name" in vacancy:
             return vacancy.get("firm_name", "Неизвестная компания")
         
-        # Для HeadHunter
-        if "employer" in vacancy:
+        # Для словарей - HeadHunter
+        if isinstance(vacancy, dict) and "employer" in vacancy:
             employer = vacancy["employer"]
             if isinstance(employer, dict):
                 return employer.get("name", "Неизвестная компания")
