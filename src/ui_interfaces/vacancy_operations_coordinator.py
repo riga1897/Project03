@@ -1,4 +1,3 @@
-
 """
 Медиатор для координации операций с вакансиями
 
@@ -21,7 +20,7 @@ logger = logging.getLogger(__name__)
 class VacancyOperationsCoordinator:
     """
     Медиатор для координации операций с вакансиями
-    
+
     Упрощает UserInterface от сложной логики координации между компонентами.
     Централизует взаимодействие между поиском, отображением и сохранением вакансий.
     """
@@ -37,7 +36,7 @@ class VacancyOperationsCoordinator:
         self.unified_api = unified_api
         self.storage = storage
         self.source_selector = SourceSelector()
-        
+
         # Инициализируем обработчики
         self.search_handler = VacancySearchHandler(unified_api, storage)
         self.display_handler = VacancyDisplayHandler(storage)
@@ -123,18 +122,18 @@ class VacancyOperationsCoordinator:
     def _handle_delete_by_keyword(self, vacancies: List[Vacancy]) -> None:
         """Обработка удаления вакансий по ключевому слову"""
         from src.utils.ui_helpers import filter_vacancies_by_keyword
-        
+
         keyword = get_user_input("Введите ключевое слово для удаления связанных вакансий: ")
         if not keyword:
             return
-            
+
         filtered_vacancies = filter_vacancies_by_keyword(vacancies, keyword)
         if not filtered_vacancies:
             print(f"Вакансии с ключевым словом '{keyword}' не найдены.")
             return
 
         print(f"\nНайдено {len(filtered_vacancies)} вакансий с ключевым словом '{keyword}'")
-        
+
         if confirm_action(f"Удалить {len(filtered_vacancies)} вакансий?"):
             deleted_count = self.storage.delete_vacancies_by_keyword(keyword)
             if deleted_count > 0:
@@ -160,7 +159,7 @@ class VacancyOperationsCoordinator:
 
         if vacancy_to_delete:
             self._show_vacancy_for_confirmation(vacancy_to_delete)
-            
+
             if confirm_action("Удалить эту вакансию?"):
                 if self.storage.delete_vacancy_by_id(vacancy_id):
                     print("Вакансия успешно удалена.")
@@ -216,3 +215,71 @@ class VacancyOperationsCoordinator:
         print("\n" + "=" * 60)
 
         input("\nНажмите Enter для продолжения...")
+
+    def get_vacancies_from_sources(self, search_query: str, sources: List[str], **kwargs) -> List[Vacancy]:
+        """
+        Получение вакансий из выбранных источников
+
+        Args:
+            search_query: Поисковый запрос
+            sources: Список источников для поиска
+            **kwargs: Дополнительные параметры поиска
+
+        Returns:
+            List[Vacancy]: Список найденных вакансий
+        """
+        try:
+            # Получаем данные через унифицированный API
+            vacancy_data = self.unified_api.get_vacancies_from_sources(
+                search_query=search_query,
+                sources=sources,
+                **kwargs
+            )
+
+            # Конвертируем в объекты Vacancy
+            vacancies = [Vacancy.from_dict(data) for data in vacancy_data]
+
+            if vacancies:
+                # Сохраняем найденные вакансии
+                saved_count = self.storage.save_vacancies(vacancies)
+                print(f"Сохранено {saved_count} новых вакансий в базу данных")
+
+            return vacancies
+
+        except Exception as e:
+            self.logger.error(f"Ошибка при получении вакансий из источников: {e}")
+            return []
+
+    def get_vacancies_from_target_companies(self, search_query: str = "", sources: List[str] = None, **kwargs) -> List[Vacancy]:
+        """
+        Получение вакансий только от целевых компаний
+
+        Args:
+            search_query: Поисковый запрос (опционально)
+            sources: Список источников для поиска
+            **kwargs: Дополнительные параметры поиска
+
+        Returns:
+            List[Vacancy]: Список найденных вакансий от целевых компаний
+        """
+        try:
+            # Получаем данные через унифицированный API
+            vacancy_data = self.unified_api.get_vacancies_from_target_companies(
+                search_query=search_query,
+                sources=sources,
+                **kwargs
+            )
+
+            # Конвертируем в объекты Vacancy
+            vacancies = [Vacancy.from_dict(data) for data in vacancy_data]
+
+            if vacancies:
+                # Сохраняем найденные вакансии
+                saved_count = self.storage.save_vacancies(vacancies)
+                print(f"Сохранено {saved_count} новых вакансий от целевых компаний в базу данных")
+
+            return vacancies
+
+        except Exception as e:
+            self.logger.error(f"Ошибка при получении вакансий от целевых компаний: {e}")
+            return []

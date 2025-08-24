@@ -5,6 +5,7 @@ from src.api_modules.base_api import BaseJobAPI
 from src.api_modules.cached_api import CachedAPI
 from src.api_modules.get_api import APIConnector
 from src.config.api_config import APIConfig
+from src.config.target_companies import get_target_company_ids
 from src.utils.paginator import Paginator
 
 logger = logging.getLogger(__name__)
@@ -191,6 +192,119 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         """
         vacancies = self.get_vacancies(search_query, **kwargs)
         return self._deduplicate_vacancies(vacancies)
+
+    def get_vacancies_from_target_companies(self, search_query: str = "", **kwargs) -> List[Dict]:
+        """
+        Получение вакансий только от целевых компаний
+
+        Args:
+            search_query: Поисковый запрос (опционально)
+            **kwargs: Дополнительные параметры поиска
+
+        Returns:
+            List[Dict]: Список вакансий от целевых компаний
+        """
+        target_company_ids = get_target_company_ids()
+        all_vacancies = []
+        
+        logger.info(f"Получение вакансий от {len(target_company_ids)} целевых компаний")
+        
+        for company_id in target_company_ids:
+            try:
+                # Получаем вакансии конкретной компании
+                company_vacancies = self.get_vacancies_by_company(company_id, search_query, **kwargs)
+                if company_vacancies:
+                    all_vacancies.extend(company_vacancies)
+                    logger.debug(f"Получено {len(company_vacancies)} вакансий от компании {company_id}")
+            except Exception as e:
+                logger.warning(f"Ошибка получения вакансий от компании {company_id}: {e}")
+                continue
+        
+        logger.info(f"Всего получено {len(all_vacancies)} вакансий от целевых компаний")
+        return self._deduplicate_vacancies(all_vacancies)
+
+    def get_vacancies_by_company(self, company_id: str, search_query: str = "", **kwargs) -> List[Dict]:
+        """
+        Получение вакансий конкретной компании
+
+        Args:
+            company_id: ID компании на HH.ru
+            search_query: Поисковый запрос (опционально)
+            **kwargs: Дополнительные параметры поиска
+
+        Returns:
+            List[Dict]: Список вакансий компании
+        """
+        try:
+            # Добавляем фильтр по компании в параметры
+            kwargs['employer_id'] = company_id
+            
+            if search_query:
+                search_query_lower = search_query.lower()
+            else:
+                search_query_lower = ""
+            
+            # Получаем метаданные для определения количества страниц
+            initial_params = self._config.hh_config.get_params(
+                text=search_query_lower, page=0, per_page=1, **kwargs
+            )
+            initial_data = self._CachedAPI__connect_to_api(self.BASE_URL, initial_params, "hh")
+            
+            if not initial_data.get("found", 0):
+                return []
+
+            total_pages = min(
+                initial_data.get("pages", 1), 
+                self._config.get_pagination_params(**kwargs)["max_pages"]
+            )
+
+            # Получаем все страницы
+            results = self._paginator.paginate(
+                fetch_func=lambda p: self.get_vacancies_page_by_company(company_id, search_query, p, **kwargs),
+                total_pages=total_pages
+            )
+
+            return results
+
+        except Exception as e:
+            logger.error(f"Ошибка получения вакансий компании {company_id}: {e}")
+            return []
+
+    def get_vacancies_page_by_company(self, company_id: str, search_query: str, page: int = 0, **kwargs) -> List[Dict]:
+        """
+        Получение одной страницы вакансий конкретной компании
+
+        Args:
+            company_id: ID компании на HH.ru
+            search_query: Поисковый запрос
+            page: Номер страницы
+            **kwargs: Дополнительные параметры поиска
+
+        Returns:
+            List[Dict]: Список валидных вакансий со страницы
+        """
+        try:
+            # Добавляем фильтр по компании
+            kwargs['employer_id'] = company_id
+            
+            search_query_lower = search_query.lower() if search_query else ""
+            params = self._config.hh_config.get_params(text=search_query_lower, page=page, **kwargs)
+
+            data = self._CachedAPI__connect_to_api(self.BASE_URL, params, "hh")
+            items = data.get("items", [])
+
+            # Добавляем источник к каждой вакансии и валидируем
+            validated_items = []
+            for item in items:
+                item["source"] = "hh.ru"
+                if self._validate_vacancy(item):
+                    validated_items.append(item)
+            
+            return validated_items
+
+        except Exception as e:
+            logger.error(f"Ошибка получения страницы {page} для компании {company_id}: {e}")
+            return []
 
     def clear_cache(self, api_prefix: str) -> None:
         """

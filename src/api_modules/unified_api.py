@@ -225,6 +225,50 @@ class UnifiedAPI:
         except Exception as e:
             logger.error(f"Ошибка очистки кэша: {e}")
 
+    def get_vacancies_from_target_companies(self, search_query: str = "", sources: List[str] = None, **kwargs) -> List[Dict]:
+        """
+        Получение вакансий только от целевых компаний
+
+        Args:
+            search_query: Поисковый запрос (опционально)
+            sources: Список источников ['hh', 'sj']
+            **kwargs: Дополнительные параметры для API
+
+        Returns:
+            List[Dict]: Список всех уникальных вакансий от целевых компаний
+        """
+        if sources is None:
+            sources = ["hh"]  # По умолчанию только HH, так как у SuperJob нет такой фильтрации
+        else:
+            sources = self.validate_sources(sources)
+
+        all_vacancies = []
+
+        # Получение от целевых компаний с HH.ru
+        if "hh" in sources:
+            try:
+                logger.info(f"Получение вакансий от целевых компаний с HH.ru по запросу: '{search_query}'")
+                hh_data = self.hh_api.get_vacancies_from_target_companies(search_query, **kwargs)
+                hh_vacancies = [Vacancy.from_dict(item).to_dict() for item in hh_data]
+
+                if hh_vacancies:
+                    logger.info(f"Найдено {len(hh_vacancies)} уникальных вакансий от целевых компаний с HH.ru")
+                    all_vacancies.extend(hh_vacancies)
+
+            except Exception as e:
+                logger.error(f"Ошибка получения вакансий от целевых компаний с HH.ru: {e}")
+
+        # SuperJob не поддерживает фильтрацию по конкретным компаниям через API
+        if "sj" in sources:
+            logger.warning("SuperJob API не поддерживает фильтрацию по целевым компаниям")
+
+        # Выводим общую статистику и применяем межплатформенную дедупликацию
+        if all_vacancies:
+            print(f"\nВсего найдено {len(all_vacancies)} вакансий от целевых компаний")
+            return self._deduplicate_cross_platform(all_vacancies)
+        else:
+            return []
+
     def clear_all_cache(self) -> None:
         """Очистка кэша всех API"""
         # Очищаем кэш каждого API отдельно, чтобы ошибка в одном не влияла на другой

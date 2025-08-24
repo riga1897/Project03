@@ -102,8 +102,7 @@ class UserInterface:
                 logger.error(f"Ошибка в пользовательском интерфейсе: {e}")
                 print(f"Произошла ошибка: {e}")
 
-    @staticmethod
-    def _show_menu() -> str:
+    def _show_menu(self) -> str:
         """
         Отображение главного меню
 
@@ -522,9 +521,9 @@ class UserInterface:
             print("• get_vacancies_with_higher_salary()")
             print("• get_vacancies_with_keyword()")
             print("=" * 60)
-            
+
             from src.utils.db_manager_demo import DBManagerDemo
-            
+
             # Используем то же хранилище, что и основное приложение
             if hasattr(self.storage, 'db_manager'):
                 # Если PostgresSaver, используем его DBManager
@@ -534,17 +533,17 @@ class UserInterface:
                 # Создаем новый DBManager
                 from src.storage.db_manager import DBManager
                 db_manager = DBManager()
-            
+
             demo = DBManagerDemo(db_manager)
             demo.run_full_demo()
-            
+
         except ImportError as e:
             print(f"Ошибка импорта модулей DBManager: {e}")
             print("Убедитесь, что все модули установлены корректно")
         except Exception as e:
             logger.error(f"Ошибка при демонстрации DBManager: {e}")
             print(f"Произошла ошибка при демонстрации DBManager: {e}")
-        
+
         input("\nНажмите Enter для возврата в главное меню...")
 
     @staticmethod
