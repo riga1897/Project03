@@ -178,7 +178,52 @@ class VacancySearchHandler:
             vacancies: Список вакансий для проверки.
 
         Returns:
-            dict: Словарь с информацией о дубликатах и новых вакансиях.
+            dict: Словарь с информацией о дубликатах и новых вакансиях
+        """
+        if not vacancies:
+            return {
+                "total_count": 0,
+                "duplicates": [],
+                "new_vacancies": [],
+                "duplicate_count": 0,
+                "new_count": 0
+            }
+
+        print(f"Проверка {len(vacancies)} вакансий на дубликаты...")
+        
+        # Используем batch проверку для PostgreSQL
+        if hasattr(self.json_saver, 'check_vacancies_exist_batch'):
+            existence_map = self.json_saver.check_vacancies_exist_batch(vacancies)
+            
+            duplicates = []
+            new_vacancies = []
+            
+            for vacancy in vacancies:
+                if existence_map.get(vacancy.vacancy_id, False):
+                    duplicates.append(vacancy)
+                else:
+                    new_vacancies.append(vacancy)
+        else:
+            # Fallback для других типов хранилищ
+            duplicates = []
+            new_vacancies = []
+            
+            for i, vacancy in enumerate(vacancies, 1):
+                if i % 10 == 0 or i == len(vacancies):
+                    print(f"Проверено {i}/{len(vacancies)} вакансий...")
+                
+                if self.json_saver.is_vacancy_exists(vacancy):
+                    duplicates.append(vacancy)
+                else:
+                    new_vacancies.append(vacancy)
+
+        return {
+            "total_count": len(vacancies),
+            "duplicates": duplicates,
+            "new_vacancies": new_vacancies,
+            "duplicate_count": len(duplicates),
+            "new_count": len(new_vacancies)
+        }акансиях.
         """
         from tqdm import tqdm
 

@@ -345,6 +345,48 @@ class PostgresSaver:
                 cursor.close()
             connection.close()
 
+    def check_vacancies_exist_batch(self, vacancies: List[Vacancy]) -> Dict[str, bool]:
+        """
+        Проверяет существование множества вакансий одним запросом
+        
+        Args:
+            vacancies: Список вакансий для проверки
+            
+        Returns:
+            Dict[str, bool]: Словарь {vacancy_id: exists}
+        """
+        if not vacancies:
+            return {}
+            
+        vacancy_ids = [v.vacancy_id for v in vacancies]
+        connection = self._get_connection()
+        
+        try:
+            cursor = connection.cursor()
+            
+            # Создаем плейсхолдеры для IN запроса
+            placeholders = ','.join(['%s'] * len(vacancy_ids))
+            query = f"SELECT vacancy_id FROM vacancies_storage WHERE vacancy_id IN ({placeholders})"
+            
+            cursor.execute(query, vacancy_ids)
+            existing_ids = {row[0] for row in cursor.fetchall()}
+            
+            # Создаем результат для всех проверяемых ID
+            result = {}
+            for vacancy_id in vacancy_ids:
+                result[vacancy_id] = vacancy_id in existing_ids
+                
+            return result
+            
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка пакетной проверки вакансий: {e}")
+            # В случае ошибки возвращаем словарь с False для всех
+            return {v.vacancy_id: False for v in vacancies}
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
+
     def get_file_size(self) -> int:
         """Возвращает количество записей в БД (аналог размера файла)"""
         connection = self._get_connection()
