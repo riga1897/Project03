@@ -280,15 +280,9 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             if target_vacancies:
                 print(f"Найдено {len(target_vacancies)} вакансий от целевых компаний")
 
-                # Выводим статистику по компаниям
-                company_stats = {}
-                for vacancy in target_vacancies:
-                    company = vacancy.get("firm_name", "Неизвестная компания")
-                    company_stats[company] = company_stats.get(company, 0) + 1
-
-                print("\nРаспределение по компаниям:")
-                for company, count in sorted(company_stats.items(), key=lambda x: x[1], reverse=True):
-                    print(f"  {company}: {count} вакансий")
+                # Используем общий компонент для статистики
+                from src.utils.vacancy_stats import VacancyStats
+                VacancyStats.display_company_stats(target_vacancies, "SuperJob - Целевые компании")
 
             # Применяем SQL-фильтрацию для целевых компаний если указано в конфигурации
             if hasattr(self.config, 'filter_by_target_companies') and self.config.filter_by_target_companies:

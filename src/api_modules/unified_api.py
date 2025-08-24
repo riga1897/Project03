@@ -9,6 +9,7 @@ from .sj_api import SuperJobAPI
 
 from tqdm import tqdm
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -91,6 +92,8 @@ class UnifiedAPI:
             sources = self.validate_sources(sources)
 
         all_vacancies = []
+        hh_vacancies = []
+        sj_vacancies = []
 
         # Получение из HeadHunter с дедупликацией
         if "hh" in sources:
@@ -153,6 +156,12 @@ class UnifiedAPI:
         # Выводим общую статистику и применяем межплатформенную дедупликацию
         if all_vacancies:
             print(f"\nВсего найдено {len(all_vacancies)} вакансий")
+
+            # Показываем объединенную статистику
+            if all_vacancies and (hh_vacancies or sj_vacancies):
+                from src.utils.vacancy_stats import VacancyStats
+                VacancyStats.display_combined_stats(hh_vacancies or [], sj_vacancies or [])
+
             return self._deduplicate_cross_platform(all_vacancies)
         else:
             return []
@@ -243,6 +252,8 @@ class UnifiedAPI:
             sources = self.validate_sources(sources)
 
         all_vacancies = []
+        hh_vacancies = []
+        sj_vacancies = []
 
         # Получение от целевых компаний с HH.ru
         if "hh" in sources:
@@ -267,20 +278,20 @@ class UnifiedAPI:
                 if "period" in kwargs:
                     sj_kwargs["published"] = kwargs["period"]
                     sj_kwargs.pop("period", None)
-                
+
                 sj_data = self.sj_api.get_vacancies_from_target_companies(search_query, **sj_kwargs)
-                
+
                 if sj_data:
                     from tqdm import tqdm
-                    
+
                     # Парсим данные SuperJob в объекты SuperJobVacancy с прогресс-баром
                     print(f"Парсинг {len(sj_data)} вакансий SuperJob от целевых компаний...")
                     sj_vacancies_raw = self.parser.parse_vacancies(sj_data)
-                    
+
                     # Конвертируем SuperJobVacancy в унифицированный формат с прогресс-баром
                     sj_vacancies = []
                     print("Конвертация вакансий SuperJob в унифицированный формат...")
-                    
+
                     with tqdm(total=len(sj_vacancies_raw), desc="Конвертация SJ", unit="вакансия") as pbar:
                         for sj_vac in sj_vacancies_raw:
                             try:
@@ -292,18 +303,25 @@ class UnifiedAPI:
                                 logger.warning(f"Ошибка конвертации вакансии SuperJob: {e}")
                             finally:
                                 pbar.update(1)
-                    
+
                     if sj_vacancies:
                         logger.info(f"Найдено {len(sj_vacancies)} уникальных вакансий от целевых компаний с SuperJob")
                         all_vacancies.extend(sj_vacancies)
-                    
+
             except Exception as e:
                 logger.error(f"Ошибка получения вакансий от целевых компаний с SuperJob: {e}")
 
         # Выводим общую статистику и применяем межплатформенную дедупликацию
         if all_vacancies:
-            print(f"\nВсего найдено {len(all_vacancies)} вакансий от целевых компаний")
-            return self._deduplicate_cross_platform(all_vacancies)
+            logger.info(f"Всего найдено {len(all_vacancies)} уникальных вакансий от целевых компаний")
+            print(f"Всего найдено {len(all_vacancies)} уникальных вакансий от целевых компаний")
+
+            # Показываем объединенную статистику
+            if all_vacancies or hh_vacancies or sj_vacancies:
+                from src.utils.vacancy_stats import VacancyStats
+                VacancyStats.display_combined_stats(hh_vacancies or [], sj_vacancies or [])
+
+            return all_vacancies
         else:
             return []
 
