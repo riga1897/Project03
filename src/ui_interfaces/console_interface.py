@@ -18,6 +18,7 @@ from src.vacancies.models import Vacancy
 from src.ui_interfaces.vacancy_display_handler import VacancyDisplayHandler
 from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
 from src.ui_interfaces.vacancy_search_handler import VacancySearchHandler
+from src.storage.storage_factory import StorageFactory
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +35,7 @@ class UserInterface:
     def __init__(self, storage=None):
         """Инициализация пользовательского интерфейса"""
         from src.config.app_config import AppConfig
-        from src.storage.storage_factory import StorageFactory
+        # from src.storage.storage_factory import StorageFactory # Импорт перемещен в начало файла
         from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
 
         self.unified_api = UnifiedAPI()
