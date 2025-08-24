@@ -323,7 +323,7 @@ class PostgresSaver:
                     vacancy.description, vacancy.requirements, vacancy.responsibilities,
                     vacancy.experience, vacancy.employment, vacancy.schedule,
                     employer_str, area_str, vacancy.source, vacancy.published_at,
-                    str(mapped_company_id) if mapped_company_id is not None else None # Преобразуем в строку
+                    mapped_company_id  # Оставляем как integer
                 ))
 
             # Bulk insert во временную таблицу
@@ -588,7 +588,7 @@ class PostgresSaver:
                         vacancy.description, vacancy.requirements, vacancy.responsibilities,
                         vacancy.experience, vacancy.employment, vacancy.schedule,
                         employer_str, area_str, vacancy.source, vacancy.published_at,
-                        str(mapped_company_id) if mapped_company_id is not None else None # Преобразуем в строку
+                        mapped_company_id  # Оставляем как integer
                     ))
 
                 insert_query = """
@@ -653,7 +653,7 @@ class PostgresSaver:
                         salary_currency, vacancy.description, vacancy.requirements,
                         vacancy.responsibilities, vacancy.experience, vacancy.employment,
                         vacancy.schedule, employer_str, area_str, vacancy.source,
-                        vacancy.published_at, str(mapped_company_id) if mapped_company_id is not None else None, vacancy.vacancy_id # Применяем company_id как строку
+                        vacancy.published_at, mapped_company_id, vacancy.vacancy_id
                     ))
 
             connection.commit()
@@ -1051,7 +1051,7 @@ class PostgresSaver:
 
                 # Filter by company name directly
                 if filters.get('company_name'):
-                    where_conditions.append("LOWER(company_name) LIKE LOWER(%s)") # Assuming company_name is available via join
+                    where_conditions.append("LOWER(company_name) LIKE LOWER(%s)")
                     params.append(f"%{filters['company_name']}%")
 
 
@@ -1245,7 +1245,7 @@ class PostgresSaver:
                     vacancy.description, vacancy.requirements, vacancy.responsibilities,
                     vacancy.experience, vacancy.employment, vacancy.schedule,
                     employer_str, area_str, vacancy.source, vacancy.published_at,
-                    str(mapped_company_id) if mapped_company_id is not None else None # Преобразуем в строку
+                    mapped_company_id  # Оставляем как integer
                 ))
 
             # Bulk insert во временную таблицу
