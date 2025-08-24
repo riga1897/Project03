@@ -303,9 +303,10 @@ class DBManagerDemo:
         """
         Запускает полную демонстрацию всех методов DBManager
         """
-        print("=" * 60)
+        print("=" * 80)
         print("ДЕМОНСТРАЦИЯ РАБОТЫ КЛАССА DBManager")
-        print("=" * 60)
+        print("Анализ данных по 15 целевым компаниям")
+        print("=" * 80)
         
         # Проверяем подключение
         if not self._check_connection():
@@ -322,9 +323,10 @@ class DBManagerDemo:
         self._demo_vacancies_with_keyword()
         self._demo_database_stats()
         
-        print("=" * 60)
+        print("=" * 80)
         print("ДЕМОНСТРАЦИЯ ЗАВЕРШЕНА")
-        print("=" * 60)
+        print("Показана статистика по всем 15 целевым компаниям")
+        print("=" * 80)
     
     def _check_connection(self) -> bool:
         """
@@ -345,32 +347,66 @@ class DBManagerDemo:
     
     def _show_target_companies(self) -> None:
         """Показывает информацию о целевых компаниях"""
-        print("\n2. Целевые компании проекта:")
-        print("-" * 40)
-        print(TargetCompanies.get_companies_info())
+        print("\n2. Целевые компании проекта (15 компаний):")
+        print("-" * 60)
+        
+        from src.config.target_companies import TARGET_COMPANIES
+        
+        print("Анализ будет проводиться по следующим целевым компаниям:")
+        print()
+        
+        for i, company in enumerate(TARGET_COMPANIES, 1):
+            print(f"{i:2d}. {company['name']} (HH ID: {company['hh_id']})")
+            print(f"    {company['description']}")
+        
+        print(f"\nВсего целевых компаний: {len(TARGET_COMPANIES)}")
     
     def _demo_companies_and_vacancies_count(self) -> None:
-        """Демонстрирует метод get_companies_and_vacancies_count()"""
-        print("\n3. get_companies_and_vacancies_count() - Компании и количество вакансий:")
-        print("-" * 60)
+        """Демонстрирует метод get_companies_and_vacancies_count() для целевых компаний"""
+        print("\n3. get_companies_and_vacancies_count() - Целевые компании и количество вакансий:")
+        print("-" * 80)
+        
+        from src.config.target_companies import TARGET_COMPANIES
         
         companies_data = self.db_manager.get_companies_and_vacancies_count()
         
-        if not companies_data:
-            print("📊 Вакансии не найдены")
+        # Создаем словарь для быстрого поиска
+        companies_dict = {name: count for name, count in companies_data} if companies_data else {}
+        
+        print(f"{'№':<3} {'Целевая компания':<35} {'Количество вакансий':<20}")
+        print("-" * 80)
+        
+        total_vacancies = 0
+        companies_with_vacancies = 0
+        
+        # Показываем все 15 целевых компаний
+        for i, company in enumerate(TARGET_COMPANIES, 1):
+            company_name = company['name']
+            
+            # Ищем компанию в результатах (может быть небольшие различия в названиях)
+            vacancy_count = 0
+            for db_name, count in companies_dict.items():
+                if (company_name.lower() in db_name.lower() or 
+                    db_name.lower() in company_name.lower() or
+                    company_name == db_name):
+                    vacancy_count = count
+                    break
+            
+            status = "✅" if vacancy_count > 0 else "❌"
+            print(f"{i:<3} {status} {company_name:<32} {vacancy_count:<20}")
+            
+            total_vacancies += vacancy_count
+            if vacancy_count > 0:
+                companies_with_vacancies += 1
+        
+        print("-" * 80)
+        print(f"📊 Итоговая статистика по целевым компаниям:")
+        print(f"   • Компаний с вакансиями: {companies_with_vacancies} из {len(TARGET_COMPANIES)}")
+        print(f"   • Всего вакансий от целевых компаний: {total_vacancies}")
+        
+        if total_vacancies == 0:
             print("💡 Для получения данных выполните поиск вакансий через пункт меню 1")
-            return
-        
-        print(f"{'№':<3} {'Название компании':<35} {'Количество вакансий':<15}")
-        print("-" * 60)
-        
-        for i, (company_name, vacancy_count) in enumerate(companies_data[:10], 1):
-            print(f"{i:<3} {company_name:<35} {vacancy_count:<15}")
-        
-        if len(companies_data) > 10:
-            print(f"... и еще {len(companies_data) - 10} компаний")
-        
-        print(f"\nВсего компаний: {len(companies_data)}")
+            print("   Выберите источник API и введите запрос для поиска")
     
     def _demo_all_vacancies(self) -> None:
         """Демонстрирует метод get_all_vacancies()"""
