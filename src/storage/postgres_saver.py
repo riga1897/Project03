@@ -320,11 +320,12 @@ class PostgresSaver:
                 salary = None
                 if row['salary_from'] or row['salary_to']:
                     from src.utils.salary import Salary
-                    salary = Salary(
-                        salary_from=row['salary_from'],
-                        salary_to=row['salary_to'],
-                        currency=row['salary_currency']
-                    )
+                    salary_data = {
+                        'from': row['salary_from'],
+                        'to': row['salary_to'],
+                        'currency': row['salary_currency']
+                    }
+                    salary = Salary(salary_data)
                 
                 # Convert employer string back to dict format for consistency
                 employer = None
