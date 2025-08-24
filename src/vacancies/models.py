@@ -92,7 +92,12 @@ class Vacancy(AbstractVacancy):
         self.detailed_description = detailed_description or description
         self.benefits = benefits
         self.source = source
-        self.area = area
+        
+        # Обработка area - может приходить как строка или словарь
+        if isinstance(area, dict):
+            self.area = area.get('name', str(area))
+        else:
+            self.area = area
 
     @staticmethod
     def _validate_salary(salary_data: Optional[Dict[str, Any]]) -> Salary:
@@ -206,11 +211,18 @@ class Vacancy(AbstractVacancy):
             if employer:
                 if isinstance(employer, dict):
                     company_id = str(employer.get("id", "")) if employer.get("id") else ""
+                    # Сохраняем employer как есть
                 elif isinstance(employer, str):
+                    # Если employer - строка, преобразуем в словарь
+                    employer = {"name": employer}
                     company_id = ""
             elif data.get("firm_name"):
                 employer = {"name": data.get("firm_name")}
                 company_id = ""
+            
+            # Если employer все еще None, но есть данные от SuperJob
+            if not employer and data.get("firm_name"):
+                employer = {"name": data.get("firm_name")}
 
             # Обработка опыта работы
             experience = None
@@ -287,6 +299,7 @@ class Vacancy(AbstractVacancy):
                 detailed_description=data.get("detailed_description"),
                 benefits=data.get("benefits"),
                 source=source,
+                area=data.get("area")  # Передаем area как есть
             )
             
             # Устанавливаем company_id после создания объекта
