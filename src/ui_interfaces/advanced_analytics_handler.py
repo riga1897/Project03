@@ -3,7 +3,7 @@ import logging
 from typing import Optional, Dict, Any
 
 from src.utils.ui_helpers import get_user_input, get_positive_integer, confirm_action
-from src.utils.paginator import quick_paginate
+from src.utils.ui_navigation import quick_paginate
 from src.utils.vacancy_formatter import VacancyFormatter
 
 logger = logging.getLogger(__name__)
