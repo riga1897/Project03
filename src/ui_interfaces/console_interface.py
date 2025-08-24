@@ -6,9 +6,7 @@ from src.api_modules.sj_api import SuperJobAPI
 from src.api_modules.unified_api import UnifiedAPI
 from src.config.ui_config import ui_pagination_config
 from src.storage.json_saver import JSONSaver
-from src.ui_interfaces.source_selector import SourceSelector
-from src.ui_interfaces.vacancy_display_handler import VacancyDisplayHandler
-from src.ui_interfaces.vacancy_search_handler import VacancySearchHandler
+
 from src.utils.menu_manager import create_main_menu, print_menu_separator, print_section_header
 from src.utils.ui_helpers import (confirm_action, display_vacancy_info, filter_vacancies_by_keyword, get_user_input,
                                   parse_salary_range)
@@ -33,9 +31,8 @@ class UserInterface:
         """Инициализация пользовательского интерфейса"""
         from src.config.app_config import AppConfig
         from src.storage.storage_factory import StorageFactory
+        from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
         
-        self.hh_api = HeadHunterAPI()
-        self.sj_api = SuperJobAPI()
         self.unified_api = UnifiedAPI()
         
         # Используем переданное хранилище или создаем по умолчанию
@@ -50,11 +47,9 @@ class UserInterface:
         
         self.menu_manager = create_main_menu()
         self.vacancy_ops = VacancyOperations()
-        self.source_selector = SourceSelector()
 
-        # Инициализируем обработчики
-        self.search_handler = VacancySearchHandler(self.unified_api, self.storage)
-        self.display_handler = VacancyDisplayHandler(self.storage)
+        # Инициализируем координатор операций
+        self.coordinator = VacancyOperationsCoordinator(self.unified_api, self.storage)
 
     def run(self) -> None:
         """Основной цикл взаимодействия с пользователем"""
@@ -122,19 +117,19 @@ class UserInterface:
 
     def _search_vacancies(self) -> None:
         """Поиск вакансий по запросу пользователя"""
-        self.search_handler.search_vacancies()
+        self.coordinator.handle_vacancy_search()
 
     def _show_saved_vacancies(self) -> None:
         """Отображение сохраненных вакансий с постраничным просмотром"""
-        self.display_handler.show_all_saved_vacancies()
+        self.coordinator.handle_show_saved_vacancies()
 
     def _get_top_saved_vacancies_by_salary(self) -> None:
         """Получение топ N сохраненных вакансий по зарплате"""
-        self.display_handler.show_top_vacancies_by_salary()
+        self.coordinator.handle_top_vacancies_by_salary()
 
     def _search_saved_vacancies_by_keyword(self) -> None:
         """Поиск в сохраненных вакансиях с ключевым словом в описании"""
-        self.display_handler.search_saved_vacancies_by_keyword()
+        self.coordinator.handle_search_saved_by_keyword()
 
     def _advanced_search_vacancies(self) -> None:
         """Расширенный поиск по вакансиям"""
@@ -268,108 +263,11 @@ class UserInterface:
 
     def _delete_saved_vacancies(self) -> None:
         """Удаление сохраненных вакансий"""
-        try:
-            vacancies = self.json_saver.get_vacancies()
-
-            if not vacancies:
-                print("Нет сохраненных вакансий для удаления.")
-                return
-
-            print(f"\nСохраненных вакансий: {len(vacancies)}")
-            print("\nВыберите способ удаления:")
-            print("1. Удалить все сохраненные вакансии")
-            print("2. Удалить вакансии по ключевому слову")
-            print("3. Удалить конкретную вакансию по ID")
-            print("0. Отмена")
-
-            choice = input("Ваш выбор: ").strip()
-
-            if choice == "1":
-                if confirm_action("Вы уверены, что хотите удалить ВСЕ сохраненные вакансии?"):
-                    if self.json_saver.delete_all_vacancies():
-                        print("Все сохраненные вакансии успешно удалены.")
-                    else:
-                        print("Ошибка при удалении вакансий.")
-                else:
-                    print("Удаление отменено.")
-
-            elif choice == "2":
-                keyword = get_user_input("Введите ключевое слово для удаления связанных вакансий: ")
-                if keyword:
-                    # Сначала покажем, что будет удалено
-                    filtered_vacancies = filter_vacancies_by_keyword(vacancies, keyword)
-                    if not filtered_vacancies:
-                        print(f"Вакансии с ключевым словом '{keyword}' не найдены.")
-                        return
-
-                    print(f"\nНайдено {len(filtered_vacancies)} вакансий с ключевым словом '{keyword}':")
-
-                    # Показываем список с постраничным просмотром
-                    self._show_vacancies_for_deletion(filtered_vacancies, keyword)
-
-            elif choice == "3":
-                print("\nДля просмотра ID вакансий используйте пункт 2 (Показать все сохраненные вакансии)")
-                vacancy_id = get_user_input("Введите полный ID вакансии для удаления: ")
-                if vacancy_id:
-                    # Найдем вакансию для подтверждения
-                    vacancy_to_delete = None
-                    for vacancy in vacancies:
-                        if vacancy.vacancy_id == vacancy_id:
-                            vacancy_to_delete = vacancy
-                            break
-
-                    if vacancy_to_delete:
-                        print("\nВакансия для удаления:")
-                        print(f"ID: {vacancy_to_delete.vacancy_id}")
-                        print(f"Название: {vacancy_to_delete.title or 'Не указано'}")
-                        if vacancy_to_delete.employer:
-                            print(f"Компания: {vacancy_to_delete.employer.get('name', 'Не указана')}")
-                        if vacancy_to_delete.salary:
-                            print(f"Зарплата: {vacancy_to_delete.salary}")
-                        else:
-                            print("Зарплата: Не указана")
-                        if vacancy_to_delete.experience:
-                            print(f"Опыт: {vacancy_to_delete.experience}")
-                        print(f"Ссылка: {vacancy_to_delete.url}")
-
-                        if confirm_action("Удалить эту вакансию?"):
-                            if self.json_saver.delete_vacancy_by_id(vacancy_id):
-                                print("Вакансия успешно удалена.")
-                            else:
-                                print("Ошибка при удалении вакансии.")
-                        else:
-                            print("Удаление отменено.")
-                    else:
-                        print("Вакансия с указанным ID не найдена.")
-
-            elif choice == "0":
-                print("Назад в предыдущее меню.")
-
-            else:
-                print("Неверный выбор. Попробуйте снова.")
-
-        except Exception as e:
-            logger.error(f"Ошибка при удалении вакансий: {e}")
-            print(f"Ошибка при удалении: {e}")
+        self.coordinator.handle_delete_vacancies()
 
     def _clear_api_cache(self) -> None:
         """Очистка кэша API"""
-        try:
-            sources = self.source_selector.get_user_source_choice()
-            if not sources:
-                return
-
-            self.source_selector.display_sources_info(sources)
-            if confirm_action("Вы уверены, что хотите очистить кэш выбранных источников?"):
-                # Конвертируем sources (set) в нужный формат для clear_cache
-                cache_sources = {"hh": "hh" in sources, "sj": "sj" in sources}
-                self.unified_api.clear_cache(cache_sources)
-                print("Кэш выбранных источников успешно очищен.")
-            else:
-                print("Очистка кэша отменена.")
-        except Exception as e:
-            logger.error(f"Ошибка при очистке кэша: {e}")
-            print(f"Ошибка при очистке кэша: {e}")
+        self.coordinator.handle_cache_cleanup()
 
     @staticmethod
     def _get_period_choice() -> Optional[int]:
@@ -417,36 +315,9 @@ class UserInterface:
             print("\nВыбор периода отменен.")
             return None
 
-    @staticmethod
-    def _setup_superjob_api() -> None:
+    def _setup_superjob_api(self) -> None:
         """Настройка SuperJob API"""
-        import os
-
-        print("\n" + "=" * 60)
-        print("НАСТРОЙКА SUPERJOB API")
-        print("=" * 60)
-
-        current_key = os.getenv("SUPERJOB_API_KEY")
-        if current_key and current_key != "v3.r.137440105.example.test_tool":
-            print("✅ SuperJob API ключ уже настроен")
-        else:
-            print("❌ SuperJob API ключ не настроен или используется тестовый")
-
-        print("\nДля получения API ключа SuperJob:")
-        print("1. Перейдите на https://api.superjob.ru/register/")
-        print("2. Зарегистрируйте ваше приложение")
-        print("3. Получите Secret key")
-        print("4. Добавьте его в Secrets как SUPERJOB_API_KEY")
-        print("\nИнструкция по добавлению секретов:")
-        print("• Откройте панель Secrets в левом меню")
-        print("• Нажмите 'New Secret'")
-        print("• Введите Key: SUPERJOB_API_KEY")
-        print("• Введите Value: ваш настоящий API ключ")
-        print("• Нажмите 'Add Secret'")
-        print("• Перезапустите приложение")
-        print("\n" + "=" * 60)
-
-        input("\nНажмите Enter для продолжения...")
+        self.coordinator.handle_superjob_setup()
 
     @staticmethod
     def _display_vacancies(vacancies: List[Vacancy], start_number: int = 1) -> None:
