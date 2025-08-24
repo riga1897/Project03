@@ -39,15 +39,14 @@ class UserInterface:
 
         self.unified_api = UnifiedAPI()
 
-        # Используем переданное хранилище или создаем по умолчанию
+        # Используем переданное хранилище или создаем по умолчанию (PostgreSQL)
         if storage:
             self.storage = storage
         else:
-            app_config = AppConfig()
-            self.storage = StorageFactory.create_storage(app_config.default_storage_type)
+            self.storage = StorageFactory.get_default_storage() # Используем только PostgreSQL хранилище
 
-        # Для обратной совместимости (удалено, так как теперь используется только storage)
-        # self.json_saver = self.storage
+        # Инициализируем только PostgreSQL хранилище
+        self.db_storage = self.storage
 
         self.menu_manager = create_main_menu()
         self.vacancy_ops = VacancyOperations()

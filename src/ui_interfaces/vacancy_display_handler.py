@@ -23,7 +23,7 @@ class VacancyDisplayHandler:
         Инициализация обработчика отображения
 
         Args:
-            storage: Сервис работы с сохраненными данными (JSON или PostgreSQL)
+            storage: Сервис работы с сохраненными данными PostgreSQL
         """
         self.storage = storage
         self.vacancy_ops = VacancyOperations()

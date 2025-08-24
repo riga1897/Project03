@@ -1,5 +1,5 @@
+
 from typing import Union, Dict, Optional
-from src.storage.json_saver import JSONSaver
 from src.storage.postgres_saver import PostgresSaver
 from src.storage.abstract import AbstractVacancyStorage
 from src.config.db_config import DatabaseConfig
@@ -9,24 +9,22 @@ class StorageFactory:
     """Фабрика для создания объектов хранилища"""
 
     @staticmethod
-    def create_storage(storage_type: str) -> AbstractVacancyStorage:
+    def create_storage(storage_type: str = "postgres") -> AbstractVacancyStorage:
         """
-        Создает экземпляр хранилища указанного типа
+        Создает экземпляр хранилища PostgreSQL
 
         Args:
-            storage_type: Тип хранилища ('json' или 'postgres')
+            storage_type: Тип хранилища (только 'postgres' поддерживается)
 
         Returns:
-            AbstractVacancyStorage: Экземпляр хранилища
+            AbstractVacancyStorage: Экземпляр PostgreSQL хранилища
         """
-        if storage_type == "json":
-            return JSONSaver()
-        elif storage_type == "postgres":
-            from src.config.app_config import AppConfig
-            app_config = AppConfig()
-            return PostgresSaver(app_config.get_db_config())
-        else:
-            raise ValueError(f"Неподдерживаемый тип хранилища: {storage_type}")
+        if storage_type != "postgres":
+            raise ValueError(f"Поддерживается только PostgreSQL хранилище, получен: {storage_type}")
+        
+        from src.config.app_config import AppConfig
+        app_config = AppConfig()
+        return PostgresSaver(app_config.get_db_config())
 
     @staticmethod
     def get_default_storage() -> AbstractVacancyStorage:
@@ -34,6 +32,6 @@ class StorageFactory:
         Возвращает хранилище по умолчанию
 
         Returns:
-            AbstractVacancyStorage: Хранилище по умолчанию (PostgreSQL)
+            AbstractVacancyStorage: PostgreSQL хранилище
         """
         return StorageFactory.create_storage("postgres")

@@ -10,14 +10,14 @@ class AbstractVacancyStorage(ABC):
     @abstractmethod
     def add_vacancy(self, vacancy: AbstractVacancy) -> None:
         """
-        Добавляет вакансию в хранилище
+        Добавляет вакансию в PostgreSQL хранилище
         :param vacancy: Объект вакансии для добавления
         """
 
     @abstractmethod
     def get_vacancies(self, filters: Optional[Dict[str, Any]] = None) -> List[AbstractVacancy]:
         """
-        Возвращает список вакансий с учетом фильтров
+        Возвращает список вакансий из PostgreSQL с учетом фильтров
         :param filters: Словарь с критериями фильтрации
         :return: Список вакансий
         """
@@ -25,7 +25,7 @@ class AbstractVacancyStorage(ABC):
     @abstractmethod
     def delete_vacancy(self, vacancy: AbstractVacancy) -> None:
         """
-        Удаляет вакансию из хранилища
+        Удаляет вакансию из PostgreSQL хранилища
         :param vacancy: Объект вакансии для удаления
         """
 
