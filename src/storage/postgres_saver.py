@@ -108,11 +108,14 @@ class PostgresSaver:
 
     def add_vacancy(self, vacancies: Union[Vacancy, List[Vacancy]]) -> List[str]:
         """
-        Добавляет вакансии в БД с выводом информационных сообщений об изменениях.
+        Добавляет вакансии в БД с batch-операциями для максимальной производительности.
         Возвращает список сообщений об обновлениях.
         """
         if not isinstance(vacancies, list):
             vacancies = [vacancies]
+
+        if not vacancies:
+            return []
 
         connection = self._get_connection()
         update_messages: List[str] = []
@@ -120,107 +123,121 @@ class PostgresSaver:
         try:
             cursor = connection.cursor(cursor_factory=RealDictCursor)
             
-            for new_vac in vacancies:
-                # Проверяем существование вакансии
-                cursor.execute("SELECT * FROM vacancies_storage WHERE vacancy_id = %s", (new_vac.vacancy_id,))
-                existing = cursor.fetchone()
-                
-                if existing:
-                    # Обновляем существующую вакансию
-                    changed_fields = []
+            # Batch проверка существования вакансий
+            vacancy_ids = [v.vacancy_id for v in vacancies]
+            placeholders = ','.join(['%s'] * len(vacancy_ids))
+            
+            cursor.execute(
+                f"SELECT vacancy_id, title, url, description, salary_from, salary_to, salary_currency FROM vacancies_storage WHERE vacancy_id IN ({placeholders})",
+                vacancy_ids
+            )
+            
+            existing_map = {row['vacancy_id']: row for row in cursor.fetchall()}
+            
+            # Разделяем на новые и обновляемые вакансии
+            new_vacancies = []
+            update_vacancies = []
+            
+            for vac in vacancies:
+                if vac.vacancy_id in existing_map:
+                    existing = existing_map[vac.vacancy_id]
                     
                     # Проверяем изменения
-                    if existing['title'] != new_vac.title:
-                        changed_fields.append('title')
-                    if existing['url'] != new_vac.url:
-                        changed_fields.append('url')
-                    if existing['description'] != new_vac.description:
-                        changed_fields.append('description')
+                    salary_from = vac.salary.salary_from if vac.salary else None
+                    salary_to = vac.salary.salary_to if vac.salary else None
+                    salary_currency = vac.salary.currency if vac.salary else None
                     
-                    # Проверяем зарплату
-                    salary_from = new_vac.salary.salary_from if new_vac.salary else None
-                    salary_to = new_vac.salary.salary_to if new_vac.salary else None
-                    salary_currency = new_vac.salary.currency if new_vac.salary else None
+                    has_changes = (
+                        existing['title'] != vac.title or
+                        existing['url'] != vac.url or
+                        existing['description'] != vac.description or
+                        existing['salary_from'] != salary_from or
+                        existing['salary_to'] != salary_to or
+                        existing['salary_currency'] != salary_currency
+                    )
                     
-                    if (existing['salary_from'] != salary_from or 
-                        existing['salary_to'] != salary_to or 
-                        existing['salary_currency'] != salary_currency):
-                        changed_fields.append('salary')
-                    
-                    if changed_fields:
-                        update_query = """
-                        UPDATE vacancies_storage SET
-                            title = %s, url = %s, salary_from = %s, salary_to = %s,
-                            salary_currency = %s, description = %s, requirements = %s,
-                            responsibilities = %s, experience = %s, employment = %s,
-                            schedule = %s, employer = %s, area = %s, published_at = %s,
-                            updated_at = CURRENT_TIMESTAMP
-                        WHERE vacancy_id = %s
-                        """
-                        
-                        # Convert dict fields to strings for PostgreSQL compatibility
-                        employer_str = (
-                            new_vac.employer.get('name') if isinstance(new_vac.employer, dict) 
-                            else str(new_vac.employer) if new_vac.employer else None
-                        )
-                        area_str = (
-                            new_vac.area.get('name') if isinstance(new_vac.area, dict)
-                            else str(new_vac.area) if new_vac.area else None
-                        )
-                        
-                        cursor.execute(update_query, (
-                            new_vac.title, new_vac.url, salary_from, salary_to,
-                            salary_currency, new_vac.description, new_vac.requirements,
-                            new_vac.responsibilities, new_vac.experience, new_vac.employment,
-                            new_vac.schedule, employer_str, area_str,
-                            new_vac.published_at, new_vac.vacancy_id
-                        ))
-                        
-                        message = (
-                            f"Вакансия ID {new_vac.vacancy_id} обновлена. "
-                            f"Измененные поля: {', '.join(changed_fields)}. "
-                            f"Название: '{new_vac.title}'"
-                        )
-                        update_messages.append(message)
+                    if has_changes:
+                        update_vacancies.append(vac)
+                        update_messages.append(f"Вакансия ID {vac.vacancy_id} обновлена: '{vac.title}'")
                 else:
-                    # Добавляем новую вакансию
-                    insert_query = """
-                    INSERT INTO vacancies_storage (
-                        vacancy_id, title, url, salary_from, salary_to, salary_currency,
-                        description, requirements, responsibilities, experience,
-                        employment, schedule, employer, area, published_at
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    """
+                    new_vacancies.append(vac)
+                    update_messages.append(f"Добавлена новая вакансия ID {vac.vacancy_id}: '{vac.title}'")
+            
+            # Batch insert новых вакансий
+            if new_vacancies:
+                insert_data = []
+                for vac in new_vacancies:
+                    salary_from = vac.salary.salary_from if vac.salary else None
+                    salary_to = vac.salary.salary_to if vac.salary else None
+                    salary_currency = vac.salary.currency if vac.salary else None
                     
-                    salary_from = new_vac.salary.salary_from if new_vac.salary else None
-                    salary_to = new_vac.salary.salary_to if new_vac.salary else None
-                    salary_currency = new_vac.salary.currency if new_vac.salary else None
-                    
-                    # Convert dict fields to strings for PostgreSQL compatibility
                     employer_str = (
-                        new_vac.employer.get('name') if isinstance(new_vac.employer, dict) 
-                        else str(new_vac.employer) if new_vac.employer else None
+                        vac.employer.get('name') if isinstance(vac.employer, dict) 
+                        else str(vac.employer) if vac.employer else None
                     )
                     area_str = (
-                        new_vac.area.get('name') if isinstance(new_vac.area, dict)
-                        else str(new_vac.area) if new_vac.area else None
+                        vac.area.get('name') if isinstance(vac.area, dict)
+                        else str(vac.area) if vac.area else None
                     )
                     
-                    cursor.execute(insert_query, (
-                        new_vac.vacancy_id, new_vac.title, new_vac.url,
+                    insert_data.append((
+                        vac.vacancy_id, vac.title, vac.url,
                         salary_from, salary_to, salary_currency,
-                        new_vac.description, new_vac.requirements, new_vac.responsibilities,
-                        new_vac.experience, new_vac.employment, new_vac.schedule,
-                        employer_str, area_str, new_vac.published_at
+                        vac.description, vac.requirements, vac.responsibilities,
+                        vac.experience, vac.employment, vac.schedule,
+                        employer_str, area_str, vac.published_at
                     ))
+                
+                insert_query = """
+                INSERT INTO vacancies_storage (
+                    vacancy_id, title, url, salary_from, salary_to, salary_currency,
+                    description, requirements, responsibilities, experience,
+                    employment, schedule, employer, area, published_at
+                ) VALUES %s
+                """
+                
+                from psycopg2.extras import execute_values
+                execute_values(cursor, insert_query, insert_data, template=None, page_size=100)
+            
+            # Batch update существующих вакансий
+            if update_vacancies:
+                for vac in update_vacancies:
+                    salary_from = vac.salary.salary_from if vac.salary else None
+                    salary_to = vac.salary.salary_to if vac.salary else None
+                    salary_currency = vac.salary.currency if vac.salary else None
                     
-                    message = f"Добавлена новая вакансия ID {new_vac.vacancy_id}: '{new_vac.title}'"
-                    update_messages.append(message)
+                    employer_str = (
+                        vac.employer.get('name') if isinstance(vac.employer, dict) 
+                        else str(vac.employer) if vac.employer else None
+                    )
+                    area_str = (
+                        vac.area.get('name') if isinstance(vac.area, dict)
+                        else str(vac.area) if vac.area else None
+                    )
+                    
+                    update_query = """
+                    UPDATE vacancies_storage SET
+                        title = %s, url = %s, salary_from = %s, salary_to = %s,
+                        salary_currency = %s, description = %s, requirements = %s,
+                        responsibilities = %s, experience = %s, employment = %s,
+                        schedule = %s, employer = %s, area = %s, published_at = %s,
+                        updated_at = CURRENT_TIMESTAMP
+                    WHERE vacancy_id = %s
+                    """
+                    
+                    cursor.execute(update_query, (
+                        vac.title, vac.url, salary_from, salary_to,
+                        salary_currency, vac.description, vac.requirements,
+                        vac.responsibilities, vac.experience, vac.employment,
+                        vac.schedule, employer_str, area_str,
+                        vac.published_at, vac.vacancy_id
+                    ))
             
             connection.commit()
+            logger.info(f"Batch операция: добавлено {len(new_vacancies)}, обновлено {len(update_vacancies)} вакансий")
             
         except psycopg2.Error as e:
-            logger.error(f"Ошибка при добавлении вакансий: {e}")
+            logger.error(f"Ошибка при batch добавлении вакансий: {e}")
             connection.rollback()
             raise
         finally:
@@ -230,16 +247,75 @@ class PostgresSaver:
             
         return update_messages
 
-    def load_vacancies(self) -> List[Vacancy]:
-        """Загружает все вакансии из БД"""
+    def load_vacancies(self, limit: Optional[int] = None, offset: int = 0, filters: Optional[Dict[str, Any]] = None) -> List[Vacancy]:
+        """
+        Загружает вакансии из БД с поддержкой пагинации и фильтров
+        
+        Args:
+            limit: Максимальное количество вакансий
+            offset: Смещение для пагинации
+            filters: Словарь с фильтрами (title, salary_from, salary_to, employer)
+        """
         connection = self._get_connection()
         try:
             cursor = connection.cursor(cursor_factory=RealDictCursor)
-            cursor.execute("SELECT * FROM vacancies_storage ORDER BY created_at DESC")
+            
+            # Строим базовый запрос
+            query = "SELECT * FROM vacancies_storage"
+            params = []
+            where_conditions = []
+            
+            # Добавляем фильтры
+            if filters:
+                if filters.get('title'):
+                    where_conditions.append("LOWER(title) LIKE LOWER(%s)")
+                    params.append(f"%{filters['title']}%")
+                
+                if filters.get('salary_from'):
+                    where_conditions.append("salary_from >= %s")
+                    params.append(filters['salary_from'])
+                
+                if filters.get('salary_to'):
+                    where_conditions.append("salary_to <= %s")
+                    params.append(filters['salary_to'])
+                
+                if filters.get('employer'):
+                    where_conditions.append("LOWER(employer) LIKE LOWER(%s)")
+                    params.append(f"%{filters['employer']}%")
+            
+            # Добавляем WHERE если есть условия
+            if where_conditions:
+                query += " WHERE " + " AND ".join(where_conditions)
+            
+            # Добавляем сортировку и пагинацию
+            query += " ORDER BY created_at DESC"
+            
+            if limit:
+                query += " LIMIT %s"
+                params.append(limit)
+                
+            if offset > 0:
+                query += " OFFSET %s"
+                params.append(offset)
+            
+            cursor.execute(query, params)
             results = cursor.fetchall()
             
-            vacancies = []
-            for row in results:
+            return self._convert_rows_to_vacancies(results)
+            
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка загрузки вакансий: {e}")
+            return []
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
+
+    def _convert_rows_to_vacancies(self, rows: List[Dict]) -> List[Vacancy]:
+        """Конвертирует строки БД в объекты Vacancy"""
+        vacancies = []
+        for row in rows:
+            try:
                 # Создаем объект Salary если есть данные о зарплате
                 salary = None
                 if row['salary_from'] or row['salary_to']:
@@ -266,21 +342,20 @@ class PostgresSaver:
                     employment=row['employment'],
                     schedule=row['schedule'],
                     employer=employer,
-                    area=row['area'],  # Keep area as string
+                    # area не включаем в конструктор, т.к. его нет в __slots__
                     vacancy_id=row['vacancy_id'],
                     published_at=row['published_at']
                 )
+                
+                # Устанавливаем area напрямую
+                vacancy.area = row['area']
                 vacancies.append(vacancy)
                 
-            return vacancies
-            
-        except psycopg2.Error as e:
-            logger.error(f"Ошибка загрузки вакансий: {e}")
-            return []
-        finally:
-            if 'cursor' in locals():
-                cursor.close()
-            connection.close()
+            except Exception as e:
+                logger.error(f"Ошибка конвертации строки в Vacancy: {e}")
+                continue
+                
+        return vacancies
 
     def get_vacancies(self) -> List[Vacancy]:
         """Возвращает список вакансий"""
@@ -348,6 +423,45 @@ class PostgresSaver:
             
         except psycopg2.Error as e:
             logger.error(f"Ошибка при удалении вакансий по ключевому слову '{keyword}': {e}")
+            connection.rollback()
+            return 0
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
+
+    def delete_vacancies_batch(self, vacancy_ids: List[str]) -> int:
+        """
+        Batch удаление вакансий по списку ID
+        
+        Args:
+            vacancy_ids: Список ID вакансий для удаления
+            
+        Returns:
+            int: Количество удаленных вакансий
+        """
+        if not vacancy_ids:
+            return 0
+            
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+            
+            # Создаем плейсхолдеры для IN запроса
+            placeholders = ','.join(['%s'] * len(vacancy_ids))
+            query = f"DELETE FROM vacancies_storage WHERE vacancy_id IN ({placeholders})"
+            
+            cursor.execute(query, vacancy_ids)
+            deleted_count = cursor.rowcount
+            connection.commit()
+            
+            if deleted_count > 0:
+                logger.info(f"Batch удалено {deleted_count} вакансий")
+            
+            return deleted_count
+            
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка при batch удалении вакансий: {e}")
             connection.rollback()
             return 0
         finally:
@@ -423,6 +537,108 @@ class PostgresSaver:
         except psycopg2.Error as e:
             logger.error(f"Ошибка получения размера БД: {e}")
             return 0
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
+
+    def get_vacancies_count(self, filters: Optional[Dict[str, Any]] = None) -> int:
+        """
+        Возвращает количество вакансий с учетом фильтров
+        
+        Args:
+            filters: Словарь с фильтрами
+            
+        Returns:
+            int: Количество вакансий
+        """
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+            
+            query = "SELECT COUNT(*) FROM vacancies_storage"
+            params = []
+            where_conditions = []
+            
+            # Добавляем фильтры
+            if filters:
+                if filters.get('title'):
+                    where_conditions.append("LOWER(title) LIKE LOWER(%s)")
+                    params.append(f"%{filters['title']}%")
+                
+                if filters.get('salary_from'):
+                    where_conditions.append("salary_from >= %s")
+                    params.append(filters['salary_from'])
+                
+                if filters.get('salary_to'):
+                    where_conditions.append("salary_to <= %s")
+                    params.append(filters['salary_to'])
+                
+                if filters.get('employer'):
+                    where_conditions.append("LOWER(employer) LIKE LOWER(%s)")
+                    params.append(f"%{filters['employer']}%")
+            
+            if where_conditions:
+                query += " WHERE " + " AND ".join(where_conditions)
+            
+            cursor.execute(query, params)
+            return cursor.fetchone()[0]
+            
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка подсчета вакансий: {e}")
+            return 0
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
+
+    def search_vacancies_batch(self, keywords: List[str], limit: Optional[int] = None) -> List[Vacancy]:
+        """
+        Batch поиск вакансий по множественным ключевым словам
+        
+        Args:
+            keywords: Список ключевых слов для поиска
+            limit: Максимальное количество результатов
+            
+        Returns:
+            List[Vacancy]: Список найденных вакансий
+        """
+        if not keywords:
+            return []
+            
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor(cursor_factory=RealDictCursor)
+            
+            # Строим условия поиска
+            search_conditions = []
+            params = []
+            
+            for keyword in keywords:
+                search_conditions.append(
+                    "(LOWER(title) LIKE LOWER(%s) OR LOWER(description) LIKE LOWER(%s) OR LOWER(requirements) LIKE LOWER(%s))"
+                )
+                keyword_param = f"%{keyword}%"
+                params.extend([keyword_param, keyword_param, keyword_param])
+            
+            query = f"""
+            SELECT * FROM vacancies_storage 
+            WHERE {' AND '.join(search_conditions)}
+            ORDER BY created_at DESC
+            """
+            
+            if limit:
+                query += " LIMIT %s"
+                params.append(limit)
+            
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            
+            return self._convert_rows_to_vacancies(results)
+            
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка batch поиска вакансий: {e}")
+            return []
         finally:
             if 'cursor' in locals():
                 cursor.close()

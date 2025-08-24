@@ -37,6 +37,10 @@ class Vacancy(AbstractVacancy):
         "detailed_description",
         "benefits",
         "source",
+        "area",
+        "_relevance_score",
+        "raw_data",
+        "profession",
     )
 
     def __init__(
@@ -57,11 +61,11 @@ class Vacancy(AbstractVacancy):
         benefits: Optional[str] = None,
         vacancy_id: Optional[str] = None,
         source: str = "unknown",
+        area: Optional[str] = None,
     ):
         self._relevance_score = None
         self.raw_data = None
         self.profession = None
-        self.area = None
         self.vacancy_id = vacancy_id or str(uuid.uuid4())
         self.title = title
         self.url = url
@@ -78,6 +82,7 @@ class Vacancy(AbstractVacancy):
         self.detailed_description = detailed_description or description
         self.benefits = benefits
         self.source = source
+        self.area = area
 
     @staticmethod
     def _validate_salary(salary_data: Optional[Dict[str, Any]]) -> Salary:
