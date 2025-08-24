@@ -67,7 +67,7 @@ class Vacancy(AbstractVacancy):
         self._relevance_score = None
         self.raw_data = None
         self.profession = None
-        self.company_id = None
+        self.company_id = ""  # Инициализируем как строку
         # Используем переданный ID, если есть, иначе генерируем UUID
         if vacancy_id and str(vacancy_id).strip() and str(vacancy_id) != "":
             self.vacancy_id = str(vacancy_id)
@@ -201,8 +201,16 @@ class Vacancy(AbstractVacancy):
 
             # Обработка работодателя - сохраняем исходную структуру
             employer = data.get("employer")
-            if not employer and data.get("firm_name"):
+            company_id = ""
+            
+            if employer:
+                if isinstance(employer, dict):
+                    company_id = str(employer.get("id", "")) if employer.get("id") else ""
+                elif isinstance(employer, str):
+                    company_id = ""
+            elif data.get("firm_name"):
                 employer = {"name": data.get("firm_name")}
+                company_id = ""
 
             # Обработка опыта работы
             experience = None
@@ -263,7 +271,7 @@ class Vacancy(AbstractVacancy):
                 elif "name" in data and "snippet" in data:
                     source = "hh.ru"
 
-            return cls(
+            vacancy = cls(
                 vacancy_id=vacancy_id,
                 title=title,
                 url=url,
@@ -280,6 +288,10 @@ class Vacancy(AbstractVacancy):
                 benefits=data.get("benefits"),
                 source=source,
             )
+            
+            # Устанавливаем company_id после создания объекта
+            vacancy.company_id = company_id
+            return vacancy
 
         except Exception as e:
             logging.error(f"Ошибка создания унифицированной вакансии из данных: {data}\nОшибка: {e}")
