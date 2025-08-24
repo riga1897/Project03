@@ -391,7 +391,7 @@ class PostgresSaver:
                     COALESCE(v.salary_from, 0) != COALESCE(t.salary_from, 0) OR
                     COALESCE(v.salary_to, 0) != COALESCE(t.salary_to, 0) OR
                     COALESCE(v.salary_currency, '') != COALESCE(t.salary_currency, '') OR
-                    COALESCE(v.company_id, 0) != COALESCE(t.company_id, 0) -- Исправленная проверка company_id
+                    v.company_id IS DISTINCT FROM t.company_id -- Исправленная проверка company_id без COALESCE
                 )
             """)
 
@@ -556,7 +556,7 @@ class PostgresSaver:
                         existing['salary_from'] != salary_from or
                         existing['salary_to'] != salary_to or
                         existing['salary_currency'] != salary_currency or
-                        (existing['company_id'] or 0) != (mapped_company_id or 0) # Исправленная проверка company_id
+                        existing['company_id'] != mapped_company_id # Сравнение company_id
                     )
 
                     if has_changes:
