@@ -158,11 +158,21 @@ class PostgresSaver:
                         WHERE vacancy_id = %s
                         """
                         
+                        # Convert dict fields to strings for PostgreSQL compatibility
+                        employer_str = (
+                            new_vac.employer.get('name') if isinstance(new_vac.employer, dict) 
+                            else str(new_vac.employer) if new_vac.employer else None
+                        )
+                        area_str = (
+                            new_vac.area.get('name') if isinstance(new_vac.area, dict)
+                            else str(new_vac.area) if new_vac.area else None
+                        )
+                        
                         cursor.execute(update_query, (
                             new_vac.title, new_vac.url, salary_from, salary_to,
                             salary_currency, new_vac.description, new_vac.requirements,
                             new_vac.responsibilities, new_vac.experience, new_vac.employment,
-                            new_vac.schedule, new_vac.employer, new_vac.area,
+                            new_vac.schedule, employer_str, area_str,
                             new_vac.published_at, new_vac.vacancy_id
                         ))
                         
@@ -186,12 +196,22 @@ class PostgresSaver:
                     salary_to = new_vac.salary.salary_to if new_vac.salary else None
                     salary_currency = new_vac.salary.currency if new_vac.salary else None
                     
+                    # Convert dict fields to strings for PostgreSQL compatibility
+                    employer_str = (
+                        new_vac.employer.get('name') if isinstance(new_vac.employer, dict) 
+                        else str(new_vac.employer) if new_vac.employer else None
+                    )
+                    area_str = (
+                        new_vac.area.get('name') if isinstance(new_vac.area, dict)
+                        else str(new_vac.area) if new_vac.area else None
+                    )
+                    
                     cursor.execute(insert_query, (
                         new_vac.vacancy_id, new_vac.title, new_vac.url,
                         salary_from, salary_to, salary_currency,
                         new_vac.description, new_vac.requirements, new_vac.responsibilities,
                         new_vac.experience, new_vac.employment, new_vac.schedule,
-                        new_vac.employer, new_vac.area, new_vac.published_at
+                        employer_str, area_str, new_vac.published_at
                     ))
                     
                     message = f"Добавлена новая вакансия ID {new_vac.vacancy_id}: '{new_vac.title}'"
@@ -230,6 +250,11 @@ class PostgresSaver:
                         currency=row['salary_currency']
                     )
                 
+                # Convert employer string back to dict format for consistency
+                employer = None
+                if row['employer']:
+                    employer = {'name': row['employer']}
+                
                 vacancy = Vacancy(
                     title=row['title'],
                     url=row['url'],
@@ -240,8 +265,8 @@ class PostgresSaver:
                     experience=row['experience'],
                     employment=row['employment'],
                     schedule=row['schedule'],
-                    employer=row['employer'],
-                    area=row['area'],
+                    employer=employer,
+                    area=row['area'],  # Keep area as string
                     vacancy_id=row['vacancy_id'],
                     published_at=row['published_at']
                 )
