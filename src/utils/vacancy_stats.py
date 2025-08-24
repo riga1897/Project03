@@ -29,29 +29,9 @@ class VacancyStats:
         """
         company_stats = defaultdict(int)
         
-        for i, vacancy in enumerate(vacancies):
+        for vacancy in vacancies:
             # Получаем название компании из разных источников
             company_name = VacancyStats._extract_company_name(vacancy)
-            
-            # Отладочная информация для первых нескольких вакансий
-            if i < 5:
-                logger.debug(f"Vacancy {i}: type={type(vacancy)}")
-                if isinstance(vacancy, dict):
-                    logger.debug(f"  Keys: {list(vacancy.keys())}")
-                    if "employer" in vacancy:
-                        logger.debug(f"  Employer: {vacancy['employer']}")
-                    if "raw_data" in vacancy:
-                        logger.debug(f"  Raw data keys: {list(vacancy['raw_data'].keys()) if isinstance(vacancy['raw_data'], dict) else 'not dict'}")
-                        if isinstance(vacancy['raw_data'], dict) and "employer" in vacancy['raw_data']:
-                            logger.debug(f"  Raw data employer: {vacancy['raw_data']['employer']}")
-                else:
-                    logger.debug(f"  Has employer attr: {hasattr(vacancy, 'employer')}")
-                    if hasattr(vacancy, 'employer'):
-                        logger.debug(f"  Employer: {vacancy.employer}")
-                    logger.debug(f"  Has raw_data attr: {hasattr(vacancy, 'raw_data')}")
-                    if hasattr(vacancy, 'raw_data'):
-                        logger.debug(f"  Raw data: {vacancy.raw_data}")
-                logger.debug(f"  Extracted company: {company_name}")
             
             if company_name:
                 company_stats[company_name] += 1
@@ -115,10 +95,16 @@ class VacancyStats:
         if isinstance(vacancy, dict) and "firm_name" in vacancy:
             return vacancy.get("firm_name", "Неизвестная компания")
         
-        # ПРИОРИТЕТ 7: Проверяем прямые поля HH в случае если это сырые данные
+        # ПРИОРИТЕТ 7: Проверяем поле company в преобразованных объектах Vacancy
+        if isinstance(vacancy, dict) and "company" in vacancy:
+            company = vacancy["company"]
+            if company and company != "None" and company.strip():
+                return str(company)
+        
+        # ПРИОРИТЕТ 8: Проверяем прямые поля HH в случае если это сырые данные
         if isinstance(vacancy, dict):
             # Проверяем возможные варианты полей компании в HH
-            for field in ["company_name", "company", "employer_name"]:
+            for field in ["company_name", "employer_name"]:
                 if field in vacancy and vacancy[field]:
                     company = vacancy[field]
                     if isinstance(company, dict):
