@@ -99,7 +99,7 @@ class PostgresSaver:
 
             # Создаем таблицу для вакансий
             create_table_query = """
-            CREATE TABLE IF NOT EXISTS vacancies_storage (
+            CREATE TABLE IF NOT EXISTS vacancies (
                 id SERIAL PRIMARY KEY,
                 vacancy_id VARCHAR(50) UNIQUE NOT NULL,
                 title VARCHAR(500) NOT NULL,
@@ -128,19 +128,19 @@ class PostgresSaver:
             cursor.execute("""
                 SELECT column_name 
                 FROM information_schema.columns 
-                WHERE table_name = 'vacancies_storage' AND column_name = 'source';
+                WHERE table_name = 'vacancies' AND column_name = 'source';
             """)
 
             if not cursor.fetchone():
                 logger.info("Добавляем поле source в существующую таблицу...")
-                cursor.execute("ALTER TABLE vacancies_storage ADD COLUMN source VARCHAR(50) DEFAULT 'unknown';")
+                cursor.execute("ALTER TABLE vacancies ADD COLUMN source VARCHAR(50) DEFAULT 'unknown';")
                 logger.info("✓ Поле source добавлено")
 
             # Создаем индексы
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_vacancy_id ON vacancies_storage(vacancy_id);")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_title ON vacancies_storage(title);")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_salary ON vacancies_storage(salary_from, salary_to);")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_source ON vacancies_storage(source);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_vacancy_id ON vacancies(vacancy_id);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_title ON vacancies(title);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_salary ON vacancies(salary_from, salary_to);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_source ON vacancies(source);")
 
             connection.commit()
             logger.info("✓ Таблицы успешно созданы/проверены")
@@ -233,13 +233,13 @@ class PostgresSaver:
 
             # Находим новые вакансии (которых нет в основной таблице)
             cursor.execute("""
-                INSERT INTO vacancies_storage (
+                INSERT INTO vacancies (
                     vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
                     employment, schedule, employer, area, source, published_at
                 )
                 SELECT t.* FROM temp_new_vacancies t
-                LEFT JOIN vacancies_storage v ON t.vacancy_id = v.vacancy_id
+                LEFT JOIN vacancies v ON t.vacancy_id = v.vacancy_id
                 WHERE v.vacancy_id IS NULL
             """)
 
@@ -247,7 +247,7 @@ class PostgresSaver:
 
             # Находим и обновляем существующие вакансии с изменениями
             cursor.execute("""
-                UPDATE vacancies_storage v SET
+                UPDATE vacancies v SET
                     title = t.title,
                     url = t.url,
                     salary_from = t.salary_from,
@@ -283,7 +283,7 @@ class PostgresSaver:
                 SELECT t.vacancy_id, t.title, 
                        CASE WHEN v.vacancy_id IS NULL THEN 'new' ELSE 'updated' END as action
                 FROM temp_new_vacancies t
-                LEFT JOIN vacancies_storage v ON t.vacancy_id = v.vacancy_id
+                LEFT JOIN vacancies v ON t.vacancy_id = v.vacancy_id
                 ORDER BY action, t.vacancy_id
                 LIMIT 10
             """)
@@ -346,7 +346,7 @@ class PostgresSaver:
             placeholders = ','.join(['%s'] * len(vacancy_ids))
 
             cursor.execute(
-                f"SELECT vacancy_id, title, url, description, salary_from, salary_to, salary_currency FROM vacancies_storage WHERE vacancy_id IN ({placeholders})",
+                f"SELECT vacancy_id, title, url, description, salary_from, salary_to, salary_currency FROM vacancies WHERE vacancy_id IN ({placeholders})",
                 vacancy_ids
             )
 
@@ -407,7 +407,7 @@ class PostgresSaver:
                     ))
 
                 insert_query = """
-                INSERT INTO vacancies_storage (
+                INSERT INTO vacancies (
                     vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
                     employment, schedule, employer, area, source, published_at
@@ -434,7 +434,7 @@ class PostgresSaver:
                     )
 
                     update_query = """
-                    UPDATE vacancies_storage SET
+                    UPDATE vacancies SET
                         title = %s, url = %s, salary_from = %s, salary_to = %s,
                         salary_currency = %s, description = %s, requirements = %s,
                         responsibilities = %s, experience = %s, employment = %s,
@@ -479,7 +479,7 @@ class PostgresSaver:
             cursor = connection.cursor(cursor_factory=RealDictCursor)
 
             # Строим базовый запрос
-            query = "SELECT * FROM vacancies_storage"
+            query = "SELECT * FROM vacancies"
             params = []
             where_conditions = []
 
@@ -592,7 +592,7 @@ class PostgresSaver:
         connection = self._get_connection()
         try:
             cursor = connection.cursor()
-            cursor.execute("DELETE FROM vacancies_storage")
+            cursor.execute("DELETE FROM vacancies")
             connection.commit()
             logger.info("Все вакансии удалены")
             return True
@@ -610,7 +610,7 @@ class PostgresSaver:
         connection = self._get_connection()
         try:
             cursor = connection.cursor()
-            cursor.execute("DELETE FROM vacancies_storage WHERE vacancy_id = %s", (vacancy_id,))
+            cursor.execute("DELETE FROM vacancies WHERE vacancy_id = %s", (vacancy_id,))
 
             if cursor.rowcount > 0:
                 connection.commit()
@@ -635,7 +635,7 @@ class PostgresSaver:
         try:
             cursor = connection.cursor()
             cursor.execute(
-                "DELETE FROM vacancies_storage WHERE LOWER(title) LIKE LOWER(%s)",
+                "DELETE FROM vacancies WHERE LOWER(title) LIKE LOWER(%s)",
                 (f"%{keyword}%",)
             )
 
@@ -675,7 +675,7 @@ class PostgresSaver:
 
             # Создаем плейсхолдеры для IN запроса
             placeholders = ','.join(['%s'] * len(vacancy_ids))
-            query = f"DELETE FROM vacancies_storage WHERE vacancy_id IN ({placeholders})"
+            query = f"DELETE FROM vacancies WHERE vacancy_id IN ({placeholders})"
 
             cursor.execute(query, vacancy_ids)
             deleted_count = cursor.rowcount
@@ -700,7 +700,7 @@ class PostgresSaver:
         connection = self._get_connection()
         try:
             cursor = connection.cursor()
-            cursor.execute("SELECT 1 FROM vacancies_storage WHERE vacancy_id = %s", (vacancy.vacancy_id,))
+            cursor.execute("SELECT 1 FROM vacancies WHERE vacancy_id = %s", (vacancy.vacancy_id,))
             return cursor.fetchone() is not None
         except psycopg2.Error as e:
             logger.error(f"Ошибка проверки существования вакансии: {e}")
@@ -750,7 +750,7 @@ class PostgresSaver:
             cursor.execute("""
                 SELECT t.vacancy_id, (v.vacancy_id IS NOT NULL) as exists
                 FROM temp_vacancy_check t
-                LEFT JOIN vacancies_storage v ON t.vacancy_id = v.vacancy_id
+                LEFT JOIN vacancies v ON t.vacancy_id = v.vacancy_id
             """)
 
             result = {row[0]: row[1] for row in cursor.fetchall()}
@@ -773,7 +773,7 @@ class PostgresSaver:
         connection = self._get_connection()
         try:
             cursor = connection.cursor()
-            cursor.execute("SELECT COUNT(*) FROM vacancies_storage")
+            cursor.execute("SELECT COUNT(*) FROM vacancies")
             count = cursor.fetchone()[0]
             return count * 1024  # Примерный размер в байтах
         except psycopg2.Error as e:
@@ -798,7 +798,7 @@ class PostgresSaver:
         try:
             cursor = connection.cursor()
 
-            query = "SELECT COUNT(*) FROM vacancies_storage"
+            query = "SELECT COUNT(*) FROM vacancies"
             params = []
             where_conditions = []
 
@@ -864,7 +864,7 @@ class PostgresSaver:
                 params.extend([keyword_param, keyword_param, keyword_param])
 
             query = f"""
-            SELECT * FROM vacancies_storage 
+            SELECT * FROM vacancies 
             WHERE {' AND '.join(search_conditions)}
             ORDER BY created_at DESC
             """
@@ -889,11 +889,11 @@ class PostgresSaver:
     def filter_api_vacancies_via_temp_table(self, vacancies: List[Vacancy], filters: Dict[str, Any]) -> List[Vacancy]:
         """
         Фильтрация вакансий из API через временную таблицу средствами SQL
-        
+
         Args:
             vacancies: Список вакансий из API для фильтрации
             filters: Словарь с фильтрами (salary_from, salary_to, keywords, employers, etc.)
-            
+
         Returns:
             List[Vacancy]: Отфильтрованный список вакансий
         """
@@ -988,7 +988,7 @@ class PostgresSaver:
                     )
                     keyword_param = f"%{keyword}%"
                     params.extend([keyword_param, keyword_param, keyword_param])
-                
+
                 if keyword_conditions:
                     where_conditions.append(f"({' OR '.join(keyword_conditions)})")
 
@@ -999,7 +999,7 @@ class PostgresSaver:
                 for employer in employers:
                     employer_conditions.append("LOWER(employer) LIKE LOWER(%s)")
                     params.append(f"%{employer}%")
-                
+
                 if employer_conditions:
                     where_conditions.append(f"({' OR '.join(employer_conditions)})")
 
@@ -1027,7 +1027,7 @@ class PostgresSaver:
             if filters.get('exclude_existing', False):
                 where_conditions.append("""
                     NOT EXISTS (
-                        SELECT 1 FROM vacancies_storage v 
+                        SELECT 1 FROM vacancies v 
                         WHERE v.vacancy_id = temp_api_vacancies.vacancy_id
                     )
                 """)
@@ -1036,7 +1036,7 @@ class PostgresSaver:
             query = "SELECT * FROM temp_api_vacancies"
             if where_conditions:
                 query += " WHERE " + " AND ".join(where_conditions)
-            
+
             # Добавляем сортировку
             if filters.get('sort_by_salary', False):
                 query += " ORDER BY COALESCE(salary_from, salary_to, 0) DESC"
@@ -1065,7 +1065,7 @@ class PostgresSaver:
 
             connection.commit()
             logger.info(f"SQL-фильтрация через временную таблицу: отобрано {len(filtered_vacancies)} из {len(vacancies)} вакансий")
-            
+
             return filtered_vacancies
 
         except psycopg2.Error as e:
