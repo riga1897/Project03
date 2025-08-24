@@ -152,7 +152,7 @@ class PostgresSaver:
                 published_at TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                company_id INTEGER REFERENCES companies(hh_id) -- Добавленная связь с таблицей companies
+                company_id VARCHAR(50) -- Изменено на VARCHAR для совместимости
             );
             """
 
@@ -172,15 +172,20 @@ class PostgresSaver:
 
             # Проверяем существование поля company_id и добавляем если его нет
             cursor.execute("""
-                SELECT column_name 
+                SELECT column_name, data_type
                 FROM information_schema.columns 
                 WHERE table_name = 'vacancies' AND column_name = 'company_id';
             """)
 
-            if not cursor.fetchone():
+            company_id_info = cursor.fetchone()
+            if not company_id_info:
                 logger.info("Добавляем поле company_id в существующую таблицу...")
-                cursor.execute("ALTER TABLE vacancies ADD COLUMN company_id INTEGER REFERENCES companies(hh_id);")
+                cursor.execute("ALTER TABLE vacancies ADD COLUMN company_id VARCHAR(50);")
                 logger.info("✓ Поле company_id добавлено")
+            elif company_id_info[1] == 'integer':
+                logger.info("Изменяем тип поля company_id с integer на varchar...")
+                cursor.execute("ALTER TABLE vacancies ALTER COLUMN company_id TYPE VARCHAR(50);")
+                logger.info("✓ Тип поля company_id изменен")
 
             # Создаем индексы
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_vacancy_id ON vacancies(vacancy_id);")
@@ -416,7 +421,7 @@ class PostgresSaver:
                     COALESCE(v.salary_from, 0) != COALESCE(t.salary_from, 0) OR
                     COALESCE(v.salary_to, 0) != COALESCE(t.salary_to, 0) OR
                     COALESCE(v.salary_currency, '') != COALESCE(t.salary_currency, '') OR
-                    v.company_id IS DISTINCT FROM t.company_id -- Исправленная проверка company_id без COALESCE
+                    COALESCE(v.company_id::text, '') IS DISTINCT FROM COALESCE(t.company_id::text, '') -- Приведение к text для сравнения
                 )
             """)
 
