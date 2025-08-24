@@ -1,6 +1,7 @@
 
 import os
 from typing import Dict, Optional
+from src.utils.env_loader import EnvLoader
 
 
 class DatabaseConfig:
@@ -11,12 +12,15 @@ class DatabaseConfig:
     
     def _get_default_config(self) -> Dict[str, str]:
         """Получает конфигурацию по умолчанию из переменных окружения"""
+        # EnvLoader автоматически загружает переменные из .env при импорте
         return {
-            'host': os.getenv('PGHOST', 'localhost'),
-            'port': os.getenv('PGPORT', '5432'),
-            'database': os.getenv('PGDATABASE', 'Project03'),
-            'username': os.getenv('PGUSER', 'postgres'),
-            'password': os.getenv('PGPASSWORD', '')
+            'host': EnvLoader.get_env_var('PGHOST', 'localhost'),
+            'port': EnvLoader.get_env_var('PGPORT', '5432'),
+            'database': EnvLoader.get_env_var('PGDATABASE', 'Project03'),
+            'username': EnvLoader.get_env_var('PGUSER', 'postgres'),
+            'password': EnvLoader.get_env_var('PGPASSWORD', ''),
+            'connect_timeout': EnvLoader.get_env_var('PGCONNECT_TIMEOUT', '10'),
+            'command_timeout': EnvLoader.get_env_var('PGCOMMAND_TIMEOUT', '30')
         }
     
     def get_config(self, custom_config: Optional[Dict[str, str]] = None) -> Dict[str, str]:

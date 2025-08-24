@@ -33,12 +33,13 @@ class PostgresSaver:
             self.username = db_config.get('username', 'postgres')
             self.password = db_config.get('password', '')
         else:
-            # Используем переменные окружения из Replit Database
-            self.host = os.getenv('PGHOST', 'localhost')
-            self.port = os.getenv('PGPORT', '5432')
-            self.database = os.getenv('PGDATABASE', 'Project03')
-            self.username = os.getenv('PGUSER', 'postgres')
-            self.password = os.getenv('PGPASSWORD', '')
+            # Используем переменные окружения через EnvLoader (поддерживает .env и Secrets)
+            from src.utils.env_loader import EnvLoader
+            self.host = EnvLoader.get_env_var('PGHOST', 'localhost')
+            self.port = EnvLoader.get_env_var('PGPORT', '5432')
+            self.database = EnvLoader.get_env_var('PGDATABASE', 'Project03')
+            self.username = EnvLoader.get_env_var('PGUSER', 'postgres')
+            self.password = EnvLoader.get_env_var('PGPASSWORD', '')
 
         self._ensure_database_exists()
         self._ensure_tables_exist()
