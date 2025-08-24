@@ -1,6 +1,9 @@
 
 """
-Тесты для API модулей
+Тесты для модулей работы с внешними API
+
+Содержит тесты для проверки корректности работы с API различных
+платформ поиска вакансий (HH.ru, SuperJob.ru).
 """
 
 import pytest
@@ -11,17 +14,17 @@ from src.config.api_config import APIConfig
 
 
 class TestHeadHunterAPI:
-    """Тесты для HeadHunter API"""
+    """Набор тестов для API клиента HeadHunter"""
 
     def test_api_initialization(self):
-        """Тест инициализации API"""
+        """Тестирование корректной инициализации API клиента"""
         api = HeadHunterAPI()
         
         assert api.BASE_URL == "https://api.hh.ru/vacancies"
         assert api._config is not None
 
     def test_validate_vacancy_valid(self):
-        """Тест валидации корректной вакансии"""
+        """Тестирование валидации корректной структуры вакансии"""
         api = HeadHunterAPI()
         valid_vacancy = {
             "name": "Python Developer",
@@ -33,10 +36,10 @@ class TestHeadHunterAPI:
         assert result is True
 
     def test_validate_vacancy_invalid(self):
-        """Тест валидации некорректной вакансии"""
+        """Тестирование валидации некорректной структуры вакансии"""
         api = HeadHunterAPI()
         invalid_vacancy = {
-            "name": "",  # Пустое название
+            "name": "",  # Пустое название должно провалить валидацию
             "alternate_url": "https://hh.ru/vacancy/12345"
         }
         
@@ -45,7 +48,7 @@ class TestHeadHunterAPI:
 
     @patch('src.api_modules.cached_api.CachedAPI._CachedAPI__connect_to_api')
     def test_get_vacancies_page_success(self, mock_connect):
-        """Тест успешного получения страницы вакансий"""
+        """Тестирование успешного получения страницы вакансий от API"""
         mock_connect.return_value = {
             "items": [
                 {
@@ -63,7 +66,7 @@ class TestHeadHunterAPI:
 
     @patch('src.api_modules.cached_api.CachedAPI._CachedAPI__connect_to_api')
     def test_get_vacancies_empty_response(self, mock_connect):
-        """Тест получения пустого ответа"""
+        """Тестирование обработки пустого ответа от API"""
         mock_connect.return_value = {"items": []}
         
         api = HeadHunterAPI()
@@ -72,7 +75,7 @@ class TestHeadHunterAPI:
         assert result == []
 
     def test_empty_response_structure(self):
-        """Тест структуры пустого ответа"""
+        """Тестирование корректной структуры пустого ответа API"""
         api = HeadHunterAPI()
         empty_response = api._get_empty_response()
         
@@ -81,18 +84,18 @@ class TestHeadHunterAPI:
 
 
 class TestSuperJobAPI:
-    """Тесты для SuperJob API"""
+    """Набор тестов для API клиента SuperJob"""
 
     @patch.dict('os.environ', {'SUPERJOB_API_KEY': 'test_key'})
     def test_api_initialization_with_custom_key(self):
-        """Тест инициализации с пользовательским ключом"""
+        """Тестирование инициализации с пользовательским API ключом"""
         api = SuperJobAPI()
         
         assert api.BASE_URL == "https://api.superjob.ru/2.0/vacancies"
         assert api.connector.headers["X-Api-App-Id"] == "test_key"
 
     def test_validate_vacancy_valid(self):
-        """Тест валидации корректной вакансии SJ"""
+        """Тестирование валидации корректной вакансии SuperJob"""
         api = SuperJobAPI()
         valid_vacancy = {
             "profession": "Python Developer",
@@ -103,10 +106,10 @@ class TestSuperJobAPI:
         assert result is True
 
     def test_validate_vacancy_invalid(self):
-        """Тест валидации некорректной вакансии SJ"""
+        """Тестирование валидации некорректной вакансии SuperJob"""
         api = SuperJobAPI()
         invalid_vacancy = {
-            "profession": "",  # Пустое название
+            "profession": "",  # Пустое название должно провалить валидацию
             "link": "https://superjob.ru/vacancy/12345"
         }
         
@@ -115,7 +118,7 @@ class TestSuperJobAPI:
 
     @patch('src.api_modules.cached_api.CachedAPI._CachedAPI__connect_to_api')
     def test_get_vacancies_page_with_source(self, mock_connect):
-        """Тест получения страницы с добавлением источника"""
+        """Тестирование получения страницы с автоматическим добавлением источника"""
         mock_connect.return_value = {
             "objects": [
                 {
@@ -133,7 +136,7 @@ class TestSuperJobAPI:
         assert result[0]["source"] == "superjob.ru"
 
     def test_empty_response_structure(self):
-        """Тест структуры пустого ответа SJ"""
+        """Тестирование корректной структуры пустого ответа SuperJob API"""
         api = SuperJobAPI()
         empty_response = api._get_empty_response()
         

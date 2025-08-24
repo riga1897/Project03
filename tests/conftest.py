@@ -1,6 +1,9 @@
 
 """
 Конфигурация pytest и фикстуры для тестов
+
+Содержит общие фикстуры и настройки для всех тестов проекта.
+Обеспечивает единообразное тестовое окружение и тестовые данные.
 """
 
 import pytest
@@ -14,7 +17,7 @@ from src.storage.json_saver import JSONSaver
 
 @pytest.fixture
 def sample_vacancy():
-    """Фикстура с тестовой вакансией"""
+    """Фикстура с образцом тестовой вакансии для использования в тестах"""
     return Vacancy(
         title="Python Developer",
         url="https://hh.ru/vacancy/12345",
@@ -37,7 +40,7 @@ def sample_vacancy():
 
 @pytest.fixture
 def sample_vacancies(sample_vacancy):
-    """Фикстура с несколькими тестовыми вакансиями"""
+    """Фикстура с коллекцией тестовых вакансий для массовых операций"""
     vacancy2 = Vacancy(
         title="Java Developer",
         url="https://hh.ru/vacancy/67890",
@@ -61,7 +64,7 @@ def sample_vacancies(sample_vacancy):
 
 @pytest.fixture
 def temp_json_file():
-    """Фикстура для временного JSON файла"""
+    """Фикстура для создания временного JSON файла для тестирования файловых операций"""
     with tempfile.NamedTemporaryFile(mode='w+', delete=False, suffix='.json') as f:
         yield f.name
     os.unlink(f.name)
@@ -69,7 +72,7 @@ def temp_json_file():
 
 @pytest.fixture
 def mock_db_config():
-    """Фикстура с мок-конфигурацией БД"""
+    """Фикстура с имитацией конфигурации базы данных для тестирования"""
     return {
         'host': 'localhost',
         'port': '5432',
@@ -81,7 +84,7 @@ def mock_db_config():
 
 @pytest.fixture
 def mock_api_response():
-    """Фикстура с мок-ответом API"""
+    """Фикстура с имитацией ответа API для тестирования без реальных запросов"""
     return {
         "items": [
             {

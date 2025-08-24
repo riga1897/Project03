@@ -18,7 +18,6 @@ class BaseJobAPI(ABC):
 
     Определяет единый интерфейс для работы с различными источниками вакансий,
     включая методы для получения, валидации вакансий.
-
     """
 
     @abstractmethod
@@ -59,14 +58,14 @@ class BaseJobAPI(ABC):
             source: Источник вакансии ('hh' или 'sj')
 
         Returns:
-            tuple: Ключ для дедупликации (title, company, salary_key)
+            tuple: Ключ для дедупликации (название, компания, зарплата)
         """
-        # Универсальное получение названия
+        # Универсальное получение названия вакансии
         if source == "hh":
             title = vacancy.get("name", "").lower().strip()
             company = vacancy.get("employer", {}).get("name", "").lower().strip()
 
-            # Обработка зарплаты для HH
+            # Обработка зарплаты для HH.ru
             salary_key = ""
             if "salary" in vacancy and vacancy["salary"]:
                 salary = vacancy["salary"]
@@ -78,15 +77,15 @@ class BaseJobAPI(ABC):
             title = vacancy.get("profession", "").lower().strip()
             company = vacancy.get("firm_name", "").lower().strip()
 
-            # Обработка зарплаты для SJ
+            # Обработка зарплаты для SuperJob
             salary_key = f"{vacancy.get('payment_from', 0)}-{vacancy.get('payment_to', 0)}"
         else:
-            # Универсальная обработка
+            # Универсальная обработка для неизвестных источников
             title = (vacancy.get("title") or vacancy.get("name") or vacancy.get("profession") or "").lower().strip()
 
             company = (vacancy.get("employer", {}).get("name") or vacancy.get("firm_name") or "").lower().strip()
 
-            salary_key = "0-0"  # Для неизвестных источников
+            salary_key = "0-0"  # Значение по умолчанию для неизвестных источников
 
         return title, company, salary_key
 
@@ -94,9 +93,11 @@ class BaseJobAPI(ABC):
         """
         Универсальная дедупликация вакансий
 
+        Удаляет дублирующиеся вакансии на основе названия, компании и зарплаты.
+
         Args:
-            vacancies: Список вакансий
-            source: Источник ('hh' или 'sj')
+            vacancies: Список вакансий для обработки
+            source: Источник вакансий ('hh' или 'sj')
 
         Returns:
             List[Dict]: Список уникальных вакансий
