@@ -108,7 +108,7 @@ class APIDataFilter:
                     ))
 
             # Выполняем SQL-операции
-            with self.db_manager.get_connection() as conn:
+            with self.db_manager._get_connection() as conn:
                 with conn.cursor() as cursor:
                     # Создаем временную таблицу
                     cursor.execute(create_temp_sql)

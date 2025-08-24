@@ -322,6 +322,18 @@ class DBManager:
             logger.error(f"Ошибка при выполнении SQL-запросов для получения статистики БД: {e}")
             return {}
     
+    def get_connection(self) -> psycopg2.extensions.connection:
+        """
+        Публичный метод для получения подключения к базе данных
+        
+        Returns:
+            psycopg2.extensions.connection: Подключение к БД
+            
+        Raises:
+            psycopg2.Error: При ошибке подключения к БД
+        """
+        return self._get_connection()
+
     def check_connection(self) -> bool:
         """
         Проверяет подключение к базе данных используя простой SQL-запрос
