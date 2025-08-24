@@ -25,7 +25,7 @@ class VacancySearchHandler:
 
         Args:
             unified_api: Унифицированный API для получения вакансий
-            storage: Сервис сохранения данных (PostgresSaver)
+            storage: Сервис сохранения данных PostgreSQL
         """
         self.unified_api = unified_api
         self.storage = storage  # Используем PostgresSaver

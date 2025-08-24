@@ -1,12 +1,11 @@
 
-from typing import Union, Dict, Optional
+from typing import Optional
 from src.storage.postgres_saver import PostgresSaver
 from src.storage.abstract import AbstractVacancyStorage
-from src.config.db_config import DatabaseConfig
 
 
 class StorageFactory:
-    """Фабрика для создания объектов хранилища"""
+    """Фабрика для создания объектов хранилища PostgreSQL"""
 
     @staticmethod
     def create_storage(storage_type: str = "postgres") -> AbstractVacancyStorage:

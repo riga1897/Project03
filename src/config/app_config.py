@@ -6,7 +6,7 @@ class AppConfig:
     """Класс для управления конфигурацией приложения"""
 
     def __init__(self):
-        # Используем только PostgreSQL хранилище
+        # По умолчанию используем PostgreSQL хранилище
         self.default_storage_type = "postgres"
         self.storage_type = self.default_storage_type
 

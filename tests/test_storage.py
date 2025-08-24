@@ -1,13 +1,21 @@
 """
-Тесты для классов хранения данных
+Тесты для PostgreSQL хранилища данных
 """
 
 import pytest
-import json
-import os
 from unittest.mock import Mock, patch, MagicMock
 from src.storage.postgres_saver import PostgresSaver
 from src.vacancies.models import Vacancy
+
+
+class TestPostgresSaver:
+    """Тесты для PostgreSQL хранилища"""
+
+    def test_postgres_saver_initialization(self):
+        """Тест инициализации PostgresSaver"""
+        with patch('src.storage.postgres_saver.psycopg2.connect'):
+            saver = PostgresSaver()
+            assert saver is not Nonecancies.models import Vacancy
 
 
 class TestJSONSaver:

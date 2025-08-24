@@ -184,15 +184,16 @@ class Vacancy(AbstractVacancy):
             )
 
             # Получаем ID из API данных
-            vacancy_id = data.get("id")
+            # Ищем ID в разных полях (из API и из UnifiedAPI)
+            vacancy_id = data.get("id") or data.get("vacancy_id")
             if vacancy_id:
                 vacancy_id = str(vacancy_id)
                 # Отладка для отслеживания ID
                 if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
-                    print(f"DEBUG Vacancy.from_dict: Извлечен ID {vacancy_id} для вакансии '{data.get('name', 'NO_NAME')}'")
+                    print(f"DEBUG Vacancy.from_dict: Извлечен ID {vacancy_id} для вакансии '{data.get('name', data.get('title', 'NO_NAME'))}'")
             else:
                 vacancy_id = ""
-                print(f"DEBUG Vacancy.from_dict: НЕТ ID в данных для вакансии '{data.get('name', 'NO_NAME')}'")
+                print(f"DEBUG Vacancy.from_dict: НЕТ ID в данных для вакансии '{data.get('name', data.get('title', 'NO_NAME'))}'")
                 print(f"DEBUG Vacancy.from_dict: Доступные ключи в data: {list(data.keys())}")
 
             # Обработка зарплаты (универсальная для всех источников)
