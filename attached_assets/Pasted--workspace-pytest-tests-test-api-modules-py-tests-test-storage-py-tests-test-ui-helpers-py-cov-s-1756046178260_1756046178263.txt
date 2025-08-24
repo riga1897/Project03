@@ -1,0 +1,142 @@
+~/workspace$ pytest tests/test_api_modules.py tests/test_storage.py tests/test_ui_helpers.py --cov=src --cov-report=html -v
+===================================== test session starts ======================================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0 -- /nix/store/2lcqw1d28vklbk8ikiwad28iq2smwndv-python-wrapped-0.1.0/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/runner/workspace/tests
+configfile: pytest.ini
+plugins: cov-6.2.1, mock-3.14.1
+collected 37 items                                                                             
+
+tests/test_api_modules.py::TestHeadHunterAPI::test_api_initialization PASSED             [  2%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_validate_vacancy_valid PASSED         [  5%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_validate_vacancy_invalid PASSED       [  8%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_get_vacancies_page_success PASSED     [ 10%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_get_vacancies_empty_response PASSED   [ 13%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_empty_response_structure PASSED       [ 16%]
+tests/test_api_modules.py::TestSuperJobAPI::test_api_initialization_with_custom_key PASSED [ 18%]
+tests/test_api_modules.py::TestSuperJobAPI::test_validate_vacancy_valid PASSED           [ 21%]
+tests/test_api_modules.py::TestSuperJobAPI::test_validate_vacancy_invalid PASSED         [ 24%]
+tests/test_api_modules.py::TestSuperJobAPI::test_get_vacancies_page_with_source PASSED   [ 27%]
+tests/test_api_modules.py::TestSuperJobAPI::test_empty_response_structure PASSED         [ 29%]
+tests/test_storage.py::TestJSONSaver::test_add_vacancy_to_empty_file FAILED              [ 32%]
+tests/test_storage.py::TestJSONSaver::test_add_duplicate_vacancy PASSED                  [ 35%]
+tests/test_storage.py::TestJSONSaver::test_get_vacancies_empty_file PASSED               [ 37%]
+tests/test_storage.py::TestJSONSaver::test_delete_vacancy_by_id PASSED                   [ 40%]
+tests/test_storage.py::TestJSONSaver::test_delete_nonexistent_vacancy PASSED             [ 43%]
+tests/test_storage.py::TestJSONSaver::test_delete_all_vacancies PASSED                   [ 45%]
+tests/test_storage.py::TestJSONSaver::test_file_size_calculation PASSED                  [ 48%]
+tests/test_storage.py::TestPostgresSaver::test_connection_creation PASSED                [ 51%]
+tests/test_storage.py::TestPostgresSaver::test_add_vacancy_success FAILED                [ 54%]
+tests/test_storage.py::TestPostgresSaver::test_get_vacancies_count PASSED                [ 56%]
+tests/test_storage.py::TestPostgresSaver::test_delete_vacancy_by_id_success PASSED       [ 59%]
+tests/test_storage.py::TestPostgresSaver::test_delete_vacancy_by_id_not_found PASSED     [ 62%]
+tests/test_ui_helpers.py::TestUIHelpers::test_get_positive_integer_valid PASSED          [ 64%]
+tests/test_ui_helpers.py::TestUIHelpers::test_get_positive_integer_invalid_then_valid FAILED [ 67%]
+tests/test_ui_helpers.py::TestUIHelpers::test_get_positive_integer_non_numeric FAILED    [ 70%]
+tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_in_title FAILED [ 72%]
+tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_in_description FAILED [ 75%]
+tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_case_insensitive FAILED [ 78%]
+tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_no_matches FAILED [ 81%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_both_values PASSED      [ 83%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_only_min FAILED         [ 86%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_only_max FAILED         [ 89%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_single_value FAILED     [ 91%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_invalid_format FAILED   [ 94%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_empty_string FAILED     [ 97%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_with_spaces PASSED      [100%]
+
+=========================================== FAILURES ===========================================
+_________________________ TestJSONSaver.test_add_vacancy_to_empty_file _________________________
+tests/test_storage.py:30: in test_add_vacancy_to_empty_file
+    assert data[0]['vacancy_id'] == '12345'
+           ^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'vacancy_id'
+__________________________ TestPostgresSaver.test_add_vacancy_success __________________________
+tests/test_storage.py:143: in test_add_vacancy_success
+    messages = saver.add_vacancy(sample_vacancy)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/storage/postgres_saver.py:248: in add_vacancy
+    execute_values(cursor, insert_query, insert_data, template=None, page_size=100)
+.pythonlibs/lib/python3.11/site-packages/psycopg2/extras.py:1287: in execute_values
+    sql = sql.encode(_ext.encodings[cur.connection.encoding])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: <Mock name='connect().cursor().connection.encoding' id='139867683227088'>
+__________________ TestUIHelpers.test_get_positive_integer_invalid_then_valid __________________
+tests/test_ui_helpers.py:32: in test_get_positive_integer_invalid_then_valid
+    assert result == 15
+E   assert None == 15
+_____________________ TestUIHelpers.test_get_positive_integer_non_numeric ______________________
+tests/test_ui_helpers.py:38: in test_get_positive_integer_non_numeric
+    result = get_positive_integer("Enter number: ", max_attempts=1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: get_positive_integer() got an unexpected keyword argument 'max_attempts'
+___________________ TestUIHelpers.test_filter_vacancies_by_keyword_in_title ____________________
+tests/test_ui_helpers.py:45: in test_filter_vacancies_by_keyword_in_title
+    Vacancy(title="Python Developer", vacancy_id="1"),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: Vacancy.__init__() missing 1 required positional argument: 'url'
+________________ TestUIHelpers.test_filter_vacancies_by_keyword_in_description _________________
+tests/test_ui_helpers.py:60: in test_filter_vacancies_by_keyword_in_description
+    Vacancy(title="Developer", description="Python programming", vacancy_id="1"),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: Vacancy.__init__() missing 1 required positional argument: 'url'
+_______________ TestUIHelpers.test_filter_vacancies_by_keyword_case_insensitive ________________
+tests/test_ui_helpers.py:72: in test_filter_vacancies_by_keyword_case_insensitive
+    Vacancy(title="python developer", vacancy_id="1"),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: Vacancy.__init__() missing 1 required positional argument: 'url'
+__________________ TestUIHelpers.test_filter_vacancies_by_keyword_no_matches ___________________
+tests/test_ui_helpers.py:87: in test_filter_vacancies_by_keyword_no_matches
+    Vacancy(title="Java Developer", vacancy_id="1"),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: Vacancy.__init__() missing 1 required positional argument: 'url'
+________________________ TestUIHelpers.test_parse_salary_range_only_min ________________________
+tests/test_ui_helpers.py:105: in test_parse_salary_range_only_min
+    assert result == (80000, None)
+E   assert None == (80000, None)
+------------------------------------- Captured stdout call -------------------------------------
+Введите корректные числа!
+________________________ TestUIHelpers.test_parse_salary_range_only_max ________________________
+tests/test_ui_helpers.py:111: in test_parse_salary_range_only_max
+    assert result == (None, 120000)
+E   assert None == (None, 120000)
+------------------------------------- Captured stdout call -------------------------------------
+Введите корректные числа!
+______________________ TestUIHelpers.test_parse_salary_range_single_value ______________________
+tests/test_ui_helpers.py:117: in test_parse_salary_range_single_value
+    assert result == (100000, 100000)
+E   assert None == (100000, 100000)
+------------------------------------- Captured stdout call -------------------------------------
+Неверный формат диапазона. Используйте формат: 100000 - 150000
+_____________________ TestUIHelpers.test_parse_salary_range_invalid_format _____________________
+tests/test_ui_helpers.py:123: in test_parse_salary_range_invalid_format
+    assert result == (None, None)
+E   assert None == (None, None)
+------------------------------------- Captured stdout call -------------------------------------
+Введите корректные числа!
+______________________ TestUIHelpers.test_parse_salary_range_empty_string ______________________
+tests/test_ui_helpers.py:129: in test_parse_salary_range_empty_string
+    assert result == (None, None)
+E   assert None == (None, None)
+------------------------------------- Captured stdout call -------------------------------------
+Неверный формат диапазона. Используйте формат: 100000 - 150000
+======================================== tests coverage ========================================
+_______________________ coverage: platform linux, python 3.11.13-final-0 _______________________
+
+Coverage HTML written to dir htmlcov
+=================================== short test summary info ====================================
+FAILED tests/test_storage.py::TestJSONSaver::test_add_vacancy_to_empty_file - KeyError: 'vacancy_id'
+FAILED tests/test_storage.py::TestPostgresSaver::test_add_vacancy_success - KeyError: <Mock name='connect().cursor().connection.encoding' id='139867683227088'>
+FAILED tests/test_ui_helpers.py::TestUIHelpers::test_get_positive_integer_invalid_then_valid - assert None == 15
+FAILED tests/test_ui_helpers.py::TestUIHelpers::test_get_positive_integer_non_numeric - TypeError: get_positive_integer() got an unexpected keyword argument 'max_attempts'
+FAILED tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_in_title - TypeError: Vacancy.__init__() missing 1 required positional argument: 'url'
+FAILED tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_in_description - TypeError: Vacancy.__init__() missing 1 required positional argument: 'url'
+FAILED tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_case_insensitive - TypeError: Vacancy.__init__() missing 1 required positional argument: 'url'
+FAILED tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_no_matches - TypeError: Vacancy.__init__() missing 1 required positional argument: 'url'
+FAILED tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_only_min - assert None == (80000, None)
+FAILED tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_only_max - assert None == (None, 120000)
+FAILED tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_single_value - assert None == (100000, 100000)
+FAILED tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_invalid_format - assert None == (None, None)
+FAILED tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_empty_string - assert None == (None, None)
+================================ 13 failed, 24 passed in 0.93s =================================
+~/workspace$ 
