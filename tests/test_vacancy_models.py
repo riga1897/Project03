@@ -61,9 +61,9 @@ class TestVacancy:
 
     def test_vacancy_comparison(self):
         """Тест сравнения вакансий"""
-        vacancy1 = Vacancy(title="Dev", vacancy_id="1", salary={"from": 100000}, source="hh.ru")
-        vacancy2 = Vacancy(title="Dev", vacancy_id="2", salary={"from": 150000}, source="hh.ru")
-        vacancy3 = Vacancy(title="Dev", vacancy_id="3", salary=None, source="superjob.ru")
+        vacancy1 = Vacancy(title="Dev", url="https://example.com/1", vacancy_id="1", salary={"from": 100000}, source="hh.ru")
+        vacancy2 = Vacancy(title="Dev", url="https://example.com/2", vacancy_id="2", salary={"from": 150000}, source="hh.ru")
+        vacancy3 = Vacancy(title="Dev", url="https://example.com/3", vacancy_id="3", salary=None, source="superjob.ru")
         
         assert vacancy2 > vacancy1  # Больше зарплата
         assert vacancy1 < vacancy2
@@ -71,9 +71,9 @@ class TestVacancy:
 
     def test_vacancy_equality(self):
         """Тест равенства вакансий по ID"""
-        vacancy1 = Vacancy(title="Dev1", vacancy_id="123", source="hh.ru")
-        vacancy2 = Vacancy(title="Dev2", vacancy_id="123", source="superjob.ru")
-        vacancy3 = Vacancy(title="Dev1", vacancy_id="456", source="hh.ru")
+        vacancy1 = Vacancy(title="Dev1", url="https://example.com/123", vacancy_id="123", source="hh.ru")
+        vacancy2 = Vacancy(title="Dev2", url="https://superjob.com/123", vacancy_id="123", source="superjob.ru")
+        vacancy3 = Vacancy(title="Dev1", url="https://example.com/456", vacancy_id="456", source="hh.ru")
         
         assert vacancy1 == vacancy2  # Одинаковые ID
         assert vacancy1 != vacancy3  # Разные ID

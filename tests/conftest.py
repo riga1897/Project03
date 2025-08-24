@@ -1,4 +1,3 @@
-
 """
 Конфигурация pytest и фикстуры для тестов
 
@@ -13,6 +12,7 @@ from unittest.mock import Mock, patch
 from src.vacancies.models import Vacancy
 from src.storage.postgres_saver import PostgresSaver
 from src.storage.json_saver import JSONSaver
+from src.utils.salary import Salary
 
 
 @pytest.fixture

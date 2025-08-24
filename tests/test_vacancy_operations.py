@@ -11,6 +11,64 @@ from src.vacancies.models import Vacancy
 class TestVacancyOperations:
     """Тесты для класса VacancyOperations"""
 
+    @pytest.fixture
+    def vacancy_ops(self):
+        """Фикстура для VacancyOperations"""
+        return VacancyOperations()
+
+    @pytest.fixture
+    def sample_vacancies(self):
+        """Фикстура с примерами вакансий"""
+        return [
+            Vacancy(
+                title="Python Developer",
+                url="https://hh.ru/vacancy/1",
+                vacancy_id="1",
+                salary={"from": 100000, "to": 150000, "currency": "RUR"},
+                requirements="Python, Django",
+                source="hh.ru"
+            ),
+            Vacancy(
+                title="Java Developer",
+                url="https://superjob.ru/vacancy/2", 
+                vacancy_id="2",
+                salary={"from": 120000, "to": 180000, "currency": "RUR"},
+                requirements="Java, Spring",
+                source="superjob.ru"
+            ),
+            Vacancy(
+                title="Frontend Developer",
+                url="https://hh.ru/vacancy/3",
+                vacancy_id="3",
+                requirements="JavaScript, React",
+                source="hh.ru"
+            )
+        ]
+
+    def test_search_vacancies_advanced(self, vacancy_ops, sample_vacancies):
+        """Тест расширенного поиска"""
+        result = vacancy_ops.search_vacancies_advanced(sample_vacancies, "Python")
+        assert len(result) == 1
+        assert result[0].title == "Python Developer"
+
+    def test_get_vacancies_with_salary(self, vacancy_ops, sample_vacancies):
+        """Тест фильтрации по наличию зарплаты"""
+        result = vacancy_ops.get_vacancies_with_salary(sample_vacancies)
+        assert len(result) == 2  # Только Python и Java Developer имеют зарплату
+
+    def test_sort_vacancies_by_salary(self, vacancy_ops, sample_vacancies):
+        """Тест сортировки по зарплате"""
+        with_salary = vacancy_ops.get_vacancies_with_salary(sample_vacancies)
+        result = vacancy_ops.sort_vacancies_by_salary(with_salary)
+        
+        # Java Developer должен быть первым (более высокая зарплата)
+        assert result[0].title == "Java Developer"
+        assert result[1].title == "Python Developer"ncies.models import Vacancy
+
+
+class TestVacancyOperations:
+    """Тесты для класса VacancyOperations"""
+
     def test_get_vacancies_with_salary(self, sample_vacancies):
         """Тест фильтрации вакансий с зарплатой"""
         # Добавляем вакансию без зарплаты

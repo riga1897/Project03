@@ -9,6 +9,59 @@ from src.vacancies.models import Vacancy
 
 
 class TestVacancyFormatter:
+    """Тесты для форматтера вакансий"""
+
+    @pytest.fixture
+    def formatter(self):
+        """Фикстура для форматтера"""
+        return VacancyFormatter()
+
+    @pytest.fixture  
+    def sample_vacancy(self):
+        """Фикстура с примером вакансии"""
+        return Vacancy(
+            title="Python Developer",
+            url="https://hh.ru/vacancy/12345",
+            vacancy_id="12345",
+            salary={"from": 100000, "to": 150000, "currency": "RUR"},
+            requirements="Python, Django, PostgreSQL",
+            source="hh.ru",
+            employer={"name": "Tech Company"}
+        )
+
+    def test_format_vacancy_info(self, formatter, sample_vacancy):
+        """Тест форматирования информации о вакансии"""
+        result = formatter.format_vacancy_info(sample_vacancy, number=1)
+        
+        assert "1." in result
+        assert "Python Developer" in result
+        assert "Tech Company" in result
+        assert "100,000" in result
+        assert "150,000" in result
+
+    def test_format_vacancy_list(self, formatter, sample_vacancy):
+        """Тест форматирования списка вакансий"""
+        vacancies = [sample_vacancy]
+        result = formatter.format_vacancy_list(vacancies)
+        
+        assert "Python Developer" in result
+        assert "1." in result
+
+    def test_format_vacancy_without_salary(self, formatter):
+        """Тест форматирования вакансии без зарплаты"""
+        vacancy = Vacancy(
+            title="Junior Developer",
+            url="https://hh.ru/vacancy/67890",
+            vacancy_id="67890",
+            source="hh.ru"
+        )
+        
+        result = formatter.format_vacancy_info(vacancy, number=1)
+        assert "Junior Developer" in result
+        assert "Не указана" in resultacancies.models import Vacancy
+
+
+class TestVacancyFormatter:
     """Тесты для класса VacancyFormatter"""
 
     def test_format_vacancy_info_basic(self, sample_vacancy):
