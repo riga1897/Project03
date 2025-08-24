@@ -368,3 +368,310 @@ class DBManager:
             if 'cursor' in locals():
                 cursor.close()
             connection.close()
+"""
+Класс DBManager для работы с данными в БД PostgreSQL
+
+Реализует специфические методы согласно требованиям проекта по работе с БД.
+Использует библиотеку psycopg2 для подключения к PostgreSQL.
+"""
+
+import logging
+from typing import Dict, List, Optional, Tuple, Any
+import psycopg2
+from psycopg2.extras import RealDictCursor
+
+from src.config.db_config import DatabaseConfig
+from src.vacancies.models import Vacancy
+
+logger = logging.getLogger(__name__)
+
+
+class DBManager:
+    """
+    Класс для работы с данными в БД PostgreSQL
+    
+    Предоставляет методы согласно требованиям проекта:
+    - get_companies_and_vacancies_count()
+    - get_all_vacancies() 
+    - get_avg_salary()
+    - get_vacancies_with_higher_salary()
+    - get_vacancies_with_keyword()
+    
+    Использует библиотеку psycopg2 для работы с БД.
+    """
+    
+    def __init__(self, db_config: Optional[DatabaseConfig] = None):
+        """
+        Инициализация DBManager
+        
+        Args:
+            db_config: Конфигурация базы данных. Если None, используется по умолчанию
+        """
+        self.db_config = db_config or DatabaseConfig()
+        
+    def _get_connection(self) -> psycopg2.extensions.connection:
+        """
+        Создает подключение к базе данных
+        
+        Returns:
+            psycopg2.extensions.connection: Подключение к БД
+            
+        Raises:
+            psycopg2.Error: При ошибке подключения к БД
+        """
+        try:
+            connection = psycopg2.connect(**self.db_config.get_connection_params())
+            return connection
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка подключения к базе данных: {e}")
+            raise
+    
+    def get_companies_and_vacancies_count(self) -> List[Tuple[str, int]]:
+        """
+        Получает список всех компаний и количество вакансий у каждой компании
+        
+        Returns:
+            List[Tuple[str, int]]: Список кортежей (название_компании, количество_вакансий)
+        """
+        query = """
+        SELECT 
+            COALESCE(employer->>'name', 'Неизвестная компания') as company_name,
+            COUNT(*) as vacancy_count
+        FROM vacancies 
+        WHERE employer IS NOT NULL
+        GROUP BY employer->>'name'
+        ORDER BY vacancy_count DESC, company_name
+        """
+        
+        try:
+            with self._get_connection() as conn:
+                with conn.cursor() as cursor:
+                    cursor.execute(query)
+                    results = cursor.fetchall()
+                    return [(row[0], row[1]) for row in results]
+                    
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка при получении списка компаний: {e}")
+            return []
+    
+    def get_all_vacancies(self) -> List[Dict[str, Any]]:
+        """
+        Получает список всех вакансий с указанием названия компании, 
+        названия вакансии, зарплаты и ссылки на вакансию
+        
+        Returns:
+            List[Dict[str, Any]]: Список словарей с информацией о вакансиях
+        """
+        query = """
+        SELECT 
+            title,
+            COALESCE(employer->>'name', 'Неизвестная компания') as company_name,
+            CASE 
+                WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN 
+                    CONCAT(salary_from, ' - ', salary_to, ' ', COALESCE(currency, 'RUR'))
+                WHEN salary_from IS NOT NULL THEN 
+                    CONCAT('от ', salary_from, ' ', COALESCE(currency, 'RUR'))
+                WHEN salary_to IS NOT NULL THEN 
+                    CONCAT('до ', salary_to, ' ', COALESCE(currency, 'RUR'))
+                ELSE 'Не указана'
+            END as salary_info,
+            url
+        FROM vacancies 
+        ORDER BY company_name, title
+        """
+        
+        try:
+            with self._get_connection() as conn:
+                with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                    cursor.execute(query)
+                    results = cursor.fetchall()
+                    return [dict(row) for row in results]
+                    
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка при получении списка вакансий: {e}")
+            return []
+    
+    def get_avg_salary(self) -> Optional[float]:
+        """
+        Получает среднюю зарплату по вакансиям
+        
+        Returns:
+            Optional[float]: Средняя зарплата или None если данных нет
+        """
+        query = """
+        SELECT AVG(
+            CASE 
+                WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN 
+                    (salary_from + salary_to) / 2
+                WHEN salary_from IS NOT NULL THEN salary_from
+                WHEN salary_to IS NOT NULL THEN salary_to
+                ELSE NULL
+            END
+        ) as avg_salary
+        FROM vacancies 
+        WHERE (salary_from IS NOT NULL OR salary_to IS NOT NULL)
+        AND currency = 'RUR'  -- Учитываем только рубли для корректного расчета
+        """
+        
+        try:
+            with self._get_connection() as conn:
+                with conn.cursor() as cursor:
+                    cursor.execute(query)
+                    result = cursor.fetchone()
+                    return float(result[0]) if result[0] is not None else None
+                    
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка при расчете средней зарплаты: {e}")
+            return None
+    
+    def get_vacancies_with_higher_salary(self) -> List[Dict[str, Any]]:
+        """
+        Получает список всех вакансий, у которых зарплата выше средней по всем вакансиям
+        
+        Returns:
+            List[Dict[str, Any]]: Список словарей с информацией о вакансиях
+        """
+        # Сначала получаем среднюю зарплату
+        avg_salary = self.get_avg_salary()
+        
+        if avg_salary is None:
+            logger.warning("Не удалось рассчитать среднюю зарплату")
+            return []
+        
+        query = """
+        SELECT 
+            title,
+            COALESCE(employer->>'name', 'Неизвестная компания') as company_name,
+            CASE 
+                WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN 
+                    CONCAT(salary_from, ' - ', salary_to, ' ', COALESCE(currency, 'RUR'))
+                WHEN salary_from IS NOT NULL THEN 
+                    CONCAT('от ', salary_from, ' ', COALESCE(currency, 'RUR'))
+                WHEN salary_to IS NOT NULL THEN 
+                    CONCAT('до ', salary_to, ' ', COALESCE(currency, 'RUR'))
+                ELSE 'Не указана'
+            END as salary_info,
+            url,
+            CASE 
+                WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN 
+                    (salary_from + salary_to) / 2
+                WHEN salary_from IS NOT NULL THEN salary_from
+                WHEN salary_to IS NOT NULL THEN salary_to
+                ELSE NULL
+            END as calculated_salary
+        FROM vacancies 
+        WHERE (
+            CASE 
+                WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN 
+                    (salary_from + salary_to) / 2
+                WHEN salary_from IS NOT NULL THEN salary_from
+                WHEN salary_to IS NOT NULL THEN salary_to
+                ELSE NULL
+            END
+        ) > %s
+        AND currency = 'RUR'
+        ORDER BY calculated_salary DESC, company_name, title
+        """
+        
+        try:
+            with self._get_connection() as conn:
+                with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                    cursor.execute(query, (avg_salary,))
+                    results = cursor.fetchall()
+                    return [dict(row) for row in results]
+                    
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка при получении вакансий с высокой зарплатой: {e}")
+            return []
+    
+    def get_vacancies_with_keyword(self, keyword: str) -> List[Dict[str, Any]]:
+        """
+        Получает список всех вакансий, в названии которых содержатся переданные слова
+        
+        Args:
+            keyword: Ключевое слово для поиска
+            
+        Returns:
+            List[Dict[str, Any]]: Список словарей с информацией о вакансиях
+        """
+        if not keyword or not keyword.strip():
+            return []
+        
+        query = """
+        SELECT 
+            title,
+            COALESCE(employer->>'name', 'Неизвестная компания') as company_name,
+            CASE 
+                WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN 
+                    CONCAT(salary_from, ' - ', salary_to, ' ', COALESCE(currency, 'RUR'))
+                WHEN salary_from IS NOT NULL THEN 
+                    CONCAT('от ', salary_from, ' ', COALESCE(currency, 'RUR'))
+                WHEN salary_to IS NOT NULL THEN 
+                    CONCAT('до ', salary_to, ' ', COALESCE(currency, 'RUR'))
+                ELSE 'Не указана'
+            END as salary_info,
+            url,
+            description
+        FROM vacancies 
+        WHERE LOWER(title) LIKE LOWER(%s)
+        ORDER BY company_name, title
+        """
+        
+        try:
+            search_pattern = f"%{keyword.strip()}%"
+            
+            with self._get_connection() as conn:
+                with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                    cursor.execute(query, (search_pattern,))
+                    results = cursor.fetchall()
+                    return [dict(row) for row in results]
+                    
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка при поиске вакансий по ключевому слову '{keyword}': {e}")
+            return []
+    
+    def get_database_stats(self) -> Dict[str, Any]:
+        """
+        Получает статистику базы данных
+        
+        Returns:
+            Dict[str, Any]: Словарь со статистикой
+        """
+        stats_queries = {
+            'total_vacancies': "SELECT COUNT(*) FROM vacancies",
+            'total_companies': "SELECT COUNT(DISTINCT employer->>'name') FROM vacancies WHERE employer IS NOT NULL",
+            'vacancies_with_salary': "SELECT COUNT(*) FROM vacancies WHERE (salary_from IS NOT NULL OR salary_to IS NOT NULL)",
+            'latest_vacancy_date': "SELECT MAX(published_at) FROM vacancies"
+        }
+        
+        stats = {}
+        
+        try:
+            with self._get_connection() as conn:
+                with conn.cursor() as cursor:
+                    for stat_name, query in stats_queries.items():
+                        cursor.execute(query)
+                        result = cursor.fetchone()
+                        stats[stat_name] = result[0] if result else 0
+                        
+            return stats
+            
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка при получении статистики БД: {e}")
+            return {}
+    
+    def check_connection(self) -> bool:
+        """
+        Проверяет подключение к базе данных
+        
+        Returns:
+            bool: True если подключение успешно, False иначе
+        """
+        try:
+            with self._get_connection() as conn:
+                with conn.cursor() as cursor:
+                    cursor.execute("SELECT 1")
+                    return True
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка подключения к БД: {e}")
+            return False

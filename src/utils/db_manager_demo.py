@@ -254,3 +254,228 @@ if __name__ == "__main__":
     
     db_manager = DBManager()
     run_all_demos(db_manager)
+"""
+Демонстрационный модуль для работы с классом DBManager
+
+Показывает использование всех методов DBManager согласно требованиям проекта.
+Позволяет протестировать функциональность работы с базой данных.
+"""
+
+import logging
+from typing import Optional
+
+from src.config.target_companies import TargetCompanies
+from src.storage.db_manager import DBManager
+
+logger = logging.getLogger(__name__)
+
+
+class DBManagerDemo:
+    """
+    Демонстрационный класс для работы с DBManager
+    
+    Предоставляет методы для демонстрации всех возможностей
+    класса DBManager согласно требованиям проекта.
+    """
+    
+    def __init__(self, db_manager: Optional[DBManager] = None):
+        """
+        Инициализация демо-класса
+        
+        Args:
+            db_manager: Экземпляр DBManager. Если None, создается новый
+        """
+        self.db_manager = db_manager or DBManager()
+    
+    def run_full_demo(self) -> None:
+        """
+        Запускает полную демонстрацию всех методов DBManager
+        """
+        print("=" * 60)
+        print("ДЕМОНСТРАЦИЯ РАБОТЫ КЛАССА DBManager")
+        print("=" * 60)
+        
+        # Проверяем подключение
+        if not self._check_connection():
+            return
+        
+        # Показываем информацию о целевых компаниях
+        self._show_target_companies()
+        
+        # Демонстрируем все методы
+        self._demo_companies_and_vacancies_count()
+        self._demo_all_vacancies()
+        self._demo_avg_salary()
+        self._demo_vacancies_with_higher_salary()
+        self._demo_vacancies_with_keyword()
+        self._demo_database_stats()
+        
+        print("=" * 60)
+        print("ДЕМОНСТРАЦИЯ ЗАВЕРШЕНА")
+        print("=" * 60)
+    
+    def _check_connection(self) -> bool:
+        """
+        Проверяет подключение к БД
+        
+        Returns:
+            bool: True если подключение успешно
+        """
+        print("\n1. Проверка подключения к базе данных...")
+        
+        if self.db_manager.check_connection():
+            print("✅ Подключение к базе данных успешно установлено")
+            return True
+        else:
+            print("❌ Ошибка подключения к базе данных")
+            print("Убедитесь, что PostgreSQL запущен и настроен корректно")
+            return False
+    
+    def _show_target_companies(self) -> None:
+        """Показывает информацию о целевых компаниях"""
+        print("\n2. Целевые компании проекта:")
+        print("-" * 40)
+        print(TargetCompanies.get_companies_info())
+    
+    def _demo_companies_and_vacancies_count(self) -> None:
+        """Демонстрирует метод get_companies_and_vacancies_count()"""
+        print("\n3. get_companies_and_vacancies_count() - Компании и количество вакансий:")
+        print("-" * 60)
+        
+        companies_data = self.db_manager.get_companies_and_vacancies_count()
+        
+        if not companies_data:
+            print("Данные не найдены. Возможно, БД пуста или произошла ошибка.")
+            return
+        
+        print(f"{'№':<3} {'Название компании':<35} {'Количество вакансий':<15}")
+        print("-" * 60)
+        
+        for i, (company_name, vacancy_count) in enumerate(companies_data[:10], 1):
+            print(f"{i:<3} {company_name:<35} {vacancy_count:<15}")
+        
+        if len(companies_data) > 10:
+            print(f"... и еще {len(companies_data) - 10} компаний")
+        
+        print(f"\nВсего компаний: {len(companies_data)}")
+    
+    def _demo_all_vacancies(self) -> None:
+        """Демонстрирует метод get_all_vacancies()"""
+        print("\n4. get_all_vacancies() - Все вакансии:")
+        print("-" * 80)
+        
+        vacancies = self.db_manager.get_all_vacancies()
+        
+        if not vacancies:
+            print("Вакансии не найдены.")
+            return
+        
+        print(f"{'№':<3} {'Название':<25} {'Компания':<20} {'Зарплата':<15}")
+        print("-" * 80)
+        
+        for i, vacancy in enumerate(vacancies[:5], 1):
+            title = vacancy['title'][:24] if len(vacancy['title']) > 24 else vacancy['title']
+            company = vacancy['company_name'][:19] if len(vacancy['company_name']) > 19 else vacancy['company_name']
+            salary = vacancy['salary_info'][:14] if len(vacancy['salary_info']) > 14 else vacancy['salary_info']
+            
+            print(f"{i:<3} {title:<25} {company:<20} {salary:<15}")
+        
+        if len(vacancies) > 5:
+            print(f"... и еще {len(vacancies) - 5} вакансий")
+        
+        print(f"\nВсего вакансий: {len(vacancies)}")
+    
+    def _demo_avg_salary(self) -> None:
+        """Демонстрирует метод get_avg_salary()"""
+        print("\n5. get_avg_salary() - Средняя зарплата:")
+        print("-" * 40)
+        
+        avg_salary = self.db_manager.get_avg_salary()
+        
+        if avg_salary is not None:
+            print(f"Средняя зарплата по всем вакансиям: {avg_salary:,.0f} руб.")
+        else:
+            print("Не удалось рассчитать среднюю зарплату.")
+            print("Возможно, нет вакансий с указанной зарплатой.")
+    
+    def _demo_vacancies_with_higher_salary(self) -> None:
+        """Демонстрирует метод get_vacancies_with_higher_salary()"""
+        print("\n6. get_vacancies_with_higher_salary() - Вакансии с зарплатой выше средней:")
+        print("-" * 80)
+        
+        high_salary_vacancies = self.db_manager.get_vacancies_with_higher_salary()
+        
+        if not high_salary_vacancies:
+            print("Вакансии с зарплатой выше средней не найдены.")
+            return
+        
+        print(f"{'№':<3} {'Название':<25} {'Компания':<20} {'Зарплата':<15}")
+        print("-" * 80)
+        
+        for i, vacancy in enumerate(high_salary_vacancies[:5], 1):
+            title = vacancy['title'][:24] if len(vacancy['title']) > 24 else vacancy['title']
+            company = vacancy['company_name'][:19] if len(vacancy['company_name']) > 19 else vacancy['company_name']
+            salary = vacancy['salary_info'][:14] if len(vacancy['salary_info']) > 14 else vacancy['salary_info']
+            
+            print(f"{i:<3} {title:<25} {company:<20} {salary:<15}")
+        
+        if len(high_salary_vacancies) > 5:
+            print(f"... и еще {len(high_salary_vacancies) - 5} вакансий")
+        
+        print(f"\nВсего вакансий с высокой зарплатой: {len(high_salary_vacancies)}")
+    
+    def _demo_vacancies_with_keyword(self) -> None:
+        """Демонстрирует метод get_vacancies_with_keyword()"""
+        print("\n7. get_vacancies_with_keyword() - Поиск вакансий по ключевому слову:")
+        print("-" * 80)
+        
+        keywords = ["python", "java", "разработчик", "менеджер"]
+        
+        for keyword in keywords:
+            print(f"\nПоиск по ключевому слову '{keyword}':")
+            keyword_vacancies = self.db_manager.get_vacancies_with_keyword(keyword)
+            
+            if keyword_vacancies:
+                print(f"Найдено {len(keyword_vacancies)} вакансий")
+                
+                # Показываем первые 3 вакансии
+                for i, vacancy in enumerate(keyword_vacancies[:3], 1):
+                    title = vacancy['title'][:35]
+                    company = vacancy['company_name'][:25]
+                    print(f"  {i}. {title} - {company}")
+                
+                if len(keyword_vacancies) > 3:
+                    print(f"  ... и еще {len(keyword_vacancies) - 3} вакансий")
+            else:
+                print(f"Вакансии с ключевым словом '{keyword}' не найдены")
+    
+    def _demo_database_stats(self) -> None:
+        """Демонстрирует получение статистики БД"""
+        print("\n8. Статистика базы данных:")
+        print("-" * 40)
+        
+        stats = self.db_manager.get_database_stats()
+        
+        if stats:
+            print(f"Общее количество вакансий: {stats.get('total_vacancies', 0)}")
+            print(f"Общее количество компаний: {stats.get('total_companies', 0)}")
+            print(f"Вакансий с указанной зарплатой: {stats.get('vacancies_with_salary', 0)}")
+            print(f"Дата последней вакансии: {stats.get('latest_vacancy_date', 'Не определена')}")
+        else:
+            print("Не удалось получить статистику базы данных")
+
+
+def main():
+    """
+    Главная функция для запуска демонстрации
+    """
+    try:
+        demo = DBManagerDemo()
+        demo.run_full_demo()
+    except Exception as e:
+        logger.error(f"Ошибка при запуске демонстрации DBManager: {e}")
+        print(f"Произошла ошибка: {e}")
+
+
+if __name__ == "__main__":
+    main()

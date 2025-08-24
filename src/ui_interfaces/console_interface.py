@@ -87,6 +87,8 @@ class UserInterface:
 
                 elif choice == "9":
                     self._configure_superjob_api()
+                elif choice == "10":
+                    self._demo_db_manager()
                 elif choice == "0":
                     print("Спасибо за использование! До свидания!")
                     break
@@ -120,6 +122,7 @@ class UserInterface:
         print("7. Удалить сохраненные вакансии")
         print("8. Очистить кэш API")
         print("9. Настройка SuperJob API")
+        print("10. Демонстрация DBManager (анализ данных в БД)")
         print("0. Выход")
         print_menu_separator()
 
@@ -504,6 +507,45 @@ class UserInterface:
                     print(f"Введите номер от 1 до {len(vacancies)}")
             else:
                 print("Неверный выбор. Попробуйте снова.")
+
+    def _demo_db_manager(self) -> None:
+        """Демонстрация функциональности DBManager"""
+        try:
+            print("\n" + "=" * 60)
+            print("ДЕМОНСТРАЦИЯ КЛАССА DBManager")
+            print("=" * 60)
+            print("Этот раздел демонстрирует специфические методы для работы с БД PostgreSQL")
+            print("согласно требованиям проекта:")
+            print("• get_companies_and_vacancies_count()")
+            print("• get_all_vacancies()")
+            print("• get_avg_salary()")
+            print("• get_vacancies_with_higher_salary()")
+            print("• get_vacancies_with_keyword()")
+            print("=" * 60)
+            
+            from src.utils.db_manager_demo import DBManagerDemo
+            
+            # Используем то же хранилище, что и основное приложение
+            if hasattr(self.storage, 'db_manager'):
+                # Если PostgresSaver, используем его DBManager
+                from src.storage.db_manager import DBManager
+                db_manager = DBManager()
+            else:
+                # Создаем новый DBManager
+                from src.storage.db_manager import DBManager
+                db_manager = DBManager()
+            
+            demo = DBManagerDemo(db_manager)
+            demo.run_full_demo()
+            
+        except ImportError as e:
+            print(f"Ошибка импорта модулей DBManager: {e}")
+            print("Убедитесь, что все модули установлены корректно")
+        except Exception as e:
+            logger.error(f"Ошибка при демонстрации DBManager: {e}")
+            print(f"Произошла ошибка при демонстрации DBManager: {e}")
+        
+        input("\nНажмите Enter для возврата в главное меню...")
 
     @staticmethod
     def _configure_superjob_api() -> None:

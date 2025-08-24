@@ -121,6 +121,7 @@ def create_main_menu() -> MenuManager:
     menu.add_menu_item("7", "Удалить сохраненные вакансии", None)
     menu.add_menu_item("8", "Очистить кэш API", None)
     menu.add_menu_item("9", "Настройка SuperJob API", None)
+    menu.add_menu_item("10", "Демонстрация DBManager (анализ данных в БД)", None)
 
     return menu
 
