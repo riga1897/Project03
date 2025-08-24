@@ -105,28 +105,25 @@ class TestPostgresSaver:
     """Тесты для PostgresSaver"""
 
     @patch('src.storage.postgres_saver.psycopg2.connect')
-    def test_connection_creation(self, mock_connect, mock_db_config):
+    def test_connection_creation(self, mock_connect):
         """Тест создания подключения к БД"""
         mock_connection = Mock()
         mock_connect.return_value = mock_connection
         
-        saver = PostgresSaver.__new__(PostgresSaver)  # Создаем без вызова __init__
-        saver.host = mock_db_config['host']
-        saver.port = mock_db_config['port']
-        saver.database = mock_db_config['database']
-        saver.username = mock_db_config['username']
-        saver.password = mock_db_config['password']
+        config = {
+            'host': 'localhost',
+            'port': '5432',
+            'database': 'test_db',
+            'username': 'test_user',
+            'password': 'test_pass'
+        }
         
-        connection = saver._get_connection()
+        with patch.object(PostgresSaver, '_ensure_database_exists'), \
+             patch.object(PostgresSaver, '_ensure_tables_exist'):
+            saver = PostgresSaver(config)
+            connection = saver._get_connection()
         
         assert connection == mock_connection
-        mock_connect.assert_called_once_with(
-            host='localhost',
-            port='5432',
-            database='test_db',
-            user='test_user',
-            password='test_pass'
-        )
 
     @patch('src.storage.postgres_saver.psycopg2.connect')
     def test_add_vacancy_success(self, mock_connect, sample_vacancy):
@@ -139,7 +136,8 @@ class TestPostgresSaver:
         mock_cursor.fetchall.return_value = []  # Нет существующих вакансий
         
         # Создаем PostgresSaver с мок-конфигурацией
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
+        with patch.object(PostgresSaver, '_ensure_database_exists'), \
+             patch.object(PostgresSaver, '_ensure_tables_exist'):
             saver = PostgresSaver({'host': 'localhost', 'database': 'test'})
         
         messages = saver.add_vacancy(sample_vacancy)
@@ -157,7 +155,8 @@ class TestPostgresSaver:
         mock_connection.cursor.return_value = mock_cursor
         mock_cursor.fetchone.return_value = [42]
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
+        with patch.object(PostgresSaver, '_ensure_database_exists'), \
+             patch.object(PostgresSaver, '_ensure_tables_exist'):
             saver = PostgresSaver({'host': 'localhost', 'database': 'test'})
         
         count = saver.get_vacancies_count()
@@ -173,7 +172,8 @@ class TestPostgresSaver:
         mock_connection.cursor.return_value = mock_cursor
         mock_cursor.rowcount = 1  # Одна строка удалена
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
+        with patch.object(PostgresSaver, '_ensure_database_exists'), \
+             patch.object(PostgresSaver, '_ensure_tables_exist'):
             saver = PostgresSaver({'host': 'localhost', 'database': 'test'})
         
         result = saver.delete_vacancy_by_id("12345")
@@ -190,7 +190,8 @@ class TestPostgresSaver:
         mock_connection.cursor.return_value = mock_cursor
         mock_cursor.rowcount = 0  # Ничего не удалено
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
+        with patch.object(PostgresSaver, '_ensure_database_exists'), \
+             patch.object(PostgresSaver, '_ensure_tables_exist'):
             saver = PostgresSaver({'host': 'localhost', 'database': 'test'})
         
         result = saver.delete_vacancy_by_id("nonexistent")

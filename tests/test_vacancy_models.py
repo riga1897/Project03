@@ -21,7 +21,8 @@ class TestVacancy:
                 "to": 150000,
                 "currency": "RUR"
             },
-            "vacancy_id": "12345"
+            "vacancy_id": "12345",
+            "source": "hh.ru"
         }
         
         vacancy = Vacancy(**vacancy_data)
@@ -29,6 +30,7 @@ class TestVacancy:
         assert vacancy.title == "Python Developer"
         assert vacancy.url == "https://hh.ru/vacancy/12345"
         assert vacancy.vacancy_id == "12345"
+        assert vacancy.source == "hh.ru"
         assert isinstance(vacancy.salary, Salary)
         assert vacancy.salary.salary_from == 100000
         assert vacancy.salary.salary_to == 150000
@@ -39,13 +41,16 @@ class TestVacancy:
         vacancy_data = {
             "title": "Test Position",
             "url": "https://example.com",
-            "vacancy_id": "999"
+            "vacancy_id": "999",
+            "source": "superjob.ru"
         }
         
         vacancy = Vacancy(**vacancy_data)
         
         assert vacancy.title == "Test Position"
-        assert vacancy.salary is None
+        assert vacancy.source == "superjob.ru"
+        assert vacancy.salary.salary_from is None
+        assert vacancy.salary.salary_to is None
 
     def test_vacancy_string_representation(self, sample_vacancy):
         """Тест строкового представления вакансии"""
@@ -56,9 +61,9 @@ class TestVacancy:
 
     def test_vacancy_comparison(self):
         """Тест сравнения вакансий"""
-        vacancy1 = Vacancy(title="Dev", vacancy_id="1", salary={"from": 100000})
-        vacancy2 = Vacancy(title="Dev", vacancy_id="2", salary={"from": 150000})
-        vacancy3 = Vacancy(title="Dev", vacancy_id="3", salary=None)
+        vacancy1 = Vacancy(title="Dev", vacancy_id="1", salary={"from": 100000}, source="hh.ru")
+        vacancy2 = Vacancy(title="Dev", vacancy_id="2", salary={"from": 150000}, source="hh.ru")
+        vacancy3 = Vacancy(title="Dev", vacancy_id="3", salary=None, source="superjob.ru")
         
         assert vacancy2 > vacancy1  # Больше зарплата
         assert vacancy1 < vacancy2
@@ -66,9 +71,9 @@ class TestVacancy:
 
     def test_vacancy_equality(self):
         """Тест равенства вакансий по ID"""
-        vacancy1 = Vacancy(title="Dev1", vacancy_id="123")
-        vacancy2 = Vacancy(title="Dev2", vacancy_id="123")
-        vacancy3 = Vacancy(title="Dev1", vacancy_id="456")
+        vacancy1 = Vacancy(title="Dev1", vacancy_id="123", source="hh.ru")
+        vacancy2 = Vacancy(title="Dev2", vacancy_id="123", source="superjob.ru")
+        vacancy3 = Vacancy(title="Dev1", vacancy_id="456", source="hh.ru")
         
         assert vacancy1 == vacancy2  # Одинаковые ID
         assert vacancy1 != vacancy3  # Разные ID
@@ -125,3 +130,53 @@ class TestSalary:
         assert salary2 > salary1
         assert salary1 > salary3
         assert salary1 != salary2
+
+
+
+    def test_source_detection_from_dict(self):
+        """Тест определения источника при создании из словаря"""
+        # HH вакансия
+        hh_data = {
+            "id": "12345",
+            "name": "Python Developer", 
+            "alternate_url": "https://hh.ru/vacancy/12345",
+            "source": "hh.ru"
+        }
+        
+        hh_vacancy = Vacancy.from_dict(hh_data)
+        assert hh_vacancy.source == "hh.ru"
+        
+        # SuperJob вакансия
+        sj_data = {
+            "id": "67890",
+            "profession": "Java Developer",
+            "link": "https://superjob.ru/vacancy/67890",
+            "source": "superjob.ru"
+        }
+        
+        sj_vacancy = Vacancy.from_dict(sj_data)
+        assert sj_vacancy.source == "superjob.ru"
+
+    def test_source_fallback_detection(self):
+        """Тест fallback определения источника"""
+        # HH без явного source
+        hh_data = {
+            "id": "12345",
+            "name": "Python Developer",
+            "alternate_url": "https://hh.ru/vacancy/12345",
+            "snippet": {"requirement": "Python"}
+        }
+        
+        hh_vacancy = Vacancy.from_dict(hh_data)
+        assert hh_vacancy.source == "hh.ru"
+        
+        # SuperJob без явного source
+        sj_data = {
+            "id": "67890", 
+            "profession": "Java Developer",
+            "payment_from": 100000,
+            "payment_to": 150000
+        }
+        
+        sj_vacancy = Vacancy.from_dict(sj_data)
+        assert sj_vacancy.source == "superjob.ru"
