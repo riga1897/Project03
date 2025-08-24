@@ -282,8 +282,10 @@ class PostgresSaver:
             except Exception as e:
                 logger.error(f"Ошибка при получении соответствия компаний: {e}")
 
-            # Подготавливаем данные для вставки/обновления
+            # Подготавливаем данные для вставки/обновления И сохраняем company_id в объектах
             insert_data = []
+            vacancy_company_mapping = {}  # Словарь для сохранения соответствия vacancy_id -> company_id
+            
             for vacancy in vacancies:
                 # Определяем company_id на основе employer
                 mapped_company_id = None
@@ -325,6 +327,12 @@ class PostgresSaver:
                         # 4. Логирование для отладки
                         if not mapped_company_id and employer_name:
                             logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
+
+                # Сохраняем соответствие для дальнейшего использования
+                vacancy_company_mapping[vacancy.vacancy_id] = mapped_company_id
+                
+                # Устанавливаем company_id напрямую в объект вакансии
+                vacancy.company_id = mapped_company_id
 
                 salary_from = vacancy.salary.salary_from if vacancy.salary else None
                 salary_to = vacancy.salary.salary_to if vacancy.salary else None

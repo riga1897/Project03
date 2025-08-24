@@ -41,6 +41,7 @@ class Vacancy(AbstractVacancy):
         "_relevance_score",
         "raw_data",
         "profession",
+        "company_id",
     )
 
     def __init__(
@@ -66,6 +67,7 @@ class Vacancy(AbstractVacancy):
         self._relevance_score = None
         self.raw_data = None
         self.profession = None
+        self.company_id = None
         # Используем переданный ID, если есть, иначе генерируем UUID
         if vacancy_id and str(vacancy_id).strip():
             self.vacancy_id = str(vacancy_id)
