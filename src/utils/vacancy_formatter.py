@@ -164,8 +164,10 @@ class VacancyFormatter(BaseFormatter):
         if vacancy.employer:
             if isinstance(vacancy.employer, dict):
                 company_name = vacancy.employer.get("name", "Не указана")
+            elif isinstance(vacancy.employer, str) and vacancy.employer.strip():
+                company_name = vacancy.employer
             else:
-                company_name = str(vacancy.employer)
+                company_name = str(vacancy.employer) if vacancy.employer else "Не указана"
         lines.append(f"Компания: {company_name}")
 
         # Зарплата

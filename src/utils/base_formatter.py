@@ -98,10 +98,13 @@ class BaseFormatter(ABC):
         employer = getattr(vacancy, "employer", None)
         if employer:
             if isinstance(employer, dict):
-                return employer.get("name")
+                name = employer.get("name")
+                return name if name and str(name).strip() else "Не указана"
+            elif isinstance(employer, str) and employer.strip():
+                return employer
             else:
-                return str(employer)
-        return None
+                return str(employer) if employer else "Не указана"
+        return "Не указана"
 
     @staticmethod
     def _extract_salary_info(vacancy: Any) -> Optional[str]:

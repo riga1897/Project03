@@ -66,7 +66,11 @@ class Vacancy(AbstractVacancy):
         self._relevance_score = None
         self.raw_data = None
         self.profession = None
-        self.vacancy_id = vacancy_id or str(uuid.uuid4())
+        # Используем переданный ID, если есть, иначе генерируем UUID
+        if vacancy_id and str(vacancy_id).strip():
+            self.vacancy_id = str(vacancy_id)
+        else:
+            self.vacancy_id = str(uuid.uuid4())
         self.title = title
         self.url = url
         self.salary = self._validate_salary(salary)
@@ -299,9 +303,19 @@ class Vacancy(AbstractVacancy):
 
     def __str__(self) -> str:
         """Строковое представление унифицированной вакансии"""
+        # Правильное извлечение имени компании
+        company_name = "Не указана"
+        if self.employer:
+            if isinstance(self.employer, dict):
+                company_name = self.employer.get('name', 'Не указана')
+            elif isinstance(self.employer, str):
+                company_name = self.employer
+            else:
+                company_name = str(self.employer)
+        
         parts = [
             f"[{self.source.upper()}] Должность: {self.title}",
-            f"Компания: {self.employer.get('name') if isinstance(self.employer, dict) else self.employer if isinstance(self.employer, str) else 'Не указана'}",
+            f"Компания: {company_name}",
             f"Зарплата: {self.salary}",
             f"Требования: {self.requirements[:100] + '...' if self.requirements else 'Не указаны'}",
             f"Ссылка: {self.url}",
