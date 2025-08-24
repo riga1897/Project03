@@ -24,6 +24,10 @@ class SuperJobParser:
 
         for vacancy_data in vacancies_data:
             try:
+                # Устанавливаем источник если не установлен
+                if "source" not in vacancy_data or not vacancy_data["source"]:
+                    vacancy_data["source"] = "superjob.ru"
+                
                 vacancy = Vacancy.from_dict(vacancy_data)
                 parsed_vacancies.append(vacancy)
             except ValueError as e:
@@ -76,5 +80,5 @@ class SuperJobParser:
             "keywords": [],
             "detailed_description": sj_vacancy.detailed_description,
             "benefits": sj_vacancy.benefits,
-            "source": sj_vacancy.source,
+            "source": sj_vacancy.source or "superjob.ru",
         }
