@@ -135,7 +135,7 @@ class DBManager:
                         for company in TARGET_COMPANIES:
                             cursor.execute(insert_sql, (
                                 company["hh_id"],
-                                company["name"], 
+                                company["name"],
                                 company["description"],
                                 company["hh_id"]
                             ))
@@ -190,7 +190,7 @@ class DBManager:
                 with conn.cursor() as cursor:
                     # Сначала пробуем основной запрос с JOIN
                     query = """
-                    SELECT 
+                    SELECT
                         c.name as company_name,
                         COUNT(v.id) as vacancy_count
                     FROM companies c
@@ -218,7 +218,7 @@ class DBManager:
                         # Ищем вакансии по названию компании в поле employer
                         fallback_query = """
                         SELECT COUNT(*) as vacancy_count
-                        FROM vacancies 
+                        FROM vacancies
                         WHERE LOWER(employer) LIKE LOWER(%s)
                         """
 
@@ -304,7 +304,7 @@ class DBManager:
 
     def get_all_vacancies(self) -> List[Dict[str, Any]]:
         """
-        Получает список всех вакансий с указанием названия компании, 
+        Получает список всех вакансий с указанием названия компании,
         названия вакансии, зарплаты и ссылки на вакансию
         Использует SQL-запрос с CASE для форматирования зарплаты
 
@@ -312,25 +312,36 @@ class DBManager:
             List[Dict[str, Any]]: Список словарей с информацией о вакансиях
         """
         query = """
-        SELECT 
+        SELECT
             v.title,
-            COALESCE(c.name, 'Неизвестная компания') as company_name,
-            CASE 
-                WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN 
+            CASE
+                WHEN c.name IS NOT NULL THEN c.name
+                WHEN v.employer IS NOT NULL AND v.employer != '' THEN v.employer
+                ELSE 'Неизвестная компания'
+            END as company_name,
+            CASE
+                WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
                     CONCAT(v.salary_from, ' - ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
-                WHEN v.salary_from IS NOT NULL THEN 
+                WHEN v.salary_from IS NOT NULL THEN
                     CONCAT('от ', v.salary_from, ' ', COALESCE(v.salary_currency, 'RUR'))
-                WHEN v.salary_to IS NOT NULL THEN 
+                WHEN v.salary_to IS NOT NULL THEN
                     CONCAT('до ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
                 ELSE 'Не указана'
             END as salary_info,
             v.url,
             v.vacancy_id,
             v.employer,
-            v.area
+            v.area,
+            c.company_id
         FROM vacancies v
         LEFT JOIN companies c ON v.company_id = c.company_id
-        ORDER BY c.name, v.title
+        ORDER BY
+            CASE
+                WHEN c.name IS NOT NULL THEN c.name
+                WHEN v.employer IS NOT NULL AND v.employer != '' THEN v.employer
+                ELSE 'Неизвестная компания'
+            END,
+            v.title
         """
 
         try:
@@ -344,14 +355,14 @@ class DBManager:
                         title = row['title'][:25] if row['title'] else "Без названия"
                         company_name = row['company_name'][:20] if row['company_name'] else "Неизвестная компания"
                         salary_str = row['salary_info'][:15] if row['salary_info'] else "Не указана"
-                        
+
                         print(f"{i:<4}{title:<26}{company_name:<21}{salary_str:<15}")
 
                     if len(results) > 10:
                         print(f"... и еще {len(results) - 10} вакансий")
 
                     print(f"\nВсего вакансий: {len(results)}")
-                    
+
                     # Возвращаем список словарей
                     return [dict(row) for row in results]
 
@@ -369,15 +380,15 @@ class DBManager:
         """
         query = """
         SELECT AVG(
-            CASE 
-                WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN 
+            CASE
+                WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN
                     (salary_from + salary_to) / 2
                 WHEN salary_from IS NOT NULL THEN salary_from
                 WHEN salary_to IS NOT NULL THEN salary_to
                 ELSE NULL
             END
         ) as avg_salary
-        FROM vacancies 
+        FROM vacancies
         WHERE (salary_from IS NOT NULL OR salary_to IS NOT NULL)
         AND salary_currency IN ('RUR', 'RUB', 'руб.', NULL)
         """
@@ -410,21 +421,21 @@ class DBManager:
 
         # SQL-запрос для получения вакансий с зарплатой выше средней
         query = """
-        SELECT 
+        SELECT
             v.title,
             COALESCE(c.name, 'Неизвестная компания') as company_name,
-            CASE 
-                WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN 
+            CASE
+                WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
                     CONCAT(v.salary_from, ' - ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
-                WHEN v.salary_from IS NOT NULL THEN 
+                WHEN v.salary_from IS NOT NULL THEN
                     CONCAT('от ', v.salary_from, ' ', COALESCE(v.salary_currency, 'RUR'))
-                WHEN v.salary_to IS NOT NULL THEN 
+                WHEN v.salary_to IS NOT NULL THEN
                     CONCAT('до ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
                 ELSE 'Не указана'
             END as salary_info,
             v.url,
-            CASE 
-                WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN 
+            CASE
+                WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
                     (v.salary_from + v.salary_to) / 2
                 WHEN v.salary_from IS NOT NULL THEN v.salary_from
                 WHEN v.salary_to IS NOT NULL THEN v.salary_to
@@ -435,8 +446,8 @@ class DBManager:
         FROM vacancies v
         LEFT JOIN companies c ON v.company_id = c.company_id
         WHERE (
-            CASE 
-                WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN 
+            CASE
+                WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
                     (v.salary_from + v.salary_to) / 2
                 WHEN v.salary_from IS NOT NULL THEN v.salary_from
                 WHEN v.salary_to IS NOT NULL THEN v.salary_to
@@ -458,14 +469,14 @@ class DBManager:
                         title = row['title'][:25] if row['title'] else "Без названия"
                         company_name = row['company_name'][:20] if row['company_name'] else "Неизвестная компания"
                         salary_str = row['salary_info'][:15] if row['salary_info'] else "Не указана"
-                        
+
                         print(f"{i:<4}{title:<26}{company_name:<21}{salary_str:<15}")
 
                     if len(results) > 10:
                         print(f"... и еще {len(results) - 10} вакансий")
 
                     print(f"\nВсего вакансий с высокой зарплатой: {len(results)}")
-                    
+
                     # Возвращаем список словарей
                     return [dict(row) for row in results]
 
@@ -489,15 +500,15 @@ class DBManager:
 
         # SQL-запрос для поиска вакансий по ключевому слову
         query = """
-        SELECT 
+        SELECT
             v.title,
             COALESCE(c.name, 'Неизвестная компания') as company_name,
-            CASE 
-                WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN 
+            CASE
+                WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
                     CONCAT(v.salary_from, ' - ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
-                WHEN v.salary_from IS NOT NULL THEN 
+                WHEN v.salary_from IS NOT NULL THEN
                     CONCAT('от ', v.salary_from, ' ', COALESCE(v.salary_currency, 'RUR'))
-                WHEN v.salary_to IS NOT NULL THEN 
+                WHEN v.salary_to IS NOT NULL THEN
                     CONCAT('до ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
                 ELSE 'Не указана'
             END as salary_info,
@@ -518,12 +529,12 @@ class DBManager:
                 with conn.cursor(cursor_factory=RealDictCursor) as cursor:
                     cursor.execute(query, (search_pattern,))
                     results = cursor.fetchall()
-                    
+
                     # Выводим результаты
                     for i, row in enumerate(results[:5], 1):
                         title = row['title'][:30] if row['title'] else "Без названия"
                         company_name = row['company_name'] if row['company_name'] else "Неизвестная компания"
-                        
+
                         print(f"  {i}. {title} - {company_name}")
 
                     if len(results) > 5:
@@ -640,8 +651,8 @@ class DBManager:
                     # SQL-запрос для поиска целевых компаний
                     placeholders = ','.join(['%s'] * len(target_company_names))
                     query = f"""
-                    SELECT company_id, company_name 
-                    FROM temp_api_companies 
+                    SELECT company_id, company_name
+                    FROM temp_api_companies
                     WHERE LOWER(company_name) IN ({placeholders})
                     OR """ + " OR ".join([
                         "LOWER(company_name) LIKE %s" for _ in target_company_names
@@ -726,11 +737,11 @@ class DBManager:
                     if analysis_type == 'vacancy_stats':
                         # Статистика по вакансиям
                         cursor.execute("""
-                            SELECT 
+                            SELECT
                                 COUNT(*) as total_vacancies,
                                 COUNT(DISTINCT employer) as unique_employers,
                                 COUNT(CASE WHEN salary_from IS NOT NULL OR salary_to IS NOT NULL THEN 1 END) as vacancies_with_salary,
-                                AVG(CASE 
+                                AVG(CASE
                                     WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN (salary_from + salary_to) / 2
                                     WHEN salary_from IS NOT NULL THEN salary_from
                                     WHEN salary_to IS NOT NULL THEN salary_to
@@ -745,7 +756,7 @@ class DBManager:
                         # Топ работодателей
                         cursor.execute("""
                             SELECT employer, COUNT(*) as vacancy_count
-                            FROM temp_api_analysis 
+                            FROM temp_api_analysis
                             WHERE employer IS NOT NULL AND employer != ''
                             GROUP BY employer
                             ORDER BY vacancy_count DESC
@@ -756,18 +767,18 @@ class DBManager:
                     elif analysis_type == 'salary_analysis':
                         # Анализ зарплат
                         cursor.execute("""
-                            SELECT 
-                                MIN(CASE 
+                            SELECT
+                                MIN(CASE
                                     WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN (salary_from + salary_to) / 2
                                     WHEN salary_from IS NOT NULL THEN salary_from
                                     WHEN salary_to IS NOT NULL THEN salary_to
                                 END) as min_salary,
-                                MAX(CASE 
+                                MAX(CASE
                                     WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN (salary_from + salary_to) / 2
                                     WHEN salary_from IS NOT NULL THEN salary_from
                                     WHEN salary_to IS NOT NULL THEN salary_to
                                 END) as max_salary,
-                                AVG(CASE 
+                                AVG(CASE
                                     WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN (salary_from + salary_to) / 2
                                     WHEN salary_from IS NOT NULL THEN salary_from
                                     WHEN salary_to IS NOT NULL THEN salary_to
