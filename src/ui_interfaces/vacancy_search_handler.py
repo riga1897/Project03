@@ -2,7 +2,6 @@ import logging
 from typing import List, Optional
 
 from src.api_modules.unified_api import UnifiedAPI
-from src.storage.postgres_saver import PostgresSaver
 from src.ui_interfaces.source_selector import SourceSelector
 from src.utils.ui_helpers import confirm_action, get_user_input
 from src.utils.ui_navigation import quick_paginate
@@ -20,7 +19,7 @@ class VacancySearchHandler:
     их отображение и сохранение.
     """
 
-    def __init__(self, unified_api: UnifiedAPI, storage: PostgresSaver):
+    def __init__(self, unified_api: UnifiedAPI, storage: 'PostgresSaver'):
         """
         Инициализация обработчика поиска
 

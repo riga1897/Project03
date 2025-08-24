@@ -54,7 +54,7 @@ class UserInterface:
         # Инициализация обработчиков
         self.search_handler = VacancySearchHandler(self.unified_api, self.storage)
         self.display_handler = VacancyDisplayHandler(self.storage)
-        self.operations_coordinator = VacancyOperationsCoordinator(self.storage)
+        self.operations_coordinator = VacancyOperationsCoordinator(self.unified_api, self.storage)
 
 
     def run(self) -> None:
