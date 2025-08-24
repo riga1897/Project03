@@ -28,18 +28,30 @@ def get_user_input(prompt: str, required: bool = True) -> Optional[str]:
         print("Поле не может быть пустым!")
 
 
-def get_positive_integer(prompt: str) -> Optional[int]:
+def get_positive_integer(prompt: str, default: Optional[int] = None) -> Optional[int]:
     """
     Получение положительного целого числа от пользователя
 
     Args:
         prompt: Текст приглашения для ввода
+        default: Значение по умолчанию при пустом вводе
 
     Returns:
         Положительное целое число или None при ошибке
     """
     try:
-        value = int(input(prompt))
+        user_input = input(prompt).strip()
+        
+        # Если ввод пустой и есть значение по умолчанию
+        if not user_input and default is not None:
+            return default
+            
+        # Если ввод пустой и нет значения по умолчанию
+        if not user_input:
+            print("Введите корректное число!")
+            return None
+            
+        value = int(user_input)
         if value <= 0:
             print("Число должно быть положительным!")
             return None
