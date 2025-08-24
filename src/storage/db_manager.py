@@ -435,11 +435,11 @@ class DBManager:
         """
         query = """
         SELECT 
-            COALESCE(employer->>'name', 'Неизвестная компания') as company_name,
+            COALESCE(employer, 'Неизвестная компания') as company_name,
             COUNT(*) as vacancy_count
-        FROM vacancies 
-        WHERE employer IS NOT NULL
-        GROUP BY employer->>'name'
+        FROM vacancies_storage 
+        WHERE employer IS NOT NULL AND employer != ''
+        GROUP BY employer 
         ORDER BY vacancy_count DESC, company_name
         """
         
@@ -465,18 +465,18 @@ class DBManager:
         query = """
         SELECT 
             title,
-            COALESCE(employer->>'name', 'Неизвестная компания') as company_name,
+            COALESCE(employer, 'Неизвестная компания') as company_name,
             CASE 
                 WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN 
-                    CONCAT(salary_from, ' - ', salary_to, ' ', COALESCE(currency, 'RUR'))
+                    CONCAT(salary_from, ' - ', salary_to, ' ', COALESCE(salary_currency, 'RUR'))
                 WHEN salary_from IS NOT NULL THEN 
-                    CONCAT('от ', salary_from, ' ', COALESCE(currency, 'RUR'))
+                    CONCAT('от ', salary_from, ' ', COALESCE(salary_currency, 'RUR'))
                 WHEN salary_to IS NOT NULL THEN 
-                    CONCAT('до ', salary_to, ' ', COALESCE(currency, 'RUR'))
+                    CONCAT('до ', salary_to, ' ', COALESCE(salary_currency, 'RUR'))
                 ELSE 'Не указана'
             END as salary_info,
             url
-        FROM vacancies 
+        FROM vacancies_storage 
         ORDER BY company_name, title
         """
         
@@ -508,9 +508,9 @@ class DBManager:
                 ELSE NULL
             END
         ) as avg_salary
-        FROM vacancies 
+        FROM vacancies_storage 
         WHERE (salary_from IS NOT NULL OR salary_to IS NOT NULL)
-        AND currency = 'RUR'  -- Учитываем только рубли для корректного расчета
+        AND salary_currency IN ('RUR', 'RUB', 'руб.', NULL)
         """
         
         try:
@@ -541,14 +541,14 @@ class DBManager:
         query = """
         SELECT 
             title,
-            COALESCE(employer->>'name', 'Неизвестная компания') as company_name,
+            COALESCE(employer, 'Неизвестная компания') as company_name,
             CASE 
                 WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN 
-                    CONCAT(salary_from, ' - ', salary_to, ' ', COALESCE(currency, 'RUR'))
+                    CONCAT(salary_from, ' - ', salary_to, ' ', COALESCE(salary_currency, 'RUR'))
                 WHEN salary_from IS NOT NULL THEN 
-                    CONCAT('от ', salary_from, ' ', COALESCE(currency, 'RUR'))
+                    CONCAT('от ', salary_from, ' ', COALESCE(salary_currency, 'RUR'))
                 WHEN salary_to IS NOT NULL THEN 
-                    CONCAT('до ', salary_to, ' ', COALESCE(currency, 'RUR'))
+                    CONCAT('до ', salary_to, ' ', COALESCE(salary_currency, 'RUR'))
                 ELSE 'Не указана'
             END as salary_info,
             url,
@@ -559,7 +559,7 @@ class DBManager:
                 WHEN salary_to IS NOT NULL THEN salary_to
                 ELSE NULL
             END as calculated_salary
-        FROM vacancies 
+        FROM vacancies_storage 
         WHERE (
             CASE 
                 WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN 
@@ -569,7 +569,7 @@ class DBManager:
                 ELSE NULL
             END
         ) > %s
-        AND currency = 'RUR'
+        AND salary_currency IN ('RUR', 'RUB', 'руб.', NULL)
         ORDER BY calculated_salary DESC, company_name, title
         """
         
@@ -600,19 +600,19 @@ class DBManager:
         query = """
         SELECT 
             title,
-            COALESCE(employer->>'name', 'Неизвестная компания') as company_name,
+            COALESCE(employer, 'Неизвестная компания') as company_name,
             CASE 
                 WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN 
-                    CONCAT(salary_from, ' - ', salary_to, ' ', COALESCE(currency, 'RUR'))
+                    CONCAT(salary_from, ' - ', salary_to, ' ', COALESCE(salary_currency, 'RUR'))
                 WHEN salary_from IS NOT NULL THEN 
-                    CONCAT('от ', salary_from, ' ', COALESCE(currency, 'RUR'))
+                    CONCAT('от ', salary_from, ' ', COALESCE(salary_currency, 'RUR'))
                 WHEN salary_to IS NOT NULL THEN 
-                    CONCAT('до ', salary_to, ' ', COALESCE(currency, 'RUR'))
+                    CONCAT('до ', salary_to, ' ', COALESCE(salary_currency, 'RUR'))
                 ELSE 'Не указана'
             END as salary_info,
             url,
             description
-        FROM vacancies 
+        FROM vacancies_storage 
         WHERE LOWER(title) LIKE LOWER(%s)
         ORDER BY company_name, title
         """
@@ -638,10 +638,10 @@ class DBManager:
             Dict[str, Any]: Словарь со статистикой
         """
         stats_queries = {
-            'total_vacancies': "SELECT COUNT(*) FROM vacancies",
-            'total_companies': "SELECT COUNT(DISTINCT employer->>'name') FROM vacancies WHERE employer IS NOT NULL",
-            'vacancies_with_salary': "SELECT COUNT(*) FROM vacancies WHERE (salary_from IS NOT NULL OR salary_to IS NOT NULL)",
-            'latest_vacancy_date': "SELECT MAX(published_at) FROM vacancies"
+            'total_vacancies': "SELECT COUNT(*) FROM vacancies_storage",
+            'total_companies': "SELECT COUNT(DISTINCT employer) FROM vacancies_storage WHERE employer IS NOT NULL AND employer != ''",
+            'vacancies_with_salary': "SELECT COUNT(*) FROM vacancies_storage WHERE (salary_from IS NOT NULL OR salary_to IS NOT NULL)",
+            'latest_vacancy_date': "SELECT MAX(published_at) FROM vacancies_storage"
         }
         
         stats = {}

@@ -35,6 +35,21 @@ class DatabaseConfig:
             return config
         return self.default_config
     
+    def get_connection_params(self) -> Dict[str, str]:
+        """
+        Возвращает параметры подключения в формате для psycopg2
+        
+        Returns:
+            Dict[str, str]: Параметры подключения
+        """
+        return {
+            'host': self.default_config['host'],
+            'port': self.default_config['port'],
+            'database': self.default_config['database'],
+            'user': self.default_config['username'],
+            'password': self.default_config['password']
+        }
+    
     def test_connection(self, config: Optional[Dict[str, str]] = None) -> bool:
         """
         Тестирует подключение к БД
