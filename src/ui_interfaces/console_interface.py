@@ -40,11 +40,10 @@ class UserInterface:
 
         self.unified_api = UnifiedAPI()
 
-        # Используем переданное хранилище или создаем по умолчанию (PostgreSQL)
-        if storage:
-            self.storage = storage
-        else:
-            self.storage = StorageFactory.get_default_storage() # Используем только PostgreSQL хранилище
+        # Инициализация хранилища
+        if storage is None:
+            storage = StorageFactory.get_default_storage()
+        self.storage = storage
 
         # Инициализируем только PostgreSQL хранилище
         self.db_storage = self.storage
@@ -52,12 +51,11 @@ class UserInterface:
         self.menu_manager = create_main_menu()
         self.vacancy_ops = VacancyOperations()
 
-        # Инициализируем координатор операций, передавая storage
-        self.coordinator = VacancyOperationsCoordinator(self.storage) # Изменено: передаем storage
+        # Инициализация обработчиков
+        self.search_handler = VacancySearchHandler(self.unified_api, self.storage)
+        self.display_handler = VacancyDisplayHandler(self.storage)
+        self.operations_coordinator = VacancyOperationsCoordinator(self.storage)
 
-        # Инициализируем обработчики, передавая storage
-        self.display_handler = VacancyDisplayHandler(self.storage) # Изменено: передаем storage
-        self.search_handler = VacancySearchHandler(self.unified_api, self.storage) # Изменено: передаем storage
 
     def run(self) -> None:
         """Основной цикл взаимодействия с пользователем"""
@@ -80,7 +78,7 @@ class UserInterface:
                 elif choice == "6":
                     self._filter_saved_vacancies_by_salary()
                 elif choice == "7":
-                    self.coordinator.handle_delete_vacancies()
+                    self.operations_coordinator.handle_delete_vacancies() # Изменено: используется operations_coordinator
 
                 elif choice == "8":
                     self._clear_api_cache()
@@ -129,19 +127,19 @@ class UserInterface:
 
     def _search_vacancies(self) -> None:
         """Поиск вакансий по запросу пользователя"""
-        self.coordinator.handle_vacancy_search()
+        self.operations_coordinator.handle_vacancy_search() # Изменено: используется operations_coordinator
 
     def _show_saved_vacancies(self) -> None:
         """Отображение сохраненных вакансий с постраничным просмотром"""
-        self.coordinator.handle_show_saved_vacancies()
+        self.operations_coordinator.handle_show_saved_vacancies() # Изменено: используется operations_coordinator
 
     def _get_top_saved_vacancies_by_salary(self) -> None:
         """Получение топ N сохраненных вакансий по зарплате"""
-        self.coordinator.handle_top_vacancies_by_salary()
+        self.operations_coordinator.handle_top_vacancies_by_salary() # Изменено: используется operations_coordinator
 
     def _search_saved_vacancies_by_keyword(self) -> None:
         """Поиск в сохраненных вакансиях с ключевым словом в описании"""
-        self.coordinator.handle_search_saved_by_keyword()
+        self.operations_coordinator.handle_search_saved_by_keyword() # Изменено: используется operations_coordinator
 
     def _advanced_search_vacancies(self) -> None:
         """Расширенный поиск по вакансиям"""
@@ -277,11 +275,11 @@ class UserInterface:
 
     def _delete_saved_vacancies(self) -> None:
         """Удаление сохраненных вакансий"""
-        self.coordinator.handle_delete_vacancies()
+        self.operations_coordinator.handle_delete_vacancies() # Изменено: используется operations_coordinator
 
     def _clear_api_cache(self) -> None:
         """Очистка кэша API"""
-        self.coordinator.handle_cache_cleanup()
+        self.operations_coordinator.handle_cache_cleanup() # Изменено: используется operations_coordinator
 
     @staticmethod
     def _get_period_choice() -> Optional[int]:
@@ -331,7 +329,7 @@ class UserInterface:
 
     def _setup_superjob_api(self) -> None:
         """Настройка SuperJob API"""
-        self.coordinator.handle_superjob_setup()
+        self.operations_coordinator.handle_superjob_setup() # Изменено: используется operations_coordinator
 
     @staticmethod
     def _display_vacancies(vacancies: List[Vacancy], start_number: int = 1) -> None:

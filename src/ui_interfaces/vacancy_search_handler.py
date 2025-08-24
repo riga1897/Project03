@@ -2,7 +2,7 @@ import logging
 from typing import List, Optional
 
 from src.api_modules.unified_api import UnifiedAPI
-from src.storage.postgresql_storage import PostgreSQLStorage
+from src.storage.postgres_saver import PostgresSaver
 from src.ui_interfaces.source_selector import SourceSelector
 from src.utils.ui_helpers import confirm_action, get_user_input
 from src.utils.ui_navigation import quick_paginate
@@ -20,16 +20,16 @@ class VacancySearchHandler:
     их отображение и сохранение.
     """
 
-    def __init__(self, unified_api: UnifiedAPI, storage: PostgreSQLStorage):
+    def __init__(self, unified_api: UnifiedAPI, storage: PostgresSaver):
         """
         Инициализация обработчика поиска
 
         Args:
             unified_api: Унифицированный API для получения вакансий
-            storage: Сервис сохранения данных (PostgreSQLStorage)
+            storage: Сервис сохранения данных (PostgresSaver)
         """
         self.unified_api = unified_api
-        self.storage = storage  # Используем PostgreSQLStorage
+        self.storage = storage  # Используем PostgresSaver
         self.source_selector = SourceSelector()
 
     def search_vacancies(self) -> None:
