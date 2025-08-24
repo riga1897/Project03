@@ -29,8 +29,12 @@ def main() -> None:
         # Инициализируем конфигурацию приложения
         app_config = AppConfig()
 
-        # Создаем пользовательский интерфейс
-        user_interface = UserInterface()
+        # Создаем хранилище согласно конфигурации
+        storage = StorageFactory.create_storage(app_config.default_storage_type)
+        logger.info(f"Используется хранилище: {type(storage).__name__}")
+
+        # Создаем пользовательский интерфейс с правильным хранилищем
+        user_interface = UserInterface(storage)
 
         # Запускаем основной цикл интерфейса
         user_interface.run()

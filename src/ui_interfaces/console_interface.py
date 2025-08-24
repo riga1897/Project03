@@ -29,19 +29,32 @@ class UserInterface:
     специализированным обработчикам.
     """
 
-    def __init__(self):
+    def __init__(self, storage=None):
         """Инициализация пользовательского интерфейса"""
+        from src.config.app_config import AppConfig
+        from src.storage.storage_factory import StorageFactory
+        
         self.hh_api = HeadHunterAPI()
         self.sj_api = SuperJobAPI()
         self.unified_api = UnifiedAPI()
-        self.json_saver = JSONSaver()
+        
+        # Используем переданное хранилище или создаем по умолчанию
+        if storage:
+            self.storage = storage
+        else:
+            app_config = AppConfig()
+            self.storage = StorageFactory.create_storage(app_config.default_storage_type)
+        
+        # Для обратной совместимости
+        self.json_saver = self.storage
+        
         self.menu_manager = create_main_menu()
         self.vacancy_ops = VacancyOperations()
         self.source_selector = SourceSelector()
 
         # Инициализируем обработчики
-        self.search_handler = VacancySearchHandler(self.unified_api, self.json_saver)
-        self.display_handler = VacancyDisplayHandler(self.json_saver)
+        self.search_handler = VacancySearchHandler(self.unified_api, self.storage)
+        self.display_handler = VacancyDisplayHandler(self.storage)
 
     def run(self) -> None:
         """Основной цикл взаимодействия с пользователем"""

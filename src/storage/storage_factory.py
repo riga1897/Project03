@@ -1,43 +1,39 @@
-
 from typing import Union, Dict, Optional
 from src.storage.json_saver import JSONSaver
 from src.storage.postgres_saver import PostgresSaver
+from src.storage.abstract_storage import AbstractStorage
 from src.config.db_config import DatabaseConfig
 
 
 class StorageFactory:
     """Фабрика для создания объектов хранилища"""
-    
+
     @staticmethod
-    def create_storage(storage_type: str = "postgres", 
-                      config: Optional[Dict[str, str]] = None,
-                      filename: Optional[str] = None) -> Union[JSONSaver, PostgresSaver]:
+    def create_storage(storage_type: str) -> AbstractStorage:
         """
-        Создает объект хранилища в зависимости от типа
-        
+        Создает экземпляр хранилища указанного типа
+
         Args:
-            storage_type: Тип хранилища ("json" или "postgres")
-            config: Конфигурация БД (для postgres)
-            filename: Имя файла (для json)
-            
+            storage_type: Тип хранилища ('json' или 'postgres')
+
         Returns:
-            Объект хранилища
+            AbstractStorage: Экземпляр хранилища
         """
-        if storage_type.lower() == "json":
-            return JSONSaver(filename or "data/storage/vacancies.json")
-        elif storage_type.lower() == "postgres":
-            db_config = DatabaseConfig()
-            final_config = db_config.get_config(config)
-            return PostgresSaver(final_config)
+        if storage_type == "json":
+            return JSONSaver()
+        elif storage_type == "postgres":
+            from src.config.app_config import AppConfig
+            app_config = AppConfig()
+            return PostgresSaver(app_config.get_db_config())
         else:
             raise ValueError(f"Неподдерживаемый тип хранилища: {storage_type}")
-    
+
     @staticmethod
-    def get_default_storage() -> Union[JSONSaver, PostgresSaver]:
+    def get_default_storage() -> AbstractStorage:
         """
-        Возвращает хранилище по умолчанию (PostgreSQL)
-        
+        Возвращает хранилище по умолчанию
+
         Returns:
-            Объект PostgreSQL хранилища
+            AbstractStorage: Хранилище по умолчанию (PostgreSQL)
         """
         return StorageFactory.create_storage("postgres")
