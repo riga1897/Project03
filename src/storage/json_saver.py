@@ -100,70 +100,65 @@ class JSONSaver:
 
     def add_vacancy_batch_optimized(self, vacancies: Union[Vacancy, List[Vacancy]]) -> List[str]:
         """
-        Оптимизированное batch-добавление вакансий в JSON.
-        Загружает файл один раз, обрабатывает все операции в памяти, сохраняет один раз.
+        Оптимизированное пакетное добавление вакансий в хранилище.
+
+        Args:
+            vacancies: Список объектов Vacancy для добавления
+
+        Returns:
+            List[str]: Список сообщений о результатах операций
         """
-        if not isinstance(vacancies, list):
-            vacancies = [vacancies]
-
         if not vacancies:
-            return []
+            return ["Список вакансий пуст"]
 
-        # Загружаем существующие вакансии один раз
-        existing_vacancies = self.load_vacancies()
-        existing_map = {v.vacancy_id: v for v in existing_vacancies}
+        messages = []
+        added_count = 0
+        skipped_count = 0
 
-        update_messages: List[str] = []
-        new_count = 0
-        updated_count = 0
+        try:
+            # Загружаем существующие данные
+            data = self._load_data()
+            existing_ids = {item.get("vacancy_id") for item in data.get("vacancies", [])}
 
-        # Обрабатываем все вакансии в одном цикле
-        for new_vac in vacancies:
-            if new_vac.vacancy_id in existing_map:
-                existing_vac = existing_map[new_vac.vacancy_id]
-                changed_fields = []
+            for vac in vacancies:
+                if not isinstance(vac, Vacancy):
+                    raise ValueError(f"Ожидался объект Vacancy, получен {type(vac)}")
 
-                # Проверяем каждое поле на изменения
-                for field in ["title", "url", "salary", "description", "updated_at"]:
-                    old_val = getattr(existing_vac, field, None)
-                    new_val = getattr(new_vac, field, None)
+                try:
+                    vac_dict = vac.to_dict()
+                    # Дополнительная проверка структуры.
+                    if not self._validate_vacancy_structure(vac_dict):
+                        logger.warning(f"Неверная структура вакансии {vac_dict.get('vacancy_id', 'unknown')}")
+                        skipped_count += 1
+                        continue
 
-                    if old_val != new_val:
-                        changed_fields.append(field)
+                    # Проверяем дубликаты
+                    if vac_dict["vacancy_id"] not in existing_ids:
+                        data["vacancies"].append(vac_dict)
+                        existing_ids.add(vac_dict["vacancy_id"])
+                        added_count += 1
+                    else:
+                        skipped_count += 1
 
-                if changed_fields:
-                    # Обновляем только изменившиеся поля
-                    for field in changed_fields:
-                        setattr(existing_vac, field, getattr(new_vac, field))
+                except Exception as vac_error:
+                    logger.error(f"Ошибка обработки вакансии {getattr(vac, 'vacancy_id', 'unknown')}: {vac_error}")
+                    skipped_count += 1
+                    continue
 
-                    if updated_count < 5:  # Показываем только первые 5 обновлений
-                        message = (
-                            f"Вакансия ID {new_vac.vacancy_id} обновлена. "
-                            f"Измененные поля: {', '.join(changed_fields)}. "
-                            f"Название: '{new_vac.title}'"
-                        )
-                        update_messages.append(message)
-                    updated_count += 1
-            else:
-                existing_map[new_vac.vacancy_id] = new_vac
-                if new_count < 5:  # Показываем только первые 5 новых вакансий
-                    message = f"Добавлена новая вакансия ID {new_vac.vacancy_id}: '{new_vac.title}'"
-                    update_messages.append(message)
-                new_count += 1
+            # Сохраняем данные
+            if added_count > 0:
+                self._save_data(data)
+                messages.append(f"Добавлено {added_count} новых вакансий")
 
-        # Добавляем сводную информацию если обработано много вакансий
-        if new_count > 5:
-            update_messages.append(f"... и еще {new_count - 5} новых вакансий")
-        if updated_count > 5:
-            update_messages.append(f"... и еще {updated_count - 5} обновленных вакансий")
+            if skipped_count > 0:
+                messages.append(f"Пропущено {skipped_count} дубликатов")
 
-        # Сохраняем все вакансии одним разом, если есть изменения
-        if new_count > 0 or updated_count > 0:
-            logger.info(f"Сохранение {len(existing_map)} вакансий в файл...")
-            self._save_to_file(list(existing_map.values()))
-            logger.info(f"Успешно обработано: новых - {new_count}, обновленных - {updated_count}")
+        except Exception as e:
+            logger.error(f"Ошибка при пакетном добавлении вакансий: {e}")
+            messages.append(f"Ошибка сохранения: {e}")
 
-        return update_messages
+        return messages
+
 
     def add_vacancy(self, vacancies: Union[Vacancy, List[Vacancy]]) -> List[str]:
         """
@@ -479,3 +474,39 @@ class JSONSaver:
             "vacancy_id": vacancy.vacancy_id,
             "published_at": vacancy.published_at,
         }
+
+    def _load_data(self) -> Dict[str, Any]:
+        """Загружает данные из JSON файла."""
+        try:
+            with open(self.filename, "r", encoding="utf-8") as f:
+                content = f.read().strip()
+                if not content:
+                    return {"vacancies": []}
+                data = json.loads(content)
+                if not isinstance(data, dict) or "vacancies" not in data:
+                    logger.warning("Некорректный формат файла. Инициализация с пустым списком вакансий.")
+                    return {"vacancies": []}
+                return data
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            logger.error(f"Ошибка загрузки файла {self.filename}: {e}. Создается новый файл.")
+            return {"vacancies": []}
+        except Exception as e:
+            logger.error(f"Неизвестная ошибка загрузки файла {self.filename}: {e}")
+            return {"vacancies": []}
+
+    def _save_data(self, data: Dict[str, Any]) -> None:
+        """Сохраняет данные в JSON файл."""
+        try:
+            with open(self.filename, "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+            logger.info(f"Данные успешно сохранены в {self.filename}")
+        except Exception as e:
+            logger.critical(f"Ошибка записи данных в файл {self.filename}: {e}")
+            raise
+
+    def _validate_vacancy_structure(self, vac_dict: Dict[str, Any]) -> bool:
+        """Проверяет базовую структуру словаря вакансии."""
+        if not isinstance(vac_dict, dict):
+            return False
+        required_keys = ["vacancy_id", "title", "url"]
+        return all(key in vac_dict for key in required_keys)
