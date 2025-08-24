@@ -9,6 +9,19 @@ class AppConfig:
         # По умолчанию используем PostgreSQL хранилище
         self.default_storage_type = "postgres"
         self.default_json_filename = "data/storage/vacancies.json"
+        
+        # Инициализируем атрибуты для совместимости
+        self.storage_type = self.default_storage_type
+        self.json_filename = self.default_json_filename
+        
+        # Настройки БД
+        self.db_config = {
+            'host': os.getenv('PGHOST', 'localhost'),
+            'port': os.getenv('PGPORT', '5432'),
+            'database': os.getenv('PGDATABASE', 'postgres'),
+            'username': os.getenv('PGUSER', 'postgres'),
+            'password': os.getenv('PGPASSWORD', '')
+        }
 
     def get_storage_type(self) -> str:
         """Возвращает тип хранилища"""
