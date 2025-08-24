@@ -58,33 +58,53 @@ class DBManager:
     
     def get_companies_and_vacancies_count(self) -> List[Tuple[str, int]]:
         """
-        Получает список всех компаний и количество вакансий у каждой компании
-        Использует SQL-запрос с GROUP BY для группировки по компаниям
+        Получает список целевых компаний и количество вакансий у каждой компании
+        Использует SQL-запрос с поиском по названиям целевых компаний
         
         Returns:
             List[Tuple[str, int]]: Список кортежей (название_компании, количество_вакансий)
         """
-        # SQL-запрос для получения компаний и подсчета количества вакансий
+        from src.config.target_companies import TARGET_COMPANIES
+        
+        # Создаем список названий целевых компаний для поиска
+        target_company_names = [company['name'] for company in TARGET_COMPANIES]
+        
+        # SQL-запрос для получения только целевых компаний и подсчета вакансий
         query = """
         SELECT 
             COALESCE(employer, 'Неизвестная компания') as company_name,
             COUNT(*) as vacancy_count
         FROM vacancies_storage 
         WHERE employer IS NOT NULL AND employer != ''
+        AND (
+            """ + " OR ".join([
+                "LOWER(employer) LIKE LOWER(%s)" for _ in target_company_names
+            ]) + """
+        )
         GROUP BY employer 
         ORDER BY vacancy_count DESC, company_name
         """
         
         try:
+            # Создаем параметры для поиска (добавляем % для LIKE)
+            search_params = [f"%{name}%" for name in target_company_names]
+            
             with self._get_connection() as conn:
                 with conn.cursor() as cursor:
-                    cursor.execute(query)
+                    cursor.execute(query, search_params)
                     results = cursor.fetchall()
-                    return [(row[0], row[1]) for row in results]
+                    
+                    # Если найдены совпадения в БД, возвращаем их
+                    if results:
+                        return [(row[0], row[1]) for row in results]
+                    
+                    # Если нет совпадений, возвращаем все целевые компании с 0 вакансий
+                    return [(company['name'], 0) for company in TARGET_COMPANIES]
                     
         except psycopg2.Error as e:
-            logger.error(f"Ошибка при выполнении SQL-запроса для получения списка компаний: {e}")
-            return []
+            logger.error(f"Ошибка при выполнении SQL-запроса для получения списка целевых компаний: {e}")
+            # В случае ошибки возвращаем целевые компании с 0 вакансий
+            return [(company['name'], 0) for company in TARGET_COMPANIES]
     
     def get_all_vacancies(self) -> List[Dict[str, Any]]:
         """

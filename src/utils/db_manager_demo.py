@@ -19,19 +19,37 @@ def demo_companies_and_vacancies_count(db_manager: DBManager) -> None:
     Демонстрация метода get_companies_and_vacancies_count()
     """
     print("\n" + "="*60)
-    print("ДЕМОНСТРАЦИЯ: Компании и количество вакансий")
+    print("ДЕМОНСТРАЦИЯ: Целевые компании и количество вакансий")
     print("="*60)
     
     companies_stats = db_manager.get_companies_and_vacancies_count()
     
     if not companies_stats:
-        print("❌ Нет данных о компаниях в базе данных")
+        print("❌ Нет данных о целевых компаниях в базе данных")
         return
     
-    print(f"📊 Найдено {len(companies_stats)} компаний в базе данных:")
+    print(f"📊 Статистика по {len(TARGET_COMPANIES)} целевым компаниям:")
     print()
+    print(f"{'№':<3} {'Название компании':<40} {'Количество вакансий':<20}")
+    print("-" * 70)
     
-    for i, company in enumerate(companies_stats[:10], 1):  # Показываем топ-10
+    # Показываем все 15 целевых компаний
+    for i, (company_name, vacancy_count) in enumerate(companies_stats, 1):
+        status = "✅" if vacancy_count > 0 else "❌"
+        print(f"{i:<3} {status} {company_name:<37} {vacancy_count:<20}")
+    
+    total_vacancies = sum(count for _, count in companies_stats)
+    companies_with_vacancies = sum(1 for _, count in companies_stats if count > 0)
+    
+    print()
+    print(f"📈 Итоговая статистика:")
+    print(f"   • Компаний с вакансиями: {companies_with_vacancies} из {len(companies_stats)}")
+    print(f"   • Всего вакансий от целевых компаний: {total_vacancies}")
+    
+    if total_vacancies == 0:
+        print("⚠️  Рекомендация: Выполните поиск вакансий от целевых компаний для получения данных")
+    
+    print(f"\nВсего целевых компаний: {len(companies_stats)}") 1):  # Показываем топ-10
         print(f"{i:2d}. {company['company_name']:<40} - {company['vacancy_count']:>3} вакансий")
     
     if len(companies_stats) > 10:
