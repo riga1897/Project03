@@ -207,7 +207,7 @@ class TestIntegrationWorkflow:
 
         # 3. Парсим в объекты Vacancy
         parser = HHParser()
-        parsed_vacancies = parser.parse_vacancies(raw_vacancies)
+        parsed_vacancies = parser._parse_items(raw_vacancies)
 
         # Проверяем, что получили ожидаемую вакансию
         assert len(parsed_vacancies) == 1

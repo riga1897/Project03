@@ -26,23 +26,29 @@ class TestUIHelpers:
     def test_get_positive_integer_invalid_then_valid(self, mock_input):
         """Тест получения числа с некорректными вводами сначала"""
         with patch('builtins.print'):  # Подавляем вывод ошибок
-            try:
-                result = get_positive_integer("Enter number: ")
-                assert result == 15
-            except RecursionError:
-                # Если функция использует рекурсию и достигает лимита
-                pytest.skip("Function uses recursion that hits limit in test")
+            # Первый вызов с -5 (некорректное значение)
+            result = get_positive_integer("Enter number: ")
+            assert result is None
+
+            # Второй вызов с 0 (некорректное значение)
+            result = get_positive_integer("Enter number: ")
+            assert result is None
+
+            # Третий вызов с 15 (корректное значение)  
+            result = get_positive_integer("Enter number: ")
+            assert result == 15
 
     @patch('builtins.input', side_effect=['abc', '5'])
     def test_get_positive_integer_non_numeric(self, mock_input):
         """Тест ввода нечислового значения"""
         with patch('builtins.print'):
-            try:
-                result = get_positive_integer("Enter number: ")
-                assert result == 5
-            except (RecursionError, StopIteration):
-                # Если функция не может обработать некорректный ввод правильно
-                pytest.skip("Function cannot handle invalid input properly in test")
+            # Первый вызов с 'abc' (нечисловое значение)
+            result = get_positive_integer("Enter number: ")
+            assert result is None
+
+            # Второй вызов с '5' (корректное значение)
+            result = get_positive_integer("Enter number: ")
+            assert result == 5
 
 
     def test_filter_vacancies_by_keyword_in_title(self):
