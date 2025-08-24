@@ -299,30 +299,30 @@ class PostgresSaver:
                                 mapped_company_id = comp_id
                                 break
 
-                salary_from = vac.salary.salary_from if vac.salary else None
-                salary_to = vac.salary.salary_to if vac.salary else None
-                salary_currency = vac.salary.currency if vac.salary else None
+                salary_from = vacancy.salary.salary_from if vacancy.salary else None
+                salary_to = vacancy.salary.salary_to if vacancy.salary else None
+                salary_currency = vacancy.salary.currency if vacancy.salary else None
 
                 # Standardize employer name before storing
                 raw_employer_name = None
-                if isinstance(vac.employer, dict):
-                    raw_employer_name = vac.employer.get('name')
-                elif vac.employer:
-                    raw_employer_name = str(vac.employer)
+                if isinstance(vacancy.employer, dict):
+                    raw_employer_name = vacancy.employer.get('name')
+                elif vacancy.employer:
+                    raw_employer_name = str(vacancy.employer)
 
                 employer_str = self._standardize_employer_name(raw_employer_name)
 
                 area_str = (
-                    vac.area.get('name') if isinstance(vac.area, dict)
-                    else str(vac.area) if vac.area else None
+                    vacancy.area.get('name') if isinstance(vacancy.area, dict)
+                    else str(vacancy.area) if vacancy.area else None
                 )
 
                 insert_data.append((
-                    vac.vacancy_id, vac.title, vac.url,
+                    vacancy.vacancy_id, vacancy.title, vacancy.url,
                     salary_from, salary_to, salary_currency,
-                    vac.description, vac.requirements, vac.responsibilities,
-                    vac.experience, vac.employment, vac.schedule,
-                    employer_str, area_str, vac.source, vac.published_at,
+                    vacancy.description, vacancy.requirements, vacancy.responsibilities,
+                    vacancy.experience, vacancy.employment, vacancy.schedule,
+                    employer_str, area_str, vacancy.source, vacancy.published_at,
                     mapped_company_id # Используем найденный company_id
                 ))
 
@@ -511,19 +511,19 @@ class PostgresSaver:
             new_vacancies = []
             update_vacancies = []
 
-            for vac in vacancies:
-                if vac.vacancy_id in existing_map:
-                    existing = existing_map[vac.vacancy_id]
+            for vacancy in vacancies:
+                if vacancy.vacancy_id in existing_map:
+                    existing = existing_map[vacancy.vacancy_id]
 
                     # Проверяем изменения
-                    salary_from = vac.salary.salary_from if vac.salary else None
-                    salary_to = vac.salary.salary_to if vac.salary else None
-                    salary_currency = vac.salary.currency if vac.salary else None
+                    salary_from = vacancy.salary.salary_from if vacancy.salary else None
+                    salary_to = vacancy.salary.salary_to if vacancy.salary else None
+                    salary_currency = vacancy.salary.currency if vacancy.salary else None
 
                     # Определяем company_id на основе employer
                     mapped_company_id = None
-                    if vac.employer:
-                        employer_lower = vac.employer.lower()
+                    if vacancy.employer:
+                        employer_lower = vacancy.employer.lower()
                         # Прямое соответствие
                         mapped_company_id = company_mapping.get(employer_lower)
 
@@ -535,9 +535,9 @@ class PostgresSaver:
                                     break
                     
                     has_changes = (
-                        existing['title'] != vac.title or
-                        existing['url'] != vac.url or
-                        existing['description'] != vac.description or
+                        existing['title'] != vacancy.title or
+                        existing['url'] != vacancy.url or
+                        existing['description'] != vacancy.description or
                         existing['salary_from'] != salary_from or
                         existing['salary_to'] != salary_to or
                         existing['salary_currency'] != salary_currency or
@@ -545,40 +545,54 @@ class PostgresSaver:
                     )
 
                     if has_changes:
-                        update_vacancies.append(vac)
-                        update_messages.append(f"Вакансия ID {vac.vacancy_id} обновлена: '{vac.title}'")
+                        update_vacancies.append(vacancy)
+                        update_messages.append(f"Вакансия ID {vacancy.vacancy_id} обновлена: '{vacancy.title}'")
                 else:
-                    new_vacancies.append(vac)
-                    update_messages.append(f"Добавлена новая вакансия ID {vac.vacancy_id}: '{vac.title}'")
+                    new_vacancies.append(vacancy)
+                    update_messages.append(f"Добавлена новая вакансия ID {vacancy.vacancy_id}: '{vacancy.title}'")
 
             # Batch insert новых вакансий
             if new_vacancies:
                 insert_data = []
-                for vac in new_vacancies:
-                    salary_from = vac.salary.salary_from if vac.salary else None
-                    salary_to = vac.salary.salary_to if vac.salary else None
-                    salary_currency = vac.salary.currency if vac.salary else None
+                for vacancy in new_vacancies:
+                    salary_from = vacancy.salary.salary_from if vacancy.salary else None
+                    salary_to = vacancy.salary.salary_to if vacancy.salary else None
+                    salary_currency = vacancy.salary.currency if vacancy.salary else None
+
+                    # Определяем company_id на основе employer
+                    mapped_company_id = None
+                    if vacancy.employer:
+                        employer_lower = vacancy.employer.lower()
+                        # Прямое соответствие
+                        mapped_company_id = company_mapping.get(employer_lower)
+
+                        # Поиск частичного соответствия
+                        if not mapped_company_id:
+                            for alt_name, comp_id in company_mapping.items():
+                                if alt_name in employer_lower or employer_lower in alt_name:
+                                    mapped_company_id = comp_id
+                                    break
 
                     # Standardize employer name before storing
                     raw_employer_name = None
-                    if isinstance(vac.employer, dict):
-                        raw_employer_name = vac.employer.get('name')
-                    elif vac.employer:
-                        raw_employer_name = str(vac.employer)
+                    if isinstance(vacancy.employer, dict):
+                        raw_employer_name = vacancy.employer.get('name')
+                    elif vacancy.employer:
+                        raw_employer_name = str(vacancy.employer)
 
                     employer_str = self._standardize_employer_name(raw_employer_name)
 
                     area_str = (
-                        vac.area.get('name') if isinstance(vac.area, dict)
-                        else str(vac.area) if vac.area else None
+                        vacancy.area.get('name') if isinstance(vacancy.area, dict)
+                        else str(vacancy.area) if vacancy.area else None
                     )
 
                     insert_data.append((
-                        vac.vacancy_id, vac.title, vac.url,
+                        vacancy.vacancy_id, vacancy.title, vacancy.url,
                         salary_from, salary_to, salary_currency,
-                        vac.description, vac.requirements, vac.responsibilities,
-                        vac.experience, vac.employment, vac.schedule,
-                        employer_str, area_str, vac.source, vac.published_at,
+                        vacancy.description, vacancy.requirements, vacancy.responsibilities,
+                        vacancy.experience, vacancy.employment, vacancy.schedule,
+                        employer_str, area_str, vacancy.source, vacancy.published_at,
                         mapped_company_id # Используем найденный company_id
                     ))
 
@@ -595,23 +609,37 @@ class PostgresSaver:
 
             # Batch update существующих вакансий
             if update_vacancies:
-                for vac in update_vacancies:
-                    salary_from = vac.salary.salary_from if vac.salary else None
-                    salary_to = vac.salary.salary_to if vac.salary else None
-                    salary_currency = vac.salary.currency if vac.salary else None
+                for vacancy in update_vacancies:
+                    salary_from = vacancy.salary.salary_from if vacancy.salary else None
+                    salary_to = vacancy.salary.salary_to if vacancy.salary else None
+                    salary_currency = vacancy.salary.currency if vacancy.salary else None
+
+                    # Определяем company_id на основе employer
+                    mapped_company_id = None
+                    if vacancy.employer:
+                        employer_lower = vacancy.employer.lower()
+                        # Прямое соответствие
+                        mapped_company_id = company_mapping.get(employer_lower)
+
+                        # Поиск частичного соответствия
+                        if not mapped_company_id:
+                            for alt_name, comp_id in company_mapping.items():
+                                if alt_name in employer_lower or employer_lower in alt_name:
+                                    mapped_company_id = comp_id
+                                    break
 
                     # Standardize employer name before storing
                     raw_employer_name = None
-                    if isinstance(vac.employer, dict):
-                        raw_employer_name = vac.employer.get('name')
-                    elif vac.employer:
-                        raw_employer_name = str(vac.employer)
+                    if isinstance(vacancy.employer, dict):
+                        raw_employer_name = vacancy.employer.get('name')
+                    elif vacancy.employer:
+                        raw_employer_name = str(vacancy.employer)
 
                     employer_str = self._standardize_employer_name(raw_employer_name)
 
                     area_str = (
-                        vac.area.get('name') if isinstance(vac.area, dict)
-                        else str(vac.area) if vac.area else None
+                        vacancy.area.get('name') if isinstance(vacancy.area, dict)
+                        else str(vacancy.area) if vacancy.area else None
                     )
 
                     update_query = """
@@ -626,11 +654,11 @@ class PostgresSaver:
                     """
 
                     cursor.execute(update_query, (
-                        vac.title, vac.url, salary_from, salary_to,
-                        salary_currency, vac.description, vac.requirements,
-                        vac.responsibilities, vac.experience, vac.employment,
-                        vac.schedule, employer_str, area_str, vac.source,
-                        vac.published_at, mapped_company_id, vac.vacancy_id # Применяем company_id
+                        vacancy.title, vacancy.url, salary_from, salary_to,
+                        salary_currency, vacancy.description, vacancy.requirements,
+                        vacancy.responsibilities, vacancy.experience, vacancy.employment,
+                        vacancy.schedule, employer_str, area_str, vacancy.source,
+                        vacancy.published_at, mapped_company_id, vacancy.vacancy_id # Применяем company_id
                     ))
 
             connection.commit()
@@ -1182,15 +1210,15 @@ class PostgresSaver:
 
             # Подготавливаем данные для вставки
             insert_data = []
-            for vac in vacancies:
-                salary_from = vac.salary.salary_from if vac.salary else None
-                salary_to = vac.salary.salary_to if vac.salary else None
-                salary_currency = vac.salary.currency if vac.salary else None
+            for vacancy in vacancies:
+                salary_from = vacancy.salary.salary_from if vacancy.salary else None
+                salary_to = vacancy.salary.salary_to if vacancy.salary else None
+                salary_currency = vacancy.salary.currency if vacancy.salary else None
 
                 # Определяем company_id на основе employer
                 mapped_company_id = None
-                if vac.employer:
-                    employer_lower = vac.employer.lower()
+                if vacancy.employer:
+                    employer_lower = vacancy.employer.lower()
                     # Прямое соответствие
                     mapped_company_id = company_mapping.get(employer_lower)
 
@@ -1203,25 +1231,25 @@ class PostgresSaver:
                 
                 # Standardize employer name before storing
                 raw_employer_name = None
-                if isinstance(vac.employer, dict):
-                    raw_employer_name = vac.employer.get('name')
-                elif vac.employer:
-                    raw_employer_name = str(vac.employer)
+                if isinstance(vacancy.employer, dict):
+                    raw_employer_name = vacancy.employer.get('name')
+                elif vacancy.employer:
+                    raw_employer_name = str(vacancy.employer)
 
                 employer_str = self._standardize_employer_name(raw_employer_name)
 
                 area_str = (
-                    vac.area.get('name') if isinstance(vac.area, dict)
-                    else str(vac.area) if vac.area else None
+                    vacancy.area.get('name') if isinstance(vacancy.area, dict)
+                    else str(vacancy.area) if vacancy.area else None
                 )
 
 
                 insert_data.append((
-                    vac.vacancy_id, vac.title, vac.url,
+                    vacancy.vacancy_id, vacancy.title, vacancy.url,
                     salary_from, salary_to, salary_currency,
-                    vac.description, vac.requirements, vac.responsibilities,
-                    vac.experience, vac.employment, vac.schedule,
-                    employer_str, area_str, vac.source, vac.published_at,
+                    vacancy.description, vacancy.requirements, vacancy.responsibilities,
+                    vacancy.experience, vacancy.employment, vacancy.schedule,
+                    employer_str, area_str, vacancy.source, vacancy.published_at,
                     mapped_company_id # Используем найденный company_id
                 ))
 
