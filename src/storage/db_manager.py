@@ -423,7 +423,7 @@ class DBManager:
         query = """
         SELECT
             v.title,
-            COALESCE(c.name, 'Неизвестная компания') as company_name,
+            COALESCE(c.name, v.employer, 'Неизвестная компания') as company_name,
             CASE
                 WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
                     CONCAT(v.salary_from, ' - ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
@@ -502,7 +502,7 @@ class DBManager:
         query = """
         SELECT
             v.title,
-            COALESCE(c.name, 'Неизвестная компания') as company_name,
+            COALESCE(c.name, v.employer, 'Неизвестная компания') as company_name,
             CASE
                 WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
                     CONCAT(v.salary_from, ' - ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))

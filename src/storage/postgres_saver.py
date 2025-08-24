@@ -45,7 +45,7 @@ class PostgresSaver:
         """
         if not employer_name:
             return None
-        
+
         lower_name = employer_name.lower()
         for pattern, standardized_name in self.COMPANY_NAME_STANDARDIZATION.items():
             if pattern in lower_name:
@@ -151,7 +151,8 @@ class PostgresSaver:
                 source VARCHAR(50) DEFAULT 'unknown',
                 published_at TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                company_id INTEGER REFERENCES companies(hh_id) -- Добавленная связь с таблицей companies
             );
             """
 
@@ -168,12 +169,26 @@ class PostgresSaver:
                 logger.info("Добавляем поле source в существующую таблицу...")
                 cursor.execute("ALTER TABLE vacancies ADD COLUMN source VARCHAR(50) DEFAULT 'unknown';")
                 logger.info("✓ Поле source добавлено")
+            
+            # Проверяем существование поля company_id и добавляем если его нет
+            cursor.execute("""
+                SELECT column_name 
+                FROM information_schema.columns 
+                WHERE table_name = 'vacancies' AND column_name = 'company_id';
+            """)
+
+            if not cursor.fetchone():
+                logger.info("Добавляем поле company_id в существующую таблицу...")
+                cursor.execute("ALTER TABLE vacancies ADD COLUMN company_id INTEGER REFERENCES companies(hh_id);")
+                logger.info("✓ Поле company_id добавлено")
 
             # Создаем индексы
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_vacancy_id ON vacancies(vacancy_id);")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_title ON vacancies(title);")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_salary ON vacancies(salary_from, salary_to);")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_source ON vacancies(source);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_company_id ON vacancies(company_id);")
+
 
             connection.commit()
             logger.info("✓ Таблицы успешно созданы/проверены")
@@ -222,13 +237,68 @@ class PostgresSaver:
                     employer VARCHAR(500),
                     area VARCHAR(200),
                     source VARCHAR(50),
-                    published_at TIMESTAMP
+                    published_at TIMESTAMP,
+                    company_id INTEGER
                 ) ON COMMIT DROP
             """)
 
-            # Подготавливаем данные для вставки
+            # Получаем соответствие employer -> company_id из таблицы companies
+            company_mapping = {}
+            try:
+                # Ensure companies table exists before querying
+                self._ensure_companies_table_exists()
+                
+                cursor.execute("SELECT hh_id, company_id, name FROM companies")
+                companies = cursor.fetchall()
+
+                for company in companies:
+                    hh_id, company_id, name = company
+                    company_mapping[hh_id] = company_id
+                    company_mapping[name.lower()] = company_id
+
+                    # Добавляем альтернативные названия
+                    alt_names = {
+                        'Яндекс': ['яндекс'],
+                        'Тинькофф': ['т-банк', 'tinkoff', 'тинькофф'],
+                        'Сбер': ['сбербанк', 'сбер', 'sberbank'],
+                        'Wildberries': ['wildberries', 'wb'],
+                        'Ozon': ['ozon'],
+                        'VK': ['vk', 'вконтакте', 'вк'],
+                        'Kaspersky': ['kaspersky', 'лаборатория касперского'],
+                        'Авито': ['авито', 'avito'],
+                        'X5 Retail Group': ['x5', 'x5 retail group'],
+                        'Ростелеком': ['ростелеком', 'rostelecom'], # Removed 'билайн' as it's a different company
+                        'Альфа-Банк': ['альфа-банк', 'alfa-bank'],
+                        'JetBrains': ['jetbrains'],
+                        '2GIS': ['2гис', '2gis'],
+                        'Skyeng': ['skyeng'],
+                        'Delivery Club': ['delivery club']
+                    }
+
+                    if name in alt_names:
+                        for alt_name in alt_names[name]:
+                            company_mapping[alt_name.lower()] = company_id
+
+            except Exception as e:
+                logger.error(f"Ошибка при получении соответствия компаний: {e}")
+
+            # Подготавливаем данные для вставки/обновления
             insert_data = []
-            for vac in vacancies:
+            for vacancy in vacancies:
+                # Определяем company_id на основе employer
+                mapped_company_id = None
+                if vacancy.employer:
+                    employer_lower = vacancy.employer.lower()
+                    # Прямое соответствие
+                    mapped_company_id = company_mapping.get(employer_lower)
+
+                    # Поиск частичного соответствия
+                    if not mapped_company_id:
+                        for alt_name, comp_id in company_mapping.items():
+                            if alt_name in employer_lower or employer_lower in alt_name:
+                                mapped_company_id = comp_id
+                                break
+
                 salary_from = vac.salary.salary_from if vac.salary else None
                 salary_to = vac.salary.salary_to if vac.salary else None
                 salary_currency = vac.salary.currency if vac.salary else None
@@ -239,9 +309,9 @@ class PostgresSaver:
                     raw_employer_name = vac.employer.get('name')
                 elif vac.employer:
                     raw_employer_name = str(vac.employer)
-                
+
                 employer_str = self._standardize_employer_name(raw_employer_name)
-                
+
                 area_str = (
                     vac.area.get('name') if isinstance(vac.area, dict)
                     else str(vac.area) if vac.area else None
@@ -252,7 +322,8 @@ class PostgresSaver:
                     salary_from, salary_to, salary_currency,
                     vac.description, vac.requirements, vac.responsibilities,
                     vac.experience, vac.employment, vac.schedule,
-                    employer_str, area_str, vac.source, vac.published_at
+                    employer_str, area_str, vac.source, vac.published_at,
+                    mapped_company_id # Используем найденный company_id
                 ))
 
             # Bulk insert во временную таблицу
@@ -262,7 +333,7 @@ class PostgresSaver:
                 """INSERT INTO temp_new_vacancies (
                     vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
-                    employment, schedule, employer, area, source, published_at
+                    employment, schedule, employer, area, source, published_at, company_id
                 ) VALUES %s""",
                 insert_data,
                 template=None,
@@ -274,9 +345,12 @@ class PostgresSaver:
                 INSERT INTO vacancies (
                     vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
-                    employment, schedule, employer, area, source, published_at
+                    employment, schedule, employer, area, source, published_at, company_id
                 )
-                SELECT t.* FROM temp_new_vacancies t
+                SELECT t.vacancy_id, t.title, t.url, t.salary_from, t.salary_to, t.salary_currency,
+                       t.description, t.requirements, t.responsibilities, t.experience,
+                       t.employment, t.schedule, t.employer, t.area, t.source, t.published_at, t.company_id
+                FROM temp_new_vacancies t
                 LEFT JOIN vacancies v ON t.vacancy_id = v.vacancy_id
                 WHERE v.vacancy_id IS NULL
             """)
@@ -301,6 +375,7 @@ class PostgresSaver:
                     area = t.area,
                     source = t.source,
                     published_at = t.published_at,
+                    company_id = t.company_id,
                     updated_at = CURRENT_TIMESTAMP
                 FROM temp_new_vacancies t
                 WHERE v.vacancy_id = t.vacancy_id
@@ -310,7 +385,8 @@ class PostgresSaver:
                     v.description != t.description OR
                     COALESCE(v.salary_from, 0) != COALESCE(t.salary_from, 0) OR
                     COALESCE(v.salary_to, 0) != COALESCE(t.salary_to, 0) OR
-                    COALESCE(v.salary_currency, '') != COALESCE(t.salary_currency, '')
+                    COALESCE(v.salary_currency, '') != COALESCE(t.salary_currency, '') OR
+                    v.company_id != t.company_id -- Проверка company_id
                 )
             """)
 
@@ -379,12 +455,53 @@ class PostgresSaver:
         try:
             cursor = connection.cursor(cursor_factory=RealDictCursor)
 
+            # Получаем соответствие employer -> company_id из таблицы companies
+            company_mapping = {}
+            try:
+                # Ensure companies table exists before querying
+                self._ensure_companies_table_exists()
+
+                cursor.execute("SELECT hh_id, company_id, name FROM companies")
+                companies = cursor.fetchall()
+
+                for company in companies:
+                    hh_id, company_id, name = company
+                    company_mapping[hh_id] = company_id
+                    company_mapping[name.lower()] = company_id
+
+                    # Добавляем альтернативные названия
+                    alt_names = {
+                        'Яндекс': ['яндекс'],
+                        'Тинькофф': ['т-банк', 'tinkoff', 'тинькофф'],
+                        'Сбер': ['сбербанк', 'сбер', 'sberbank'],
+                        'Wildberries': ['wildberries', 'wb'],
+                        'Ozon': ['ozon'],
+                        'VK': ['vk', 'вконтакте', 'вк'],
+                        'Kaspersky': ['kaspersky', 'лаборатория касперского'],
+                        'Авито': ['авито', 'avito'],
+                        'X5 Retail Group': ['x5', 'x5 retail group'],
+                        'Ростелеком': ['ростелеком', 'rostelecom'], # Removed 'билайн' as it's a different company
+                        'Альфа-Банк': ['альфа-банк', 'alfa-bank'],
+                        'JetBrains': ['jetbrains'],
+                        '2GIS': ['2гис', '2gis'],
+                        'Skyeng': ['skyeng'],
+                        'Delivery Club': ['delivery club']
+                    }
+
+                    if name in alt_names:
+                        for alt_name in alt_names[name]:
+                            company_mapping[alt_name.lower()] = company_id
+
+            except Exception as e:
+                logger.error(f"Ошибка при получении соответствия компаний: {e}")
+
+
             # Batch проверка существования вакансий
             vacancy_ids = [v.vacancy_id for v in vacancies]
             placeholders = ','.join(['%s'] * len(vacancy_ids))
 
             cursor.execute(
-                f"SELECT vacancy_id, title, url, description, salary_from, salary_to, salary_currency FROM vacancies WHERE vacancy_id IN ({placeholders})",
+                f"SELECT vacancy_id, title, url, description, salary_from, salary_to, salary_currency, company_id FROM vacancies WHERE vacancy_id IN ({placeholders})",
                 vacancy_ids
             )
 
@@ -403,13 +520,28 @@ class PostgresSaver:
                     salary_to = vac.salary.salary_to if vac.salary else None
                     salary_currency = vac.salary.currency if vac.salary else None
 
+                    # Определяем company_id на основе employer
+                    mapped_company_id = None
+                    if vac.employer:
+                        employer_lower = vac.employer.lower()
+                        # Прямое соответствие
+                        mapped_company_id = company_mapping.get(employer_lower)
+
+                        # Поиск частичного соответствия
+                        if not mapped_company_id:
+                            for alt_name, comp_id in company_mapping.items():
+                                if alt_name in employer_lower or employer_lower in alt_name:
+                                    mapped_company_id = comp_id
+                                    break
+                    
                     has_changes = (
                         existing['title'] != vac.title or
                         existing['url'] != vac.url or
                         existing['description'] != vac.description or
                         existing['salary_from'] != salary_from or
                         existing['salary_to'] != salary_to or
-                        existing['salary_currency'] != salary_currency
+                        existing['salary_currency'] != salary_currency or
+                        existing['company_id'] != mapped_company_id # Проверка company_id
                     )
 
                     if has_changes:
@@ -446,14 +578,15 @@ class PostgresSaver:
                         salary_from, salary_to, salary_currency,
                         vac.description, vac.requirements, vac.responsibilities,
                         vac.experience, vac.employment, vac.schedule,
-                        employer_str, area_str, vac.source, vac.published_at
+                        employer_str, area_str, vac.source, vac.published_at,
+                        mapped_company_id # Используем найденный company_id
                     ))
 
                 insert_query = """
                 INSERT INTO vacancies (
                     vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
-                    employment, schedule, employer, area, source, published_at
+                    employment, schedule, employer, area, source, published_at, company_id
                 ) VALUES %s
                 """
 
@@ -487,6 +620,7 @@ class PostgresSaver:
                         salary_currency = %s, description = %s, requirements = %s,
                         responsibilities = %s, experience = %s, employment = %s,
                         schedule = %s, employer = %s, area = %s, source = %s, published_at = %s,
+                        company_id = %s,
                         updated_at = CURRENT_TIMESTAMP
                     WHERE vacancy_id = %s
                     """
@@ -496,7 +630,7 @@ class PostgresSaver:
                         salary_currency, vac.description, vac.requirements,
                         vac.responsibilities, vac.experience, vac.employment,
                         vac.schedule, employer_str, area_str, vac.source,
-                        vac.published_at, vac.vacancy_id
+                        vac.published_at, mapped_company_id, vac.vacancy_id # Применяем company_id
                     ))
 
             connection.commit()
@@ -527,29 +661,34 @@ class PostgresSaver:
             cursor = connection.cursor(cursor_factory=RealDictCursor)
 
             # Строим базовый запрос
-            query = "SELECT * FROM vacancies"
+            query = "SELECT v.*, c.name as company_name FROM vacancies v LEFT JOIN companies c ON v.company_id = c.hh_id" # Join with companies
             params = []
             where_conditions = []
 
             # Добавляем фильтры
             if filters:
                 if filters.get('title'):
-                    where_conditions.append("LOWER(title) LIKE LOWER(%s)")
+                    where_conditions.append("LOWER(v.title) LIKE LOWER(%s)")
                     params.append(f"%{filters['title']}%")
 
                 if filters.get('salary_from'):
-                    where_conditions.append("salary_from >= %s")
+                    where_conditions.append("v.salary_from >= %s")
                     params.append(filters['salary_from'])
 
                 if filters.get('salary_to'):
-                    where_conditions.append("salary_to <= %s")
+                    where_conditions.append("v.salary_to <= %s")
                     params.append(filters['salary_to'])
 
                 if filters.get('employer'): # Filter by standardized employer name
                     standardized_employer = self._standardize_employer_name(filters['employer'])
                     if standardized_employer:
-                        where_conditions.append("LOWER(employer) LIKE LOWER(%s)")
+                        where_conditions.append("LOWER(v.employer) LIKE LOWER(%s)")
                         params.append(f"%{standardized_employer}%")
+                
+                # Filter by company name directly using the join
+                if filters.get('company_name'):
+                    where_conditions.append("LOWER(c.name) LIKE LOWER(%s)")
+                    params.append(f"%{filters['company_name']}%")
 
 
             # Добавляем WHERE если есть условия
@@ -630,6 +769,15 @@ class PostgresSaver:
                 # Для отладки - также сохраняем название компании напрямую
                 if row['employer']:
                     vacancy._employer_name = row['employer']
+                
+                # Set company_id if available
+                if row.get('company_id'):
+                    vacancy.company_id = row['company_id']
+                
+                # Set company name if available from the join
+                if row.get('company_name'):
+                    vacancy.company_name = row['company_name']
+
 
                 vacancies.append(vacancy)
 
@@ -877,6 +1025,12 @@ class PostgresSaver:
                     if standardized_employer:
                         where_conditions.append("LOWER(employer) LIKE LOWER(%s)")
                         params.append(f"%{standardized_employer}%")
+                
+                # Filter by company name directly
+                if filters.get('company_name'):
+                    where_conditions.append("LOWER(company_name) LIKE LOWER(%s)") # Assuming company_name is available via join
+                    params.append(f"%{filters['company_name']}%")
+
 
             if where_conditions:
                 query += " WHERE " + " AND ".join(where_conditions)
@@ -922,7 +1076,7 @@ class PostgresSaver:
                 params.extend([keyword_param, keyword_param, keyword_param])
 
             query = f"""
-            SELECT * FROM vacancies 
+            SELECT v.*, c.name as company_name FROM vacancies v LEFT JOIN companies c ON v.company_id = c.hh_id
             WHERE {' AND '.join(search_conditions)}
             ORDER BY created_at DESC
             """
@@ -980,9 +1134,51 @@ class PostgresSaver:
                     employer VARCHAR(500),
                     area VARCHAR(200),
                     source VARCHAR(50),
-                    published_at TIMESTAMP
+                    published_at TIMESTAMP,
+                    company_id INTEGER
                 ) ON COMMIT DROP
             """)
+
+            # Получаем соответствие employer -> company_id из таблицы companies
+            company_mapping = {}
+            try:
+                # Ensure companies table exists before querying
+                self._ensure_companies_table_exists()
+
+                cursor.execute("SELECT hh_id, company_id, name FROM companies")
+                companies = cursor.fetchall()
+
+                for company in companies:
+                    hh_id, company_id, name = company
+                    company_mapping[hh_id] = company_id
+                    company_mapping[name.lower()] = company_id
+
+                    # Добавляем альтернативные названия
+                    alt_names = {
+                        'Яндекс': ['яндекс'],
+                        'Тинькофф': ['т-банк', 'tinkoff', 'тинькофф'],
+                        'Сбер': ['сбербанк', 'сбер', 'sberbank'],
+                        'Wildberries': ['wildberries', 'wb'],
+                        'Ozon': ['ozon'],
+                        'VK': ['vk', 'вконтакте', 'вк'],
+                        'Kaspersky': ['kaspersky', 'лаборатория касперского'],
+                        'Авито': ['авито', 'avito'],
+                        'X5 Retail Group': ['x5', 'x5 retail group'],
+                        'Ростелеком': ['ростелеком', 'rostelecom'], # Removed 'билайн' as it's a different company
+                        'Альфа-Банк': ['альфа-банк', 'alfa-bank'],
+                        'JetBrains': ['jetbrains'],
+                        '2GIS': ['2гис', '2gis'],
+                        'Skyeng': ['skyeng'],
+                        'Delivery Club': ['delivery club']
+                    }
+
+                    if name in alt_names:
+                        for alt_name in alt_names[name]:
+                            company_mapping[alt_name.lower()] = company_id
+
+            except Exception as e:
+                logger.error(f"Ошибка при получении соответствия компаний: {e}")
+
 
             # Подготавливаем данные для вставки
             insert_data = []
@@ -991,13 +1187,27 @@ class PostgresSaver:
                 salary_to = vac.salary.salary_to if vac.salary else None
                 salary_currency = vac.salary.currency if vac.salary else None
 
+                # Определяем company_id на основе employer
+                mapped_company_id = None
+                if vac.employer:
+                    employer_lower = vac.employer.lower()
+                    # Прямое соответствие
+                    mapped_company_id = company_mapping.get(employer_lower)
+
+                    # Поиск частичного соответствия
+                    if not mapped_company_id:
+                        for alt_name, comp_id in company_mapping.items():
+                            if alt_name in employer_lower or employer_lower in alt_name:
+                                mapped_company_id = comp_id
+                                break
+                
                 # Standardize employer name before storing
                 raw_employer_name = None
                 if isinstance(vac.employer, dict):
                     raw_employer_name = vac.employer.get('name')
                 elif vac.employer:
                     raw_employer_name = str(vac.employer)
-                
+
                 employer_str = self._standardize_employer_name(raw_employer_name)
 
                 area_str = (
@@ -1005,12 +1215,14 @@ class PostgresSaver:
                     else str(vac.area) if vac.area else None
                 )
 
+
                 insert_data.append((
                     vac.vacancy_id, vac.title, vac.url,
                     salary_from, salary_to, salary_currency,
                     vac.description, vac.requirements, vac.responsibilities,
                     vac.experience, vac.employment, vac.schedule,
-                    employer_str, area_str, vac.source, vac.published_at
+                    employer_str, area_str, vac.source, vac.published_at,
+                    mapped_company_id # Используем найденный company_id
                 ))
 
             # Bulk insert во временную таблицу
@@ -1020,7 +1232,7 @@ class PostgresSaver:
                 """INSERT INTO temp_api_vacancies (
                     vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
-                    employment, schedule, employer, area, source, published_at
+                    employment, schedule, employer, area, source, published_at, company_id
                 ) VALUES %s""",
                 insert_data,
                 template=None,
@@ -1089,6 +1301,11 @@ class PostgresSaver:
                 where_conditions.append("LOWER(area) LIKE LOWER(%s)")
                 params.append(f"%{filters['area']}%")
 
+            # Фильтр по company_id
+            if filters.get('company_id'):
+                where_conditions.append("company_id = %s")
+                params.append(filters['company_id'])
+
             # Исключение уже существующих вакансий (опционально)
             if filters.get('exclude_existing', False):
                 where_conditions.append("""
@@ -1124,6 +1341,8 @@ class PostgresSaver:
                     # Находим оригинальную вакансию из списка по ID
                     original_vacancy = next((v for v in vacancies if v.vacancy_id == row['vacancy_id']), None)
                     if original_vacancy:
+                        # Update company_id in the original vacancy object
+                        original_vacancy.company_id = row['company_id']
                         filtered_vacancies.append(original_vacancy)
                 except Exception as e:
                     logger.error(f"Ошибка при восстановлении вакансии {row['vacancy_id']}: {e}")
@@ -1173,6 +1392,10 @@ class PostgresSaver:
             if standardized_employer:
                 conditions.append("LOWER(employer) LIKE LOWER(%s)")
                 params.append(f"%{standardized_employer}%")
+        
+        if filters.get('company_id'): # Filter by company_id
+            conditions.append("company_id = %s")
+            params.append(filters['company_id'])
 
         if filters.get('experience'):
             conditions.append("LOWER(experience) LIKE LOWER(%s)")
@@ -1183,3 +1406,45 @@ class PostgresSaver:
             params.append(f"%{filters['employment']}%")
 
         return {'conditions': conditions, 'params': params}
+
+    def _ensure_companies_table_exists(self):
+        """Создает таблицу companies если она не существует"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+
+            create_table_query = """
+            CREATE TABLE IF NOT EXISTS companies (
+                hh_id INTEGER PRIMARY KEY,
+                company_id VARCHAR(255) UNIQUE NOT NULL,
+                name VARCHAR(255) NOT NULL,
+                description TEXT,
+                url TEXT,
+                logo_url TEXT,
+                site_url TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """
+            cursor.execute(create_table_query)
+            
+            # Add index for company_id if it doesn't exist
+            cursor.execute("""
+                SELECT COUNT(*) 
+                FROM pg_indexes 
+                WHERE tablename = 'companies' AND indexname = 'idx_companies_company_id';
+            """)
+            if cursor.fetchone()[0] == 0:
+                cursor.execute("CREATE INDEX idx_companies_company_id ON companies(company_id);")
+
+            connection.commit()
+            logger.info("✓ Таблица 'companies' успешно создана/проверена")
+
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка создания таблицы 'companies': {e}")
+            connection.rollback()
+            raise
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
