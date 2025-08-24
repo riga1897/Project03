@@ -344,35 +344,21 @@ class DBManager:
                         vacancy_obj = type('Vacancy', (object,), row)() # Создаем объект из словаря
                         vacancies.append(vacancy_obj)
 
-                    for i, vacancy in enumerate(vacancies[:10], 1):
-                        salary_str = vacancy.salary.get_display_string() if vacancy.salary else "Не указана"
+                    # Выводим результаты
+                    for i, row in enumerate(results[:10], 1):
+                        title = row['title'][:25] if row['title'] else "Без названия"
+                        company_name = row['company_name'][:20] if row['company_name'] else "Неизвестная компания"
+                        salary_str = row['salary_info'][:15] if row['salary_info'] else "Не указана"
+                        
+                        print(f"{i:<4}{title:<26}{company_name:<21}{salary_str:<15}")
 
-                        # Правильно получаем название компании из поля employer или area
-                        company_name = 'Неизвестная компания'
-                        if hasattr(vacancy, 'employer') and vacancy.employer:
-                            if isinstance(vacancy.employer, dict):
-                                company_name = vacancy.employer.get('name', 'Неизвестная компания')
-                            else:
-                                company_name = str(vacancy.employer)
-                        elif hasattr(vacancy, 'area') and vacancy.area:
-                            # Если employer пустой, пробуем получить из базы данных напрямую
-                            try:
-                                with self._get_connection() as conn:
-                                    with conn.cursor() as cursor:
-                                        cursor.execute("SELECT employer FROM vacancies WHERE vacancy_id = %s", (vacancy.vacancy_id,))
-                                        result = cursor.fetchone()
-                                        if result and result[0]:
-                                            company_name = result[0]
-                            except:
-                                pass
+                    if len(results) > 10:
+                        print(f"... и еще {len(results) - 10} вакансий")
 
-                        print(f"{i:<4}{vacancy.title[:25]:<26}{company_name[:20]:<21}{salary_str:<15}")
-
-                    if len(vacancies) > 10:
-                        print(f"... и еще {len(vacancies) - 10} вакансий")
-
-                    print(f"\nВсего вакансий: {len(vacancies)}")
-                    return vacancies
+                    print(f"\nВсего вакансий: {len(results)}")
+                    
+                    # Возвращаем список словарей вместо объектов Vacancy
+                    return [dict(row) for row in results]
 
         except Exception as e:
             logger.error(f"Ошибка при получении всех вакансий: {e}")
@@ -477,36 +463,21 @@ class DBManager:
                         vacancy_obj = type('Vacancy', (object,), row)() # Создаем объект из словаря
                         high_salary_vacancies.append(vacancy_obj)
 
-                    for i, vacancy in enumerate(high_salary_vacancies[:10], 1):
-                        salary_str = vacancy.salary.get_display_string() if vacancy.salary else "Не указана"
+                    # Выводим результаты
+                    for i, row in enumerate(results[:10], 1):
+                        title = row['title'][:25] if row['title'] else "Без названия"
+                        company_name = row['company_name'][:20] if row['company_name'] else "Неизвестная компания"
+                        salary_str = row['salary_info'][:15] if row['salary_info'] else "Не указана"
+                        
+                        print(f"{i:<4}{title:<26}{company_name:<21}{salary_str:<15}")
 
-                        # Правильно получаем название компании из поля employer
-                        company_name = 'Неизвестная компания'
-                        if hasattr(vacancy, 'employer') and vacancy.employer:
-                            if isinstance(vacancy.employer, dict):
-                                company_name = vacancy.employer.get('name', 'Неизвестная компания')
-                            else:
-                                company_name = str(vacancy.employer)
+                    if len(results) > 10:
+                        print(f"... и еще {len(results) - 10} вакансий")
 
-                        # Если employer пустой, получаем из базы данных напрямую
-                        if company_name == 'Неизвестная компания':
-                            try:
-                                with self._get_connection() as conn:
-                                    with conn.cursor() as cursor:
-                                        cursor.execute("SELECT employer FROM vacancies WHERE vacancy_id = %s", (vacancy.vacancy_id,))
-                                        result = cursor.fetchone()
-                                        if result and result[0]:
-                                            company_name = result[0]
-                            except:
-                                pass
-
-                        print(f"{i:<4}{vacancy.title[:25]:<26}{company_name[:20]:<21}{salary_str:<15}")
-
-                    if len(high_salary_vacancies) > 10:
-                        print(f"... и еще {len(high_salary_vacancies) - 10} вакансий")
-
-                    print(f"\nВсего вакансий с высокой зарплатой: {len(high_salary_vacancies)}")
-                    return high_salary_vacancies
+                    print(f"\nВсего вакансий с высокой зарплатой: {len(results)}")
+                    
+                    # Возвращаем список словарей вместо объектов Vacancy
+                    return [dict(row) for row in results]
 
         except psycopg2.Error as e:
             logger.error(f"Ошибка при выполнении SQL-запроса для получения вакансий с высокой зарплатой: {e}")
@@ -563,33 +534,18 @@ class DBManager:
                         vacancy_obj = type('Vacancy', (object,), row)() # Создаем объект из словаря
                         found_vacancies.append(vacancy_obj)
                     
-                    for i, vacancy in enumerate(found_vacancies[:5], 1):
-                        # Правильно получаем название компании из поля employer
-                        company_name = 'Неизвестная компания'
-                        if hasattr(vacancy, 'employer') and vacancy.employer:
-                            if isinstance(vacancy.employer, dict):
-                                company_name = vacancy.employer.get('name', 'Неизвестная компания')
-                            else:
-                                company_name = str(vacancy.employer)
+                    # Выводим результаты
+                    for i, row in enumerate(results[:5], 1):
+                        title = row['title'][:30] if row['title'] else "Без названия"
+                        company_name = row['company_name'] if row['company_name'] else "Неизвестная компания"
+                        
+                        print(f"  {i}. {title} - {company_name}")
 
-                        # Если employer пустой, получаем из базы данных напрямую
-                        if company_name == 'Неизвестная компания':
-                            try:
-                                with self._get_connection() as conn:
-                                    with conn.cursor() as cursor:
-                                        cursor.execute("SELECT employer FROM vacancies WHERE vacancy_id = %s", (vacancy.vacancy_id,))
-                                        result = cursor.fetchone()
-                                        if result and result[0]:
-                                            company_name = result[0]
-                            except:
-                                pass
+                    if len(results) > 5:
+                        print(f"  ... и еще {len(results) - 5} вакансий")
 
-                        print(f"  {i}. {vacancy.title[:30]} - {company_name}")
-
-                    if len(found_vacancies) > 5:
-                        print(f"  ... и еще {len(found_vacancies) - 5} вакансий")
-
-                    return found_vacancies
+                    # Возвращаем список словарей вместо объектов Vacancy
+                    return [dict(row) for row in results]
 
         except psycopg2.Error as e:
             logger.error(f"Ошибка при выполнении SQL-запроса для поиска вакансий по ключевому слову '{keyword}': {e}")
