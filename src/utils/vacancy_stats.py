@@ -92,15 +92,27 @@ class VacancyStats:
             print("Не удалось извлечь информацию о компаниях")
             return
             
+        VacancyStats._display_company_distribution(company_stats, len(vacancies), source_name)
+    
+    @staticmethod
+    def _display_company_distribution(company_stats: Dict[str, int], total_vacancies: int, source_name: str = ""):
+        """
+        Отобразить распределение компаний
+        
+        Args:
+            company_stats: Словарь с распределением компаний
+            total_vacancies: Общее количество вакансий
+            source_name: Название источника для заголовка
+        """
         print(f"\n📊 Распределение вакансий по компаниям{' (' + source_name + ')' if source_name else ''}:")
-        print(f"Всего найдено {len(vacancies)} вакансий от {len(company_stats)} компаний")
+        print(f"Всего найдено {total_vacancies} вакансий от {len(company_stats)} компаний")
         print("-" * 60)
         
         # Сортируем по количеству вакансий (убывание)
         sorted_companies = sorted(company_stats.items(), key=lambda x: x[1], reverse=True)
         
         for company, count in sorted_companies:
-            percentage = (count / len(vacancies)) * 100
+            percentage = (count / total_vacancies) * 100
             print(f"  {company}: {count} вакансий ({percentage:.1f}%)")
         
         print("-" * 60)
@@ -130,14 +142,28 @@ class VacancyStats:
         print(f"SuperJob: {total_sj} вакансий ({(total_sj/total_all)*100:.1f}%)")
         print(f"Всего: {total_all} вакансий")
         
-        # Показываем статистику по каждому источнику отдельно
+        # Получаем распределения компаний для каждого источника
+        hh_companies = {}
+        sj_companies = {}
+        
         if hh_vacancies:
+            hh_companies = VacancyStats.get_company_distribution(hh_vacancies)
             VacancyStats.display_company_stats(hh_vacancies, "HH.ru")
             
         if sj_vacancies:
+            sj_companies = VacancyStats.get_company_distribution(sj_vacancies)
             VacancyStats.display_company_stats(sj_vacancies, "SuperJob")
-            
-        # Объединенная статистика по компаниям
+        
+        # Объединенная статистика - суммируем уже полученные распределения
         if total_all > 0:
-            all_vacancies = hh_vacancies + sj_vacancies
-            VacancyStats.display_company_stats(all_vacancies, "Все источники")
+            combined_companies = defaultdict(int)
+            
+            # Суммируем данные из обоих источников
+            for company, count in hh_companies.items():
+                combined_companies[company] += count
+                
+            for company, count in sj_companies.items():
+                combined_companies[company] += count
+            
+            # Отображаем объединенную статистику
+            VacancyStats._display_company_distribution(dict(combined_companies), total_all, "Все источники")
