@@ -223,29 +223,6 @@ class VacancySearchHandler:
             "new_vacancies": new_vacancies,
             "duplicate_count": len(duplicates),
             "new_count": len(new_vacancies)
-        }акансиях.
-        """
-        from tqdm import tqdm
-
-        existing_vacancies = []
-        new_vacancies = []
-        total_count = len(vacancies)
-
-        print("Проверка существующих вакансий в базе данных...")
-        with tqdm(total=total_count, desc="Проверка дубликатов", unit="вакансия") as pbar:
-            for vacancy in vacancies:
-                if self.json_saver.is_vacancy_exists(vacancy):
-                    existing_vacancies.append(vacancy)
-                else:
-                    new_vacancies.append(vacancy)
-                pbar.update(1)
-
-        return {
-            "existing_count": len(existing_vacancies),
-            "new_count": len(new_vacancies),
-            "existing_vacancies": existing_vacancies,
-            "new_vacancies": new_vacancies,
-            "total_count": total_count,
         }
 
     @staticmethod
@@ -257,17 +234,17 @@ class VacancySearchHandler:
             duplicate_info: Словарь с информацией о дубликатах.
         """
         total_count = duplicate_info["total_count"]
-        existing_count = duplicate_info["existing_count"]
+        duplicate_count = duplicate_info["duplicate_count"]
         new_count = duplicate_info["new_count"]
 
         if total_count == 0:
             print("Не найдено ни одной вакансии.")
             return
 
-        if existing_count == total_count:
+        if duplicate_count == total_count:
             print(f"Все {total_count} вакансий уже существуют в базе данных.")
-        elif existing_count > 0:
-            print(f"{existing_count} вакансий из {total_count} уже есть в базе данных.")
+        elif duplicate_count > 0:
+            print(f"{duplicate_count} вакансий из {total_count} уже есть в базе данных.")
             print(f"Можно сохранить {new_count} новых вакансий.")
         else:
             print(f"Все {total_count} вакансий - новые.")
