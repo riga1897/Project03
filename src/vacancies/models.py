@@ -178,7 +178,7 @@ class Vacancy(AbstractVacancy):
             # Обработка зарплаты (универсальная для всех источников)
             salary = data.get("salary")
 
-            # Обработка работодателя
+            # Обработка работодателя - сохраняем исходную структуру
             employer = data.get("employer")
             if not employer and data.get("firm_name"):
                 employer = {"name": data.get("firm_name")}
@@ -242,16 +242,6 @@ class Vacancy(AbstractVacancy):
                 elif "name" in data and "snippet" in data:
                     source = "hh.ru"
 
-            # Безопасная обработка компании
-            company = data.get("company")
-            if isinstance(company, dict):
-                # Если company - словарь, извлекаем имя компании
-                company = company.get("name", "") if company else ""
-            elif company is None:
-                company = ""
-            else:
-                company = str(company)
-
             return cls(
                 vacancy_id=vacancy_id,
                 title=title,
@@ -260,7 +250,7 @@ class Vacancy(AbstractVacancy):
                 description=description,
                 requirements=requirements,
                 responsibilities=responsibilities,
-                employer=company, # Используем обработанное значение company
+                employer=employer,  # Используем исходную структуру employer
                 experience=experience,
                 employment=employment,
                 schedule=data.get("schedule", {}).get("name") if isinstance(data.get("schedule"), dict) else None,
