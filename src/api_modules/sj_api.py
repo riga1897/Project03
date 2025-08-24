@@ -226,72 +226,86 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
     def get_vacancies_from_target_companies(self, search_query: str = "", **kwargs) -> List[Dict]:
         """
         Получение вакансий от целевых компаний SuperJob
-        
+
         Поскольку SuperJob API не поддерживает прямую фильтрацию по компаниям,
         выполняется пост-фильтрация результатов по названиям целевых компаний.
-        
+
         Args:
             search_query: Поисковый запрос (опционально)
             **kwargs: Дополнительные параметры для API
-            
+
         Returns:
             List[Dict]: Список вакансий от целевых компаний
         """
         try:
             # Импортируем список целевых компаний
             from src.config.target_companies import get_target_company_names
-            
+
             target_company_names = get_target_company_names()
             target_names_lower = [name.lower() for name in target_company_names]
-            
+
             logger.info(f"Поиск вакансий от {len(target_company_names)} целевых компаний в SuperJob")
-            
+
             # Получаем все вакансии по запросу
             all_vacancies = self.get_vacancies_with_deduplication(search_query, **kwargs)
-            
+
             if not all_vacancies:
                 logger.info("Вакансии не найдены")
                 return []
-            
+
             # Фильтруем вакансии по целевым компаниям
             target_vacancies = []
-            
+
             print(f"Фильтрация {len(all_vacancies)} вакансий SuperJob по целевым компаниям...")
-            
+
             from tqdm import tqdm
             with tqdm(total=len(all_vacancies), desc="Фильтрация по компаниям", unit="вакансия") as pbar:
                 for vacancy in all_vacancies:
                     firm_name = vacancy.get("firm_name", "").lower().strip()
-                    
+
                     # Проверяем точное совпадение или вхождение названия
                     is_target_company = any(
                         target_name in firm_name or firm_name in target_name 
                         for target_name in target_names_lower
                     )
-                    
+
                     if is_target_company:
                         target_vacancies.append(vacancy)
                         logger.debug(f"Найдена вакансия от целевой компании: {firm_name}")
-                    
+
                     pbar.update(1)
-            
+
             logger.info(f"Найдено {len(target_vacancies)} вакансий от целевых компаний из {len(all_vacancies)} общих")
-            
+
             if target_vacancies:
                 print(f"Найдено {len(target_vacancies)} вакансий от целевых компаний")
-                
+
                 # Выводим статистику по компаниям
                 company_stats = {}
                 for vacancy in target_vacancies:
                     company = vacancy.get("firm_name", "Неизвестная компания")
                     company_stats[company] = company_stats.get(company, 0) + 1
-                
+
                 print("\nРаспределение по компаниям:")
                 for company, count in sorted(company_stats.items(), key=lambda x: x[1], reverse=True):
                     print(f"  {company}: {count} вакансий")
-            
-            return target_vacancies
-            
+
+            # Применяем SQL-фильтрацию для целевых компаний если указано в конфигурации
+            if hasattr(self.config, 'filter_by_target_companies') and self.config.filter_by_target_companies:
+                try:
+                    from src.utils.api_data_filter import APIDataFilter
+                    api_filter = APIDataFilter()
+                    vacancies = api_filter.filter_vacancies_by_target_companies(target_vacancies)
+                    logger.debug(f"После SQL-фильтрации по целевым компаниям осталось {len(vacancies)} вакансий")
+                except Exception as e:
+                    logger.error(f"Ошибка SQL-фильтрации по целевым компаниям: {e}")
+                    vacancies = target_vacancies # Возвращаем отфильтрованные вручную вакансии в случае ошибки
+
+            else:
+                vacancies = target_vacancies
+
+            return vacancies
+
         except Exception as e:
             logger.error(f"Ошибка получения вакансий от целевых компаний SuperJob: {e}")
             return []

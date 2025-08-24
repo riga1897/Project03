@@ -338,3 +338,191 @@ class DBManager:
         except psycopg2.Error as e:
             logger.error(f"Ошибка подключения к БД: {e}")
             return False
+
+    def filter_companies_by_targets(self, api_companies: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        Фильтрует компании из API по целевым компаниям используя SQL-запрос
+        
+        Args:
+            api_companies: Список компаний из API
+            
+        Returns:
+            List[Dict[str, Any]]: Отфильтрованный список целевых компаний
+        """
+        from src.config.target_companies import TARGET_COMPANIES
+        
+        if not api_companies:
+            return []
+        
+        # Создаем список названий целевых компаний для SQL-поиска
+        target_company_names = [company['name'].lower() for company in TARGET_COMPANIES]
+        
+        try:
+            with self._get_connection() as conn:
+                with conn.cursor() as cursor:
+                    # Создаем временную таблицу для компаний из API
+                    cursor.execute("""
+                        CREATE TEMP TABLE temp_api_companies (
+                            company_id VARCHAR(50),
+                            company_name VARCHAR(500)
+                        ) ON COMMIT DROP
+                    """)
+                    
+                    # Вставляем данные о компаниях из API
+                    api_data = [(str(comp.get('id', '')), comp.get('name', '')) for comp in api_companies]
+                    from psycopg2.extras import execute_values
+                    execute_values(
+                        cursor,
+                        "INSERT INTO temp_api_companies (company_id, company_name) VALUES %s",
+                        api_data,
+                        template=None,
+                        page_size=1000
+                    )
+                    
+                    # SQL-запрос для поиска целевых компаний
+                    placeholders = ','.join(['%s'] * len(target_company_names))
+                    query = f"""
+                    SELECT company_id, company_name 
+                    FROM temp_api_companies 
+                    WHERE LOWER(company_name) IN ({placeholders})
+                    OR """ + " OR ".join([
+                        "LOWER(company_name) LIKE %s" for _ in target_company_names
+                    ])
+                    
+                    # Параметры: точные совпадения + LIKE поиск
+                    params = target_company_names + [f"%{name}%" for name in target_company_names]
+                    
+                    cursor.execute(query, params)
+                    results = cursor.fetchall()
+                    
+                    # Возвращаем найденные компании из исходного списка
+                    found_ids = {row[0] for row in results}
+                    return [comp for comp in api_companies if str(comp.get('id', '')) in found_ids]
+                    
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка SQL-фильтрации компаний: {e}")
+            return api_companies
+
+    def analyze_api_data_with_sql(self, api_data: List[Dict[str, Any]], analysis_type: str = 'vacancy_stats') -> Dict[str, Any]:
+        """
+        Анализирует данные из API используя SQL-запросы для получения статистики
+        
+        Args:
+            api_data: Данные из API для анализа
+            analysis_type: Тип анализа ('vacancy_stats', 'salary_analysis', 'company_analysis')
+            
+        Returns:
+            Dict[str, Any]: Результаты анализа
+        """
+        if not api_data:
+            return {}
+        
+        try:
+            with self._get_connection() as conn:
+                with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                    # Создаем временную таблицу для данных из API
+                    cursor.execute("""
+                        CREATE TEMP TABLE temp_api_analysis (
+                            item_id VARCHAR(50),
+                            title VARCHAR(500),
+                            salary_from INTEGER,
+                            salary_to INTEGER,
+                            salary_currency VARCHAR(10),
+                            employer VARCHAR(500),
+                            area VARCHAR(200),
+                            experience VARCHAR(200),
+                            employment VARCHAR(200)
+                        ) ON COMMIT DROP
+                    """)
+                    
+                    # Подготавливаем данные для анализа
+                    analysis_data = []
+                    for item in api_data:
+                        salary = item.get('salary', {}) or {}
+                        analysis_data.append((
+                            str(item.get('id', '')),
+                            item.get('name', ''),
+                            salary.get('from'),
+                            salary.get('to'),
+                            salary.get('currency'),
+                            str(item.get('employer', {}).get('name', '') if item.get('employer') else ''),
+                            str(item.get('area', {}).get('name', '') if item.get('area') else ''),
+                            item.get('experience', {}).get('name', '') if isinstance(item.get('experience'), dict) else str(item.get('experience', '')),
+                            item.get('employment', {}).get('name', '') if isinstance(item.get('employment'), dict) else str(item.get('employment', ''))
+                        ))
+                    
+                    from psycopg2.extras import execute_values
+                    execute_values(
+                        cursor,
+                        """INSERT INTO temp_api_analysis (
+                            item_id, title, salary_from, salary_to, salary_currency,
+                            employer, area, experience, employment
+                        ) VALUES %s""",
+                        analysis_data,
+                        template=None,
+                        page_size=1000
+                    )
+                    
+                    results = {}
+                    
+                    if analysis_type == 'vacancy_stats':
+                        # Статистика по вакансиям
+                        cursor.execute("""
+                            SELECT 
+                                COUNT(*) as total_vacancies,
+                                COUNT(DISTINCT employer) as unique_employers,
+                                COUNT(CASE WHEN salary_from IS NOT NULL OR salary_to IS NOT NULL THEN 1 END) as vacancies_with_salary,
+                                AVG(CASE 
+                                    WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN (salary_from + salary_to) / 2
+                                    WHEN salary_from IS NOT NULL THEN salary_from
+                                    WHEN salary_to IS NOT NULL THEN salary_to
+                                END) as avg_salary
+                            FROM temp_api_analysis
+                            WHERE salary_currency IN ('RUR', 'RUB', 'руб.', NULL) OR salary_currency IS NULL
+                        """)
+                        
+                        stats = cursor.fetchone()
+                        results.update(dict(stats))
+                        
+                        # Топ работодателей
+                        cursor.execute("""
+                            SELECT employer, COUNT(*) as vacancy_count
+                            FROM temp_api_analysis 
+                            WHERE employer IS NOT NULL AND employer != ''
+                            GROUP BY employer
+                            ORDER BY vacancy_count DESC
+                            LIMIT 10
+                        """)
+                        results['top_employers'] = [dict(row) for row in cursor.fetchall()]
+                        
+                    elif analysis_type == 'salary_analysis':
+                        # Анализ зарплат
+                        cursor.execute("""
+                            SELECT 
+                                MIN(CASE 
+                                    WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN (salary_from + salary_to) / 2
+                                    WHEN salary_from IS NOT NULL THEN salary_from
+                                    WHEN salary_to IS NOT NULL THEN salary_to
+                                END) as min_salary,
+                                MAX(CASE 
+                                    WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN (salary_from + salary_to) / 2
+                                    WHEN salary_from IS NOT NULL THEN salary_from
+                                    WHEN salary_to IS NOT NULL THEN salary_to
+                                END) as max_salary,
+                                AVG(CASE 
+                                    WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN (salary_from + salary_to) / 2
+                                    WHEN salary_from IS NOT NULL THEN salary_from
+                                    WHEN salary_to IS NOT NULL THEN salary_to
+                                END) as avg_salary,
+                                COUNT(CASE WHEN salary_from IS NOT NULL OR salary_to IS NOT NULL THEN 1 END) as count_with_salary
+                            FROM temp_api_analysis
+                            WHERE salary_currency IN ('RUR', 'RUB', 'руб.', NULL) OR salary_currency IS NULL
+                        """)
+                        
+                        results.update(dict(cursor.fetchone()))
+                    
+                    return results
+                    
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка SQL-анализа данных API: {e}")
+            return {}

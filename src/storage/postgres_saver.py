@@ -886,6 +886,197 @@ class PostgresSaver:
                 cursor.close()
             connection.close()
 
+    def filter_api_vacancies_via_temp_table(self, vacancies: List[Vacancy], filters: Dict[str, Any]) -> List[Vacancy]:
+        """
+        Фильтрация вакансий из API через временную таблицу средствами SQL
+        
+        Args:
+            vacancies: Список вакансий из API для фильтрации
+            filters: Словарь с фильтрами (salary_from, salary_to, keywords, employers, etc.)
+            
+        Returns:
+            List[Vacancy]: Отфильтрованный список вакансий
+        """
+        if not vacancies:
+            return []
+
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor(cursor_factory=RealDictCursor)
+
+            # Создаем временную таблицу для вакансий из API
+            cursor.execute("""
+                CREATE TEMP TABLE temp_api_vacancies (
+                    vacancy_id VARCHAR(50),
+                    title VARCHAR(500),
+                    url TEXT,
+                    salary_from INTEGER,
+                    salary_to INTEGER,
+                    salary_currency VARCHAR(10),
+                    description TEXT,
+                    requirements TEXT,
+                    responsibilities TEXT,
+                    experience VARCHAR(200),
+                    employment VARCHAR(200),
+                    schedule VARCHAR(200),
+                    employer VARCHAR(500),
+                    area VARCHAR(200),
+                    source VARCHAR(50),
+                    published_at TIMESTAMP
+                ) ON COMMIT DROP
+            """)
+
+            # Подготавливаем данные для вставки
+            insert_data = []
+            for vac in vacancies:
+                salary_from = vac.salary.salary_from if vac.salary else None
+                salary_to = vac.salary.salary_to if vac.salary else None
+                salary_currency = vac.salary.currency if vac.salary else None
+
+                employer_str = (
+                    vac.employer.get('name') if isinstance(vac.employer, dict) 
+                    else str(vac.employer) if vac.employer else None
+                )
+                area_str = (
+                    vac.area.get('name') if isinstance(vac.area, dict)
+                    else str(vac.area) if vac.area else None
+                )
+
+                insert_data.append((
+                    vac.vacancy_id, vac.title, vac.url,
+                    salary_from, salary_to, salary_currency,
+                    vac.description, vac.requirements, vac.responsibilities,
+                    vac.experience, vac.employment, vac.schedule,
+                    employer_str, area_str, vac.source, vac.published_at
+                ))
+
+            # Bulk insert во временную таблицу
+            from psycopg2.extras import execute_values
+            execute_values(
+                cursor,
+                """INSERT INTO temp_api_vacancies (
+                    vacancy_id, title, url, salary_from, salary_to, salary_currency,
+                    description, requirements, responsibilities, experience,
+                    employment, schedule, employer, area, source, published_at
+                ) VALUES %s""",
+                insert_data,
+                template=None,
+                page_size=1000
+            )
+
+            # Строим SQL-запрос с фильтрами
+            where_conditions = []
+            params = []
+
+            # Фильтр по зарплате от
+            if filters.get('salary_from'):
+                where_conditions.append("(salary_from >= %s OR salary_to >= %s)")
+                params.extend([filters['salary_from'], filters['salary_from']])
+
+            # Фильтр по зарплате до
+            if filters.get('salary_to'):
+                where_conditions.append("(salary_from <= %s OR salary_to <= %s)")
+                params.extend([filters['salary_to'], filters['salary_to']])
+
+            # Фильтр по ключевым словам в названии/описании
+            if filters.get('keywords'):
+                keywords = filters['keywords'] if isinstance(filters['keywords'], list) else [filters['keywords']]
+                keyword_conditions = []
+                for keyword in keywords:
+                    keyword_conditions.append(
+                        "(LOWER(title) LIKE LOWER(%s) OR LOWER(description) LIKE LOWER(%s) OR LOWER(requirements) LIKE LOWER(%s))"
+                    )
+                    keyword_param = f"%{keyword}%"
+                    params.extend([keyword_param, keyword_param, keyword_param])
+                
+                if keyword_conditions:
+                    where_conditions.append(f"({' OR '.join(keyword_conditions)})")
+
+            # Фильтр по работодателям (целевые компании)
+            if filters.get('target_employers'):
+                employers = filters['target_employers']
+                employer_conditions = []
+                for employer in employers:
+                    employer_conditions.append("LOWER(employer) LIKE LOWER(%s)")
+                    params.append(f"%{employer}%")
+                
+                if employer_conditions:
+                    where_conditions.append(f"({' OR '.join(employer_conditions)})")
+
+            # Фильтр по опыту работы
+            if filters.get('experience'):
+                where_conditions.append("LOWER(experience) LIKE LOWER(%s)")
+                params.append(f"%{filters['experience']}%")
+
+            # Фильтр по типу занятости
+            if filters.get('employment'):
+                where_conditions.append("LOWER(employment) LIKE LOWER(%s)")
+                params.append(f"%{filters['employment']}%")
+
+            # Фильтр по графику работы
+            if filters.get('schedule'):
+                where_conditions.append("LOWER(schedule) LIKE LOWER(%s)")
+                params.append(f"%{filters['schedule']}%")
+
+            # Фильтр по региону
+            if filters.get('area'):
+                where_conditions.append("LOWER(area) LIKE LOWER(%s)")
+                params.append(f"%{filters['area']}%")
+
+            # Исключение уже существующих вакансий (опционально)
+            if filters.get('exclude_existing', False):
+                where_conditions.append("""
+                    NOT EXISTS (
+                        SELECT 1 FROM vacancies_storage v 
+                        WHERE v.vacancy_id = temp_api_vacancies.vacancy_id
+                    )
+                """)
+
+            # Формируем итоговый запрос
+            query = "SELECT * FROM temp_api_vacancies"
+            if where_conditions:
+                query += " WHERE " + " AND ".join(where_conditions)
+            
+            # Добавляем сортировку
+            if filters.get('sort_by_salary', False):
+                query += " ORDER BY COALESCE(salary_from, salary_to, 0) DESC"
+            else:
+                query += " ORDER BY published_at DESC"
+
+            # Ограничение количества результатов
+            if filters.get('limit'):
+                query += " LIMIT %s"
+                params.append(filters['limit'])
+
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+
+            # Конвертируем результаты обратно в объекты Vacancy
+            filtered_vacancies = []
+            for row in results:
+                try:
+                    # Находим оригинальную вакансию из списка по ID
+                    original_vacancy = next((v for v in vacancies if v.vacancy_id == row['vacancy_id']), None)
+                    if original_vacancy:
+                        filtered_vacancies.append(original_vacancy)
+                except Exception as e:
+                    logger.error(f"Ошибка при восстановлении вакансии {row['vacancy_id']}: {e}")
+                    continue
+
+            connection.commit()
+            logger.info(f"SQL-фильтрация через временную таблицу: отобрано {len(filtered_vacancies)} из {len(vacancies)} вакансий")
+            
+            return filtered_vacancies
+
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка SQL-фильтрации через временную таблицу: {e}")
+            connection.rollback()
+            return vacancies  # Возвращаем исходный список при ошибке
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
+
     @property
     def filename(self) -> str:
         """Возвращает информацию о БД (для совместимости)"""

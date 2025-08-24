@@ -10,6 +10,13 @@ class SJAPIConfig:
     published: int = 15  # Период публикации в днях (по умолчанию 15 дней)
     custom_params: Dict[str, Any] = None
 
+    # Дополнительные настройки
+    per_page = 100
+    max_total_pages = 20
+
+    # Настройка фильтрации данных через SQL
+    filter_by_target_companies = True  # Фильтровать по целевым компаниям через SQL
+
     def get_params(self, **kwargs) -> Dict[str, Any]:
         """Генерация параметров запроса с учетом переопределений"""
         params = {
