@@ -179,9 +179,35 @@ class DBManager:
             logger.error(f"Ошибка при создании таблицы vacancies_storage: {e}")
             raise
 
+    def get_target_companies_analysis(self) -> List[Tuple[str, int]]:
+        """
+        Получает анализ ТОЛЬКО по целевым компаниям
+        Этот метод специально предназначен для демонстрации п.10
+        
+        Returns:
+            List[Tuple[str, int]]: Список кортежей (название_целевой_компании, количество_вакансий)
+        """
+        from src.config.target_companies import TARGET_COMPANIES
+        
+        try:
+            # Сначала получаем все данные
+            all_data = self.get_companies_and_vacancies_count()
+            
+            # Если нет данных, возвращаем все целевые компании с нулями
+            if not all_data:
+                return [(company['name'], 0) for company in TARGET_COMPANIES]
+            
+            return all_data  # Метод уже возвращает данные по целевым компаниям
+            
+        except Exception as e:
+            logger.error(f"Ошибка при анализе целевых компаний: {e}")
+            # В случае ошибки возвращаем все целевые компании с нулями
+            return [(company['name'], 0) for company in TARGET_COMPANIES]
+
     def get_companies_and_vacancies_count(self) -> List[Tuple[str, int]]:
         """
         Получает список всех компаний и количество вакансий у каждой компании
+        ВАЖНО: Метод фильтрует результаты по целевым компаниям из конфигурации
 
         Returns:
             List[Tuple[str, int]]: Список кортежей (название_компании, количество_вакансий)
