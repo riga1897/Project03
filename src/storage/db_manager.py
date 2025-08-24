@@ -183,9 +183,12 @@ class DBManager:
         Returns:
             List[Tuple[str, int]]: Список кортежей (название_компании, количество_вакансий)
         """
+        from src.config.target_companies import TARGET_COMPANIES
+        
         try:
             with self._get_connection() as conn:
                 with conn.cursor() as cursor:
+                    # Сначала пробуем основной запрос с JOIN
                     query = """
                     SELECT 
                         c.name as company_name,
@@ -198,11 +201,60 @@ class DBManager:
 
                     cursor.execute(query)
                     results = cursor.fetchall()
-                    return results
+                    
+                    # Если есть результаты с вакансиями, возвращаем их
+                    if any(count > 0 for _, count in results):
+                        return results
+                    
+                    # Если нет связанных данных, работаем напрямую с таблицей vacancies
+                    logger.info("Нет данных в основной схеме, переходим к fallback")
+                    
+                    # Создаем результат для всех целевых компаний
+                    company_results = []
+                    
+                    for target_company in TARGET_COMPANIES:
+                        company_name = target_company['name']
+                        
+                        # Ищем вакансии по названию компании в поле employer
+                        fallback_query = """
+                        SELECT COUNT(*) as vacancy_count
+                        FROM vacancies 
+                        WHERE LOWER(employer) LIKE LOWER(%s)
+                        """
+                        
+                        cursor.execute(fallback_query, (f"%{company_name}%",))
+                        count_result = cursor.fetchone()
+                        vacancy_count = count_result[0] if count_result else 0
+                        
+                        # Дополнительные проверки для известных альтернативных названий
+                        if vacancy_count == 0:
+                            # Альтернативные названия компаний
+                            alternatives = {
+                                "Тинькофф": ["т-банк", "tinkoff"],
+                                "СБЕР": ["сбербанк", "сбер"],
+                                "VK (ВКонтакте)": ["vk", "вконтакте"],
+                                "OZON": ["ozon"],
+                                "Wildberries": ["wildberries"]
+                            }
+                            
+                            if company_name in alternatives:
+                                for alt_name in alternatives[company_name]:
+                                    cursor.execute(fallback_query, (f"%{alt_name}%",))
+                                    count_result = cursor.fetchone()
+                                    if count_result and count_result[0] > 0:
+                                        vacancy_count = count_result[0]
+                                        break
+                        
+                        company_results.append((company_name, vacancy_count))
+                    
+                    # Сортируем по количеству вакансий (убывание), затем по названию
+                    company_results.sort(key=lambda x: (-x[1], x[0]))
+                    return company_results
 
         except Exception as e:
             logger.error(f"Ошибка при получении списка компаний и количества вакансий: {e}")
-            return []
+            # В случае ошибки возвращаем все целевые компании с нулями
+            return [(company['name'], 0) for company in TARGET_COMPANIES]
 
     def _is_target_company_match(self, target_name: str, db_name: str) -> bool:
         """
