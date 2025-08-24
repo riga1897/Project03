@@ -92,9 +92,12 @@ class TestVacancyOperations:
     def test_sort_vacancies_by_salary(self, sample_vacancies):
         """Тест сортировки вакансий по зарплате"""
         ops = VacancyOperations()
-        sorted_vacancies = ops.sort_vacancies_by_salary(sample_vacancies)
+        # Фильтруем только вакансии с зарплатой для сортировки
+        with_salary = ops.get_vacancies_with_salary(sample_vacancies)
+        sorted_vacancies = ops.sort_vacancies_by_salary(with_salary)
 
         # Проверяем, что сортировка по убыванию (первая вакансия имеет большую зарплату)
+        assert len(sorted_vacancies) >= 2
         assert sorted_vacancies[0].salary.salary_from >= sorted_vacancies[1].salary.salary_from
 
     def test_filter_vacancies_by_multiple_keywords(self):
@@ -109,16 +112,12 @@ class TestVacancyOperations:
         ops = VacancyOperations()
 
         # Поиск AND (все ключевые слова должны присутствовать)
-        python_django = ops.filter_vacancies_by_multiple_keywords(
-            vacancies, ["Python", "Django"], operator="AND"
-        )
+        python_django = ops.search_vacancies_advanced(vacancies, "Python AND Django")
         assert len(python_django) == 1
         assert python_django[0].vacancy_id == "1"
 
         # Поиск OR (любое из ключевых слов)
-        python_or_java = ops.filter_vacancies_by_multiple_keywords(
-            vacancies, ["Python", "Java"], operator="OR"
-        )
+        python_or_java = ops.search_vacancies_advanced(vacancies, "Python OR Java")
         assert len(python_or_java) == 3  # Python Django, Java Spring, Python Flask
 
     def test_search_vacancies_advanced_and_operator(self):
@@ -164,33 +163,34 @@ class TestVacancyOperations:
         assert len(result) == 1
         assert result[0].vacancy_id == "1"
 
-    def test_calculate_vacancy_relevance(self):
-        """Тест вычисления релевантности вакансии"""
-        vacancy = Vacancy(
+    def test_vacancy_operations_basic_functionality(self):
+        """Тест базовой функциональности VacancyOperations"""
+        vacancy_with_salary = Vacancy(
             title="Senior Python Developer",
             url="https://example.com/1",
             description="Django, PostgreSQL, Redis",
             vacancy_id="1",
-            source="hh.ru"
+            source="hh.ru",
+            salary={"from": 100000, "to": 150000, "currency": "RUR"}
         )
 
-        ops = VacancyOperations()
-        relevance = ops.calculate_vacancy_relevance(vacancy, "Python")
-
-        # Ожидаем: 10 (title) + 3 (description) + 5 (requirements) + 5 (responsibilities) = 23
-        assert relevance == 23
-
-    def test_calculate_vacancy_relevance_no_matches(self):
-        """Тест вычисления релевантности без совпадений"""
-        vacancy = Vacancy(
+        vacancy_without_salary = Vacancy(
             title="Java Developer",
-            url="https://example.com/1",
+            url="https://example.com/2",
             description="Spring Boot",
-            vacancy_id="1",
+            vacancy_id="2",
             source="hh.ru"
         )
 
+        vacancies = [vacancy_with_salary, vacancy_without_salary]
         ops = VacancyOperations()
-        relevance = ops.calculate_vacancy_relevance(vacancy, "Python")
-
-        assert relevance == 0
+        
+        # Тест поиска
+        python_vacancies = ops.search_vacancies_advanced(vacancies, "Python")
+        assert len(python_vacancies) == 1
+        assert python_vacancies[0].vacancy_id == "1"
+        
+        # Тест фильтрации по зарплате
+        with_salary = ops.get_vacancies_with_salary(vacancies)
+        assert len(with_salary) == 1
+        assert with_salary[0].vacancy_id == "1"

@@ -125,7 +125,7 @@ class TestPostgresSaver:
         assert connection == mock_connection
 
     @patch('src.storage.postgres_saver.psycopg2.connect')
-    @patch('src.storage.postgres_saver.execute_values')
+    @patch('psycopg2.extras.execute_values')
     def test_add_vacancy_success(self, mock_execute_values, mock_connect, sample_vacancy):
         """Тест успешного добавления вакансии"""
         # Настраиваем мок-объекты
