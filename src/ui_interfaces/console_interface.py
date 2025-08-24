@@ -5,7 +5,7 @@ from src.api_modules.hh_api import HeadHunterAPI
 from src.api_modules.sj_api import SuperJobAPI
 from src.api_modules.unified_api import UnifiedAPI
 from src.config.ui_config import ui_pagination_config
-from src.storage.json_saver import JSONSaver
+# from src.storage.json_saver import JSONSaver # Удален JSONSaver
 
 from src.utils.menu_manager import create_main_menu, print_menu_separator, print_section_header
 from src.utils.ui_helpers import (confirm_action, display_vacancy_info, filter_vacancies_by_keyword, get_user_input,
@@ -46,18 +46,18 @@ class UserInterface:
             app_config = AppConfig()
             self.storage = StorageFactory.create_storage(app_config.default_storage_type)
 
-        # Для обратной совместимости
-        self.json_saver = self.storage
+        # Для обратной совместимости (удалено, так как теперь используется только storage)
+        # self.json_saver = self.storage
 
         self.menu_manager = create_main_menu()
         self.vacancy_ops = VacancyOperations()
 
-        # Инициализируем координатор операций
-        self.coordinator = VacancyOperationsCoordinator(self.unified_api, storage)
+        # Инициализируем координатор операций, передавая storage
+        self.coordinator = VacancyOperationsCoordinator(self.storage) # Изменено: передаем storage
 
-        # Инициализируем обработчики
-        self.display_handler = VacancyDisplayHandler(self.storage)
-        self.search_handler = VacancySearchHandler(self.unified_api, self.storage)
+        # Инициализируем обработчики, передавая storage
+        self.display_handler = VacancyDisplayHandler(self.storage) # Изменено: передаем storage
+        self.search_handler = VacancySearchHandler(self.unified_api, self.storage) # Изменено: передаем storage
 
     def run(self) -> None:
         """Основной цикл взаимодействия с пользователем"""
@@ -146,7 +146,8 @@ class UserInterface:
     def _advanced_search_vacancies(self) -> None:
         """Расширенный поиск по вакансиям"""
         try:
-            vacancies = self.json_saver.get_vacancies()
+            # Используем self.storage для получения вакансий
+            vacancies = self.storage.get_vacancies() # Изменено: используется storage
 
             if not vacancies:
                 print("Нет сохраненных вакансий.")
@@ -200,7 +201,8 @@ class UserInterface:
     def _filter_saved_vacancies_by_salary(self) -> None:
         """Фильтрация сохраненных вакансий по зарплате"""
         try:
-            vacancies = self.json_saver.get_vacancies()
+            # Используем self.storage для получения вакансий
+            vacancies = self.storage.get_vacancies() # Изменено: используется storage
 
             if not vacancies:
                 print("Нет сохраненных вакансий.")
@@ -412,7 +414,8 @@ class UserInterface:
                 break
             elif choice == "a":
                 if confirm_action(f"Удалить ВСЕ {len(vacancies)} вакансий с ключевым словом '{keyword}'?"):
-                    deleted_count = self.json_saver.delete_vacancies_by_keyword(keyword)
+                    # Используем storage для удаления
+                    deleted_count = self.storage.delete_vacancies_by_keyword(keyword) # Изменено: используется storage
                     if deleted_count > 0:
                         print(f"Удалено {deleted_count} вакансий.")
                     else:
@@ -450,7 +453,8 @@ class UserInterface:
                         if confirm_action(f"Удалить {len(vacancies_to_delete)} вакансий?"):
                             deleted_count = 0
                             for vacancy in vacancies_to_delete:
-                                if self.json_saver.delete_vacancy_by_id(vacancy.vacancy_id):
+                                # Используем storage для удаления
+                                if self.storage.delete_vacancy_by_id(vacancy.vacancy_id): # Изменено: используется storage
                                     vacancies.remove(vacancy)
                                     deleted_count += 1
 
@@ -487,7 +491,8 @@ class UserInterface:
                     print(f"Ссылка: {vacancy_to_delete.url}")
 
                     if confirm_action("Удалить эту вакансию?"):
-                        if self.json_saver.delete_vacancy_by_id(vacancy_to_delete.vacancy_id):
+                        # Используем storage для удаления
+                        if self.storage.delete_vacancy_by_id(vacancy_to_delete.vacancy_id): # Изменено: используется storage
                             print("Вакансия успешно удалена.")
                             # Удаляем из локального списка и обновляем отображение
                             vacancies.remove(vacancy_to_delete)

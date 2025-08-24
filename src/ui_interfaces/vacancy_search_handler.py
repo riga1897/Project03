@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from src.api_modules.unified_api import UnifiedAPI
 from src.storage.json_saver import JSONSaver
+from src.storage.postgresql_storage import PostgreSQLStorage
 from src.ui_interfaces.source_selector import SourceSelector
 from src.utils.ui_helpers import confirm_action, get_user_input
 from src.utils.ui_navigation import quick_paginate
@@ -20,16 +21,16 @@ class VacancySearchHandler:
     их отображение и сохранение.
     """
 
-    def __init__(self, unified_api: UnifiedAPI, json_saver: JSONSaver):
+    def __init__(self, unified_api: UnifiedAPI, storage: PostgreSQLStorage):
         """
         Инициализация обработчика поиска
 
         Args:
             unified_api: Унифицированный API для получения вакансий
-            json_saver: Сервис сохранения данных
+            storage: Сервис сохранения данных (PostgreSQLStorage)
         """
         self.unified_api = unified_api
-        self.json_saver = json_saver
+        self.storage = storage  # Используем PostgreSQLStorage
         self.source_selector = SourceSelector()
 
     def search_vacancies(self) -> None:
@@ -83,29 +84,29 @@ class VacancySearchHandler:
             List[Vacancy]: Список найденных вакансий от целевых компаний
         """
         print("Поиск вакансий только от целевых компаний...")
-        
+
         # Конвертируем set в list для передачи в UnifiedAPI
         sources_list = list(sources)
-        
+
         # Получаем вакансии от целевых компаний через унифицированный API
         try:
             vacancies_data = self.unified_api.get_vacancies_from_target_companies(
-                search_query=query, 
-                sources=sources_list, 
+                search_query=query,
+                sources=sources_list,
                 period=period
             )
-            
+
             # Конвертируем Dict обратно в объекты Vacancy
             from src.vacancies.models import Vacancy
             all_vacancies = [Vacancy.from_dict(item) for item in vacancies_data]
-            
+
             if all_vacancies:
                 print(f"Найдено {len(all_vacancies)} вакансий от целевых компаний")
             else:
                 print("Вакансии от целевых компаний не найдены")
-            
+
             return all_vacancies
-            
+
         except Exception as e:
             print(f"Ошибка получения вакансий от целевых компаний: {e}")
             return []
@@ -167,9 +168,9 @@ class VacancySearchHandler:
             vacancies: Список вакансий для сохранения
         """
         # Сохраняем новые вакансии оптимизированным методом
-        save_messages = self.json_saver.add_vacancy_batch_optimized(vacancies)
+        update_messages = self.storage.add_vacancy_batch_optimized(vacancies)
 
-        for message in save_messages:
+        for message in update_messages:
             print(f"  • {message}")
 
         print()  # Пустая строка для лучшего форматирования
@@ -196,7 +197,7 @@ class VacancySearchHandler:
         print(f"Проверка {len(vacancies)} вакансий на дубликаты...")
 
         # Используем batch-метод для проверки дубликатов
-        existence_map = self.json_saver.check_vacancies_exist_batch(vacancies)
+        existence_map = self.storage.check_vacancies_exist_batch(vacancies)
 
         duplicates = []
         new_vacancies = []

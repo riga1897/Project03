@@ -242,6 +242,16 @@ class Vacancy(AbstractVacancy):
                 elif "name" in data and "snippet" in data:
                     source = "hh.ru"
 
+            # Безопасная обработка компании
+            company = data.get("company")
+            if isinstance(company, dict):
+                # Если company - словарь, извлекаем имя компании
+                company = company.get("name", "") if company else ""
+            elif company is None:
+                company = ""
+            else:
+                company = str(company)
+
             return cls(
                 vacancy_id=vacancy_id,
                 title=title,
@@ -250,7 +260,7 @@ class Vacancy(AbstractVacancy):
                 description=description,
                 requirements=requirements,
                 responsibilities=responsibilities,
-                employer=employer,
+                employer=company, # Используем обработанное значение company
                 experience=experience,
                 employment=employment,
                 schedule=data.get("schedule", {}).get("name") if isinstance(data.get("schedule"), dict) else None,
@@ -265,31 +275,43 @@ class Vacancy(AbstractVacancy):
             raise ValueError(f"Невозможно создать унифицированную вакансию: {e}")
 
     def to_dict(self) -> Dict[str, Any]:
-        """Преобразование в унифицированный словарь"""
+        """
+        Преобразование объекта в словарь для сериализации
+
+        Returns:
+            Dict[str, Any]: Словарь с данными вакансии
+        """
+        # Безопасная обработка поля company
+        company_value = None
+        if self.employer: # Используем self.employer, так как он был заполнен обработанной компанией
+            if isinstance(self.employer, str):
+                company_value = self.employer.lower()
+            elif isinstance(self.employer, dict):
+                # Если company - словарь, извлекаем имя компании
+                company_value = self.employer.get("name", str(self.employer)).lower() if self.employer.get("name") else str(self.employer).lower()
+            else:
+                company_value = str(self.employer).lower()
+
         return {
-            "id": self.vacancy_id,
+            "vacancy_id": self.vacancy_id,
             "title": self.title,
-            "url": self.url,
+            "link": self.url, # Использовать self.url вместо self.link
             "salary": self.salary.to_dict() if self.salary else None,
             "description": self.description,
-            "requirements": self.requirements,
-            "responsibilities": self.responsibilities,
-            "employer": self.employer,
+            "company": company_value,
+            "location": self.area, # Использовать self.area вместо self.location
+            "source": self.source,
+            "published_date": self.published_at.isoformat() if self.published_at else None, # Использовать self.published_at
             "experience": self.experience,
             "employment": self.employment,
             "schedule": self.schedule,
-            "published_at": self.published_at.isoformat() if self.published_at else None,
-            "skills": self.skills,
-            "detailed_description": self.detailed_description,
-            "benefits": self.benefits,
-            "source": self.source,
         }
 
     def __str__(self) -> str:
         """Строковое представление унифицированной вакансии"""
         parts = [
             f"[{self.source.upper()}] Должность: {self.title}",
-            f"Компания: {self.employer.get('name') if self.employer else 'Не указана'}",
+            f"Компания: {self.employer.get('name') if isinstance(self.employer, dict) else self.employer if isinstance(self.employer, str) else 'Не указана'}",
             f"Зарплата: {self.salary}",
             f"Требования: {self.requirements[:100] + '...' if self.requirements else 'Не указаны'}",
             f"Ссылка: {self.url}",
