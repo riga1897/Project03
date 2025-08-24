@@ -169,7 +169,7 @@ class DBManager:
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         """
-        
+
         try:
             with self._get_connection() as conn:
                 with conn.cursor() as cursor:
@@ -183,22 +183,22 @@ class DBManager:
         """
         Получает анализ ТОЛЬКО по целевым компаниям
         Этот метод специально предназначен для демонстрации п.10
-        
+
         Returns:
             List[Tuple[str, int]]: Список кортежей (название_целевой_компании, количество_вакансий)
         """
         from src.config.target_companies import TARGET_COMPANIES
-        
+
         try:
             # Сначала получаем все данные
             all_data = self.get_companies_and_vacancies_count()
-            
+
             # Если нет данных, возвращаем все целевые компании с нулями
             if not all_data:
                 return [(company['name'], 0) for company in TARGET_COMPANIES]
-            
+
             return all_data  # Метод уже возвращает данные по целевым компаниям
-            
+
         except Exception as e:
             logger.error(f"Ошибка при анализе целевых компаний: {e}")
             # В случае ошибки возвращаем все целевые компании с нулями
@@ -228,21 +228,20 @@ class DBManager:
 
                     cursor.execute(query)
                     results = cursor.fetchall()
-                    
+
                     # Если нет данных в основной схеме, используем fallback
                     if not results or all(count == 0 for _, count in results):
                         raise Exception("Нет данных в основной схеме, переходим к fallback")
-                    
+
                     return results
 
-        except Exception as e:
-            logger.error(f"Ошибка при получении списка компаний и количества вакансий: {e}")
+        except Exception:
             # Fallback - используем данные из vacancies_storage
             try:
                 with self._get_connection() as conn:
                     with conn.cursor() as cursor:
                         from src.config.target_companies import TARGET_COMPANIES
-                        
+
                         # Получаем данные из vacancies_storage
                         query_fallback = """
                         SELECT 
@@ -255,27 +254,27 @@ class DBManager:
                         """
                         cursor.execute(query_fallback)
                         db_results = cursor.fetchall()
-                        
+
                         # Создаем полный результат включающий все целевые компании
                         db_dict = {name: count for name, count in db_results}
                         full_results = []
-                        
+
                         # Добавляем все целевые компании
                         for company in TARGET_COMPANIES:
                             target_name = company['name']
                             count = 0
-                            
+
                             # Ищем совпадения в БД с учетом вариаций названий
                             for db_name, db_count in db_dict.items():
                                 if self._is_target_company_match(target_name, db_name):
                                     count = max(count, db_count)
-                            
+
                             full_results.append((target_name, count))
-                        
+
                         # Сортируем по количеству вакансий
                         full_results.sort(key=lambda x: x[1], reverse=True)
                         return full_results
-                        
+
             except Exception as e2:
                 logger.error(f"Ошибка в fallback запросе: {e2}")
                 return []
@@ -283,11 +282,11 @@ class DBManager:
     def _is_target_company_match(self, target_name: str, db_name: str) -> bool:
         """
         Проверяет, соответствует ли название компании из БД целевой компании
-        
+
         Args:
             target_name: Название целевой компании
             db_name: Название компании из БД
-            
+
         Returns:
             bool: True если названия соответствуют
         """
@@ -309,21 +308,21 @@ class DBManager:
             "Skyeng": ["skyeng"],
             "Delivery Club": ["delivery club"]
         }
-        
+
         target_lower = target_name.lower()
         db_lower = db_name.lower()
-        
+
         # Проверяем точное совпадение
         if target_lower == db_lower:
             return True
-            
+
         # Проверяем сопоставления
         possible_names = mappings.get(target_name, [target_lower])
-        
+
         for possible_name in possible_names:
             if possible_name in db_lower or db_lower in possible_name:
                 return True
-                
+
         return False
 
     def get_all_vacancies(self) -> List[Dict[str, Any]]:
