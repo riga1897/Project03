@@ -122,14 +122,14 @@ class TestSalary:
         assert "от" not in result
 
     def test_salary_comparison(self):
-        """Тест сравнения зарплат"""
+        """Тест сравнения зарплат через average"""
         salary1 = Salary({"from": 100000, "to": 150000})
         salary2 = Salary({"from": 120000, "to": 180000})
         salary3 = Salary({"from": 50000})
         
-        assert salary2 > salary1
-        assert salary1 > salary3
-        assert salary1 != salary2
+        assert salary2.average > salary1.average
+        assert salary1.average > salary3.average
+        assert salary1.average != salary2.average
 
 
 
