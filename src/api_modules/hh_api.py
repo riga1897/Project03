@@ -222,7 +222,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         
         logger.info(f"Всего получено {len(all_vacancies)} вакансий от целевых компаний")
         
-        # Показываем статистику по компаниям
+        # Показываем статистику по компаниям (используем сырые данные)
         if all_vacancies:
             from src.utils.vacancy_stats import VacancyStats
             VacancyStats.display_company_stats(all_vacancies, "HH.ru - Целевые компании")

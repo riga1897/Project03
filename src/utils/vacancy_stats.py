@@ -7,10 +7,7 @@ import logging
 from typing import List, Dict, Any
 from collections import defaultdict
 
-# Настраиваем логирование на DEBUG уровень для этого модуля
-logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 
 class VacancyStats:
@@ -41,75 +38,50 @@ class VacancyStats:
     @staticmethod
     def _extract_company_name(vacancy: Dict[str, Any]) -> str:
         """
-        Извлечь название компании из данных вакансии
+        Извлечь название компании из данных вакансии (приоритет - сырые данные API)
         
         Args:
-            vacancy: Данные вакансии
+            vacancy: Данные вакансии (сырые данные API или объект Vacancy)
             
         Returns:
             str: Название компании или "Неизвестная компания"
         """
-        # ПРИОРИТЕТ 1: Проверяем raw_data.employer (основной источник для HH)
+        # ПРИОРИТЕТ 1: Сырые данные HH.ru - employer.name
+        if isinstance(vacancy, dict) and "employer" in vacancy:
+            employer = vacancy["employer"]
+            if isinstance(employer, dict) and "name" in employer and employer["name"]:
+                return employer["name"]
+            elif isinstance(employer, str) and employer.strip():
+                return employer
+        
+        # ПРИОРИТЕТ 2: Сырые данные SuperJob - firm_name
+        if isinstance(vacancy, dict) and "firm_name" in vacancy:
+            firm_name = vacancy.get("firm_name")
+            if firm_name and firm_name.strip():
+                return firm_name
+        
+        # ПРИОРИТЕТ 3: Объекты Vacancy - атрибут employer
+        if hasattr(vacancy, 'employer') and vacancy.employer:
+            employer = vacancy.employer
+            if isinstance(employer, dict):
+                return employer.get("name", "Неизвестная компания")
+            elif isinstance(employer, str):
+                return employer
+            return str(employer)
+        
+        # ПРИОРИТЕТ 4: Объекты Vacancy - raw_data
         if hasattr(vacancy, 'raw_data') and vacancy.raw_data:
             raw_data = vacancy.raw_data
             if isinstance(raw_data, dict) and "employer" in raw_data:
                 employer = raw_data["employer"]
                 if isinstance(employer, dict) and "name" in employer:
                     return employer["name"]
-                elif isinstance(employer, str):
-                    return employer
         
-        # ПРИОРИТЕТ 2: Проверяем объект Vacancy.employer
-        if hasattr(vacancy, 'employer'):
-            employer = vacancy.employer
-            if isinstance(employer, dict):
-                return employer.get("name", "Неизвестная компания")
-            elif isinstance(employer, str):
-                return employer
-            elif employer:
-                return str(employer)
-        
-        # ПРИОРИТЕТ 3: Для словарей - HeadHunter прямой доступ
-        if isinstance(vacancy, dict) and "employer" in vacancy:
-            employer = vacancy["employer"]
-            if isinstance(employer, dict) and "name" in employer:
-                return employer["name"]
-            elif isinstance(employer, str):
-                return employer
-        
-        # ПРИОРИТЕТ 4: Дополнительная проверка для raw_data как словарь
-        if isinstance(vacancy, dict) and "raw_data" in vacancy:
-            raw_data = vacancy["raw_data"]
-            if isinstance(raw_data, dict) and "employer" in raw_data:
-                employer = raw_data["employer"]
-                if isinstance(employer, dict) and "name" in employer:
-                    return employer["name"]
-                elif isinstance(employer, str):
-                    return employer
-        
-        # ПРИОРИТЕТ 5: Проверяем атрибут _employer_name (стандартизированное название из БД)
-        if hasattr(vacancy, '_employer_name') and vacancy._employer_name:
-            return vacancy._employer_name
-            
-        # ПРИОРИТЕТ 6: Для словарей - SuperJob
-        if isinstance(vacancy, dict) and "firm_name" in vacancy:
-            return vacancy.get("firm_name", "Неизвестная компания")
-        
-        # ПРИОРИТЕТ 7: Проверяем поле company в преобразованных объектах Vacancy
+        # ПРИОРИТЕТ 5: Преобразованные данные - поле company
         if isinstance(vacancy, dict) and "company" in vacancy:
             company = vacancy["company"]
-            if company and company != "None" and company.strip():
-                return str(company)
-        
-        # ПРИОРИТЕТ 8: Проверяем прямые поля HH в случае если это сырые данные
-        if isinstance(vacancy, dict):
-            # Проверяем возможные варианты полей компании в HH
-            for field in ["company_name", "employer_name"]:
-                if field in vacancy and vacancy[field]:
-                    company = vacancy[field]
-                    if isinstance(company, dict):
-                        return company.get("name", str(company))
-                    return str(company)
+            if company and str(company).strip() and str(company) != "None":
+                return str(company).title()
                 
         return "Неизвестная компания"
     
