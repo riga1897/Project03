@@ -575,6 +575,11 @@ class PostgresSaver:
 
                 # Устанавливаем area напрямую
                 vacancy.area = row['area']
+                
+                # Для отладки - также сохраняем название компании напрямую
+                if row['employer']:
+                    vacancy._employer_name = row['employer']
+                
                 vacancies.append(vacancy)
 
             except Exception as e:
