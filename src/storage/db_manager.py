@@ -148,36 +148,7 @@ class DBManager:
             logger.error(f"Ошибка при заполнении таблицы компаний: {e}")
             raise
 
-    def _create_vacancies_storage_table(self):
-        """
-        Создает таблицу vacancies_storage для совместимости со старыми методами
-        """
-        create_vacancies_storage_table = """
-        CREATE TABLE IF NOT EXISTS vacancies_storage (
-            id SERIAL PRIMARY KEY,
-            vacancy_id VARCHAR(255) UNIQUE,
-            title TEXT,
-            url TEXT,
-            salary_from INTEGER,
-            salary_to INTEGER,
-            salary_currency VARCHAR(10),
-            description TEXT,
-            employer TEXT,
-            area TEXT,
-            source VARCHAR(50),
-            published_at TIMESTAMP,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-        """
-
-        try:
-            with self._get_connection() as conn:
-                with conn.cursor() as cursor:
-                    cursor.execute(create_vacancies_storage_table)
-                    logger.info("Таблица vacancies_storage создана успешно")
-        except Exception as e:
-            logger.error(f"Ошибка при создании таблицы vacancies_storage: {e}")
-            raise
+    
 
     def get_target_companies_analysis(self) -> List[Tuple[str, int]]:
         """
@@ -215,7 +186,6 @@ class DBManager:
         try:
             with self._get_connection() as conn:
                 with conn.cursor() as cursor:
-                    # Сначала пытаемся использовать основную схему с таблицами companies и vacancies
                     query = """
                     SELECT 
                         c.name as company_name,
@@ -228,56 +198,11 @@ class DBManager:
 
                     cursor.execute(query)
                     results = cursor.fetchall()
-
-                    # Если нет данных в основной схеме, используем fallback
-                    if not results or all(count == 0 for _, count in results):
-                        raise Exception("Нет данных в основной схеме, переходим к fallback")
-
                     return results
 
-        except Exception:
-            # Fallback - используем данные из vacancies_storage
-            try:
-                with self._get_connection() as conn:
-                    with conn.cursor() as cursor:
-                        from src.config.target_companies import TARGET_COMPANIES
-
-                        # Получаем данные из vacancies_storage
-                        query_fallback = """
-                        SELECT 
-                            COALESCE(employer, 'Не указано') as company_name,
-                            COUNT(*) as vacancy_count
-                        FROM vacancies_storage 
-                        WHERE employer IS NOT NULL AND employer != ''
-                        GROUP BY employer
-                        ORDER BY vacancy_count DESC, company_name
-                        """
-                        cursor.execute(query_fallback)
-                        db_results = cursor.fetchall()
-
-                        # Создаем полный результат включающий все целевые компании
-                        db_dict = {name: count for name, count in db_results}
-                        full_results = []
-
-                        # Добавляем все целевые компании
-                        for company in TARGET_COMPANIES:
-                            target_name = company['name']
-                            count = 0
-
-                            # Ищем совпадения в БД с учетом вариаций названий
-                            for db_name, db_count in db_dict.items():
-                                if self._is_target_company_match(target_name, db_name):
-                                    count = max(count, db_count)
-
-                            full_results.append((target_name, count))
-
-                        # Сортируем по количеству вакансий
-                        full_results.sort(key=lambda x: x[1], reverse=True)
-                        return full_results
-
-            except Exception as e2:
-                logger.error(f"Ошибка в fallback запросе: {e2}")
-                return []
+        except Exception as e:
+            logger.error(f"Ошибка при получении списка компаний и количества вакансий: {e}")
+            return []
 
     def _is_target_company_match(self, target_name: str, db_name: str) -> bool:
         """
@@ -334,23 +259,23 @@ class DBManager:
         Returns:
             List[Dict[str, Any]]: Список словарей с информацией о вакансиях
         """
-        # SQL-запрос для получения всех вакансий с форматированной зарплатой
         query = """
         SELECT 
-            title,
-            COALESCE(employer, 'Неизвестная компания') as company_name,
+            v.title,
+            COALESCE(c.name, 'Неизвестная компания') as company_name,
             CASE 
-                WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN 
-                    CONCAT(salary_from, ' - ', salary_to, ' ', COALESCE(salary_currency, 'RUR'))
-                WHEN salary_from IS NOT NULL THEN 
-                    CONCAT('от ', salary_from, ' ', COALESCE(salary_currency, 'RUR'))
-                WHEN salary_to IS NOT NULL THEN 
-                    CONCAT('до ', salary_to, ' ', COALESCE(salary_currency, 'RUR'))
+                WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN 
+                    CONCAT(v.salary_from, ' - ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
+                WHEN v.salary_from IS NOT NULL THEN 
+                    CONCAT('от ', v.salary_from, ' ', COALESCE(v.salary_currency, 'RUR'))
+                WHEN v.salary_to IS NOT NULL THEN 
+                    CONCAT('до ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
                 ELSE 'Не указана'
             END as salary_info,
-            url
-        FROM vacancies_storage 
-        ORDER BY company_name, title
+            v.url
+        FROM vacancies v
+        LEFT JOIN companies c ON v.company_id = c.company_id
+        ORDER BY c.name, v.title
         """
 
         try:
@@ -372,7 +297,6 @@ class DBManager:
         Returns:
             Optional[float]: Средняя зарплата или None если данных нет
         """
-        # SQL-запрос для вычисления средней зарплаты
         query = """
         SELECT AVG(
             CASE 
@@ -383,7 +307,7 @@ class DBManager:
                 ELSE NULL
             END
         ) as avg_salary
-        FROM vacancies_storage 
+        FROM vacancies 
         WHERE (salary_from IS NOT NULL OR salary_to IS NOT NULL)
         AND salary_currency IN ('RUR', 'RUB', 'руб.', NULL)
         """
@@ -417,37 +341,38 @@ class DBManager:
         # SQL-запрос для получения вакансий с зарплатой выше средней
         query = """
         SELECT 
-            title,
-            COALESCE(employer, 'Неизвестная компания') as company_name,
+            v.title,
+            COALESCE(c.name, 'Неизвестная компания') as company_name,
             CASE 
-                WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN 
-                    CONCAT(salary_from, ' - ', salary_to, ' ', COALESCE(salary_currency, 'RUR'))
-                WHEN salary_from IS NOT NULL THEN 
-                    CONCAT('от ', salary_from, ' ', COALESCE(salary_currency, 'RUR'))
-                WHEN salary_to IS NOT NULL THEN 
-                    CONCAT('до ', salary_to, ' ', COALESCE(salary_currency, 'RUR'))
+                WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN 
+                    CONCAT(v.salary_from, ' - ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
+                WHEN v.salary_from IS NOT NULL THEN 
+                    CONCAT('от ', v.salary_from, ' ', COALESCE(v.salary_currency, 'RUR'))
+                WHEN v.salary_to IS NOT NULL THEN 
+                    CONCAT('до ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
                 ELSE 'Не указана'
             END as salary_info,
-            url,
+            v.url,
             CASE 
-                WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN 
-                    (salary_from + salary_to) / 2
-                WHEN salary_from IS NOT NULL THEN salary_from
-                WHEN salary_to IS NOT NULL THEN salary_to
+                WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN 
+                    (v.salary_from + v.salary_to) / 2
+                WHEN v.salary_from IS NOT NULL THEN v.salary_from
+                WHEN v.salary_to IS NOT NULL THEN v.salary_to
                 ELSE NULL
             END as calculated_salary
-        FROM vacancies_storage 
+        FROM vacancies v
+        LEFT JOIN companies c ON v.company_id = c.company_id
         WHERE (
             CASE 
-                WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN 
-                    (salary_from + salary_to) / 2
-                WHEN salary_from IS NOT NULL THEN salary_from
-                WHEN salary_to IS NOT NULL THEN salary_to
+                WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN 
+                    (v.salary_from + v.salary_to) / 2
+                WHEN v.salary_from IS NOT NULL THEN v.salary_from
+                WHEN v.salary_to IS NOT NULL THEN v.salary_to
                 ELSE NULL
             END
         ) > %s
-        AND salary_currency IN ('RUR', 'RUB', 'руб.', NULL)
-        ORDER BY calculated_salary DESC, company_name, title
+        AND v.salary_currency IN ('RUR', 'RUB', 'руб.', NULL)
+        ORDER BY calculated_salary DESC, c.name, v.title
         """
 
         try:
@@ -478,22 +403,23 @@ class DBManager:
         # SQL-запрос для поиска вакансий по ключевому слову
         query = """
         SELECT 
-            title,
-            COALESCE(employer, 'Неизвестная компания') as company_name,
+            v.title,
+            COALESCE(c.name, 'Неизвестная компания') as company_name,
             CASE 
-                WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN 
-                    CONCAT(salary_from, ' - ', salary_to, ' ', COALESCE(salary_currency, 'RUR'))
-                WHEN salary_from IS NOT NULL THEN 
-                    CONCAT('от ', salary_from, ' ', COALESCE(salary_currency, 'RUR'))
-                WHEN salary_to IS NOT NULL THEN 
-                    CONCAT('до ', salary_to, ' ', COALESCE(salary_currency, 'RUR'))
+                WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN 
+                    CONCAT(v.salary_from, ' - ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
+                WHEN v.salary_from IS NOT NULL THEN 
+                    CONCAT('от ', v.salary_from, ' ', COALESCE(v.salary_currency, 'RUR'))
+                WHEN v.salary_to IS NOT NULL THEN 
+                    CONCAT('до ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
                 ELSE 'Не указана'
             END as salary_info,
-            url,
-            description
-        FROM vacancies_storage 
-        WHERE LOWER(title) LIKE LOWER(%s)
-        ORDER BY company_name, title
+            v.url,
+            v.description
+        FROM vacancies v
+        LEFT JOIN companies c ON v.company_id = c.company_id
+        WHERE LOWER(v.title) LIKE LOWER(%s)
+        ORDER BY c.name, v.title
         """
 
         try:
@@ -518,10 +444,10 @@ class DBManager:
         """
         # Словарь SQL-запросов для получения статистики
         stats_queries = {
-            'total_vacancies': "SELECT COUNT(*) FROM vacancies_storage",
-            'total_companies': "SELECT COUNT(DISTINCT employer) FROM vacancies_storage WHERE employer IS NOT NULL AND employer != ''",
-            'vacancies_with_salary': "SELECT COUNT(*) FROM vacancies_storage WHERE (salary_from IS NOT NULL OR salary_to IS NOT NULL)",
-            'latest_vacancy_date': "SELECT MAX(published_at) FROM vacancies_storage"
+            'total_vacancies': "SELECT COUNT(*) FROM vacancies",
+            'total_companies': "SELECT COUNT(*) FROM companies",
+            'vacancies_with_salary': "SELECT COUNT(*) FROM vacancies WHERE (salary_from IS NOT NULL OR salary_to IS NOT NULL)",
+            'latest_vacancy_date': "SELECT MAX(published_at) FROM vacancies"
         }
 
         stats = {}

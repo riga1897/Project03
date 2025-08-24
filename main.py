@@ -15,7 +15,6 @@ if __name__ == "__main__":
         db_manager = DBManager()
         db_manager.create_tables()
         db_manager.populate_companies_table()
-        db_manager._create_vacancies_storage_table()
         
         main()
     except Exception as e:
