@@ -62,11 +62,37 @@
 ### 2. Работа с сохраненными вакансиями
 
 ```
-Пользователь → ConsoleInterface → VacancyOperations → PostgresSaver
+Пользователь → ConsoleInterface → VacancyOperationsCoordinator
                      ↓
-               SearchUtils → VacancyOperations → VacancyFormatter
+               VacancyDisplayHandler → VacancyOperations → PostgresSaver
+                     ↓                      ↓
+               VacancyFormatter ← SearchUtils (ui_helpers)
                      ↓
                Paginator → VacancyDisplayHandler → Пользователь
+```
+
+### 4. Удаление вакансий
+
+```
+Пользователь → ConsoleInterface → VacancyOperationsCoordinator
+                     ↓
+               MenuManager → _handle_delete_by_keyword()
+                     ↓
+               ui_helpers.filter_vacancies_by_keyword → VacancyOperations.search_vacancies_advanced
+                     ↓
+               PostgresSaver.delete_vacancies_by_keyword → Пользователь
+```
+
+### 5. Кэширование и оптимизация
+
+```
+API Request → CachedAPI → Cache.get()
+                ↓              ↓
+        APIConnector ← Cache miss → External API
+                ↓              ↓
+        Cache.set() ← Response data → Vacancy.from_dict()
+                ↓
+        Return cached data
 ```
 
 **Описание потока**:
@@ -80,10 +106,82 @@
 
 ```
 EnvLoader → DatabaseConfig → PostgresSaver
-     ↓
-APIConfig → HeadHunterAPI/SuperJobAPI
-     ↓
-UIConfig → ConsoleInterface → VacancyDisplayHandler
+     ↓              ↓
+APIConfig → HeadHunterAPI/SuperJobAPI → CachedAPI
+     ↓              ↓
+UIConfig → ConsoleInterface → VacancyDisplayHandler → Paginator
+                    ↓
+        VacancyOperationsCoordinator → MenuManager
+```
+
+#### Детальное взаимодействие конфигураций
+```python
+# EnvLoader загружает переменные окружения
+class EnvLoader:
+    @staticmethod
+    def load_environment():
+        load_dotenv()
+        return {
+            'db_config': DatabaseConfig().get_config(),
+            'api_config': APIConfig().get_config(),
+            'ui_config': UIConfig().get_pagination_config()
+        }
+
+# DatabaseConfig используется в PostgresSaver
+class PostgresSaver:
+    def __init__(self, db_config=None):
+        self.config = db_config or DatabaseConfig().get_config()
+        self.connection = self._create_connection()
+
+# APIConfig влияет на все API модули
+class HeadHunterAPI:
+    def __init__(self):
+        self.config = HHAPIConfig()
+        self.base_url = self.config.get_base_url()
+        self.timeout = APIConfig().get_timeout()
+
+# UIConfig используется в пагинации и отображении
+class VacancyDisplayHandler:
+    def show_all_saved_vacancies(self):
+        items_per_page = ui_pagination_config.get_items_per_page("saved")
+        quick_paginate(vacancies, items_per_page=items_per_page)
+```
+
+### Координация операций
+
+#### VacancyOperationsCoordinator - медиатор системы
+```python
+class VacancyOperationsCoordinator:
+    def __init__(self, unified_api, storage):
+        self.unified_api = unified_api
+        self.storage = storage
+        # Создание зависимых обработчиков
+        self.search_handler = VacancySearchHandler(unified_api, storage)
+        self.display_handler = VacancyDisplayHandler(storage)
+    
+    def handle_vacancy_search(self):
+        # Делегирует поиск VacancySearchHandler
+        self.search_handler.search_vacancies()
+    
+    def handle_delete_by_keyword(self, vacancies):
+        # Использует ui_helpers для фильтрации
+        filtered_vacancies = filter_vacancies_by_keyword(vacancies, keyword)
+        # Координирует удаление через storage
+        deleted_count = self.storage.delete_vacancies_by_keyword(keyword)
+```
+
+#### Взаимодействие VacancySearchHandler с хранилищем
+```python
+class VacancySearchHandler:
+    def _check_existing_vacancies(self, vacancies):
+        # Batch проверка существования для PostgreSQL
+        if hasattr(self.json_saver, 'check_vacancies_exist_batch'):
+            existence_map = self.json_saver.check_vacancies_exist_batch(vacancies)
+        else:
+            # Fallback для других хранилищ
+            for vacancy in vacancies:
+                if self.json_saver.is_vacancy_exists(vacancy):
+                    duplicates.append(vacancy)
 ```
 
 ## Детальное взаимодействие модулей
@@ -126,7 +224,7 @@ class CachedAPI:
 
 ### Слой данных
 
-#### Interaction с базой данных
+#### Взаимодействие с базой данных
 ```python
 class PostgresSaver:
     def add_vacancy(self, vacancies):
@@ -140,19 +238,78 @@ class PostgresSaver:
         # Batch операции
         self._batch_insert(new_vacancies)
         self._batch_update(update_vacancies)
+
+    def check_vacancies_exist_batch(self, vacancies):
+        # Batch проверка для оптимизации
+        vacancy_ids = [v.vacancy_id for v in vacancies]
+        query = "SELECT vacancy_id FROM vacancies WHERE vacancy_id = ANY(%s)"
+        existing_ids = self._execute_query(query, (vacancy_ids,))
+        return {v_id: v_id in existing_ids for v_id in vacancy_ids}
 ```
 
-#### Преобразование данных
+#### Взаимодействие утилит с основными модулями
 ```python
+# ui_helpers -> VacancyOperations
+def filter_vacancies_by_keyword(vacancies, keyword):
+    # Может делегировать сложный поиск в VacancyOperations
+    if " AND " in keyword or " OR " in keyword:
+        return VacancyOperations.search_vacancies_advanced(vacancies, keyword)
+    else:
+        # Простая фильтрация
+        return [v for v in vacancies if vacancy_contains_keyword(v, keyword)]
+
+# VacancyFormatter -> Salary утилиты
+class VacancyFormatter:
+    def format_salary(self, salary):
+        # Использует утилиты из src.utils.salary
+        return format_salary_range(salary.salary_from, salary.salary_to, salary.currency)
+
+# SearchUtils -> VacancyOperations
+def advanced_search(vacancies, criteria):
+    # Комбинирует различные методы VacancyOperations
+    result = VacancyOperations.filter_vacancies_by_salary_range(vacancies, min_sal, max_sal)
+    result = VacancyOperations.search_vacancies_advanced(result, keywords)
+    return VacancyOperations.sort_vacancies_by_salary(result)
+```
+
+#### Преобразование данных через парсеры
+```python
+# API -> Parser -> Vacancy
+class HeadHunterAPI:
+    def get_vacancies(self, query):
+        raw_data = self._fetch_from_api(query)
+        # Делегирует парсинг специализированному парсеру
+        return [HHParser.parse_vacancy(item) for item in raw_data['items']]
+
+class HHParser:
+    @staticmethod
+    def parse_vacancy(raw_vacancy):
+        # Специализированный парсинг для HH.ru
+        return Vacancy(
+            title=raw_vacancy.get('name'),
+            salary=HHParser.parse_salary(raw_vacancy.get('salary')),
+            employer=HHParser.parse_employer(raw_vacancy.get('employer')),
+            # ... другие поля
+        )
+
+class SuperJobAPI:
+    def get_vacancies(self, query):
+        raw_data = self._fetch_from_api(query)
+        # Использует свой парсер
+        return [SJParser.parse_vacancy(item) for item in raw_data['objects']]
+
+# Универсальное создание через фабрику
 class Vacancy:
     @classmethod
-    def from_dict(cls, data):
-        # Универсальное преобразование из разных API
-        title = data.get('name') or data.get('profession')
-        url = data.get('alternate_url') or data.get('link')
-        
-        # Создание унифицированного объекта
-        return cls(title=title, url=url, ...)
+    def from_dict(cls, data, source='unknown'):
+        # Определяет какой парсер использовать
+        if source == 'hh':
+            return HHParser.parse_vacancy(data)
+        elif source == 'sj':
+            return SJParser.parse_vacancy(data)
+        else:
+            # Универсальное преобразование
+            return cls._generic_parse(data)
 ```
 
 ### UI слой
@@ -171,18 +328,34 @@ class ConsoleInterface:
             # ... другие опции
 ```
 
-#### Отображение данных
+#### Отображение данных и взаимодействие с VacancyOperations
 ```python
 class VacancyDisplayHandler:
-    def show_vacancies(self, vacancies):
-        formatted = self.formatter.format_list(vacancies)
-        paginated = self.paginator.paginate(formatted)
+    def __init__(self, storage):
+        self.storage = storage
+        self.vacancy_ops = VacancyOperations()  # Создание экземпляра
+    
+    def show_top_vacancies_by_salary(self):
+        vacancies = self.storage.get_vacancies()
         
-        for page in paginated:
-            self._display_page(page)
-            user_action = self._get_user_input()
-            if user_action == 'quit':
-                break
+        # Используем VacancyOperations для фильтрации
+        vacancies_with_salary = self.vacancy_ops.get_vacancies_with_salary(vacancies)
+        
+        # Используем VacancyOperations для сортировки
+        sorted_vacancies = self.vacancy_ops.sort_vacancies_by_salary(vacancies_with_salary)
+        
+        # Форматирование и отображение
+        formatted = self.formatter.format_list(sorted_vacancies)
+        paginated = self.paginator.paginate(formatted)
+    
+    def search_saved_vacancies_by_keyword(self):
+        vacancies = self.storage.get_vacancies()
+        
+        # Делегируем поиск в VacancyOperations через ui_helpers
+        filtered_vacancies = filter_vacancies_by_keyword(vacancies, keyword)
+        
+        # Отображение результатов
+        formatted = self.formatter.format_list(filtered_vacancies)
 ```
 
 ## Жизненный цикл объектов
