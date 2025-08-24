@@ -320,6 +320,12 @@ class Vacancy(AbstractVacancy):
 
     def __str__(self) -> str:
         """Строковое представление унифицированной вакансии"""
+        # Отладка для отслеживания проблемы с employer
+        if str(self.vacancy_id) in ["124403607", "124403580", "124403642"]:
+            print(f"DEBUG Vacancy.__str__: ID {self.vacancy_id}")
+            print(f"DEBUG Vacancy.__str__: self.employer = {self.employer}")
+            print(f"DEBUG Vacancy.__str__: type(self.employer) = {type(self.employer)}")
+        
         # Правильное извлечение имени компании
         company_name = "Не указана"
         if self.employer:
@@ -329,6 +335,10 @@ class Vacancy(AbstractVacancy):
                 company_name = self.employer
             else:
                 company_name = str(self.employer)
+        
+        # Дополнительная отладка
+        if str(self.vacancy_id) in ["124403607", "124403580", "124403642"]:
+            print(f"DEBUG Vacancy.__str__: извлеченное company_name = '{company_name}'")
         
         parts = [
             f"[{self.source.upper()}] Должность: {self.title}",

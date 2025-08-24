@@ -84,19 +84,94 @@ class VacancyFormatter(BaseFormatter):
         )
 
     @staticmethod
-    def format_vacancy_info(vacancy: Vacancy, number: Optional[int] = None) -> str:
+    def format_vacancy_info(vacancy, number=None) -> str:
         """
-        Форматирование информации о вакансии в строку
+        Форматирует информацию о вакансии для отображения
 
         Args:
-            vacancy: Объект вакансии
-            number: Порядковый номер (опционально)
+            vacancy: Объект вакансии или словарь с данными вакансии
+            number: Номер вакансии в списке (опционально)
 
         Returns:
-            Отформатированная строка с информацией о вакансии
+            str: Отформатированная строка с информацией о вакансии
         """
-        lines = VacancyFormatter._build_vacancy_lines(vacancy, number)
-        return "\n".join(lines) + "\n"
+        # Получаем данные о вакансии
+        if hasattr(vacancy, 'to_dict'):
+            # Если это объект Vacancy
+            vacancy_data = vacancy
+        else:
+            # Если это уже словарь
+            vacancy_data = vacancy
+
+        # Извлекаем информацию
+        vacancy_id = getattr(vacancy_data, 'vacancy_id', vacancy_data.get('vacancy_id', 'N/A'))
+
+        # Отладка для отслеживания проблемы
+        if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
+            print(f"DEBUG VacancyFormatter.format_vacancy_info: ID {vacancy_id}")
+            print(f"DEBUG VacancyFormatter.format_vacancy_info: type(vacancy_data) = {type(vacancy_data)}")
+            if hasattr(vacancy_data, 'employer'):
+                print(f"DEBUG VacancyFormatter.format_vacancy_info: vacancy_data.employer = {vacancy_data.employer}")
+            elif isinstance(vacancy_data, dict) and 'employer' in vacancy_data:
+                print(f"DEBUG VacancyFormatter.format_vacancy_info: vacancy_data['employer'] = {vacancy_data.get('employer')}")
+
+        title = getattr(vacancy_data, 'title', vacancy_data.get('title', 'Название не указано'))
+        url = (
+            getattr(vacancy_data, 'url', None) or
+            vacancy_data.get('url', '') or
+            vacancy_data.get('link', '')
+        )
+
+        # Получение информации о компании
+        company_name = VacancyFormatter._extract_company_name(vacancy_data)
+
+        # Дополнительная отладка для компании
+        if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
+            print(f"DEBUG VacancyFormatter.format_vacancy_info: извлеченное company_name = '{company_name}'")
+
+        # Получение информации о зарплате
+        salary_info = VacancyFormatter._extract_salary_info(vacancy_data)
+
+        # Опыт работы
+        experience = (
+            getattr(vacancy_data, 'experience', None) or
+            vacancy_data.get('experience', 'Не указан')
+        )
+
+        # Тип занятости
+        employment = (
+            getattr(vacancy_data, 'employment', None) or
+            vacancy_data.get('employment', 'Не указана')
+        )
+
+        # Источник
+        source = (
+            getattr(vacancy_data, 'source', None) or
+            vacancy_data.get('source', 'unknown')
+        )
+
+        # Описание (ограничиваем длину)
+        description = VacancyFormatter._extract_description(vacancy_data)
+
+        # Формируем итоговую строку
+        result_parts = []
+
+        if number is not None:
+            result_parts.append(f"{number}.")
+
+        result_parts.extend([
+            f"ID: {vacancy_id}",
+            f"Название: {title}",
+            f"Компания: {company_name}",
+            f"Зарплата: {salary_info}",
+            f"Опыт: {experience}",
+            f"Занятость: {employment}",
+            f"Источник: {source}",
+            f"Ссылка: {url}",
+            f"Описание вакансии: {description}",
+        ])
+
+        return "\n".join(result_parts)
 
     @staticmethod
     def display_vacancy_info(vacancy: Vacancy, number: Optional[int] = None) -> None:
@@ -307,6 +382,95 @@ class VacancyFormatter(BaseFormatter):
             salary_str += currency
 
         return salary_str.strip() if salary_str else "Зарплата не указана"
+
+    @staticmethod
+    def _extract_company_name(vacancy_data) -> str:
+        """
+        Извлекает название компании из объекта или словаря вакансии.
+        """
+        employer_info = None
+        if hasattr(vacancy_data, 'employer'):
+            employer_info = vacancy_data.employer
+        elif isinstance(vacancy_data, dict) and 'employer' in vacancy_data:
+            employer_info = vacancy_data.get('employer')
+
+        if not employer_info:
+            return "Не указана"
+
+        if isinstance(employer_info, dict):
+            return employer_info.get('name', 'Не указана')
+        elif isinstance(employer_info, str) and employer_info.strip():
+            return employer_info
+        else:
+            # Пытаемся преобразовать в строку, если это какой-то другой объект
+            return str(employer_info) if employer_info else "Не указана"
+
+    @staticmethod
+    def _extract_salary_info(vacancy_data) -> str:
+        """
+        Извлекает и форматирует информацию о зарплате.
+        """
+        salary_data = None
+        if hasattr(vacancy_data, 'salary'):
+            salary_data = vacancy_data.salary
+        elif isinstance(vacancy_data, dict) and 'salary' in vacancy_data:
+            salary_data = vacancy_data.get('salary')
+
+        if not salary_data:
+            return "Не указана"
+
+        if isinstance(salary_data, dict):
+            return VacancyFormatter._format_salary_dict(salary_data)
+        elif hasattr(salary_data, 'salary_from') and hasattr(salary_data, 'salary_to'):
+            # Форматирование, если salary является объектом с атрибутами
+            from_value = salary_data.salary_from
+            to_value = salary_data.salary_to
+            currency = getattr(salary_data, 'currency', '₽') # Используем ₽ по умолчанию, если нет валюты
+
+            salary_parts = []
+            if from_value is not None:
+                salary_parts.append(f"от {from_value:,}")
+            if to_value is not None:
+                salary_parts.append(f"до {to_value:,}")
+            
+            if salary_parts:
+                return " ".join(salary_parts) + f" {currency}".strip()
+            else:
+                return "Не указана"
+        else:
+            # Если salary_data не словарь и не имеет известных атрибутов, просто возвращаем как строку
+            return str(salary_data)
+
+    @staticmethod
+    def _extract_description(vacancy_data) -> str:
+        """
+        Извлекает и форматирует описание вакансии, ограничивая длину.
+        """
+        description_text = None
+        if hasattr(vacancy_data, 'description') and vacancy_data.description:
+            description_text = str(vacancy_data.description).strip()
+        elif hasattr(vacancy_data, 'detailed_description') and vacancy_data.detailed_description:
+            description_text = str(vacancy_data.detailed_description).strip()
+        elif isinstance(vacancy_data, dict) and vacancy_data.get('description'):
+            description_text = str(vacancy_data.get('description')).strip()
+        elif isinstance(vacancy_data, dict) and vacancy_data.get('detailed_description'):
+            description_text = str(vacancy_data.get('detailed_description')).strip()
+
+        if not description_text or description_text == "Не указано" or description_text == "":
+            return "Описание отсутствует"
+
+        # Очистка HTML-тегов
+        import re
+        cleaned_description = re.sub(r"<[^>]+>", "", description_text)
+        cleaned_description = cleaned_description.strip()
+
+        if not cleaned_description:
+            return "Описание отсутствует"
+
+        # Ограничение длины
+        if len(cleaned_description) > 150:
+            return cleaned_description[:150] + "..."
+        return cleaned_description
 
 
 # Глобальный экземпляр форматтера
