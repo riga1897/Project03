@@ -142,7 +142,7 @@ class CachedAPI(BaseJobAPI, ABC):
 
     def get_cache_status(self, api_prefix: str) -> Dict:
         """
-        Получение статуса кэша для диагностики
+        Получение статуса кэша для диагностики с анализом файлов
 
         Args:
             api_prefix: Префикс API (hh, sj)
@@ -156,11 +156,29 @@ class CachedAPI(BaseJobAPI, ABC):
             if hasattr(self._cached_api_request, "cache_info"):
                 memory_info = self._cached_api_request.cache_info()
 
+            # Анализ файлов кэша
+            total_size = 0
+            valid_files = 0
+            invalid_files = 0
+            
+            for cache_file in cache_files:
+                try:
+                    total_size += cache_file.stat().st_size
+                    # Проверяем валидность JSON
+                    with open(cache_file, 'r', encoding='utf-8') as f:
+                        json.load(f)
+                    valid_files += 1
+                except Exception:
+                    invalid_files += 1
+
             return {
                 "cache_dir": str(self.cache_dir),
                 "cache_dir_exists": self.cache_dir.exists(),
                 "file_cache_count": len(cache_files),
-                "cache_files": [f.name for f in cache_files],
+                "valid_files": valid_files,
+                "invalid_files": invalid_files,
+                "total_size_mb": round(total_size / (1024 * 1024), 2),
+                "cache_files": [f.name for f in cache_files[:10]],  # Показываем только первые 10
                 "memory_cache": memory_info,
             }
         except Exception as e:
