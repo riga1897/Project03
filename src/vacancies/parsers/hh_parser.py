@@ -45,48 +45,25 @@ class HHParser:
 
         for item in raw_data:
             try:
-                # Сначала создаем HH-специфичную модель
-                # hh_vacancy = Vacancy.from_dict(item)
-                # Устанавливаем raw_data для доступа к исходным данным
-                # hh_vacancy.raw_data = item
-                # Устанавливаем источник если не установлен
-                # if not hh_vacancy.source or hh_vacancy.source == "unknown":
-                #     hh_vacancy.source = "hh.ru"
-                # Обработка snippet (специфично для HH)
-                snippet = item.get("snippet", {})
+                # Проверяем что есть обязательные поля
+                if not item.get("name") or not item.get("alternate_url"):
+                    logger.warning(f"Пропуск вакансии без обязательных полей: {item.get('id', 'NO_ID')}")
+                    continue
 
-                if isinstance(snippet, dict):
-                    requirements = snippet.get("requirement")
-                    responsibilities = snippet.get("responsibility")
+                # Убеждаемся что источник установлен
+                if "source" not in item:
+                    item["source"] = "hh.ru"
 
-                    # Отладочная информация для определенных вакансий
-                    vacancy_id = str(item.get("id", ""))
-                    if vacancy_id in ["122732917", "122993500", "122509873", "122991966", "122865078"]:
-                        print(f"DEBUG HH Parser ID {vacancy_id}:")
-                        print(f"  raw item keys = {list(item.keys())}")
-                        print(f"  snippet = {snippet}")
-                        print(f"  requirements = {requirements}")
-                        print(f"  responsibilities = {responsibilities}")
-                        # Проверим, что передается в HHVacancy
-                        # print(f"  hh_vacancy.requirements = {hh_vacancy.requirements}")
-                        # print(f"  hh_vacancy.responsibilities = {hh_vacancy.responsibilities}")
-                # Затем конвертируем в унифицированный формат
-                # unified_vacancy = self.convert_to_unified_format(hh_vacancy)
-                # vacancies.append(unified_vacancy)
+                # Создаем объект вакансии напрямую из данных API
+                vacancy = Vacancy.from_dict(item)
+                
+                # Отладочная информация
+                vacancy_id = str(item.get("id", ""))
+                if vacancy_id in ["124403607", "124403580", "124403642"]:
+                    print(f"DEBUG HH Parser: Обрабатывается вакансия ID {vacancy_id}: {item.get('name')}")
+                    print(f"DEBUG HH Parser: Созданная вакансия имеет ID: {vacancy.vacancy_id}")
 
-                # Если есть имя и альтернативный URL, то добавляем вакансию
-                if item.get("name") and item.get("alternate_url"):
-                    # Отладочная информация для проблемных ID
-                    vacancy_id = str(item.get("id", ""))
-                    if vacancy_id in ["124403607", "124403580", "124403642"]:
-                        print(f"DEBUG HH Parser: Обрабатывается вакансия ID {vacancy_id}: {item.get('name')}")
-                        print(f"DEBUG HH Parser: item.keys() = {list(item.keys())}")
-
-                    vacancy = Vacancy.from_dict(item)
-                    if vacancy_id in ["124403607", "124403580", "124403642"]:
-                        print(f"DEBUG HH Parser: Созданная вакансия имеет ID: {vacancy.vacancy_id}")
-
-                    vacancies.append(vacancy)
+                vacancies.append(vacancy)
 
             except Exception as e:
                 logger.warning(f"Ошибка парсинга HH вакансии: {e}")
