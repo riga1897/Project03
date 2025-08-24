@@ -104,7 +104,12 @@ class VacancyFormatter(BaseFormatter):
             vacancy_data = vacancy
 
         # Извлекаем информацию
-        vacancy_id = getattr(vacancy_data, 'vacancy_id', vacancy_data.get('vacancy_id', 'N/A'))
+        if hasattr(vacancy_data, 'vacancy_id'):
+            vacancy_id = vacancy_data.vacancy_id
+        elif isinstance(vacancy_data, dict):
+            vacancy_id = vacancy_data.get('vacancy_id', 'N/A')
+        else:
+            vacancy_id = 'N/A'
 
         # Отладка для отслеживания проблемы
         if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
@@ -115,12 +120,18 @@ class VacancyFormatter(BaseFormatter):
             elif isinstance(vacancy_data, dict) and 'employer' in vacancy_data:
                 print(f"DEBUG VacancyFormatter.format_vacancy_info: vacancy_data['employer'] = {vacancy_data.get('employer')}")
 
-        title = getattr(vacancy_data, 'title', vacancy_data.get('title', 'Название не указано'))
-        url = (
-            getattr(vacancy_data, 'url', None) or
-            vacancy_data.get('url', '') or
-            vacancy_data.get('link', '')
-        )
+        if hasattr(vacancy_data, 'title'):
+            title = vacancy_data.title
+        elif isinstance(vacancy_data, dict):
+            title = vacancy_data.get('title', 'Название не указано')
+        else:
+            title = 'Название не указано'
+        if hasattr(vacancy_data, 'url'):
+            url = vacancy_data.url or ''
+        elif isinstance(vacancy_data, dict):
+            url = vacancy_data.get('url', '') or vacancy_data.get('link', '')
+        else:
+            url = ''
 
         # Получение информации о компании
         company_name = VacancyFormatter._extract_company_name(vacancy_data)
@@ -133,22 +144,28 @@ class VacancyFormatter(BaseFormatter):
         salary_info = VacancyFormatter._extract_salary_info(vacancy_data)
 
         # Опыт работы
-        experience = (
-            getattr(vacancy_data, 'experience', None) or
-            vacancy_data.get('experience', 'Не указан')
-        )
+        if hasattr(vacancy_data, 'experience'):
+            experience = vacancy_data.experience or 'Не указан'
+        elif isinstance(vacancy_data, dict):
+            experience = vacancy_data.get('experience', 'Не указан')
+        else:
+            experience = 'Не указан'
 
         # Тип занятости
-        employment = (
-            getattr(vacancy_data, 'employment', None) or
-            vacancy_data.get('employment', 'Не указана')
-        )
+        if hasattr(vacancy_data, 'employment'):
+            employment = vacancy_data.employment or 'Не указана'
+        elif isinstance(vacancy_data, dict):
+            employment = vacancy_data.get('employment', 'Не указана')
+        else:
+            employment = 'Не указана'
 
         # Источник
-        source = (
-            getattr(vacancy_data, 'source', None) or
-            vacancy_data.get('source', 'unknown')
-        )
+        if hasattr(vacancy_data, 'source'):
+            source = vacancy_data.source or 'unknown'
+        elif isinstance(vacancy_data, dict):
+            source = vacancy_data.get('source', 'unknown')
+        else:
+            source = 'unknown'
 
         # Описание (ограничиваем длину)
         description = VacancyFormatter._extract_description(vacancy_data)
