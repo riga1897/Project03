@@ -103,7 +103,14 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             data = self._CachedAPI__connect_to_api(self.BASE_URL, params, "hh")
             items = data.get("items", [])
 
-            return [item for item in items if self._validate_vacancy(item)]
+            # Добавляем источник к каждой вакансии и валидируем
+            validated_items = []
+            for item in items:
+                if self._validate_vacancy(item):
+                    item["source"] = "hh.ru"
+                    validated_items.append(item)
+            
+            return validated_items
 
         except Exception as e:
             logger.error(f"Failed to get vacancies page {page}: {e}")

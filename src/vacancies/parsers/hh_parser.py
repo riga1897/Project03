@@ -49,6 +49,9 @@ class HHParser:
                 hh_vacancy = Vacancy.from_dict(item)
                 # Устанавливаем raw_data для доступа к исходным данным
                 hh_vacancy.raw_data = item
+                # Устанавливаем источник если не установлен
+                if not hh_vacancy.source or hh_vacancy.source == "unknown":
+                    hh_vacancy.source = "hh.ru"
                 # Обработка snippet (специфично для HH)
                 snippet = item.get("snippet", {})
 
@@ -99,5 +102,5 @@ class HHParser:
             skills=hh_vacancy.skills,
             detailed_description=hh_vacancy.detailed_description,
             benefits=hh_vacancy.benefits,
-            source=hh_vacancy.source,
+            source=hh_vacancy.source or "hh.ru",
         )
