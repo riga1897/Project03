@@ -450,40 +450,8 @@ class JSONSaver:
             return 0
 
     # Реализация новых методов бизнес-логики через fallback
-    def get_vacancies_paginated(self, page: int = 1, page_size: int = 10, 
-                              filters: Optional[Dict[str, Any]] = None,
-                              sort_by: str = "created_at", sort_desc: bool = True) -> Tuple[List[Vacancy], int]:
-        """Пагинация через Python (fallback)"""
-        vacancies = self.get_vacancies()
-        return JSONBusinessLogic.get_vacancies_paginated(
-            vacancies, page, page_size, filters, sort_by, sort_desc
-        )
-
-    def search_vacancies_advanced(self, keywords: List[str], salary_range: Optional[Tuple[int, int]] = None,
-                                experience_levels: Optional[List[str]] = None,
-                                employment_types: Optional[List[str]] = None,
-                                page: int = 1, page_size: int = 10) -> Tuple[List[Vacancy], int]:
-        """Расширенный поиск через Python (fallback)"""
-        vacancies = self.get_vacancies()
-        return JSONBusinessLogic.search_vacancies_advanced(
-            vacancies, keywords, salary_range, experience_levels, employment_types, page, page_size
-        )
-
-    def get_salary_statistics(self, filters: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-        """Статистика зарплат через Python (fallback)"""
-        vacancies = self.get_vacancies()
-        return JSONBusinessLogic.get_salary_statistics(vacancies, filters)
-
-    def get_top_employers(self, limit: int = 10, filters: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
-        """Топ работодателей через Python (fallback)"""
-        vacancies = self.get_vacancies()
-        return JSONBusinessLogic.get_top_employers(vacancies, limit, filters)
-
-    def get_popular_keywords(self, limit: int = 20, filters: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
-        """Популярные ключевые слова через Python (fallback)"""
-        vacancies = self.get_vacancies()
-        return JSONBusinessLogic.get_popular_keywords(vacancies, limit, filters)
-
+    # Удалены методы get_vacancies_paginated, search_vacancies_advanced, get_salary_statistics, get_top_employers, get_popular_keywords
+    # так как они были связаны с расширенной аналитикой.
 
     @staticmethod
     def _vacancy_to_dict(vacancy: Vacancy) -> Dict[str, Any]:
