@@ -60,7 +60,7 @@ class VacancyDisplayHandler:
             return
 
         try:
-            vacancies = self.json_saver.get_vacancies()
+            vacancies = self.storage.get_vacancies()
 
             if not vacancies:
                 print("Нет сохраненных вакансий.")
@@ -102,7 +102,7 @@ class VacancyDisplayHandler:
             return
 
         try:
-            vacancies = self.json_saver.get_vacancies()
+            vacancies = self.storage.get_vacancies()
 
             if not vacancies:
                 print("Нет сохраненных вакансий.")
