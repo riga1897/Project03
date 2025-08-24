@@ -6,7 +6,6 @@ import pytest
 import json
 import os
 from unittest.mock import Mock, patch, MagicMock
-from src.storage.json_saver import JSONSaver
 from src.storage.postgres_saver import PostgresSaver
 from src.vacancies.models import Vacancy
 
