@@ -156,20 +156,50 @@ class CachedAPI(BaseJobAPI, ABC):
             if hasattr(self._cached_api_request, "cache_info"):
                 memory_info = self._cached_api_request.cache_info()
 
-            # Анализ файлов кэша
+            # Детальный анализ файлов кэша
             total_size = 0
             valid_files = 0
             invalid_files = 0
+            oldest_file = None
+            newest_file = None
+            file_sizes = []
+            search_queries = []
             
             for cache_file in cache_files:
                 try:
-                    total_size += cache_file.stat().st_size
-                    # Проверяем валидность JSON
+                    stat = cache_file.stat()
+                    total_size += stat.st_size
+                    file_sizes.append(stat.st_size)
+                    
+                    # Отслеживаем самый старый и новый файл
+                    if oldest_file is None or stat.st_mtime < oldest_file[1]:
+                        oldest_file = (cache_file.name, stat.st_mtime)
+                    if newest_file is None or stat.st_mtime > newest_file[1]:
+                        newest_file = (cache_file.name, stat.st_mtime)
+                    
+                    # Проверяем валидность JSON и извлекаем метаданные
                     with open(cache_file, 'r', encoding='utf-8') as f:
-                        json.load(f)
-                    valid_files += 1
+                        data = json.load(f)
+                        valid_files += 1
+                        
+                        # Извлекаем поисковые запросы
+                        meta = data.get('meta', {})
+                        params = meta.get('params', {})
+                        if 'text' in params:
+                            search_queries.append(params['text'])
+                            
                 except Exception:
                     invalid_files += 1
+            
+            # Статистика по размерам файлов
+            avg_file_size = sum(file_sizes) / len(file_sizes) if file_sizes else 0
+            max_file_size = max(file_sizes) if file_sizes else 0
+            
+            # Популярные поисковые запросы
+            query_stats = {}
+            for query in search_queries:
+                query_stats[query] = query_stats.get(query, 0) + 1
+            popular_queries = sorted(query_stats.items(), key=lambda x: x[1], reverse=True)[:5]
 
             return {
                 "cache_dir": str(self.cache_dir),
@@ -178,7 +208,14 @@ class CachedAPI(BaseJobAPI, ABC):
                 "valid_files": valid_files,
                 "invalid_files": invalid_files,
                 "total_size_mb": round(total_size / (1024 * 1024), 2),
-                "cache_files": [f.name for f in cache_files[:10]],  # Показываем только первые 10
+                "avg_file_size_kb": round(avg_file_size / 1024, 2),
+                "max_file_size_kb": round(max_file_size / 1024, 2),
+                "oldest_file": oldest_file[0] if oldest_file else None,
+                "newest_file": newest_file[0] if newest_file else None,
+                "cache_age_days": round((time.time() - oldest_file[1]) / 86400, 1) if oldest_file else 0,
+                "popular_queries": popular_queries,
+                "unique_queries": len(query_stats),
+                "cache_files": [f.name for f in cache_files[:5]],  # Показываем первые 5
                 "memory_cache": memory_info,
             }
         except Exception as e:
