@@ -106,7 +106,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
 
     def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs) -> List[Dict]:
         """
-        Получение и валидация одной страницы вакансий (аналогично HH API)
+        Получение одной страницы вакансий (адаптировано под паттерн HH API)
 
         Args:
             search_query: Поисковый запрос
@@ -117,7 +117,9 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             List[Dict]: Список валидных вакансий со страницы
         """
         try:
-            params = self.config.get_params(keyword=search_query, page=page, **kwargs)
+            # Приводим поисковый запрос к нижнему регистру для регистронезависимого поиска
+            search_query_lower = search_query.lower() if search_query else search_query
+            params = self.config.get_params(keyword=search_query_lower, page=page, **kwargs)
 
             data = self._CachedAPI__connect_to_api(self.BASE_URL, params, "sj")
             items = data.get("objects", [])
@@ -143,20 +145,25 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
         1. Получает метаданные о количестве результатов
         2. Рассчитывает необходимое количество страниц
         3. Обрабатывает все страницы с помощью унифицированного пагинатора
-        4. Валидирует каждую вакансию
+        4. Возвращает дедуплицированный список вакансий
 
         Args:
             search_query: Поисковый запрос
             **kwargs: Дополнительные параметры поиска
 
         Returns:
-            List[Dict]: Список всех найденных и валидных вакансий
+            List[Dict]: Список всех найденных вакансий
         """
         try:
-            # Initial request for metadata (как в HH API)
+            # Приводим поисковый запрос к нижнему регистру для регистронезависимого поиска
+            search_query_lower = search_query.lower() if search_query else search_query
+
+            # Получаем первую страницу для метаданных
+            first_page_params = self.config.get_params(keyword=search_query_lower, page=0, **kwargs)
+
             initial_data = self._CachedAPI__connect_to_api(
                 self.BASE_URL,
-                self.config.get_params(keyword=search_query, count=1, **kwargs),  # Минимальные данные сначала
+                first_page_params,  # Минимальные данные сначала
                 "sj",
             )
 
