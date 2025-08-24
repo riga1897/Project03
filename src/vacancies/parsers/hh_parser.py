@@ -61,7 +61,17 @@ class HHParser:
                 vacancy_id = str(item.get("id", ""))
                 if vacancy_id in ["124403607", "124403580", "124403642"]:
                     print(f"DEBUG HH Parser: Обрабатывается вакансия ID {vacancy_id}: {item.get('name')}")
+                    print(f"DEBUG HH Parser: item содержит ключи: {list(item.keys())}")
+                    print(f"DEBUG HH Parser: item['id'] = {item.get('id')}")
+                    print(f"DEBUG HH Parser: Передаем в Vacancy.from_dict...")
+                    
+                vacancy = Vacancy.from_dict(item)
+                
+                if vacancy_id in ["124403607", "124403580", "124403642"]:
                     print(f"DEBUG HH Parser: Созданная вакансия имеет ID: {vacancy.vacancy_id}")
+                    print(f"DEBUG HH Parser: Ожидали ID: {vacancy_id}")
+                    if vacancy.vacancy_id != vacancy_id:
+                        print(f"❌ ОШИБКА: ID изменился с {vacancy_id} на {vacancy.vacancy_id}!")
 
                 vacancies.append(vacancy)
 

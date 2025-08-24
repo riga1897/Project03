@@ -71,8 +71,12 @@ class Vacancy(AbstractVacancy):
         # Используем переданный ID, если есть, иначе генерируем UUID
         if vacancy_id and str(vacancy_id).strip() and str(vacancy_id) != "":
             self.vacancy_id = str(vacancy_id)
+            # Отладка для отслеживания присвоения ID
+            if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
+                print(f"DEBUG Vacancy.__init__: Присвоен оригинальный ID {self.vacancy_id} для '{title}'")
         else:
             self.vacancy_id = str(uuid.uuid4())
+            print(f"DEBUG Vacancy.__init__: Сгенерирован UUID {self.vacancy_id} для '{title}' (оригинальный ID был: '{vacancy_id}')")
         self.title = title
         self.url = url
         self.salary = self._validate_salary(salary)
@@ -183,8 +187,13 @@ class Vacancy(AbstractVacancy):
             vacancy_id = data.get("id")
             if vacancy_id:
                 vacancy_id = str(vacancy_id)
+                # Отладка для отслеживания ID
+                if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
+                    print(f"DEBUG Vacancy.from_dict: Извлечен ID {vacancy_id} для вакансии '{data.get('name', 'NO_NAME')}'")
             else:
                 vacancy_id = ""
+                print(f"DEBUG Vacancy.from_dict: НЕТ ID в данных для вакансии '{data.get('name', 'NO_NAME')}'")
+                print(f"DEBUG Vacancy.from_dict: Доступные ключи в data: {list(data.keys())}")
 
             # Обработка зарплаты (универсальная для всех источников)
             salary = data.get("salary")
