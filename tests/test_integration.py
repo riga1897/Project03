@@ -209,6 +209,7 @@ class TestIntegrationWorkflow:
         parser = HHParser()
         parsed_vacancies = parser.parse_vacancies(raw_vacancies)
 
+        # Проверяем, что получили ожидаемую вакансию
         assert len(parsed_vacancies) == 1
         assert isinstance(parsed_vacancies[0], Vacancy)
         assert parsed_vacancies[0].title == "Python Developer"
