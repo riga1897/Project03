@@ -130,10 +130,13 @@ class UnifiedAPI:
         if all_vacancies:
             print(f"\nВсего найдено {len(all_vacancies)} вакансий")
 
-            # Показываем объединенную статистику
-            if all_vacancies and (hh_vacancies or sj_vacancies):
+            # Показываем объединенную статистику только для сырых данных
+            if hh_vacancies or sj_vacancies:
                 from src.utils.vacancy_stats import VacancyStats
-                VacancyStats.display_source_stats(hh_vacancies or [], sj_vacancies or [])
+                # Получаем сырые данные для статистики
+                hh_raw = self.hh_api.get_vacancies_with_deduplication(search_query, **kwargs) if "hh" in sources else []
+                sj_raw = sj_data if "sj" in sources and 'sj_data' in locals() else []
+                VacancyStats.display_source_stats(hh_raw, sj_raw)
 
             return self._deduplicate_cross_platform(all_vacancies)
         else:
@@ -288,11 +291,6 @@ class UnifiedAPI:
         if all_vacancies:
             logger.info(f"Всего найдено {len(all_vacancies)} уникальных вакансий от целевых компаний")
             print(f"Всего найдено {len(all_vacancies)} уникальных вакансий от целевых компаний")
-
-            # Показываем объединенную статистику
-            if all_vacancies or hh_vacancies or sj_vacancies:
-                from src.utils.vacancy_stats import VacancyStats
-                VacancyStats.display_source_stats(hh_vacancies or [], sj_vacancies or [])
 
             return all_vacancies
         else:
