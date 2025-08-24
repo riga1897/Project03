@@ -98,7 +98,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         try:
             # Приводим поисковый запрос к нижнему регистру для регистронезависимого поиска
             search_query_lower = search_query.lower() if search_query else search_query
-            params = self._config.get_params(text=search_query_lower, page=page, **kwargs)
+            params = self._config.hh_config.get_params(text=search_query_lower, page=page, **kwargs)
 
             data = self._CachedAPI__connect_to_api(self.BASE_URL, params, "hh")
             items = data.get("items", [])
@@ -131,7 +131,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
 
             # Initial request for metadata
             initial_data = self._CachedAPI__connect_to_api(
-                self.BASE_URL, self._config.get_params(text=search_query_lower, page=0, per_page=1, **kwargs), "hh"
+                self.BASE_URL, self._config.hh_config.get_params(text=search_query_lower, page=0, per_page=1, **kwargs), "hh"
             )
 
             if not initial_data.get("found", 0):
