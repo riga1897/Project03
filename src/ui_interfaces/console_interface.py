@@ -58,7 +58,6 @@ class UserInterface:
 
         # Инициализируем обработчики
         self.display_handler = VacancyDisplayHandler(self.storage)
-        self.operations_coordinator = VacancyOperationsCoordinator(self.storage)
         self.search_handler = VacancySearchHandler(self.unified_api, self.storage)
         self.analytics_handler = AdvancedAnalyticsHandler(self.storage)
 
@@ -83,7 +82,7 @@ class UserInterface:
                 elif choice == "6":
                     self._filter_saved_vacancies_by_salary()
                 elif choice == "7":
-                    self.operations_coordinator.handle_vacancy_deletion()
+                    self.coordinator.handle_delete_vacancies()
 
                 elif choice == "8":
                     self.analytics_handler.show_analytics_menu()
