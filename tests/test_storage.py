@@ -26,7 +26,7 @@ class TestJSONSaver:
         with open(temp_json_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
             assert len(data) == 1
-            assert data[0]['vacancy_id'] == '12345'
+            assert data[0]['id'] == '12345'
 
     def test_add_duplicate_vacancy(self, temp_json_file, sample_vacancy):
         """Тест добавления дублирующейся вакансии"""
@@ -125,7 +125,8 @@ class TestPostgresSaver:
         assert connection == mock_connection
 
     @patch('src.storage.postgres_saver.psycopg2.connect')
-    def test_add_vacancy_success(self, mock_connect, sample_vacancy):
+    @patch('src.storage.postgres_saver.execute_values')
+    def test_add_vacancy_success(self, mock_execute_values, mock_connect, sample_vacancy):
         """Тест успешного добавления вакансии"""
         # Настраиваем мок-объекты
         mock_connection = Mock()
@@ -133,6 +134,9 @@ class TestPostgresSaver:
         mock_connect.return_value = mock_connection
         mock_connection.cursor.return_value = mock_cursor
         mock_cursor.fetchall.return_value = []  # Нет существующих вакансий
+        
+        # Настраиваем encoding для connection
+        mock_connection.encoding = 'UTF8'
 
         # Создаем PostgresSaver с мок-конфигурацией
         with patch.object(PostgresSaver, '_ensure_database_exists'), \
