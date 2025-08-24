@@ -379,17 +379,41 @@ class DBManagerDemo:
         total_vacancies = 0
         companies_with_vacancies = 0
         
+        # Сопоставления названий компаний между целевыми и теми, что в БД
+        company_mappings = {
+            "Яндекс": ["Яндекс"],
+            "Тинькофф": ["Т-Банк", "Tinkoff", "Тинькофф"],
+            "СБЕР": ["Сбербанк", "СБЕР", "Sberbank"],
+            "Wildberries": ["Wildberries", "WB"],
+            "OZON": ["Ozon", "OZON"],
+            "VK (ВКонтакте)": ["VK", "ВКонтакте", "ВК"],
+            "Kaspersky": ["Kaspersky", "Лаборатория Касперского"],
+            "Авито": ["Авито", "Avito"],
+            "X5 Retail Group": ["X5", "X5 Retail Group"],
+            "Ростелеком": ["Ростелеком", "Rostelecom"],
+            "Альфа-Банк": ["Альфа-Банк", "Alfa-Bank"],
+            "JetBrains": ["JetBrains"],
+            "2GIS": ["2ГИС", "2GIS"],
+            "Skyeng": ["Skyeng"],
+            "Delivery Club": ["Delivery Club"]
+        }
+        
         # Показываем все 15 целевых компаний
         for i, company in enumerate(TARGET_COMPANIES, 1):
             company_name = company['name']
             
-            # Ищем компанию в результатах (может быть небольшие различия в названиях)
+            # Ищем компанию в результатах используя сопоставления
             vacancy_count = 0
+            possible_names = company_mappings.get(company_name, [company_name])
+            
             for db_name, count in companies_dict.items():
-                if (company_name.lower() in db_name.lower() or 
-                    db_name.lower() in company_name.lower() or
-                    company_name == db_name):
-                    vacancy_count = count
+                for possible_name in possible_names:
+                    if (possible_name.lower() in db_name.lower() or 
+                        db_name.lower() in possible_name.lower() or
+                        possible_name.lower() == db_name.lower()):
+                        vacancy_count = max(vacancy_count, count)  # Берем максимальное значение
+                        break
+                if vacancy_count > 0:
                     break
             
             status = "✅" if vacancy_count > 0 else "❌"
