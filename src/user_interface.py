@@ -5,33 +5,38 @@
 
 import logging
 
-from src.ui_interfaces.console_interface import UserInterface
-from src.utils.env_loader import EnvLoader
+from src.config.app_config import AppConfig
 from src.storage.storage_factory import StorageFactory
+from src.ui_interfaces.console_interface import ConsoleInterface
+from src.utils.menu_manager import MenuManager
 
 
 def main() -> None:
-    """Точка входа для пользовательского интерфейса"""
-    # Загружаем переменные окружения из .env файла
-    EnvLoader.load_env_file()
+    """
+    Основная функция для запуска пользовательского интерфейса
+    """
+    try:
+        # Создаем менеджер меню
+        menu_manager = MenuManager()
 
-    # Получаем уровень логирования из переменных окружения
-    log_level = EnvLoader.get_env_var("LOG_LEVEL", "INFO").upper()
-    log_level_value = getattr(logging, log_level, logging.INFO)
+        # Инициализируем конфигурацию приложения
+        app_config = AppConfig()
 
-    # Настройка логирования
-    logging.basicConfig(
-        level=log_level_value,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        handlers=[logging.FileHandler("user_interface.log"), logging.StreamHandler()],
-    )
+        # Создаем хранилище согласно конфигурации
+        storage = StorageFactory.create_storage(app_config.default_storage_type)
 
-    print("=" * 60)
-    print("   ПОИСКОВИК ВАКАНСИЙ")
-    print("=" * 60)
+        # Создаем консольный интерфейс с хранилищем
+        console_interface = ConsoleInterface(storage)
 
-    ui = UserInterface()
-    ui.run()
+        # Запускаем основной цикл интерфейса
+        console_interface.run()
+
+    except KeyboardInterrupt:
+        print("\n\nРабота прервана пользователем. До свидания!")
+    except Exception as e:
+        logger.error(f"Непредвиденная ошибка: {e}")
+        print(f"\nПроизошла непредвиденная ошибка: {e}")
+        print("Обратитесь к разработчику для решения проблемы.")
 
 
 if __name__ == "__main__":
