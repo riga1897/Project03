@@ -169,7 +169,7 @@ class PostgresSaver:
                 logger.info("Добавляем поле source в существующую таблицу...")
                 cursor.execute("ALTER TABLE vacancies ADD COLUMN source VARCHAR(50) DEFAULT 'unknown';")
                 logger.info("✓ Поле source добавлено")
-            
+
             # Проверяем существование поля company_id и добавляем если его нет
             cursor.execute("""
                 SELECT column_name 
@@ -247,7 +247,7 @@ class PostgresSaver:
             try:
                 # Ensure companies table exists before querying
                 self._ensure_companies_table_exists()
-                
+
                 cursor.execute("SELECT hh_id, company_id, name FROM companies")
                 companies = cursor.fetchall()
 
@@ -323,7 +323,7 @@ class PostgresSaver:
                     vacancy.description, vacancy.requirements, vacancy.responsibilities,
                     vacancy.experience, vacancy.employment, vacancy.schedule,
                     employer_str, area_str, vacancy.source, vacancy.published_at,
-                    mapped_company_id # Используем найденный company_id
+                    str(mapped_company_id) if mapped_company_id is not None else None # Преобразуем в строку
                 ))
 
             # Bulk insert во временную таблицу
@@ -362,12 +362,7 @@ class PostgresSaver:
                 UPDATE vacancies v SET
                     title = t.title,
                     url = t.url,
-                    salary_from = t.salary_from,
-                    salary_to = t.salary_to,
-                    salary_currency = t.salary_currency,
                     description = t.description,
-                    requirements = t.requirements,
-                    responsibilities = t.responsibilities,
                     experience = t.experience,
                     employment = t.employment,
                     schedule = t.schedule,
@@ -533,7 +528,7 @@ class PostgresSaver:
                                 if alt_name in employer_lower or employer_lower in alt_name:
                                     mapped_company_id = comp_id
                                     break
-                    
+
                     has_changes = (
                         existing['title'] != vacancy.title or
                         existing['url'] != vacancy.url or
@@ -593,7 +588,7 @@ class PostgresSaver:
                         vacancy.description, vacancy.requirements, vacancy.responsibilities,
                         vacancy.experience, vacancy.employment, vacancy.schedule,
                         employer_str, area_str, vacancy.source, vacancy.published_at,
-                        mapped_company_id # Используем найденный company_id
+                        str(mapped_company_id) if mapped_company_id is not None else None # Преобразуем в строку
                     ))
 
                 insert_query = """
@@ -658,7 +653,7 @@ class PostgresSaver:
                         salary_currency, vacancy.description, vacancy.requirements,
                         vacancy.responsibilities, vacancy.experience, vacancy.employment,
                         vacancy.schedule, employer_str, area_str, vacancy.source,
-                        vacancy.published_at, mapped_company_id, vacancy.vacancy_id # Применяем company_id
+                        vacancy.published_at, str(mapped_company_id) if mapped_company_id is not None else None, vacancy.vacancy_id # Применяем company_id как строку
                     ))
 
             connection.commit()
@@ -712,7 +707,7 @@ class PostgresSaver:
                     if standardized_employer:
                         where_conditions.append("LOWER(v.employer) LIKE LOWER(%s)")
                         params.append(f"%{standardized_employer}%")
-                
+
                 # Filter by company name directly using the join
                 if filters.get('company_name'):
                     where_conditions.append("LOWER(c.name) LIKE LOWER(%s)")
@@ -797,11 +792,11 @@ class PostgresSaver:
                 # Для отладки - также сохраняем название компании напрямую
                 if row['employer']:
                     vacancy._employer_name = row['employer']
-                
+
                 # Set company_id if available
                 if row.get('company_id'):
                     vacancy.company_id = row['company_id']
-                
+
                 # Set company name if available from the join
                 if row.get('company_name'):
                     vacancy.company_name = row['company_name']
@@ -1053,7 +1048,7 @@ class PostgresSaver:
                     if standardized_employer:
                         where_conditions.append("LOWER(employer) LIKE LOWER(%s)")
                         params.append(f"%{standardized_employer}%")
-                
+
                 # Filter by company name directly
                 if filters.get('company_name'):
                     where_conditions.append("LOWER(company_name) LIKE LOWER(%s)") # Assuming company_name is available via join
@@ -1228,7 +1223,7 @@ class PostgresSaver:
                             if alt_name in employer_lower or employer_lower in alt_name:
                                 mapped_company_id = comp_id
                                 break
-                
+
                 # Standardize employer name before storing
                 raw_employer_name = None
                 if isinstance(vacancy.employer, dict):
@@ -1250,7 +1245,7 @@ class PostgresSaver:
                     vacancy.description, vacancy.requirements, vacancy.responsibilities,
                     vacancy.experience, vacancy.employment, vacancy.schedule,
                     employer_str, area_str, vacancy.source, vacancy.published_at,
-                    mapped_company_id # Используем найденный company_id
+                    str(mapped_company_id) if mapped_company_id is not None else None # Преобразуем в строку
                 ))
 
             # Bulk insert во временную таблицу
@@ -1420,7 +1415,7 @@ class PostgresSaver:
             if standardized_employer:
                 conditions.append("LOWER(employer) LIKE LOWER(%s)")
                 params.append(f"%{standardized_employer}%")
-        
+
         if filters.get('company_id'): # Filter by company_id
             conditions.append("company_id = %s")
             params.append(filters['company_id'])
@@ -1455,7 +1450,7 @@ class PostgresSaver:
             );
             """
             cursor.execute(create_table_query)
-            
+
             # Add index for company_id if it doesn't exist
             cursor.execute("""
                 SELECT COUNT(*) 
