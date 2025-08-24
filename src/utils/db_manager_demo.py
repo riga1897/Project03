@@ -50,7 +50,7 @@ def demo_companies_and_vacancies_count(db_manager: DBManager) -> None:
         print("⚠️  Рекомендация: Выполните поиск вакансий от целевых компаний для получения данных")
     
     print(f"\nВсего целевых компаний: {len(companies_stats)}")
-        def demo_all_vacancies(db_manager: DBManager) -> None:
+def demo_all_vacancies(db_manager: DBManager) -> None:
     """
     Демонстрация метода get_all_vacancies()
     """
