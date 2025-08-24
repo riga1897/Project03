@@ -156,3 +156,61 @@ class VacancyStats:
             
         if sj_vacancies:
             VacancyStats.display_company_stats(sj_vacancies, "SuperJob")
+    
+    @staticmethod
+    def analyze_company_mapping(vacancies: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Анализ маппинга компаний для диагностики потери company_id
+        
+        Args:
+            vacancies: Список вакансий для анализа
+            
+        Returns:
+            Dict с результатами анализа
+        """
+        total_vacancies = len(vacancies)
+        with_employer = 0
+        without_employer = 0
+        unique_employers = set()
+        
+        for vacancy in vacancies:
+            employer_name = VacancyStats._extract_company_name(vacancy)
+            
+            if employer_name and employer_name != "Неизвестная компания":
+                with_employer += 1
+                unique_employers.add(employer_name)
+            else:
+                without_employer += 1
+        
+        return {
+            'total_vacancies': total_vacancies,
+            'with_employer': with_employer,
+            'without_employer': without_employer,
+            'employer_coverage': (with_employer / total_vacancies * 100) if total_vacancies > 0 else 0,
+            'unique_employers': len(unique_employers),
+            'employer_names': sorted(list(unique_employers))
+        }
+    
+    @staticmethod
+    def display_company_mapping_analysis(vacancies: List[Dict[str, Any]]):
+        """
+        Отобразить анализ маппинга компаний
+        
+        Args:
+            vacancies: Список вакансий для анализа
+        """
+        analysis = VacancyStats.analyze_company_mapping(vacancies)
+        
+        print(f"\n🔍 Анализ маппинга компаний:")
+        print(f"Всего вакансий: {analysis['total_vacancies']}")
+        print(f"С указанным работодателем: {analysis['with_employer']} ({analysis['employer_coverage']:.1f}%)")
+        print(f"Без работодателя: {analysis['without_employer']}")
+        print(f"Уникальных работодателей: {analysis['unique_employers']}")
+        
+        if analysis['employer_names']:
+            print(f"\nТоп-10 работодателей:")
+            for i, employer in enumerate(analysis['employer_names'][:10], 1):
+                print(f"  {i}. {employer}")
+            
+            if len(analysis['employer_names']) > 10:
+                print(f"  ... и еще {len(analysis['employer_names']) - 10} работодателей")

@@ -287,27 +287,44 @@ class PostgresSaver:
             for vacancy in vacancies:
                 # Определяем company_id на основе employer
                 mapped_company_id = None
+                employer_name = None
+
                 if vacancy.employer:
                     # Правильно извлекаем имя работодателя
-                    employer_name = None
                     if isinstance(vacancy.employer, dict):
                         employer_name = vacancy.employer.get('name')
+                        # Также проверяем возможное поле id
+                        if not mapped_company_id and 'id' in vacancy.employer:
+                            mapped_company_id = company_mapping.get(vacancy.employer['id'])
                     elif isinstance(vacancy.employer, str):
                         employer_name = vacancy.employer
                     else:
                         employer_name = str(vacancy.employer)
 
-                    if employer_name:
-                        employer_lower = employer_name.lower()
-                        # Прямое соответствие
+                    if employer_name and employer_name.strip():
+                        employer_lower = employer_name.lower().strip()
+
+                        # 1. Прямое соответствие по названию
                         mapped_company_id = company_mapping.get(employer_lower)
 
-                        # Поиск частичного соответствия
+                        # 2. Поиск частичного соответствия (улучшенный)
                         if not mapped_company_id:
+                            # Сначала ищем точные вхождения
                             for alt_name, comp_id in company_mapping.items():
-                                if alt_name in employer_lower or employer_lower in alt_name:
+                                if alt_name == employer_lower:
                                     mapped_company_id = comp_id
                                     break
+
+                        # 3. Поиск частичного соответствия
+                        if not mapped_company_id:
+                            for alt_name, comp_id in company_mapping.items():
+                                if len(alt_name) > 2 and (alt_name in employer_lower or employer_lower in alt_name):
+                                    mapped_company_id = comp_id
+                                    break
+
+                        # 4. Логирование для отладки
+                        if not mapped_company_id and employer_name:
+                            logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
 
                 salary_from = vacancy.salary.salary_from if vacancy.salary else None
                 salary_to = vacancy.salary.salary_to if vacancy.salary else None
@@ -527,27 +544,44 @@ class PostgresSaver:
 
                     # Определяем company_id на основе employer
                     mapped_company_id = None
+                    employer_name = None
+
                     if vacancy.employer:
                         # Правильно извлекаем имя работодателя
-                        employer_name = None
                         if isinstance(vacancy.employer, dict):
                             employer_name = vacancy.employer.get('name')
+                            # Также проверяем возможное поле id
+                            if not mapped_company_id and 'id' in vacancy.employer:
+                                mapped_company_id = company_mapping.get(vacancy.employer['id'])
                         elif isinstance(vacancy.employer, str):
                             employer_name = vacancy.employer
                         else:
                             employer_name = str(vacancy.employer)
 
-                        if employer_name:
-                            employer_lower = employer_name.lower()
-                            # Прямое соответствие
+                        if employer_name and employer_name.strip():
+                            employer_lower = employer_name.lower().strip()
+
+                            # 1. Прямое соответствие по названию
                             mapped_company_id = company_mapping.get(employer_lower)
 
-                            # Поиск частичного соответствия
+                            # 2. Поиск частичного соответствия (улучшенный)
                             if not mapped_company_id:
+                                # Сначала ищем точные вхождения
                                 for alt_name, comp_id in company_mapping.items():
-                                    if alt_name in employer_lower or employer_lower in alt_name:
+                                    if alt_name == employer_lower:
                                         mapped_company_id = comp_id
                                         break
+
+                            # 3. Поиск частичного соответствия
+                            if not mapped_company_id:
+                                for alt_name, comp_id in company_mapping.items():
+                                    if len(alt_name) > 2 and (alt_name in employer_lower or employer_lower in alt_name):
+                                        mapped_company_id = comp_id
+                                        break
+
+                            # 4. Логирование для отладки
+                            if not mapped_company_id and employer_name:
+                                logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
 
                     has_changes = (
                         existing['title'] != vacancy.title or
@@ -576,27 +610,45 @@ class PostgresSaver:
 
                     # Определяем company_id на основе employer
                     mapped_company_id = None
+                    employer_name = None
+
                     if vacancy.employer:
                         # Правильно извлекаем имя работодателя
-                        employer_name = None
                         if isinstance(vacancy.employer, dict):
                             employer_name = vacancy.employer.get('name')
+                            # Также проверяем возможное поле id
+                            if not mapped_company_id and 'id' in vacancy.employer:
+                                mapped_company_id = company_mapping.get(vacancy.employer['id'])
                         elif isinstance(vacancy.employer, str):
                             employer_name = vacancy.employer
                         else:
                             employer_name = str(vacancy.employer)
 
-                        if employer_name:
-                            employer_lower = employer_name.lower()
-                            # Прямое соответствие
+                        if employer_name and employer_name.strip():
+                            employer_lower = employer_name.lower().strip()
+
+                            # 1. Прямое соответствие по названию
                             mapped_company_id = company_mapping.get(employer_lower)
 
-                            # Поиск частичного соответствия
+                            # 2. Поиск частичного соответствия (улучшенный)
                             if not mapped_company_id:
+                                # Сначала ищем точные вхождения
                                 for alt_name, comp_id in company_mapping.items():
-                                    if alt_name in employer_lower or employer_lower in alt_name:
+                                    if alt_name == employer_lower:
                                         mapped_company_id = comp_id
                                         break
+
+                            # 3. Поиск частичного соответствия
+                            if not mapped_company_id:
+                                for alt_name, comp_id in company_mapping.items():
+                                    if len(alt_name) > 2 and (alt_name in employer_lower or employer_lower in alt_name):
+                                        mapped_company_id = comp_id
+                                        break
+
+                            # 4. Логирование для отладки
+                            if not mapped_company_id and employer_name:
+                                logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
+
 
                     # Standardize employer name before storing
                     raw_employer_name = None
@@ -641,27 +693,45 @@ class PostgresSaver:
 
                     # Определяем company_id на основе employer
                     mapped_company_id = None
+                    employer_name = None
+
                     if vacancy.employer:
                         # Правильно извлекаем имя работодателя
-                        employer_name = None
                         if isinstance(vacancy.employer, dict):
                             employer_name = vacancy.employer.get('name')
+                            # Также проверяем возможное поле id
+                            if not mapped_company_id and 'id' in vacancy.employer:
+                                mapped_company_id = company_mapping.get(vacancy.employer['id'])
                         elif isinstance(vacancy.employer, str):
                             employer_name = vacancy.employer
                         else:
                             employer_name = str(vacancy.employer)
 
-                        if employer_name:
-                            employer_lower = employer_name.lower()
-                            # Прямое соответствие
+                        if employer_name and employer_name.strip():
+                            employer_lower = employer_name.lower().strip()
+
+                            # 1. Прямое соответствие по названию
                             mapped_company_id = company_mapping.get(employer_lower)
 
-                            # Поиск частичного соответствия
+                            # 2. Поиск частичного соответствия (улучшенный)
                             if not mapped_company_id:
+                                # Сначала ищем точные вхождения
                                 for alt_name, comp_id in company_mapping.items():
-                                    if alt_name in employer_lower or employer_lower in alt_name:
+                                    if alt_name == employer_lower:
                                         mapped_company_id = comp_id
                                         break
+
+                            # 3. Поиск частичного соответствия
+                            if not mapped_company_id:
+                                for alt_name, comp_id in company_mapping.items():
+                                    if len(alt_name) > 2 and (alt_name in employer_lower or employer_lower in alt_name):
+                                        mapped_company_id = comp_id
+                                        break
+
+                            # 4. Логирование для отладки
+                            if not mapped_company_id and employer_name:
+                                logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
+
 
                     # Standardize employer name before storing
                     raw_employer_name = None
@@ -1252,27 +1322,45 @@ class PostgresSaver:
 
                 # Определяем company_id на основе employer
                 mapped_company_id = None
+                employer_name = None
+
                 if vacancy.employer:
                     # Правильно извлекаем имя работодателя
-                    employer_name = None
                     if isinstance(vacancy.employer, dict):
                         employer_name = vacancy.employer.get('name')
+                        # Также проверяем возможное поле id
+                        if not mapped_company_id and 'id' in vacancy.employer:
+                            mapped_company_id = company_mapping.get(vacancy.employer['id'])
                     elif isinstance(vacancy.employer, str):
                         employer_name = vacancy.employer
                     else:
                         employer_name = str(vacancy.employer)
 
-                    if employer_name:
-                        employer_lower = employer_name.lower()
-                        # Прямое соответствие
+                    if employer_name and employer_name.strip():
+                        employer_lower = employer_name.lower().strip()
+
+                        # 1. Прямое соответствие по названию
                         mapped_company_id = company_mapping.get(employer_lower)
 
-                        # Поиск частичного соответствия
+                        # 2. Поиск частичного соответствия (улучшенный)
                         if not mapped_company_id:
+                            # Сначала ищем точные вхождения
                             for alt_name, comp_id in company_mapping.items():
-                                if alt_name in employer_lower or employer_lower in alt_name:
+                                if alt_name == employer_lower:
                                     mapped_company_id = comp_id
                                     break
+
+                        # 3. Поиск частичного соответствия
+                        if not mapped_company_id:
+                            for alt_name, comp_id in company_mapping.items():
+                                if len(alt_name) > 2 and (alt_name in employer_lower or employer_lower in alt_name):
+                                    mapped_company_id = comp_id
+                                    break
+
+                        # 4. Логирование для отладки
+                        if not mapped_company_id and employer_name:
+                            logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
+
 
                 # Standardize employer name before storing
                 raw_employer_name = None
