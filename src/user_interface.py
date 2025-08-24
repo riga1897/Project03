@@ -7,6 +7,7 @@ import logging
 
 from src.ui_interfaces.console_interface import UserInterface
 from src.utils.env_loader import EnvLoader
+from src.storage.storage_factory import StorageFactory
 
 
 def main() -> None:

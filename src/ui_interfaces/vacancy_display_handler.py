@@ -18,20 +18,20 @@ class VacancyDisplayHandler:
     сохраненных вакансий.
     """
 
-    def __init__(self, json_saver: JSONSaver):
+    def __init__(self, storage):
         """
         Инициализация обработчика отображения
 
         Args:
-            json_saver: Сервис работы с сохраненными данными
+            storage: Сервис работы с сохраненными данными (JSON или PostgreSQL)
         """
-        self.json_saver = json_saver
+        self.storage = storage
         self.vacancy_ops = VacancyOperations()
 
     def show_all_saved_vacancies(self) -> None:
         """Отображение всех сохраненных вакансий с постраничным просмотром"""
         try:
-            vacancies = self.json_saver.get_vacancies()
+            vacancies = self.storage.get_vacancies()
 
             if not vacancies:
                 print("\nНет сохраненных вакансий.")
