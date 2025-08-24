@@ -51,7 +51,7 @@ class VacancySearchHandler:
         if period is None:
             return
 
-        print(f"\nИщем вакансии по запросу: '{query}' за последние {period} дней...")
+        print(f"\nИщем вакансии от целевых компаний по запросу: '{query}' за последние {period} дней...")
 
         # Получение вакансий
         try:
@@ -72,7 +72,7 @@ class VacancySearchHandler:
 
     def _fetch_vacancies_from_sources(self, sources: set, query: str, period: int) -> List[Vacancy]:
         """
-        Получение вакансий из выбранных источников
+        Получение вакансий из выбранных источников только от целевых компаний
 
         Args:
             sources: Множество выбранных источников
@@ -80,29 +80,35 @@ class VacancySearchHandler:
             period: Период поиска в днях
 
         Returns:
-            List[Vacancy]: Список найденных вакансий
+            List[Vacancy]: Список найденных вакансий от целевых компаний
         """
-        all_vacancies = []
-
-        if "hh" in sources:
-            print("Получение вакансий с HH.ru...")
-            hh_vacancies = self.unified_api.get_hh_vacancies(query, period=period)
-            if hh_vacancies:
-                all_vacancies.extend(hh_vacancies)
-                print(f"Найдено {len(hh_vacancies)} вакансий на HH.ru")
+        print("Поиск вакансий только от целевых компаний...")
+        
+        # Конвертируем set в list для передачи в UnifiedAPI
+        sources_list = list(sources)
+        
+        # Получаем вакансии от целевых компаний через унифицированный API
+        try:
+            vacancies_data = self.unified_api.get_vacancies_from_target_companies(
+                search_query=query, 
+                sources=sources_list, 
+                period=period
+            )
+            
+            # Конвертируем Dict обратно в объекты Vacancy
+            from src.vacancies.models import Vacancy
+            all_vacancies = [Vacancy.from_dict(item) for item in vacancies_data]
+            
+            if all_vacancies:
+                print(f"Найдено {len(all_vacancies)} вакансий от целевых компаний")
             else:
-                print("Вакансии на HH.ru не найдены")
-
-        if "sj" in sources:
-            print("Получение вакансий с SuperJob...")
-            sj_vacancies = self.unified_api.get_sj_vacancies(query, period=period)
-            if sj_vacancies:
-                all_vacancies.extend(sj_vacancies)
-                print(f"Найдено {len(sj_vacancies)} вакансий на SuperJob")
-            else:
-                print("Вакансии на SuperJob не найдены")
-
-        return all_vacancies
+                print("Вакансии от целевых компаний не найдены")
+            
+            return all_vacancies
+            
+        except Exception as e:
+            print(f"Ошибка получения вакансий от целевых компаний: {e}")
+            return []
 
     def _handle_search_results(self, vacancies: List[Vacancy], query: str) -> None:
         """
@@ -140,7 +146,7 @@ class VacancySearchHandler:
             quick_paginate(
                 vacancies,
                 formatter=format_vacancy,
-                header=f"Найденные вакансии по запросу '{query}' из всех источников",
+                header=f"Найденные вакансии от целевых компаний по запросу '{query}'",
                 items_per_page=5,
             )
 
