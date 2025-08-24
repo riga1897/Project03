@@ -60,7 +60,7 @@ class PostgresSaver:
             raise
 
     def _ensure_database_exists(self):
-        """Создает базу данных Project03 если она не существует, удаляет старые данные"""
+        """Создает базу данных Project03 если она не существует"""
         # Подключаемся к системной БД postgres для создания новой БД
         connection = self._get_connection('postgres')
         connection.autocommit = True
@@ -77,22 +77,11 @@ class PostgresSaver:
             db_exists = cursor.fetchone() is not None
             
             if db_exists:
-                logger.info(f"База данных {self.database} существует. Удаляем старые данные...")
-                
-                # Отключаем все активные соединения к базе данных
-                cursor.execute("""
-                    SELECT pg_terminate_backend(pid)
-                    FROM pg_stat_activity
-                    WHERE datname = %s AND pid <> pg_backend_pid()
-                """, (self.database,))
-                
-                # Удаляем базу данных
-                cursor.execute(f'DROP DATABASE "{self.database}"')
-                logger.info(f"База данных {self.database} удалена")
-            
-            # Создаем новую базу данных
-            cursor.execute(f'CREATE DATABASE "{self.database}"')
-            logger.info(f"✓ База данных {self.database} создана")
+                logger.info(f"✓ База данных {self.database} уже существует")
+            else:
+                # Создаем новую базу данных только если её нет
+                cursor.execute(f'CREATE DATABASE "{self.database}"')
+                logger.info(f"✓ База данных {self.database} создана")
             
         except psycopg2.Error as e:
             logger.error(f"Ошибка при создании базы данных {self.database}: {e}")
