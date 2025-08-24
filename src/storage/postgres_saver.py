@@ -704,3 +704,322 @@ class PostgresSaver:
     def filename(self) -> str:
         """Возвращает информацию о БД (для совместимости)"""
         return f"PostgreSQL://{self.host}:{self.port}/{self.database}"
+
+    # Новые методы бизнес-логики на SQL
+    def get_vacancies_paginated(self, page: int = 1, page_size: int = 10, 
+                              filters: Optional[Dict[str, Any]] = None,
+                              sort_by: str = "created_at", sort_desc: bool = True) -> Tuple[List[Vacancy], int]:
+        """SQL-оптимизированная пагинация с сортировкой"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor(cursor_factory=RealDictCursor)
+            
+            # Получаем общее количество
+            count_query = "SELECT COUNT(*) FROM vacancies_storage"
+            count_params = []
+            where_conditions = self._build_where_conditions(filters)
+            
+            if where_conditions['conditions']:
+                count_query += " WHERE " + " AND ".join(where_conditions['conditions'])
+                count_params = where_conditions['params']
+            
+            cursor.execute(count_query, count_params)
+            total_count = cursor.fetchone()[0]
+            
+            # Получаем данные с пагинацией
+            valid_sort_fields = ['created_at', 'updated_at', 'title', 'salary_from', 'salary_to', 'published_at']
+            sort_field = sort_by if sort_by in valid_sort_fields else 'created_at'
+            sort_order = 'DESC' if sort_desc else 'ASC'
+            
+            query = f"SELECT * FROM vacancies_storage"
+            params = []
+            
+            if where_conditions['conditions']:
+                query += " WHERE " + " AND ".join(where_conditions['conditions'])
+                params = where_conditions['params']
+            
+            query += f" ORDER BY {sort_field} {sort_order}"
+            
+            # Добавляем LIMIT и OFFSET
+            offset = (page - 1) * page_size
+            query += " LIMIT %s OFFSET %s"
+            params.extend([page_size, offset])
+            
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            
+            vacancies = self._convert_rows_to_vacancies(results)
+            return vacancies, total_count
+            
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка пагинации вакансий: {e}")
+            return [], 0
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
+
+    def search_vacancies_advanced(self, keywords: List[str], salary_range: Optional[Tuple[int, int]] = None,
+                                experience_levels: Optional[List[str]] = None,
+                                employment_types: Optional[List[str]] = None,
+                                page: int = 1, page_size: int = 10) -> Tuple[List[Vacancy], int]:
+        """SQL-оптимизированный расширенный поиск"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor(cursor_factory=RealDictCursor)
+            
+            # Строим условия поиска
+            where_conditions = []
+            params = []
+            
+            # Поиск по ключевым словам
+            if keywords:
+                keyword_conditions = []
+                for keyword in keywords:
+                    keyword_conditions.append(
+                        "(LOWER(title) LIKE LOWER(%s) OR LOWER(description) LIKE LOWER(%s) OR LOWER(requirements) LIKE LOWER(%s))"
+                    )
+                    keyword_param = f"%{keyword}%"
+                    params.extend([keyword_param, keyword_param, keyword_param])
+                
+                where_conditions.append(f"({' AND '.join(keyword_conditions)})")
+            
+            # Фильтр по зарплате
+            if salary_range:
+                min_salary, max_salary = salary_range
+                where_conditions.append("(salary_from >= %s OR salary_to >= %s)")
+                where_conditions.append("(salary_from <= %s OR salary_to <= %s)")
+                params.extend([min_salary, min_salary, max_salary, max_salary])
+            
+            # Фильтр по опыту
+            if experience_levels:
+                exp_placeholders = ','.join(['%s'] * len(experience_levels))
+                where_conditions.append(f"LOWER(experience) IN ({exp_placeholders})")
+                params.extend([exp.lower() for exp in experience_levels])
+            
+            # Фильтр по типу занятости
+            if employment_types:
+                emp_placeholders = ','.join(['%s'] * len(employment_types))
+                where_conditions.append(f"LOWER(employment) IN ({emp_placeholders})")
+                params.extend([emp.lower() for emp in employment_types])
+            
+            base_where = " WHERE " + " AND ".join(where_conditions) if where_conditions else ""
+            
+            # Получаем количество
+            count_query = f"SELECT COUNT(*) FROM vacancies_storage{base_where}"
+            cursor.execute(count_query, params)
+            total_count = cursor.fetchone()[0]
+            
+            # Получаем данные с пагинацией
+            offset = (page - 1) * page_size
+            query = f"""
+            SELECT * FROM vacancies_storage{base_where}
+            ORDER BY 
+                CASE WHEN salary_from IS NOT NULL OR salary_to IS NOT NULL THEN 0 ELSE 1 END,
+                GREATEST(COALESCE(salary_from, 0), COALESCE(salary_to, 0)) DESC,
+                created_at DESC
+            LIMIT %s OFFSET %s
+            """
+            
+            params.extend([page_size, offset])
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            
+            vacancies = self._convert_rows_to_vacancies(results)
+            return vacancies, total_count
+            
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка расширенного поиска: {e}")
+            return [], 0
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
+
+    def get_salary_statistics(self, filters: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """SQL-агрегация статистики по зарплатам"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+            
+            where_conditions = self._build_where_conditions(filters)
+            base_where = ""
+            params = []
+            
+            if where_conditions['conditions']:
+                base_where = " WHERE " + " AND ".join(where_conditions['conditions'])
+                params = where_conditions['params']
+            
+            # Статистика по зарплатам с фильтрацией NULL значений
+            query = f"""
+            SELECT 
+                COUNT(*) as total_vacancies,
+                COUNT(CASE WHEN salary_from IS NOT NULL OR salary_to IS NOT NULL THEN 1 END) as with_salary,
+                MIN(GREATEST(COALESCE(salary_from, 0), COALESCE(salary_to, 0))) as min_salary,
+                MAX(GREATEST(COALESCE(salary_from, 0), COALESCE(salary_to, 0))) as max_salary,
+                AVG(GREATEST(COALESCE(salary_from, 0), COALESCE(salary_to, 0))) as avg_salary,
+                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY GREATEST(COALESCE(salary_from, 0), COALESCE(salary_to, 0))) as median_salary
+            FROM vacancies_storage{base_where}
+            """
+            
+            cursor.execute(query, params)
+            result = cursor.fetchone()
+            
+            return {
+                'total_vacancies': result[0],
+                'vacancies_with_salary': result[1],
+                'min_salary': result[2] if result[2] else 0,
+                'max_salary': result[3] if result[3] else 0,
+                'avg_salary': round(result[4], 2) if result[4] else 0,
+                'median_salary': round(result[5], 2) if result[5] else 0,
+                'salary_coverage': round((result[1] / result[0] * 100), 2) if result[0] > 0 else 0
+            }
+            
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка получения статистики зарплат: {e}")
+            return {}
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
+
+    def get_top_employers(self, limit: int = 10, filters: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        """SQL-агрегация топа работодателей"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+            
+            where_conditions = self._build_where_conditions(filters)
+            base_where = ""
+            params = []
+            
+            if where_conditions['conditions']:
+                base_where = " WHERE " + " AND ".join(where_conditions['conditions'])
+                params = where_conditions['params']
+            
+            query = f"""
+            SELECT 
+                employer,
+                COUNT(*) as vacancy_count,
+                AVG(GREATEST(COALESCE(salary_from, 0), COALESCE(salary_to, 0))) as avg_salary,
+                COUNT(CASE WHEN salary_from IS NOT NULL OR salary_to IS NOT NULL THEN 1 END) as vacancies_with_salary
+            FROM vacancies_storage{base_where}
+            WHERE employer IS NOT NULL AND employer != ''
+            GROUP BY employer
+            ORDER BY vacancy_count DESC
+            LIMIT %s
+            """
+            
+            params.append(limit)
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            
+            return [
+                {
+                    'employer': row[0],
+                    'vacancy_count': row[1],
+                    'avg_salary': round(row[2], 2) if row[2] else 0,
+                    'vacancies_with_salary': row[3]
+                }
+                for row in results
+            ]
+            
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка получения топа работодателей: {e}")
+            return []
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
+
+    def get_popular_keywords(self, limit: int = 20, filters: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        """SQL-анализ популярных ключевых слов"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+            
+            where_conditions = self._build_where_conditions(filters)
+            base_where = ""
+            params = []
+            
+            if where_conditions['conditions']:
+                base_where = " WHERE " + " AND ".join(where_conditions['conditions'])
+                params = where_conditions['params']
+            
+            # Используем простой подход с разделением по словам
+            query = f"""
+            WITH keywords AS (
+                SELECT 
+                    LOWER(TRIM(unnest(string_to_array(requirements, ' ')))) as keyword
+                FROM vacancies_storage{base_where}
+                WHERE requirements IS NOT NULL
+            ),
+            filtered_keywords AS (
+                SELECT keyword
+                FROM keywords
+                WHERE LENGTH(keyword) > 3 
+                AND keyword NOT IN ('для', 'что', 'как', 'все', 'вас', 'мы', 'наш', 'ваш', 'это', 'или', 'так', 'может', 'быть', 'его', 'ее', 'их')
+                AND keyword ~ '^[а-яё]+$|^[a-z]+$'
+            )
+            SELECT 
+                keyword,
+                COUNT(*) as frequency
+            FROM filtered_keywords
+            GROUP BY keyword
+            ORDER BY frequency DESC
+            LIMIT %s
+            """
+            
+            params.append(limit)
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            
+            return [
+                {
+                    'keyword': row[0],
+                    'frequency': row[1]
+                }
+                for row in results
+            ]
+            
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка анализа ключевых слов: {e}")
+            return []
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
+
+    def _build_where_conditions(self, filters: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+        """Вспомогательный метод для построения WHERE условий"""
+        conditions = []
+        params = []
+        
+        if not filters:
+            return {'conditions': conditions, 'params': params}
+        
+        if filters.get('title'):
+            conditions.append("LOWER(title) LIKE LOWER(%s)")
+            params.append(f"%{filters['title']}%")
+        
+        if filters.get('salary_from'):
+            conditions.append("(salary_from >= %s OR salary_to >= %s)")
+            params.extend([filters['salary_from'], filters['salary_from']])
+        
+        if filters.get('salary_to'):
+            conditions.append("(salary_from <= %s OR salary_to <= %s)")
+            params.extend([filters['salary_to'], filters['salary_to']])
+        
+        if filters.get('employer'):
+            conditions.append("LOWER(employer) LIKE LOWER(%s)")
+            params.append(f"%{filters['employer']}%")
+        
+        if filters.get('experience'):
+            conditions.append("LOWER(experience) LIKE LOWER(%s)")
+            params.append(f"%{filters['experience']}%")
+        
+        if filters.get('employment'):
+            conditions.append("LOWER(employment) LIKE LOWER(%s)")
+            params.append(f"%{filters['employment']}%")
+        
+        return {'conditions': conditions, 'params': params}

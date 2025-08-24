@@ -15,6 +15,11 @@ from src.utils.vacancy_formatter import VacancyFormatter
 from src.utils.vacancy_operations import VacancyOperations
 from src.vacancies.models import Vacancy
 
+from src.ui_interfaces.vacancy_display_handler import VacancyDisplayHandler
+from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
+from src.ui_interfaces.vacancy_search_handler import VacancySearchHandler
+from src.ui_interfaces.advanced_analytics_handler import AdvancedAnalyticsHandler
+
 logger = logging.getLogger(__name__)
 
 
@@ -32,24 +37,30 @@ class UserInterface:
         from src.config.app_config import AppConfig
         from src.storage.storage_factory import StorageFactory
         from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
-        
+
         self.unified_api = UnifiedAPI()
-        
+
         # Используем переданное хранилище или создаем по умолчанию
         if storage:
             self.storage = storage
         else:
             app_config = AppConfig()
             self.storage = StorageFactory.create_storage(app_config.default_storage_type)
-        
+
         # Для обратной совместимости
         self.json_saver = self.storage
-        
+
         self.menu_manager = create_main_menu()
         self.vacancy_ops = VacancyOperations()
 
         # Инициализируем координатор операций
         self.coordinator = VacancyOperationsCoordinator(self.unified_api, self.storage)
+
+        # Инициализируем обработчики
+        self.display_handler = VacancyDisplayHandler(self.storage)
+        self.operations_coordinator = VacancyOperationsCoordinator(self.storage)
+        self.search_handler = VacancySearchHandler(self.unified_api, self.storage)
+        self.analytics_handler = AdvancedAnalyticsHandler(self.storage)
 
     def run(self) -> None:
         """Основной цикл взаимодействия с пользователем"""
@@ -72,11 +83,16 @@ class UserInterface:
                 elif choice == "6":
                     self._filter_saved_vacancies_by_salary()
                 elif choice == "7":
-                    self._delete_saved_vacancies()
+                    self.operations_coordinator.handle_vacancy_deletion()
+
                 elif choice == "8":
-                    self._clear_api_cache()
+                    self.analytics_handler.show_analytics_menu()
+
                 elif choice == "9":
-                    self._setup_superjob_api()
+                    self._clear_api_cache()
+
+                elif choice == "10":
+                    self._configure_superjob_api()
                 elif choice == "0":
                     print("Спасибо за использование! До свидания!")
                     break
@@ -108,8 +124,9 @@ class UserInterface:
         print("5. Расширенный поиск (несколько ключевых слов)")
         print("6. Фильтр сохраненных вакансий по зарплате")
         print("7. Удалить сохраненные вакансии")
-        print("8. Очистить кэш API")
-        print("9. Настройка SuperJob API")
+        print("8. Расширенная аналитика")
+        print("9. Очистить кэш API")
+        print("10. Настройка SuperJob API")
         print("0. Выход")
         print_menu_separator()
 

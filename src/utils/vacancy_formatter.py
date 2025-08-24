@@ -43,6 +43,47 @@ class VacancyFormatter(BaseFormatter):
         return "; ".join(conditions_parts) if conditions_parts else None
 
     @staticmethod
+    def format_vacancy_brief(vacancy: "Vacancy", number: Optional[int] = None) -> str:
+        """
+        Краткое форматирование информации о вакансии для списков
+
+        Args:
+            vacancy: Объект вакансии
+            number: Порядковый номер
+
+        Returns:
+            Отформатированная строка с краткой информацией
+        """
+        number_str = f"{number}. " if number else ""
+
+        # Получаем зарплату
+        salary_str = "Зарплата не указана"
+        if vacancy.salary:
+            if hasattr(vacancy.salary, 'salary_from') and hasattr(vacancy.salary, 'salary_to'):
+                if vacancy.salary.salary_from and vacancy.salary.salary_to:
+                    salary_str = f"{vacancy.salary.salary_from:,} - {vacancy.salary.salary_to:,} ₽"
+                elif vacancy.salary.salary_from:
+                    salary_str = f"от {vacancy.salary.salary_from:,} ₽"
+                elif vacancy.salary.salary_to:
+                    salary_str = f"до {vacancy.salary.salary_to:,} ₽"
+
+        # Получаем работодателя
+        employer_name = "Не указан"
+        if vacancy.employer:
+            if isinstance(vacancy.employer, dict):
+                employer_name = vacancy.employer.get('name', 'Не указан')
+            else:
+                employer_name = str(vacancy.employer)
+
+        return (
+            f"{number_str}{vacancy.title}\n"
+            f"   💰 {salary_str}\n"
+            f"   🏢 {employer_name}\n"
+            f"   📍 {vacancy.area or 'Не указан'}\n"
+            f"   🔗 {vacancy.url}\n"
+        )
+
+    @staticmethod
     def format_vacancy_info(vacancy: Vacancy, number: Optional[int] = None) -> str:
         """
         Форматирование информации о вакансии в строку

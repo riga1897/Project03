@@ -1,8 +1,9 @@
 import json
 import logging
+import os
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Union, Optional, Tuple
 
 from src.vacancies.models import Vacancy
 
@@ -338,19 +339,51 @@ class JSONSaver:
 
     def get_file_size(self) -> int:
         """
-        Получает размер файла в байтах
+        Возвращает размер файла хранилища в байтах
 
         Returns:
             int: Размер файла в байтах, 0 если файл не существует
         """
         try:
-            file_path = Path(self.filename)
-            if file_path.exists():
-                return file_path.stat().st_size
+            return os.path.getsize(self._filename)
+        except (OSError, FileNotFoundError):
             return 0
-        except Exception as e:
-            logger.error(f"Ошибка получения размера файла: {e}")
-            return 0
+
+    # Реализация новых методов бизнес-логики через fallback
+    def get_vacancies_paginated(self, page: int = 1, page_size: int = 10, 
+                              filters: Optional[Dict[str, Any]] = None,
+                              sort_by: str = "created_at", sort_desc: bool = True) -> Tuple[List[Vacancy], int]:
+        """Пагинация через Python (fallback)"""
+        vacancies = self.get_vacancies()
+        return JSONBusinessLogic.get_vacancies_paginated(
+            vacancies, page, page_size, filters, sort_by, sort_desc
+        )
+
+    def search_vacancies_advanced(self, keywords: List[str], salary_range: Optional[Tuple[int, int]] = None,
+                                experience_levels: Optional[List[str]] = None,
+                                employment_types: Optional[List[str]] = None,
+                                page: int = 1, page_size: int = 10) -> Tuple[List[Vacancy], int]:
+        """Расширенный поиск через Python (fallback)"""
+        vacancies = self.get_vacancies()
+        return JSONBusinessLogic.search_vacancies_advanced(
+            vacancies, keywords, salary_range, experience_levels, employment_types, page, page_size
+        )
+
+    def get_salary_statistics(self, filters: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """Статистика зарплат через Python (fallback)"""
+        vacancies = self.get_vacancies()
+        return JSONBusinessLogic.get_salary_statistics(vacancies, filters)
+
+    def get_top_employers(self, limit: int = 10, filters: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        """Топ работодателей через Python (fallback)"""
+        vacancies = self.get_vacancies()
+        return JSONBusinessLogic.get_top_employers(vacancies, limit, filters)
+
+    def get_popular_keywords(self, limit: int = 20, filters: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        """Популярные ключевые слова через Python (fallback)"""
+        vacancies = self.get_vacancies()
+        return JSONBusinessLogic.get_popular_keywords(vacancies, limit, filters)
+
 
     @staticmethod
     def _vacancy_to_dict(vacancy: Vacancy) -> Dict[str, Any]:
