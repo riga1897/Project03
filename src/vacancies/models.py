@@ -83,7 +83,17 @@ class Vacancy(AbstractVacancy):
         self.description = description
         self.requirements = self._clean_html(requirements) if requirements else None
         self.responsibilities = self._clean_html(responsibilities) if responsibilities else None
+        # Отладка для отслеживания employer
+        if vacancy_id and str(vacancy_id) in ["124403607", "124403580", "124403642"]:
+            print(f"DEBUG Vacancy.__init__: Получен employer = {employer} для ID {vacancy_id}")
+            print(f"DEBUG Vacancy.__init__: type(employer) = {type(employer)}")
+        
         self.employer = employer
+        
+        # Дополнительная проверка после присвоения
+        if vacancy_id and str(vacancy_id) in ["124403607", "124403580", "124403642"]:
+            print(f"DEBUG Vacancy.__init__: После присвоения self.employer = {self.employer}")
+        
         self.experience = experience
         self.employment = employment
         self.schedule = schedule
@@ -283,6 +293,12 @@ class Vacancy(AbstractVacancy):
                 elif "name" in data and "snippet" in data:
                     source = "hh.ru"
 
+            # Отладка перед созданием объекта
+            if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
+                print(f"DEBUG Vacancy.from_dict: Перед созданием объекта для ID {vacancy_id}")
+                print(f"DEBUG Vacancy.from_dict: employer = {employer}")
+                print(f"DEBUG Vacancy.from_dict: type(employer) = {type(employer)}")
+
             vacancy = cls(
                 vacancy_id=vacancy_id,
                 title=title,
@@ -301,6 +317,12 @@ class Vacancy(AbstractVacancy):
                 source=source,
                 area=data.get("area")  # Передаем area как есть
             )
+            
+            # Отладка после создания объекта
+            if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
+                print(f"DEBUG Vacancy.from_dict: После создания объекта для ID {vacancy_id}")
+                print(f"DEBUG Vacancy.from_dict: vacancy.employer = {vacancy.employer}")
+                print(f"DEBUG Vacancy.from_dict: type(vacancy.employer) = {type(vacancy.employer)}")
             
             # Устанавливаем company_id после создания объекта
             vacancy.company_id = company_id
