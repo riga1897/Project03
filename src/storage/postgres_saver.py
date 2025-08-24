@@ -30,32 +30,77 @@ class PostgresSaver:
         if db_config:
             self.host = db_config.get('host', 'localhost')
             self.port = db_config.get('port', '5432')
-            self.database = db_config.get('database', 'postgres')
+            self.database = db_config.get('database', 'Project03')
             self.username = db_config.get('username', 'postgres')
             self.password = db_config.get('password', '')
         else:
             # Используем переменные окружения из Replit Database
             self.host = os.getenv('PGHOST', 'localhost')
             self.port = os.getenv('PGPORT', '5432')
-            self.database = os.getenv('PGDATABASE', 'postgres')
+            self.database = os.getenv('PGDATABASE', 'Project03')
             self.username = os.getenv('PGUSER', 'postgres')
             self.password = os.getenv('PGPASSWORD', '')
         
+        self._ensure_database_exists()
         self._ensure_tables_exist()
 
-    def _get_connection(self):
+    def _get_connection(self, database=None):
         """Создает подключение к базе данных"""
+        db_name = database or self.database
         try:
             return psycopg2.connect(
                 host=self.host,
                 port=self.port,
-                database=self.database,
+                database=db_name,
                 user=self.username,
                 password=self.password
             )
         except psycopg2.Error as e:
-            logger.error(f"Ошибка подключения к БД: {e}")
+            logger.error(f"Ошибка подключения к БД {db_name}: {e}")
             raise
+
+    def _ensure_database_exists(self):
+        """Создает базу данных Project03 если она не существует, удаляет старые данные"""
+        # Подключаемся к системной БД postgres для создания новой БД
+        connection = self._get_connection('postgres')
+        connection.autocommit = True
+        
+        try:
+            cursor = connection.cursor()
+            
+            # Проверяем существование базы данных Project03
+            cursor.execute(
+                "SELECT 1 FROM pg_database WHERE datname = %s",
+                (self.database,)
+            )
+            
+            db_exists = cursor.fetchone() is not None
+            
+            if db_exists:
+                logger.info(f"База данных {self.database} существует. Удаляем старые данные...")
+                
+                # Отключаем все активные соединения к базе данных
+                cursor.execute("""
+                    SELECT pg_terminate_backend(pid)
+                    FROM pg_stat_activity
+                    WHERE datname = %s AND pid <> pg_backend_pid()
+                """, (self.database,))
+                
+                # Удаляем базу данных
+                cursor.execute(f'DROP DATABASE "{self.database}"')
+                logger.info(f"База данных {self.database} удалена")
+            
+            # Создаем новую базу данных
+            cursor.execute(f'CREATE DATABASE "{self.database}"')
+            logger.info(f"✓ База данных {self.database} создана")
+            
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка при создании базы данных {self.database}: {e}")
+            raise
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
 
     def _ensure_tables_exist(self):
         """Создает таблицы если они не существуют"""

@@ -14,7 +14,7 @@ class DatabaseConfig:
         return {
             'host': os.getenv('PGHOST', 'localhost'),
             'port': os.getenv('PGPORT', '5432'),
-            'database': os.getenv('PGDATABASE', 'postgres'),
+            'database': os.getenv('PGDATABASE', 'Project03'),
             'username': os.getenv('PGUSER', 'postgres'),
             'password': os.getenv('PGPASSWORD', '')
         }
