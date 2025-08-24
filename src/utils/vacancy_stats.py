@@ -57,8 +57,8 @@ class VacancyStats:
         # ПРИОРИТЕТ 2: Сырые данные SuperJob - firm_name
         if isinstance(vacancy, dict) and "firm_name" in vacancy:
             firm_name = vacancy.get("firm_name")
-            if firm_name and firm_name.strip():
-                return firm_name
+            if firm_name and str(firm_name).strip() and str(firm_name) != "None":
+                return str(firm_name)
         
         # ПРИОРИТЕТ 3: Объекты Vacancy - атрибут employer
         if hasattr(vacancy, 'employer') and vacancy.employer:

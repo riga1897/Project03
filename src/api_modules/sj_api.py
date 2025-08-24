@@ -235,7 +235,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             **kwargs: Дополнительные параметры для API
 
         Returns:
-            List[Dict]: Список вакансий от целевых компаний
+            List[Dict]: Список сырых данных вакансий от целевых компаний
         """
         try:
             # Импортируем список целевых компаний
@@ -246,8 +246,8 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
 
             logger.info(f"Поиск вакансий от {len(target_company_names)} целевых компаний в SuperJob")
 
-            # Получаем все вакансии по запросу
-            all_vacancies = self.get_vacancies_with_deduplication(search_query, **kwargs)
+            # ВАЖНО: Получаем сырые данные без дедупликации
+            all_vacancies = self.get_vacancies(search_query, **kwargs)
 
             if not all_vacancies:
                 logger.info("Вакансии не найдены")
@@ -261,6 +261,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             from tqdm import tqdm
             with tqdm(total=len(all_vacancies), desc="Фильтрация по компаниям", unit="вакансия") as pbar:
                 for vacancy in all_vacancies:
+                    # ВАЖНО: Работаем с сырыми данными - поле firm_name
                     firm_name = vacancy.get("firm_name", "").lower().strip()
 
                     # Проверяем точное совпадение или вхождение названия
@@ -280,25 +281,11 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             if target_vacancies:
                 print(f"Найдено {len(target_vacancies)} вакансий от целевых компаний")
 
-                # Используем общий компонент для статистики
+                # Используем общий компонент для статистики с сырыми данными
                 from src.utils.vacancy_stats import VacancyStats
                 VacancyStats.display_company_stats(target_vacancies, "SuperJob - Целевые компании")
 
-            # Применяем SQL-фильтрацию для целевых компаний если указано в конфигурации
-            if hasattr(self.config, 'filter_by_target_companies') and self.config.filter_by_target_companies:
-                try:
-                    from src.utils.api_data_filter import APIDataFilter
-                    api_filter = APIDataFilter()
-                    vacancies = api_filter.filter_vacancies_by_target_companies(target_vacancies)
-                    logger.debug(f"После SQL-фильтрации по целевым компаниям осталось {len(vacancies)} вакансий")
-                except Exception as e:
-                    logger.error(f"Ошибка SQL-фильтрации по целевым компаниям: {e}")
-                    vacancies = target_vacancies # Возвращаем отфильтрованные вручную вакансии в случае ошибки
-
-            else:
-                vacancies = target_vacancies
-
-            return vacancies
+            return target_vacancies
 
         except Exception as e:
             logger.error(f"Ошибка получения вакансий от целевых компаний SuperJob: {e}")

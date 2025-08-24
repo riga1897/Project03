@@ -109,49 +109,22 @@ class UnifiedAPI:
             except Exception as e:
                 logger.error(f"Ошибка получения вакансий с HH.ru: {e}")
 
-        # Получение из SuperJob
+        # Получение от SuperJob с преобразованием
         if "sj" in sources:
-            try:
-                logger.info(f"Получение вакансий с SuperJob по запросу: '{search_query}'")
-                # Синхронизируем параметры периода между API
-                sj_kwargs = kwargs.copy()
-                if "period" in kwargs:
-                    # HH использует 'period', SuperJob использует 'published'
-                    sj_kwargs["published"] = kwargs["period"]
-                    sj_kwargs.pop("period", None)  # Удаляем исходный параметр
-                sj_data = self.sj_api.get_vacancies_with_deduplication(search_query, **sj_kwargs)
+            # Синхронизируем параметры периода между API
+            sj_kwargs = kwargs.copy()
+            if "period" in kwargs:
+                sj_kwargs["published"] = kwargs["period"]
+                sj_kwargs.pop("period", None)  # Удаляем исходный параметр
 
-                if sj_data:
-                    from tqdm import tqdm
+            # Получаем сырые данные SuperJob
+            sj_data = self.sj_api.get_vacancies(search_query, **sj_kwargs)
 
-                    # Парсим данные SuperJob в объекты SuperJobVacancy с прогресс-баром
-                    print(f"Парсинг {len(sj_data)} вакансий SuperJob...")
-                    sj_vacancies_raw = self.parser.parse_vacancies(sj_data)
+            if sj_data:
+                logger.info(f"Получено {len(sj_data)} сырых вакансий SuperJob")
+                # Добавляем сырые данные без преобразования
+                all_vacancies.extend(sj_data)
 
-                    # Конвертируем SuperJobVacancy в унифицированный формат с прогресс-баром
-                    sj_vacancies = []
-                    print("Конвертация вакансий SuperJob в унифицированный формат...")
-
-                    with tqdm(total=len(sj_vacancies_raw), desc="Конвертация SJ", unit="вакансия") as pbar:
-                        for sj_vac in sj_vacancies_raw:
-                            try:
-                                # Конвертируем SuperJobVacancy в унифицированный формат
-                                unified_data = self.parser.convert_to_unified_format(sj_vac)
-                                vacancy = Vacancy.from_dict(unified_data)
-                                sj_vacancies.append(vacancy.to_dict())
-                            except Exception as e:
-                                logger.warning(f"Ошибка конвертации вакансии SuperJob: {e}")
-                            finally:
-                                pbar.update(1)
-
-                    if sj_vacancies:
-                        logger.info(f"Найдено {len(sj_vacancies)} уникальных вакансий с SuperJob")
-                        all_vacancies.extend(sj_vacancies)
-                    else:
-                        logger.warning("SuperJob API не вернул вакансий")
-
-            except Exception as e:
-                logger.error(f"Ошибка получения вакансий из SJ: {e}")
 
         # Выводим общую статистику и применяем межплатформенную дедупликацию
         if all_vacancies:
