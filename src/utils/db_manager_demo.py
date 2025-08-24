@@ -49,14 +49,8 @@ def demo_companies_and_vacancies_count(db_manager: DBManager) -> None:
     if total_vacancies == 0:
         print("⚠️  Рекомендация: Выполните поиск вакансий от целевых компаний для получения данных")
     
-    print(f"\nВсего целевых компаний: {len(companies_stats)}") 1):  # Показываем топ-10
-        print(f"{i:2d}. {company['company_name']:<40} - {company['vacancy_count']:>3} вакансий")
-    
-    if len(companies_stats) > 10:
-        print(f"... и еще {len(companies_stats) - 10} компаний")
-
-
-def demo_all_vacancies(db_manager: DBManager) -> None:
+    print(f"\nВсего целевых компаний: {len(companies_stats)}")
+        def demo_all_vacancies(db_manager: DBManager) -> None:
     """
     Демонстрация метода get_all_vacancies()
     """
