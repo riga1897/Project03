@@ -63,7 +63,10 @@ class TestVacancyOperations:
         
         # Java Developer должен быть первым (более высокая зарплата)
         assert result[0].title == "Java Developer"
-        assert result[1].title == "Python Developer"ncies.models import Vacancy
+        assert result[1].title == "Python Developer"
+
+
+from src.vacancies.models import Vacancy
 
 
 class TestVacancyOperations:

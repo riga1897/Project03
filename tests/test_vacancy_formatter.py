@@ -58,7 +58,10 @@ class TestVacancyFormatter:
         
         result = formatter.format_vacancy_info(vacancy, number=1)
         assert "Junior Developer" in result
-        assert "Не указана" in resultacancies.models import Vacancy
+        assert "Не указана" in result
+
+
+from src.vacancies.models import Vacancy
 
 
 class TestVacancyFormatter:
