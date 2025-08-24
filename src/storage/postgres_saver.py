@@ -154,14 +154,184 @@ class PostgresSaver:
                 cursor.close()
             connection.close()
 
-    def add_vacancy(self, vacancies: Union[Vacancy, List[Vacancy]]) -> List[str]:
+    def add_vacancy_batch_optimized(self, vacancies: Union[Vacancy, List[Vacancy]]) -> List[str]:
         """
-        Добавляет вакансии в БД с batch-операциями для максимальной производительности.
-        Возвращает список сообщений об обновлениях.
+        Максимально оптимизированное batch-добавление вакансий через временные таблицы.
+        Использует SQL для всех операций, минимизирует количество запросов.
         """
         if not isinstance(vacancies, list):
             vacancies = [vacancies]
 
+        if not vacancies:
+            return []
+
+        connection = self._get_connection()
+        update_messages: List[str] = []
+        
+        try:
+            cursor = connection.cursor(cursor_factory=RealDictCursor)
+            
+            # Создаем временную таблицу для новых вакансий
+            cursor.execute("""
+                CREATE TEMP TABLE temp_new_vacancies (
+                    vacancy_id VARCHAR(50),
+                    title VARCHAR(500),
+                    url TEXT,
+                    salary_from INTEGER,
+                    salary_to INTEGER,
+                    salary_currency VARCHAR(10),
+                    description TEXT,
+                    requirements TEXT,
+                    responsibilities TEXT,
+                    experience VARCHAR(200),
+                    employment VARCHAR(200),
+                    schedule VARCHAR(200),
+                    employer VARCHAR(500),
+                    area VARCHAR(200),
+                    source VARCHAR(50),
+                    published_at TIMESTAMP
+                ) ON COMMIT DROP
+            """)
+            
+            # Подготавливаем данные для вставки
+            insert_data = []
+            for vac in vacancies:
+                salary_from = vac.salary.salary_from if vac.salary else None
+                salary_to = vac.salary.salary_to if vac.salary else None
+                salary_currency = vac.salary.currency if vac.salary else None
+                
+                employer_str = (
+                    vac.employer.get('name') if isinstance(vac.employer, dict) 
+                    else str(vac.employer) if vac.employer else None
+                )
+                area_str = (
+                    vac.area.get('name') if isinstance(vac.area, dict)
+                    else str(vac.area) if vac.area else None
+                )
+                
+                insert_data.append((
+                    vac.vacancy_id, vac.title, vac.url,
+                    salary_from, salary_to, salary_currency,
+                    vac.description, vac.requirements, vac.responsibilities,
+                    vac.experience, vac.employment, vac.schedule,
+                    employer_str, area_str, vac.source, vac.published_at
+                ))
+            
+            # Bulk insert во временную таблицу
+            from psycopg2.extras import execute_values
+            execute_values(
+                cursor,
+                """INSERT INTO temp_new_vacancies (
+                    vacancy_id, title, url, salary_from, salary_to, salary_currency,
+                    description, requirements, responsibilities, experience,
+                    employment, schedule, employer, area, source, published_at
+                ) VALUES %s""",
+                insert_data,
+                template=None,
+                page_size=1000
+            )
+            
+            # Находим новые вакансии (которых нет в основной таблице)
+            cursor.execute("""
+                INSERT INTO vacancies_storage (
+                    vacancy_id, title, url, salary_from, salary_to, salary_currency,
+                    description, requirements, responsibilities, experience,
+                    employment, schedule, employer, area, source, published_at
+                )
+                SELECT t.* FROM temp_new_vacancies t
+                LEFT JOIN vacancies_storage v ON t.vacancy_id = v.vacancy_id
+                WHERE v.vacancy_id IS NULL
+            """)
+            
+            new_count = cursor.rowcount
+            
+            # Находим и обновляем существующие вакансии с изменениями
+            cursor.execute("""
+                UPDATE vacancies_storage v SET
+                    title = t.title,
+                    url = t.url,
+                    salary_from = t.salary_from,
+                    salary_to = t.salary_to,
+                    salary_currency = t.salary_currency,
+                    description = t.description,
+                    requirements = t.requirements,
+                    responsibilities = t.responsibilities,
+                    experience = t.experience,
+                    employment = t.employment,
+                    schedule = t.schedule,
+                    employer = t.employer,
+                    area = t.area,
+                    source = t.source,
+                    published_at = t.published_at,
+                    updated_at = CURRENT_TIMESTAMP
+                FROM temp_new_vacancies t
+                WHERE v.vacancy_id = t.vacancy_id
+                AND (
+                    v.title != t.title OR
+                    v.url != t.url OR
+                    v.description != t.description OR
+                    COALESCE(v.salary_from, 0) != COALESCE(t.salary_from, 0) OR
+                    COALESCE(v.salary_to, 0) != COALESCE(t.salary_to, 0) OR
+                    COALESCE(v.salary_currency, '') != COALESCE(t.salary_currency, '')
+                )
+            """)
+            
+            updated_count = cursor.rowcount
+            
+            # Получаем информацию о добавленных и обновленных вакансиях для сообщений
+            cursor.execute("""
+                SELECT t.vacancy_id, t.title, 
+                       CASE WHEN v.vacancy_id IS NULL THEN 'new' ELSE 'updated' END as action
+                FROM temp_new_vacancies t
+                LEFT JOIN vacancies_storage v ON t.vacancy_id = v.vacancy_id
+                ORDER BY action, t.vacancy_id
+                LIMIT 10
+            """)
+            
+            results = cursor.fetchall()
+            for row in results:
+                if row['action'] == 'new':
+                    update_messages.append(f"Добавлена новая вакансия ID {row['vacancy_id']}: '{row['title']}'")
+                else:
+                    update_messages.append(f"Вакансия ID {row['vacancy_id']} обновлена: '{row['title']}'")
+            
+            # Добавляем сводку если много операций
+            total_processed = len(vacancies)
+            if total_processed > 10:
+                if new_count > 5:
+                    update_messages.append(f"... и еще {new_count - 5} новых вакансий")
+                if updated_count > 5:
+                    update_messages.append(f"... и еще {updated_count - 5} обновленных вакансий")
+            
+            connection.commit()
+            logger.info(f"Batch операция через временные таблицы: добавлено {new_count}, обновлено {updated_count} вакансий")
+            
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка при batch операции через временные таблицы: {e}")
+            connection.rollback()
+            raise
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
+            
+        return update_messages
+
+    def add_vacancy(self, vacancies: Union[Vacancy, List[Vacancy]]) -> List[str]:
+        """
+        Добавляет вакансии в БД. Использует оптимизированный метод для больших объемов.
+        """
+        if not isinstance(vacancies, list):
+            vacancies = [vacancies]
+
+        # Для небольших объемов используем старый алгоритм, для больших - оптимизированный
+        if len(vacancies) <= 50:
+            return self._add_vacancy_small_batch(vacancies)
+        else:
+            return self.add_vacancy_batch_optimized(vacancies)
+
+    def _add_vacancy_small_batch(self, vacancies: List[Vacancy]) -> List[str]:
+        """Оригинальный алгоритм для небольших batch-операций"""
         if not vacancies:
             return []
 
@@ -282,10 +452,10 @@ class PostgresSaver:
                     ))
             
             connection.commit()
-            logger.info(f"Batch операция: добавлено {len(new_vacancies)}, обновлено {len(update_vacancies)} вакансий")
+            logger.info(f"Малый batch: добавлено {len(new_vacancies)}, обновлено {len(update_vacancies)} вакансий")
             
         except psycopg2.Error as e:
-            logger.error(f"Ошибка при batch добавлении вакансий: {e}")
+            logger.error(f"Ошибка при малом batch добавлении вакансий: {e}")
             connection.rollback()
             raise
         finally:
@@ -542,7 +712,7 @@ class PostgresSaver:
 
     def check_vacancies_exist_batch(self, vacancies: List[Vacancy]) -> Dict[str, bool]:
         """
-        Проверяет существование множества вакансий одним запросом
+        Проверяет существование множества вакансий через временную таблицу
         
         Args:
             vacancies: Список вакансий для проверки
@@ -553,28 +723,44 @@ class PostgresSaver:
         if not vacancies:
             return {}
             
-        vacancy_ids = [v.vacancy_id for v in vacancies]
         connection = self._get_connection()
         
         try:
             cursor = connection.cursor()
             
-            # Создаем плейсхолдеры для IN запроса
-            placeholders = ','.join(['%s'] * len(vacancy_ids))
-            query = f"SELECT vacancy_id FROM vacancies_storage WHERE vacancy_id IN ({placeholders})"
+            # Создаем временную таблицу для batch-проверки
+            cursor.execute("""
+                CREATE TEMP TABLE temp_vacancy_check (
+                    vacancy_id VARCHAR(50) PRIMARY KEY
+                ) ON COMMIT DROP
+            """)
             
-            cursor.execute(query, vacancy_ids)
-            existing_ids = {row[0] for row in cursor.fetchall()}
+            # Вставляем все ID для проверки
+            vacancy_ids = [(v.vacancy_id,) for v in vacancies]
+            from psycopg2.extras import execute_values
+            execute_values(
+                cursor, 
+                "INSERT INTO temp_vacancy_check (vacancy_id) VALUES %s",
+                vacancy_ids,
+                template=None,
+                page_size=1000
+            )
             
-            # Создаем результат для всех проверяемых ID
-            result = {}
-            for vacancy_id in vacancy_ids:
-                result[vacancy_id] = vacancy_id in existing_ids
-                
+            # Находим существующие ID одним запросом
+            cursor.execute("""
+                SELECT t.vacancy_id, (v.vacancy_id IS NOT NULL) as exists
+                FROM temp_vacancy_check t
+                LEFT JOIN vacancies_storage v ON t.vacancy_id = v.vacancy_id
+            """)
+            
+            result = {row[0]: row[1] for row in cursor.fetchall()}
+            
+            connection.commit()
             return result
             
         except psycopg2.Error as e:
-            logger.error(f"Ошибка пакетной проверки вакансий: {e}")
+            logger.error(f"Ошибка batch проверки через временную таблицу: {e}")
+            connection.rollback()
             # В случае ошибки возвращаем словарь с False для всех
             return {v.vacancy_id: False for v in vacancies}
         finally:

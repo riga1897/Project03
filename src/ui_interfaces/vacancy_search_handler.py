@@ -160,15 +160,13 @@ class VacancySearchHandler:
         Args:
             vacancies: Список вакансий для сохранения
         """
-        update_messages = self.json_saver.add_vacancy(vacancies)
-        if update_messages:
-            print(f"Обработано {len(vacancies)} вакансий:")
-            for message in update_messages[:5]:
-                print(f"  • {message}")
-            if len(update_messages) > 5:
-                print(f"  ... и еще {len(update_messages) - 5} операций")
-        else:
-            print("Вакансии уже существуют в базе данных")
+        # Сохраняем новые вакансии оптимизированным методом
+        save_messages = self.json_saver.add_vacancy_batch_optimized(vacancies)
+
+        for message in save_messages:
+            print(f"  • {message}")
+
+        print()  # Пустая строка для лучшего форматирования
 
     def _check_existing_vacancies(self, vacancies: List[Vacancy]) -> dict:
         """
@@ -190,32 +188,18 @@ class VacancySearchHandler:
             }
 
         print(f"Проверка {len(vacancies)} вакансий на дубликаты...")
-        
-        # Используем batch проверку для PostgreSQL
-        if hasattr(self.json_saver, 'check_vacancies_exist_batch'):
-            existence_map = self.json_saver.check_vacancies_exist_batch(vacancies)
-            
-            duplicates = []
-            new_vacancies = []
-            
-            for vacancy in vacancies:
-                if existence_map.get(vacancy.vacancy_id, False):
-                    duplicates.append(vacancy)
-                else:
-                    new_vacancies.append(vacancy)
-        else:
-            # Fallback для других типов хранилищ
-            duplicates = []
-            new_vacancies = []
-            
-            for i, vacancy in enumerate(vacancies, 1):
-                if i % 10 == 0 or i == len(vacancies):
-                    print(f"Проверено {i}/{len(vacancies)} вакансий...")
-                
-                if self.json_saver.is_vacancy_exists(vacancy):
-                    duplicates.append(vacancy)
-                else:
-                    new_vacancies.append(vacancy)
+
+        # Используем batch-метод для проверки дубликатов
+        existence_map = self.json_saver.check_vacancies_exist_batch(vacancies)
+
+        duplicates = []
+        new_vacancies = []
+
+        for vacancy in vacancies:
+            if existence_map.get(vacancy.vacancy_id, False):
+                duplicates.append(vacancy)
+            else:
+                new_vacancies.append(vacancy)
 
         return {
             "total_count": len(vacancies),

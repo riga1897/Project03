@@ -76,14 +76,114 @@ class JSONSaver:
         except Exception as e:
             logger.error(f"Ошибка создания резервной копии: {e}")
 
-    def add_vacancy(self, vacancies: Union[Vacancy, List[Vacancy]]) -> List[str]:
+    def check_vacancies_exist_batch(self, vacancies: List[Vacancy]) -> Dict[str, bool]:
         """
-        Добавляет вакансии в файл с выводом информационных сообщений об изменениях.
-        Возвращает список сообщений об обновлениях.
+        Batch проверка существования вакансий в JSON файле
+
+        Args:
+            vacancies: Список вакансий для проверки
+
+        Returns:
+            Dict[str, bool]: Словарь {vacancy_id: exists}
+        """
+        if not vacancies:
+            return {}
+
+        try:
+            existing_vacancies = self.load_vacancies()
+            existing_ids = {v.vacancy_id for v in existing_vacancies}
+
+            return {v.vacancy_id: v.vacancy_id in existing_ids for v in vacancies}
+        except Exception as e:
+            logger.error(f"Ошибка batch проверки существования вакансий: {e}")
+            return {v.vacancy_id: False for v in vacancies}
+
+    def add_vacancy_batch_optimized(self, vacancies: Union[Vacancy, List[Vacancy]]) -> List[str]:
+        """
+        Оптимизированное batch-добавление вакансий в JSON.
+        Загружает файл один раз, обрабатывает все операции в памяти, сохраняет один раз.
         """
         if not isinstance(vacancies, list):
             vacancies = [vacancies]
 
+        if not vacancies:
+            return []
+
+        # Загружаем существующие вакансии один раз
+        existing_vacancies = self.load_vacancies()
+        existing_map = {v.vacancy_id: v for v in existing_vacancies}
+
+        update_messages: List[str] = []
+        new_count = 0
+        updated_count = 0
+
+        # Обрабатываем все вакансии в одном цикле
+        for new_vac in vacancies:
+            if new_vac.vacancy_id in existing_map:
+                existing_vac = existing_map[new_vac.vacancy_id]
+                changed_fields = []
+
+                # Проверяем каждое поле на изменения
+                for field in ["title", "url", "salary", "description", "updated_at"]:
+                    old_val = getattr(existing_vac, field, None)
+                    new_val = getattr(new_vac, field, None)
+
+                    if old_val != new_val:
+                        changed_fields.append(field)
+
+                if changed_fields:
+                    # Обновляем только изменившиеся поля
+                    for field in changed_fields:
+                        setattr(existing_vac, field, getattr(new_vac, field))
+
+                    if updated_count < 5:  # Показываем только первые 5 обновлений
+                        message = (
+                            f"Вакансия ID {new_vac.vacancy_id} обновлена. "
+                            f"Измененные поля: {', '.join(changed_fields)}. "
+                            f"Название: '{new_vac.title}'"
+                        )
+                        update_messages.append(message)
+                    updated_count += 1
+            else:
+                existing_map[new_vac.vacancy_id] = new_vac
+                if new_count < 5:  # Показываем только первые 5 новых вакансий
+                    message = f"Добавлена новая вакансия ID {new_vac.vacancy_id}: '{new_vac.title}'"
+                    update_messages.append(message)
+                new_count += 1
+
+        # Добавляем сводную информацию если обработано много вакансий
+        if new_count > 5:
+            update_messages.append(f"... и еще {new_count - 5} новых вакансий")
+        if updated_count > 5:
+            update_messages.append(f"... и еще {updated_count - 5} обновленных вакансий")
+
+        # Сохраняем все вакансии одним разом, если есть изменения
+        if new_count > 0 or updated_count > 0:
+            logger.info(f"Сохранение {len(existing_map)} вакансий в файл...")
+            self._save_to_file(list(existing_map.values()))
+            logger.info(f"Успешно обработано: новых - {new_count}, обновленных - {updated_count}")
+
+        return update_messages
+
+    def add_vacancy(self, vacancies: Union[Vacancy, List[Vacancy]]) -> List[str]:
+        """
+        Добавляет вакансии в файл с выводом информационных сообщений об изменениях.
+        Автоматически выбирает оптимальную стратегию в зависимости от объема данных.
+        """
+        if not isinstance(vacancies, list):
+            vacancies = [vacancies]
+
+        if not vacancies:
+            return []
+
+        # Для любого количества используем оптимизированный метод
+        return self.add_vacancy_batch_optimized(vacancies)
+
+    def _add_vacancy_legacy(self, vacancies: List[Vacancy]) -> List[str]:
+        """
+        Оригинальный алгоритм добавления вакансий (сохранен для совместимости).
+        Обрабатывает каждую вакансию отдельно.
+        """
         existing_vacancies = self.load_vacancies()
         existing_map = {v.vacancy_id: v for v in existing_vacancies}
 

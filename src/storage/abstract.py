@@ -29,6 +29,23 @@ class AbstractVacancyStorage(ABC):
         :param vacancy: Объект вакансии для удаления
         """
 
+    # Batch методы для эффективной работы с большими объемами данных
+    @abstractmethod
+    def check_vacancies_exist_batch(self, vacancies: List[AbstractVacancy]) -> Dict[str, bool]:
+        """
+        Проверяет существование множества вакансий одним запросом
+        :param vacancies: Список вакансий для проверки
+        :return: Словарь {vacancy_id: exists}
+        """
+
+    @abstractmethod
+    def add_vacancy_batch_optimized(self, vacancies: List[AbstractVacancy]) -> List[str]:
+        """
+        Оптимизированное batch-добавление вакансий
+        :param vacancies: Список вакансий для добавления
+        :return: Список сообщений об операциях
+        """
+
     # Новые методы для бизнес-логики
     @abstractmethod
     def get_vacancies_paginated(self, page: int = 1, page_size: int = 10, 
