@@ -26,9 +26,23 @@ class VacancyStats:
         """
         company_stats = defaultdict(int)
         
-        for vacancy in vacancies:
+        for i, vacancy in enumerate(vacancies):
             # Получаем название компании из разных источников
             company_name = VacancyStats._extract_company_name(vacancy)
+            
+            # Отладочная информация для первых нескольких вакансий
+            if i < 3:
+                logger.debug(f"Vacancy {i}: type={type(vacancy)}")
+                if isinstance(vacancy, dict):
+                    logger.debug(f"  Keys: {list(vacancy.keys())}")
+                    if "employer" in vacancy:
+                        logger.debug(f"  Employer: {vacancy['employer']}")
+                else:
+                    logger.debug(f"  Has employer attr: {hasattr(vacancy, 'employer')}")
+                    if hasattr(vacancy, 'employer'):
+                        logger.debug(f"  Employer: {vacancy.employer}")
+                logger.debug(f"  Extracted company: {company_name}")
+            
             if company_name:
                 company_stats[company_name] += 1
                 
@@ -70,6 +84,26 @@ class VacancyStats:
                 return employer.get("name", "Неизвестная компания")
             elif isinstance(employer, str):
                 return employer
+        
+        # Дополнительная проверка для raw_data из HH
+        if isinstance(vacancy, dict) and "raw_data" in vacancy:
+            raw_data = vacancy["raw_data"]
+            if isinstance(raw_data, dict) and "employer" in raw_data:
+                employer = raw_data["employer"]
+                if isinstance(employer, dict):
+                    return employer.get("name", "Неизвестная компания")
+                elif isinstance(employer, str):
+                    return employer
+        
+        # Проверяем прямые поля HH в случае если это сырые данные
+        if isinstance(vacancy, dict):
+            # Проверяем возможные варианты полей компании в HH
+            for field in ["company_name", "company", "employer_name"]:
+                if field in vacancy and vacancy[field]:
+                    company = vacancy[field]
+                    if isinstance(company, dict):
+                        return company.get("name", str(company))
+                    return str(company)
                 
         return "Неизвестная компания"
     
