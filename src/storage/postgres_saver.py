@@ -115,6 +115,7 @@ class PostgresSaver:
                 schedule VARCHAR(200),
                 employer VARCHAR(500),
                 area VARCHAR(200),
+                source VARCHAR(50) DEFAULT 'unknown',
                 published_at TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -123,10 +124,23 @@ class PostgresSaver:
             
             cursor.execute(create_table_query)
             
+            # Проверяем существование поля source и добавляем если его нет
+            cursor.execute("""
+                SELECT column_name 
+                FROM information_schema.columns 
+                WHERE table_name = 'vacancies_storage' AND column_name = 'source';
+            """)
+            
+            if not cursor.fetchone():
+                logger.info("Добавляем поле source в существующую таблицу...")
+                cursor.execute("ALTER TABLE vacancies_storage ADD COLUMN source VARCHAR(50) DEFAULT 'unknown';")
+                logger.info("✓ Поле source добавлено")
+            
             # Создаем индексы
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_vacancy_id ON vacancies_storage(vacancy_id);")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_title ON vacancies_storage(title);")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_salary ON vacancies_storage(salary_from, salary_to);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_source ON vacancies_storage(source);")
             
             connection.commit()
             logger.info("✓ Таблицы успешно созданы/проверены")
@@ -219,14 +233,14 @@ class PostgresSaver:
                         salary_from, salary_to, salary_currency,
                         vac.description, vac.requirements, vac.responsibilities,
                         vac.experience, vac.employment, vac.schedule,
-                        employer_str, area_str, vac.published_at
+                        employer_str, area_str, vac.source, vac.published_at
                     ))
                 
                 insert_query = """
                 INSERT INTO vacancies_storage (
                     vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
-                    employment, schedule, employer, area, published_at
+                    employment, schedule, employer, area, source, published_at
                 ) VALUES %s
                 """
                 
@@ -254,7 +268,7 @@ class PostgresSaver:
                         title = %s, url = %s, salary_from = %s, salary_to = %s,
                         salary_currency = %s, description = %s, requirements = %s,
                         responsibilities = %s, experience = %s, employment = %s,
-                        schedule = %s, employer = %s, area = %s, published_at = %s,
+                        schedule = %s, employer = %s, area = %s, source = %s, published_at = %s,
                         updated_at = CURRENT_TIMESTAMP
                     WHERE vacancy_id = %s
                     """
@@ -263,7 +277,7 @@ class PostgresSaver:
                         vac.title, vac.url, salary_from, salary_to,
                         salary_currency, vac.description, vac.requirements,
                         vac.responsibilities, vac.experience, vac.employment,
-                        vac.schedule, employer_str, area_str,
+                        vac.schedule, employer_str, area_str, vac.source,
                         vac.published_at, vac.vacancy_id
                     ))
             
@@ -385,7 +399,8 @@ class PostgresSaver:
                     schedule=row['schedule'],
                     employer=employer,
                     vacancy_id=row['vacancy_id'],
-                    published_at=published_at
+                    published_at=published_at,
+                    source=row.get('source', 'unknown')
                 )
                 
                 # Устанавливаем area напрямую
