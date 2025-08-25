@@ -1,6 +1,13 @@
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any, Dict, Optional
+import json
+import logging
+from pathlib import Path
 
+from src.utils.file_handlers import json_handler
+from .api_config import APIConfig
+
+logger = logging.getLogger(__name__)
 
 @dataclass
 class SJAPIConfig:
@@ -16,6 +23,15 @@ class SJAPIConfig:
 
     # Настройка фильтрации данных через SQL
     filter_by_target_companies = True  # Фильтровать по целевым компаниям через SQL
+
+    def __init__(self, token_file: Path = Path("token.json"), **kwargs):
+        self.token_file = token_file
+        # Инициализация APIConfig, если он нужен (в данном случае не используется напрямую в SJAPIConfig)
+        # self.api_config = APIConfig()
+
+        # Обновляем параметры из kwargs, если они переданы
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     def get_params(self, **kwargs) -> Dict[str, Any]:
         """Генерация параметров запроса с учетом переопределений"""
@@ -38,3 +54,26 @@ class SJAPIConfig:
             params.update(self.custom_params)
         params.update(kwargs)
         return params
+
+    def save_token(self, token: str) -> None:
+        """Сохранить токен в файл"""
+        try:
+            token_data = [{"superjob_api_key": token}]
+            json_handler.write_json(self.token_file, token_data)
+            logger.info(f"Токен SuperJob сохранен в {self.token_file}")
+
+        except Exception as e:
+            logger.error(f"Ошибка сохранения токена: {e}")
+            raise
+
+    def load_token(self) -> Optional[str]:
+        """Загрузить токен из файла"""
+        try:
+            token_data = json_handler.read_json(self.token_file)
+            if token_data and len(token_data) > 0:
+                return token_data[0].get("superjob_api_key")
+            return None
+
+        except Exception as e:
+            logger.error(f"Ошибка загрузки токена: {e}")
+            return None

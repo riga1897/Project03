@@ -19,7 +19,7 @@ class PostgresSaver:
     в PostgreSQL базе данных с валидацией данных и обработкой ошибок.
     """
 
-    # Mapping for standardizing company names, based on the intention of the provided snippet.
+    # Mapping for std company names, based on the intention of the provided snippet.
     COMPANY_NAME_STANDARDIZATION = {
         'яндекс': 'Яндекс',
         'сбер': 'Сбер',
@@ -133,7 +133,7 @@ class PostgresSaver:
         connection = self._get_connection()
         try:
             cursor = connection.cursor()
-            
+
             # Устанавливаем кодировку сессии
             cursor.execute("SET client_encoding TO 'UTF8'")
 
@@ -297,7 +297,7 @@ class PostgresSaver:
             # Подготавливаем данные для вставки/обновления И сохраняем company_id в объектах
             insert_data = []
             vacancy_company_mapping = {}  # Словарь для сохранения соответствия vacancy_id -> company_id
-            
+
             for vacancy in vacancies:
                 # Определяем company_id на основе employer
                 mapped_company_id = None
@@ -342,7 +342,7 @@ class PostgresSaver:
 
                 # Сохраняем соответствие для дальнейшего использования
                 vacancy_company_mapping[vacancy.vacancy_id] = mapped_company_id
-                
+
                 # Устанавливаем company_id напрямую в объект вакансии
                 vacancy.company_id = mapped_company_id
 

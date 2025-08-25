@@ -1,11 +1,16 @@
 import logging
 from typing import Optional, Set
 
+from src.utils.source_manager import source_manager, DataSource
+
 logger = logging.getLogger(__name__)
 
 
 class SourceSelector:
-    """Класс для выбора источников вакансий"""
+    """Класс для выбора источников данных в пользовательском интерфейсе"""
+
+    def __init__(self):
+        self.source_manager = source_manager
 
     AVAILABLE_SOURCES = {"hh": "HH.ru", "sj": "SuperJob.ru"}
 

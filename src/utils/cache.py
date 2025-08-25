@@ -1,11 +1,13 @@
 import hashlib
 import json
+import logging
 import time
 from functools import wraps
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional
 
 from .env_loader import EnvLoader
+from .file_handlers import json_handler
 
 
 def simple_cache(ttl: Optional[int] = None, max_size: int = 1000) -> Callable:

@@ -9,6 +9,7 @@ import pytest
 import tempfile
 import os
 from unittest.mock import Mock, patch
+from pathlib import Path
 from src.vacancies.models import Vacancy
 from src.storage.postgres_saver import PostgresSaver
 from src.utils.salary import Salary
@@ -67,6 +68,13 @@ def temp_json_file():
     with tempfile.NamedTemporaryFile(mode='w+', delete=False, suffix='.json') as f:
         yield f.name
     os.unlink(f.name)
+
+
+@pytest.fixture
+def temp_directory():
+    """Фикстура для создания временной директории"""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        yield Path(temp_dir)
 
 
 @pytest.fixture
