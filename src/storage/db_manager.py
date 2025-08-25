@@ -350,6 +350,10 @@ class DBManager:
                     cursor.execute(query)
                     results = cursor.fetchall()
 
+                    # Выводим заголовок таблицы
+                    print(f"{'№':<4}{'Название':<26}{'Компания':<21}{'Зарплата':<15}")
+                    print("-" * 66)
+                    
                     # Выводим результаты
                     for i, row in enumerate(results[:10], 1):
                         title = row['title'][:25] if row['title'] else "Без названия"
