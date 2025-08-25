@@ -591,11 +591,14 @@ class DBManager:
                     """)
                     
                     main_stats = cursor.fetchone()
-                    stats.update(dict(main_stats))
+                    if main_stats:
+                        stats.update(dict(main_stats))
 
                     # Статистика по компаниям
-                    cursor.execute("SELECT COUNT(*) FROM companies")
-                    stats['total_companies'] = cursor.fetchone()[0]
+                    cursor.execute("SELECT COUNT(*) as total_companies FROM companies")
+                    company_result = cursor.fetchone()
+                    if company_result:
+                        stats['total_companies'] = company_result['total_companies']
 
                     # Топ работодателей по количеству вакансий
                     cursor.execute("""
@@ -631,6 +634,9 @@ class DBManager:
 
         except psycopg2.Error as e:
             logger.error(f"Ошибка при выполнении SQL-запросов для получения статистики БД: {e}")
+            return {}
+        except Exception as e:
+            logger.error(f"Неожиданная ошибка при получении статистики БД: {e}")
             return {}
 
     def get_connection(self) -> psycopg2.extensions.connection:
