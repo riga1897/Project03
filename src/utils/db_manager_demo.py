@@ -149,24 +149,42 @@ class DBManagerDemo:
         print("\n4. get_all_vacancies() - Все вакансии:")
         print("-" * 80)
         all_vacancies = self.db_manager.get_all_vacancies()
-        print()
 
         if not all_vacancies:
             print("Вакансии не найдены.")
             return
 
-        print(f"{'№':<3} {'Название':<25} {'Компания':<20} {'Зарплата':<15}")
-        print("-" * 80)
+        # Сортируем вакансии: сначала по убыванию зарплаты, потом по названию
+        def get_salary_value(vacancy):
+            """Извлекает числовое значение зарплаты для сортировки"""
+            salary_info = vacancy.get('salary_info', 'Не указана')
+            if salary_info == 'Не указана':
+                return 0
+            
+            # Извлекаем числа из строки зарплаты
+            import re
+            numbers = re.findall(r'\d+', salary_info)
+            if numbers:
+                # Берем максимальное значение (если есть диапазон)
+                return max(int(num) for num in numbers)
+            return 0
 
-        for i, vacancy in enumerate(all_vacancies[:5], 1):
-            title = vacancy['title'][:24] if len(vacancy['title']) > 24 else vacancy['title']
-            company = vacancy['company_name'][:19] if len(vacancy['company_name']) > 19 else vacancy['company_name']
-            salary = vacancy['salary_info'][:14] if len(vacancy['salary_info']) > 14 else vacancy['salary_info']
+        sorted_vacancies = sorted(all_vacancies, 
+                                key=lambda x: (-get_salary_value(x), x.get('title', '')))
 
-            print(f"{i:<3} {title:<25} {company:<20} {salary:<15}")
+        print(f"{'№':<3} {'Название':<30} {'Компания':<25} {'Зарплата':<20}")
+        print("-" * 85)
 
-        if len(all_vacancies) > 5:
-            print(f"... и еще {len(all_vacancies) - 5} вакансий")
+        # Показываем все вакансии (не ограничиваем до 15, так как целевых компаний всего 15)
+        for i, vacancy in enumerate(sorted_vacancies[:15], 1):
+            title = vacancy['title'][:29] if len(vacancy['title']) > 29 else vacancy['title']
+            company = vacancy['company_name'][:24] if len(vacancy['company_name']) > 24 else vacancy['company_name']
+            salary = vacancy['salary_info'][:19] if len(vacancy['salary_info']) > 19 else vacancy['salary_info']
+
+            print(f"{i:<3} {title:<30} {company:<25} {salary:<20}")
+
+        if len(sorted_vacancies) > 15:
+            print(f"... и еще {len(sorted_vacancies) - 15} вакансий")
 
         print(f"\nВсего вакансий: {len(all_vacancies)}")
 
@@ -186,7 +204,7 @@ class DBManagerDemo:
     def _demo_vacancies_with_higher_salary(self) -> None:
         """Демонстрирует метод get_vacancies_with_higher_salary()"""
         print("\n6. get_vacancies_with_higher_salary() - Вакансии с зарплатой выше средней:")
-        print("-" * 80)
+        print("-" * 90)
 
         high_salary_vacancies = self.db_manager.get_vacancies_with_higher_salary()
 
@@ -194,18 +212,32 @@ class DBManagerDemo:
             print("Вакансии с зарплатой выше средней не найдены.")
             return
 
-        print(f"{'№':<3} {'Название':<25} {'Компания':<20} {'Зарплата':<15}")
-        print("-" * 80)
+        # Сортируем по убыванию зарплаты, потом по названию
+        def get_salary_value(vacancy):
+            """Извлекает числовое значение зарплаты для сортировки"""
+            salary_info = vacancy.get('salary_info', 'Не указана')
+            if salary_info == 'Не указана':
+                return 0
+            
+            import re
+            numbers = re.findall(r'\d+', salary_info)
+            if numbers:
+                return max(int(num) for num in numbers)
+            return 0
 
-        for i, vacancy in enumerate(high_salary_vacancies[:5], 1):
-            title = vacancy['title'][:24] if len(vacancy['title']) > 24 else vacancy['title']
-            company = vacancy['company_name'][:19] if len(vacancy['company_name']) > 19 else vacancy['company_name']
-            salary = vacancy['salary_info'][:14] if len(vacancy['salary_info']) > 14 else vacancy['salary_info']
+        sorted_vacancies = sorted(high_salary_vacancies, 
+                                key=lambda x: (-get_salary_value(x), x.get('title', '')))
 
-            print(f"{i:<3} {title:<25} {company:<20} {salary:<15}")
+        print(f"{'№':<3} {'Название':<35} {'Компания':<25} {'Зарплата':<20}")
+        print("-" * 90)
 
-        if len(high_salary_vacancies) > 5:
-            print(f"... и еще {len(high_salary_vacancies) - 5} вакансий")
+        # Показываем все вакансии с высокой зарплатой
+        for i, vacancy in enumerate(sorted_vacancies, 1):
+            title = vacancy['title'][:34] if len(vacancy['title']) > 34 else vacancy['title']
+            company = vacancy['company_name'][:24] if len(vacancy['company_name']) > 24 else vacancy['company_name']
+            salary = vacancy['salary_info'][:19] if len(vacancy['salary_info']) > 19 else vacancy['salary_info']
+
+            print(f"{i:<3} {title:<35} {company:<25} {salary:<20}")
 
         print(f"\nВсего вакансий с высокой зарплатой: {len(high_salary_vacancies)}")
 
@@ -221,16 +253,35 @@ class DBManagerDemo:
             keyword_vacancies = self.db_manager.get_vacancies_with_keyword(keyword)
 
             if keyword_vacancies:
-                print(f"Найдено {len(keyword_vacancies)} вакансий")
+                # Сортируем по убыванию зарплаты, потом по названию
+                def get_salary_value(vacancy):
+                    """Извлекает числовое значение зарплаты для сортировки"""
+                    salary_info = vacancy.get('salary_info', 'Не указана')
+                    if salary_info == 'Не указана':
+                        return 0
+                    
+                    import re
+                    numbers = re.findall(r'\d+', salary_info)
+                    if numbers:
+                        return max(int(num) for num in numbers)
+                    return 0
 
-                # Показываем первые 3 вакансии
-                for i, vacancy in enumerate(keyword_vacancies[:3], 1):
-                    title = vacancy['title'][:35]
-                    company = vacancy['company_name'][:25]
-                    print(f"  {i}. {title} - {company}")
+                sorted_vacancies = sorted(keyword_vacancies, 
+                                        key=lambda x: (-get_salary_value(x), x.get('title', '')))
 
-                if len(keyword_vacancies) > 3:
-                    print(f"  ... и еще {len(keyword_vacancies) - 3} вакансий")
+                print(f"Найдено {len(sorted_vacancies)} вакансий")
+                print(f"{'№':<3} {'Название':<40} {'Компания':<25} {'Зарплата':<15}")
+                print("-" * 88)
+
+                # Показываем максимум 15 вакансий
+                for i, vacancy in enumerate(sorted_vacancies[:15], 1):
+                    title = vacancy['title'][:39] if len(vacancy['title']) > 39 else vacancy['title']
+                    company = vacancy['company_name'][:24] if len(vacancy['company_name']) > 24 else vacancy['company_name']
+                    salary = vacancy['salary_info'][:14] if len(vacancy['salary_info']) > 14 else vacancy['salary_info']
+                    print(f"{i:<3} {title:<40} {company:<25} {salary:<15}")
+
+                if len(sorted_vacancies) > 15:
+                    print(f"  ... и еще {len(sorted_vacancies) - 15} вакансий")
             else:
                 print(f"Вакансии с ключевым словом '{keyword}' не найдены")
 

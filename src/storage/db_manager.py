@@ -350,24 +350,7 @@ class DBManager:
                     cursor.execute(query)
                     results = cursor.fetchall()
 
-                    # Выводим заголовок таблицы
-                    print(f"{'№':<4}{'Название':<26}{'Компания':<21}{'Зарплата':<15}")
-                    print("-" * 66)
-                    
-                    # Выводим результаты
-                    for i, row in enumerate(results[:10], 1):
-                        title = row['title'][:25] if row['title'] else "Без названия"
-                        company_name = row['company_name'][:20] if row['company_name'] else "Неизвестная компания"
-                        salary_str = row['salary_info'][:15] if row['salary_info'] else "Не указана"
-
-                        print(f"{i:<4}{title:<26}{company_name:<21}{salary_str:<15}")
-
-                    if len(results) > 10:
-                        print(f"... и еще {len(results) - 10} вакансий")
-
-                    print(f"\nВсего вакансий: {len(results)}")
-
-                    # Возвращаем список словарей
+                    # Возвращаем список словарей без вывода
                     return [dict(row) for row in results]
 
         except Exception as e:
@@ -468,20 +451,7 @@ class DBManager:
                     cursor.execute(query, (avg_salary,))
                     results = cursor.fetchall()
 
-                    # Выводим результаты
-                    for i, row in enumerate(results[:10], 1):
-                        title = row['title'][:25] if row['title'] else "Без названия"
-                        company_name = row['company_name'][:20] if row['company_name'] else "Неизвестная компания"
-                        salary_str = row['salary_info'][:15] if row['salary_info'] else "Не указана"
-
-                        print(f"{i:<4}{title:<26}{company_name:<21}{salary_str:<15}")
-
-                    if len(results) > 10:
-                        print(f"... и еще {len(results) - 10} вакансий")
-
-                    print(f"\nВсего вакансий с высокой зарплатой: {len(results)}")
-
-                    # Возвращаем список словарей
+                    # Возвращаем список словарей без вывода
                     return [dict(row) for row in results]
 
         except psycopg2.Error as e:
@@ -534,17 +504,7 @@ class DBManager:
                     cursor.execute(query, (search_pattern,))
                     results = cursor.fetchall()
 
-                    # Выводим результаты
-                    for i, row in enumerate(results[:5], 1):
-                        title = row['title'][:30] if row['title'] else "Без названия"
-                        company_name = row['company_name'] if row['company_name'] else "Неизвестная компания"
-
-                        print(f"  {i}. {title} - {company_name}")
-
-                    if len(results) > 5:
-                        print(f"  ... и еще {len(results) - 5} вакансий")
-
-                    # Возвращаем список словарей
+                    # Возвращаем список словарей без вывода
                     return [dict(row) for row in results]
 
         except psycopg2.Error as e:
