@@ -1,0 +1,1250 @@
+~/workspace$ pytest -v
+================================ test session starts ================================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0 -- /nix/store/2lcqw1d28vklbk8ikiwad28iq2smwndv-python-wrapped-0.1.0/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.14.1
+collected 193 items                                                                 
+
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_hh_data_by_salary_range FAILED [  0%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_sj_data_by_salary_range FAILED [  1%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_by_keywords FAILED [  1%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_by_location FAILED [  2%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_by_experience FAILED [  2%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_by_employment_type FAILED [  3%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_by_company FAILED [  3%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_complex_filter_chain FAILED [  4%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_empty_filter_results FAILED [  4%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_with_empty_data FAILED [  5%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_invalid_data_structure FAILED [  5%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_api_initialization PASSED  [  6%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_validate_vacancy_valid PASSED [  6%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_validate_vacancy_invalid PASSED [  7%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_get_vacancies_page_success PASSED [  7%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_get_vacancies_empty_response PASSED [  8%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_empty_response_structure PASSED [  8%]
+tests/test_api_modules.py::TestSuperJobAPI::test_api_initialization_with_custom_key PASSED [  9%]
+tests/test_api_modules.py::TestSuperJobAPI::test_validate_vacancy_valid PASSED [  9%]
+tests/test_api_modules.py::TestSuperJobAPI::test_validate_vacancy_invalid PASSED [ 10%]
+tests/test_api_modules.py::TestSuperJobAPI::test_get_vacancies_page_with_source PASSED [ 10%]
+tests/test_api_modules.py::TestSuperJobAPI::test_empty_response_structure PASSED [ 11%]
+tests/test_cache.py::TestFileCache::test_cache_initialization PASSED          [ 11%]
+tests/test_cache.py::TestFileCache::test_generate_params_hash PASSED          [ 12%]
+tests/test_cache.py::TestFileCache::test_generate_params_hash_different_params PASSED [ 12%]
+tests/test_cache.py::TestFileCache::test_save_and_load_response PASSED        [ 13%]
+tests/test_cache.py::TestFileCache::test_load_response_nonexistent PASSED     [ 13%]
+tests/test_cache.py::TestFileCache::test_clear_cache_source PASSED            [ 14%]
+tests/test_cache.py::TestFileCache::test_clear_cache_all PASSED               [ 15%]
+tests/test_cache.py::TestFileCache::test_cache_with_complex_params PASSED     [ 15%]
+tests/test_cache.py::TestFileCache::test_cache_file_corrupted PASSED          [ 16%]
+tests/test_cache.py::TestFileCache::test_cache_unicode_support PASSED         [ 16%]
+tests/test_config.py::TestAppConfig::test_default_initialization PASSED       [ 17%]
+tests/test_config.py::TestAppConfig::test_get_storage_type PASSED             [ 17%]
+tests/test_config.py::TestAppConfig::test_set_storage_type_valid PASSED       [ 18%]
+tests/test_config.py::TestAppConfig::test_set_storage_type_invalid PASSED     [ 18%]
+tests/test_config.py::TestAppConfig::test_get_db_config PASSED                [ 19%]
+tests/test_config.py::TestAppConfig::test_db_config_from_env PASSED           [ 19%]
+tests/test_config.py::TestDatabaseConfig::test_default_initialization SKIPPED [ 20%]
+tests/test_config.py::TestDatabaseConfig::test_initialization_with_env PASSED [ 20%]
+tests/test_config.py::TestDatabaseConfig::test_get_connection_params PASSED   [ 21%]
+tests/test_config.py::TestDatabaseConfig::test_get_dsn PASSED                 [ 21%]
+tests/test_config.py::TestDatabaseConfig::test_test_connection_success PASSED [ 22%]
+tests/test_config.py::TestDatabaseConfig::test_test_connection_failure PASSED [ 22%]
+tests/test_config.py::TestHHAPIConfig::test_initialization SKIPPED (HHAPI...) [ 23%]
+tests/test_config.py::TestHHAPIConfig::test_get_headers PASSED                [ 23%]
+tests/test_config.py::TestHHAPIConfig::test_get_vacancies_url PASSED          [ 24%]
+tests/test_config.py::TestHHAPIConfig::test_get_employers_url PASSED          [ 24%]
+tests/test_config.py::TestHHAPIConfig::test_get_areas_url PASSED              [ 25%]
+tests/test_config.py::TestHHAPIConfig::test_get_request_params PASSED         [ 25%]
+tests/test_config.py::TestSJAPIConfig::test_initialization PASSED             [ 26%]
+tests/test_config.py::TestSJAPIConfig::test_initialization_with_secret_key PASSED [ 26%]
+tests/test_config.py::TestSJAPIConfig::test_get_headers_without_key PASSED    [ 27%]
+tests/test_config.py::TestSJAPIConfig::test_get_headers_with_key PASSED       [ 27%]
+tests/test_config.py::TestSJAPIConfig::test_get_vacancies_url PASSED          [ 28%]
+tests/test_config.py::TestSJAPIConfig::test_set_secret_key PASSED             [ 29%]
+tests/test_config.py::TestSJAPIConfig::test_is_configured PASSED              [ 29%]
+tests/test_config.py::TestSJAPIConfig::test_get_request_params PASSED         [ 30%]
+tests/test_db_manager.py::TestDBManager::test_get_connection_success PASSED   [ 30%]
+tests/test_db_manager.py::TestDBManager::test_get_connection_failure PASSED   [ 31%]
+tests/test_db_manager.py::TestDBManager::test_create_tables_success PASSED    [ 31%]
+tests/test_db_manager.py::TestDBManager::test_populate_companies_table PASSED [ 32%]
+tests/test_db_manager.py::TestDBManager::test_get_companies_and_vacancies_count PASSED [ 32%]
+tests/test_db_manager.py::TestDBManager::test_get_all_vacancies PASSED        [ 33%]
+tests/test_db_manager.py::TestDBManager::test_get_avg_salary PASSED           [ 33%]
+tests/test_db_manager.py::TestDBManager::test_get_avg_salary_no_data PASSED   [ 34%]
+tests/test_db_manager.py::TestDBManager::test_get_vacancies_with_higher_salary PASSED [ 34%]
+tests/test_db_manager.py::TestDBManager::test_get_vacancies_with_keyword PASSED [ 35%]
+tests/test_db_manager.py::TestDBManager::test_get_vacancies_with_keyword_empty PASSED [ 35%]
+tests/test_db_manager.py::TestDBManager::test_get_database_stats PASSED       [ 36%]
+tests/test_db_manager.py::TestDBManager::test_check_connection_success PASSED [ 36%]
+tests/test_db_manager.py::TestDBManager::test_check_connection_failure PASSED [ 37%]
+tests/test_db_manager.py::TestDBManager::test_is_target_company_match PASSED  [ 37%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_demo_initialization FAILED [ 38%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_run_demo_exit FAILED   [ 38%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_show_companies_and_vacancies_count FAILED [ 39%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_show_all_vacancies FAILED [ 39%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_show_avg_salary FAILED [ 40%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_show_vacancies_with_higher_salary FAILED [ 40%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_search_vacancies_by_keyword FAILED [ 41%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_invalid_menu_choice FAILED [ 41%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_format_companies_data FAILED [ 42%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_format_vacancies_data FAILED [ 43%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_get_db_manager_creation FAILED [ 43%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_display_menu FAILED    [ 44%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_error_handling_db_connection FAILED [ 44%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_write_json_data PASSED [ 45%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_read_json_data PASSED  [ 45%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_read_nonexistent_json_file PASSED [ 46%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_read_empty_json_file PASSED [ 46%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_read_invalid_json_file PASSED [ 47%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_write_creates_directory FAILED [ 47%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_atomic_write_on_error PASSED [ 48%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_cache_clearing_on_write PASSED [ 48%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_global_json_handler_instance PASSED [ 49%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_caching_behavior FAILED [ 49%]
+tests/test_integration.py::TestAPIIntegration::test_hh_api_search_integration PASSED [ 50%]
+tests/test_integration.py::TestAPIIntegration::test_sj_api_search_integration PASSED [ 50%]
+tests/test_integration.py::TestStorageIntegration::test_postgres_saver_integration PASSED [ 51%]
+tests/test_integration.py::TestCacheIntegration::test_cached_api_integration PASSED [ 51%]
+tests/test_integration.py::TestFullWorkflowIntegration::test_search_and_save_workflow PASSED [ 52%]
+tests/test_integration.py::TestFullWorkflowIntegration::test_error_handling_integration PASSED [ 52%]
+tests/test_integration.py::TestFullWorkflowIntegration::test_data_consistency_integration PASSED [ 53%]
+tests/test_source_manager.py::TestSourceManager::test_source_manager_initialization PASSED [ 53%]
+tests/test_source_manager.py::TestSourceManager::test_get_available_sources FAILED [ 54%]
+tests/test_source_manager.py::TestSourceManager::test_get_source_config_hh FAILED [ 54%]
+tests/test_source_manager.py::TestSourceManager::test_get_source_config_sj FAILED [ 55%]
+tests/test_source_manager.py::TestSourceManager::test_get_source_config_invalid FAILED [ 55%]
+tests/test_source_manager.py::TestSourceManager::test_is_source_available_true FAILED [ 56%]
+tests/test_source_manager.py::TestSourceManager::test_is_source_available_false FAILED [ 56%]
+tests/test_source_manager.py::TestSourceManager::test_get_source_display_name FAILED [ 57%]
+tests/test_source_manager.py::TestSourceManager::test_get_source_api_limits FAILED [ 58%]
+tests/test_source_manager.py::TestSourceManager::test_validate_source_credentials_hh FAILED [ 58%]
+tests/test_source_manager.py::TestSourceManager::test_validate_source_credentials_sj_valid FAILED [ 59%]
+tests/test_source_manager.py::TestSourceManager::test_validate_source_credentials_sj_invalid FAILED [ 59%]
+tests/test_source_manager.py::TestSourceManager::test_get_source_priority FAILED [ 60%]
+tests/test_source_manager.py::TestSourceManager::test_sort_sources_by_priority FAILED [ 60%]
+tests/test_source_manager.py::TestSourceManager::test_get_source_features FAILED [ 61%]
+tests/test_storage.py::TestPostgresSaver::test_postgres_saver_initialization PASSED [ 61%]
+tests/test_storage.py::TestPostgresSaver::test_get_connection PASSED          [ 62%]
+tests/test_storage.py::TestPostgresSaver::test_add_vacancy_with_sample_data PASSED [ 62%]
+tests/test_storage.py::TestPostgresSaver::test_ensure_database_exists PASSED  [ 63%]
+tests/test_storage.py::TestPostgresSaver::test_format_vacancy_data PASSED     [ 63%]
+tests/test_storage.py::TestStorageFactory::test_get_storage_postgres PASSED   [ 64%]
+tests/test_storage.py::TestStorageFactory::test_get_storage_invalid_type PASSED [ 64%]
+tests/test_storage.py::TestStorageFactory::test_get_storage_missing_config PASSED [ 65%]
+tests/test_ui_helpers.py::TestUIHelpers::test_get_positive_integer_valid PASSED [ 65%]
+tests/test_ui_helpers.py::TestUIHelpers::test_get_positive_integer_invalid_then_valid PASSED [ 66%]
+tests/test_ui_helpers.py::TestUIHelpers::test_get_positive_integer_non_numeric PASSED [ 66%]
+tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_in_title PASSED [ 67%]
+tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_in_description PASSED [ 67%]
+tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_case_insensitive PASSED [ 68%]
+tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_no_matches PASSED [ 68%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_both_values PASSED [ 69%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_only_min PASSED [ 69%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_only_max PASSED [ 70%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_single_value PASSED [ 70%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_invalid_format PASSED [ 71%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_empty_string PASSED [ 72%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_with_spaces PASSED [ 72%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_brief PASSED [ 73%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_brief_no_number PASSED [ 73%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_brief_no_salary PASSED [ 74%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_brief_partial_salary PASSED [ 74%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_info_with_dict PASSED [ 75%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_info_with_object PASSED [ 75%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_display_vacancy_info PASSED [ 76%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_salary_dict PASSED [ 76%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_company_info PASSED [ 77%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_company_name PASSED [ 77%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_salary_info PASSED [ 78%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_description PASSED [ 78%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_responsibilities PASSED [ 79%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_requirements PASSED [ 79%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_conditions PASSED [ 80%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_build_vacancy_lines PASSED [ 80%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_build_vacancy_lines_with_api_url PASSED [ 81%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_salary_with_object PASSED [ 81%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_salary_with_dict PASSED [ 82%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_salary_none PASSED [ 82%]
+tests/test_vacancy_models.py::TestVacancy::test_vacancy_creation_with_dict_salary PASSED [ 83%]
+tests/test_vacancy_models.py::TestVacancy::test_vacancy_creation_without_salary PASSED [ 83%]
+tests/test_vacancy_models.py::TestVacancy::test_vacancy_string_representation PASSED [ 84%]
+tests/test_vacancy_models.py::TestVacancy::test_vacancy_comparison PASSED     [ 84%]
+tests/test_vacancy_models.py::TestVacancy::test_vacancy_equality PASSED       [ 85%]
+tests/test_vacancy_models.py::TestSalary::test_salary_creation_from_dict PASSED [ 86%]
+tests/test_vacancy_models.py::TestSalary::test_salary_string_representation PASSED [ 86%]
+tests/test_vacancy_models.py::TestSalary::test_salary_only_from PASSED        [ 87%]
+tests/test_vacancy_models.py::TestSalary::test_salary_only_to PASSED          [ 87%]
+tests/test_vacancy_models.py::TestSalary::test_salary_comparison PASSED       [ 88%]
+tests/test_vacancy_models.py::TestSalary::test_source_detection_from_dict PASSED [ 88%]
+tests/test_vacancy_models.py::TestSalary::test_source_fallback_detection PASSED [ 89%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_search_vacancies_advanced PASSED [ 89%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_get_vacancies_with_salary PASSED [ 90%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_sort_vacancies_by_salary PASSED [ 90%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_filter_vacancies_by_multiple_keywords PASSED [ 91%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_search_vacancies_advanced_and_operator PASSED [ 91%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_search_vacancies_advanced_or_operator PASSED [ 92%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_search_vacancies_advanced_simple_query PASSED [ 92%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_vacancy_operations_basic_functionality PASSED [ 93%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_get_company_distribution_dict_data PASSED [ 93%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_get_company_distribution_vacancy_objects PASSED [ 94%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_extract_company_name_hh_format PASSED [ 94%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_extract_company_name_sj_format PASSED [ 95%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_extract_company_name_vacancy_object PASSED [ 95%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_extract_company_name_unknown PASSED [ 96%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_extract_company_name_empty_employer PASSED [ 96%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_display_company_stats_with_data PASSED [ 97%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_display_company_stats_empty_data PASSED [ 97%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_display_source_stats PASSED [ 98%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_analyze_company_mapping PASSED [ 98%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_display_company_mapping_analysis PASSED [ 99%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_company_distribution_edge_cases PASSED [100%]
+
+===================================== FAILURES ======================================
+_______________ TestAPIDataFilter.test_filter_hh_data_by_salary_range _______________
+
+self = <tests.test_api_data_filter.TestAPIDataFilter object at 0x7fd3e48fc750>
+sample_hh_data = {'items': [{'alternate_url': 'https://hh.ru/vacancy/12345', 'area': {'name': 'Москва'}, 'employer': {'name': 'Test Com...', 'area': {'name': 'СПб'}, 'employer': {'name': 'Another Company'}, 'employment': {'name': 'Полная занятость'}, ...}]}
+
+    def test_filter_hh_data_by_salary_range(self, sample_hh_data):
+        """Тест фильтрации данных HH по диапазону зарплаты"""
+        filter_obj = APIDataFilter()
+    
+        # Фильтруем вакансии с зарплатой от 90000
+>       filtered = filter_obj.filter_by_salary_range(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            sample_hh_data["items"],
+            min_salary=90000
+        )
+E       AttributeError: 'APIDataFilter' object has no attribute 'filter_by_salary_range'
+
+tests/test_api_data_filter.py:86: AttributeError
+_______________ TestAPIDataFilter.test_filter_sj_data_by_salary_range _______________
+
+self = <tests.test_api_data_filter.TestAPIDataFilter object at 0x7fd3e2cf5590>
+sample_sj_data = {'objects': [{'candidat': 'Python, Flask', 'currency': 'rub', 'date_pub_timestamp': 1705312800, 'experience': {'title': 'От 1 года до 3 лет'}, ...}]}
+
+    def test_filter_sj_data_by_salary_range(self, sample_sj_data):
+        """Тест фильтрации данных SJ по диапазону зарплаты"""
+        filter_obj = APIDataFilter()
+    
+        # Фильтруем вакансии с зарплатой до 200000
+>       filtered = filter_obj.filter_by_salary_range(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            sample_sj_data["objects"],
+            max_salary=200000,
+            source="sj"
+        )
+E       AttributeError: 'APIDataFilter' object has no attribute 'filter_by_salary_range'
+
+tests/test_api_data_filter.py:99: AttributeError
+_____________________ TestAPIDataFilter.test_filter_by_keywords _____________________
+
+self = <tests.test_api_data_filter.TestAPIDataFilter object at 0x7fd3e2cf5c90>
+sample_hh_data = {'items': [{'alternate_url': 'https://hh.ru/vacancy/12345', 'area': {'name': 'Москва'}, 'employer': {'name': 'Test Com...', 'area': {'name': 'СПб'}, 'employer': {'name': 'Another Company'}, 'employment': {'name': 'Полная занятость'}, ...}]}
+
+    def test_filter_by_keywords(self, sample_hh_data):
+        """Тест фильтрации по ключевым словам"""
+        filter_obj = APIDataFilter()
+    
+        # Поиск по ключевому слову "Python"
+>       filtered = filter_obj.filter_by_keywords(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            sample_hh_data["items"],
+            keywords=["Python"]
+        )
+E       AttributeError: 'APIDataFilter' object has no attribute 'filter_by_keywords'
+
+tests/test_api_data_filter.py:113: AttributeError
+_____________________ TestAPIDataFilter.test_filter_by_location _____________________
+
+self = <tests.test_api_data_filter.TestAPIDataFilter object at 0x7fd3e2cf63d0>
+sample_hh_data = {'items': [{'alternate_url': 'https://hh.ru/vacancy/12345', 'area': {'name': 'Москва'}, 'employer': {'name': 'Test Com...', 'area': {'name': 'СПб'}, 'employer': {'name': 'Another Company'}, 'employment': {'name': 'Полная занятость'}, ...}]}
+
+    def test_filter_by_location(self, sample_hh_data):
+        """Тест фильтрации по местоположению"""
+        filter_obj = APIDataFilter()
+    
+        # Фильтрация по городу Москва
+>       filtered = filter_obj.filter_by_location(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            sample_hh_data["items"],
+            locations=["Москва"]
+        )
+E       AttributeError: 'APIDataFilter' object has no attribute 'filter_by_location'
+
+tests/test_api_data_filter.py:126: AttributeError
+____________________ TestAPIDataFilter.test_filter_by_experience ____________________
+
+self = <tests.test_api_data_filter.TestAPIDataFilter object at 0x7fd3e2cf6ad0>
+sample_hh_data = {'items': [{'alternate_url': 'https://hh.ru/vacancy/12345', 'area': {'name': 'Москва'}, 'employer': {'name': 'Test Com...', 'area': {'name': 'СПб'}, 'employer': {'name': 'Another Company'}, 'employment': {'name': 'Полная занятость'}, ...}]}
+
+    def test_filter_by_experience(self, sample_hh_data):
+        """Тест фильтрации по опыту работы"""
+        filter_obj = APIDataFilter()
+    
+        # Фильтрация по опыту "От 1 года до 3 лет"
+>       filtered = filter_obj.filter_by_experience(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            sample_hh_data["items"],
+            experience_levels=["От 1 года до 3 лет"]
+        )
+E       AttributeError: 'APIDataFilter' object has no attribute 'filter_by_experience'
+
+tests/test_api_data_filter.py:139: AttributeError
+_________________ TestAPIDataFilter.test_filter_by_employment_type __________________
+
+self = <tests.test_api_data_filter.TestAPIDataFilter object at 0x7fd3e2cf71d0>
+sample_hh_data = {'items': [{'alternate_url': 'https://hh.ru/vacancy/12345', 'area': {'name': 'Москва'}, 'employer': {'name': 'Test Com...', 'area': {'name': 'СПб'}, 'employer': {'name': 'Another Company'}, 'employment': {'name': 'Полная занятость'}, ...}]}
+
+    def test_filter_by_employment_type(self, sample_hh_data):
+        """Тест фильтрации по типу занятости"""
+        filter_obj = APIDataFilter()
+    
+        # Фильтрация по полной занятости
+>       filtered = filter_obj.filter_by_employment_type(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            sample_hh_data["items"],
+            employment_types=["Полная занятость"]
+        )
+E       AttributeError: 'APIDataFilter' object has no attribute 'filter_by_employment_type'
+
+tests/test_api_data_filter.py:152: AttributeError
+_____________________ TestAPIDataFilter.test_filter_by_company ______________________
+
+self = <tests.test_api_data_filter.TestAPIDataFilter object at 0x7fd3e2cf5710>
+sample_hh_data = {'items': [{'alternate_url': 'https://hh.ru/vacancy/12345', 'area': {'name': 'Москва'}, 'employer': {'name': 'Test Com...', 'area': {'name': 'СПб'}, 'employer': {'name': 'Another Company'}, 'employment': {'name': 'Полная занятость'}, ...}]}
+
+    def test_filter_by_company(self, sample_hh_data):
+        """Тест фильтрации по компании"""
+        filter_obj = APIDataFilter()
+    
+        # Фильтрация по конкретной компании
+>       filtered = filter_obj.filter_by_company(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            sample_hh_data["items"],
+            companies=["Test Company"]
+        )
+E       AttributeError: 'APIDataFilter' object has no attribute 'filter_by_company'
+
+tests/test_api_data_filter.py:164: AttributeError
+____________________ TestAPIDataFilter.test_complex_filter_chain ____________________
+
+self = <tests.test_api_data_filter.TestAPIDataFilter object at 0x7fd3e2cf7790>
+sample_hh_data = {'items': [{'alternate_url': 'https://hh.ru/vacancy/12345', 'area': {'name': 'Москва'}, 'employer': {'name': 'Test Com...', 'area': {'name': 'СПб'}, 'employer': {'name': 'Another Company'}, 'employment': {'name': 'Полная занятость'}, ...}]}
+
+    def test_complex_filter_chain(self, sample_hh_data):
+        """Тест цепочки фильтров"""
+        filter_obj = APIDataFilter()
+    
+        # Применяем несколько фильтров подряд
+        vacancies = sample_hh_data["items"]
+    
+        # Фильтр по ключевому слову
+>       vacancies = filter_obj.filter_by_keywords(vacancies, ["Developer"])
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'APIDataFilter' object has no attribute 'filter_by_keywords'
+
+tests/test_api_data_filter.py:180: AttributeError
+____________________ TestAPIDataFilter.test_empty_filter_results ____________________
+
+self = <tests.test_api_data_filter.TestAPIDataFilter object at 0x7fd3e2cf7b10>
+sample_hh_data = {'items': [{'alternate_url': 'https://hh.ru/vacancy/12345', 'area': {'name': 'Москва'}, 'employer': {'name': 'Test Com...', 'area': {'name': 'СПб'}, 'employer': {'name': 'Another Company'}, 'employment': {'name': 'Полная занятость'}, ...}]}
+
+    def test_empty_filter_results(self, sample_hh_data):
+        """Тест фильтра, который не возвращает результатов"""
+        filter_obj = APIDataFilter()
+    
+        # Поиск несуществующего ключевого слова
+>       filtered = filter_obj.filter_by_keywords(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            sample_hh_data["items"],
+            keywords=["NonExistentKeyword"]
+        )
+E       AttributeError: 'APIDataFilter' object has no attribute 'filter_by_keywords'
+
+tests/test_api_data_filter.py:196: AttributeError
+___________________ TestAPIDataFilter.test_filter_with_empty_data ___________________
+
+self = <tests.test_api_data_filter.TestAPIDataFilter object at 0x7fd3e2cf7fd0>
+
+    def test_filter_with_empty_data(self):
+        """Тест фильтрации пустых данных"""
+        filter_obj = APIDataFilter()
+    
+        # Фильтрация пустого списка
+>       filtered = filter_obj.filter_by_keywords([], keywords=["Python"])
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'APIDataFilter' object has no attribute 'filter_by_keywords'
+
+tests/test_api_data_filter.py:208: AttributeError
+_______________ TestAPIDataFilter.test_filter_invalid_data_structure ________________
+
+self = <tests.test_api_data_filter.TestAPIDataFilter object at 0x7fd3e2d00610>
+
+    def test_filter_invalid_data_structure(self):
+        """Тест фильтрации некорректной структуры данных"""
+        filter_obj = APIDataFilter()
+    
+        # Некорректная структура данных
+        invalid_data = [{"invalid": "structure"}]
+    
+        # Фильтр должен обработать некорректные данные без ошибок
+>       filtered = filter_obj.filter_by_keywords(invalid_data, keywords=["Python"])
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'APIDataFilter' object has no attribute 'filter_by_keywords'
+
+tests/test_api_data_filter.py:220: AttributeError
+____________________ TestDBManagerDemo.test_demo_initialization _____________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd3e2121e50>
+
+    def test_demo_initialization(self):
+        """Тест инициализации демо"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager'):
+
+tests/test_db_manager_demo.py:37: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd3e1d51850>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_______________________ TestDBManagerDemo.test_run_demo_exit ________________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd3e2122190>
+mock_input = <MagicMock name='input' id='140548003890192'>
+mock_print = <MagicMock name='print' id='140548003424016'>
+mock_db_manager = <Mock id='140548003833872'>
+
+    @patch('builtins.print')
+    @patch('builtins.input', return_value='0')
+    def test_run_demo_exit(self, mock_input, mock_print, mock_db_manager):
+        """Тест запуска демо с немедленным выходом"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd3e1d70290>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_____________ TestDBManagerDemo.test_show_companies_and_vacancies_count _____________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd3e21224d0>
+mock_input = <MagicMock name='input' id='140548003408528'>
+mock_print = <MagicMock name='print' id='140548004136144'>
+mock_db_manager = <Mock id='140548003400976'>
+
+    @patch('builtins.print')
+    @patch('builtins.input', side_effect=['1', '0'])
+    def test_show_companies_and_vacancies_count(self, mock_input, mock_print, mock_db_manager):
+        """Тест показа количества компаний и вакансий"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd3e25f8810>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_____________________ TestDBManagerDemo.test_show_all_vacancies _____________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd3e2122a50>
+mock_input = <MagicMock name='input' id='140548020061072'>
+mock_print = <MagicMock name='print' id='140548003694928'>
+mock_db_manager = <Mock id='140548012606160'>
+
+    @patch('builtins.print')
+    @patch('builtins.input', side_effect=['2', '0'])
+    def test_show_all_vacancies(self, mock_input, mock_print, mock_db_manager):
+        """Тест показа всех вакансий"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd3e1d78e90>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+______________________ TestDBManagerDemo.test_show_avg_salary _______________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd3e2122fd0>
+mock_input = <MagicMock name='input' id='140548027186960'>
+mock_print = <MagicMock name='print' id='140548000172112'>
+mock_db_manager = <Mock id='140548027185872'>
+
+    @patch('builtins.print')
+    @patch('builtins.input', side_effect=['3', '0'])
+    def test_show_avg_salary(self, mock_input, mock_print, mock_db_manager):
+        """Тест показа средней зарплаты"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd3e19fff50>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_____________ TestDBManagerDemo.test_show_vacancies_with_higher_salary ______________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd3e2123550>
+mock_input = <MagicMock name='input' id='140548003812368'>
+mock_print = <MagicMock name='print' id='140548003812432'>
+mock_db_manager = <Mock id='140548003808848'>
+
+    @patch('builtins.print')
+    @patch('builtins.input', side_effect=['4', '0'])
+    def test_show_vacancies_with_higher_salary(self, mock_input, mock_print, mock_db_manager):
+        """Тест показа вакансий с зарплатой выше средней"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:104: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd3e1d763d0>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+________________ TestDBManagerDemo.test_search_vacancies_by_keyword _________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd3e2123ad0>
+mock_input = <MagicMock name='input' id='140548008489680'>
+mock_print = <MagicMock name='print' id='140548003794704'>
+mock_db_manager = <Mock id='140548003341328'>
+
+    @patch('builtins.print')
+    @patch('builtins.input', side_effect=['5', 'Python', '0'])
+    def test_search_vacancies_by_keyword(self, mock_input, mock_print, mock_db_manager):
+        """Тест поиска вакансий по ключевому слову"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd3e1d70e10>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+____________________ TestDBManagerDemo.test_invalid_menu_choice _____________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd3e2134110>
+mock_input = <MagicMock name='input' id='140548027176528'>
+mock_print = <MagicMock name='print' id='140548003819856'>
+mock_db_manager = <Mock id='140548008223120'>
+
+    @patch('builtins.print')
+    @patch('builtins.input', return_value='invalid')
+    def test_invalid_menu_choice(self, mock_input, mock_print, mock_db_manager):
+        """Тест обработки неверного выбора меню"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:132: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd3e1d76c90>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+___________________ TestDBManagerDemo.test_format_companies_data ____________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd3e2134850>
+mock_db_manager = <Mock id='140548004040336'>
+
+    def test_format_companies_data(self, mock_db_manager):
+        """Тест форматирования данных компаний"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd3e1dae750>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+___________________ TestDBManagerDemo.test_format_vacancies_data ____________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd3e2134f10>
+mock_db_manager = <Mock id='140548003664528'>
+
+    def test_format_vacancies_data(self, mock_db_manager):
+        """Тест форматирования данных вакансий"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd3e1d53490>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+__________________ TestDBManagerDemo.test_get_db_manager_creation ___________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd3e2135590>
+mock_db_manager_class = <MagicMock name='DBManager' id='140548012738896'>
+
+    @patch('src.storage.db_manager.DBManager')
+    def test_get_db_manager_creation(self, mock_db_manager_class):
+        """Тест создания экземпляра DBManager"""
+        mock_instance = Mock()
+        mock_db_manager_class.return_value = mock_instance
+    
+        demo = DBManagerDemo()
+>       db_manager = demo._get_db_manager()
+                     ^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'DBManagerDemo' object has no attribute '_get_db_manager'
+
+tests/test_db_manager_demo.py:184: AttributeError
+________________________ TestDBManagerDemo.test_display_menu ________________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd3e2135c10>
+mock_print = <MagicMock name='print' id='140548003398160'>
+
+    @patch('builtins.print')
+    def test_display_menu(self, mock_print):
+        """Тест отображения меню"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager'):
+
+tests/test_db_manager_demo.py:192: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd3e2cd0cd0>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+________________ TestDBManagerDemo.test_error_handling_db_connection ________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd3e2136290>
+mock_print = <MagicMock name='print' id='140548003698832'>
+mock_db_manager = <Mock id='140548003699728'>
+
+    @patch('builtins.print')
+    def test_error_handling_db_connection(self, mock_print, mock_db_manager):
+        """Тест обработки ошибок подключения к БД"""
+        # Настраиваем мок для генерации исключения
+        mock_db_manager.get_companies_and_vacancies_count.side_effect = Exception("DB Connection Error")
+    
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:208: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd3e33be450>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_________________ TestJSONFileHandler.test_write_creates_directory __________________
+
+self = <tests.test_file_handlers.TestJSONFileHandler object at 0x7fd3e213c110>
+sample_data = [{'id': '1', 'salary': 100000, 'title': 'Python Developer'}, {'id': '2', 'salary': 120000, 'title': 'Java Developer'}]
+
+    def test_write_creates_directory(self, sample_data):
+        """Тест создания директории при записи"""
+        temp_dir = Path(tempfile.mkdtemp())
+        try:
+            nested_path = temp_dir / "nested" / "deep" / "test.json"
+    
+            handler = JSONFileHandler()
+            handler.write_json(nested_path, sample_data)
+    
+            assert nested_path.exists()
+            loaded_data = handler.read_json(nested_path)
+            assert loaded_data == sample_data
+        finally:
+            # Очищаем созданные файлы и директории
+            if nested_path.exists():
+                nested_path.unlink()
+            for parent in nested_path.parents:
+                if parent.exists() and parent != temp_dir:
+>                   parent.rmdir()
+
+tests/test_file_handlers.py:102: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('/tmp')
+
+    def rmdir(self):
+        """
+        Remove this directory.  The directory must be empty.
+        """
+>       os.rmdir(self)
+E       OSError: [Errno 30] Read-only file system: '/tmp'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/pathlib.py:1156: OSError
+_____________________ TestJSONFileHandler.test_caching_behavior _____________________
+
+self = <tests.test_file_handlers.TestJSONFileHandler object at 0x7fd3e213da10>
+sample_data = [{'id': '1', 'salary': 100000, 'title': 'Python Developer'}, {'id': '2', 'salary': 120000, 'title': 'Java Developer'}]
+temp_json_file = PosixPath('/tmp/tmp480pibl9.json')
+
+    def test_caching_behavior(self, sample_data, temp_json_file):
+        """Тест поведения кэширования"""
+        # Записываем данные в файл
+        with temp_json_file.open('w', encoding='utf-8') as f:
+            json.dump(sample_data, f)
+    
+        handler = JSONFileHandler()
+    
+        # Первое чтение
+        data1 = handler.read_json(temp_json_file)
+    
+        # Изменяем файл напрямую
+        modified_data = [{"id": "999", "title": "Modified"}]
+        with temp_json_file.open('w', encoding='utf-8') as f:
+            json.dump(modified_data, f)
+    
+        # Второе чтение (в течение TTL должен вернуть кэшированные данные)
+        data2 = handler.read_json(temp_json_file)
+    
+        # Данные должны быть одинаковыми (из кэша)
+        assert data1 == data2 == sample_data
+    
+        # Очищаем кэш и читаем снова
+>       handler.read_json.cache_clear()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute 'cache_clear'
+
+tests/test_file_handlers.py:160: AttributeError
+___________________ TestSourceManager.test_get_available_sources ____________________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7fd3e21b5d90>
+
+    def test_get_available_sources(self):
+        """Тест получения доступных источников"""
+        manager = SourceManager()
+>       sources = manager.get_available_sources()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'get_available_sources'
+
+tests/test_source_manager.py:22: AttributeError
+____________________ TestSourceManager.test_get_source_config_hh ____________________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7fd3e21b6250>
+
+    def test_get_source_config_hh(self):
+        """Тест получения конфигурации для HH.ru"""
+        manager = SourceManager()
+>       config = manager.get_source_config("hh.ru")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'get_source_config'
+
+tests/test_source_manager.py:32: AttributeError
+____________________ TestSourceManager.test_get_source_config_sj ____________________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7fd3e21b6890>
+
+    def test_get_source_config_sj(self):
+        """Тест получения конфигурации для SuperJob"""
+        manager = SourceManager()
+>       config = manager.get_source_config("superjob.ru")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'get_source_config'
+
+tests/test_source_manager.py:41: AttributeError
+_________________ TestSourceManager.test_get_source_config_invalid __________________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7fd3e21b6e90>
+
+    def test_get_source_config_invalid(self):
+        """Тест получения конфигурации для несуществующего источника"""
+        manager = SourceManager()
+>       config = manager.get_source_config("invalid_source")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'get_source_config'
+
+tests/test_source_manager.py:50: AttributeError
+__________________ TestSourceManager.test_is_source_available_true __________________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7fd3e21b7490>
+
+    def test_is_source_available_true(self):
+        """Тест проверки доступности существующего источника"""
+        manager = SourceManager()
+    
+>       assert manager.is_source_available("hh.ru") is True
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'is_source_available'
+
+tests/test_source_manager.py:58: AttributeError
+_________________ TestSourceManager.test_is_source_available_false __________________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7fd3e21b7a90>
+
+    def test_is_source_available_false(self):
+        """Тест проверки доступности несуществующего источника"""
+        manager = SourceManager()
+    
+>       assert manager.is_source_available("invalid_source") is False
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'is_source_available'
+
+tests/test_source_manager.py:65: AttributeError
+__________________ TestSourceManager.test_get_source_display_name ___________________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7fd3e21b80d0>
+
+    def test_get_source_display_name(self):
+        """Тест получения отображаемого имени источника"""
+        manager = SourceManager()
+    
+>       assert manager.get_source_display_name("hh.ru") == "HeadHunter"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'get_source_display_name'
+
+tests/test_source_manager.py:71: AttributeError
+___________________ TestSourceManager.test_get_source_api_limits ____________________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7fd3e21b8710>
+
+    def test_get_source_api_limits(self):
+        """Тест получения лимитов API для источника"""
+        manager = SourceManager()
+    
+>       hh_limits = manager.get_source_api_limits("hh.ru")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'get_source_api_limits'
+
+tests/test_source_manager.py:79: AttributeError
+_______________ TestSourceManager.test_validate_source_credentials_hh _______________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7fd3e21b8d90>
+
+    def test_validate_source_credentials_hh(self):
+        """Тест валидации учетных данных для HH (не требуются)"""
+        manager = SourceManager()
+    
+        # HH.ru не требует API ключа
+>       is_valid = manager.validate_source_credentials("hh.ru", {})
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'validate_source_credentials'
+
+tests/test_source_manager.py:92: AttributeError
+____________ TestSourceManager.test_validate_source_credentials_sj_valid ____________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7fd3e21b93d0>
+
+    @patch.dict('os.environ', {'SUPERJOB_API_KEY': 'test_key'})
+    def test_validate_source_credentials_sj_valid(self):
+        """Тест валидации учетных данных для SJ (валидные)"""
+        manager = SourceManager()
+    
+        credentials = {"api_key": "test_key"}
+>       is_valid = manager.validate_source_credentials("superjob.ru", credentials)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'validate_source_credentials'
+
+tests/test_source_manager.py:101: AttributeError
+___________ TestSourceManager.test_validate_source_credentials_sj_invalid ___________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7fd3e21b9a90>
+
+    def test_validate_source_credentials_sj_invalid(self):
+        """Тест валидации учетных данных для SJ (невалидные)"""
+        manager = SourceManager()
+    
+        credentials = {}  # Пустые учетные данные
+>       is_valid = manager.validate_source_credentials("superjob.ru", credentials)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'validate_source_credentials'
+
+tests/test_source_manager.py:109: AttributeError
+____________________ TestSourceManager.test_get_source_priority _____________________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7fd3e21ba150>
+
+    def test_get_source_priority(self):
+        """Тест получения приоритета источника"""
+        manager = SourceManager()
+    
+>       hh_priority = manager.get_source_priority("hh.ru")
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'get_source_priority'
+
+tests/test_source_manager.py:116: AttributeError
+__________________ TestSourceManager.test_sort_sources_by_priority __________________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7fd3e21ba810>
+
+    def test_sort_sources_by_priority(self):
+        """Тест сортировки источников по приоритету"""
+        manager = SourceManager()
+    
+        sources = ["superjob.ru", "hh.ru"]
+>       sorted_sources = manager.sort_sources_by_priority(sources)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'sort_sources_by_priority'
+
+tests/test_source_manager.py:128: AttributeError
+____________________ TestSourceManager.test_get_source_features _____________________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7fd3e21baed0>
+
+    def test_get_source_features(self):
+        """Тест получения функций источника"""
+        manager = SourceManager()
+    
+>       hh_features = manager.get_source_features("hh.ru")
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'get_source_features'
+
+tests/test_source_manager.py:138: AttributeError
+============================== short test summary info ==============================
+FAILED tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_hh_data_by_salary_range - AttributeError: 'APIDataFilter' object has no attribute 'filter_by_salary_range'
+FAILED tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_sj_data_by_salary_range - AttributeError: 'APIDataFilter' object has no attribute 'filter_by_salary_range'
+FAILED tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_by_keywords - AttributeError: 'APIDataFilter' object has no attribute 'filter_by_keywords'
+FAILED tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_by_location - AttributeError: 'APIDataFilter' object has no attribute 'filter_by_location'
+FAILED tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_by_experience - AttributeError: 'APIDataFilter' object has no attribute 'filter_by_experience'
+FAILED tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_by_employment_type - AttributeError: 'APIDataFilter' object has no attribute 'filter_by_employment_type'
+FAILED tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_by_company - AttributeError: 'APIDataFilter' object has no attribute 'filter_by_company'
+FAILED tests/test_api_data_filter.py::TestAPIDataFilter::test_complex_filter_chain - AttributeError: 'APIDataFilter' object has no attribute 'filter_by_keywords'
+FAILED tests/test_api_data_filter.py::TestAPIDataFilter::test_empty_filter_results - AttributeError: 'APIDataFilter' object has no attribute 'filter_by_keywords'
+FAILED tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_with_empty_data - AttributeError: 'APIDataFilter' object has no attribute 'filter_by_keywords'
+FAILED tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_invalid_data_structure - AttributeError: 'APIDataFilter' object has no attribute 'filter_by_keywords'
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_demo_initialization - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have ...
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_run_demo_exit - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have ...
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_show_companies_and_vacancies_count - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have ...
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_show_all_vacancies - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have ...
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_show_avg_salary - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have ...
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_show_vacancies_with_higher_salary - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have ...
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_search_vacancies_by_keyword - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have ...
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_invalid_menu_choice - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have ...
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_format_companies_data - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have ...
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_format_vacancies_data - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have ...
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_get_db_manager_creation - AttributeError: 'DBManagerDemo' object has no attribute '_get_db_manager'
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_display_menu - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have ...
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_error_handling_db_connection - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have ...
+FAILED tests/test_file_handlers.py::TestJSONFileHandler::test_write_creates_directory - OSError: [Errno 30] Read-only file system: '/tmp'
+FAILED tests/test_file_handlers.py::TestJSONFileHandler::test_caching_behavior - AttributeError: 'function' object has no attribute 'cache_clear'
+FAILED tests/test_source_manager.py::TestSourceManager::test_get_available_sources - AttributeError: 'SourceManager' object has no attribute 'get_available_sources'
+FAILED tests/test_source_manager.py::TestSourceManager::test_get_source_config_hh - AttributeError: 'SourceManager' object has no attribute 'get_source_config'
+FAILED tests/test_source_manager.py::TestSourceManager::test_get_source_config_sj - AttributeError: 'SourceManager' object has no attribute 'get_source_config'
+FAILED tests/test_source_manager.py::TestSourceManager::test_get_source_config_invalid - AttributeError: 'SourceManager' object has no attribute 'get_source_config'
+FAILED tests/test_source_manager.py::TestSourceManager::test_is_source_available_true - AttributeError: 'SourceManager' object has no attribute 'is_source_available'
+FAILED tests/test_source_manager.py::TestSourceManager::test_is_source_available_false - AttributeError: 'SourceManager' object has no attribute 'is_source_available'
+FAILED tests/test_source_manager.py::TestSourceManager::test_get_source_display_name - AttributeError: 'SourceManager' object has no attribute 'get_source_display_name'
+FAILED tests/test_source_manager.py::TestSourceManager::test_get_source_api_limits - AttributeError: 'SourceManager' object has no attribute 'get_source_api_limits'
+FAILED tests/test_source_manager.py::TestSourceManager::test_validate_source_credentials_hh - AttributeError: 'SourceManager' object has no attribute 'validate_source_credent...
+FAILED tests/test_source_manager.py::TestSourceManager::test_validate_source_credentials_sj_valid - AttributeError: 'SourceManager' object has no attribute 'validate_source_credent...
+FAILED tests/test_source_manager.py::TestSourceManager::test_validate_source_credentials_sj_invalid - AttributeError: 'SourceManager' object has no attribute 'validate_source_credent...
+FAILED tests/test_source_manager.py::TestSourceManager::test_get_source_priority - AttributeError: 'SourceManager' object has no attribute 'get_source_priority'
+FAILED tests/test_source_manager.py::TestSourceManager::test_sort_sources_by_priority - AttributeError: 'SourceManager' object has no attribute 'sort_sources_by_priority'
+FAILED tests/test_source_manager.py::TestSourceManager::test_get_source_features - AttributeError: 'SourceManager' object has no attribute 'get_source_features'
+=============== 40 failed, 151 passed, 2 skipped in 61.26s (0:01:01) ================
+~/workspace$ 

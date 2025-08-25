@@ -1,0 +1,771 @@
+{
+  "meta": {
+    "params": {
+      "area": 1,
+      "per_page": 50,
+      "only_with_salary": false,
+      "text": "python",
+      "page": 0,
+      "period": 1,
+      "employer_id": "78638"
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "124437540",
+        "premium": false,
+        "name": "DevSecOps - инженер",
+        "department": {
+          "id": "78638-78638-safety",
+          "name": "Т-Банк. ИТ. Информационная безопасность"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-25T13:17:01+0300",
+        "created_at": "2025-08-25T13:17:01+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124437540",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124437540?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124437540",
+        "relations": [],
+        "employer": {
+          "id": "78638",
+          "name": "Т-Банк",
+          "url": "https://api.hh.ru/employers/78638",
+          "alternate_url": "https://hh.ru/employer/78638",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1405176.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7240372.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7240373.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=78638",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Умение читать код на различных языках и анализировать исходный код на предмет наличия уязвимостей. Опыт написания bash и <highlighttext>Python</highlighttext> скриптов...",
+          "responsibility": "Развитие продуктов для защиты периметра и SDLC: Security Gate, сканеры приложений. Анализ архитектуры приложений, продуктов, систем, технологий, бизнес-процессов. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124425350",
+        "premium": false,
+        "name": "SRE инженер в Databases",
+        "department": {
+          "id": "78638-78638-infrast",
+          "name": "Т-Банк. ИТ. Инфраструктура"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-25T10:57:32+0300",
+        "created_at": "2025-08-25T10:57:32+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124425350",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": {
+          "id": "32978",
+          "url": "https://hh.ru/interview/32978?employerId=78638"
+        },
+        "url": "https://api.hh.ru/vacancies/124425350?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124425350",
+        "relations": [],
+        "employer": {
+          "id": "78638",
+          "name": "Т-Банк",
+          "url": "https://api.hh.ru/employers/78638",
+          "alternate_url": "https://hh.ru/employer/78638",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1405176.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7240372.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7240373.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=78638",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Хорошее знание и опыт работы с ClickHouse на высоком уровне экспертизы. Будет плюсом знания и опыт работы с SQL и...",
+          "responsibility": "Разрабатывать инструменты для повышения надежности информационных систем. Участвовать в устранении сбоев и расследовании их причин. Повышать Observability приложений. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "119292610",
+        "premium": false,
+        "name": "ML-инженер в Центр технологий искусственного интеллекта",
+        "department": {
+          "id": "78638-78638-develop",
+          "name": "Т-Банк. ИТ. Разработка"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "улица Грузинский Вал",
+          "building": "7",
+          "lat": 55.77424713630653,
+          "lng": 37.577799595244834,
+          "description": null,
+          "raw": "Москва, улица Грузинский Вал, 7",
+          "metro": {
+            "station_name": "Белорусская",
+            "line_name": "МЦД-1",
+            "station_id": "131.700",
+            "line_id": "131",
+            "lat": 55.775179,
+            "lng": 37.582303
+          },
+          "metro_stations": [
+            {
+              "station_name": "Белорусская",
+              "line_name": "МЦД-1",
+              "station_id": "131.700",
+              "line_id": "131",
+              "lat": 55.775179,
+              "lng": 37.582303
+            }
+          ],
+          "id": "14765125"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-25T09:56:11+0300",
+        "created_at": "2025-08-25T09:56:11+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=119292610",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": {
+          "id": "32978",
+          "url": "https://hh.ru/interview/32978?employerId=78638"
+        },
+        "url": "https://api.hh.ru/vacancies/119292610?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/119292610",
+        "relations": [],
+        "employer": {
+          "id": "78638",
+          "name": "Т-Банк",
+          "url": "https://api.hh.ru/employers/78638",
+          "alternate_url": "https://hh.ru/employer/78638",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1405176.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7240372.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7240373.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=78638",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Разбираетесь в принципах работы современных алгоритмов машинного обучения. Знаете <highlighttext>Python</highlighttext>. Умеете декомпозировать задачу в переиспользуемые и тестируемые библиотеки и компоненты. ",
+          "responsibility": "Диалоговые системы. Обучаем финансового ассистента поддерживать разговор и отвечать на запросы пользователей в чате с поддержкой. Компьютерное зрение. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "165",
+            "name": "Дата-сайентист"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "118305201",
+        "premium": false,
+        "name": "Главный специалист по сопровождению проектов (субсидии)",
+        "department": {
+          "id": "78638-78638-money",
+          "name": "Т-Банк. Бизнес и процессы. Финансы"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Ленинградский проспект",
+          "building": "36с10",
+          "lat": 55.788515,
+          "lng": 37.567482,
+          "description": null,
+          "raw": "Москва, Ленинградский проспект, 36с10",
+          "metro": {
+            "station_name": "Динамо",
+            "line_name": "Замоскворецкая",
+            "station_id": "2.34",
+            "line_id": "2",
+            "lat": 55.789704,
+            "lng": 37.558212
+          },
+          "metro_stations": [
+            {
+              "station_name": "Динамо",
+              "line_name": "Замоскворецкая",
+              "station_id": "2.34",
+              "line_id": "2",
+              "lat": 55.789704,
+              "lng": 37.558212
+            }
+          ],
+          "id": "7400847"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-24T18:18:05+0300",
+        "created_at": "2025-08-24T18:18:05+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=118305201",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": {
+          "id": "33556",
+          "url": "https://hh.ru/interview/33556?employerId=78638"
+        },
+        "url": "https://api.hh.ru/vacancies/118305201?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/118305201",
+        "relations": [],
+        "employer": {
+          "id": "78638",
+          "name": "Т-Банк",
+          "url": "https://api.hh.ru/employers/78638",
+          "alternate_url": "https://hh.ru/employer/78638",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1405176.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7240372.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7240373.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=78638",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "У вас есть опыт работы в лизинговых компаниях (ТОП-10) в финансовом департаменте от 3-х лет. Имеете опыт операционного...",
+          "responsibility": "Анализировать и обрабатывать данные с помощью SQL и <highlighttext>Python</highlighttext>. Работать с финансовой отчетностью группы. Работать в программах/приложениях: MS Excel..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "40",
+            "name": "Другое"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "122070006",
+        "premium": false,
+        "name": "TechLead Python (ML)",
+        "department": {
+          "id": "78638-78638-client",
+          "name": "Т-Банк. Работа с клиентами"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-24T18:06:05+0300",
+        "created_at": "2025-08-24T18:06:05+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=122070006",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": true,
+        "insider_interview": {
+          "id": "33556",
+          "url": "https://hh.ru/interview/33556?employerId=78638"
+        },
+        "url": "https://api.hh.ru/vacancies/122070006?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/122070006",
+        "relations": [],
+        "employer": {
+          "id": "78638",
+          "name": "Т-Банк",
+          "url": "https://api.hh.ru/employers/78638",
+          "alternate_url": "https://hh.ru/employer/78638",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1405176.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7240372.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7240373.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=78638",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Готовность глубоко разбираться в продукте, участвовать в формировании стратегии и понимать экономические цели. Уверенное владение <highlighttext>Python</highlighttext> (умение читать и писать...",
+          "responsibility": "Формировать и развивать техническую стратегию команды: обосновывать архитектурные решения, определять приоритеты и процессы. Проектировать фичи, инфраструктуру и пайплайны данных так..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123694212",
+        "premium": false,
+        "name": "ML-инженер в области Generative CV",
+        "department": {
+          "id": "78638-78638-develop",
+          "name": "Т-Банк. ИТ. Разработка"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "улица Грузинский Вал",
+          "building": "7",
+          "lat": 55.77424713630653,
+          "lng": 37.577799595244834,
+          "description": null,
+          "raw": "Москва, улица Грузинский Вал, 7",
+          "metro": {
+            "station_name": "Белорусская",
+            "line_name": "МЦД-1",
+            "station_id": "131.700",
+            "line_id": "131",
+            "lat": 55.775179,
+            "lng": 37.582303
+          },
+          "metro_stations": [
+            {
+              "station_name": "Белорусская",
+              "line_name": "МЦД-1",
+              "station_id": "131.700",
+              "line_id": "131",
+              "lat": 55.775179,
+              "lng": 37.582303
+            }
+          ],
+          "id": "14765125"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-25T09:56:12+0300",
+        "created_at": "2025-08-25T09:56:12+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123694212",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": true,
+        "insider_interview": {
+          "id": "32978",
+          "url": "https://hh.ru/interview/32978?employerId=78638"
+        },
+        "url": "https://api.hh.ru/vacancies/123694212?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123694212",
+        "relations": [],
+        "employer": {
+          "id": "78638",
+          "name": "Т-Банк",
+          "url": "https://api.hh.ru/employers/78638",
+          "alternate_url": "https://hh.ru/employer/78638",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1405176.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7240372.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7240373.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=78638",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "У вас есть опыт в генеративных моделях — особенно в диффузионных и flow-matching-архитектурах. Есть опыт адаптации и дообучения моделей...",
+          "responsibility": "Обучать и улучшать модели для генерации и редактирования изображений — будем создавать решения на стыке науки и продакшена. Читать статьи, предлагать..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "40",
+            "name": "Другое"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 6,
+    "pages": 1,
+    "page": 0,
+    "per_page": 50,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=1&employer_id=78638&enable_snippets=true&items_on_page=50&search_period=1&text=python"
+  }
+}
