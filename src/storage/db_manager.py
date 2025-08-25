@@ -491,6 +491,12 @@ class DBManager:
                 with conn.cursor(cursor_factory=RealDictCursor) as cursor:
                     cursor.execute(query, (avg_salary,))
                     results = cursor.fetchall()
+                    
+                    # Отладочная информация
+                    logger.debug(f"Результаты запроса: {len(results) if results else 0} записей")
+                    if results:
+                        logger.debug(f"Тип первой записи: {type(results[0])}")
+                        logger.debug(f"Первая запись: {results[0]}")
 
                     # Возвращаем список словарей без вывода
                     return [dict(row) for row in results]
@@ -551,6 +557,11 @@ class DBManager:
                 with conn.cursor(cursor_factory=RealDictCursor) as cursor:
                     cursor.execute(query, (search_pattern,))
                     results = cursor.fetchall()
+                    
+                    # Отладочная информация
+                    logger.debug(f"Поиск по '{keyword}': найдено {len(results) if results else 0} записей")
+                    if results:
+                        logger.debug(f"Тип первой записи: {type(results[0])}")
 
                     # Возвращаем список словарей без вывода
                     return [dict(row) for row in results]

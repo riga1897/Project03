@@ -237,7 +237,7 @@ class DBManagerDemo:
             logger.error(f"Ошибка при демонстрации вакансий с высокой зарплатой: {e}")
             print(f"Ошибка при получении вакансий с высокой зарплатой: {e}")
             print(f"Тип данных результата: {type(high_salary_vacancies) if 'high_salary_vacancies' in locals() else 'не определен'}")
-            if 'high_salary_vacancies' in locals() and len(high_salary_vacancies) > 0:
+            if 'high_salary_vacancies' in locals() and high_salary_vacancies and len(high_salary_vacancies) > 0:
                 print(f"Пример результата: {high_salary_vacancies[0]}")
             print("\nВозможные причины:")
             print("• Нет подключения к базе данных")
@@ -282,8 +282,8 @@ class DBManagerDemo:
                 print(f"❌ Ошибка при поиске по ключевому слову '{keyword}': {e}")
                 print("   Возможные причины: проблемы с SQL-запросом или данными")
                 print(f"   Тип результата: {type(vacancies) if 'vacancies' in locals() else 'не определен'}")
-                if 'vacancies' in locals() and vacancies:
-                    print(f"   Пример результата: {vacancies[0] if len(vacancies) > 0 else 'пусто'}")
+                if 'vacancies' in locals() and vacancies and len(vacancies) > 0:
+                    print(f"   Пример результата: {vacancies[0]}")
 
     def _demo_database_stats(self) -> None:
         """Демонстрирует получение статистики БД"""
