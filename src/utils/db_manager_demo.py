@@ -221,9 +221,10 @@ class DBManagerDemo:
 
             # Показываем первые 15 вакансий с высокой зарплатой
             for i, vacancy in enumerate(high_salary_vacancies[:15], 1):
-                title = str(vacancy.get('title', 'Не указано'))[:34]
-                company = str(vacancy.get('company_name', 'Не указана'))[:24]
-                salary = str(vacancy.get('salary_info', 'Не указана'))[:19]
+                # Обрабатываем словарь, а не кортеж
+                title = str(vacancy.get('title', 'Не указано'))[:34] if isinstance(vacancy, dict) else str(vacancy[0] if len(vacancy) > 0 else 'Не указано')[:34]
+                company = str(vacancy.get('company_name', 'Не указана'))[:24] if isinstance(vacancy, dict) else str(vacancy[1] if len(vacancy) > 1 else 'Не указана')[:24]
+                salary = str(vacancy.get('salary_info', 'Не указана'))[:19] if isinstance(vacancy, dict) else str(vacancy[2] if len(vacancy) > 2 else 'Не указана')[:19]
 
                 print(f"{i:<3} {title:<35} {company:<25} {salary:<20}")
 
@@ -263,9 +264,10 @@ class DBManagerDemo:
 
                 # Показываем первые 5 вакансий для экономии места
                 for i, vacancy in enumerate(vacancies[:5], 1):
-                    title = str(vacancy.get('title', 'Не указано'))[:34]
-                    company = str(vacancy.get('company_name', 'Не указана'))[:24]
-                    salary = str(vacancy.get('salary_info', 'Не указана'))[:14]
+                    # Обрабатываем словарь, а не кортеж
+                    title = str(vacancy.get('title', 'Не указано'))[:34] if isinstance(vacancy, dict) else str(vacancy[0] if len(vacancy) > 0 else 'Не указано')[:34]
+                    company = str(vacancy.get('company_name', 'Не указана'))[:24] if isinstance(vacancy, dict) else str(vacancy[1] if len(vacancy) > 1 else 'Не указана')[:24]
+                    salary = str(vacancy.get('salary_info', 'Не указана'))[:14] if isinstance(vacancy, dict) else str(vacancy[2] if len(vacancy) > 2 else 'Не указана')[:14]
 
                     print(f"{i:<3} {title:<35} {company:<25} {salary:<15}")
 
@@ -276,6 +278,9 @@ class DBManagerDemo:
                 logger.error(f"Ошибка при поиске по ключевому слову '{keyword}': {e}")
                 print(f"❌ Ошибка при поиске по ключевому слову '{keyword}': {e}")
                 print("   Возможные причины: проблемы с SQL-запросом или данными")
+                print(f"   Тип результата: {type(vacancies) if 'vacancies' in locals() else 'не определен'}")
+                if 'vacancies' in locals() and vacancies:
+                    print(f"   Пример результата: {vacancies[0] if len(vacancies) > 0 else 'пусто'}")
 
     def _demo_database_stats(self) -> None:
         """Демонстрирует получение статистики БД"""
