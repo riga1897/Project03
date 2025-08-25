@@ -11,7 +11,7 @@ from src.api_modules.hh_api import HeadHunterAPI
 from src.api_modules.sj_api import SuperJobAPI
 from src.storage.postgres_saver import PostgresSaver
 from src.vacancies.models import Vacancy
-from src.utils.cache import CacheManager
+from src.utils.cache import FileCache
 from src.ui_interfaces.console_interface import ConsoleInterface
 
 # Заглушка для CachedAPI
