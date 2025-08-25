@@ -83,9 +83,9 @@ class TestJSONFileHandler:
 
     def test_write_creates_directory(self, sample_data):
         """Тест создания директории при записи"""
-        temp_dir = Path(tempfile.mkdtemp())
-        try:
-            nested_path = temp_dir / "nested" / "deep" / "test.json"
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            nested_path = temp_path / "nested" / "deep" / "test.json"
 
             handler = JSONFileHandler()
             handler.write_json(nested_path, sample_data)
@@ -93,13 +93,6 @@ class TestJSONFileHandler:
             assert nested_path.exists()
             loaded_data = handler.read_json(nested_path)
             assert loaded_data == sample_data
-        finally:
-            # Очищаем созданные файлы и директории
-            if nested_path.exists():
-                nested_path.unlink()
-            for parent in nested_path.parents:
-                if parent.exists() and parent != temp_dir:
-                    parent.rmdir()
             temp_dir.rmdir()
 
     def test_atomic_write_on_error(self, sample_data, temp_json_file):
@@ -157,7 +150,7 @@ class TestJSONFileHandler:
         assert data1 == data2 == sample_data
 
         # Очищаем кэш и читаем снова
-        handler.read_json.cache_clear()
+        handler.read_json.clear_cache()
         data3 = handler.read_json(temp_json_file)
 
         # Теперь должны получить измененные данные

@@ -160,7 +160,7 @@ class DBManagerDemo:
             salary_info = vacancy.get('salary_info', 'Не указана')
             if salary_info == 'Не указана':
                 return 0
-            
+
             # Извлекаем числа из строки зарплаты
             import re
             numbers = re.findall(r'\d+', salary_info)
@@ -169,7 +169,7 @@ class DBManagerDemo:
                 return max(int(num) for num in numbers)
             return 0
 
-        sorted_vacancies = sorted(all_vacancies, 
+        sorted_vacancies = sorted(all_vacancies,
                                 key=lambda x: (-get_salary_value(x), x.get('title', '')))
 
         print(f"{'№':<3} {'Название':<30} {'Компания':<25} {'Зарплата':<20}")
@@ -218,14 +218,14 @@ class DBManagerDemo:
             salary_info = vacancy.get('salary_info', 'Не указана')
             if salary_info == 'Не указана':
                 return 0
-            
+
             import re
             numbers = re.findall(r'\d+', salary_info)
             if numbers:
                 return max(int(num) for num in numbers)
             return 0
 
-        sorted_vacancies = sorted(high_salary_vacancies, 
+        sorted_vacancies = sorted(high_salary_vacancies,
                                 key=lambda x: (-get_salary_value(x), x.get('title', '')))
 
         print(f"{'№':<3} {'Название':<35} {'Компания':<25} {'Зарплата':<20}")
@@ -259,14 +259,14 @@ class DBManagerDemo:
                     salary_info = vacancy.get('salary_info', 'Не указана')
                     if salary_info == 'Не указана':
                         return 0
-                    
+
                     import re
                     numbers = re.findall(r'\d+', salary_info)
                     if numbers:
                         return max(int(num) for num in numbers)
                     return 0
 
-                sorted_vacancies = sorted(keyword_vacancies, 
+                sorted_vacancies = sorted(keyword_vacancies,
                                         key=lambda x: (-get_salary_value(x), x.get('title', '')))
 
                 print(f"Найдено {len(sorted_vacancies)} вакансий")

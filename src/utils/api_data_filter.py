@@ -1,303 +1,296 @@
-"""
-Утилиты для фильтрации данных из API через SQL-запросы
 
-Предоставляет методы для фильтрации вакансий и компаний из API
-с использованием временных таблиц в PostgreSQL для повышения производительности.
+"""
+Модуль для фильтрации данных API
 """
 
-import logging
-import time  # Импорт time для генерации временных имен таблиц
-from typing import Dict, List, Any, Optional, Union # Добавлен Union
-from src.vacancies.models import Vacancy
-from src.storage.postgres_saver import PostgresSaver
-from src.storage.db_manager import DBManager
-
-logger = logging.getLogger(__name__)
+from typing import Any, Dict, List, Optional, Union
 
 
 class APIDataFilter:
-    """
-    Класс для фильтрации данных из API через SQL-запросы
-    """
+    """Класс для фильтрации данных API различных источников"""
 
-    def __init__(self):
-        self.postgres_saver = PostgresSaver()
-        self.db_manager = DBManager()
-
-    def filter_vacancies_by_target_companies(self, vacancies: List[Union[Dict, 'Vacancy']]) -> List[Union[Dict, 'Vacancy']]:
+    def filter_by_salary_range(
+        self,
+        data: List[Dict[str, Any]],
+        min_salary: Optional[int] = None,
+        max_salary: Optional[int] = None,
+        source: str = "hh"
+    ) -> List[Dict[str, Any]]:
         """
-        Фильтрация вакансий по целевым компаниям с использованием временной таблицы
-
+        Фильтрация по диапазону зарплаты
+        
         Args:
-            vacancies: Список вакансий (словари или объекты Vacancy)
-
+            data: Список вакансий
+            min_salary: Минимальная зарплата
+            max_salary: Максимальная зарплата
+            source: Источник данных (hh, sj)
+        
         Returns:
-            List: Отфильтрованные вакансии от целевых компаний
+            Отфильтрованный список вакансий
         """
-        if not vacancies:
+        if not data:
             return []
 
-        try:
-            # Создаем временную таблицу
-            temp_table = f"temp_vacancies_{int(time.time())}"
+        filtered = []
+        for item in data:
+            try:
+                salary_info = self._extract_salary_info(item, source)
+                if salary_info and self._salary_in_range(salary_info, min_salary, max_salary):
+                    filtered.append(item)
+            except (KeyError, TypeError, ValueError):
+                continue
 
-            # SQL для создания временной таблицы
-            create_temp_sql = f"""
-            CREATE TEMPORARY TABLE {temp_table} (
-                id VARCHAR(255),
-                title TEXT,
-                company_name TEXT,
-                salary_from INTEGER,
-                salary_to INTEGER,
-                currency VARCHAR(10),
-                source VARCHAR(50)
-            );
-            """
+        return filtered
 
-            # Заполняем временную таблицу данными
-            insert_data = []
-            for vacancy in vacancies:
-                if isinstance(vacancy, dict):
-                    # Работаем со словарем
-                    salary_data = vacancy.get('salary') or {}
-                    company_name = (
-                        vacancy.get('employer', {}).get('name') if vacancy.get('employer') 
-                        else vacancy.get('firm_name', '')
-                    )
-
-                    insert_data.append((
-                        str(vacancy.get('id', '')),
-                        vacancy.get('title') or vacancy.get('name') or vacancy.get('profession', ''),
-                        company_name,
-                        salary_data.get('from') or salary_data.get('payment_from'),
-                        salary_data.get('to') or salary_data.get('payment_to'), 
-                        salary_data.get('currency') or 'RUR',
-                        vacancy.get('source', 'unknown')
-                    ))
-                else:
-                    # Работаем с объектом Vacancy
-                    salary_from = None
-                    salary_to = None
-                    currency = 'RUR'
-
-                    # Безопасно получаем данные о зарплате
-                    if hasattr(vacancy, 'salary') and vacancy.salary:
-                        if hasattr(vacancy.salary, 'salary_from'):
-                            salary_from = vacancy.salary.salary_from
-                        if hasattr(vacancy.salary, 'salary_to'):
-                            salary_to = vacancy.salary.salary_to
-                        if hasattr(vacancy.salary, 'currency'):
-                            currency = vacancy.salary.currency
-
-                    # Безопасно получаем название компании
-                    company_name = ''
-                    if hasattr(vacancy, 'employer') and vacancy.employer:
-                        if isinstance(vacancy.employer, dict):
-                            company_name = vacancy.employer.get('name', '')
-                        elif hasattr(vacancy.employer, 'name'):
-                            company_name = vacancy.employer.name
-
-                    insert_data.append((
-                        str(getattr(vacancy, 'vacancy_id', '')),
-                        getattr(vacancy, 'title', ''),
-                        company_name,
-                        salary_from,
-                        salary_to,
-                        currency,
-                        getattr(vacancy, 'source', 'unknown')
-                    ))
-
-            # Выполняем SQL-операции
-            with self.db_manager._get_connection() as conn:
-                with conn.cursor() as cursor:
-                    # Создаем временную таблицу
-                    cursor.execute(create_temp_sql)
-
-                    # Вставляем данные
-                    insert_sql = f"""
-                    INSERT INTO {temp_table} (id, title, company_name, salary_from, salary_to, currency, source)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
-                    """
-                    cursor.executemany(insert_sql, insert_data)
-
-                    # Получаем список целевых компаний
-                    from src.config.target_companies import get_target_company_names
-                    target_companies = get_target_company_names()
-
-                    # Создаем плейсхолдеры для IN запроса
-                    placeholders = ','.join(['%s'] * len(target_companies))
-
-                    # SQL-запрос для фильтрации по целевым компаниям
-                    filter_sql = f"""
-                    SELECT id FROM {temp_table}
-                    WHERE company_name ILIKE ANY(ARRAY[{','.join(['%s'] * len(target_companies))}])
-                    """
-
-                    # Подготавливаем параметры для поиска (с wildcards)
-                    search_params = [f'%{company}%' for company in target_companies]
-
-                    cursor.execute(filter_sql, search_params)
-                    target_ids = {row[0] for row in cursor.fetchall()}
-
-                    # Очищаем временную таблицу
-                    cursor.execute(f"DROP TABLE {temp_table}")
-
-            # Фильтруем исходный список по найденным ID
-            filtered_vacancies = []
-            for vacancy in vacancies:
-                if isinstance(vacancy, dict):
-                    vacancy_id = str(vacancy.get('id', ''))
-                else:
-                    vacancy_id = str(getattr(vacancy, 'vacancy_id', ''))
-
-                if vacancy_id in target_ids:
-                    filtered_vacancies.append(vacancy)
-
-            logger.info(f"SQL-фильтрация: найдено {len(filtered_vacancies)} вакансий от целевых компаний из {len(vacancies)}")
-            return filtered_vacancies
-
-        except Exception as e:
-            logger.error(f"Ошибка SQL-фильтрации по целевым компаниям: {e}")
-            # В случае ошибки возвращаем исходный список
-            return vacancies
-
-    def filter_vacancies_by_criteria(self, vacancies: List[Vacancy], criteria: Dict[str, Any]) -> List[Vacancy]:
+    def filter_by_keywords(
+        self,
+        data: List[Dict[str, Any]],
+        keywords: List[str]
+    ) -> List[Dict[str, Any]]:
         """
-        Фильтрует вакансии по заданным критериям через SQL
-
+        Фильтрация по ключевым словам
+        
         Args:
-            vacancies: Список вакансий из API
-            criteria: Критерии фильтрации
-
+            data: Список вакансий
+            keywords: Список ключевых слов для поиска
+        
         Returns:
-            List[Vacancy]: Отфильтрованный список вакансий
+            Отфильтрованный список вакансий
         """
-        # Конвертируем критерии в формат для SQL-фильтрации
-        filters = {}
+        if not data or not keywords:
+            return data
 
-        if criteria.get('min_salary'):
-            filters['salary_from'] = criteria['min_salary']
+        filtered = []
+        for item in data:
+            try:
+                text_fields = self._get_searchable_text(item)
+                if self._contains_keywords(text_fields, keywords):
+                    filtered.append(item)
+            except (KeyError, TypeError):
+                continue
 
-        if criteria.get('max_salary'):
-            filters['salary_to'] = criteria['max_salary']
+        return filtered
 
-        if criteria.get('keywords'):
-            filters['keywords'] = criteria['keywords']
-
-        if criteria.get('experience'):
-            filters['experience'] = criteria['experience']
-
-        if criteria.get('employment'):
-            filters['employment'] = criteria['employment']
-
-        if criteria.get('schedule'):
-            filters['schedule'] = criteria['schedule']
-
-        if criteria.get('area'):
-            filters['area'] = criteria['area']
-
-        if criteria.get('exclude_duplicates', True):
-            filters['exclude_existing'] = True
-
-        if criteria.get('limit'):
-            filters['limit'] = criteria['limit']
-
-        if criteria.get('sort_by_salary', False):
-            filters['sort_by_salary'] = True
-
-        return self.postgres_saver.filter_api_vacancies_via_temp_table(vacancies, filters)
-
-    def get_api_data_statistics(self, vacancies: List[Vacancy]) -> Dict[str, Any]:
+    def filter_by_location(
+        self,
+        data: List[Dict[str, Any]],
+        locations: List[str]
+    ) -> List[Dict[str, Any]]:
         """
-        Получает статистику по данным из API используя SQL
-
+        Фильтрация по местоположению
+        
         Args:
-            vacancies: Список вакансий из API
-
+            data: Список вакансий
+            locations: Список городов/регионов
+        
         Returns:
-            Dict[str, Any]: Статистика
+            Отфильтрованный список вакансий
         """
-        # Конвертируем вакансии в формат для анализа
-        api_data = []
-        for vacancy in vacancies:
-            salary_data = {}
-            if vacancy.salary:
-                salary_data = {
-                    'from': vacancy.salary.salary_from,
-                    'to': vacancy.salary.salary_to,
-                    'currency': vacancy.salary.currency
+        if not data or not locations:
+            return data
+
+        filtered = []
+        for item in data:
+            try:
+                item_location = self._extract_location(item)
+                if item_location and any(loc.lower() in item_location.lower() for loc in locations):
+                    filtered.append(item)
+            except (KeyError, TypeError):
+                continue
+
+        return filtered
+
+    def filter_by_experience(
+        self,
+        data: List[Dict[str, Any]],
+        experience_levels: List[str]
+    ) -> List[Dict[str, Any]]:
+        """
+        Фильтрация по опыту работы
+        
+        Args:
+            data: Список вакансий
+            experience_levels: Список уровней опыта
+        
+        Returns:
+            Отфильтрованный список вакансий
+        """
+        if not data or not experience_levels:
+            return data
+
+        filtered = []
+        for item in data:
+            try:
+                item_experience = self._extract_experience(item)
+                if item_experience and item_experience in experience_levels:
+                    filtered.append(item)
+            except (KeyError, TypeError):
+                continue
+
+        return filtered
+
+    def filter_by_employment_type(
+        self,
+        data: List[Dict[str, Any]],
+        employment_types: List[str]
+    ) -> List[Dict[str, Any]]:
+        """
+        Фильтрация по типу занятости
+        
+        Args:
+            data: Список вакансий
+            employment_types: Список типов занятости
+        
+        Returns:
+            Отфильтрованный список вакансий
+        """
+        if not data or not employment_types:
+            return data
+
+        filtered = []
+        for item in data:
+            try:
+                item_employment = self._extract_employment_type(item)
+                if item_employment and item_employment in employment_types:
+                    filtered.append(item)
+            except (KeyError, TypeError):
+                continue
+
+        return filtered
+
+    def filter_by_company(
+        self,
+        data: List[Dict[str, Any]],
+        companies: List[str]
+    ) -> List[Dict[str, Any]]:
+        """
+        Фильтрация по компании
+        
+        Args:
+            data: Список вакансий
+            companies: Список названий компаний
+        
+        Returns:
+            Отфильтрованный список вакансий
+        """
+        if not data or not companies:
+            return data
+
+        filtered = []
+        for item in data:
+            try:
+                company_name = self._extract_company_name(item)
+                if company_name and any(comp.lower() in company_name.lower() for comp in companies):
+                    filtered.append(item)
+            except (KeyError, TypeError):
+                continue
+
+        return filtered
+
+    def _extract_salary_info(self, item: Dict[str, Any], source: str) -> Optional[Dict[str, Any]]:
+        """Извлечение информации о зарплате"""
+        if source.lower() == "hh":
+            return item.get("salary")
+        elif source.lower() == "sj":
+            salary_from = item.get("payment_from")
+            salary_to = item.get("payment_to")
+            if salary_from or salary_to:
+                return {
+                    "from": salary_from,
+                    "to": salary_to,
+                    "currency": item.get("currency", "rub")
                 }
+        return None
 
-            employer_data = {}
-            if vacancy.employer:
-                if isinstance(vacancy.employer, dict):
-                    employer_data = vacancy.employer
-                else:
-                    employer_data = {'name': str(vacancy.employer)}
+    def _salary_in_range(
+        self,
+        salary_info: Dict[str, Any],
+        min_salary: Optional[int],
+        max_salary: Optional[int]
+    ) -> bool:
+        """Проверка, попадает ли зарплата в диапазон"""
+        salary_from = salary_info.get("from")
+        salary_to = salary_info.get("to")
 
-            area_data = {}
-            if vacancy.area:
-                if isinstance(vacancy.area, dict):
-                    area_data = vacancy.area
-                else:
-                    area_data = {'name': str(vacancy.area)}
+        if not salary_from and not salary_to:
+            return False
 
-            api_data.append({
-                'id': vacancy.vacancy_id,
-                'name': vacancy.title,
-                'salary': salary_data,
-                'employer': employer_data,
-                'area': area_data,
-                'experience': vacancy.experience,
-                'employment': vacancy.employment
-            })
+        # Берем среднее значение если есть оба, иначе имеющееся
+        if salary_from and salary_to:
+            avg_salary = (salary_from + salary_to) / 2
+        else:
+            avg_salary = salary_from or salary_to
 
-        return self.db_manager.analyze_api_data_with_sql(api_data, 'vacancy_stats')
+        if min_salary and avg_salary < min_salary:
+            return False
+        if max_salary and avg_salary > max_salary:
+            return False
 
-    def filter_high_salary_vacancies_sql(self, vacancies: List[Vacancy], percentile: float = 0.7) -> List[Vacancy]:
-        """
-        Фильтрует вакансии с высокой зарплатой используя SQL-вычисления
+        return True
 
-        Args:
-            vacancies: Список вакансий из API
-            percentile: Процентиль для определения высокой зарплаты (по умолчанию 70%)
+    def _get_searchable_text(self, item: Dict[str, Any]) -> str:
+        """Получение текста для поиска"""
+        text_parts = []
+        
+        # Название вакансии
+        if "name" in item:
+            text_parts.append(str(item["name"]))
+        
+        # Описание
+        if "snippet" in item:
+            snippet = item["snippet"]
+            if isinstance(snippet, dict):
+                text_parts.extend([
+                    snippet.get("requirement", ""),
+                    snippet.get("responsibility", "")
+                ])
+            else:
+                text_parts.append(str(snippet))
+        
+        # Для SuperJob
+        if "candidat" in item:
+            text_parts.append(str(item["candidat"]))
+        
+        return " ".join(text_parts).lower()
 
-        Returns:
-            List[Vacancy]: Вакансии с зарплатой выше указанного процентиля
-        """
-        # Сначала получаем статистику по зарплатам
-        api_data = []
-        for vacancy in vacancies:
-            if vacancy.salary and (vacancy.salary.salary_from or vacancy.salary.salary_to):
-                salary_data = {
-                    'from': vacancy.salary.salary_from,
-                    'to': vacancy.salary.salary_to,
-                    'currency': vacancy.salary.currency
-                }
+    def _contains_keywords(self, text: str, keywords: List[str]) -> bool:
+        """Проверка наличия ключевых слов в тексте"""
+        return any(keyword.lower() in text for keyword in keywords)
 
-                api_data.append({
-                    'id': vacancy.vacancy_id,
-                    'name': vacancy.title,
-                    'salary': salary_data,
-                    'employer': vacancy.employer,
-                    'area': vacancy.area
-                })
+    def _extract_location(self, item: Dict[str, Any]) -> Optional[str]:
+        """Извлечение местоположения"""
+        if "area" in item:
+            area = item["area"]
+            if isinstance(area, dict):
+                return area.get("name")
+            return str(area)
+        return None
 
-        if not api_data:
-            return []
+    def _extract_experience(self, item: Dict[str, Any]) -> Optional[str]:
+        """Извлечение опыта работы"""
+        if "experience" in item:
+            experience = item["experience"]
+            if isinstance(experience, dict):
+                return experience.get("name") or experience.get("title")
+            return str(experience)
+        return None
 
-        # Получаем анализ зарплат
-        salary_stats = self.db_manager.analyze_api_data_with_sql(api_data, 'salary_analysis')
+    def _extract_employment_type(self, item: Dict[str, Any]) -> Optional[str]:
+        """Извлечение типа занятости"""
+        if "employment" in item:
+            employment = item["employment"]
+            if isinstance(employment, dict):
+                return employment.get("name")
+            return str(employment)
+        return None
 
-        if not salary_stats.get('avg_salary'):
-            return vacancies
-
-        # Используем среднюю зарплату как порог для фильтрации
-        threshold_salary = salary_stats['avg_salary'] * (1 + percentile)
-
-        filters = {
-            'salary_from': int(threshold_salary),
-            'sort_by_salary': True
-        }
-
-        return self.postgres_saver.filter_api_vacancies_via_temp_table(vacancies, filters)
+    def _extract_company_name(self, item: Dict[str, Any]) -> Optional[str]:
+        """Извлечение названия компании"""
+        if "employer" in item:
+            employer = item["employer"]
+            if isinstance(employer, dict):
+                return employer.get("name")
+            return str(employer)
+        elif "firm_name" in item:  # SuperJob
+            return str(item["firm_name"])
+        return None

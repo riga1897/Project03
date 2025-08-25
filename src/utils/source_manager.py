@@ -1,78 +1,199 @@
-from enum import Enum
-from typing import Dict, List, Optional, Set
 
+"""
+Модуль для управления источниками данных о вакансиях
+"""
 
-class DataSource(Enum):
-    """Перечисление доступных источников данных"""
-
-    HH = "hh"
-    SUPERJOB = "sj"
+from typing import Any, Dict, List, Optional
+from src.config.hh_api_config import HHAPIConfig
+from src.config.sj_api_config import SJAPIConfig
 
 
 class SourceManager:
-    """Менеджер для работы с источниками данных"""
+    """Менеджер для управления источниками данных"""
 
-    SOURCE_NAMES = {DataSource.HH: "HeadHunter (hh.ru)", DataSource.SUPERJOB: "SuperJob (superjob.ru)"}
+    def __init__(self):
+        self._sources_config = {
+            "hh.ru": {
+                "name": "HeadHunter",
+                "display_name": "HeadHunter",
+                "priority": 1,
+                "api_limits": {
+                    "requests_per_second": 5,
+                    "max_pages": 20,
+                    "max_per_page": 100
+                },
+                "features": ["free_access", "large_database", "detailed_info"],
+                "config_class": HHAPIConfig
+            },
+            "superjob.ru": {
+                "name": "SuperJob",
+                "display_name": "SuperJob",
+                "priority": 2,
+                "api_limits": {
+                    "requests_per_second": 3,
+                    "max_pages": 50,
+                    "max_per_page": 100
+                },
+                "features": ["api_key_required", "salary_details", "contact_info"],
+                "config_class": SJAPIConfig
+            }
+        }
 
-    SOURCE_URLS = {DataSource.HH: "https://hh.ru", DataSource.SUPERJOB: "https://superjob.ru"}
-
-    @classmethod
-    def get_all_sources(cls) -> List[DataSource]:
-        """Получение списка всех доступных источников"""
-        return list(DataSource)
-
-    @classmethod
-    def get_source_names(cls) -> Dict[DataSource, str]:
-        """Получение словаря с именами источников"""
-        return cls.SOURCE_NAMES.copy()
-
-    @classmethod
-    def get_source_name(cls, source: DataSource) -> str:
-        """Получение имени источника"""
-        return cls.SOURCE_NAMES.get(source, str(source.value))
-
-    @classmethod
-    def get_source_url(cls, source: DataSource) -> str:
-        """Получение URL источника"""
-        return cls.SOURCE_URLS.get(source, "")
-
-    @classmethod
-    def parse_sources_from_strings(cls, source_strings: List[str]) -> Set[str]:
+    def get_available_sources(self) -> List[str]:
         """
-        Преобразование строковых названий источников в набор
-
-        Args:
-            source_strings: Список строковых названий источников
-
+        Получить список доступных источников
+        
         Returns:
-            Набор валидных источников
+            Список идентификаторов источников
         """
-        valid_sources = set()
-        valid_source_values = {source.value for source in DataSource}
+        return list(self._sources_config.keys())
 
-        for source_str in source_strings:
-            if source_str.lower() in valid_source_values:
-                valid_sources.add(source_str.lower())
-
-        return valid_sources
-
-    @classmethod
-    def validate_sources(cls, sources: Optional[Set[str]]) -> Set[str]:
+    def get_source_config(self, source: str) -> Optional[Dict[str, Any]]:
         """
-        Валидация набора источников
-
+        Получить конфигурацию источника
+        
         Args:
-            sources: Набор источников для валидации
-
+            source: Идентификатор источника
+            
         Returns:
-            Набор валидных источников
+            Словарь с конфигурацией или None
         """
-        if sources is None:
-            return {source.value for source in DataSource}
+        return self._sources_config.get(source)
 
-        valid_source_values = {source.value for source in DataSource}
-        return {source for source in sources if source in valid_source_values}
+    def is_source_available(self, source: str) -> bool:
+        """
+        Проверить доступность источника
+        
+        Args:
+            source: Идентификатор источника
+            
+        Returns:
+            True если источник доступен
+        """
+        return source in self._sources_config
 
+    def get_source_display_name(self, source: str) -> str:
+        """
+        Получить отображаемое название источника
+        
+        Args:
+            source: Идентификатор источника
+            
+        Returns:
+            Отображаемое название
+        """
+        config = self.get_source_config(source)
+        if config:
+            return config.get("display_name", source)
+        return source
 
-# Глобальный экземпляр менеджера источников
-source_manager = SourceManager()
+    def get_source_api_limits(self, source: str) -> Optional[Dict[str, Any]]:
+        """
+        Получить лимиты API для источника
+        
+        Args:
+            source: Идентификатор источника
+            
+        Returns:
+            Словарь с лимитами API
+        """
+        config = self.get_source_config(source)
+        if config:
+            return config.get("api_limits")
+        return None
+
+    def validate_source_credentials(self, source: str, credentials: Dict[str, Any]) -> bool:
+        """
+        Валидация учетных данных для источника
+        
+        Args:
+            source: Идентификатор источника
+            credentials: Словарь с учетными данными
+            
+        Returns:
+            True если учетные данные валидны
+        """
+        if source == "hh.ru":
+            # HH.ru не требует API ключа
+            return True
+        elif source == "superjob.ru":
+            # SuperJob требует API ключ
+            api_key = credentials.get("api_key")
+            if not api_key:
+                # Проверяем в переменных окружения
+                config = SJAPIConfig()
+                return config.is_configured()
+            return bool(api_key)
+        return False
+
+    def get_source_priority(self, source: str) -> int:
+        """
+        Получить приоритет источника
+        
+        Args:
+            source: Идентификатор источника
+            
+        Returns:
+            Приоритет (меньше = выше приоритет)
+        """
+        config = self.get_source_config(source)
+        if config:
+            return config.get("priority", 999)
+        return 999
+
+    def sort_sources_by_priority(self, sources: List[str]) -> List[str]:
+        """
+        Сортировка источников по приоритету
+        
+        Args:
+            sources: Список идентификаторов источников
+            
+        Returns:
+            Отсортированный список источников
+        """
+        return sorted(sources, key=self.get_source_priority)
+
+    def get_source_features(self, source: str) -> List[str]:
+        """
+        Получить список функций источника
+        
+        Args:
+            source: Идентификатор источника
+            
+        Returns:
+            Список функций
+        """
+        config = self.get_source_config(source)
+        if config:
+            return config.get("features", [])
+        return []
+
+    def get_source_config_class(self, source: str):
+        """
+        Получить класс конфигурации для источника
+        
+        Args:
+            source: Идентификатор источника
+            
+        Returns:
+            Класс конфигурации
+        """
+        config = self.get_source_config(source)
+        if config:
+            return config.get("config_class")
+        return None
+
+    def create_source_instance(self, source: str):
+        """
+        Создать экземпляр API для источника
+        
+        Args:
+            source: Идентификатор источника
+            
+        Returns:
+            Экземпляр API класса
+        """
+        config_class = self.get_source_config_class(source)
+        if config_class:
+            return config_class()
+        return None
