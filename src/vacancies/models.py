@@ -73,30 +73,17 @@ class Vacancy(AbstractVacancy):
         # Используем переданный ID, если есть, иначе генерируем UUID
         if vacancy_id and str(vacancy_id).strip() and str(vacancy_id) != "":
             self.vacancy_id = str(vacancy_id)
-            # Отладка для отслеживания присвоения ID
-            if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
-                print(f"DEBUG Vacancy.__init__: Присвоен оригинальный ID {self.vacancy_id} для '{title}'")
         else:
             self.vacancy_id = str(uuid.uuid4())
-            print(f"DEBUG Vacancy.__init__: Сгенерирован UUID {self.vacancy_id} для '{title}' (оригинальный ID был: '{vacancy_id}')")
         self.title = title
         self.url = url
         self.salary = self._validate_salary(salary)
         self.description = description
         self.requirements = self._clean_html(requirements) if requirements else None
         self.responsibilities = self._clean_html(responsibilities) if responsibilities else None
-        # Отладка для отслеживания employer
-        if vacancy_id and str(vacancy_id) in ["124403607", "124403580", "124403642"]:
-            print(f"DEBUG Vacancy.__init__: Получен employer = {employer} для ID {vacancy_id}")
-            print(f"DEBUG Vacancy.__init__: type(employer) = {type(employer)}")
         
         self.employer = employer
         self.employer_id = employer_id  # Инициализируем новое поле
-        
-        # Дополнительная проверка после присвоения
-        if vacancy_id and str(vacancy_id) in ["124403607", "124403580", "124403642"]:
-            print(f"DEBUG Vacancy.__init__: После присвоения self.employer = {self.employer}")
-            print(f"DEBUG Vacancy.__init__: После присвоения self.employer_id = {self.employer_id}")
         
         self.experience = experience
         self.employment = employment
@@ -178,14 +165,6 @@ class Vacancy(AbstractVacancy):
         vacancies = []
         for i, item in enumerate(data):
             try:
-                # Отладка для отслеживания входящих данных
-                if isinstance(item, dict):
-                    item_id = item.get('id') or item.get('vacancy_id')
-                    if str(item_id) in ["124403607", "124403580", "124403642"]:
-                        print(f"DEBUG cast_to_object_list[{i}]: Обрабатываю элемент с ID {item_id}")
-                        print(f"DEBUG cast_to_object_list[{i}]: item.get('employer') = {item.get('employer')}")
-                        print(f"DEBUG cast_to_object_list[{i}]: Тип данных item = {type(item)}")
-                
                 vacancy = cls.from_dict(item)
                 vacancies.append(vacancy)
             except ValueError as e:
@@ -215,13 +194,8 @@ class Vacancy(AbstractVacancy):
             vacancy_id = data.get("id") or data.get("vacancy_id")
             if vacancy_id:
                 vacancy_id = str(vacancy_id)
-                # Отладка для отслеживания ID
-                if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
-                    print(f"DEBUG Vacancy.from_dict: Извлечен ID {vacancy_id} для вакансии '{data.get('name', data.get('title', 'NO_NAME'))}'")
             else:
                 vacancy_id = ""
-                print(f"DEBUG Vacancy.from_dict: НЕТ ID в данных для вакансии '{data.get('name', data.get('title', 'NO_NAME'))}'")
-                print(f"DEBUG Vacancy.from_dict: Доступные ключи в data: {list(data.keys())}")
 
             # Обработка зарплаты (универсальная для всех источников)
             salary = data.get("salary")
@@ -230,12 +204,6 @@ class Vacancy(AbstractVacancy):
             employer = data.get("employer")
             company_id = ""
             employer_id = None  # Новое поле для сохранения ID работодателя
-            
-            # Дополнительная отладка входящих данных
-            if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
-                print(f"DEBUG Vacancy.from_dict: Сырые входящие данные employer для ID {vacancy_id}:")
-                print(f"DEBUG Vacancy.from_dict: data.get('employer') = {data.get('employer')}")
-                print(f"DEBUG Vacancy.from_dict: Все ключи в data: {list(data.keys())}")
             
             if employer:
                 if isinstance(employer, dict):
@@ -248,14 +216,27 @@ class Vacancy(AbstractVacancy):
                     company_id = ""
                     employer_id = None
             elif data.get("firm_name"):
+                # Для SuperJob создаем структуру employer с ID если есть
+                firm_id = data.get("firm_id") or data.get("client_id")
                 employer = {"name": data.get("firm_name")}
-                company_id = ""
-                employer_id = None
+                if firm_id:
+                    employer["id"] = str(firm_id)
+                    employer_id = str(firm_id)
+                    company_id = str(firm_id)
+                else:
+                    employer_id = None
+                    company_id = ""
             
             # Если employer все еще None, но есть данные от SuperJob
             if not employer and data.get("firm_name"):
+                firm_id = data.get("firm_id") or data.get("client_id")
                 employer = {"name": data.get("firm_name")}
-                employer_id = None
+                if firm_id:
+                    employer["id"] = str(firm_id)
+                    employer_id = str(firm_id)
+                    company_id = str(firm_id)
+                else:
+                    employer_id = None
 
             # Обработка опыта работы
             experience = None
@@ -316,12 +297,6 @@ class Vacancy(AbstractVacancy):
                 elif "name" in data and "snippet" in data:
                     source = "hh.ru"
 
-            # Отладка перед созданием объекта
-            if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
-                print(f"DEBUG Vacancy.from_dict: Перед созданием объекта для ID {vacancy_id}")
-                print(f"DEBUG Vacancy.from_dict: employer = {employer}")
-                print(f"DEBUG Vacancy.from_dict: type(employer) = {type(employer)}")
-
             vacancy = cls(
                 vacancy_id=vacancy_id,
                 title=title,
@@ -341,12 +316,6 @@ class Vacancy(AbstractVacancy):
                 source=source,
                 area=data.get("area")  # Передаем area как есть
             )
-            
-            # Отладка после создания объекта
-            if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
-                print(f"DEBUG Vacancy.from_dict: После создания объекта для ID {vacancy_id}")
-                print(f"DEBUG Vacancy.from_dict: vacancy.employer = {vacancy.employer}")
-                print(f"DEBUG Vacancy.from_dict: type(vacancy.employer) = {type(vacancy.employer)}")
             
             # Устанавливаем company_id после создания объекта
             vacancy.company_id = company_id
@@ -393,12 +362,6 @@ class Vacancy(AbstractVacancy):
 
     def __str__(self) -> str:
         """Строковое представление унифицированной вакансии"""
-        # Отладка для отслеживания проблемы с employer
-        if str(self.vacancy_id) in ["124403607", "124403580", "124403642"]:
-            print(f"DEBUG Vacancy.__str__: ID {self.vacancy_id}")
-            print(f"DEBUG Vacancy.__str__: self.employer = {self.employer}")
-            print(f"DEBUG Vacancy.__str__: type(self.employer) = {type(self.employer)}")
-        
         # Правильное извлечение имени компании
         company_name = "Не указана"
         if self.employer:
@@ -408,10 +371,6 @@ class Vacancy(AbstractVacancy):
                 company_name = self.employer
             else:
                 company_name = str(self.employer)
-        
-        # Дополнительная отладка
-        if str(self.vacancy_id) in ["124403607", "124403580", "124403642"]:
-            print(f"DEBUG Vacancy.__str__: извлеченное company_name = '{company_name}'")
         
         parts = [
             f"[{self.source.upper()}] Должность: {self.title}",

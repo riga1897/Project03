@@ -63,10 +63,14 @@ class VacancyStats:
             elif isinstance(employer, str) and employer.strip():
                 return employer
         
-        # ПРИОРИТЕТ 3: Сырые данные SuperJob - firm_name
+        # ПРИОРИТЕТ 3: Сырые данные SuperJob - firm_name (с сохранением ID)
         if isinstance(vacancy, dict) and "firm_name" in vacancy:
             firm_name = vacancy.get("firm_name")
             if firm_name and str(firm_name).strip() and str(firm_name) != "None":
+                # Дополнительно сохраняем ID работодателя если есть
+                firm_id = vacancy.get("firm_id") or vacancy.get("client_id")
+                if firm_id and hasattr(vacancy, 'employer_id'):
+                    vacancy.employer_id = str(firm_id)
                 return str(firm_name)
         
         # ПРИОРИТЕТ 4: Объекты Vacancy - raw_data

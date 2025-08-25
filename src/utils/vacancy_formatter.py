@@ -111,15 +111,6 @@ class VacancyFormatter(BaseFormatter):
         else:
             vacancy_id = 'N/A'
 
-        # Отладка для отслеживания проблемы
-        if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
-            print(f"DEBUG VacancyFormatter.format_vacancy_info: ID {vacancy_id}")
-            print(f"DEBUG VacancyFormatter.format_vacancy_info: type(vacancy_data) = {type(vacancy_data)}")
-            if hasattr(vacancy_data, 'employer'):
-                print(f"DEBUG VacancyFormatter.format_vacancy_info: vacancy_data.employer = {vacancy_data.employer}")
-            elif isinstance(vacancy_data, dict) and 'employer' in vacancy_data:
-                print(f"DEBUG VacancyFormatter.format_vacancy_info: vacancy_data['employer'] = {vacancy_data.get('employer')}")
-
         if hasattr(vacancy_data, 'title'):
             title = vacancy_data.title
         elif isinstance(vacancy_data, dict):
@@ -135,10 +126,6 @@ class VacancyFormatter(BaseFormatter):
 
         # Получение информации о компании
         company_name = VacancyFormatter._extract_company_name(vacancy_data)
-
-        # Дополнительная отладка для компании
-        if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
-            print(f"DEBUG VacancyFormatter.format_vacancy_info: извлеченное company_name = '{company_name}'")
 
         # Получение информации о зарплате
         salary_info = VacancyFormatter._extract_salary_info(vacancy_data)
