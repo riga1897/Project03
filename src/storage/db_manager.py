@@ -561,34 +561,71 @@ class DBManager:
 
     def get_database_stats(self) -> Dict[str, Any]:
         """
-        Получает статистику базы данных используя различные SQL-запросы
+        Получает расширенную статистику базы данных используя различные SQL-запросы
 
         Returns:
             Dict[str, Any]: Словарь со статистикой
         """
-        # Словарь SQL-запросов для получения статистики базы данных
-        # Каждый запрос использует агрегатные функции для анализа данных
-        stats_queries = {
-            # Общее количество вакансий в БД
-            'total_vacancies': "SELECT COUNT(*) FROM vacancies",
-            # Общее количество компаний в справочнике
-            'total_companies': "SELECT COUNT(*) FROM companies", 
-            # Количество вакансий с указанной зарплатой (хотя бы один из параметров: salary_from или salary_to)
-            'vacancies_with_salary': "SELECT COUNT(*) FROM vacancies WHERE (salary_from IS NOT NULL OR salary_to IS NOT NULL)",
-            # Дата публикации самой новой вакансии (использует агрегатную функцию MAX)
-            'latest_vacancy_date': "SELECT MAX(published_at) FROM vacancies"
-        }
-
         stats = {}
 
         try:
             with self._get_connection() as conn:
-                with conn.cursor() as cursor:
-                    # Выполняем каждый SQL-запрос для получения статистики
-                    for stat_name, query in stats_queries.items():
-                        cursor.execute(query)
-                        result = cursor.fetchone()
-                        stats[stat_name] = result[0] if result else 0
+                with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                    # Основная статистика одним запросом
+                    cursor.execute("""
+                        SELECT 
+                            COUNT(*) as total_vacancies,
+                            COUNT(CASE WHEN salary_from IS NOT NULL OR salary_to IS NOT NULL THEN 1 END) as vacancies_with_salary,
+                            COUNT(DISTINCT employer) as unique_employers,
+                            AVG(CASE
+                                WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN (salary_from + salary_to) / 2
+                                WHEN salary_from IS NOT NULL THEN salary_from
+                                WHEN salary_to IS NOT NULL THEN salary_to
+                            END) as avg_salary,
+                            MAX(published_at) as latest_vacancy_date,
+                            MIN(published_at) as earliest_vacancy_date,
+                            COUNT(CASE WHEN created_at >= CURRENT_DATE - INTERVAL '7 days' THEN 1 END) as vacancies_last_week,
+                            COUNT(CASE WHEN created_at >= CURRENT_DATE - INTERVAL '30 days' THEN 1 END) as vacancies_last_month
+                        FROM vacancies
+                        WHERE salary_currency IN ('RUR', 'RUB', 'руб.', NULL) OR salary_currency IS NULL
+                    """)
+                    
+                    main_stats = cursor.fetchone()
+                    stats.update(dict(main_stats))
+
+                    # Статистика по компаниям
+                    cursor.execute("SELECT COUNT(*) FROM companies")
+                    stats['total_companies'] = cursor.fetchone()[0]
+
+                    # Топ работодателей по количеству вакансий
+                    cursor.execute("""
+                        SELECT employer, COUNT(*) as vacancy_count
+                        FROM vacancies
+                        WHERE employer IS NOT NULL AND employer != ''
+                        GROUP BY employer
+                        ORDER BY vacancy_count DESC
+                        LIMIT 10
+                    """)
+                    stats['top_employers'] = [dict(row) for row in cursor.fetchall()]
+
+                    # Распределение зарплат по диапазонам
+                    cursor.execute("""
+                        SELECT 
+                            CASE
+                                WHEN COALESCE(salary_from, salary_to, 0) < 50000 THEN 'до 50k'
+                                WHEN COALESCE(salary_from, salary_to, 0) < 100000 THEN '50k-100k'
+                                WHEN COALESCE(salary_from, salary_to, 0) < 150000 THEN '100k-150k'
+                                WHEN COALESCE(salary_from, salary_to, 0) < 200000 THEN '150k-200k'
+                                ELSE 'свыше 200k'
+                            END as salary_range,
+                            COUNT(*) as count
+                        FROM vacancies
+                        WHERE (salary_from IS NOT NULL OR salary_to IS NOT NULL)
+                        AND (salary_currency IN ('RUR', 'RUB', 'руб.') OR salary_currency IS NULL)
+                        GROUP BY salary_range
+                        ORDER BY MIN(COALESCE(salary_from, salary_to, 0))
+                    """)
+                    stats['salary_distribution'] = [dict(row) for row in cursor.fetchall()]
 
             return stats
 

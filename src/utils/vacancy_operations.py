@@ -230,6 +230,53 @@ class VacancyOperations:
             return filter_vacancies_by_keyword(vacancies, query)
 
     @staticmethod
+    def search_vacancies_by_keyword(self, vacancies: List[Vacancy], keyword: str, use_sql: bool = True) -> List[Vacancy]:
+        """
+        Поиск вакансий по ключевому слову в названии или описании
+        Поддерживает как SQL-поиск (быстрый), так и Python-поиск (для данных из API)
+
+        Args:
+            vacancies: Список вакансий для поиска
+            keyword: Ключевое слово для поиска
+            use_sql: Использовать SQL-поиск через БД (по умолчанию True)
+
+        Returns:
+            List[Vacancy]: Список найденных вакансий
+        """
+        if not keyword or not keyword.strip():
+            return []
+
+        # Если можем использовать SQL и у нас есть PostgresSaver
+        if use_sql:
+            try:
+                from src.storage.postgres_saver import PostgresSaver
+                postgres_saver = PostgresSaver()
+
+                # SQL-поиск по ключевому слову в БД
+                sql_results = postgres_saver.search_vacancies_batch([keyword], limit=1000)
+                if sql_results:
+                    return sql_results
+            except Exception as e:
+                logger.warning(f"SQL-поиск не удался, переходим на Python-поиск: {e}")
+
+        # Fallback к Python-поиску для данных из памяти/API
+        keyword_lower = keyword.lower().strip()
+        found_vacancies = []
+
+        for vacancy in vacancies:
+            # Поиск в названии
+            if keyword_lower in vacancy.title.lower():
+                found_vacancies.append(vacancy)
+                continue
+
+            # Поиск в описании (если есть)
+            if vacancy.description and keyword_lower in vacancy.description.lower():
+                found_vacancies.append(vacancy)
+                continue
+
+        return found_vacancies
+
+    @staticmethod
     def debug_vacancy_search(vacancy: Vacancy, keyword: str) -> None:
         """
         Отладочная функция для проверки содержимого вакансии при поиске
