@@ -221,10 +221,10 @@ class DBManagerDemo:
 
             # Показываем первые 15 вакансий с высокой зарплатой
             for i, vacancy in enumerate(high_salary_vacancies[:15], 1):
-                # RealDictCursor всегда возвращает словари
-                title = str(vacancy['title'])[:34]
-                company = str(vacancy['company_name'])[:24]  
-                salary = str(vacancy['salary_info'])[:19]
+                # RealDictCursor возвращает словари
+                title = str(vacancy.get('title', ''))[:34]
+                company = str(vacancy.get('company_name', ''))[:24]  
+                salary = str(vacancy.get('salary_info', ''))[:19]
 
                 print(f"{i:<3} {title:<35} {company:<25} {salary:<20}")
 
@@ -238,7 +238,10 @@ class DBManagerDemo:
             print(f"Ошибка при получении вакансий с высокой зарплатой: {e}")
             print(f"Тип данных результата: {type(high_salary_vacancies) if 'high_salary_vacancies' in locals() else 'не определен'}")
             if 'high_salary_vacancies' in locals() and high_salary_vacancies and len(high_salary_vacancies) > 0:
-                print(f"Пример результата: {high_salary_vacancies[0]}")
+                print(f"Первый элемент: {high_salary_vacancies[0]}")
+                print(f"Тип первого элемента: {type(high_salary_vacancies[0])}")
+                if hasattr(high_salary_vacancies[0], 'keys'):
+                    print(f"Ключи: {list(high_salary_vacancies[0].keys())}")
             print("\nВозможные причины:")
             print("• Нет подключения к базе данных")
             print("• Ошибка в SQL-запросах")
@@ -267,10 +270,10 @@ class DBManagerDemo:
 
                 # Показываем первые 5 вакансий для экономии места
                 for i, vacancy in enumerate(vacancies[:5], 1):
-                    # RealDictCursor всегда возвращает словари
-                    title = str(vacancy['title'])[:34]
-                    company = str(vacancy['company_name'])[:24]
-                    salary = str(vacancy['salary_info'])[:14]
+                    # RealDictCursor возвращает словари
+                    title = str(vacancy.get('title', ''))[:34]
+                    company = str(vacancy.get('company_name', ''))[:24]
+                    salary = str(vacancy.get('salary_info', ''))[:14]
 
                     print(f"{i:<3} {title:<35} {company:<25} {salary:<15}")
 
@@ -283,7 +286,10 @@ class DBManagerDemo:
                 print("   Возможные причины: проблемы с SQL-запросом или данными")
                 print(f"   Тип результата: {type(vacancies) if 'vacancies' in locals() else 'не определен'}")
                 if 'vacancies' in locals() and vacancies and len(vacancies) > 0:
-                    print(f"   Пример результата: {vacancies[0]}")
+                    print(f"   Первый элемент: {vacancies[0]}")
+                    print(f"   Тип первого элемента: {type(vacancies[0])}")
+                    if hasattr(vacancies[0], 'keys'):
+                        print(f"   Ключи: {list(vacancies[0].keys())}")
 
     def _demo_database_stats(self) -> None:
         """Демонстрирует получение статистики БД"""
