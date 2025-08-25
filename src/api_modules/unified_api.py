@@ -219,6 +219,9 @@ class UnifiedAPI:
             sources = ["hh"]  # По умолчанию только HH, так как у SuperJob нет такой фильтрации
         else:
             sources = self.validate_sources(sources)
+        
+        # Логируем выбранные источники
+        logger.info(f"Выбранные источники для поиска: {sources}")
 
         all_vacancies = []
         hh_vacancies = []
