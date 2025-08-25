@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List
 
-from src.utils.cache import simple_cache
+from .decorators import simple_cache
 
 logger = logging.getLogger(__name__)
 
