@@ -308,19 +308,21 @@ class TestCacheIntegration:
         # Создаем файловый кэш
         file_cache = FileCache(temp_cache_dir)
 
-        # Тестируем кэш напрямую
-        cache_key = "test_key"
+        # Тестируем кэш напрямую с правильными параметрами
+        source = "hh"
+        params = {"keyword": "python", "area": "1"}
         test_data = {"test": "data"}
         
-        # Сохраняем в кэш с правильным форматом ключа
-        full_cache_key = file_cache._generate_params_hash({"key": cache_key})
-        file_cache.save_response(full_cache_key, test_data, 'hh')
+        # Сохраняем в кэш с правильными параметрами
+        file_cache.save_response(source, params, test_data)
         
         # Загружаем из кэша
-        cached_data = file_cache.load_response(full_cache_key, 'hh')
+        cached_response = file_cache.load_response(source, params)
         
         # Проверяем, что данные кэшируются корректно
-        assert cached_data == test_data
+        assert cached_response is not None
+        assert cached_response["data"] == test_data
+        assert cached_response["meta"]["params"] == params
 
 
 class TestFullWorkflowIntegration:
