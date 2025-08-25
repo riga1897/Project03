@@ -12,7 +12,7 @@ class SourceSelector:
     def __init__(self):
         self.source_manager = source_manager
 
-    AVAILABLE_SOURCES = {"hh": "HH.ru", "sj": "SuperJob.ru"}
+    AVAILABLE_SOURCES = {"hh.ru": "HH.ru", "superjob.ru": "SuperJob.ru"}
 
     @classmethod
     def get_user_source_choice(cls) -> Optional[Set[str]]:
@@ -37,13 +37,13 @@ class SourceSelector:
 
             if choice == "1":
                 print("Выбран источник: HH.ru")
-                return {"hh"}
+                return {"hh.ru"}
             elif choice == "2":
                 print("Выбран источник: SuperJob.ru")
-                return {"sj"}
+                return {"superjob.ru"}
             elif choice == "3":
                 print("Выбраны оба источника: HH.ru и SuperJob.ru")
-                return {"hh", "sj"}
+                return {"hh.ru", "superjob.ru"}
             elif choice == "0":
                 print("Выбор источников отменен.")
                 return None

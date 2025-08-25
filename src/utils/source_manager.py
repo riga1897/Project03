@@ -1,4 +1,3 @@
-
 """
 Модуль для управления источниками данных о вакансиях
 """
@@ -42,7 +41,7 @@ class SourceManager:
     def get_available_sources(self) -> List[str]:
         """
         Получить список доступных источников
-        
+
         Returns:
             Список идентификаторов источников
         """
@@ -51,10 +50,10 @@ class SourceManager:
     def get_source_config(self, source: str) -> Optional[Dict[str, Any]]:
         """
         Получить конфигурацию источника
-        
+
         Args:
             source: Идентификатор источника
-            
+
         Returns:
             Словарь с конфигурацией или None
         """
@@ -63,10 +62,10 @@ class SourceManager:
     def is_source_available(self, source: str) -> bool:
         """
         Проверить доступность источника
-        
+
         Args:
             source: Идентификатор источника
-            
+
         Returns:
             True если источник доступен
         """
@@ -75,10 +74,10 @@ class SourceManager:
     def get_source_display_name(self, source: str) -> str:
         """
         Получить отображаемое название источника
-        
+
         Args:
             source: Идентификатор источника
-            
+
         Returns:
             Отображаемое название
         """
@@ -90,10 +89,10 @@ class SourceManager:
     def get_source_api_limits(self, source: str) -> Optional[Dict[str, Any]]:
         """
         Получить лимиты API для источника
-        
+
         Args:
             source: Идентификатор источника
-            
+
         Returns:
             Словарь с лимитами API
         """
@@ -105,11 +104,11 @@ class SourceManager:
     def validate_source_credentials(self, source: str, credentials: Dict[str, Any]) -> bool:
         """
         Валидация учетных данных для источника
-        
+
         Args:
             source: Идентификатор источника
             credentials: Словарь с учетными данными
-            
+
         Returns:
             True если учетные данные валидны
         """
@@ -129,10 +128,10 @@ class SourceManager:
     def get_source_priority(self, source: str) -> int:
         """
         Получить приоритет источника
-        
+
         Args:
             source: Идентификатор источника
-            
+
         Returns:
             Приоритет (меньше = выше приоритет)
         """
@@ -144,10 +143,10 @@ class SourceManager:
     def sort_sources_by_priority(self, sources: List[str]) -> List[str]:
         """
         Сортировка источников по приоритету
-        
+
         Args:
             sources: Список идентификаторов источников
-            
+
         Returns:
             Отсортированный список источников
         """
@@ -156,10 +155,10 @@ class SourceManager:
     def get_source_features(self, source: str) -> List[str]:
         """
         Получить список функций источника
-        
+
         Args:
             source: Идентификатор источника
-            
+
         Returns:
             Список функций
         """
@@ -171,10 +170,10 @@ class SourceManager:
     def get_source_config_class(self, source: str):
         """
         Получить класс конфигурации для источника
-        
+
         Args:
             source: Идентификатор источника
-            
+
         Returns:
             Класс конфигурации
         """
@@ -186,10 +185,10 @@ class SourceManager:
     def create_source_instance(self, source: str):
         """
         Создать экземпляр API для источника
-        
+
         Args:
             source: Идентификатор источника
-            
+
         Returns:
             Экземпляр API класса
         """
@@ -197,3 +196,16 @@ class SourceManager:
         if config_class:
             return config_class()
         return None
+
+
+class DataSource:
+    """Класс для представления источника данных"""
+
+    def __init__(self, key: str, name: str, display_name: str):
+        self.key = key
+        self.name = name
+        self.display_name = display_name
+
+
+# Глобальный экземпляр менеджера источников
+source_manager = SourceManager()
