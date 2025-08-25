@@ -86,7 +86,7 @@ class TestAPIIntegration:
 
         # Создаем API и выполняем поиск
         api = HeadHunterAPI()
-        vacancies = api.get_vacancies({"text": "python", "area": "1"})
+        vacancies = api.get_vacancies("python", area="1")
 
         # Проверяем результат
         assert len(vacancies) == 1
@@ -140,7 +140,7 @@ class TestAPIIntegration:
         # Создаем API с тестовым ключом
         api = SuperJobAPI()
         api.config.secret_key = "test_key"
-        vacancies = api.get_vacancies({"keyword": "java", "town": 4})
+        vacancies = api.get_vacancies("java", town=4)
 
         # Проверяем результат
         assert len(vacancies) == 1
@@ -317,6 +317,7 @@ class TestFullWorkflowIntegration:
         mock_cursor = Mock()
         mock_connect.return_value = mock_connection
         mock_connection.cursor.return_value = mock_cursor
+        mock_connection.encoding = 'UTF8'
         mock_cursor.fetchone.side_effect = [
             [True],  # DB exists
             None,    # Column checks
@@ -394,7 +395,7 @@ class TestFullWorkflowIntegration:
 
         # Получаем данные через API
         api = HeadHunterAPI()
-        vacancies = api.get_vacancies({"text": "test"})
+        vacancies = api.get_vacancies("test")
 
         # Проверяем, что данные корректно преобразованы
         assert len(vacancies) == 1

@@ -61,6 +61,10 @@ class TestPostgresSaver:
             mock_cursor.__enter__ = Mock(return_value=mock_cursor)
             mock_cursor.__exit__ = Mock(return_value=None)
             mock_cursor.fetchall.return_value = []
+            # Мокаем connection для psycopg2
+            mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+            mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+            mock_connection.encoding = 'UTF8'
 
             result = postgres_saver.add_vacancy([sample_vacancy])
 
@@ -109,7 +113,7 @@ class TestStorageFactory:
         with patch.object(PostgresSaver, '_ensure_database_exists'), \
              patch.object(PostgresSaver, '_ensure_tables_exist'), \
              patch.object(PostgresSaver, '_ensure_companies_table_exists'):
-            storage = StorageFactory.get_storage(config)
+            storage = StorageFactory.create_storage(config)
 
         assert isinstance(storage, PostgresSaver)
 
@@ -118,9 +122,9 @@ class TestStorageFactory:
         config = {'type': 'invalid_type'}
 
         with pytest.raises(ValueError):
-            StorageFactory.get_storage(config)
+            StorageFactory.create_storage(config)
 
     def test_get_storage_missing_config(self):
         """Тест получения хранилища без конфигурации"""
         with pytest.raises((ValueError, TypeError)):
-            StorageFactory.get_storage(None)
+            StorageFactory.create_storage(None)

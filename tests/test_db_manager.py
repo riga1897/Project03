@@ -1,4 +1,3 @@
-
 """
 Тесты для класса DBManager
 """
@@ -67,7 +66,7 @@ class TestDBManager:
         # Проверяем, что были выполнены SQL-запросы для создания таблиц
         assert mock_cursor.execute.call_count >= 3  # SET encoding + 2 CREATE TABLE
 
-    @patch('src.storage.db_manager.TARGET_COMPANIES', [
+    @patch('src.config.target_companies.TARGET_COMPANIES', [
         {"hh_id": "1", "name": "Test Company", "description": "Test Description"}
     ])
     @patch('src.storage.db_manager.psycopg2.connect')
@@ -80,7 +79,7 @@ class TestDBManager:
         mock_connection.__exit__ = Mock(return_value=None)
         mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
         mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
-        
+
         # Имитируем пустую таблицу
         mock_cursor.fetchone.return_value = [0]
 
@@ -91,7 +90,7 @@ class TestDBManager:
                        if 'INSERT INTO companies' in str(call)]
         assert len(insert_calls) >= 1
 
-    @patch('src.storage.db_manager.TARGET_COMPANIES', [
+    @patch('src.config.target_companies.TARGET_COMPANIES', [
         {"name": "Test Company 1"},
         {"name": "Test Company 2"}
     ])
@@ -307,11 +306,11 @@ class TestDBManager:
         """Тест сопоставления названий компаний"""
         # Точное совпадение
         assert db_manager._is_target_company_match("Яндекс", "яндекс") is True
-        
+
         # Альтернативные названия
         assert db_manager._is_target_company_match("Тинькофф", "т-банк") is True
         assert db_manager._is_target_company_match("СБЕР", "сбербанк") is True
         assert db_manager._is_target_company_match("VK (ВКонтакте)", "вконтакте") is True
-        
+
         # Несовпадение
         assert db_manager._is_target_company_match("Яндекс", "Google") is False

@@ -67,12 +67,12 @@ class TestVacancyFormatter:
     def test_format_vacancy_brief_partial_salary(self, sample_vacancy):
         """Тест краткого форматирования с частичной зарплатой"""
         # Только минимальная зарплата
-        sample_vacancy.salary = Salary(100000, None, "RUR")
+        sample_vacancy.salary = Salary({"from": 100000, "currency": "RUR"})
         result = VacancyFormatter.format_vacancy_brief(sample_vacancy, 1)
         assert "от 100,000 ₽" in result
 
         # Только максимальная зарплата
-        sample_vacancy.salary = Salary(None, 150000, "RUR")
+        sample_vacancy.salary = Salary({"to": 150000, "currency": "RUR"})
         result = VacancyFormatter.format_vacancy_brief(sample_vacancy, 1)
         assert "до 150,000 ₽" in result
 
