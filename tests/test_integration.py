@@ -7,12 +7,24 @@ import pytest
 import tempfile
 import os
 from unittest.mock import Mock, patch, MagicMock
+
+# Патчим source_manager перед импортом других модулей
+with patch('src.utils.source_manager.source_manager', MockSourceManager()):
+    pass
 from src.api_modules.hh_api import HeadHunterAPI
 from src.api_modules.sj_api import SuperJobAPI
 from src.storage.postgres_saver import PostgresSaver
 from src.vacancies.models import Vacancy
 from src.utils.cache import FileCache
 from src.ui_interfaces.console_interface import UserInterface
+
+# Мок для source_manager перед импортом модулей, которые его используют
+class MockSourceManager:
+    def get_available_sources(self):
+        return ["hh.ru", "superjob.ru"]
+    
+    def get_source_display_name(self, source):
+        return {"hh.ru": "HeadHunter", "superjob.ru": "SuperJob"}.get(source, source)
 
 # Заглушка для CachedAPI
 class CachedAPI:

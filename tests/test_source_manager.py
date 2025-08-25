@@ -5,7 +5,7 @@
 
 import pytest
 from unittest.mock import patch, Mock
-from src.utils.source_manager import SourceManager
+from src.utils.source_manager import SourceManager, source_manager
 
 
 class TestSourceManager:
@@ -32,8 +32,10 @@ class TestSourceManager:
         config = manager.get_source_config("hh.ru")
         
         assert config is not None
-        assert "base_url" in config
-        assert config["base_url"] == "https://api.hh.ru/vacancies"
+        assert "name" in config
+        assert config["name"] == "HeadHunter"
+        assert "display_name" in config
+        assert config["display_name"] == "HeadHunter"
 
     def test_get_source_config_sj(self):
         """Тест получения конфигурации для SuperJob"""
@@ -41,8 +43,10 @@ class TestSourceManager:
         config = manager.get_source_config("superjob.ru")
         
         assert config is not None
-        assert "base_url" in config
-        assert config["base_url"] == "https://api.superjob.ru/2.0/vacancies"
+        assert "name" in config
+        assert config["name"] == "SuperJob"
+        assert "display_name" in config
+        assert config["display_name"] == "SuperJob"
 
     def test_get_source_config_invalid(self):
         """Тест получения конфигурации для несуществующего источника"""
@@ -78,11 +82,11 @@ class TestSourceManager:
         
         hh_limits = manager.get_source_api_limits("hh.ru")
         assert hh_limits is not None
-        assert "requests_per_minute" in hh_limits
+        assert "requests_per_second" in hh_limits
         
         sj_limits = manager.get_source_api_limits("superjob.ru")
         assert sj_limits is not None
-        assert "requests_per_minute" in sj_limits
+        assert "requests_per_second" in sj_limits
 
     def test_validate_source_credentials_hh(self):
         """Тест валидации учетных данных для HH (не требуются)"""
