@@ -46,21 +46,7 @@ class VacancyStats:
         Returns:
             str: Название компании или "Неизвестная компания"
         """
-        # ПРИОРИТЕТ 1: Сырые данные HH.ru - employer.name
-        if isinstance(vacancy, dict) and "employer" in vacancy:
-            employer = vacancy["employer"]
-            if isinstance(employer, dict) and "name" in employer and employer["name"]:
-                return employer["name"]
-            elif isinstance(employer, str) and employer.strip():
-                return employer
-        
-        # ПРИОРИТЕТ 2: Сырые данные SuperJob - firm_name
-        if isinstance(vacancy, dict) and "firm_name" in vacancy:
-            firm_name = vacancy.get("firm_name")
-            if firm_name and str(firm_name).strip() and str(firm_name) != "None":
-                return str(firm_name)
-        
-        # ПРИОРИТЕТ 3: Объекты Vacancy - атрибут employer
+        # ПРИОРИТЕТ 1: Объекты Vacancy - атрибут employer (новая структура)
         if hasattr(vacancy, 'employer') and vacancy.employer:
             employer = vacancy.employer
             if isinstance(employer, dict):
@@ -68,6 +54,20 @@ class VacancyStats:
             elif isinstance(employer, str):
                 return employer
             return str(employer)
+        
+        # ПРИОРИТЕТ 2: Сырые данные HH.ru - employer.name
+        if isinstance(vacancy, dict) and "employer" in vacancy:
+            employer = vacancy["employer"]
+            if isinstance(employer, dict) and "name" in employer and employer["name"]:
+                return employer["name"]
+            elif isinstance(employer, str) and employer.strip():
+                return employer
+        
+        # ПРИОРИТЕТ 3: Сырые данные SuperJob - firm_name
+        if isinstance(vacancy, dict) and "firm_name" in vacancy:
+            firm_name = vacancy.get("firm_name")
+            if firm_name and str(firm_name).strip() and str(firm_name) != "None":
+                return str(firm_name)
         
         # ПРИОРИТЕТ 4: Объекты Vacancy - raw_data
         if hasattr(vacancy, 'raw_data') and vacancy.raw_data:
@@ -77,7 +77,7 @@ class VacancyStats:
                 if isinstance(employer, dict) and "name" in employer:
                     return employer["name"]
         
-        # ПРИОРИТЕТ 5: Преобразованные данные - поле company
+        # ПРИОРИТЕТ 5: Преобразованные данные - поле company (fallback)
         if isinstance(vacancy, dict) and "company" in vacancy:
             company = vacancy["company"]
             if company and str(company).strip() and str(company) != "None":

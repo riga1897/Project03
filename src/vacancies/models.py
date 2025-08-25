@@ -29,6 +29,7 @@ class Vacancy(AbstractVacancy):
         "requirements",
         "responsibilities",
         "employer",
+        "employer_id",  # Новое поле для ID работодателя
         "experience",
         "employment",
         "schedule",
@@ -53,6 +54,7 @@ class Vacancy(AbstractVacancy):
         requirements: Optional[str] = None,
         responsibilities: Optional[str] = None,
         employer: Optional[Dict[str, Any]] = None,
+        employer_id: Optional[str] = None,  # Новый параметр для ID работодателя
         experience: Optional[str] = None,
         employment: Optional[str] = None,
         schedule: Optional[str] = None,
@@ -89,10 +91,12 @@ class Vacancy(AbstractVacancy):
             print(f"DEBUG Vacancy.__init__: type(employer) = {type(employer)}")
         
         self.employer = employer
+        self.employer_id = employer_id  # Инициализируем новое поле
         
         # Дополнительная проверка после присвоения
         if vacancy_id and str(vacancy_id) in ["124403607", "124403580", "124403642"]:
             print(f"DEBUG Vacancy.__init__: После присвоения self.employer = {self.employer}")
+            print(f"DEBUG Vacancy.__init__: После присвоения self.employer_id = {self.employer_id}")
         
         self.experience = experience
         self.employment = employment
@@ -225,6 +229,7 @@ class Vacancy(AbstractVacancy):
             # Обработка работодателя - сохраняем исходную структуру
             employer = data.get("employer")
             company_id = ""
+            employer_id = None  # Новое поле для сохранения ID работодателя
             
             # Дополнительная отладка входящих данных
             if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
@@ -235,18 +240,22 @@ class Vacancy(AbstractVacancy):
             if employer:
                 if isinstance(employer, dict):
                     company_id = str(employer.get("id", "")) if employer.get("id") else ""
+                    employer_id = employer.get("id")  # Сохраняем ID работодателя отдельно
                     # Сохраняем employer как есть
                 elif isinstance(employer, str):
                     # Если employer - строка, преобразуем в словарь
                     employer = {"name": employer}
                     company_id = ""
+                    employer_id = None
             elif data.get("firm_name"):
                 employer = {"name": data.get("firm_name")}
                 company_id = ""
+                employer_id = None
             
             # Если employer все еще None, но есть данные от SuperJob
             if not employer and data.get("firm_name"):
                 employer = {"name": data.get("firm_name")}
+                employer_id = None
 
             # Обработка опыта работы
             experience = None
@@ -322,6 +331,7 @@ class Vacancy(AbstractVacancy):
                 requirements=requirements,
                 responsibilities=responsibilities,
                 employer=employer,  # Используем исходную структуру employer
+                employer_id=employer_id,  # Передаем ID работодателя отдельно
                 experience=experience,
                 employment=employment,
                 schedule=data.get("schedule", {}).get("name") if isinstance(data.get("schedule"), dict) else None,
@@ -371,6 +381,8 @@ class Vacancy(AbstractVacancy):
             "salary": self.salary.to_dict() if self.salary else None,
             "description": self.description,
             "company": company_value,
+            "employer": self.employer,  # Сохраняем полную структуру employer
+            "employer_id": self.employer_id,  # Сохраняем ID работодателя отдельно
             "location": self.area, # Использовать self.area вместо self.location
             "source": self.source,
             "published_date": self.published_at.isoformat() if self.published_at else None, # Использовать self.published_at

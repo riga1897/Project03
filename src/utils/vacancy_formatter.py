@@ -405,22 +405,33 @@ class VacancyFormatter(BaseFormatter):
         """
         Извлекает название компании из объекта или словаря вакансии.
         """
+        # Приоритет 1: поле employer (полная структура)
         employer_info = None
         if hasattr(vacancy_data, 'employer'):
             employer_info = vacancy_data.employer
         elif isinstance(vacancy_data, dict) and 'employer' in vacancy_data:
             employer_info = vacancy_data.get('employer')
 
-        if not employer_info:
-            return "Не указана"
+        if employer_info:
+            if isinstance(employer_info, dict):
+                return employer_info.get('name', 'Не указана')
+            elif isinstance(employer_info, str) and employer_info.strip():
+                return employer_info
+            else:
+                # Пытаемся преобразовать в строку, если это какой-то другой объект
+                return str(employer_info) if employer_info else "Не указана"
 
-        if isinstance(employer_info, dict):
-            return employer_info.get('name', 'Не указана')
-        elif isinstance(employer_info, str) and employer_info.strip():
-            return employer_info
-        else:
-            # Пытаемся преобразовать в строку, если это какой-то другой объект
-            return str(employer_info) if employer_info else "Не указана"
+        # Приоритет 2: fallback на поле company (для совместимости)
+        company_info = None
+        if hasattr(vacancy_data, 'company'):
+            company_info = vacancy_data.company
+        elif isinstance(vacancy_data, dict) and 'company' in vacancy_data:
+            company_info = vacancy_data.get('company')
+        
+        if company_info and str(company_info).strip():
+            return str(company_info).title()
+
+        return "Не указана"
 
     @staticmethod
     def _extract_salary_info(vacancy_data) -> str:
