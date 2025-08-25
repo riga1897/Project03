@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "params": {
+      "area": "1",
+      "per_page": 50,
+      "only_with_salary": false,
+      "text": "python",
+      "page": 0
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "12345",
+        "name": "Python Developer",
+        "url": "https://api.hh.ru/vacancies/12345",
+        "salary": {
+          "from": 100000,
+          "to": 150000,
+          "currency": "RUR"
+        },
+        "snippet": {
+          "requirement": "Знание Python",
+          "responsibility": "Разработка приложений"
+        },
+        "employer": {
+          "id": "1",
+          "name": "Test Company"
+        },
+        "area": {
+          "id": "1",
+          "name": "Москва"
+        },
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "published_at": "2024-01-15T10:00:00+0300"
+      }
+    ],
+    "found": 1,
+    "pages": 1,
+    "page": 0,
+    "per_page": 20
+  }
+}
