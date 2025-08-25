@@ -81,13 +81,17 @@ class PostgresSaver:
         """Создает подключение к базе данных"""
         db_name = database or self.database
         try:
-            return psycopg2.connect(
+            connection = psycopg2.connect(
                 host=self.host,
                 port=self.port,
                 database=db_name,
                 user=self.username,
-                password=self.password
+                password=self.password,
+                client_encoding='utf8'
             )
+            # Устанавливаем кодировку для соединения
+            connection.set_client_encoding('UTF8')
+            return connection
         except psycopg2.Error as e:
             logger.error(f"Ошибка подключения к БД {db_name}: {e}")
             raise
@@ -129,6 +133,9 @@ class PostgresSaver:
         connection = self._get_connection()
         try:
             cursor = connection.cursor()
+            
+            # Устанавливаем кодировку сессии
+            cursor.execute("SET client_encoding TO 'UTF8'")
 
             # Создаем таблицу для вакансий
             create_table_query = """

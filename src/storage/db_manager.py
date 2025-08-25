@@ -49,7 +49,13 @@ class DBManager:
             psycopg2.Error: При ошибке подключения к БД
         """
         try:
-            connection = psycopg2.connect(**self.db_config.get_connection_params())
+            connection_params = self.db_config.get_connection_params()
+            # Добавляем явное указание кодировки UTF-8
+            connection_params['client_encoding'] = 'utf8'
+            connection = psycopg2.connect(**connection_params)
+            
+            # Устанавливаем кодировку для соединения
+            connection.set_client_encoding('UTF8')
             return connection
         except psycopg2.Error as e:
             logger.error(f"Ошибка подключения к базе данных: {e}")
@@ -59,7 +65,7 @@ class DBManager:
         """
         Создает таблицы компаний и вакансий в базе данных, если они не существуют
         """
-        # SQL для создания таблиц
+        # SQL для создания таблиц с явным указанием кодировки
         create_companies_table = """
         CREATE TABLE IF NOT EXISTS companies (
             id SERIAL PRIMARY KEY,
@@ -99,6 +105,9 @@ class DBManager:
         try:
             with self._get_connection() as conn:
                 with conn.cursor() as cursor:
+                    # Устанавливаем кодировку сессии
+                    cursor.execute("SET client_encoding TO 'UTF8'")
+                    
                     # Сначала создаем таблицу компаний
                     cursor.execute(create_companies_table)
                     logger.info("Таблица компаний создана успешно")
