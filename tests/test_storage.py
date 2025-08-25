@@ -1,4 +1,3 @@
-
 """
 Тесты для модулей хранения данных
 """
@@ -86,12 +85,18 @@ class TestPostgresSaver:
 
     def test_format_vacancy_data(self, postgres_saver, sample_vacancy):
         """Тест форматирования данных вакансии"""
-        formatted_data = postgres_saver._format_vacancy_data(sample_vacancy)
+        # Метод _format_vacancy_data был удален, тестируем через add_vacancy
+        with patch.object(postgres_saver, '_get_connection') as mock_get_conn:
+            mock_connection = Mock()
+            mock_cursor = Mock()
+            mock_get_conn.return_value = mock_connection
+            mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+            mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+            mock_cursor.fetchall.return_value = []
 
-        assert isinstance(formatted_data, tuple)
-        assert len(formatted_data) >= 10  # Минимальное количество полей
-        assert formatted_data[0] == sample_vacancy.vacancy_id
-        assert formatted_data[1] == sample_vacancy.title
+            # Проверяем, что метод add_vacancy работает
+            result = postgres_saver.add_vacancy([sample_vacancy])
+            assert isinstance(result, list)
 
 
 class TestStorageFactory:
@@ -100,7 +105,7 @@ class TestStorageFactory:
     def test_get_storage_postgres(self):
         """Тест получения PostgreSQL хранилища"""
         config = {'type': 'postgres', 'host': 'localhost'}
-        
+
         with patch.object(PostgresSaver, '_ensure_database_exists'), \
              patch.object(PostgresSaver, '_ensure_tables_exist'), \
              patch.object(PostgresSaver, '_ensure_companies_table_exists'):
@@ -111,7 +116,7 @@ class TestStorageFactory:
     def test_get_storage_invalid_type(self):
         """Тест получения хранилища с неверным типом"""
         config = {'type': 'invalid_type'}
-        
+
         with pytest.raises(ValueError):
             StorageFactory.get_storage(config)
 

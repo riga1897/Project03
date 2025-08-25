@@ -16,7 +16,11 @@ class TestVacancyFormatter:
     @pytest.fixture
     def sample_salary(self):
         """Фикстура для тестовой зарплаты"""
-        return Salary(100000, 150000, "RUR")
+        return Salary({
+            'from': 100000,
+            'to': 150000,
+            'currency': 'RUR'
+        })
 
     @pytest.fixture
     def sample_vacancy(self, sample_salary):

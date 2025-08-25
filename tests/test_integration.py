@@ -86,7 +86,7 @@ class TestAPIIntegration:
 
         # Создаем API и выполняем поиск
         api = HeadHunterAPI()
-        vacancies = api.search_vacancies("python", area="1")
+        vacancies = api.get_vacancies({"text": "python", "area": "1"})
 
         # Проверяем результат
         assert len(vacancies) == 1
@@ -140,7 +140,7 @@ class TestAPIIntegration:
         # Создаем API с тестовым ключом
         api = SuperJobAPI()
         api.config.secret_key = "test_key"
-        vacancies = api.search_vacancies("java", town=4)
+        vacancies = api.get_vacancies({"keyword": "java", "town": 4})
 
         # Проверяем результат
         assert len(vacancies) == 1
@@ -254,7 +254,7 @@ class TestCacheIntegration:
 
         # Создаем кэшированное API
         hh_api = HeadHunterAPI()
-        file_cache = FileCache(base_cache_dir=temp_cache_dir)
+        file_cache = FileCache(temp_cache_dir)
         cached_api = CachedAPI(hh_api, file_cache, 'hh')
 
         # Первый запрос (должен обратиться к API)
@@ -354,7 +354,7 @@ class TestFullWorkflowIntegration:
             mock_get.side_effect = Exception("Network error")
             
             api = HeadHunterAPI()
-            vacancies = api.search_vacancies("python")
+            vacancies = api.get_vacancies({"text": "python"})
             
             # Должен вернуть пустой список при ошибке
             assert vacancies == []
@@ -394,7 +394,7 @@ class TestFullWorkflowIntegration:
 
         # Получаем данные через API
         api = HeadHunterAPI()
-        vacancies = api.search_vacancies("test")
+        vacancies = api.get_vacancies({"text": "test"})
 
         # Проверяем, что данные корректно преобразованы
         assert len(vacancies) == 1
