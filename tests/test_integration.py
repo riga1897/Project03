@@ -310,19 +310,26 @@ class TestCacheIntegration:
 
         # Тестируем кэш напрямую с правильными параметрами
         source = "hh"
-        params = {"keyword": "python", "area": "1"}
-        test_data = {"test": "data"}
+        params = {"text": "python", "area": "1"}
+        test_data = {"items": [{"name": "Test Vacancy"}], "found": 1}
         
-        # Сохраняем в кэш с правильными параметрами
+        # Сохраняем в кэш с правильными параметрами (source, params, data)
         file_cache.save_response(source, params, test_data)
         
         # Загружаем из кэша
         cached_response = file_cache.load_response(source, params)
         
-        # Проверяем, что данные кэшируются корректно
+        # Проверяем структуру кэшированного ответа
         assert cached_response is not None
+        assert "data" in cached_response
+        assert "meta" in cached_response
         assert cached_response["data"] == test_data
         assert cached_response["meta"]["params"] == params
+        
+        # Проверяем, что кэш создал правильный файл
+        params_hash = file_cache._generate_params_hash(params)
+        cache_file = file_cache.cache_dir / f"{source}_{params_hash}.json"
+        assert cache_file.exists()
 
 
 class TestFullWorkflowIntegration:
