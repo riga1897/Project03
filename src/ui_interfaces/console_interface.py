@@ -526,26 +526,25 @@ class UserInterface:
             print("=" * 60)
 
             from src.utils.db_manager_demo import DBManagerDemo
+            from src.storage.db_manager import DBManager
 
-            # Используем то же хранилище, что и основное приложение
-            if hasattr(self.storage, 'db_manager'):
-                # Если PostgresSaver, используем его DBManager
-                from src.storage.db_manager import DBManager
-                db_manager = DBManager()
-            else:
-                # Создаем новый DBManager
-                from src.storage.db_manager import DBManager
-                db_manager = DBManager()
+            # Создаем DBManager с той же конфигурацией
+            db_manager = DBManager()
 
             demo = DBManagerDemo(db_manager)
             demo.run_full_demo()
 
         except ImportError as e:
+            logger.error(f"Ошибка импорта модулей DBManager: {e}")
             print(f"Ошибка импорта модулей DBManager: {e}")
             print("Убедитесь, что все модули установлены корректно")
         except Exception as e:
             logger.error(f"Ошибка при демонстрации DBManager: {e}")
             print(f"Произошла ошибка при демонстрации DBManager: {e}")
+            print("\nВозможные причины:")
+            print("• Нет подключения к базе данных")
+            print("• Нет данных в базе данных")
+            print("• Ошибка в SQL-запросах")
 
         input("\nНажмите Enter для возврата в главное меню...")
 

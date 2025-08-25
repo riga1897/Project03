@@ -213,45 +213,20 @@ class DBManagerDemo:
                 print("Вакансии с зарплатой выше средней не найдены.")
                 return
 
-            # Сортируем по убыванию зарплаты, потом по названию
-            def get_salary_value(vacancy):
-                """Извлекает числовое значение зарплаты для сортировки"""
-                # Проверяем, что vacancy - это словарь
-                if not isinstance(vacancy, dict):
-                    return 0
-
-                salary_info = vacancy.get('salary_info', 'Не указана')
-                if salary_info == 'Не указана' or not salary_info:
-                    return 0
-
-                import re
-                numbers = re.findall(r'\d+', str(salary_info))
-                if numbers:
-                    return max(int(num) for num in numbers)
-                return 0
-
-            # Фильтруем только валидные словари
-            valid_vacancies = [v for v in high_salary_vacancies if isinstance(v, dict)]
-
-            if not valid_vacancies:
-                print("Нет валидных данных о вакансиях с высокой зарплатой.")
-                return
-
-            sorted_vacancies = sorted(valid_vacancies,
-                                    key=lambda x: (-get_salary_value(x), x.get('title', '')))
-
+            # Все элементы уже являются словарями (результат RealDictCursor)
             print(f"{'№':<3} {'Название':<35} {'Компания':<25} {'Зарплата':<20}")
             print("-" * 90)
 
-            # Показываем все вакансии с высокой зарплатой
-            for i, vacancy in enumerate(sorted_vacancies, 1):
+            # Показываем вакансии с высокой зарплатой
+            for i, vacancy in enumerate(high_salary_vacancies, 1):
+                # Безопасно извлекаем данные из словаря
                 title = str(vacancy.get('title', 'Не указано'))[:34]
                 company = str(vacancy.get('company_name', 'Не указана'))[:24]
                 salary = str(vacancy.get('salary_info', 'Не указана'))[:19]
 
                 print(f"{i:<3} {title:<35} {company:<25} {salary:<20}")
 
-            print(f"\nВсего вакансий с высокой зарплатой: {len(valid_vacancies)}")
+            print(f"\nВсего вакансий с высокой зарплатой: {len(high_salary_vacancies)}")
 
         except Exception as e:
             logger.error(f"Ошибка при демонстрации вакансий с высокой зарплатой: {e}")
@@ -267,26 +242,32 @@ class DBManagerDemo:
         for keyword in keywords:
             print(f"\nПоиск по ключевому слову '{keyword}':")
 
-            vacancies = self.db_manager.get_vacancies_with_keyword(keyword)
+            try:
+                vacancies = self.db_manager.get_vacancies_with_keyword(keyword)
 
-            if not vacancies:
-                print(f"Вакансии по ключевому слову '{keyword}' не найдены.")
-                continue
+                if not vacancies:
+                    print(f"Вакансии по ключевому слову '{keyword}' не найдены.")
+                    continue
 
-            print(f"Найдено {len(vacancies)} вакансий:")
-            print(f"{'№':<3} {'Название':<35} {'Компания':<25} {'Зарплата':<20}")
-            print("-" * 90)
+                print(f"Найдено {len(vacancies)} вакансий:")
+                print(f"{'№':<3} {'Название':<35} {'Компания':<25} {'Зарплата':<20}")
+                print("-" * 90)
 
-            # Показываем первые 10 вакансий
-            for i, vacancy in enumerate(vacancies[:10], 1):
-                title = str(vacancy.get('title', 'Не указано'))[:34]
-                company = str(vacancy.get('company_name', 'Не указана'))[:24]
-                salary = str(vacancy.get('salary_info', 'Не указана'))[:19]
+                # Показываем первые 10 вакансий
+                for i, vacancy in enumerate(vacancies[:10], 1):
+                    # Безопасно извлекаем данные из словаря
+                    title = str(vacancy.get('title', 'Не указано'))[:34]
+                    company = str(vacancy.get('company_name', 'Не указана'))[:24]
+                    salary = str(vacancy.get('salary_info', 'Не указана'))[:19]
 
-                print(f"{i:<3} {title:<35} {company:<25} {salary:<20}")
+                    print(f"{i:<3} {title:<35} {company:<25} {salary:<20}")
 
-            if len(vacancies) > 10:
-                print(f"... и еще {len(vacancies) - 10} вакансий")
+                if len(vacancies) > 10:
+                    print(f"... и еще {len(vacancies) - 10} вакансий")
+
+            except Exception as e:
+                logger.error(f"Ошибка при поиске по ключевому слову '{keyword}': {e}")
+                print(f"Ошибка при поиске по ключевому слову '{keyword}': {e}")
 
     def _demo_database_stats(self) -> None:
         """Демонстрирует получение статистики БД"""
