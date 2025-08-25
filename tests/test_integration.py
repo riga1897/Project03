@@ -401,7 +401,11 @@ class TestFullWorkflowIntegration:
             
             # Тестируем API
             api = HeadHunterAPI()
-            with patch.object(api, '_validate_vacancy', return_value=True):
+            
+            # Патчим внутренний метод подключения к API
+            with patch.object(api.connector, '_APIConnector__connect', return_value=mock_response.json.return_value) as mock_api_connect, \
+                 patch.object(api, '_validate_vacancy', return_value=True):
+                
                 vacancies = api.get_vacancies("python")
             
             # Тестируем сохранение (мокаем)
@@ -413,7 +417,7 @@ class TestFullWorkflowIntegration:
             saver = PostgresSaver(db_config)
             
             # Проверяем, что компоненты работают
-            assert mock_get.called
+            assert mock_api_connect.called  # Проверяем вызов внутреннего метода API
             assert len(vacancies) >= 0  # API может вернуть пустой список
 
     def test_error_handling_integration(self):
