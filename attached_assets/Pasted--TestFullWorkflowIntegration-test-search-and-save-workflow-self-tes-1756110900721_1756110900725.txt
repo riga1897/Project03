@@ -1,0 +1,99 @@
+_____________ TestFullWorkflowIntegration.test_search_and_save_workflow _____________
+
+self = <tests.test_integration.TestFullWorkflowIntegration object at 0x7fe420145890>
+mock_connect = <MagicMock name='connect' id='140617768106960'>
+mock_get = <MagicMock name='get' id='140617768107408'>
+mock_input = <MagicMock name='input' id='140617768102480'>
+
+    @patch('builtins.input')
+    @patch('requests.get')
+    @patch('src.storage.postgres_saver.psycopg2.connect')
+    def test_search_and_save_workflow(self, mock_connect, mock_get, mock_input):
+        """Тест полного цикла: поиск -> сохранение -> отображение"""
+        # Настраиваем мок ввода пользователя
+        mock_input.side_effect = [
+            '1',  # Выбор HH
+            'python',  # Поисковый запрос
+            '1',  # Регион
+            'y',  # Сохранить результаты
+            '0'   # Выход
+        ]
+    
+        # Настраиваем мок API ответ
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "items": [
+                {
+                    "id": "12345",
+                    "name": "Python Developer",
+                    "url": "https://api.hh.ru/vacancies/12345",
+                    "salary": None,
+                    "snippet": {
+                        "requirement": "Python",
+                        "responsibility": "Разработка"
+                    },
+                    "employer": {"name": "Test Company"},
+                    "area": {"name": "Москва"},
+                    "experience": {"name": "От 1 года"},
+                    "employment": {"name": "Полная занятость"},
+                    "schedule": {"name": "Полный день"},
+                    "published_at": "2024-01-15T10:00:00+0300"
+                }
+            ],
+            "found": 1
+        }
+        mock_get.return_value = mock_response
+    
+        # Настраиваем мок БД
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        mock_connect.return_value = mock_connection
+        mock_connection.cursor.return_value = mock_cursor
+        mock_connection.encoding = 'UTF8'
+        mock_cursor.fetchone.side_effect = [
+            [True],  # DB exists
+            None,    # Column checks
+            None,
+            []       # Company mapping
+        ]
+        mock_cursor.fetchall.return_value = []
+    
+        # Импортируем сначала
+        from src.api_modules.hh_api import HeadHunterAPI
+        from src.storage.postgres_saver import PostgresSaver
+    
+        # Патчим методы создания БД и таблиц
+        with patch.object(PostgresSaver, '_ensure_database_exists'), \
+             patch.object(PostgresSaver, '_ensure_tables_exist'), \
+             patch.object(PostgresSaver, '_ensure_companies_table_exists'), \
+             patch('builtins.print') as mock_print:
+    
+            # Тестируем API
+            api = HeadHunterAPI()
+    
+            # Патчим внутренний метод подключения к API
+            with patch.object(api.connector, '_APIConnector__connect', return_value=mock_response.json.return_value) as mock_api_connect, \
+                 patch.object(api, '_validate_vacancy', return_value=True):
+    
+                vacancies = api.get_vacancies("python")
+    
+            # Тестируем сохранение (мокаем)
+            db_config = {
+                'host': 'localhost', 'port': '5432',
+                'database': 'test_db', 'username': 'test_user',
+                'password': 'test_pass'
+            }
+            saver = PostgresSaver(db_config)
+    
+            # Проверяем, что компоненты работают
+>           assert mock_api_connect.called  # Проверяем вызов внутреннего метода API
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: assert False
+E            +  where False = <MagicMock name='_APIConnector__connect' id='140617768014480'>.called
+
+tests/test_integration.py:420: AssertionError
+------------------------------- Captured stderr call --------------------------------
+Fetching pages: 100%|██████████| 1/1 [00:00<00:00, 3187.16page/s, vacancies=1]
+============================== short test summary info ==============================
+FAILED tests/test_integration.py::TestFullWorkflowIntegration::test_search_and_save_workflow - AssertionError: assert False
