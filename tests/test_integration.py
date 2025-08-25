@@ -12,7 +12,7 @@ from src.api_modules.sj_api import SuperJobAPI
 from src.storage.postgres_saver import PostgresSaver
 from src.vacancies.models import Vacancy
 from src.utils.cache import FileCache
-from src.ui_interfaces.console_interface import ConsoleInterface
+from src.ui_interfaces.console_interface import UserInterface
 
 # Заглушка для CachedAPI
 class CachedAPI:
@@ -254,8 +254,8 @@ class TestCacheIntegration:
 
         # Создаем кэшированное API
         hh_api = HeadHunterAPI()
-        cache_manager = CacheManager(base_cache_dir=temp_cache_dir)
-        cached_api = CachedAPI(hh_api, cache_manager, 'hh')
+        file_cache = FileCache(base_cache_dir=temp_cache_dir)
+        cached_api = CachedAPI(hh_api, file_cache, 'hh')
 
         # Первый запрос (должен обратиться к API)
         params = {'text': 'python', 'area': '1'}
@@ -332,7 +332,7 @@ class TestFullWorkflowIntegration:
              patch('builtins.print') as mock_print:
 
             # Создаем интерфейс и запускаем
-            interface = ConsoleInterface()
+            interface = UserInterface()
             
             # Этот тест проверяет, что система не падает при выполнении операций
             # Детальная проверка логики выполняется в unit-тестах
