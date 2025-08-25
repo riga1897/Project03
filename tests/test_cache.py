@@ -7,7 +7,7 @@ import pytest
 import tempfile
 import os
 from unittest.mock import patch, Mock
-from src.utils.cache import CacheManager
+from src.utils.cache import APICache as CacheManager
 
 
 class TestCacheManager:

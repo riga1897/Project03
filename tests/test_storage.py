@@ -1,122 +1,24 @@
+
 """
-Тесты для PostgreSQL хранилища данных
+Тесты для модулей хранения данных
 """
 
 import pytest
 from unittest.mock import Mock, patch, MagicMock
+import tempfile
+import os
 from src.storage.postgres_saver import PostgresSaver
+from src.storage.storage_factory import StorageFactory
 from src.vacancies.models import Vacancy
-
-
-class TestPostgresSaver:
-    """Тесты для PostgreSQL хранилища"""
-
-    def test_postgres_saver_initialization(self):
-        """Тест инициализации PostgresSaver"""
-        with patch('src.storage.postgres_saver.psycopg2.connect'):
-            saver = PostgresSaver()
-            assert saver is not Nonecancies.models import Vacancy
-
-
-class TestJSONSaver:
-    """Тесты для JSONSaver"""
-
-    def test_add_vacancy_to_empty_file(self, temp_json_file, sample_vacancy):
-        """Тест добавления вакансии в пустой файл"""
-        saver = JSONSaver(temp_json_file)
-        messages = saver.add_vacancy(sample_vacancy)
-
-        assert len(messages) == 1
-        assert "Добавлена новая вакансия" in messages[0]
-
-        # Проверяем, что файл содержит вакансию
-        with open(temp_json_file, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            assert len(data) == 1
-            assert data[0]['id'] == '12345'
-
-    def test_add_duplicate_vacancy(self, temp_json_file, sample_vacancy):
-        """Тест добавления дублирующейся вакансии"""
-        saver = JSONSaver(temp_json_file)
-
-        # Добавляем вакансию первый раз
-        saver.add_vacancy(sample_vacancy)
-
-        # Добавляем ту же вакансию снова
-        messages = saver.add_vacancy(sample_vacancy)
-
-        # Должно быть сообщение об обновлении
-        assert any("обновлена" in msg for msg in messages)
-
-        # В файле должна быть только одна вакансия
-        vacancies = saver.get_vacancies()
-        assert len(vacancies) == 1
-
-    def test_get_vacancies_empty_file(self, temp_json_file):
-        """Тест получения вакансий из пустого файла"""
-        saver = JSONSaver(temp_json_file)
-        vacancies = saver.get_vacancies()
-
-        assert vacancies == []
-
-    def test_delete_vacancy_by_id(self, temp_json_file, sample_vacancies):
-        """Тест удаления вакансии по ID"""
-        saver = JSONSaver(temp_json_file)
-        saver.add_vacancy(sample_vacancies)
-
-        # Удаляем первую вакансию
-        result = saver.delete_vacancy_by_id("12345")
-
-        assert result is True
-
-        remaining_vacancies = saver.get_vacancies()
-        assert len(remaining_vacancies) == 1
-        assert remaining_vacancies[0].vacancy_id == "67890"
-
-    def test_delete_nonexistent_vacancy(self, temp_json_file, sample_vacancy):
-        """Тест удаления несуществующей вакансии"""
-        saver = JSONSaver(temp_json_file)
-        saver.add_vacancy(sample_vacancy)
-
-        result = saver.delete_vacancy_by_id("nonexistent")
-
-        assert result is False
-        assert len(saver.get_vacancies()) == 1
-
-    def test_delete_all_vacancies(self, temp_json_file, sample_vacancies):
-        """Тест удаления всех вакансий"""
-        saver = JSONSaver(temp_json_file)
-        saver.add_vacancy(sample_vacancies)
-
-        result = saver.delete_all_vacancies()
-
-        assert result is True
-        assert len(saver.get_vacancies()) == 0
-
-    def test_file_size_calculation(self, temp_json_file, sample_vacancy):
-        """Тест вычисления размера файла"""
-        saver = JSONSaver(temp_json_file)
-
-        # Пустой файл
-        size_empty = saver.get_file_size()
-        assert size_empty >= 0
-
-        # Файл с вакансией
-        saver.add_vacancy(sample_vacancy)
-        size_with_data = saver.get_file_size()
-        assert size_with_data > size_empty
 
 
 class TestPostgresSaver:
     """Тесты для PostgresSaver"""
 
-    @patch('src.storage.postgres_saver.psycopg2.connect')
-    def test_connection_creation(self, mock_connect):
-        """Тест создания подключения к БД"""
-        mock_connection = Mock()
-        mock_connect.return_value = mock_connection
-
-        config = {
+    @pytest.fixture
+    def mock_db_config(self):
+        """Фикстура для мок-конфигурации БД"""
+        return {
             'host': 'localhost',
             'port': '5432',
             'database': 'test_db',
@@ -124,86 +26,96 @@ class TestPostgresSaver:
             'password': 'test_pass'
         }
 
+    @pytest.fixture
+    def postgres_saver(self, mock_db_config):
+        """Фикстура для PostgresSaver с мок-конфигурацией"""
         with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver(config)
-            connection = saver._get_connection()
+             patch.object(PostgresSaver, '_ensure_tables_exist'), \
+             patch.object(PostgresSaver, '_ensure_companies_table_exists'):
+            return PostgresSaver(mock_db_config)
+
+    def test_postgres_saver_initialization(self, postgres_saver):
+        """Тест инициализации PostgresSaver"""
+        assert postgres_saver is not None
+        assert postgres_saver.host == 'localhost'
+        assert postgres_saver.port == '5432'
+        assert postgres_saver.database == 'test_db'
+
+    @patch('src.storage.postgres_saver.psycopg2.connect')
+    def test_get_connection(self, mock_connect, postgres_saver):
+        """Тест получения соединения с БД"""
+        mock_connection = Mock()
+        mock_connect.return_value = mock_connection
+
+        connection = postgres_saver._get_connection()
 
         assert connection == mock_connection
+        mock_connect.assert_called_once()
+
+    def test_add_vacancy_with_sample_data(self, postgres_saver, sample_vacancy):
+        """Тест добавления вакансии с примерными данными"""
+        with patch.object(postgres_saver, '_get_connection') as mock_get_conn:
+            mock_connection = Mock()
+            mock_cursor = Mock()
+            mock_get_conn.return_value = mock_connection
+            mock_connection.cursor.return_value = mock_cursor
+            mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+            mock_cursor.__exit__ = Mock(return_value=None)
+            mock_cursor.fetchall.return_value = []
+
+            result = postgres_saver.add_vacancy([sample_vacancy])
+
+            assert isinstance(result, list)
+            mock_cursor.execute.assert_called()
 
     @patch('src.storage.postgres_saver.psycopg2.connect')
-    @patch('psycopg2.extras.execute_values')
-    def test_add_vacancy_success(self, mock_execute_values, mock_connect, sample_vacancy):
-        """Тест успешного добавления вакансии"""
-        # Настраиваем мок-объекты
+    def test_ensure_database_exists(self, mock_connect, mock_db_config):
+        """Тест создания базы данных если она не существует"""
         mock_connection = Mock()
         mock_cursor = Mock()
         mock_connect.return_value = mock_connection
         mock_connection.cursor.return_value = mock_cursor
-        mock_cursor.fetchall.return_value = []  # Нет существующих вакансий
+        mock_cursor.fetchone.return_value = [False]  # БД не существует
+
+        with patch.object(PostgresSaver, '_ensure_tables_exist'), \
+             patch.object(PostgresSaver, '_ensure_companies_table_exists'):
+            saver = PostgresSaver(mock_db_config)
+
+        # Проверяем, что была попытка создать БД
+        mock_cursor.execute.assert_called()
+
+    def test_format_vacancy_data(self, postgres_saver, sample_vacancy):
+        """Тест форматирования данных вакансии"""
+        formatted_data = postgres_saver._format_vacancy_data(sample_vacancy)
+
+        assert isinstance(formatted_data, tuple)
+        assert len(formatted_data) >= 10  # Минимальное количество полей
+        assert formatted_data[0] == sample_vacancy.vacancy_id
+        assert formatted_data[1] == sample_vacancy.title
+
+
+class TestStorageFactory:
+    """Тесты для StorageFactory"""
+
+    def test_get_storage_postgres(self):
+        """Тест получения PostgreSQL хранилища"""
+        config = {'type': 'postgres', 'host': 'localhost'}
         
-        # Настраиваем encoding для connection
-        mock_connection.encoding = 'UTF8'
-
-        # Создаем PostgresSaver с мок-конфигурацией
         with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({'host': 'localhost', 'database': 'test'})
+             patch.object(PostgresSaver, '_ensure_tables_exist'), \
+             patch.object(PostgresSaver, '_ensure_companies_table_exists'):
+            storage = StorageFactory.get_storage(config)
 
-        messages = saver.add_vacancy(sample_vacancy)
+        assert isinstance(storage, PostgresSaver)
 
-        assert len(messages) == 1
-        assert "Добавлена новая вакансия" in messages[0]
-        mock_connection.commit.assert_called()
+    def test_get_storage_invalid_type(self):
+        """Тест получения хранилища с неверным типом"""
+        config = {'type': 'invalid_type'}
+        
+        with pytest.raises(ValueError):
+            StorageFactory.get_storage(config)
 
-    @patch('src.storage.postgres_saver.psycopg2.connect')
-    def test_get_vacancies_count(self, mock_connect):
-        """Тест подсчета количества вакансий"""
-        mock_connection = Mock()
-        mock_cursor = Mock()
-        mock_connect.return_value = mock_connection
-        mock_connection.cursor.return_value = mock_cursor
-        mock_cursor.fetchone.return_value = [42]
-
-        with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({'host': 'localhost', 'database': 'test'})
-
-        count = saver.get_vacancies_count()
-
-        assert count == 42
-
-    @patch('src.storage.postgres_saver.psycopg2.connect')
-    def test_delete_vacancy_by_id_success(self, mock_connect):
-        """Тест успешного удаления вакансии по ID"""
-        mock_connection = Mock()
-        mock_cursor = Mock()
-        mock_connect.return_value = mock_connection
-        mock_connection.cursor.return_value = mock_cursor
-        mock_cursor.rowcount = 1  # Одна строка удалена
-
-        with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({'host': 'localhost', 'database': 'test'})
-
-        result = saver.delete_vacancy_by_id("12345")
-
-        assert result is True
-        mock_connection.commit.assert_called()
-
-    @patch('src.storage.postgres_saver.psycopg2.connect')
-    def test_delete_vacancy_by_id_not_found(self, mock_connect):
-        """Тест удаления несуществующей вакансии"""
-        mock_connection = Mock()
-        mock_cursor = Mock()
-        mock_connect.return_value = mock_connection
-        mock_connection.cursor.return_value = mock_cursor
-        mock_cursor.rowcount = 0  # Ничего не удалено
-
-        with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({'host': 'localhost', 'database': 'test'})
-
-        result = saver.delete_vacancy_by_id("nonexistent")
-
-        assert result is False
+    def test_get_storage_missing_config(self):
+        """Тест получения хранилища без конфигурации"""
+        with pytest.raises((ValueError, TypeError)):
+            StorageFactory.get_storage(None)

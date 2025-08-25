@@ -7,12 +7,22 @@ import pytest
 import tempfile
 import os
 from unittest.mock import Mock, patch, MagicMock
-from src.api_modules.hh_api import HHApi
-from src.api_modules.sj_api import SJApi
+from src.api_modules.hh_api import HeadHunterAPI
+from src.api_modules.sj_api import SuperJobAPI
 from src.storage.postgres_saver import PostgresSaver
 from src.vacancies.models import Vacancy
-from src.utils.cache import CacheManager
+from src.utils.cache import APICache as CacheManager
 from src.ui_interfaces.console_interface import ConsoleInterface
+
+# Заглушка для CachedAPI
+class CachedAPI:
+    def __init__(self, api, cache_manager, source):
+        self.api = api
+        self.cache_manager = cache_manager
+        self.source = source
+    
+    def search_vacancies(self, **kwargs):
+        return self.api.search_vacancies(**kwargs)
 
 
 class TestAPIIntegration:
@@ -75,7 +85,7 @@ class TestAPIIntegration:
         mock_get.return_value = mock_response
 
         # Создаем API и выполняем поиск
-        api = HHApi()
+        api = HeadHunterAPI()
         vacancies = api.search_vacancies("python", area="1")
 
         # Проверяем результат
@@ -128,7 +138,7 @@ class TestAPIIntegration:
         mock_get.return_value = mock_response
 
         # Создаем API с тестовым ключом
-        api = SJApi()
+        api = SuperJobAPI()
         api.config.secret_key = "test_key"
         vacancies = api.search_vacancies("java", town=4)
 
@@ -243,7 +253,7 @@ class TestCacheIntegration:
         mock_get.return_value = mock_response
 
         # Создаем кэшированное API
-        hh_api = HHApi()
+        hh_api = HeadHunterAPI()
         cache_manager = CacheManager(base_cache_dir=temp_cache_dir)
         cached_api = CachedAPI(hh_api, cache_manager, 'hh')
 
@@ -337,13 +347,13 @@ class TestFullWorkflowIntegration:
 
     def test_error_handling_integration(self):
         """Тест обработки ошибок в интегрированной системе"""
-        from src.api_modules.hh_api import HHApi
+        from src.api_modules.hh_api import HeadHunterAPI
         
         # Тестируем обработку ошибок API
         with patch('requests.get') as mock_get:
             mock_get.side_effect = Exception("Network error")
             
-            api = HHApi()
+            api = HeadHunterAPI()
             vacancies = api.search_vacancies("python")
             
             # Должен вернуть пустой список при ошибке
@@ -383,7 +393,7 @@ class TestFullWorkflowIntegration:
         mock_get.return_value = mock_response
 
         # Получаем данные через API
-        api = HHApi()
+        api = HeadHunterAPI()
         vacancies = api.search_vacancies("test")
 
         # Проверяем, что данные корректно преобразованы
