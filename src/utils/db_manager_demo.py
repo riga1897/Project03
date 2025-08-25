@@ -221,10 +221,10 @@ class DBManagerDemo:
 
             # Показываем первые 15 вакансий с высокой зарплатой
             for i, vacancy in enumerate(high_salary_vacancies[:15], 1):
-                # Обрабатываем результаты как словари (RealDictCursor возвращает словари)
-                title = str(vacancy.get('title', 'Не указано'))[:34]
-                company = str(vacancy.get('company_name', 'Не указана'))[:24]
-                salary = str(vacancy.get('salary_info', 'Не указана'))[:19]
+                # RealDictCursor всегда возвращает словари
+                title = str(vacancy['title'])[:34]
+                company = str(vacancy['company_name'])[:24]  
+                salary = str(vacancy['salary_info'])[:19]
 
                 print(f"{i:<3} {title:<35} {company:<25} {salary:<20}")
 
@@ -236,6 +236,9 @@ class DBManagerDemo:
         except Exception as e:
             logger.error(f"Ошибка при демонстрации вакансий с высокой зарплатой: {e}")
             print(f"Ошибка при получении вакансий с высокой зарплатой: {e}")
+            print(f"Тип данных результата: {type(high_salary_vacancies) if 'high_salary_vacancies' in locals() else 'не определен'}")
+            if 'high_salary_vacancies' in locals() and len(high_salary_vacancies) > 0:
+                print(f"Пример результата: {high_salary_vacancies[0]}")
             print("\nВозможные причины:")
             print("• Нет подключения к базе данных")
             print("• Ошибка в SQL-запросах")
@@ -264,10 +267,10 @@ class DBManagerDemo:
 
                 # Показываем первые 5 вакансий для экономии места
                 for i, vacancy in enumerate(vacancies[:5], 1):
-                    # Обрабатываем результаты как словари (RealDictCursor возвращает словари)
-                    title = str(vacancy.get('title', 'Не указано'))[:34]
-                    company = str(vacancy.get('company_name', 'Не указана'))[:24]
-                    salary = str(vacancy.get('salary_info', 'Не указана'))[:14]
+                    # RealDictCursor всегда возвращает словари
+                    title = str(vacancy['title'])[:34]
+                    company = str(vacancy['company_name'])[:24]
+                    salary = str(vacancy['salary_info'])[:14]
 
                     print(f"{i:<3} {title:<35} {company:<25} {salary:<15}")
 
