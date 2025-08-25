@@ -53,23 +53,19 @@ class TestPostgresSaver:
 
     def test_add_vacancy_with_sample_data(self, postgres_saver, sample_vacancy):
         """Тест добавления вакансии с примерными данными"""
-        with patch.object(postgres_saver, '_get_connection') as mock_get_conn:
+        with patch.object(postgres_saver, '_get_connection') as mock_get_conn, \
+             patch('psycopg2.extras.execute_values') as mock_execute_values:
             mock_connection = Mock()
             mock_cursor = Mock()
             mock_get_conn.return_value = mock_connection
             mock_connection.cursor.return_value = mock_cursor
-            mock_cursor.__enter__ = Mock(return_value=mock_cursor)
-            mock_cursor.__exit__ = Mock(return_value=None)
-            mock_cursor.fetchall.return_value = []
-            # Мокаем connection для psycopg2
-            mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-            mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
             mock_connection.encoding = 'UTF8'
+            mock_cursor.fetchall.return_value = []
 
             result = postgres_saver.add_vacancy([sample_vacancy])
 
             assert isinstance(result, list)
-            mock_cursor.execute.assert_called()
+            assert mock_execute_values.called
 
     @patch('src.storage.postgres_saver.psycopg2.connect')
     def test_ensure_database_exists(self, mock_connect, mock_db_config):
@@ -90,12 +86,13 @@ class TestPostgresSaver:
     def test_format_vacancy_data(self, postgres_saver, sample_vacancy):
         """Тест форматирования данных вакансии"""
         # Метод _format_vacancy_data был удален, тестируем через add_vacancy
-        with patch.object(postgres_saver, '_get_connection') as mock_get_conn:
+        with patch.object(postgres_saver, '_get_connection') as mock_get_conn, \
+             patch('psycopg2.extras.execute_values') as mock_execute_values:
             mock_connection = Mock()
             mock_cursor = Mock()
             mock_get_conn.return_value = mock_connection
-            mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-            mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_connection.encoding = 'UTF8'
             mock_cursor.fetchall.return_value = []
 
             # Проверяем, что метод add_vacancy работает
@@ -108,12 +105,12 @@ class TestStorageFactory:
 
     def test_get_storage_postgres(self):
         """Тест получения PostgreSQL хранилища"""
-        config = {'type': 'postgres', 'host': 'localhost'}
+        storage_type = 'postgres'
 
         with patch.object(PostgresSaver, '_ensure_database_exists'), \
              patch.object(PostgresSaver, '_ensure_tables_exist'), \
              patch.object(PostgresSaver, '_ensure_companies_table_exists'):
-            storage = StorageFactory.create_storage(config)
+            storage = StorageFactory.create_storage(storage_type)
 
         assert isinstance(storage, PostgresSaver)
 
