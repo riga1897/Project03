@@ -1,0 +1,111 @@
+[ 48%]
+tests/test_integration.py::TestStorageIntegration::test_postgres_saver_integration PASSED [ 49%]
+tests/test_integration.py::TestCacheIntegration::test_cached_api_integration FAILED [ 50%]
+tests/test_integration.py::TestFullWorkflowIntegration::test_search_and_save_workflow PASSED [ 51%]
+tests/test_integration.py::TestFullWorkflowIntegration::test_error_handling_integration PASSED [ 51%]
+tests/test_integration.py::TestFullWorkflowIntegration::test_data_consistency_integration PASSED [ 52%]
+tests/test_storage.py::TestPostgresSaver::test_postgres_saver_initialization PASSED [ 53%]
+tests/test_storage.py::TestPostgresSaver::test_get_connection PASSED          [ 54%]
+tests/test_storage.py::TestPostgresSaver::test_add_vacancy_with_sample_data PASSED [ 54%]
+tests/test_storage.py::TestPostgresSaver::test_ensure_database_exists PASSED  [ 55%]
+tests/test_storage.py::TestPostgresSaver::test_format_vacancy_data PASSED     [ 56%]
+tests/test_storage.py::TestStorageFactory::test_get_storage_postgres PASSED   [ 57%]
+tests/test_storage.py::TestStorageFactory::test_get_storage_invalid_type PASSED [ 58%]
+tests/test_storage.py::TestStorageFactory::test_get_storage_missing_config PASSED [ 58%]
+tests/test_ui_helpers.py::TestUIHelpers::test_get_positive_integer_valid PASSED [ 59%]
+tests/test_ui_helpers.py::TestUIHelpers::test_get_positive_integer_invalid_then_valid PASSED [ 60%]
+tests/test_ui_helpers.py::TestUIHelpers::test_get_positive_integer_non_numeric PASSED [ 61%]
+tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_in_title PASSED [ 61%]
+tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_in_description PASSED [ 62%]
+tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_case_insensitive PASSED [ 63%]
+tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_no_matches PASSED [ 64%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_both_values PASSED [ 64%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_only_min PASSED [ 65%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_only_max PASSED [ 66%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_single_value PASSED [ 67%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_invalid_format PASSED [ 67%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_empty_string PASSED [ 68%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_with_spaces PASSED [ 69%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_brief PASSED [ 70%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_brief_no_number PASSED [ 70%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_brief_no_salary PASSED [ 71%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_brief_partial_salary PASSED [ 72%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_info_with_dict PASSED [ 73%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_info_with_object PASSED [ 74%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_display_vacancy_info PASSED [ 74%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_salary_dict PASSED [ 75%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_company_info PASSED [ 76%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_company_name PASSED [ 77%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_salary_info PASSED [ 77%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_description PASSED [ 78%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_responsibilities PASSED [ 79%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_requirements PASSED [ 80%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_conditions PASSED [ 80%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_build_vacancy_lines PASSED [ 81%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_build_vacancy_lines_with_api_url PASSED [ 82%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_salary_with_object PASSED [ 83%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_salary_with_dict PASSED [ 83%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_salary_none PASSED [ 84%]
+tests/test_vacancy_models.py::TestVacancy::test_vacancy_creation_with_dict_salary PASSED [ 85%]
+tests/test_vacancy_models.py::TestVacancy::test_vacancy_creation_without_salary PASSED [ 86%]
+tests/test_vacancy_models.py::TestVacancy::test_vacancy_string_representation PASSED [ 87%]
+tests/test_vacancy_models.py::TestVacancy::test_vacancy_comparison PASSED     [ 87%]
+tests/test_vacancy_models.py::TestVacancy::test_vacancy_equality PASSED       [ 88%]
+tests/test_vacancy_models.py::TestSalary::test_salary_creation_from_dict PASSED [ 89%]
+tests/test_vacancy_models.py::TestSalary::test_salary_string_representation PASSED [ 90%]
+tests/test_vacancy_models.py::TestSalary::test_salary_only_from PASSED        [ 90%]
+tests/test_vacancy_models.py::TestSalary::test_salary_only_to PASSED          [ 91%]
+tests/test_vacancy_models.py::TestSalary::test_salary_comparison PASSED       [ 92%]
+tests/test_vacancy_models.py::TestSalary::test_source_detection_from_dict PASSED [ 93%]
+tests/test_vacancy_models.py::TestSalary::test_source_fallback_detection PASSED [ 93%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_search_vacancies_advanced PASSED [ 94%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_get_vacancies_with_salary PASSED [ 95%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_sort_vacancies_by_salary PASSED [ 96%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_filter_vacancies_by_multiple_keywords PASSED [ 96%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_search_vacancies_advanced_and_operator PASSED [ 97%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_search_vacancies_advanced_or_operator PASSED [ 98%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_search_vacancies_advanced_simple_query PASSED [ 99%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_vacancy_operations_basic_functionality PASSED [100%]
+
+===================================== FAILURES ======================================
+_________________ TestCacheIntegration.test_cached_api_integration __________________
+
+self = <tests.test_integration.TestCacheIntegration object at 0x7f5053b3cd50>
+mock_get = <MagicMock name='get' id='139982974021200'>
+temp_cache_dir = '/tmp/tmp42btg8v1'
+
+    @patch('requests.get')
+    def test_cached_api_integration(self, mock_get, temp_cache_dir):
+        """Интеграционный тест кэширования API"""
+        # Мок ответ от API
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "items": [],
+            "found": 0
+        }
+        mock_get.return_value = mock_response
+    
+        # Создаем файловый кэш
+        file_cache = FileCache(temp_cache_dir)
+    
+        # Тестируем кэш напрямую
+        cache_key = "test_key"
+        test_data = {"test": "data"}
+    
+        # Сохраняем в кэш с правильным форматом ключа
+        full_cache_key = file_cache._generate_params_hash({"key": cache_key})
+        file_cache.save_response(full_cache_key, test_data, 'hh')
+    
+        # Загружаем из кэша
+        cached_data = file_cache.load_response(full_cache_key, 'hh')
+    
+        # Проверяем, что данные кэшируются корректно
+>       assert cached_data == test_data
+E       AssertionError: assert None == {'test': 'data'}
+
+tests/test_integration.py:323: AssertionError
+============================== short test summary info ==============================
+FAILED tests/test_integration.py::TestCacheIntegration::test_cached_api_integration - AssertionError: assert None == {'test': 'data'}
+===================== 1 failed, 128 passed, 2 skipped in 0.74s ======================
+~/workspace$ 
