@@ -172,8 +172,16 @@ class Vacancy(AbstractVacancy):
     def cast_to_object_list(cls, data):
         """Преобразование списка словарей в список объектов Vacancy"""
         vacancies = []
-        for item in data:
+        for i, item in enumerate(data):
             try:
+                # Отладка для отслеживания входящих данных
+                if isinstance(item, dict):
+                    item_id = item.get('id') or item.get('vacancy_id')
+                    if str(item_id) in ["124403607", "124403580", "124403642"]:
+                        print(f"DEBUG cast_to_object_list[{i}]: Обрабатываю элемент с ID {item_id}")
+                        print(f"DEBUG cast_to_object_list[{i}]: item.get('employer') = {item.get('employer')}")
+                        print(f"DEBUG cast_to_object_list[{i}]: Тип данных item = {type(item)}")
+                
                 vacancy = cls.from_dict(item)
                 vacancies.append(vacancy)
             except ValueError as e:
@@ -217,6 +225,12 @@ class Vacancy(AbstractVacancy):
             # Обработка работодателя - сохраняем исходную структуру
             employer = data.get("employer")
             company_id = ""
+            
+            # Дополнительная отладка входящих данных
+            if str(vacancy_id) in ["124403607", "124403580", "124403642"]:
+                print(f"DEBUG Vacancy.from_dict: Сырые входящие данные employer для ID {vacancy_id}:")
+                print(f"DEBUG Vacancy.from_dict: data.get('employer') = {data.get('employer')}")
+                print(f"DEBUG Vacancy.from_dict: Все ключи в data: {list(data.keys())}")
             
             if employer:
                 if isinstance(employer, dict):
