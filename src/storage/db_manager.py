@@ -67,38 +67,43 @@ class DBManager:
         """
         # SQL для создания таблиц с явным указанием кодировки
         create_companies_table = """
+        -- Создание таблицы компаний для хранения информации о работодателях
+        -- Используется IF NOT EXISTS для безопасного создания таблицы
         CREATE TABLE IF NOT EXISTS companies (
-            id SERIAL PRIMARY KEY,
-            company_id VARCHAR(255) UNIQUE NOT NULL,
-            name VARCHAR(255) NOT NULL,
-            description TEXT,
-            hh_id VARCHAR(255),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            id SERIAL PRIMARY KEY,                          -- Автоинкрементный первичный ключ
+            company_id VARCHAR(255) UNIQUE NOT NULL,        -- Уникальный идентификатор компании из API
+            name VARCHAR(255) NOT NULL,                     -- Название компании
+            description TEXT,                               -- Описание компании
+            hh_id VARCHAR(255),                            -- ID компании в системе HeadHunter
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- Время создания записи
         );
         """
 
         create_vacancies_table = """
+        -- Создание таблицы вакансий для хранения всей информации о вакансиях
+        -- Связана с таблицей companies через внешний ключ company_id
         CREATE TABLE IF NOT EXISTS vacancies (
-            id SERIAL PRIMARY KEY,
-            vacancy_id VARCHAR(255) UNIQUE NOT NULL,
-            title TEXT NOT NULL,
-            url TEXT,
-            salary_from INTEGER,
-            salary_to INTEGER,
-            salary_currency VARCHAR(10),
-            description TEXT,
-            requirements TEXT,
-            responsibilities TEXT,
-            experience VARCHAR(100),
-            employment VARCHAR(100),
-            schedule VARCHAR(100),
-            employer TEXT,
-            area TEXT,
-            source VARCHAR(50),
-            published_at TIMESTAMP,
-            company_id VARCHAR(255),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            id SERIAL PRIMARY KEY,                          -- Автоинкрементный первичный ключ
+            vacancy_id VARCHAR(255) UNIQUE NOT NULL,        -- Уникальный идентификатор вакансии из API
+            title TEXT NOT NULL,                           -- Название вакансии (обязательное поле)
+            url TEXT,                                      -- Ссылка на вакансию
+            salary_from INTEGER,                           -- Минимальная зарплата (может быть NULL)
+            salary_to INTEGER,                             -- Максимальная зарплата (может быть NULL)
+            salary_currency VARCHAR(10),                   -- Валюта зарплаты (RUR, USD, EUR и т.д.)
+            description TEXT,                              -- Полное описание вакансии
+            requirements TEXT,                             -- Требования к кандидату
+            responsibilities TEXT,                         -- Обязанности на позиции
+            experience VARCHAR(100),                       -- Требуемый опыт работы
+            employment VARCHAR(100),                       -- Тип занятости (полная, частичная и т.д.)
+            schedule VARCHAR(100),                         -- График работы (полный день, удаленка и т.д.)
+            employer TEXT,                                 -- Название работодателя (дублирование для совместимости)
+            area TEXT,                                     -- Регион/город размещения вакансии
+            source VARCHAR(50),                            -- Источник данных (hh.ru, superjob.ru)
+            published_at TIMESTAMP,                        -- Дата публикации вакансии
+            company_id VARCHAR(255),                       -- Связь с таблицей компаний (внешний ключ)
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Время создания записи в БД
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Время последнего обновления записи
+            -- Внешний ключ для связи с таблицей компаний
             FOREIGN KEY (company_id) REFERENCES companies(company_id)
         );
         """
@@ -197,15 +202,17 @@ class DBManager:
         try:
             with self._get_connection() as conn:
                 with conn.cursor() as cursor:
-                    # Сначала пробуем основной запрос с JOIN
+                    # Основной SQL-запрос с использованием LEFT JOIN для получения статистики по компаниям
                     query = """
+                    -- Получение списка всех компаний и количества вакансий у каждой компании
+                    -- Использует LEFT JOIN чтобы показать компании даже без вакансий (с count = 0)
                     SELECT
-                        c.name as company_name,
-                        COUNT(v.id) as vacancy_count
-                    FROM companies c
-                    LEFT JOIN vacancies v ON c.company_id = v.company_id
-                    GROUP BY c.name, c.company_id
-                    ORDER BY vacancy_count DESC, company_name
+                        c.name as company_name,                    -- Название компании из справочника
+                        COUNT(v.id) as vacancy_count               -- Подсчет количества вакансий для каждой компании
+                    FROM companies c                               -- Основная таблица компаний
+                    LEFT JOIN vacancies v ON c.company_id = v.company_id  -- Левое соединение с таблицей вакансий
+                    GROUP BY c.name, c.company_id                  -- Группировка по компании для агрегации COUNT()
+                    ORDER BY vacancy_count DESC, company_name      -- Сортировка: сначала по количеству (убывание), затем по имени
                     """
 
                     cursor.execute(query)
@@ -224,11 +231,14 @@ class DBManager:
                     for target_company in TARGET_COMPANIES:
                         company_name = target_company['name']
 
-                        # Ищем вакансии по названию компании в поле employer
+                        # Fallback SQL-запрос для поиска вакансий по названию компании в поле employer
+                        # Используется когда нет связанных данных через внешний ключ company_id
                         fallback_query = """
-                        SELECT COUNT(*) as vacancy_count
-                        FROM vacancies
-                        WHERE LOWER(employer) LIKE LOWER(%s)
+                        -- Подсчет вакансий по частичному совпадению названия компании
+                        -- Использует LIKE для нечеткого поиска и LOWER() для регистронезависимого поиска
+                        SELECT COUNT(*) as vacancy_count              -- Количество найденных вакансий
+                        FROM vacancies                               -- Таблица вакансий
+                        WHERE LOWER(employer) LIKE LOWER(%s)         -- Поиск по полю employer с игнорированием регистра
                         """
 
                         cursor.execute(fallback_query, (f"%{company_name}%",))
@@ -321,36 +331,45 @@ class DBManager:
             List[Dict[str, Any]]: Список словарей с информацией о вакансиях
         """
         query = """
+        -- Получение списка всех вакансий с названием компании, зарплатой и ссылкой
+        -- Использует LEFT JOIN для связи вакансий с компаниями и CASE для форматирования данных
         SELECT
-            v.title,
+            v.title,                                       -- Название вакансии
+            -- CASE для определения названия компании с приоритетом:
+            -- 1. Название из справочника companies (если есть связь по company_id)
+            -- 2. Название из поля employer вакансии (если заполнено)  
+            -- 3. Значение по умолчанию "Неизвестная компания"
             CASE
-                WHEN c.name IS NOT NULL THEN c.name
-                WHEN v.employer IS NOT NULL AND v.employer != '' THEN v.employer
-                ELSE 'Неизвестная компания'
+                WHEN c.name IS NOT NULL THEN c.name                           -- Приоритет: справочник компаний
+                WHEN v.employer IS NOT NULL AND v.employer != '' THEN v.employer  -- Fallback: поле employer
+                ELSE 'Неизвестная компания'                                   -- По умолчанию
             END as company_name,
+            -- CASE для форматирования информации о зарплате:
+            -- Объединяет salary_from, salary_to и currency в читаемый формат
             CASE
                 WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
-                    CONCAT(v.salary_from, ' - ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
+                    CONCAT(v.salary_from, ' - ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))  -- Диапазон зарплаты
                 WHEN v.salary_from IS NOT NULL THEN
-                    CONCAT('от ', v.salary_from, ' ', COALESCE(v.salary_currency, 'RUR'))
+                    CONCAT('от ', v.salary_from, ' ', COALESCE(v.salary_currency, 'RUR'))              -- Только минимум
                 WHEN v.salary_to IS NOT NULL THEN
-                    CONCAT('до ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
-                ELSE 'Не указана'
+                    CONCAT('до ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))                -- Только максимум
+                ELSE 'Не указана'                                                                     -- Зарплата не указана
             END as salary_info,
-            v.url,
-            v.vacancy_id,
-            v.employer,
-            v.area,
-            c.company_id
-        FROM vacancies v
-        LEFT JOIN companies c ON v.company_id = c.company_id
+            v.url,                                         -- Ссылка на вакансию
+            v.vacancy_id,                                  -- ID вакансии
+            v.employer,                                    -- Оригинальное поле employer для совместимости
+            v.area,                                        -- Регион/город
+            c.company_id                                   -- ID компании из справочника
+        FROM vacancies v                                   -- Основная таблица вакансий
+        LEFT JOIN companies c ON v.company_id = c.company_id  -- Левое соединение для получения названия компании
+        -- Сортировка по названию компании, затем по названию вакансии
         ORDER BY
             CASE
-                WHEN c.name IS NOT NULL THEN c.name
-                WHEN v.employer IS NOT NULL AND v.employer != '' THEN v.employer
-                ELSE 'Неизвестная компания'
+                WHEN c.name IS NOT NULL THEN c.name        -- Сортировка по названию из справочника
+                WHEN v.employer IS NOT NULL AND v.employer != '' THEN v.employer  -- или по полю employer
+                ELSE 'Неизвестная компания'               -- или по значению по умолчанию
             END,
-            v.title
+            v.title                                        -- Вторичная сортировка по названию вакансии
         """
 
         try:
@@ -375,18 +394,22 @@ class DBManager:
             Optional[float]: Средняя зарплата или None если данных нет
         """
         query = """
+        -- Расчет средней зарплаты по всем вакансиям с использованием функции AVG()
+        -- Учитывает различные варианты указания зарплаты и нормализует их к единому значению
         SELECT AVG(
+            -- CASE для вычисления единого значения зарплаты из диапазона или отдельных значений
             CASE
                 WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN
-                    (salary_from + salary_to) / 2
-                WHEN salary_from IS NOT NULL THEN salary_from
-                WHEN salary_to IS NOT NULL THEN salary_to
-                ELSE NULL
+                    (salary_from + salary_to) / 2                     -- Среднее арифметическое диапазона
+                WHEN salary_from IS NOT NULL THEN salary_from          -- Используем минимум, если нет максимума
+                WHEN salary_to IS NOT NULL THEN salary_to              -- Используем максимум, если нет минимума
+                ELSE NULL                                             -- Исключаем вакансии без зарплаты
             END
-        ) as avg_salary
-        FROM vacancies
-        WHERE (salary_from IS NOT NULL OR salary_to IS NOT NULL)
-        AND salary_currency IN ('RUR', 'RUB', 'руб.', NULL)
+        ) as avg_salary                                               -- Применяем AVG() к нормализованным значениям
+        FROM vacancies                                                -- Таблица вакансий
+        -- Фильтрация: включаем только вакансии с указанной зарплатой
+        WHERE (salary_from IS NOT NULL OR salary_to IS NOT NULL)      -- Есть хотя бы одно значение зарплаты
+        AND salary_currency IN ('RUR', 'RUB', 'руб.', NULL)          -- Только российские рубли или без валюты
         """
 
         try:
@@ -416,10 +439,15 @@ class DBManager:
             return []
 
         # SQL-запрос для получения вакансий с зарплатой выше средней
+        # Использует WHERE с параметром для фильтрации по средней зарплате
         query = """
+        -- Выборка вакансий с зарплатой выше средней по всем вакансиям
+        -- Использует ту же логику нормализации зарплат, что и в get_avg_salary()
         SELECT
-            v.title,
+            v.title,                                                   -- Название вакансии
+            -- COALESCE для выбора первого не-NULL значения названия компании
             COALESCE(c.name, v.employer, 'Неизвестная компания') as company_name,
+            -- Форматирование зарплаты для отображения (аналогично get_all_vacancies)
             CASE
                 WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
                     CONCAT(v.salary_from, ' - ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
@@ -429,19 +457,22 @@ class DBManager:
                     CONCAT('до ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
                 ELSE 'Не указана'
             END as salary_info,
-            v.url,
+            v.url,                                                     -- Ссылка на вакансию
+            -- Расчет нормализованной зарплаты для сортировки (та же логика что в AVG)
             CASE
                 WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
-                    (v.salary_from + v.salary_to) / 2
-                WHEN v.salary_from IS NOT NULL THEN v.salary_from
-                WHEN v.salary_to IS NOT NULL THEN v.salary_to
-                ELSE NULL
+                    (v.salary_from + v.salary_to) / 2                  -- Среднее арифметическое диапазона
+                WHEN v.salary_from IS NOT NULL THEN v.salary_from       -- Минимальная зарплата
+                WHEN v.salary_to IS NOT NULL THEN v.salary_to           -- Максимальная зарплата
+                ELSE NULL                                              -- NULL для вакансий без зарплаты
             END as calculated_salary,
-            v.vacancy_id,
-            v.employer
-        FROM vacancies v
-        LEFT JOIN companies c ON v.company_id = c.company_id
+            v.vacancy_id,                                              -- ID вакансии
+            v.employer                                                 -- Оригинальное поле работодателя
+        FROM vacancies v                                               -- Основная таблица вакансий
+        LEFT JOIN companies c ON v.company_id = c.company_id          -- Соединение с таблицей компаний
+        -- WHERE с условием фильтрации: зарплата > средней зарплаты (параметр %s)
         WHERE (
+            -- Применяем ту же логику расчета зарплаты для сравнения
             CASE
                 WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
                     (v.salary_from + v.salary_to) / 2
@@ -449,8 +480,9 @@ class DBManager:
                 WHEN v.salary_to IS NOT NULL THEN v.salary_to
                 ELSE NULL
             END
-        ) > %s
-        AND v.salary_currency IN ('RUR', 'RUB', 'руб.', NULL)
+        ) > %s                                                        -- Параметр: средняя зарплата из get_avg_salary()
+        AND v.salary_currency IN ('RUR', 'RUB', 'руб.', NULL)        -- Фильтр по валюте (только рубли)
+        -- Сортировка: по убыванию зарплаты, затем по компании и названию вакансии
         ORDER BY calculated_salary DESC, c.name, v.title
         """
 
@@ -481,11 +513,16 @@ class DBManager:
         if not keyword or not keyword.strip():
             return []
 
-        # SQL-запрос для поиска вакансий по ключевому слову
+        # SQL-запрос для поиска вакансий по ключевому слову в названии
+        # Использует оператор LIKE для нечеткого поиска подстроки
         query = """
+        -- Поиск вакансий по ключевому слову в названии вакансии
+        -- Использует LIKE для частичного совпадения и LOWER() для регистронезависимого поиска
         SELECT
-            v.title,
+            v.title,                                                   -- Название вакансии
+            -- Определение названия компании с приоритетом (аналогично другим запросам)
             COALESCE(c.name, v.employer, 'Неизвестная компания') as company_name,
+            -- Форматирование зарплаты (стандартная логика)
             CASE
                 WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
                     CONCAT(v.salary_from, ' - ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
@@ -495,13 +532,15 @@ class DBManager:
                     CONCAT('до ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
                 ELSE 'Не указана'
             END as salary_info,
-            v.url,
-            v.description,
-            v.vacancy_id,
-            v.employer
-        FROM vacancies v
-        LEFT JOIN companies c ON v.company_id = c.company_id
-        WHERE LOWER(v.title) LIKE LOWER(%s)
+            v.url,                                                     -- Ссылка на вакансию
+            v.description,                                             -- Описание вакансии
+            v.vacancy_id,                                              -- ID вакансии
+            v.employer                                                 -- Работодатель
+        FROM vacancies v                                               -- Основная таблица вакансий
+        LEFT JOIN companies c ON v.company_id = c.company_id          -- Соединение с компаниями
+        -- WHERE с LIKE для поиска подстроки в названии (регистронезависимо)
+        WHERE LOWER(v.title) LIKE LOWER(%s)                           -- Параметр содержит %keyword%
+        -- Сортировка по компании, затем по названию вакансии
         ORDER BY c.name, v.title
         """
 
@@ -527,11 +566,16 @@ class DBManager:
         Returns:
             Dict[str, Any]: Словарь со статистикой
         """
-        # Словарь SQL-запросов для получения статистики
+        # Словарь SQL-запросов для получения статистики базы данных
+        # Каждый запрос использует агрегатные функции для анализа данных
         stats_queries = {
+            # Общее количество вакансий в БД
             'total_vacancies': "SELECT COUNT(*) FROM vacancies",
-            'total_companies': "SELECT COUNT(*) FROM companies",
+            # Общее количество компаний в справочнике
+            'total_companies': "SELECT COUNT(*) FROM companies", 
+            # Количество вакансий с указанной зарплатой (хотя бы один из параметров: salary_from или salary_to)
             'vacancies_with_salary': "SELECT COUNT(*) FROM vacancies WHERE (salary_from IS NOT NULL OR salary_to IS NOT NULL)",
+            # Дата публикации самой новой вакансии (использует агрегатную функцию MAX)
             'latest_vacancy_date': "SELECT MAX(published_at) FROM vacancies"
         }
 
@@ -574,7 +618,8 @@ class DBManager:
         try:
             with self._get_connection() as conn:
                 with conn.cursor() as cursor:
-                    # Простой SQL-запрос для проверки подключения
+                    # Простой SQL-запрос для проверки подключения к БД
+                    # SELECT 1 - минимальный запрос, не требующий доступа к таблицам
                     cursor.execute("SELECT 1")
                     return True
         except psycopg2.Error as e:
