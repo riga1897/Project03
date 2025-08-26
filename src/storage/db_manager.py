@@ -545,14 +545,16 @@ class DBManager:
         FROM vacancies v
         LEFT JOIN companies c ON v.company_id = c.company_id
         WHERE LOWER(v.title) LIKE LOWER(%s)
-        -- Сортировка аналогично get_all_vacancies(): по названию компании, затем по названию вакансии
+        -- Сортировка: сначала по зарплате (убывание), затем по названию вакансии (возрастание)
         ORDER BY
             CASE
-                WHEN c.name IS NOT NULL THEN c.name        -- Сортировка по названию из справочника
-                WHEN v.employer IS NOT NULL AND v.employer != '' THEN v.employer  -- или по полю employer
-                ELSE 'Неизвестная компания'               -- или по значению по умолчанию
-            END,
-            v.title                                        -- Вторичная сортировка по названию вакансии
+                WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
+                    (v.salary_from + v.salary_to) / 2      -- Среднее арифметическое диапазона
+                WHEN v.salary_from IS NOT NULL THEN v.salary_from          -- Используем минимум
+                WHEN v.salary_to IS NOT NULL THEN v.salary_to              -- Используем максимум
+                ELSE 0                                     -- Вакансии без зарплаты в конце
+            END DESC,                                      -- Сортировка по зарплате по убыванию
+            v.title ASC                                    -- Вторичная сортировка по названию по возрастанию
         """
 
         try:
