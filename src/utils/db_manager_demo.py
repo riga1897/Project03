@@ -172,19 +172,18 @@ class DBManagerDemo:
         sorted_vacancies = sorted(all_vacancies,
                                 key=lambda x: (-get_salary_value(x), x.get('title', '')))
 
-        print(f"{'№':<3} {'Название':<30} {'Компания':<25} {'Зарплата':<20}")
-        print("-" * 85)
+        print(f"{'№':<3} {'Название':<50} {'Зарплата':<25}")
+        print("-" * 80)
 
-        # Показываем все вакансии (не ограничиваем до 15, так как целевых компаний всего 15)
-        for i, vacancy in enumerate(sorted_vacancies[:15], 1):
-            title = vacancy['title'][:29] if len(vacancy['title']) > 29 else vacancy['title']
-            company = vacancy['company_name'][:24] if len(vacancy['company_name']) > 24 else vacancy['company_name']
-            salary = vacancy['salary_info'][:19] if len(vacancy['salary_info']) > 19 else vacancy['salary_info']
+        # Показываем первые 25 вакансий
+        for i, vacancy in enumerate(sorted_vacancies[:25], 1):
+            title = vacancy['title'][:49] if len(vacancy['title']) > 49 else vacancy['title']
+            salary = vacancy['salary_info'][:24] if len(vacancy['salary_info']) > 24 else vacancy['salary_info']
 
-            print(f"{i:<3} {title:<30} {company:<25} {salary:<20}")
+            print(f"{i:<3} {title:<50} {salary:<25}")
 
-        if len(sorted_vacancies) > 15:
-            print(f"... и еще {len(sorted_vacancies) - 15} вакансий")
+        if len(sorted_vacancies) > 25:
+            print(f"... и еще {len(sorted_vacancies) - 25} вакансий")
 
         print(f"\nВсего вакансий: {len(all_vacancies)}")
 
