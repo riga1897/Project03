@@ -95,116 +95,102 @@ class UnifiedAPI:
         hh_vacancies = []
         sj_vacancies = []
 
-        # Получение из HeadHunter с дедупликацией
+        # Получение из HeadHunter
         if "hh" in sources:
             try:
                 logger.info(f"Получение вакансий с HH.ru по запросу: '{search_query}'")
-                # Используем обычный метод получения вакансий, а не только от целевых компаний
                 hh_data = self.hh_api.get_vacancies(search_query, **kwargs)
-
                 if hh_data:
-                    # Применяем дедупликацию
-                    hh_data = self.hh_api._deduplicate_vacancies(hh_data)
-                    logger.info(f"Найдено {len(hh_data)} уникальных вакансий с HH.ru")
                     all_vacancies.extend(hh_data)
-
+                    logger.info(f"HH.ru: получено {len(hh_data)} вакансий")
             except Exception as e:
                 logger.error(f"Ошибка получения вакансий с HH.ru: {e}")
 
-        # Получение от SuperJob с преобразованием
+        # Получение от SuperJob
         if "sj" in sources:
             try:
                 # Синхронизируем параметры периода между API
                 sj_kwargs = kwargs.copy()
                 if "period" in kwargs:
                     sj_kwargs["published"] = kwargs["period"]
-                    sj_kwargs.pop("period", None)  # Удаляем исходный параметр
+                    sj_kwargs.pop("period", None)
 
-                # Получаем данные SuperJob
                 sj_data = self.sj_api.get_vacancies(search_query, **sj_kwargs)
-
                 if sj_data:
-                    logger.info(f"Получено {len(sj_data)} вакансий SuperJob")
-                    # Добавляем данные SuperJob
                     all_vacancies.extend(sj_data)
-
+                    logger.info(f"SuperJob: получено {len(sj_data)} вакансий")
             except Exception as e:
                 logger.error(f"Ошибка получения вакансий с SuperJob: {e}")
 
-
-        # Выводим общую статистику и применяем межплатформенную дедупликацию
+        # SQL-дедупликация с фильтрацией по целевым компаниям
         if all_vacancies:
-            print(f"\nВсего найдено {len(all_vacancies)} вакансий")
+            logger.info(f"Всего получено {len(all_vacancies)} вакансий, применяем SQL-дедупликацию с фильтрацией")
+            
+            try:
+                # Используем SQL для эффективной дедупликации с фильтрацией
+                from src.api_modules.base_api import BaseJobAPI
+                
+                # Создаем временную реализацию BaseJobAPI для доступа к методу
+                class TempAPI(BaseJobAPI):
+                    def get_vacancies(self, search_query: str, **kwargs):
+                        return []
+                    def _validate_vacancy(self, vacancy):
+                        return True
+                
+                base_api = TempAPI()
+                all_vacancies = base_api._deduplicate_vacancies(all_vacancies, "unified")
+                
+                if all_vacancies:
+                    print(f"✅ Найдено {len(all_vacancies)} уникальных вакансий от целевых компаний")
+                else:
+                    print("⚠️ Не найдено вакансий от целевых компаний")
 
-            # Межплатформенная дедупликация с фильтрацией по целевым компаниям
-            if len(sources) > 1:
-                print("🔄 Выполняется межплатформенная дедупликация с фильтрацией по целевым компаниям...")
+            except Exception as e:
+                logger.error(f"Ошибка SQL-дедупликации: {e}")
+                print("⚠️ Переходим к простой дедупликации...")
 
-                try:
-                    # Используем SQL для эффективной межплатформенной дедупликации
-                    from src.api_modules.base_api import BaseAPI
-                    base_api = BaseAPI()
-                    all_vacancies = base_api._deduplicate_vacancies(all_vacancies, "cross-platform")
+                # Fallback: простая дедупликация с фильтрацией
+                from src.config.target_companies import TARGET_COMPANIES
+                target_company_names = [company['name'].lower() for company in TARGET_COMPANIES]
 
-                    print(f"✅ Межплатформенная SQL-дедупликация завершена: получено {len(all_vacancies)} уникальных вакансий от целевых компаний")
+                seen = set()
+                unique_vacancies = []
 
-                except Exception as e:
-                    logger.error(f"Ошибка межплатформенной SQL-дедупликации: {e}")
-                    print("⚠️ Переходим к простой дедупликации...")
+                for vacancy in all_vacancies:
+                    # Проверяем, является ли компания целевой
+                    company = vacancy.get("employer", {}).get("name", vacancy.get("firm_name", "")).lower().strip()
+                    
+                    is_target = False
+                    for target_name in target_company_names:
+                        if target_name in company or company in target_name:
+                            is_target = True
+                            break
 
-                    # Fallback: простая дедупликация с фильтрацией
-                    from src.config.target_companies import TARGET_COMPANIES
-                    target_company_names = [company['name'].lower() for company in TARGET_COMPANIES]
+                    if is_target:
+                        # Создаем ключ дедупликации
+                        title = vacancy.get("name", vacancy.get("profession", "")).lower().strip()
+                        
+                        salary_key = ""
+                        if "salary" in vacancy and vacancy["salary"]:
+                            salary = vacancy["salary"]
+                            salary_from = salary.get("from", 0) or 0
+                            salary_to = salary.get("to", 0) or 0
+                            salary_key = f"{salary_from}-{salary_to}"
+                        elif "payment_from" in vacancy:
+                            salary_key = f"{vacancy.get('payment_from', 0)}-{vacancy.get('payment_to', 0)}"
 
-                    seen = set()
-                    unique_vacancies = []
-                    target_vacancies = []
+                        dedup_key = (title, company, salary_key)
 
-                    # Сначала фильтруем по целевым компаниям
-                    for vacancy in all_vacancies:
-                        company = vacancy.get("employer", {}).get("name", vacancy.get("firm_name", "")).lower().strip()
+                        if dedup_key not in seen:
+                            seen.add(dedup_key)
+                            unique_vacancies.append(vacancy)
 
-                        is_target = False
-                        for target_name in target_company_names:
-                            if target_name in company or company in target_name:
-                                is_target = True
-                                break
+                all_vacancies = unique_vacancies
+                print(f"✅ Найдено {len(all_vacancies)} уникальных вакансий от целевых компаний (простая дедупликация)")
 
-                        if is_target:
-                            target_vacancies.append(vacancy)
-
-                    # Затем дедуплицируем
-                    with tqdm(total=len(target_vacancies), desc="Простая дедупликация", unit="vacancy") as pbar:
-                        for vacancy in target_vacancies:
-                            title = vacancy.get("name", vacancy.get("profession", "")).lower().strip()
-                            company = vacancy.get("employer", {}).get("name", vacancy.get("firm_name", "")).lower().strip()
-
-                            # Нормализуем зарплату
-                            salary_key = ""
-                            if "salary" in vacancy and vacancy["salary"]:
-                                salary = vacancy["salary"]
-                                salary_from = salary.get("from", 0) or 0
-                                salary_to = salary.get("to", 0) or 0
-                                salary_key = f"{salary_from}-{salary_to}"
-                            elif "payment_from" in vacancy:
-                                salary_key = f"{vacancy.get('payment_from', 0)}-{vacancy.get('payment_to', 0)}"
-
-                            dedup_key = (title, company, salary_key)
-
-                            if dedup_key not in seen:
-                                seen.add(dedup_key)
-                                unique_vacancies.append(vacancy)
-
-                            pbar.update(1)
-
-                    duplicates_found = len(target_vacancies) - len(unique_vacancies)
-                    filtered_out = len(all_vacancies) - len(target_vacancies)
-                    print(f"Отфильтровано {filtered_out} вакансий (не целевые компании)")
-                    print(f"Найдено и удалено {duplicates_found} дубликатов")
-
-                    all_vacancies = unique_vacancies
             return all_vacancies
         else:
+            logger.info("Вакансии не найдены")
             return []
 
     def get_hh_vacancies(self, query: str, **kwargs) -> List[Vacancy]:
