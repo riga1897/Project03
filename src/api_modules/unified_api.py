@@ -186,22 +186,49 @@ class UnifiedAPI:
 
     def clear_cache(self, sources: Dict[str, bool]) -> None:
         """
-        Очистка кэша выбранных источников
+        Очистка кэша для выбранных источников
 
         Args:
-            sources: Словарь источников {'hh': bool, 'sj': bool}
+            sources: Словарь с источниками для очистки
         """
         try:
             if sources.get("hh", False):
                 self.hh_api.clear_cache("hh")
                 logger.info("Кэш HH.ru очищен")
+                print("✅ Кэш HH.ru очищен")
 
             if sources.get("sj", False):
                 self.sj_api.clear_cache("sj")
                 logger.info("Кэш SuperJob очищен")
+                print("✅ Кэш SuperJob очищен")
+
+            # Дополнительная проверка - принудительно удаляем файлы кэша
+            import os
+            import glob
+
+            cache_dir = "data/cache"
+            if sources.get("hh", False):
+                hh_files = glob.glob(f"{cache_dir}/hh/hh_*.json")
+                for file in hh_files:
+                    try:
+                        os.remove(file)
+                    except Exception as e:
+                        logger.warning(f"Не удалось удалить файл {file}: {e}")
+                print(f"🗑️ Удалено {len(hh_files)} файлов кэша HH.ru")
+
+            if sources.get("sj", False):
+                sj_files = glob.glob(f"{cache_dir}/sj/sj_*.json")
+                for file in sj_files:
+                    try:
+                        os.remove(file)
+                    except Exception as e:
+                        logger.warning(f"Не удалось удалить файл {file}: {e}")
+                print(f"🗑️ Удалено {len(sj_files)} файлов кэша SuperJob")
 
         except Exception as e:
-            logger.error(f"Ошибка очистки кэша: {e}")
+            logger.error(f"Ошибка при очистке кэша: {e}")
+            print(f"❌ Ошибка при очистке кэша: {e}")
+            raise
 
     def get_vacancies_from_target_companies(self, search_query: str = "", sources: List[str] = None, **kwargs) -> List[Dict]:
         """
