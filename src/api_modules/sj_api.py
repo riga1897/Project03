@@ -3,6 +3,7 @@ from typing import Dict, List, Optional
 
 from src.config.api_config import APIConfig
 from src.config.sj_api_config import SJAPIConfig
+from src.config.target_companies import get_target_company_names
 from src.utils.env_loader import EnvLoader
 from src.utils.paginator import Paginator
 
@@ -47,7 +48,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
         self.connector.headers.update({"X-Api-App-Id": api_key, "User-Agent": "VacancySearchApp/1.0"})
 
         # Инициализируем общие компоненты как в HH API
-        self.paginator = Paginator()
+        self._paginator = Paginator()
 
         # Логируем, какой ключ используется
         if api_key == "v3.r.137440105.example.test_tool":
@@ -182,7 +183,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             logger.info(f"Found {total_found} vacancies " f"({total_pages} pages to process)")
 
             # Process all pages using unified paginator (как в HH API)
-            results = self.paginator.paginate(
+            results = self._paginator.paginate(
                 fetch_func=lambda p: self.get_vacancies_page(search_query, p, **kwargs), total_pages=total_pages
             )
 
