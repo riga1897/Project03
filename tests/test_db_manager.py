@@ -271,13 +271,34 @@ class TestDBManager:
         mock_cursor_context.__exit__ = Mock(return_value=None)
         mock_connection.cursor.return_value = mock_cursor_context
 
-        # Имитируем результаты разных запросов - возвращаем одиночные значения
-        mock_cursor.fetchone.side_effect = [
-            (100,),  # total_vacancies
-            (15,),   # total_companies  
-            (75,),   # vacancies_with_salary
-            ('2024-01-15',)  # latest_vacancy_date
+        # Мокаем результаты как словарь (RealDictCursor возвращает объекты, конвертируемые в dict)
+        mock_main_stats = {
+            'total_vacancies': 100,
+            'vacancies_with_salary': 75,
+            'unique_employers': 8,
+            'avg_salary': 125000.0,
+            'latest_vacancy_date': '2024-01-15',
+            'earliest_vacancy_date': '2024-01-01',
+            'vacancies_last_week': 10,
+            'vacancies_last_month': 45
+        }
+        
+        mock_company_result = {'total_companies': 15}
+        
+        mock_top_employers = [
+            {'employer': 'TechCorp', 'vacancy_count': 25},
+            {'employer': 'DevCompany', 'vacancy_count': 20}
         ]
+        
+        mock_salary_distribution = [
+            {'salary_range': 'до 50k', 'count': 5},
+            {'salary_range': '50k-100k', 'count': 20},
+            {'salary_range': '100k-150k', 'count': 30}
+        ]
+
+        # Настраиваем последовательные вызовы
+        mock_cursor.fetchone.side_effect = [mock_main_stats, mock_company_result]
+        mock_cursor.fetchall.side_effect = [mock_top_employers, mock_salary_distribution]
 
         result = db_manager.get_database_stats()
 
@@ -285,7 +306,10 @@ class TestDBManager:
         assert result['total_vacancies'] == 100
         assert result['total_companies'] == 15
         assert result['vacancies_with_salary'] == 75
+        assert result['avg_salary'] == 125000.0
         assert result['latest_vacancy_date'] == '2024-01-15'
+        assert len(result['top_employers']) == 2
+        assert len(result['salary_distribution']) == 3
 
     @patch('src.storage.db_manager.psycopg2.connect')
     def test_get_database_stats_error(self, mock_connect, db_manager):
@@ -294,7 +318,8 @@ class TestDBManager:
 
         result = db_manager.get_database_stats()
 
-        assert result is None
+        # Метод возвращает пустой словарь при ошибке, а не None
+        assert result == {}
 
     @patch('src.storage.db_manager.psycopg2.connect')
     def test_check_connection_success(self, mock_connect, db_manager):
