@@ -1,5 +1,5 @@
 {
-  "timestamp": 1756199477.0620816,
+  "timestamp": 1756206690.0992186,
   "meta": {
     "params": {
       "area": 1,
@@ -118,6 +118,115 @@
         "experience": {
           "id": "between1And3",
           "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124497098",
+        "premium": false,
+        "name": "Senior python разработчик",
+        "department": {
+          "id": "3529-3529-prof",
+          "name": "Сбер для экспертов"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-26T13:54:00+0300",
+        "created_at": "2025-08-26T13:54:00+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124497098",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124497098?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124497098",
+        "relations": [],
+        "employer": {
+          "id": "3529",
+          "name": "СБЕР",
+          "url": "https://api.hh.ru/employers/3529",
+          "alternate_url": "https://hh.ru/employer/3529",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1311252.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/6865266.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/6865267.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3529",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт от 3 лет в качестве <highlighttext>python</highlighttext> разработчика. Глубокое знание <highlighttext>python</highlighttext>: asyncio, fastapi, GIL, внутренние структуры данных. Понимание паттернов и...",
+          "responsibility": "Разработка и запуск AI агентов в промышленную эксплуатацию. Написание системных промптов. Разработка RAG систем. Проектирование архитектуры мультиагентных систем, взаимодействия агентов..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
         },
         "employment": {
           "id": "full",
@@ -865,115 +974,6 @@
         "adv_context": null
       },
       {
-        "id": "124446394",
-        "premium": false,
-        "name": "Исследователь - эконометрист (Лаборатория СберИндекс)",
-        "department": {
-          "id": "3529-3529-prof",
-          "name": "Сбер для экспертов"
-        },
-        "has_test": false,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": null,
-        "salary_range": null,
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": null,
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-25T15:10:50+0300",
-        "created_at": "2025-08-25T15:10:50+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124446394",
-        "branding": {
-          "type": "MAKEUP",
-          "tariff": null
-        },
-        "show_logo_in_search": true,
-        "show_contacts": false,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124446394?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124446394",
-        "relations": [],
-        "employer": {
-          "id": "3529",
-          "name": "СБЕР",
-          "url": "https://api.hh.ru/employers/3529",
-          "alternate_url": "https://hh.ru/employer/3529",
-          "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1311252.jpg",
-            "90": "https://img.hhcdn.ru/employer-logo/6865266.jpeg",
-            "240": "https://img.hhcdn.ru/employer-logo/6865267.jpeg"
-          },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3529",
-          "accredited_it_employer": false,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Опыт исследовательской работы в сфере экономики не менее трёх лет. Экономическое высшее образование. Уверенное владение эконометрикой. Уверенное владение <highlighttext>Python</highlighttext>. ",
-          "responsibility": "Разрабатывать уникальную методологию оценок показателей, характеризующих жизнь населения и ситуацию в бизнесе. Находить инсайты о населении и бизнесе на основе..."
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "fullDay",
-          "name": "Полный день"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "ON_SITE",
-            "name": "На месте работодателя"
-          }
-        ],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
-        "work_schedule_by_days": [
-          {
-            "id": "FIVE_ON_TWO_OFF",
-            "name": "5/2"
-          }
-        ],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "10",
-            "name": "Аналитик"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between1And3",
-          "name": "От 1 года до 3 лет"
-        },
-        "employment": {
-          "id": "full",
-          "name": "Полная занятость"
-        },
-        "employment_form": {
-          "id": "FULL",
-          "name": "Полная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
         "id": "124453713",
         "premium": false,
         "name": "Team Lead AI Research",
@@ -1068,6 +1068,115 @@
         "experience": {
           "id": "moreThan6",
           "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124446394",
+        "premium": false,
+        "name": "Исследователь - эконометрист (Лаборатория СберИндекс)",
+        "department": {
+          "id": "3529-3529-prof",
+          "name": "Сбер для экспертов"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-25T15:10:50+0300",
+        "created_at": "2025-08-25T15:10:50+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124446394",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124446394?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124446394",
+        "relations": [],
+        "employer": {
+          "id": "3529",
+          "name": "СБЕР",
+          "url": "https://api.hh.ru/employers/3529",
+          "alternate_url": "https://hh.ru/employer/3529",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1311252.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/6865266.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/6865267.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3529",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт исследовательской работы в сфере экономики не менее трёх лет. Экономическое высшее образование. Уверенное владение эконометрикой. Уверенное владение <highlighttext>Python</highlighttext>. ",
+          "responsibility": "Разрабатывать уникальную методологию оценок показателей, характеризующих жизнь населения и ситуацию в бизнесе. Находить инсайты о населении и бизнесе на основе..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "10",
+            "name": "Аналитик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
         },
         "employment": {
           "id": "full",
@@ -1275,110 +1384,6 @@
             "name": "5/2"
           }
         ],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "10",
-            "name": "Аналитик"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between3And6",
-          "name": "От 3 до 6 лет"
-        },
-        "employment": {
-          "id": "full",
-          "name": "Полная занятость"
-        },
-        "employment_form": {
-          "id": "FULL",
-          "name": "Полная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
-        "id": "124433048",
-        "premium": false,
-        "name": "Middle Data Scientits",
-        "department": {
-          "id": "3529-3529-prof",
-          "name": "Сбер для экспертов"
-        },
-        "has_test": false,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": null,
-        "salary_range": null,
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": null,
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-25T12:26:30+0300",
-        "created_at": "2025-08-25T12:26:30+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124433048",
-        "branding": {
-          "type": "MAKEUP",
-          "tariff": null
-        },
-        "show_logo_in_search": true,
-        "show_contacts": false,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124433048?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124433048",
-        "relations": [],
-        "employer": {
-          "id": "3529",
-          "name": "СБЕР",
-          "url": "https://api.hh.ru/employers/3529",
-          "alternate_url": "https://hh.ru/employer/3529",
-          "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1311252.jpg",
-            "90": "https://img.hhcdn.ru/employer-logo/6865266.jpeg",
-            "240": "https://img.hhcdn.ru/employer-logo/6865267.jpeg"
-          },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3529",
-          "accredited_it_employer": false,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Глубокие знания в области теории вероятностей, статистики. Понимание основных ML-алгоритмов. Владение <highlighttext>Python</highlighttext> и основными библиотеками для анализа данных (numpy...",
-          "responsibility": "CLTV ЮЛ. Модели эластичности ЮЛ. Модели ценообразования кредита, комплексного кредитного предложения. Модели единой трансфертной ставки. Построение и проверка бизнес-гипотез..."
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "fullDay",
-          "name": "Полный день"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "ON_SITE",
-            "name": "На месте работодателя"
-          }
-        ],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
-        "work_schedule_by_days": [],
         "night_shifts": false,
         "professional_roles": [
           {
@@ -1732,9 +1737,9 @@
         "adv_context": null
       },
       {
-        "id": "124440210",
+        "id": "123326710",
         "premium": false,
-        "name": "Data Scientist",
+        "name": "Senior-специалист по нагрузочному тестированию",
         "department": {
           "id": "3529-3529-prof",
           "name": "Сбер для экспертов"
@@ -1755,19 +1760,19 @@
         "address": null,
         "response_url": null,
         "sort_point_distance": null,
-        "published_at": "2025-08-25T13:50:50+0300",
-        "created_at": "2025-08-25T13:50:50+0300",
+        "published_at": "2025-08-25T16:31:20+0300",
+        "created_at": "2025-08-25T16:31:20+0300",
         "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124440210",
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123326710",
         "branding": {
           "type": "MAKEUP",
           "tariff": null
         },
         "show_logo_in_search": true,
-        "show_contacts": true,
+        "show_contacts": false,
         "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124440210?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124440210",
+        "url": "https://api.hh.ru/vacancies/123326710?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123326710",
         "relations": [],
         "employer": {
           "id": "3529",
@@ -1784,8 +1789,8 @@
           "trusted": true
         },
         "snippet": {
-          "requirement": "...или модификации и/или внедрению ПО с использованием искусственного интеллекта. <highlighttext>Python</highlighttext>: LLM: Желание изучать новые подходы, модели и технологии. ",
-          "responsibility": "Обзор современных мировых трендов в области искусственного интеллекта. Анализ возможностей для улучшения продуктов и процессов заказчика с применением искусственного интеллекта. "
+          "requirement": "Опыт работы с инструментами Agile (Jira, Confluence). Базовые знания программирования и автоматизации задач (<highlighttext>Python</highlighttext>, bash). Опыт работы с инструментами DevOps...",
+          "responsibility": "Проведение нагрузочного тестирования АС: разработка скриптов и сценариев, выстраивание среды, организация и контроль процесса по временным рамкам, анализ результатов, выявление..."
         },
         "contacts": null,
         "schedule": {
@@ -1797,12 +1802,7 @@
         "working_time_modes": [],
         "accept_temporary": false,
         "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "ON_SITE",
-            "name": "На месте работодателя"
-          }
-        ],
+        "work_format": [],
         "working_hours": [
           {
             "id": "HOURS_8",
@@ -1818,112 +1818,8 @@
         "night_shifts": false,
         "professional_roles": [
           {
-            "id": "10",
-            "name": "Аналитик"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between3And6",
-          "name": "От 3 до 6 лет"
-        },
-        "employment": {
-          "id": "full",
-          "name": "Полная занятость"
-        },
-        "employment_form": {
-          "id": "FULL",
-          "name": "Полная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
-        "id": "124438511",
-        "premium": false,
-        "name": "DevOps-инженер (внутрибанковская безопасность)",
-        "department": {
-          "id": "3529-3529-prof",
-          "name": "Сбер для экспертов"
-        },
-        "has_test": false,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": null,
-        "salary_range": null,
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": null,
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-25T13:27:17+0300",
-        "created_at": "2025-08-25T13:27:17+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124438511",
-        "branding": {
-          "type": "MAKEUP",
-          "tariff": null
-        },
-        "show_logo_in_search": true,
-        "show_contacts": false,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124438511?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124438511",
-        "relations": [],
-        "employer": {
-          "id": "3529",
-          "name": "СБЕР",
-          "url": "https://api.hh.ru/employers/3529",
-          "alternate_url": "https://hh.ru/employer/3529",
-          "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1311252.jpg",
-            "90": "https://img.hhcdn.ru/employer-logo/6865266.jpeg",
-            "240": "https://img.hhcdn.ru/employer-logo/6865267.jpeg"
-          },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3529",
-          "accredited_it_employer": false,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Опыт администрирования серверов под управлением GNU/Linux (RHEL, CentOS, Ubuntu); опыт администрирования серверов на базе Windows будет плюсом. ",
-          "responsibility": "Создание, поддержка и развитие процессов CI/CD в продукте. Автоматизация процессов управления конфигурациями. Разработка скриптов автоматизации сборки, развертывания. "
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "fullDay",
-          "name": "Полный день"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "ON_SITE",
-            "name": "На месте работодателя"
-          }
-        ],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
-        "work_schedule_by_days": [],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "160",
-            "name": "DevOps-инженер"
+            "id": "121",
+            "name": "Специалист технической поддержки"
           }
         ],
         "accept_incomplete_resumes": false,
@@ -2024,110 +1920,6 @@
           {
             "id": "96",
             "name": "Программист, разработчик"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between3And6",
-          "name": "От 3 до 6 лет"
-        },
-        "employment": {
-          "id": "full",
-          "name": "Полная занятость"
-        },
-        "employment_form": {
-          "id": "FULL",
-          "name": "Полная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
-        "id": "123326710",
-        "premium": false,
-        "name": "Senior-специалист по нагрузочному тестированию",
-        "department": {
-          "id": "3529-3529-prof",
-          "name": "Сбер для экспертов"
-        },
-        "has_test": false,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": null,
-        "salary_range": null,
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": null,
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-25T16:31:20+0300",
-        "created_at": "2025-08-25T16:31:20+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123326710",
-        "branding": {
-          "type": "MAKEUP",
-          "tariff": null
-        },
-        "show_logo_in_search": true,
-        "show_contacts": false,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/123326710?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/123326710",
-        "relations": [],
-        "employer": {
-          "id": "3529",
-          "name": "СБЕР",
-          "url": "https://api.hh.ru/employers/3529",
-          "alternate_url": "https://hh.ru/employer/3529",
-          "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1311252.jpg",
-            "90": "https://img.hhcdn.ru/employer-logo/6865266.jpeg",
-            "240": "https://img.hhcdn.ru/employer-logo/6865267.jpeg"
-          },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3529",
-          "accredited_it_employer": false,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Опыт работы с инструментами Agile (Jira, Confluence). Базовые знания программирования и автоматизации задач (<highlighttext>Python</highlighttext>, bash). Опыт работы с инструментами DevOps...",
-          "responsibility": "Проведение нагрузочного тестирования АС: разработка скриптов и сценариев, выстраивание среды, организация и контроль процесса по временным рамкам, анализ результатов, выявление..."
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "fullDay",
-          "name": "Полный день"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
-        "work_schedule_by_days": [
-          {
-            "id": "FIVE_ON_TWO_OFF",
-            "name": "5/2"
-          }
-        ],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "121",
-            "name": "Специалист технической поддержки"
           }
         ],
         "accept_incomplete_resumes": false,
@@ -2258,7 +2050,7 @@
         "adv_context": null
       }
     ],
-    "found": 20,
+    "found": 18,
     "pages": 1,
     "page": 0,
     "per_page": 50,
