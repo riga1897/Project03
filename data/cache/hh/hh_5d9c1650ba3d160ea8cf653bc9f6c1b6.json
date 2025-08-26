@@ -1,0 +1,135 @@
+{
+  "timestamp": 1756210613.1567557,
+  "meta": {
+    "params": {
+      "area": 1,
+      "per_page": 1,
+      "only_with_salary": false,
+      "text": "python",
+      "page": 0,
+      "period": 1
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "124500042",
+        "premium": false,
+        "name": "Инженер-тестировщик интеграционного тестирования",
+        "department": {
+          "id": "4649269-4649269-innoteh",
+          "name": "Т1 Иннотех"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-26T14:35:52+0300",
+        "created_at": "2025-08-26T14:35:52+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124500042",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124500042?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124500042",
+        "relations": [],
+        "employer": {
+          "id": "4649269",
+          "name": "Т1",
+          "url": "https://api.hh.ru/employers/4649269",
+          "alternate_url": "https://hh.ru/employer/4649269",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1334956.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6959834.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6959835.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4649269",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Знание и опыт использования языков программирования <highlighttext>Python</highlighttext>, Java. Опыт работы с системами контроля версий. Опыт работы тестировщиком в Agile командах.",
+          "responsibility": "Интеграционное функциональное тестирование процессингового ПО. Взаимодействие с партнерами, разработчиками, аналитиками по вопросам интеграционного тестирования. Выезды 1-2 раза в неделю..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "124",
+            "name": "Тестировщик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 503,
+    "pages": 503,
+    "page": 0,
+    "per_page": 1,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=1&enable_snippets=true&items_on_page=1&search_period=1&text=python"
+  }
+}
