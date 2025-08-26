@@ -222,7 +222,7 @@ class DBManagerDemo:
             for i, vacancy in enumerate(high_salary_vacancies[:15], 1):
                 # RealDictCursor возвращает словари
                 title = str(vacancy.get('title', ''))[:34]
-                company = str(vacancy.get('company_name', ''))[:24]  
+                company = str(vacancy.get('company_name', ''))[:24]
                 salary = str(vacancy.get('salary_info', ''))[:19]
 
                 print(f"{i:<3} {title:<35} {company:<25} {salary:<20}")
@@ -292,17 +292,42 @@ class DBManagerDemo:
     def _demo_database_stats(self) -> None:
         """Демонстрирует получение статистики БД"""
         print("\n8. Статистика базы данных:")
-        print("-" * 40)
-
+        print("----------------------------------------")
         stats = self.db_manager.get_database_stats()
-
         if stats:
             print(f"Общее количество вакансий: {stats.get('total_vacancies', 0)}")
             print(f"Общее количество компаний: {stats.get('total_companies', 0)}")
             print(f"Вакансий с указанной зарплатой: {stats.get('vacancies_with_salary', 0)}")
-            print(f"Дата последней вакансии: {stats.get('latest_vacancy_date', 'Не определена')}")
+
+            # Обрабатываем даты
+            latest_date = stats.get('latest_vacancy_date')
+            earliest_date = stats.get('earliest_vacancy_date')
+
+            if latest_date:
+                if hasattr(latest_date, 'strftime'):
+                    latest_str = latest_date.strftime('%Y-%m-%d %H:%M:%S')
+                else:
+                    latest_str = str(latest_date)
+                print(f"Дата последней вакансии: {latest_str}")
+            else:
+                print("Дата последней вакансии: Не указана")
+
+            if earliest_date:
+                if hasattr(earliest_date, 'strftime'):
+                    earliest_str = earliest_date.strftime('%Y-%m-%d %H:%M:%S')
+                else:
+                    earliest_str = str(earliest_date)
+                print(f"Дата первой вакансии: {earliest_str}")
+            else:
+                print("Дата первой вакансии: Не указана")
+
+            # Дополнительная статистика если есть
+            if stats.get('vacancies_last_week'):
+                print(f"Вакансий за последнюю неделю: {stats.get('vacancies_last_week', 0)}")
+            if stats.get('vacancies_last_month'):
+                print(f"Вакансий за последний месяц: {stats.get('vacancies_last_month', 0)}")
         else:
-            print("Не удалось получить статистику базы данных")
+            print("❌ Не удалось получить статистику базы данных")
 
 
 def main():
