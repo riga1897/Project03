@@ -1,5 +1,5 @@
 {
-  "timestamp": 1756211943.2215278,
+  "timestamp": 1756212497.437841,
   "meta": {
     "params": {
       "area": 1,
@@ -13,13 +13,10 @@
   "data": {
     "items": [
       {
-        "id": "124500042",
+        "id": "124489792",
         "premium": false,
-        "name": "Инженер-тестировщик интеграционного тестирования",
-        "department": {
-          "id": "4649269-4649269-innoteh",
-          "name": "Т1 Иннотех"
-        },
+        "name": "Тестировщик",
+        "department": null,
         "has_test": false,
         "response_letter_required": false,
         "area": {
@@ -36,42 +33,38 @@
         "address": null,
         "response_url": null,
         "sort_point_distance": null,
-        "published_at": "2025-08-26T14:35:52+0300",
-        "created_at": "2025-08-26T14:35:52+0300",
+        "published_at": "2025-08-26T12:13:36+0300",
+        "created_at": "2025-08-26T12:13:36+0300",
         "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124500042",
-        "branding": {
-          "type": "MAKEUP",
-          "tariff": null
-        },
-        "show_logo_in_search": true,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124489792",
+        "show_logo_in_search": null,
         "show_contacts": false,
         "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124500042?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124500042",
+        "url": "https://api.hh.ru/vacancies/124489792?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124489792",
         "relations": [],
         "employer": {
-          "id": "4649269",
-          "name": "Т1",
-          "url": "https://api.hh.ru/employers/4649269",
-          "alternate_url": "https://hh.ru/employer/4649269",
+          "id": "11920587",
+          "name": "Secunda",
+          "url": "https://api.hh.ru/employers/11920587",
+          "alternate_url": "https://hh.ru/employer/11920587",
           "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1334956.png",
-            "90": "https://img.hhcdn.ru/employer-logo/6959834.png",
-            "240": "https://img.hhcdn.ru/employer-logo/6959835.png"
+            "original": "https://img.hhcdn.ru/employer-logo-original/1412011.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7267704.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7267705.png"
           },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4649269",
-          "accredited_it_employer": true,
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=11920587",
+          "accredited_it_employer": false,
           "trusted": true
         },
         "snippet": {
-          "requirement": "Знание и опыт использования языков программирования <highlighttext>Python</highlighttext>, Java. Опыт работы с системами контроля версий. Опыт работы тестировщиком в Agile командах.",
-          "responsibility": "Интеграционное функциональное тестирование процессингового ПО. Взаимодействие с партнерами, разработчиками, аналитиками по вопросам интеграционного тестирования. Выезды 1-2 раза в неделю..."
+          "requirement": "Опыт тестирования программного обеспечения. - Опыт работы с тестированием веб-приложений и API. - Знание методологий тестирования и инструментов для автоматизации. - ",
+          "responsibility": "Проведение функционального и регрессионного тестирования. - Автоматизация тестов и создание тестовых сценариев. - Взаимодействие с командой разработчиков для выявления и устранения багов. - "
         },
         "contacts": null,
         "schedule": {
-          "id": "fullDay",
-          "name": "Полный день"
+          "id": "remote",
+          "name": "Удаленная работа"
         },
         "working_days": [],
         "working_time_intervals": [],
@@ -80,8 +73,8 @@
         "fly_in_fly_out_duration": [],
         "work_format": [
           {
-            "id": "HYBRID",
-            "name": "Гибрид"
+            "id": "REMOTE",
+            "name": "Удалённо"
           }
         ],
         "working_hours": [
@@ -105,8 +98,8 @@
         ],
         "accept_incomplete_resumes": false,
         "experience": {
-          "id": "between3And6",
-          "name": "От 3 до 6 лет"
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
         },
         "employment": {
           "id": "full",
@@ -122,8 +115,8 @@
         "adv_context": null
       }
     ],
-    "found": 503,
-    "pages": 503,
+    "found": 499,
+    "pages": 499,
     "page": 0,
     "per_page": 1,
     "clusters": null,

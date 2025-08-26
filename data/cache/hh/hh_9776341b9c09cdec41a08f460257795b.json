@@ -1,5 +1,5 @@
 {
-  "timestamp": 1756211944.836679,
+  "timestamp": 1756212498.9818933,
   "meta": {
     "params": {
       "area": 1,
@@ -12,6 +12,108 @@
   },
   "data": {
     "items": [
+      {
+        "id": "124489792",
+        "premium": false,
+        "name": "Тестировщик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-26T12:13:36+0300",
+        "created_at": "2025-08-26T12:13:36+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124489792",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124489792?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124489792",
+        "relations": [],
+        "employer": {
+          "id": "11920587",
+          "name": "Secunda",
+          "url": "https://api.hh.ru/employers/11920587",
+          "alternate_url": "https://hh.ru/employer/11920587",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1412011.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7267704.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7267705.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=11920587",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт тестирования программного обеспечения. - Опыт работы с тестированием веб-приложений и API. - Знание методологий тестирования и инструментов для автоматизации. - ",
+          "responsibility": "Проведение функционального и регрессионного тестирования. - Автоматизация тестов и создание тестовых сценариев. - Взаимодействие с командой разработчиков для выявления и устранения багов. - "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "124",
+            "name": "Тестировщик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
       {
         "id": "124500042",
         "premium": false,
@@ -107,108 +209,6 @@
         "experience": {
           "id": "between3And6",
           "name": "От 3 до 6 лет"
-        },
-        "employment": {
-          "id": "full",
-          "name": "Полная занятость"
-        },
-        "employment_form": {
-          "id": "FULL",
-          "name": "Полная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
-        "id": "124489792",
-        "premium": false,
-        "name": "Тестировщик",
-        "department": null,
-        "has_test": false,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": null,
-        "salary_range": null,
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": null,
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-26T12:13:36+0300",
-        "created_at": "2025-08-26T12:13:36+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124489792",
-        "show_logo_in_search": null,
-        "show_contacts": false,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124489792?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124489792",
-        "relations": [],
-        "employer": {
-          "id": "11920587",
-          "name": "Secunda",
-          "url": "https://api.hh.ru/employers/11920587",
-          "alternate_url": "https://hh.ru/employer/11920587",
-          "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1412011.png",
-            "90": "https://img.hhcdn.ru/employer-logo/7267704.png",
-            "240": "https://img.hhcdn.ru/employer-logo/7267705.png"
-          },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=11920587",
-          "accredited_it_employer": false,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Опыт тестирования программного обеспечения. - Опыт работы с тестированием веб-приложений и API. - Знание методологий тестирования и инструментов для автоматизации. - ",
-          "responsibility": "Проведение функционального и регрессионного тестирования. - Автоматизация тестов и создание тестовых сценариев. - Взаимодействие с командой разработчиков для выявления и устранения багов. - "
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "remote",
-          "name": "Удаленная работа"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "REMOTE",
-            "name": "Удалённо"
-          }
-        ],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
-        "work_schedule_by_days": [
-          {
-            "id": "FIVE_ON_TWO_OFF",
-            "name": "5/2"
-          }
-        ],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "124",
-            "name": "Тестировщик"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between1And3",
-          "name": "От 1 года до 3 лет"
         },
         "employment": {
           "id": "full",
@@ -1013,6 +1013,163 @@
         "adv_context": null
       },
       {
+        "id": "124501173",
+        "premium": false,
+        "name": "Python Developer",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Хлебозаводский проезд",
+          "building": "7с9",
+          "lat": 55.669925,
+          "lng": 37.63252,
+          "description": null,
+          "raw": "Москва, Хлебозаводский проезд, 7с9",
+          "metro": {
+            "station_name": "Каширская",
+            "line_name": "Каховская",
+            "station_id": "11.46",
+            "line_id": "11",
+            "lat": 55.654327,
+            "lng": 37.647705
+          },
+          "metro_stations": [
+            {
+              "station_name": "Каширская",
+              "line_name": "Каховская",
+              "station_id": "11.46",
+              "line_id": "11",
+              "lat": 55.654327,
+              "lng": 37.647705
+            },
+            {
+              "station_name": "Нагатинская",
+              "line_name": "Серпуховско-Тимирязевская",
+              "station_id": "9.85",
+              "line_id": "9",
+              "lat": 55.682099,
+              "lng": 37.620917
+            },
+            {
+              "station_name": "Нагорная",
+              "line_name": "Серпуховско-Тимирязевская",
+              "station_id": "9.86",
+              "line_id": "9",
+              "lat": 55.672962,
+              "lng": 37.610397
+            },
+            {
+              "station_name": "Нахимовский проспект",
+              "line_name": "Серпуховско-Тимирязевская",
+              "station_id": "9.87",
+              "line_id": "9",
+              "lat": 55.662379,
+              "lng": 37.605274
+            }
+          ],
+          "id": "15672576"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-26T14:53:48+0300",
+        "created_at": "2025-08-26T14:53:48+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124501173",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124501173?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124501173",
+        "relations": [],
+        "employer": {
+          "id": "4512",
+          "name": "ISD Parking Solutions",
+          "url": "https://api.hh.ru/employers/4512",
+          "alternate_url": "https://hh.ru/employer/4512",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1412953.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7271472.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7271473.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4512",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт разработки на <highlighttext>Python</highlighttext> не менее 1 года. Умение разрабатывать многопоточные приложения, понимание асинхронности. Опыт организации обмена данными через COM...",
+          "responsibility": "Доработка решений по управлению программно-аппаратным комплексом доступа на парковку. Решение сбоев и ошибок в работе текущего функционала, рефакторинг имеющихся..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
         "id": "124495253",
         "premium": false,
         "name": "C# разработчик",
@@ -1107,6 +1264,135 @@
         "experience": {
           "id": "noExperience",
           "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124461230",
+        "premium": false,
+        "name": "QA-инженер (manual)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "улица Тимура Фрунзе",
+          "building": "24",
+          "lat": 55.735626,
+          "lng": 37.587614,
+          "description": null,
+          "raw": "Москва, улица Тимура Фрунзе, 24",
+          "metro": {
+            "station_name": "Парк культуры",
+            "line_name": "Кольцевая",
+            "station_id": "5.104",
+            "line_id": "5",
+            "lat": 55.735221,
+            "lng": 37.593095
+          },
+          "metro_stations": [
+            {
+              "station_name": "Парк культуры",
+              "line_name": "Кольцевая",
+              "station_id": "5.104",
+              "line_id": "5",
+              "lat": 55.735221,
+              "lng": 37.593095
+            }
+          ],
+          "id": "671768"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-25T18:48:30+0300",
+        "created_at": "2025-08-25T18:48:30+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124461230",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124461230?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124461230",
+        "relations": [],
+        "employer": {
+          "id": "2425896",
+          "name": "Эвотор",
+          "url": "https://api.hh.ru/employers/2425896",
+          "alternate_url": "https://hh.ru/employer/2425896",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/575957.png",
+            "90": "https://img.hhcdn.ru/employer-logo/2745099.png",
+            "240": "https://img.hhcdn.ru/employer-logo/2745100.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2425896",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт тестирования REST API (инструменты: c URL, Postman/Insomnia). Опыт автоматизации тестирования (Java/<highlighttext>Python</highlighttext>, Gradle/Maven etc, Selenium WebDriwer (Selenide...",
+          "responsibility": "Ручное тестирование UI (Angular, TypeScript). Тестирование API, в том числе с использованием инструментов автоматизации (Java, Gradle, SpringBoot, JUnit5, TestNG..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "124",
+            "name": "Тестировщик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
         },
         "employment": {
           "id": "full",
@@ -1270,135 +1556,6 @@
         "experience": {
           "id": "between3And6",
           "name": "От 3 до 6 лет"
-        },
-        "employment": {
-          "id": "full",
-          "name": "Полная занятость"
-        },
-        "employment_form": {
-          "id": "FULL",
-          "name": "Полная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
-        "id": "124461230",
-        "premium": false,
-        "name": "QA-инженер (manual)",
-        "department": null,
-        "has_test": false,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": null,
-        "salary_range": null,
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": {
-          "city": "Москва",
-          "street": "улица Тимура Фрунзе",
-          "building": "24",
-          "lat": 55.735626,
-          "lng": 37.587614,
-          "description": null,
-          "raw": "Москва, улица Тимура Фрунзе, 24",
-          "metro": {
-            "station_name": "Парк культуры",
-            "line_name": "Кольцевая",
-            "station_id": "5.104",
-            "line_id": "5",
-            "lat": 55.735221,
-            "lng": 37.593095
-          },
-          "metro_stations": [
-            {
-              "station_name": "Парк культуры",
-              "line_name": "Кольцевая",
-              "station_id": "5.104",
-              "line_id": "5",
-              "lat": 55.735221,
-              "lng": 37.593095
-            }
-          ],
-          "id": "671768"
-        },
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-25T18:48:30+0300",
-        "created_at": "2025-08-25T18:48:30+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124461230",
-        "show_logo_in_search": null,
-        "show_contacts": false,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124461230?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124461230",
-        "relations": [],
-        "employer": {
-          "id": "2425896",
-          "name": "Эвотор",
-          "url": "https://api.hh.ru/employers/2425896",
-          "alternate_url": "https://hh.ru/employer/2425896",
-          "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/575957.png",
-            "90": "https://img.hhcdn.ru/employer-logo/2745099.png",
-            "240": "https://img.hhcdn.ru/employer-logo/2745100.png"
-          },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2425896",
-          "accredited_it_employer": true,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Опыт тестирования REST API (инструменты: c URL, Postman/Insomnia). Опыт автоматизации тестирования (Java/<highlighttext>Python</highlighttext>, Gradle/Maven etc, Selenium WebDriwer (Selenide...",
-          "responsibility": "Ручное тестирование UI (Angular, TypeScript). Тестирование API, в том числе с использованием инструментов автоматизации (Java, Gradle, SpringBoot, JUnit5, TestNG..."
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "remote",
-          "name": "Удаленная работа"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "REMOTE",
-            "name": "Удалённо"
-          }
-        ],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
-        "work_schedule_by_days": [
-          {
-            "id": "FIVE_ON_TWO_OFF",
-            "name": "5/2"
-          }
-        ],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "124",
-            "name": "Тестировщик"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between1And3",
-          "name": "От 1 года до 3 лет"
         },
         "employment": {
           "id": "full",
@@ -1610,163 +1767,6 @@
           {
             "id": "REMOTE",
             "name": "Удалённо"
-          }
-        ],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
-        "work_schedule_by_days": [
-          {
-            "id": "FIVE_ON_TWO_OFF",
-            "name": "5/2"
-          }
-        ],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "96",
-            "name": "Программист, разработчик"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between1And3",
-          "name": "От 1 года до 3 лет"
-        },
-        "employment": {
-          "id": "full",
-          "name": "Полная занятость"
-        },
-        "employment_form": {
-          "id": "FULL",
-          "name": "Полная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
-        "id": "124501173",
-        "premium": false,
-        "name": "Python Developer",
-        "department": null,
-        "has_test": false,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": null,
-        "salary_range": null,
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": {
-          "city": "Москва",
-          "street": "Хлебозаводский проезд",
-          "building": "7с9",
-          "lat": 55.669925,
-          "lng": 37.63252,
-          "description": null,
-          "raw": "Москва, Хлебозаводский проезд, 7с9",
-          "metro": {
-            "station_name": "Каширская",
-            "line_name": "Каховская",
-            "station_id": "11.46",
-            "line_id": "11",
-            "lat": 55.654327,
-            "lng": 37.647705
-          },
-          "metro_stations": [
-            {
-              "station_name": "Каширская",
-              "line_name": "Каховская",
-              "station_id": "11.46",
-              "line_id": "11",
-              "lat": 55.654327,
-              "lng": 37.647705
-            },
-            {
-              "station_name": "Нагатинская",
-              "line_name": "Серпуховско-Тимирязевская",
-              "station_id": "9.85",
-              "line_id": "9",
-              "lat": 55.682099,
-              "lng": 37.620917
-            },
-            {
-              "station_name": "Нагорная",
-              "line_name": "Серпуховско-Тимирязевская",
-              "station_id": "9.86",
-              "line_id": "9",
-              "lat": 55.672962,
-              "lng": 37.610397
-            },
-            {
-              "station_name": "Нахимовский проспект",
-              "line_name": "Серпуховско-Тимирязевская",
-              "station_id": "9.87",
-              "line_id": "9",
-              "lat": 55.662379,
-              "lng": 37.605274
-            }
-          ],
-          "id": "15672576"
-        },
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-26T14:53:48+0300",
-        "created_at": "2025-08-26T14:53:48+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124501173",
-        "show_logo_in_search": null,
-        "show_contacts": true,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124501173?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124501173",
-        "relations": [],
-        "employer": {
-          "id": "4512",
-          "name": "ISD Parking Solutions",
-          "url": "https://api.hh.ru/employers/4512",
-          "alternate_url": "https://hh.ru/employer/4512",
-          "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1412953.png",
-            "90": "https://img.hhcdn.ru/employer-logo/7271472.png",
-            "240": "https://img.hhcdn.ru/employer-logo/7271473.png"
-          },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4512",
-          "accredited_it_employer": true,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Опыт разработки на <highlighttext>Python</highlighttext> не менее 1 года. Умение разрабатывать многопоточные приложения, понимание асинхронности. Опыт организации обмена данными через COM...",
-          "responsibility": "Доработка решений по управлению программно-аппаратным комплексом доступа на парковку. Решение сбоев и ошибок в работе текущего функционала, рефакторинг имеющихся..."
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "fullDay",
-          "name": "Полный день"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "ON_SITE",
-            "name": "На месте работодателя"
-          },
-          {
-            "id": "HYBRID",
-            "name": "Гибрид"
           }
         ],
         "working_hours": [
@@ -2028,216 +2028,6 @@
         "adv_context": null
       },
       {
-        "id": "124485263",
-        "premium": false,
-        "name": "Системный аналитик",
-        "department": null,
-        "has_test": false,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": null,
-        "salary_range": null,
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": null,
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-26T11:21:40+0300",
-        "created_at": "2025-08-26T11:21:40+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124485263",
-        "show_logo_in_search": null,
-        "show_contacts": true,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124485263?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124485263",
-        "relations": [],
-        "employer": {
-          "id": "53368",
-          "name": "Innovative People",
-          "url": "https://api.hh.ru/employers/53368",
-          "alternate_url": "https://hh.ru/employer/53368",
-          "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/359281.png",
-            "90": "https://img.hhcdn.ru/employer-logo/1879386.png",
-            "240": "https://img.hhcdn.ru/employer-logo/1879387.png"
-          },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=53368",
-          "accredited_it_employer": false,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Опыт в сфере системного анализа от 4 лет. Знание основных видов требований к ПО, особенностей их выявления и описания. ",
-          "responsibility": "Рефакторинг текущей системы запуска CRM-кампаний на outsource платформе. Разработка и согласование коммуникационного плана запуска кампаний и пилотов. "
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "remote",
-          "name": "Удаленная работа"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "REMOTE",
-            "name": "Удалённо"
-          }
-        ],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
-        "work_schedule_by_days": [
-          {
-            "id": "FIVE_ON_TWO_OFF",
-            "name": "5/2"
-          }
-        ],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "148",
-            "name": "Системный аналитик"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between3And6",
-          "name": "От 3 до 6 лет"
-        },
-        "employment": {
-          "id": "full",
-          "name": "Полная занятость"
-        },
-        "employment_form": {
-          "id": "FULL",
-          "name": "Полная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
-        "id": "124270986",
-        "premium": false,
-        "name": "Аналитик данных",
-        "department": null,
-        "has_test": false,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": null,
-        "salary_range": null,
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": {
-          "city": "Москва",
-          "street": "Волоколамское шоссе",
-          "building": "69с2",
-          "lat": 55.817921,
-          "lng": 37.442859,
-          "description": null,
-          "raw": "Москва, Волоколамское шоссе, 69с2",
-          "metro": null,
-          "metro_stations": [],
-          "id": "714365"
-        },
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-26T11:51:34+0300",
-        "created_at": "2025-08-26T11:51:34+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124270986",
-        "show_contacts": false,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124270986?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124270986",
-        "relations": [],
-        "employer": {
-          "id": "2392326",
-          "name": "ФК Спартак-Москва",
-          "url": "https://api.hh.ru/employers/2392326",
-          "alternate_url": "https://hh.ru/employer/2392326",
-          "logo_urls": null,
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2392326",
-          "accredited_it_employer": false,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Отличное знание SQL (умение писать оптимизированные запросы). Владение <highlighttext>Python</highlighttext> для анализа и построения ML-моделей. Навыки работы с BI-системами. ",
-          "responsibility": "Работать с базами данных: писать SQL-запросы, интегрировать данные из разных источников. - Настраивать и поддерживать базовые ETL-процессы: участвовать в..."
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "fullDay",
-          "name": "Полный день"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "ON_SITE",
-            "name": "На месте работодателя"
-          }
-        ],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
-        "work_schedule_by_days": [
-          {
-            "id": "FIVE_ON_TWO_OFF",
-            "name": "5/2"
-          }
-        ],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "156",
-            "name": "BI-аналитик, аналитик данных"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between1And3",
-          "name": "От 1 года до 3 лет"
-        },
-        "employment": {
-          "id": "full",
-          "name": "Полная занятость"
-        },
-        "employment_form": {
-          "id": "FULL",
-          "name": "Полная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
         "id": "124496183",
         "premium": false,
         "name": "Аналитик данных (ценообразование)",
@@ -2387,6 +2177,341 @@
         "experience": {
           "id": "between1And3",
           "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124270986",
+        "premium": false,
+        "name": "Аналитик данных",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Волоколамское шоссе",
+          "building": "69с2",
+          "lat": 55.817921,
+          "lng": 37.442859,
+          "description": null,
+          "raw": "Москва, Волоколамское шоссе, 69с2",
+          "metro": null,
+          "metro_stations": [],
+          "id": "714365"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-26T11:51:34+0300",
+        "created_at": "2025-08-26T11:51:34+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124270986",
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124270986?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124270986",
+        "relations": [],
+        "employer": {
+          "id": "2392326",
+          "name": "ФК Спартак-Москва",
+          "url": "https://api.hh.ru/employers/2392326",
+          "alternate_url": "https://hh.ru/employer/2392326",
+          "logo_urls": null,
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2392326",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Отличное знание SQL (умение писать оптимизированные запросы). Владение <highlighttext>Python</highlighttext> для анализа и построения ML-моделей. Навыки работы с BI-системами. ",
+          "responsibility": "Работать с базами данных: писать SQL-запросы, интегрировать данные из разных источников. - Настраивать и поддерживать базовые ETL-процессы: участвовать в..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "156",
+            "name": "BI-аналитик, аналитик данных"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124485263",
+        "premium": false,
+        "name": "Системный аналитик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-26T11:21:40+0300",
+        "created_at": "2025-08-26T11:21:40+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124485263",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124485263?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124485263",
+        "relations": [],
+        "employer": {
+          "id": "53368",
+          "name": "Innovative People",
+          "url": "https://api.hh.ru/employers/53368",
+          "alternate_url": "https://hh.ru/employer/53368",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/359281.png",
+            "90": "https://img.hhcdn.ru/employer-logo/1879386.png",
+            "240": "https://img.hhcdn.ru/employer-logo/1879387.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=53368",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт в сфере системного анализа от 4 лет. Знание основных видов требований к ПО, особенностей их выявления и описания. ",
+          "responsibility": "Рефакторинг текущей системы запуска CRM-кампаний на outsource платформе. Разработка и согласование коммуникационного плана запуска кампаний и пилотов. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "148",
+            "name": "Системный аналитик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124500595",
+        "premium": false,
+        "name": "C#/.NET Developer",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": null,
+          "to": 260000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": null,
+          "to": 260000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-26T14:44:42+0300",
+        "created_at": "2025-08-26T14:44:42+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124500595",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124500595?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124500595",
+        "relations": [],
+        "employer": {
+          "id": "598471",
+          "name": "evrone.ru",
+          "url": "https://api.hh.ru/employers/598471",
+          "alternate_url": "https://hh.ru/employer/598471",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1416091.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7284020.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7284021.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=598471",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Стек: C# ASP.Net, PostgreSQL, ClickHouse, Docker, Microservices. Знания С# и ASP.NET Core. Опыт разработки микросервисной архитектуры. Опыт работы c PostgreSQL...",
+          "responsibility": "Премии за привлечение новых сотрудников и новых клиентов."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "По договорённости"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
         },
         "employment": {
           "id": "full",
@@ -2781,233 +2906,6 @@
         "adv_context": null
       },
       {
-        "id": "124495318",
-        "premium": false,
-        "name": "QA инженер (automation)",
-        "department": null,
-        "has_test": false,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": null,
-        "salary_range": null,
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": null,
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-26T13:28:22+0300",
-        "created_at": "2025-08-26T13:28:22+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124495318",
-        "show_logo_in_search": null,
-        "show_contacts": false,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124495318?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124495318",
-        "relations": [],
-        "employer": {
-          "id": "2947917",
-          "name": "БАЗИС",
-          "url": "https://api.hh.ru/employers/2947917",
-          "alternate_url": "https://hh.ru/employer/2947917",
-          "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1392460.png",
-            "90": "https://img.hhcdn.ru/employer-logo/7189623.png",
-            "240": "https://img.hhcdn.ru/employer-logo/7189624.png"
-          },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2947917",
-          "accredited_it_employer": true,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Опыт разработки на языке <highlighttext>python</highlighttext> и его популярных фреймворках от 1-го года. - Понимание процессов QA и тестирования в команде. - ",
-          "responsibility": "Участие в разработке и актуализации имеющихся автотестов платформы, её компонентов и API. - Проведение регрессионного тестирования платформы, её компонентов и API..."
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "remote",
-          "name": "Удаленная работа"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "REMOTE",
-            "name": "Удалённо"
-          }
-        ],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
-        "work_schedule_by_days": [
-          {
-            "id": "FIVE_ON_TWO_OFF",
-            "name": "5/2"
-          }
-        ],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "124",
-            "name": "Тестировщик"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between1And3",
-          "name": "От 1 года до 3 лет"
-        },
-        "employment": {
-          "id": "full",
-          "name": "Полная занятость"
-        },
-        "employment_form": {
-          "id": "FULL",
-          "name": "Полная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
-        "id": "124500595",
-        "premium": false,
-        "name": "C#/.NET Developer",
-        "department": null,
-        "has_test": false,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": {
-          "from": null,
-          "to": 260000,
-          "currency": "RUR",
-          "gross": false
-        },
-        "salary_range": {
-          "from": null,
-          "to": 260000,
-          "currency": "RUR",
-          "gross": false,
-          "mode": {
-            "id": "MONTH",
-            "name": "За месяц"
-          },
-          "frequency": null
-        },
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": null,
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-26T14:44:42+0300",
-        "created_at": "2025-08-26T14:44:42+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124500595",
-        "show_logo_in_search": null,
-        "show_contacts": false,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124500595?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124500595",
-        "relations": [],
-        "employer": {
-          "id": "598471",
-          "name": "evrone.ru",
-          "url": "https://api.hh.ru/employers/598471",
-          "alternate_url": "https://hh.ru/employer/598471",
-          "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1416091.png",
-            "90": "https://img.hhcdn.ru/employer-logo/7284020.png",
-            "240": "https://img.hhcdn.ru/employer-logo/7284021.png"
-          },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=598471",
-          "accredited_it_employer": false,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Стек: C# ASP.Net, PostgreSQL, ClickHouse, Docker, Microservices. Знания С# и ASP.NET Core. Опыт разработки микросервисной архитектуры. Опыт работы c PostgreSQL...",
-          "responsibility": "Премии за привлечение новых сотрудников и новых клиентов."
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "remote",
-          "name": "Удаленная работа"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "REMOTE",
-            "name": "Удалённо"
-          }
-        ],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          },
-          {
-            "id": "FLEXIBLE",
-            "name": "По договорённости"
-          }
-        ],
-        "work_schedule_by_days": [
-          {
-            "id": "FIVE_ON_TWO_OFF",
-            "name": "5/2"
-          },
-          {
-            "id": "FLEXIBLE",
-            "name": "Свободный"
-          }
-        ],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "96",
-            "name": "Программист, разработчик"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between3And6",
-          "name": "От 3 до 6 лет"
-        },
-        "employment": {
-          "id": "full",
-          "name": "Полная занятость"
-        },
-        "employment_form": {
-          "id": "FULL",
-          "name": "Полная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
         "id": "124481558",
         "premium": false,
         "name": "Аналитик данных",
@@ -3157,6 +3055,108 @@
         "experience": {
           "id": "between3And6",
           "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124495318",
+        "premium": false,
+        "name": "QA инженер (automation)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-26T13:28:22+0300",
+        "created_at": "2025-08-26T13:28:22+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124495318",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124495318?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124495318",
+        "relations": [],
+        "employer": {
+          "id": "2947917",
+          "name": "БАЗИС",
+          "url": "https://api.hh.ru/employers/2947917",
+          "alternate_url": "https://hh.ru/employer/2947917",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1392460.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7189623.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7189624.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2947917",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт разработки на языке <highlighttext>python</highlighttext> и его популярных фреймворках от 1-го года. - Понимание процессов QA и тестирования в команде. - ",
+          "responsibility": "Участие в разработке и актуализации имеющихся автотестов платформы, её компонентов и API. - Проведение регрессионного тестирования платформы, её компонентов и API..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "124",
+            "name": "Тестировщик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
         },
         "employment": {
           "id": "full",
@@ -3532,431 +3532,6 @@
         "adv_context": null
       },
       {
-        "id": "124488723",
-        "premium": false,
-        "name": "AI/Backend Developer (Python, AI-интеграции)",
-        "department": null,
-        "has_test": false,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": null,
-        "salary_range": null,
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": {
-          "city": "Москва",
-          "street": "Бутырская улица",
-          "building": "77",
-          "lat": 55.803924,
-          "lng": 37.582251,
-          "description": null,
-          "raw": "Москва, Бутырская улица, 77",
-          "metro": {
-            "station_name": "Дмитровская",
-            "line_name": "Серпуховско-Тимирязевская",
-            "station_id": "9.35",
-            "line_id": "9",
-            "lat": 55.808056,
-            "lng": 37.581734
-          },
-          "metro_stations": [
-            {
-              "station_name": "Дмитровская",
-              "line_name": "Серпуховско-Тимирязевская",
-              "station_id": "9.35",
-              "line_id": "9",
-              "lat": 55.808056,
-              "lng": 37.581734
-            },
-            {
-              "station_name": "Дмитровская",
-              "line_name": "МЦД-2",
-              "station_id": "132.723",
-              "line_id": "132",
-              "lat": 55.808056,
-              "lng": 37.581734
-            },
-            {
-              "station_name": "Савёловская",
-              "line_name": "Серпуховско-Тимирязевская",
-              "station_id": "9.128",
-              "line_id": "9",
-              "lat": 55.794054,
-              "lng": 37.587163
-            },
-            {
-              "station_name": "Савёловская",
-              "line_name": "Большая кольцевая линия",
-              "station_id": "97.685",
-              "line_id": "97",
-              "lat": 55.794054,
-              "lng": 37.587163
-            }
-          ],
-          "id": "19095555"
-        },
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-26T12:01:23+0300",
-        "created_at": "2025-08-26T12:01:23+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124488723",
-        "show_logo_in_search": null,
-        "show_contacts": false,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124488723?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124488723",
-        "relations": [],
-        "employer": {
-          "id": "40754",
-          "name": "Далее",
-          "url": "https://api.hh.ru/employers/40754",
-          "alternate_url": "https://hh.ru/employer/40754",
-          "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1308705.png",
-            "90": "https://img.hhcdn.ru/employer-logo/6855082.png",
-            "240": "https://img.hhcdn.ru/employer-logo/6855083.png"
-          },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=40754",
-          "accredited_it_employer": true,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Уверенный <highlighttext>Python</highlighttext> и PyTorch/TensorFlow, понимание принципов алгоритмов (GBDT, CNN, transformers). - Знание современных AI фреймворков и библиотек ( LangChain, LlamaIndeх и...",
-          "responsibility": "Разрабатывать backend-сервисы и микросервисы на <highlighttext>Python</highlighttext>. - Настраивать и использовать API (OpenAI, Claude, YandexGPT и др.), строить отказоустойчивые пайплайны. - "
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "remote",
-          "name": "Удаленная работа"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "ON_SITE",
-            "name": "На месте работодателя"
-          },
-          {
-            "id": "REMOTE",
-            "name": "Удалённо"
-          },
-          {
-            "id": "HYBRID",
-            "name": "Гибрид"
-          }
-        ],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
-        "work_schedule_by_days": [
-          {
-            "id": "FIVE_ON_TWO_OFF",
-            "name": "5/2"
-          }
-        ],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "96",
-            "name": "Программист, разработчик"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between3And6",
-          "name": "От 3 до 6 лет"
-        },
-        "employment": {
-          "id": "full",
-          "name": "Полная занятость"
-        },
-        "employment_form": {
-          "id": "FULL",
-          "name": "Полная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
-        "id": "124498633",
-        "premium": false,
-        "name": "Системный аналитик (e-commerce)",
-        "department": null,
-        "has_test": false,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": null,
-        "salary_range": null,
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": {
-          "city": "Москва",
-          "street": "Ленинградский проспект",
-          "building": "15с1",
-          "lat": 55.781489,
-          "lng": 37.572118,
-          "description": null,
-          "raw": "Москва, Ленинградский проспект, 15с1",
-          "metro": {
-            "station_name": "Белорусская",
-            "line_name": "Замоскворецкая",
-            "station_id": "2.19",
-            "line_id": "2",
-            "lat": 55.777439,
-            "lng": 37.582107
-          },
-          "metro_stations": [
-            {
-              "station_name": "Белорусская",
-              "line_name": "Замоскворецкая",
-              "station_id": "2.19",
-              "line_id": "2",
-              "lat": 55.777439,
-              "lng": 37.582107
-            }
-          ],
-          "id": "699787"
-        },
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-26T14:13:17+0300",
-        "created_at": "2025-08-26T14:13:17+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124498633",
-        "show_logo_in_search": null,
-        "show_contacts": false,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124498633?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124498633",
-        "relations": [],
-        "employer": {
-          "id": "49700",
-          "name": "RoRe Group",
-          "url": "https://api.hh.ru/employers/49700",
-          "alternate_url": "https://hh.ru/employer/49700",
-          "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1266949.png",
-            "90": "https://img.hhcdn.ru/employer-logo/6688114.png",
-            "240": "https://img.hhcdn.ru/employer-logo/6688115.png"
-          },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=49700",
-          "accredited_it_employer": false,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Интерес к AI/ML-проектам и желание разбираться в работе моделей, алгоритмов и их применении в прод. Знание <highlighttext>Python</highlighttext>. ",
-          "responsibility": "Аналитика эффективности рекламы: Формализация требований для расчета ROI/ROAS/ROMI, выявления топ-товаров, анализа конкурентных полок. Валидация, тестирование и интерпретация..."
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "remote",
-          "name": "Удаленная работа"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "REMOTE",
-            "name": "Удалённо"
-          },
-          {
-            "id": "HYBRID",
-            "name": "Гибрид"
-          }
-        ],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
-        "work_schedule_by_days": [
-          {
-            "id": "FIVE_ON_TWO_OFF",
-            "name": "5/2"
-          }
-        ],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "148",
-            "name": "Системный аналитик"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between3And6",
-          "name": "От 3 до 6 лет"
-        },
-        "employment": {
-          "id": "full",
-          "name": "Полная занятость"
-        },
-        "employment_form": {
-          "id": "FULL",
-          "name": "Полная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
-        "id": "124460840",
-        "premium": false,
-        "name": "DevOps-инженер",
-        "department": null,
-        "has_test": false,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": {
-          "from": 40000,
-          "to": 50000,
-          "currency": "RUR",
-          "gross": false
-        },
-        "salary_range": {
-          "from": 40000,
-          "to": 50000,
-          "currency": "RUR",
-          "gross": false,
-          "mode": {
-            "id": "MONTH",
-            "name": "За месяц"
-          },
-          "frequency": {
-            "id": "TWICE_PER_MONTH",
-            "name": "Два раза в месяц"
-          }
-        },
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": {
-          "city": "Москва",
-          "street": "улица Ленинская Слобода",
-          "building": "26",
-          "lat": 55.710129,
-          "lng": 37.65461,
-          "description": null,
-          "raw": "Москва, улица Ленинская Слобода, 26",
-          "metro": null,
-          "metro_stations": [],
-          "id": "13040828"
-        },
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-25T18:26:54+0300",
-        "created_at": "2025-08-25T18:26:54+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124460840",
-        "show_logo_in_search": null,
-        "show_contacts": true,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124460840?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124460840",
-        "relations": [],
-        "employer": {
-          "id": "9462746",
-          "name": "Цикл-Он",
-          "url": "https://api.hh.ru/employers/9462746",
-          "alternate_url": "https://hh.ru/employer/9462746",
-          "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1078843.png",
-            "90": "https://img.hhcdn.ru/employer-logo/5936001.png",
-            "240": "https://img.hhcdn.ru/employer-logo/5936002.png"
-          },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=9462746",
-          "accredited_it_employer": false,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Уверенно владеет одним из облачных провайдеров (желательно Yandex Cloud). Уверенно пишет скрипты на Bash/<highlighttext>Python</highlighttext>/Go. Умение работать с Docker. ",
-          "responsibility": "Развитие и поддержание CI/CD процессов для быстрого и надежного развертывания приложений. Автоматизация процессов сборки, тестирования и деплоя (наша цель..."
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "remote",
-          "name": "Удаленная работа"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "REMOTE",
-            "name": "Удалённо"
-          }
-        ],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
-        "work_schedule_by_days": [
-          {
-            "id": "FIVE_ON_TWO_OFF",
-            "name": "5/2"
-          }
-        ],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "160",
-            "name": "DevOps-инженер"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between1And3",
-          "name": "От 1 года до 3 лет"
-        },
-        "employment": {
-          "id": "part",
-          "name": "Частичная занятость"
-        },
-        "employment_form": {
-          "id": "PART",
-          "name": "Частичная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
         "id": "124026261",
         "premium": false,
         "name": "Веб-разработчик",
@@ -4110,6 +3685,298 @@
         "experience": {
           "id": "between1And3",
           "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124460840",
+        "premium": false,
+        "name": "DevOps-инженер",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 40000,
+          "to": 50000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 40000,
+          "to": 50000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "улица Ленинская Слобода",
+          "building": "26",
+          "lat": 55.710129,
+          "lng": 37.65461,
+          "description": null,
+          "raw": "Москва, улица Ленинская Слобода, 26",
+          "metro": null,
+          "metro_stations": [],
+          "id": "13040828"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-25T18:26:54+0300",
+        "created_at": "2025-08-25T18:26:54+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124460840",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124460840?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124460840",
+        "relations": [],
+        "employer": {
+          "id": "9462746",
+          "name": "Цикл-Он",
+          "url": "https://api.hh.ru/employers/9462746",
+          "alternate_url": "https://hh.ru/employer/9462746",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1078843.png",
+            "90": "https://img.hhcdn.ru/employer-logo/5936001.png",
+            "240": "https://img.hhcdn.ru/employer-logo/5936002.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=9462746",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Уверенно владеет одним из облачных провайдеров (желательно Yandex Cloud). Уверенно пишет скрипты на Bash/<highlighttext>Python</highlighttext>/Go. Умение работать с Docker. ",
+          "responsibility": "Развитие и поддержание CI/CD процессов для быстрого и надежного развертывания приложений. Автоматизация процессов сборки, тестирования и деплоя (наша цель..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124488723",
+        "premium": false,
+        "name": "AI/Backend Developer (Python, AI-интеграции)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Бутырская улица",
+          "building": "77",
+          "lat": 55.803924,
+          "lng": 37.582251,
+          "description": null,
+          "raw": "Москва, Бутырская улица, 77",
+          "metro": {
+            "station_name": "Дмитровская",
+            "line_name": "Серпуховско-Тимирязевская",
+            "station_id": "9.35",
+            "line_id": "9",
+            "lat": 55.808056,
+            "lng": 37.581734
+          },
+          "metro_stations": [
+            {
+              "station_name": "Дмитровская",
+              "line_name": "Серпуховско-Тимирязевская",
+              "station_id": "9.35",
+              "line_id": "9",
+              "lat": 55.808056,
+              "lng": 37.581734
+            },
+            {
+              "station_name": "Дмитровская",
+              "line_name": "МЦД-2",
+              "station_id": "132.723",
+              "line_id": "132",
+              "lat": 55.808056,
+              "lng": 37.581734
+            },
+            {
+              "station_name": "Савёловская",
+              "line_name": "Серпуховско-Тимирязевская",
+              "station_id": "9.128",
+              "line_id": "9",
+              "lat": 55.794054,
+              "lng": 37.587163
+            },
+            {
+              "station_name": "Савёловская",
+              "line_name": "Большая кольцевая линия",
+              "station_id": "97.685",
+              "line_id": "97",
+              "lat": 55.794054,
+              "lng": 37.587163
+            }
+          ],
+          "id": "19095555"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-26T12:01:23+0300",
+        "created_at": "2025-08-26T12:01:23+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124488723",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124488723?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124488723",
+        "relations": [],
+        "employer": {
+          "id": "40754",
+          "name": "Далее",
+          "url": "https://api.hh.ru/employers/40754",
+          "alternate_url": "https://hh.ru/employer/40754",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1308705.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6855082.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6855083.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=40754",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Уверенный <highlighttext>Python</highlighttext> и PyTorch/TensorFlow, понимание принципов алгоритмов (GBDT, CNN, transformers). - Знание современных AI фреймворков и библиотек ( LangChain, LlamaIndeх и...",
+          "responsibility": "Разрабатывать backend-сервисы и микросервисы на <highlighttext>Python</highlighttext>. - Настраивать и использовать API (OpenAI, Claude, YandexGPT и др.), строить отказоустойчивые пайплайны. - "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
         },
         "employment": {
           "id": "full",
@@ -4348,6 +4215,139 @@
         "adv_context": null
       },
       {
+        "id": "124498633",
+        "premium": false,
+        "name": "Системный аналитик (e-commerce)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Ленинградский проспект",
+          "building": "15с1",
+          "lat": 55.781489,
+          "lng": 37.572118,
+          "description": null,
+          "raw": "Москва, Ленинградский проспект, 15с1",
+          "metro": {
+            "station_name": "Белорусская",
+            "line_name": "Замоскворецкая",
+            "station_id": "2.19",
+            "line_id": "2",
+            "lat": 55.777439,
+            "lng": 37.582107
+          },
+          "metro_stations": [
+            {
+              "station_name": "Белорусская",
+              "line_name": "Замоскворецкая",
+              "station_id": "2.19",
+              "line_id": "2",
+              "lat": 55.777439,
+              "lng": 37.582107
+            }
+          ],
+          "id": "699787"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-26T14:13:17+0300",
+        "created_at": "2025-08-26T14:13:17+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124498633",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124498633?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124498633",
+        "relations": [],
+        "employer": {
+          "id": "49700",
+          "name": "RoRe Group",
+          "url": "https://api.hh.ru/employers/49700",
+          "alternate_url": "https://hh.ru/employer/49700",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1266949.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6688114.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6688115.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=49700",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Интерес к AI/ML-проектам и желание разбираться в работе моделей, алгоритмов и их применении в прод. Знание <highlighttext>Python</highlighttext>. ",
+          "responsibility": "Аналитика эффективности рекламы: Формализация требований для расчета ROI/ROAS/ROMI, выявления топ-товаров, анализа конкурентных полок. Валидация, тестирование и интерпретация..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "148",
+            "name": "Системный аналитик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
         "id": "124461212",
         "premium": false,
         "name": "Аналитик данных, Ozon Fresh",
@@ -4414,6 +4414,123 @@
         "accept_temporary": false,
         "fly_in_fly_out_duration": [],
         "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "156",
+            "name": "BI-аналитик, аналитик данных"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124496893",
+        "premium": false,
+        "name": "Data аналитик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Душанбе",
+          "street": null,
+          "building": null,
+          "lat": 38.57627,
+          "lng": 68.77972,
+          "description": null,
+          "raw": "Душанбе",
+          "metro": null,
+          "metro_stations": [],
+          "id": "18808323"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-26T13:51:13+0300",
+        "created_at": "2025-08-26T13:51:13+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124496893",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124496893?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124496893",
+        "relations": [],
+        "employer": {
+          "id": "3575537",
+          "name": "Банк Эсхата",
+          "url": "https://api.hh.ru/employers/3575537",
+          "alternate_url": "https://hh.ru/employer/3575537",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1315311.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6881498.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6881499.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3575537",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт с BI-системами (Power BI, Tableau). Опыт автоматизации отчетности. Свободное владение Excel. <highlighttext>Python</highlighttext> — будет преимуществом. Знание статистики, математического аппарата...",
+          "responsibility": "Расчет ключевых метрик программы. Проведение A/B тестов новых механик, акций. Подготовка дашбордов и аналитики для управленческих решений. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
           {
             "id": "REMOTE",
             "name": "Удалённо"
@@ -4848,123 +4965,6 @@
         "adv_context": null
       },
       {
-        "id": "124496893",
-        "premium": false,
-        "name": "Data аналитик",
-        "department": null,
-        "has_test": false,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": null,
-        "salary_range": null,
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": {
-          "city": "Душанбе",
-          "street": null,
-          "building": null,
-          "lat": 38.57627,
-          "lng": 68.77972,
-          "description": null,
-          "raw": "Душанбе",
-          "metro": null,
-          "metro_stations": [],
-          "id": "18808323"
-        },
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-26T13:51:13+0300",
-        "created_at": "2025-08-26T13:51:13+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124496893",
-        "show_logo_in_search": null,
-        "show_contacts": false,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124496893?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124496893",
-        "relations": [],
-        "employer": {
-          "id": "3575537",
-          "name": "Банк Эсхата",
-          "url": "https://api.hh.ru/employers/3575537",
-          "alternate_url": "https://hh.ru/employer/3575537",
-          "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1315311.png",
-            "90": "https://img.hhcdn.ru/employer-logo/6881498.png",
-            "240": "https://img.hhcdn.ru/employer-logo/6881499.png"
-          },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3575537",
-          "accredited_it_employer": false,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Опыт с BI-системами (Power BI, Tableau). Опыт автоматизации отчетности. Свободное владение Excel. <highlighttext>Python</highlighttext> — будет преимуществом. Знание статистики, математического аппарата...",
-          "responsibility": "Расчет ключевых метрик программы. Проведение A/B тестов новых механик, акций. Подготовка дашбордов и аналитики для управленческих решений. "
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "remote",
-          "name": "Удаленная работа"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "ON_SITE",
-            "name": "На месте работодателя"
-          },
-          {
-            "id": "REMOTE",
-            "name": "Удалённо"
-          }
-        ],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
-        "work_schedule_by_days": [
-          {
-            "id": "FIVE_ON_TWO_OFF",
-            "name": "5/2"
-          }
-        ],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "156",
-            "name": "BI-аналитик, аналитик данных"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between1And3",
-          "name": "От 1 года до 3 лет"
-        },
-        "employment": {
-          "id": "full",
-          "name": "Полная занятость"
-        },
-        "employment_form": {
-          "id": "FULL",
-          "name": "Полная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
         "id": "124461603",
         "premium": false,
         "name": "Backend-разработчик TMA",
@@ -5305,6 +5305,258 @@
         "adv_context": null
       },
       {
+        "id": "124481209",
+        "premium": false,
+        "name": "Аналитик данных",
+        "department": {
+          "id": "mailru-15478-ii",
+          "name": "VK, AI VK"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Садовническая улица",
+          "building": "82с2",
+          "lat": 55.73611520016595,
+          "lng": 37.64183026983519,
+          "description": null,
+          "raw": "Москва, Садовническая улица, 82с2",
+          "metro": null,
+          "metro_stations": [],
+          "id": "11729271"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-26T12:20:36+0300",
+        "created_at": "2025-08-26T12:20:36+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124481209",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124481209?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124481209",
+        "relations": [],
+        "employer": {
+          "id": "15478",
+          "name": "VK",
+          "url": "https://api.hh.ru/employers/15478",
+          "alternate_url": "https://hh.ru/employer/15478",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1297111.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6808730.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6808731.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=15478",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы с данными с помощью базовых инструментов (SQL, <highlighttext>Python</highlighttext> + базовые библиотеки, любой BI-инструмент). Системное мышление, умение быстро...",
+          "responsibility": "Аналитику данных предстоит заниматься также построением эвристик/сегментаций, чтобы наиболее гибко фильтровать по интересам наших пользователей. Задачи. Коммуникации с контрагентами..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "156",
+            "name": "BI-аналитик, аналитик данных"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124486149",
+        "premium": false,
+        "name": "Продуктовый аналитик",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Лесная улица",
+          "building": "3",
+          "lat": 55.777251,
+          "lng": 37.586006,
+          "description": null,
+          "raw": "Москва, Лесная улица, 3",
+          "metro": {
+            "station_name": "Белорусская",
+            "line_name": "Кольцевая",
+            "station_id": "5.20",
+            "line_id": "5",
+            "lat": 55.775179,
+            "lng": 37.582303
+          },
+          "metro_stations": [
+            {
+              "station_name": "Белорусская",
+              "line_name": "Кольцевая",
+              "station_id": "5.20",
+              "line_id": "5",
+              "lat": 55.775179,
+              "lng": 37.582303
+            }
+          ],
+          "id": "1735888"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-26T11:31:34+0300",
+        "created_at": "2025-08-26T11:31:34+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124486149",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124486149?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124486149",
+        "relations": [],
+        "employer": {
+          "id": "223129",
+          "name": "Лига Ставок",
+          "url": "https://api.hh.ru/employers/223129",
+          "alternate_url": "https://hh.ru/employer/223129",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1227626.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/6530945.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/6530946.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=223129",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Знание SQL (оконные функции, объединения данных из различных баз данных, CTE, опыт построения витрин данных). Знание <highlighttext>Python</highlighttext> (pandas, seaborn, sklearn...",
+          "responsibility": "Искать точки роста через исследования данных поведения пользователей в продукте. Генерировать гипотезы и проверять их. Объяснять команде полученные результаты и..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "164",
+            "name": "Продуктовый аналитик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
         "id": "124283532",
         "premium": false,
         "name": "Старший специалист по тестированию",
@@ -5560,121 +5812,6 @@
         "adv_context": null
       },
       {
-        "id": "124481209",
-        "premium": false,
-        "name": "Аналитик данных",
-        "department": {
-          "id": "mailru-15478-ii",
-          "name": "VK, AI VK"
-        },
-        "has_test": false,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": null,
-        "salary_range": null,
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": {
-          "city": "Москва",
-          "street": "Садовническая улица",
-          "building": "82с2",
-          "lat": 55.73611520016595,
-          "lng": 37.64183026983519,
-          "description": null,
-          "raw": "Москва, Садовническая улица, 82с2",
-          "metro": null,
-          "metro_stations": [],
-          "id": "11729271"
-        },
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-26T12:20:36+0300",
-        "created_at": "2025-08-26T12:20:36+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124481209",
-        "branding": {
-          "type": "MAKEUP",
-          "tariff": null
-        },
-        "show_logo_in_search": true,
-        "show_contacts": false,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124481209?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124481209",
-        "relations": [],
-        "employer": {
-          "id": "15478",
-          "name": "VK",
-          "url": "https://api.hh.ru/employers/15478",
-          "alternate_url": "https://hh.ru/employer/15478",
-          "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1297111.png",
-            "90": "https://img.hhcdn.ru/employer-logo/6808730.png",
-            "240": "https://img.hhcdn.ru/employer-logo/6808731.png"
-          },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=15478",
-          "accredited_it_employer": true,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Опыт работы с данными с помощью базовых инструментов (SQL, <highlighttext>Python</highlighttext> + базовые библиотеки, любой BI-инструмент). Системное мышление, умение быстро...",
-          "responsibility": "Аналитику данных предстоит заниматься также построением эвристик/сегментаций, чтобы наиболее гибко фильтровать по интересам наших пользователей. Задачи. Коммуникации с контрагентами..."
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "fullDay",
-          "name": "Полный день"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
-        "work_schedule_by_days": [
-          {
-            "id": "FIVE_ON_TWO_OFF",
-            "name": "5/2"
-          }
-        ],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "156",
-            "name": "BI-аналитик, аналитик данных"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between3And6",
-          "name": "От 3 до 6 лет"
-        },
-        "employment": {
-          "id": "full",
-          "name": "Полная занятость"
-        },
-        "employment_form": {
-          "id": "FULL",
-          "name": "Полная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
         "id": "124470972",
         "premium": false,
         "name": "Middle / Senior Python developer (Django)",
@@ -5836,143 +5973,6 @@
         "adv_context": null
       },
       {
-        "id": "124486149",
-        "premium": false,
-        "name": "Продуктовый аналитик",
-        "department": null,
-        "has_test": true,
-        "response_letter_required": false,
-        "area": {
-          "id": "1",
-          "name": "Москва",
-          "url": "https://api.hh.ru/areas/1"
-        },
-        "salary": null,
-        "salary_range": null,
-        "type": {
-          "id": "open",
-          "name": "Открытая"
-        },
-        "address": {
-          "city": "Москва",
-          "street": "Лесная улица",
-          "building": "3",
-          "lat": 55.777251,
-          "lng": 37.586006,
-          "description": null,
-          "raw": "Москва, Лесная улица, 3",
-          "metro": {
-            "station_name": "Белорусская",
-            "line_name": "Кольцевая",
-            "station_id": "5.20",
-            "line_id": "5",
-            "lat": 55.775179,
-            "lng": 37.582303
-          },
-          "metro_stations": [
-            {
-              "station_name": "Белорусская",
-              "line_name": "Кольцевая",
-              "station_id": "5.20",
-              "line_id": "5",
-              "lat": 55.775179,
-              "lng": 37.582303
-            }
-          ],
-          "id": "1735888"
-        },
-        "response_url": null,
-        "sort_point_distance": null,
-        "published_at": "2025-08-26T11:31:34+0300",
-        "created_at": "2025-08-26T11:31:34+0300",
-        "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124486149",
-        "branding": {
-          "type": "MAKEUP",
-          "tariff": null
-        },
-        "show_logo_in_search": true,
-        "show_contacts": false,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124486149?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124486149",
-        "relations": [],
-        "employer": {
-          "id": "223129",
-          "name": "Лига Ставок",
-          "url": "https://api.hh.ru/employers/223129",
-          "alternate_url": "https://hh.ru/employer/223129",
-          "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1227626.jpg",
-            "90": "https://img.hhcdn.ru/employer-logo/6530945.jpeg",
-            "240": "https://img.hhcdn.ru/employer-logo/6530946.jpeg"
-          },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=223129",
-          "accredited_it_employer": false,
-          "trusted": true
-        },
-        "snippet": {
-          "requirement": "Знание SQL (оконные функции, объединения данных из различных баз данных, CTE, опыт построения витрин данных). Знание <highlighttext>Python</highlighttext> (pandas, seaborn, sklearn...",
-          "responsibility": "Искать точки роста через исследования данных поведения пользователей в продукте. Генерировать гипотезы и проверять их. Объяснять команде полученные результаты и..."
-        },
-        "contacts": null,
-        "schedule": {
-          "id": "fullDay",
-          "name": "Полный день"
-        },
-        "working_days": [],
-        "working_time_intervals": [],
-        "working_time_modes": [],
-        "accept_temporary": false,
-        "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "ON_SITE",
-            "name": "На месте работодателя"
-          },
-          {
-            "id": "HYBRID",
-            "name": "Гибрид"
-          }
-        ],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
-        "work_schedule_by_days": [
-          {
-            "id": "FIVE_ON_TWO_OFF",
-            "name": "5/2"
-          }
-        ],
-        "night_shifts": false,
-        "professional_roles": [
-          {
-            "id": "164",
-            "name": "Продуктовый аналитик"
-          }
-        ],
-        "accept_incomplete_resumes": false,
-        "experience": {
-          "id": "between1And3",
-          "name": "От 1 года до 3 лет"
-        },
-        "employment": {
-          "id": "full",
-          "name": "Полная занятость"
-        },
-        "employment_form": {
-          "id": "FULL",
-          "name": "Полная"
-        },
-        "internship": false,
-        "adv_response_url": null,
-        "is_adv_vacancy": false,
-        "adv_context": null
-      },
-      {
         "id": "124065574",
         "premium": false,
         "name": "Разработчик",
@@ -6088,9 +6088,9 @@
         "adv_context": null
       },
       {
-        "id": "124448840",
+        "id": "124490544",
         "premium": false,
-        "name": "Junior Data Analyst (Python) / Аналитик данных",
+        "name": "Senior Quality Assurance Engineer",
         "department": null,
         "has_test": false,
         "response_letter_required": false,
@@ -6099,60 +6099,53 @@
           "name": "Москва",
           "url": "https://api.hh.ru/areas/1"
         },
-        "salary": {
-          "from": 80000,
-          "to": 100000,
-          "currency": "RUR",
-          "gross": false
-        },
-        "salary_range": {
-          "from": 80000,
-          "to": 100000,
-          "currency": "RUR",
-          "gross": false,
-          "mode": {
-            "id": "MONTH",
-            "name": "За месяц"
-          },
-          "frequency": {
-            "id": "TWICE_PER_MONTH",
-            "name": "Два раза в месяц"
-          }
-        },
+        "salary": null,
+        "salary_range": null,
         "type": {
           "id": "open",
           "name": "Открытая"
         },
-        "address": null,
+        "address": {
+          "city": "Минск",
+          "street": "проспект Победителей",
+          "building": "7А",
+          "lat": 53.9077,
+          "lng": 27.549731,
+          "description": null,
+          "raw": "Минск, проспект Победителей, 7А",
+          "metro": null,
+          "metro_stations": [],
+          "id": "17945705"
+        },
         "response_url": null,
         "sort_point_distance": null,
-        "published_at": "2025-08-25T15:46:11+0300",
-        "created_at": "2025-08-25T15:46:11+0300",
+        "published_at": "2025-08-26T12:24:27+0300",
+        "created_at": "2025-08-26T12:24:27+0300",
         "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124448840",
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124490544",
         "show_logo_in_search": null,
-        "show_contacts": false,
+        "show_contacts": true,
         "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124448840?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124448840",
+        "url": "https://api.hh.ru/vacancies/124490544?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124490544",
         "relations": [],
         "employer": {
-          "id": "2223982",
-          "name": "Rubbles",
-          "url": "https://api.hh.ru/employers/2223982",
-          "alternate_url": "https://hh.ru/employer/2223982",
+          "id": "11912401",
+          "name": "Интеграция Дистрибуция Проекты",
+          "url": "https://api.hh.ru/employers/11912401",
+          "alternate_url": "https://hh.ru/employer/11912401",
           "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1410664.png",
-            "90": "https://img.hhcdn.ru/employer-logo/7262316.png",
-            "240": "https://img.hhcdn.ru/employer-logo/7262317.png"
+            "original": "https://img.hhcdn.ru/employer-logo-original/1408610.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7254100.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7254101.png"
           },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2223982",
-          "accredited_it_employer": true,
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=11912401",
+          "accredited_it_employer": false,
           "trusted": true
         },
         "snippet": {
-          "requirement": "<highlighttext>Python</highlighttext> на уровне уверенного пользователя (pandas, numpy, другие стандартные питон-библиотеки). Базовые навыки работы с табличными данными, знание SQL. ",
-          "responsibility": "Разобраться в данных, сделать из них правильные выводы. Построить качественные предположения/гипотезы и проверить их. Понять причинно-следственные связи в..."
+          "requirement": "...и SIP call flow. Навыки тестирования C++-бэкенда или знание CI для C++. Желательно:  Postman, gRPCurl, <highlighttext>Python</highlighttext> (pytest), Robot Framework.",
+          "responsibility": "Цели тестирования: — Проверить поведение сервиса в различных условиях (сети, шумы, масштаб). — Поддерживать качество в разработке C++ и системной логики (SIP..."
         },
         "contacts": null,
         "schedule": {
@@ -6162,12 +6155,16 @@
         "working_days": [],
         "working_time_intervals": [],
         "working_time_modes": [],
-        "accept_temporary": true,
+        "accept_temporary": false,
         "fly_in_fly_out_duration": [],
         "work_format": [
           {
             "id": "REMOTE",
             "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
           }
         ],
         "working_hours": [
@@ -6185,14 +6182,14 @@
         "night_shifts": false,
         "professional_roles": [
           {
-            "id": "156",
-            "name": "BI-аналитик, аналитик данных"
+            "id": "124",
+            "name": "Тестировщик"
           }
         ],
         "accept_incomplete_resumes": false,
         "experience": {
-          "id": "between1And3",
-          "name": "От 1 года до 3 лет"
+          "id": "moreThan6",
+          "name": "Более 6 лет"
         },
         "employment": {
           "id": "full",
@@ -6208,8 +6205,8 @@
         "adv_context": null
       }
     ],
-    "found": 503,
-    "pages": 11,
+    "found": 498,
+    "pages": 10,
     "page": 0,
     "per_page": 50,
     "clusters": null,
