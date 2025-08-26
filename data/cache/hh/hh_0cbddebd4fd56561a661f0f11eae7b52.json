@@ -1,4 +1,5 @@
 {
+  "timestamp": 1756199480.9668784,
   "meta": {
     "params": {
       "area": 1,
@@ -13,14 +14,14 @@
   "data": {
     "items": [
       {
-        "id": "124412004",
+        "id": "124461212",
         "premium": false,
-        "name": "Стажёр-Data Engineer, команда MLOps, Ozon Tech",
+        "name": "Аналитик данных, Ozon Fresh",
         "department": {
           "id": "ozonru-2180-dev",
           "name": "Ozon Информационные технологии"
         },
-        "has_test": true,
+        "has_test": false,
         "response_letter_required": false,
         "area": {
           "id": "1",
@@ -33,56 +34,13 @@
           "id": "open",
           "name": "Открытая"
         },
-        "address": {
-          "city": "Москва",
-          "street": "Пресненская набережная",
-          "building": "10",
-          "lat": 55.74723295660558,
-          "lng": 37.536558290665916,
-          "description": null,
-          "raw": "Москва, Пресненская набережная, 10",
-          "metro": {
-            "station_name": "Деловой центр",
-            "line_name": "Большая кольцевая линия",
-            "station_id": "97.603",
-            "line_id": "97",
-            "lat": 55.7491,
-            "lng": 37.5395
-          },
-          "metro_stations": [
-            {
-              "station_name": "Деловой центр",
-              "line_name": "Большая кольцевая линия",
-              "station_id": "97.603",
-              "line_id": "97",
-              "lat": 55.7491,
-              "lng": 37.5395
-            },
-            {
-              "station_name": "Деловой центр",
-              "line_name": "Солнцевская",
-              "station_id": "133.468",
-              "line_id": "133",
-              "lat": 55.7491,
-              "lng": 37.5395
-            },
-            {
-              "station_name": "Москва-Сити",
-              "line_name": "Филевская",
-              "station_id": "4.179",
-              "line_id": "4",
-              "lat": 55.748056,
-              "lng": 37.532778
-            }
-          ],
-          "id": "1522426"
-        },
+        "address": null,
         "response_url": null,
         "sort_point_distance": null,
-        "published_at": "2025-08-25T08:01:00+0300",
-        "created_at": "2025-08-25T08:01:00+0300",
+        "published_at": "2025-08-25T18:47:30+0300",
+        "created_at": "2025-08-25T18:47:30+0300",
         "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124412004",
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124461212",
         "branding": {
           "type": "MAKEUP",
           "tariff": null
@@ -90,8 +48,8 @@
         "show_logo_in_search": true,
         "show_contacts": false,
         "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124412004?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124412004",
+        "url": "https://api.hh.ru/vacancies/124461212?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124461212",
         "relations": [],
         "employer": {
           "id": "2180",
@@ -108,13 +66,13 @@
           "trusted": true
         },
         "snippet": {
-          "requirement": "Хорошее владение <highlighttext>Python</highlighttext>. Хорошие навыки написания SQL запросов. Будет плюсом: Учебный или коммерческий опыт работы с pyspark / hadoop. ",
-          "responsibility": "Создавать стабильные отказоустойчивые и масштабируемые системы обработки данных. Писать регрессионные тесты (в разработке используем TDD). Создавать и валидировать прототипы решений. "
+          "requirement": "Уверенное владение SQL на уровне написания сложных запросов. Уверенное владение <highlighttext>Python</highlighttext> для обработки и анализа данных. Опыт визуализации данных и...",
+          "responsibility": "Разработка регулярной отчетности по ключевым показателям бизнеса. Подготовка и анализ A/B-тестов. Оптимизация существующих ETL-процессов. Различные ad-hoc..."
         },
         "contacts": null,
         "schedule": {
-          "id": "fullDay",
-          "name": "Полный день"
+          "id": "remote",
+          "name": "Удаленная работа"
         },
         "working_days": [],
         "working_time_intervals": [],
@@ -123,12 +81,8 @@
         "fly_in_fly_out_duration": [],
         "work_format": [
           {
-            "id": "ON_SITE",
-            "name": "На месте работодателя"
-          },
-          {
-            "id": "HYBRID",
-            "name": "Гибрид"
+            "id": "REMOTE",
+            "name": "Удалённо"
           }
         ],
         "working_hours": [
@@ -146,14 +100,14 @@
         "night_shifts": false,
         "professional_roles": [
           {
-            "id": "96",
-            "name": "Программист, разработчик"
+            "id": "156",
+            "name": "BI-аналитик, аналитик данных"
           }
         ],
         "accept_incomplete_resumes": false,
         "experience": {
-          "id": "noExperience",
-          "name": "Нет опыта"
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
         },
         "employment": {
           "id": "full",
@@ -163,14 +117,14 @@
           "id": "FULL",
           "name": "Полная"
         },
-        "internship": true,
+        "internship": false,
         "adv_response_url": null,
         "is_adv_vacancy": false,
         "adv_context": null
       }
     ],
-    "found": 7,
-    "pages": 7,
+    "found": 9,
+    "pages": 9,
     "page": 0,
     "per_page": 1,
     "clusters": null,

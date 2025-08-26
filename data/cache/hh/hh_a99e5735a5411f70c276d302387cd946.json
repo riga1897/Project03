@@ -1,4 +1,5 @@
 {
+  "timestamp": 1756199473.060643,
   "meta": {
     "params": {
       "area": 1,
@@ -13,12 +14,12 @@
   "data": {
     "items": [
       {
-        "id": "124437540",
+        "id": "124461175",
         "premium": false,
-        "name": "DevSecOps - инженер",
+        "name": "Аналитик БКИ",
         "department": {
-          "id": "78638-78638-safety",
-          "name": "Т-Банк. ИТ. Информационная безопасность"
+          "id": "78638-78638-infrast",
+          "name": "Т-Банк. ИТ. Инфраструктура"
         },
         "has_test": false,
         "response_letter_required": false,
@@ -33,18 +34,60 @@
           "id": "open",
           "name": "Открытая"
         },
-        "address": null,
+        "address": {
+          "city": "Москва",
+          "street": "улица Грузинский Вал",
+          "building": "7",
+          "lat": 55.774174568296736,
+          "lng": 37.57752064550758,
+          "description": null,
+          "raw": "Москва, улица Грузинский Вал, 7",
+          "metro": {
+            "station_name": "Белорусская",
+            "line_name": "Кольцевая",
+            "station_id": "5.20",
+            "line_id": "5",
+            "lat": 55.775179,
+            "lng": 37.582303
+          },
+          "metro_stations": [
+            {
+              "station_name": "Белорусская",
+              "line_name": "Кольцевая",
+              "station_id": "5.20",
+              "line_id": "5",
+              "lat": 55.775179,
+              "lng": 37.582303
+            },
+            {
+              "station_name": "Белорусская",
+              "line_name": "МЦД-4",
+              "station_id": "136.894",
+              "line_id": "136",
+              "lat": 55.776389,
+              "lng": 37.580278
+            }
+          ],
+          "id": "14765141"
+        },
         "response_url": null,
         "sort_point_distance": null,
-        "published_at": "2025-08-25T13:17:01+0300",
-        "created_at": "2025-08-25T13:17:01+0300",
+        "published_at": "2025-08-25T18:45:44+0300",
+        "created_at": "2025-08-25T18:45:44+0300",
         "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124437540",
-        "show_logo_in_search": null,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124461175",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
         "show_contacts": false,
-        "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124437540?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124437540",
+        "insider_interview": {
+          "id": "33556",
+          "url": "https://hh.ru/interview/33556?employerId=78638"
+        },
+        "url": "https://api.hh.ru/vacancies/124461175?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124461175",
         "relations": [],
         "employer": {
           "id": "78638",
@@ -61,8 +104,8 @@
           "trusted": true
         },
         "snippet": {
-          "requirement": "Умение читать код на различных языках и анализировать исходный код на предмет наличия уязвимостей. Опыт написания bash и <highlighttext>Python</highlighttext> скриптов...",
-          "responsibility": "Развитие продуктов для защиты периметра и SDLC: Security Gate, сканеры приложений. Анализ архитектуры приложений, продуктов, систем, технологий, бизнес-процессов. "
+          "requirement": "Знание форматов обмена данными с \"НБКИ\", \"СкорингБюро\", \"ОКБ\", \"БРС\". Опыт работы с PostgreSQL (до оконных функций включительно). Знание <highlighttext>Python</highlighttext> (как...",
+          "responsibility": "Анализ текущих процессов, выявление узких мест и их оптимизация для соответствия требованиям законодательства (БКИ). Формировать ТЗ на разработчиков для повышения..."
         },
         "contacts": null,
         "schedule": {
@@ -74,12 +117,7 @@
         "working_time_modes": [],
         "accept_temporary": false,
         "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "HYBRID",
-            "name": "Гибрид"
-          }
-        ],
+        "work_format": [],
         "working_hours": [
           {
             "id": "HOURS_8",
@@ -95,8 +133,8 @@
         "night_shifts": false,
         "professional_roles": [
           {
-            "id": "160",
-            "name": "DevOps-инженер"
+            "id": "10",
+            "name": "Аналитик"
           }
         ],
         "accept_incomplete_resumes": false,
@@ -118,8 +156,8 @@
         "adv_context": null
       }
     ],
-    "found": 6,
-    "pages": 6,
+    "found": 4,
+    "pages": 4,
     "page": 0,
     "per_page": 1,
     "clusters": null,

@@ -1,4 +1,5 @@
 {
+  "timestamp": 1756199483.5273101,
   "meta": {
     "params": {
       "area": 1,
@@ -13,12 +14,12 @@
   "data": {
     "items": [
       {
-        "id": "123318629",
+        "id": "123532960",
         "premium": false,
-        "name": "Аналитик-разработчик в команду Поиска",
+        "name": "Продуктовый аналитик в команду Одноклассников",
         "department": {
-          "id": "mailru-15478-ii",
-          "name": "VK, AI VK"
+          "id": "mailru-15478-od",
+          "name": "VK, Одноклассники"
         },
         "has_test": false,
         "response_letter_required": false,
@@ -33,24 +34,13 @@
           "id": "open",
           "name": "Открытая"
         },
-        "address": {
-          "city": "Москва",
-          "street": "Садовническая улица",
-          "building": "82с2",
-          "lat": 55.73611520016595,
-          "lng": 37.64183026983519,
-          "description": null,
-          "raw": "Москва, Садовническая улица, 82с2",
-          "metro": null,
-          "metro_stations": [],
-          "id": "11729271"
-        },
+        "address": null,
         "response_url": null,
         "sort_point_distance": null,
-        "published_at": "2025-08-24T20:04:40+0300",
-        "created_at": "2025-08-24T20:04:40+0300",
+        "published_at": "2025-08-25T13:57:21+0300",
+        "created_at": "2025-08-25T13:57:21+0300",
         "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123318629",
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123532960",
         "branding": {
           "type": "MAKEUP",
           "tariff": null
@@ -58,8 +48,8 @@
         "show_logo_in_search": true,
         "show_contacts": false,
         "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/123318629?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/123318629",
+        "url": "https://api.hh.ru/vacancies/123532960?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123532960",
         "relations": [],
         "employer": {
           "id": "15478",
@@ -67,17 +57,17 @@
           "url": "https://api.hh.ru/employers/15478",
           "alternate_url": "https://hh.ru/employer/15478",
           "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1297111.png",
-            "90": "https://img.hhcdn.ru/employer-logo/6808730.png",
-            "240": "https://img.hhcdn.ru/employer-logo/6808731.png"
+            "90": "https://img.hhcdn.ru/ichameleon/366685.png",
+            "240": "https://img.hhcdn.ru/ichameleon/366685.png",
+            "original": "https://img.hhcdn.ru/ichameleon/366685.png"
           },
           "vacancies_url": "https://api.hh.ru/vacancies?employer_id=15478",
           "accredited_it_employer": true,
           "trusted": true
         },
         "snippet": {
-          "requirement": "Опыт в роли аналитика-разработчика от двух лет. Уверенное владение <highlighttext>Python</highlighttext>, SQL. Знание теории вероятностей и статистики. Знание основных алгоритмов...",
-          "responsibility": "Развивают системы рекомендаций и поиска контента для всех продуктов компании. Улучшают качество поиска по видео. Платформизируют инфраструктуру данных. "
+          "requirement": "Технические навыки. Продвинутый SQL (сложные запросы, оконные функции, CTE). <highlighttext>Python</highlighttext> (Pandas, NumPy, SciPy, Matplotlib/Seaborn). Опыт работы с BI-инструментами...",
+          "responsibility": "Анализ потребления контента – изучение того, какие типы контента (фото, видео, ВК клипы) удерживают пользователей дольше, какие форматы более вовлекающие и..."
         },
         "contacts": null,
         "schedule": {
@@ -114,8 +104,8 @@
         "night_shifts": false,
         "professional_roles": [
           {
-            "id": "156",
-            "name": "BI-аналитик, аналитик данных"
+            "id": "164",
+            "name": "Продуктовый аналитик"
           }
         ],
         "accept_incomplete_resumes": false,
@@ -137,8 +127,8 @@
         "adv_context": null
       }
     ],
-    "found": 6,
-    "pages": 6,
+    "found": 2,
+    "pages": 2,
     "page": 0,
     "per_page": 1,
     "clusters": null,

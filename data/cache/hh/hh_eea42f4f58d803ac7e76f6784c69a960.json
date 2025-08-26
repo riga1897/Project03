@@ -1,4 +1,5 @@
 {
+  "timestamp": 1756199475.6934798,
   "meta": {
     "params": {
       "area": 1,
@@ -21,7 +22,7 @@
           "name": "Сбер для экспертов"
         },
         "has_test": false,
-        "response_letter_required": true,
+        "response_letter_required": false,
         "area": {
           "id": "1",
           "name": "Москва",
@@ -99,12 +100,7 @@
             "name": "Удалённо"
           }
         ],
-        "working_hours": [
-          {
-            "id": "HOURS_8",
-            "name": "8 часов"
-          }
-        ],
+        "working_hours": [],
         "work_schedule_by_days": [
           {
             "id": "FIVE_ON_TWO_OFF",
@@ -137,8 +133,8 @@
         "adv_context": null
       }
     ],
-    "found": 17,
-    "pages": 17,
+    "found": 20,
+    "pages": 20,
     "page": 0,
     "per_page": 1,
     "clusters": null,

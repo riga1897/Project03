@@ -1,4 +1,5 @@
 {
+  "timestamp": 1756199470.5685015,
   "meta": {
     "params": {
       "area": 1,
@@ -13,12 +14,12 @@
   "data": {
     "items": [
       {
-        "id": "124438515",
+        "id": "124471983",
         "premium": false,
-        "name": "Менеджер проектов в Электро (со знанием китайского языка)",
+        "name": "Специалист технической поддержки Яндекс Пэй",
         "department": {
-          "id": "yandex-1740-ois360",
-          "name": "Облачные, инфраструктурные сервисы и Яндекс 360 "
+          "id": "yandex-1740-finteh",
+          "name": "Финтех "
         },
         "has_test": false,
         "response_letter_required": false,
@@ -36,10 +37,10 @@
         "address": null,
         "response_url": null,
         "sort_point_distance": null,
-        "published_at": "2025-08-25T13:27:20+0300",
-        "created_at": "2025-08-25T13:27:20+0300",
+        "published_at": "2025-08-26T08:28:34+0300",
+        "created_at": "2025-08-26T08:28:34+0300",
         "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124438515",
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124471983",
         "branding": {
           "type": "MAKEUP",
           "tariff": null
@@ -47,8 +48,8 @@
         "show_logo_in_search": true,
         "show_contacts": false,
         "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124438515?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124438515",
+        "url": "https://api.hh.ru/vacancies/124471983?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124471983",
         "relations": [],
         "employer": {
           "id": "1740",
@@ -65,13 +66,13 @@
           "trusted": true
         },
         "snippet": {
-          "requirement": "Готовы работать полный рабочий день и выезжать в командировки. Знаете SQL или <highlighttext>Python</highlighttext>, получали призовые места на городских или страновых...",
-          "responsibility": "Проектная деятельность. Самостоятельная проработка и контроль выполнения отдельных задач и проектов в рамках команды от постановки цели до финализации результата. "
+          "requirement": "Грамотно говорите и пишете. Обучаемы, самостоятельны, самоорганизованы и требовательны. Знакомы с YQL. Читаете код на <highlighttext>Python</highlighttext>. Имеете опыт в технической...",
+          "responsibility": "Воспроизведение технической проблемы, полученной от первой линии поддержки B2B2C. Локализация проблемы. Координация решения проблемы. "
         },
         "contacts": null,
         "schedule": {
-          "id": "fullDay",
-          "name": "Полный день"
+          "id": "remote",
+          "name": "Удаленная работа"
         },
         "working_days": [],
         "working_time_intervals": [],
@@ -80,20 +81,28 @@
         "fly_in_fly_out_duration": [],
         "work_format": [
           {
-            "id": "ON_SITE",
-            "name": "На месте работодателя"
+            "id": "REMOTE",
+            "name": "Удалённо"
           }
         ],
         "working_hours": [
           {
             "id": "HOURS_8",
             "name": "8 часов"
+          },
+          {
+            "id": "HOURS_11",
+            "name": "11 часов"
           }
         ],
         "work_schedule_by_days": [
           {
             "id": "FIVE_ON_TWO_OFF",
             "name": "5/2"
+          },
+          {
+            "id": "TWO_ON_TWO_OFF",
+            "name": "2/2"
           }
         ],
         "night_shifts": false,
@@ -103,7 +112,7 @@
             "name": "Другое"
           }
         ],
-        "accept_incomplete_resumes": false,
+        "accept_incomplete_resumes": true,
         "experience": {
           "id": "between1And3",
           "name": "От 1 года до 3 лет"
@@ -122,8 +131,8 @@
         "adv_context": null
       }
     ],
-    "found": 3,
-    "pages": 3,
+    "found": 9,
+    "pages": 9,
     "page": 0,
     "per_page": 1,
     "clusters": null,
