@@ -265,17 +265,16 @@ class DBManagerDemo:
                     continue
 
                 print(f"✅ Найдено {len(vacancies)} вакансий:")
-                print(f"{'№':<3} {'Название':<35} {'Компания':<25} {'Зарплата':<15}")
-                print("-" * 85)
+                print(f"{'№':<3} {'Название':<50} {'Зарплата':<25}")
+                print("-" * 80)
 
                 # Показываем первые 5 вакансий для экономии места
                 for i, vacancy in enumerate(vacancies[:5], 1):
                     # RealDictCursor возвращает словари
-                    title = str(vacancy.get('title', ''))[:34]
-                    company = str(vacancy.get('company_name', ''))[:24]
-                    salary = str(vacancy.get('salary_info', ''))[:14]
+                    title = str(vacancy.get('title', ''))[:49]
+                    salary = str(vacancy.get('salary_info', ''))[:24]
 
-                    print(f"{i:<3} {title:<35} {company:<25} {salary:<15}")
+                    print(f"{i:<3} {title:<50} {salary:<25}")
 
                 if len(vacancies) > 5:
                     print(f"... и еще {len(vacancies) - 5} вакансий")
