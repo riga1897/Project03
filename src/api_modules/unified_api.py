@@ -99,31 +99,37 @@ class UnifiedAPI:
         if "hh" in sources:
             try:
                 logger.info(f"Получение вакансий с HH.ru по запросу: '{search_query}'")
-                hh_data = self.hh_api.get_vacancies_with_deduplication(search_query, **kwargs)
-                hh_vacancies = [Vacancy.from_dict(item).to_dict() for item in hh_data]
-
-                if hh_vacancies:
-                    logger.info(f"Найдено {len(hh_vacancies)} уникальных вакансий с HH.ru")
-                    all_vacancies.extend(hh_vacancies)
+                # Используем обычный метод получения вакансий, а не только от целевых компаний
+                hh_data = self.hh_api.get_vacancies(search_query, **kwargs)
+                
+                if hh_data:
+                    # Применяем дедупликацию
+                    hh_data = self.hh_api._deduplicate_vacancies(hh_data)
+                    logger.info(f"Найдено {len(hh_data)} уникальных вакансий с HH.ru")
+                    all_vacancies.extend(hh_data)
 
             except Exception as e:
                 logger.error(f"Ошибка получения вакансий с HH.ru: {e}")
 
         # Получение от SuperJob с преобразованием
         if "sj" in sources:
-            # Синхронизируем параметры периода между API
-            sj_kwargs = kwargs.copy()
-            if "period" in kwargs:
-                sj_kwargs["published"] = kwargs["period"]
-                sj_kwargs.pop("period", None)  # Удаляем исходный параметр
+            try:
+                # Синхронизируем параметры периода между API
+                sj_kwargs = kwargs.copy()
+                if "period" in kwargs:
+                    sj_kwargs["published"] = kwargs["period"]
+                    sj_kwargs.pop("period", None)  # Удаляем исходный параметр
 
-            # Получаем сырые данные SuperJob
-            sj_data = self.sj_api.get_vacancies(search_query, **sj_kwargs)
+                # Получаем данные SuperJob
+                sj_data = self.sj_api.get_vacancies(search_query, **sj_kwargs)
 
-            if sj_data:
-                logger.info(f"Получено {len(sj_data)} сырых вакансий SuperJob")
-                # Добавляем сырые данные без преобразования
-                all_vacancies.extend(sj_data)
+                if sj_data:
+                    logger.info(f"Получено {len(sj_data)} вакансий SuperJob")
+                    # Добавляем данные SuperJob
+                    all_vacancies.extend(sj_data)
+                    
+            except Exception as e:
+                logger.error(f"Ошибка получения вакансий с SuperJob: {e}")
 
 
         # Выводим общую статистику и применяем межплатформенную дедупликацию

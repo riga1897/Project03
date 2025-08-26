@@ -111,7 +111,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
                 item["source"] = "hh.ru"
                 if self._validate_vacancy(item):
                     validated_items.append(item)
-            
+
             return validated_items
 
         except Exception as e:
@@ -120,63 +120,34 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
 
     def get_vacancies(self, search_query: str, **kwargs) -> List[Dict]:
         """
-        Получение всех вакансий с пагинацией и валидацией
-
-        Выполняет полный цикл получения вакансий:
-        1. Получает метаданные о количестве страниц
-        2. Обрабатывает все страницы с помощью пагинатора
-        3. Валидирует каждую вакансию
+        Получение вакансий с HH.ru с многоуровневым кэшированием
 
         Args:
             search_query: Поисковый запрос
             **kwargs: Дополнительные параметры поиска
 
         Returns:
-            List[Dict]: Список всех найденных и валидных вакансий
+            List[Dict]: Список вакансий
         """
         try:
-            # Приводим поисковый запрос к нижнему регистру для регистронезависимого поиска
-            search_query_lower = search_query.lower() if search_query else search_query
+            logger.info(f"Начинаем поиск вакансий по запросу: '{search_query}' с параметрами: {kwargs}")
 
-            # Initial request for metadata
-            initial_data = self._CachedAPI__connect_to_api(
-                self.BASE_URL, self._config.hh_config.get_params(text=search_query_lower, page=0, per_page=1, **kwargs), "hh"
-            )
+            # Используем кэшированный API для получения данных
+            vacancies = self._cached_api.get_vacancies(search_query, **kwargs)
 
-            if not initial_data.get("found", 0):
-                logger.info("No vacancies found for query")
+            if not vacancies:
+                logger.warning(f"Вакансии по запросу '{search_query}' не найдены")
                 return []
 
-            # Используем реальное количество страниц из API, но не больше лимита
-            actual_pages = initial_data.get("pages", 1)
-            max_pages = self._config.get_pagination_params(**kwargs)["max_pages"]
-            total_pages = min(actual_pages, max_pages)
-            
-            # Дополнительная проверка - если найдено вакансий меньше чем per_page, то страница только одна
-            found_vacancies = initial_data.get("found", 0)
-            per_page = self._config.hh_config.get_params(**kwargs).get("per_page", 50)
-            if found_vacancies <= per_page:
-                total_pages = 1
-
-            logger.info(f"Found {found_vacancies} vacancies " f"({actual_pages} actual pages, processing {total_pages} pages)")
-
-            # Process all pages, но только если есть что обрабатывать
-            if total_pages > 0:
-                results = self._paginator.paginate(
-                    fetch_func=lambda p: self.get_vacancies_page(search_query, p, **kwargs), total_pages=total_pages
-                )
-            else:
-                results = []
-
-            logger.info(f"Successfully processed {len(results)} vacancies")
-            return results
+            logger.info(f"Получено {len(vacancies)} вакансий по запросу '{search_query}'")
+            return vacancies
 
         except KeyboardInterrupt:
             logger.info("Получение вакансий прервано пользователем")
             print("\nПолучение вакансий остановлено.")
             return []
         except Exception as e:
-            logger.error(f"Failed to get vacancies: {e}")
+            logger.error(f"Ошибка получения вакансий: {e}")
             return []
 
     def _deduplicate_vacancies(self, vacancies: List[Dict], source: str = None) -> List[Dict]:
@@ -218,9 +189,9 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         """
         target_company_ids = get_target_company_ids()
         all_vacancies = []
-        
+
         logger.info(f"Получение вакансий от {len(target_company_ids)} целевых компаний")
-        
+
         for company_id in target_company_ids:
             try:
                 # Получаем вакансии конкретной компании
@@ -231,14 +202,14 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             except Exception as e:
                 logger.warning(f"Ошибка получения вакансий от компании {company_id}: {e}")
                 continue
-        
+
         logger.info(f"Всего получено {len(all_vacancies)} вакансий от целевых компаний")
-        
+
         # Показываем статистику по компаниям (используем сырые данные)
         if all_vacancies:
             from src.utils.vacancy_stats import VacancyStats
             VacancyStats.display_company_stats(all_vacancies, "HH.ru - Целевые компании")
-        
+
         return self._deduplicate_vacancies(all_vacancies)
 
     def get_vacancies_by_company(self, company_id: str, search_query: str = "", **kwargs) -> List[Dict]:
@@ -256,18 +227,18 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         try:
             # Добавляем фильтр по компании в параметры
             kwargs['employer_id'] = company_id
-            
+
             if search_query:
                 search_query_lower = search_query.lower()
             else:
                 search_query_lower = ""
-            
+
             # Получаем метаданные для определения количества страниц
             initial_params = self._config.hh_config.get_params(
                 text=search_query_lower, page=0, per_page=1, **kwargs
             )
             initial_data = self._CachedAPI__connect_to_api(self.BASE_URL, initial_params, "hh")
-            
+
             found_vacancies = initial_data.get("found", 0)
             if not found_vacancies:
                 logger.debug(f"Компания {company_id}: вакансий не найдено")
@@ -277,7 +248,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             actual_pages = initial_data.get("pages", 1)
             max_pages = self._config.get_pagination_params(**kwargs)["max_pages"]
             per_page = self._config.hh_config.get_params(**kwargs).get("per_page", 50)
-            
+
             # Если вакансий меньше чем per_page, то страница только одна
             if found_vacancies <= per_page:
                 total_pages = 1
@@ -317,7 +288,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         try:
             # Добавляем фильтр по компании
             kwargs['employer_id'] = company_id
-            
+
             search_query_lower = search_query.lower() if search_query else ""
             params = self._config.hh_config.get_params(text=search_query_lower, page=page, **kwargs)
 
@@ -330,7 +301,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
                 item["source"] = "hh.ru"
                 if self._validate_vacancy(item):
                     validated_items.append(item)
-            
+
             return validated_items
 
         except Exception as e:

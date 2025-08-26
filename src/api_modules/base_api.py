@@ -8,6 +8,7 @@
 import logging
 from abc import ABC, abstractmethod
 from typing import Dict, List
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -116,3 +117,25 @@ class BaseJobAPI(ABC):
 
         logger.info(f"{source.upper()} дедупликация: {len(vacancies)} -> {len(unique_vacancies)} вакансий")
         return unique_vacancies
+
+    def clear_cache(self, source: str) -> None:
+        """
+        Очистка кэша для конкретного источника
+
+        Args:
+            source: Название источника (hh, sj)
+        """
+        try:
+            cache_dir = f"data/cache/{source}"
+            if os.path.exists(cache_dir):
+                import shutil
+                shutil.rmtree(cache_dir)
+                os.makedirs(cache_dir, exist_ok=True)
+                logger.info(f"Кэш {source} очищен")
+            else:
+                # Создаем папку кэша если её нет
+                os.makedirs(cache_dir, exist_ok=True)
+                logger.info(f"Создана папка кэша {cache_dir}")
+        except Exception as e:
+            logger.error(f"Ошибка очистки кэша {source}: {e}")
+            raise

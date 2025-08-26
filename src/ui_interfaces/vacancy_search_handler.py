@@ -83,38 +83,32 @@ class VacancySearchHandler:
         """
         print("Поиск вакансий только от целевых компаний...")
 
-        # Создаем unified_api для поиска от целевых компаний
-        unified_api = UnifiedAPI()
+        # Преобразуем set в список источников для UnifiedAPI
+        source_list = []
+        for source in sources:
+            if source == "hh.ru":
+                source_list.append("hh")
+            elif source == "superjob.ru":
+                source_list.append("sj")
 
-        # Преобразуем источники в правильный формат
-        api_sources = []
-        if "HH.ru" in sources:
-            api_sources.append("hh")
-        if "SuperJob.ru" in sources:
-            api_sources.append("sj")
+        # Используем обычный метод поиска, который делает реальные API запросы
+        vacancies_data = self.unified_api.get_vacancies_from_sources(
+            search_query=query,
+            sources=source_list,
+            period=period
+        )
 
-        # Получаем вакансии от целевых компаний только из выбранных источников
-        try:
-            vacancies_data = self.unified_api.get_vacancies_from_target_companies(
-                search_query=query,
-                sources=api_sources,  # Передаем только выбранные источники
-                period=period
-            )
+        # Конвертируем данные в объекты Vacancy
+        vacancies = []
+        for vacancy_data in vacancies_data:
+            try:
+                vacancy = Vacancy.from_dict(vacancy_data)
+                vacancies.append(vacancy)
+            except Exception as e:
+                logger.warning(f"Ошибка создания объекта Vacancy: {e}")
+                continue
 
-            # Конвертируем Dict обратно в объекты Vacancy
-            from src.vacancies.models import Vacancy
-            all_vacancies = [Vacancy.from_dict(item) for item in vacancies_data]
-
-            if all_vacancies:
-                print(f"Найдено {len(all_vacancies)} вакансий от целевых компаний")
-            else:
-                print("Вакансии от целевых компаний не найдены")
-
-            return all_vacancies
-
-        except Exception as e:
-            print(f"Ошибка получения вакансий от целевых компаний: {e}")
-            return []
+        return vacancies
 
     def _handle_search_results(self, vacancies: List[Vacancy], query: str) -> None:
         """
