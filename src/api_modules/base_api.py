@@ -144,7 +144,7 @@ class BaseJobAPI(ABC):
             postgres_saver = PostgresSaver()
 
             with postgres_saver._get_connection() as conn:
-                with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                with conn.cursor() as cursor:
                     # Создаем временную таблицу для анализа
                     cursor.execute("""
                         CREATE TEMP TABLE temp_dedup_analysis (
@@ -288,6 +288,40 @@ class BaseJobAPI(ABC):
             logger.error(f"Ошибка при SQL-дедупликации с фильтрацией: {e}")
             # Fallback на простую фильтрацию
             return self._simple_deduplicate_with_filter_fallback(vacancies, source)
+
+    def _normalize_text(self, text: str) -> str:
+        """
+        Нормализация текста для сравнения
+        
+        Args:
+            text: Исходный текст
+            
+        Returns:
+            str: Нормализованный текст
+        """
+        if not text:
+            return ""
+        return text.lower().strip()
+
+    def _get_salary_key(self, vacancy: Dict) -> str:
+        """
+        Получение ключа зарплаты для дедупликации
+        
+        Args:
+            vacancy: Данные вакансии
+            
+        Returns:
+            str: Ключ зарплаты в формате "от-до"
+        """
+        if "salary" in vacancy and vacancy["salary"]:
+            salary = vacancy["salary"]
+            salary_from = salary.get("from", 0) or 0
+            salary_to = salary.get("to", 0) or 0
+            return f"{salary_from}-{salary_to}"
+        elif "payment_from" in vacancy:
+            return f"{vacancy.get('payment_from', 0)}-{vacancy.get('payment_to', 0)}"
+        else:
+            return "0-0"
 
     def _simple_deduplicate_with_filter_fallback(self, vacancies: List[Dict], source: str = None) -> List[Dict]:
         """
