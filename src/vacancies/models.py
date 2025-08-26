@@ -260,16 +260,35 @@ class Vacancy(AbstractVacancy):
 
             # Обработка описания и требований
             description = data.get("description") or data.get("vacancyRichText") or ""
+            
+            # Для HH API также проверяем snippet
+            snippet = data.get("snippet", {})
+            if not description.strip() and isinstance(snippet, dict):
+                snippet_parts = []
+                if snippet.get("requirement"):
+                    snippet_parts.append(f"Требования: {snippet.get('requirement')}")
+                if snippet.get("responsibility"):
+                    snippet_parts.append(f"Обязанности: {snippet.get('responsibility')}")
+                if snippet_parts:
+                    description = " ".join(snippet_parts)
 
-            # Если описание пустое, но есть requirements или responsibilities - объединяем их
+            # Если описание все еще пустое, но есть requirements или responsibilities - объединяем их
             if not description.strip():
                 desc_parts = []
                 if data.get("requirements"):
-                    desc_parts.append(data.get("requirements"))
+                    desc_parts.append(f"Требования: {data.get('requirements')}")
                 if data.get("responsibilities"):
-                    desc_parts.append(data.get("responsibilities"))
+                    desc_parts.append(f"Обязанности: {data.get('responsibilities')}")
+                if data.get("candidat"):  # Для SuperJob
+                    desc_parts.append(f"Требования: {data.get('candidat')}")
+                if data.get("work"):  # Для SuperJob
+                    desc_parts.append(f"Обязанности: {data.get('work')}")
                 if desc_parts:
                     description = " ".join(desc_parts)
+            
+            # Если описание все еще пустое, используем название вакансии
+            if not description.strip():
+                description = f"Вакансия: {title}"
 
             requirements = None
             responsibilities = None

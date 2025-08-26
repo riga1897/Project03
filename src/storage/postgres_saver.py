@@ -401,10 +401,26 @@ class PostgresSaver:
                         except:
                             published_date = datetime.now()
 
+                # Валидация описания
+                final_description = vacancy.description
+                if not final_description or not final_description.strip():
+                    # Если описание пустое, формируем его из доступных данных
+                    desc_parts = []
+                    if vacancy.requirements:
+                        desc_parts.append(f"Требования: {vacancy.requirements}")
+                    if vacancy.responsibilities:
+                        desc_parts.append(f"Обязанности: {vacancy.responsibilities}")
+                    if desc_parts:
+                        final_description = " ".join(desc_parts)
+                    else:
+                        final_description = f"Вакансия: {vacancy.title}"
+
+                    logger.debug(f"Сформировано описание для вакансии {vacancy.vacancy_id}: {final_description[:100]}...")
+
                 insert_data.append((
                     vacancy.vacancy_id, vacancy.title, vacancy.url,
                     salary_from, salary_to, salary_currency,
-                    vacancy.description, vacancy.requirements, vacancy.responsibilities,
+                    final_description, vacancy.requirements, vacancy.responsibilities,
                     vacancy.experience, vacancy.employment, vacancy.schedule,
                     employer_str, area_str, vacancy.source, published_date,
                     mapped_company_id  # Оставляем как integer
@@ -758,10 +774,27 @@ class PostgresSaver:
                             except:
                                 published_date = datetime.now()
 
+                    # Валидация описания
+                    final_description = vacancy.description
+                    if not final_description or not final_description.strip():
+                        # Если описание пустое, формируем его из доступных данных
+                        desc_parts = []
+                        if vacancy.requirements:
+                            desc_parts.append(f"Требования: {vacancy.requirements}")
+                        if vacancy.responsibilities:
+                            desc_parts.append(f"Обязанности: {vacancy.responsibilities}")
+                        if desc_parts:
+                            final_description = " ".join(desc_parts)
+                        else:
+                            final_description = f"Вакансия: {vacancy.title}"
+
+                        logger.debug(f"Сформировано описание для вакансии {vacancy.vacancy_id}: {final_description[:100]}...")
+
+
                     insert_data.append((
                         vacancy.vacancy_id, vacancy.title, vacancy.url,
                         salary_from, salary_to, salary_currency,
-                        vacancy.description, vacancy.requirements, vacancy.responsibilities,
+                        final_description, vacancy.requirements, vacancy.responsibilities,
                         vacancy.experience, vacancy.employment, vacancy.schedule,
                         employer_str, area_str, vacancy.source, published_date,
                         mapped_company_id  # Оставляем как integer

@@ -55,6 +55,17 @@ class HHParser:
                 if "source" not in item:
                     item["source"] = "hh.ru"
 
+                # Обогащаем данные описанием из snippet если основное описание пустое
+                if not item.get("description") and item.get("snippet"):
+                    snippet = item.get("snippet", {})
+                    desc_parts = []
+                    if snippet.get("requirement"):
+                        desc_parts.append(f"Требования: {snippet.get('requirement')}")
+                    if snippet.get("responsibility"):
+                        desc_parts.append(f"Обязанности: {snippet.get('responsibility')}")
+                    if desc_parts:
+                        item["description"] = " ".join(desc_parts)
+                
                 # Создаем объект вакансии напрямую из данных API
                 vacancy = Vacancy.from_dict(item)
 
