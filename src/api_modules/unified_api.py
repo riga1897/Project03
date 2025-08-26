@@ -219,7 +219,7 @@ class UnifiedAPI:
             sources = ["hh"]  # По умолчанию только HH, так как у SuperJob нет такой фильтрации
         else:
             sources = self.validate_sources(sources)
-        
+
         # Логируем выбранные источники
         logger.info(f"Выбранные источники для поиска: {sources}")
 
@@ -322,3 +322,83 @@ class UnifiedAPI:
             return available
 
         return valid_sources
+
+    def get_all_vacancies(self, query: str, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:
+        """Получение всех вакансий из всех доступных источников"""
+        sources = self.get_available_sources()
+        return self.get_vacancies_from_sources(query, sources=sources, **kwargs)
+
+    def get_vacancies_from_all_sources(self, query: str, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:
+        """Получение вакансий из всех источников"""
+        return self.get_all_vacancies(query, sources=["hh", "sj"], **kwargs)
+
+    def get_vacancies_from_source(self, query: str, source: str, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:
+        """Получение вакансий из определенного источника"""
+        if source.lower() == "hh":
+            return self.get_hh_vacancies(query, **kwargs)
+        elif source.lower() in ["sj", "superjob"]:
+            return self.get_sj_vacancies(query, **kwargs)
+        else:
+            logger.warning(f"Неизвестный источник: {source}")
+            return []
+
+    def get_companies_from_all_sources(self, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:
+        """Получение компаний из всех источников"""
+        companies = []
+
+        try:
+            # Получаем компании с HH
+            hh_companies = self.hh_api.get_companies(**kwargs)
+            if hh_companies:
+                companies.extend(hh_companies)
+
+            # Получаем компании с SJ
+            sj_companies = self.sj_api.get_companies(**kwargs)
+            if sj_companies:
+                companies.extend(sj_companies)
+
+            logger.info(f"Получено {len(companies)} компаний из всех источников")
+            return companies
+        except Exception as e:
+            logger.error(f"Ошибка при получении компаний из всех источников: {e}")
+            return []
+
+    def get_companies_from_source(self, source: str, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:
+        """Получение компаний из определенного источника"""
+        try:
+            if source.lower() == "hh":
+                return self.hh_api.get_companies(**kwargs)
+            elif source.lower() in ["sj", "superjob"]:
+                return self.sj_api.get_companies(**kwargs)
+            else:
+                logger.warning(f"Неизвестный источник: {source}")
+                return []
+        except Exception as e:
+            logger.error(f"Ошибка при получении компаний из источника {source}: {e}")
+            return []
+
+    def search_with_multiple_keywords(self, keywords: List[str], **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:
+        """Поиск с несколькими ключевыми словами"""
+        all_results = []
+
+        for keyword in keywords:
+            try:
+                results = self.get_all_vacancies(keyword, **kwargs)
+                if results:
+                    all_results.extend(results)
+            except Exception as e:
+                logger.error(f"Ошибка при поиске по ключевому слову '{keyword}': {e}")
+                continue
+
+        # Дедуплицируем результаты по ID
+        seen_ids = set()
+        unique_results = []
+
+        for result in all_results:
+            vacancy_id = result.get('id') or result.get('vacancy_id')
+            if vacancy_id not in seen_ids:
+                seen_ids.add(vacancy_id)
+                unique_results.append(result)
+
+        logger.info(f"Найдено {len(unique_results)} уникальных вакансий по {len(keywords)} ключевым словам")
+        return unique_results

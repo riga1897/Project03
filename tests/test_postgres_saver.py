@@ -1,4 +1,3 @@
-
 """
 Тесты для PostgresSaver
 """
@@ -180,7 +179,7 @@ class TestPostgresSaver:
             Mock(spec=Vacancy, salary_from=100000),
             Mock(spec=Vacancy, salary_from=200000)
         ]
-        
+
         postgres_saver.db_manager.get_vacancies_with_higher_salary.return_value = mock_vacancies
 
         result = postgres_saver.filter_vacancies_by_salary(150000)
@@ -191,7 +190,7 @@ class TestPostgresSaver:
     def test_search_vacancies_by_keyword(self, postgres_saver):
         """Тест поиска вакансий по ключевому слову через DBManager"""
         mock_vacancies = [Mock(spec=Vacancy, title="Python Developer")]
-        
+
         postgres_saver.db_manager.get_vacancies_with_keyword.return_value = mock_vacancies
 
         result = postgres_saver.search_vacancies_by_keyword("Python")

@@ -1,8 +1,6 @@
 import logging
 from typing import Any, Dict, List
 
-from src.utils.cache import FileCache
-
 from ..models import Vacancy
 
 logger = logging.getLogger(__name__)
@@ -56,7 +54,7 @@ class HHParser:
 
                 # Создаем объект вакансии напрямую из данных API
                 vacancy = Vacancy.from_dict(item)
-                
+
                 # Отладочная информация
                 vacancy_id = str(item.get("id", ""))
                 if vacancy_id in ["124403607", "124403580", "124403642"]:
@@ -64,9 +62,9 @@ class HHParser:
                     print(f"DEBUG HH Parser: item содержит ключи: {list(item.keys())}")
                     print(f"DEBUG HH Parser: item['id'] = {item.get('id')}")
                     print(f"DEBUG HH Parser: Передаем в Vacancy.from_dict...")
-                    
+
                 vacancy = Vacancy.from_dict(item)
-                
+
                 if vacancy_id in ["124403607", "124403580", "124403642"]:
                     print(f"DEBUG HH Parser: Созданная вакансия имеет ID: {vacancy.vacancy_id}")
                     print(f"DEBUG HH Parser: Ожидали ID: {vacancy_id}")
@@ -78,7 +76,115 @@ class HHParser:
             except Exception as e:
                 logger.warning(f"Ошибка парсинга HH вакансии: {e}")
                 continue
+        logger.info(f"Успешно распарсено {len(vacancies)} вакансий HH из {len(raw_data)}")
         return vacancies
+
+    @staticmethod
+    def parse_vacancy(vacancy_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Парсинг одной вакансии HH в словарь
+
+        Args:
+            vacancy_data: Данные вакансии от API HH
+
+        Returns:
+            Dict[str, Any]: Словарь с данными вакансии
+        """
+        try:
+            salary_info = vacancy_data.get('salary', {})
+            snippet_info = vacancy_data.get('snippet', {})
+            employer_info = vacancy_data.get('employer', {})
+            area_info = vacancy_data.get('area', {})
+            experience_info = vacancy_data.get('experience', {})
+            employment_info = vacancy_data.get('employment', {})
+            schedule_info = vacancy_data.get('schedule', {})
+
+            return {
+                'vacancy_id': str(vacancy_data.get('id', '')),
+                'title': vacancy_data.get('name', ''),
+                'url': vacancy_data.get('alternate_url', ''),
+                'salary_from': salary_info.get('from') if salary_info else None,
+                'salary_to': salary_info.get('to') if salary_info else None,
+                'salary_currency': salary_info.get('currency') if salary_info else None,
+                'requirements': snippet_info.get('requirement', '') if snippet_info else '',
+                'responsibilities': snippet_info.get('responsibility', '') if snippet_info else '',
+                'employer': employer_info.get('name', '') if employer_info else '',
+                'area': area_info.get('name', '') if area_info else '',
+                'experience': experience_info.get('name', '') if experience_info else '',
+                'employment': employment_info.get('name', '') if employment_info else '',
+                'schedule': schedule_info.get('name', '') if schedule_info else '',
+                'published_at': vacancy_data.get('published_at', ''),
+            }
+        except Exception as e:
+            logger.error(f"Ошибка при парсинге вакансии HH: {e}")
+            return {
+                'vacancy_id': str(vacancy_data.get('id', '')),
+                'title': vacancy_data.get('name', ''),
+                'url': '',
+                'salary_from': None,
+                'salary_to': None,
+                'salary_currency': None,
+                'requirements': '',
+                'responsibilities': '',
+                'employer': '',
+                'area': '',
+                'experience': '',
+                'employment': '',
+                'schedule': '',
+                'published_at': '',
+            }
+
+    @staticmethod
+    def parse_company(company_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Парсинг данных компании HH
+
+        Args:
+            company_data: Данные компании от API HH
+
+        Returns:
+            Dict[str, Any]: Словарь с данными компании
+        """
+        try:
+            return {
+                'company_id': str(company_data.get('id', '')),
+                'name': company_data.get('name', ''),
+                'description': company_data.get('description', ''),
+                'url': company_data.get('alternate_url', ''),
+            }
+        except Exception as e:
+            logger.error(f"Ошибка при парсинге компании HH: {e}")
+            return {
+                'company_id': str(company_data.get('id', '')),
+                'name': company_data.get('name', ''),
+                'description': '',
+                'url': '',
+            }
+
+    @staticmethod
+    def parse_companies(companies_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Парсинг списка компаний HH
+
+        Args:
+            companies_data: Данные компаний от API HH
+
+        Returns:
+            List[Dict[str, Any]]: Список словарей с данными компаний
+        """
+        try:
+            companies = []
+            items = companies_data.get('items', [])
+
+            for company_data in items:
+                company = HHParser.parse_company(company_data)
+                companies.append(company)
+
+            logger.info(f"Успешно распарсено {len(companies)} компаний HH")
+            return companies
+        except Exception as e:
+            logger.error(f"Ошибка при парсинге списка компаний HH: {e}")
+            return []
 
     @staticmethod
     def convert_to_unified_format(hh_vacancy: Vacancy) -> Vacancy:
