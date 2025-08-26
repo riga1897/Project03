@@ -474,7 +474,14 @@ class DBManager:
             END
         ) > %s
         AND (v.salary_currency IN ('RUR', 'RUB', 'руб.') OR v.salary_currency IS NULL)
-        ORDER BY calculated_salary DESC, c.name, v.title
+        -- Сортировка аналогично get_all_vacancies(): по зарплате (убывание), компании, названию вакансии
+        ORDER BY calculated_salary DESC,
+            CASE
+                WHEN c.name IS NOT NULL THEN c.name        -- Сортировка по названию из справочника
+                WHEN v.employer IS NOT NULL AND v.employer != '' THEN v.employer  -- или по полю employer
+                ELSE 'Неизвестная компания'               -- или по значению по умолчанию
+            END,
+            v.title                                        -- Вторичная сортировка по названию вакансии
         """
 
         try:
@@ -538,7 +545,14 @@ class DBManager:
         FROM vacancies v
         LEFT JOIN companies c ON v.company_id = c.company_id
         WHERE LOWER(v.title) LIKE LOWER(%s)
-        ORDER BY c.name, v.title
+        -- Сортировка аналогично get_all_vacancies(): по названию компании, затем по названию вакансии
+        ORDER BY
+            CASE
+                WHEN c.name IS NOT NULL THEN c.name        -- Сортировка по названию из справочника
+                WHEN v.employer IS NOT NULL AND v.employer != '' THEN v.employer  -- или по полю employer
+                ELSE 'Неизвестная компания'               -- или по значению по умолчанию
+            END,
+            v.title                                        -- Вторичная сортировка по названию вакансии
         """
 
         try:
