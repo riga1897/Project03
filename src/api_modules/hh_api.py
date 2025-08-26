@@ -132,15 +132,41 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         try:
             logger.info(f"Начинаем поиск вакансий по запросу: '{search_query}' с параметрами: {kwargs}")
 
-            # Используем кэшированный API для получения данных
-            vacancies = self._cached_api.get_vacancies(search_query, **kwargs)
+            # Получаем метаданные для определения количества страниц
+            initial_params = self._config.hh_config.get_params(
+                text=search_query.lower() if search_query else "", 
+                page=0, per_page=1, **kwargs
+            )
+            initial_data = self._CachedAPI__connect_to_api(self.BASE_URL, initial_params, "hh")
 
-            if not vacancies:
+            found_vacancies = initial_data.get("found", 0)
+            if not found_vacancies:
                 logger.warning(f"Вакансии по запросу '{search_query}' не найдены")
                 return []
 
-            logger.info(f"Получено {len(vacancies)} вакансий по запросу '{search_query}'")
-            return vacancies
+            # Рассчитываем количество страниц
+            actual_pages = initial_data.get("pages", 1)
+            max_pages = self._config.get_pagination_params(**kwargs)["max_pages"]
+            per_page = self._config.hh_config.get_params(**kwargs).get("per_page", 50)
+
+            if found_vacancies <= per_page:
+                total_pages = 1
+            else:
+                total_pages = min(actual_pages, max_pages)
+
+            logger.info(f"Найдено {found_vacancies} вакансий, обрабатываем {total_pages} страниц")
+
+            # Получаем все страницы
+            if total_pages > 0:
+                results = self._paginator.paginate(
+                    fetch_func=lambda p: self.get_vacancies_page(search_query, p, **kwargs),
+                    total_pages=total_pages
+                )
+            else:
+                results = []
+
+            logger.info(f"Получено {len(results)} вакансий по запросу '{search_query}'")
+            return results
 
         except KeyboardInterrupt:
             logger.info("Получение вакансий прервано пользователем")
