@@ -18,6 +18,10 @@ class TestDBManagerDemo:
             ("TechCorp", 5),
             ("DevCompany", 3)
         ]
+        mock_manager.get_target_companies_analysis.return_value = [
+            ("TechCorp", 5),
+            ("DevCompany", 3)
+        ]
         mock_manager.get_all_vacancies.return_value = [
             {"title": "Python Developer", "company_name": "TechCorp", "salary_info": "150000 RUR", "url": "http://example.com/1"},
             {"title": "Java Developer", "company_name": "DevCompany", "salary_info": "120000 RUR", "url": "http://example.com/2"}
@@ -68,10 +72,10 @@ class TestDBManagerDemo:
         mock_db_manager_class.assert_called_once()
 
     @patch('builtins.print')
-    def test_display_connection_status(self, mock_print, mock_db_manager):
-        """Тест отображения статуса подключения"""
+    def test_display_database_stats(self, mock_print, mock_db_manager):
+        """Тест отображения статистики базы данных"""
         demo = DBManagerDemo(db_manager=mock_db_manager)
-        demo._display_connection_status()
+        demo._demo_database_stats()
 
-        # Проверяем, что статус подключения был выведен
+        # Проверяем, что статистика была выведена
         assert mock_print.called

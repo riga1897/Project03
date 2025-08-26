@@ -93,7 +93,6 @@ class TestJSONFileHandler:
             assert nested_path.exists()
             loaded_data = handler.read_json(nested_path)
             assert loaded_data == sample_data
-            temp_dir.rmdir()
 
     def test_atomic_write_on_error(self, sample_data, temp_json_file):
         """Тест атомарной записи при ошибке"""

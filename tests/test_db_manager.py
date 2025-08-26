@@ -211,17 +211,10 @@ class TestDBManager:
 
         # Мокаем get_avg_salary
         with patch.object(db_manager, 'get_avg_salary', return_value=100000.0):
-            # Имитируем результат запроса
+            # Имитируем результат запроса - возвращаем список кортежей
             mock_cursor.fetchall.return_value = [
-                {
-                    'title': 'Senior Python Developer',
-                    'company_name': 'Test Company',
-                    'salary_info': '150000 - 200000 RUR',
-                    'url': 'https://test.com/vacancy/2',
-                    'calculated_salary': 175000.0,
-                    'vacancy_id': 'test_2',
-                    'employer': 'Test Company'
-                }
+                ('Senior Python Developer', 'Test Company', '150000 - 200000 RUR', 
+                 'https://test.com/vacancy/2', 175000.0, 'test_2', 'Test Company')
             ]
 
             result = db_manager.get_vacancies_with_higher_salary()
@@ -242,17 +235,10 @@ class TestDBManager:
         mock_cursor_context.__exit__ = Mock(return_value=None)
         mock_connection.cursor.return_value = mock_cursor_context
 
-        # Имитируем результат запроса
+        # Имитируем результат запроса - возвращаем список кортежей
         mock_cursor.fetchall.return_value = [
-            {
-                'title': 'Python Developer',
-                'company_name': 'Test Company',
-                'salary_info': '100000 - 150000 RUR',
-                'url': 'https://test.com/vacancy/1',
-                'description': 'Python development position',
-                'vacancy_id': 'test_1',
-                'employer': 'Test Company'
-            }
+            ('Python Developer', 'Test Company', '100000 - 150000 RUR', 
+             'https://test.com/vacancy/1', 'Python development position', 'test_1', 'Test Company')
         ]
 
         result = db_manager.get_vacancies_with_keyword('Python')
@@ -285,8 +271,8 @@ class TestDBManager:
         mock_cursor_context.__exit__ = Mock(return_value=None)
         mock_connection.cursor.return_value = mock_cursor_context
 
-        # Имитируем результаты разных запросов
-        mock_cursor.fetchone.side_effect = [[100], [15], [75], ['2024-01-15']]
+        # Имитируем результаты разных запросов - возвращаем кортежи
+        mock_cursor.fetchone.side_effect = [(100,), (15,), (75,), ('2024-01-15',)]
 
         result = db_manager.get_database_stats()
 
