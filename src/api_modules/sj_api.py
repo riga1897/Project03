@@ -200,13 +200,13 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
 
     def _deduplicate_vacancies(self, vacancies: List[Dict], source: str = None) -> List[Dict]:
         """
-        Удаление дублирующихся вакансий SJ (используется базовая реализация)
+        Удаление дублирующихся вакансий SJ с фильтрацией по целевым компаниям
 
         Args:
             vacancies: Список вакансий с SuperJob
 
         Returns:
-            List[Dict]: Список уникальных вакансий
+            List[Dict]: Список уникальных вакансий от целевых компаний
         """
         return super()._deduplicate_vacancies(vacancies, "sj")
 

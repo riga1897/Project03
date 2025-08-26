@@ -178,13 +178,13 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
 
     def _deduplicate_vacancies(self, vacancies: List[Dict], source: str = None) -> List[Dict]:
         """
-        Удаление дублирующихся вакансий HH (используется базовая реализация)
+        Удаление дублирующихся вакансий HH с фильтрацией по целевым компаниям
 
         Args:
             vacancies: Список вакансий с HH.ru
 
         Returns:
-            List[Dict]: Список уникальных вакансий
+            List[Dict]: Список уникальных вакансий от целевых компаний
         """
         return super()._deduplicate_vacancies(vacancies, "hh")
 
