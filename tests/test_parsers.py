@@ -6,7 +6,7 @@
 import pytest
 from unittest.mock import Mock, patch
 from src.vacancies.parsers.hh_parser import HHParser
-from src.vacancies.parsers.sj_parser import SJParser
+from src.vacancies.parsers.sj_parser import SuperJobParser
 
 
 class TestHHParser:
@@ -124,13 +124,13 @@ class TestHHParser:
         assert result[1]['name'] == 'Company2'
 
 
-class TestSJParser:
+class TestSuperJobParser:
     """Тесты для парсера SuperJob"""
 
     @pytest.fixture
     def sj_parser(self):
-        """Фикстура парсера SJ"""
-        return SJParser()
+        """Фикстура парсера SuperJob"""
+        return SuperJobParser()
 
     def test_parse_vacancy_full_data(self, sj_parser):
         """Тест парсинга полных данных вакансии SJ"""
