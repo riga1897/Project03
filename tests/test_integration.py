@@ -1,4 +1,3 @@
-
 """
 Интеграционные тесты для проверки взаимодействия компонентов
 """
@@ -12,10 +11,10 @@ from unittest.mock import Mock, patch, MagicMock
 class MockSourceManager:
     def get_available_sources(self):
         return ["hh.ru", "superjob.ru"]
-    
+
     def get_source_display_name(self, source):
         return {"hh.ru": "HeadHunter", "superjob.ru": "SuperJob"}.get(source, source)
-    
+
     def get_source_config(self, source):
         return {
             "name": "Test",
@@ -25,16 +24,16 @@ class MockSourceManager:
             "features": [],
             "config_class": None
         }
-    
+
     def is_source_available(self, source):
         return source in ["hh.ru", "superjob.ru"]
-    
+
     def validate_source_credentials(self, source, credentials):
         return True
-    
+
     def get_source_priority(self, source):
         return 1
-    
+
     def sort_sources_by_priority(self, sources):
         return sources
 
@@ -51,7 +50,7 @@ class CachedAPI:
         self.api = api
         self.cache_manager = cache_manager
         self.source = source
-    
+
     def search_vacancies(self, **kwargs):
         return self.api.search_vacancies(**kwargs)
 
@@ -117,7 +116,7 @@ class TestAPIIntegration:
 
         # Создаем API и выполняем поиск
         api = HeadHunterAPI()
-        
+
         # Патчим валидацию для успешного прохождения тестов
         with patch.object(api, '_validate_vacancy', return_value=True):
             raw_vacancies = api.get_vacancies("python", area="1")
@@ -127,7 +126,7 @@ class TestAPIIntegration:
         assert isinstance(raw_vacancies[0], dict)
         assert raw_vacancies[0]["name"] == "Python Developer"
         assert raw_vacancies[0]["id"] == "12345"
-        
+
         # Проверяем, что можем создать объект Vacancy из полученных данных
         # (парсеры тестируются отдельно)
         if raw_vacancies:
@@ -147,7 +146,7 @@ class TestAPIIntegration:
                 published_at=raw_vacancy.get("published_at", ""),
                 source="hh.ru"
             )
-            
+
             assert vacancy.title == "Python Developer"
             assert vacancy.vacancy_id == "12345"
 
@@ -197,7 +196,7 @@ class TestAPIIntegration:
         # Создаем API с тестовым ключом
         api = SuperJobAPI()
         api.config.secret_key = "test_key"
-        
+
         # Патчим валидацию для успешного прохождения тестов
         with patch.object(api, '_validate_vacancy', return_value=True):
             raw_vacancies = api.get_vacancies("java", town=4)
@@ -206,7 +205,7 @@ class TestAPIIntegration:
         assert len(raw_vacancies) == 1
         assert isinstance(raw_vacancies[0], dict)
         assert raw_vacancies[0]["profession"] == "Java Developer"
-        
+
         # Проверяем, что можем создать объект Vacancy из полученных данных
         # (парсеры тестируются отдельно)
         if raw_vacancies:
@@ -220,7 +219,7 @@ class TestAPIIntegration:
                     'currency': raw_vacancy.get("currency", "rub")
                 },
                 description="Test description",
-                requirements="Test requirements", 
+                requirements="Test requirements",
                 responsibilities="Test responsibilities",
                 experience="Test experience",
                 employment="Test employment",
@@ -230,7 +229,7 @@ class TestAPIIntegration:
                 published_at="2024-01-15T10:00:00",
                 source="sj.ru"
             )
-            
+
             assert vacancy.title == "Java Developer"
 
 
@@ -304,7 +303,7 @@ class TestStorageIntegration:
              patch.object(PostgresSaver, '_ensure_tables_exist'), \
              patch.object(PostgresSaver, '_ensure_companies_table_exists'), \
              patch('psycopg2.extras.execute_values') as mock_execute_values:
-            
+
             saver = PostgresSaver(db_config)
 
             # Сохраняем вакансии
@@ -343,20 +342,20 @@ class TestCacheIntegration:
         source = "hh"
         params = {"text": "python", "area": "1"}
         test_data = {"items": [{"name": "Test Vacancy"}], "found": 1}
-        
+
         # Сохраняем в кэш с правильными параметрами (source, params, data)
         file_cache.save_response(source, params, test_data)
-        
+
         # Загружаем из кэша
         cached_response = file_cache.load_response(source, params)
-        
+
         # Проверяем структуру кэшированного ответа
         assert cached_response is not None
         assert "data" in cached_response
         assert "meta" in cached_response
         assert cached_response["data"] == test_data
         assert cached_response["meta"]["params"] == params
-        
+
         # Проверяем, что кэш создал правильный файл
         params_hash = file_cache._generate_params_hash(params)
         cache_file = file_cache.cache_dir / f"{source}_{params_hash}.json"
@@ -429,16 +428,16 @@ class TestFullWorkflowIntegration:
              patch.object(PostgresSaver, '_ensure_tables_exist'), \
              patch.object(PostgresSaver, '_ensure_companies_table_exists'), \
              patch('builtins.print') as mock_print:
-            
+
             # Тестируем API
             api = HeadHunterAPI()
-            
+
             # Патчим правильный метод, который используется в CachedAPI
             with patch.object(api, '_CachedAPI__connect_to_api', return_value=mock_response.json.return_value) as mock_api_connect, \
                  patch.object(api, '_validate_vacancy', return_value=True):
-                
+
                 vacancies = api.get_vacancies("python")
-            
+
             # Тестируем сохранение (мокаем)
             db_config = {
                 'host': 'localhost', 'port': '5432',
@@ -446,7 +445,7 @@ class TestFullWorkflowIntegration:
                 'password': 'test_pass'
             }
             saver = PostgresSaver(db_config)
-            
+
             # Проверяем, что компоненты работают
             assert mock_api_connect.called  # Проверяем вызов метода CachedAPI
             assert len(vacancies) >= 0  # API может вернуть пустой список
@@ -454,14 +453,14 @@ class TestFullWorkflowIntegration:
     def test_error_handling_integration(self):
         """Тест обработки ошибок в интегрированной системе"""
         from src.api_modules.hh_api import HeadHunterAPI
-        
+
         # Тестируем обработку ошибок API
         with patch('requests.get') as mock_get:
             mock_get.side_effect = Exception("Network error")
-            
+
             api = HeadHunterAPI()
             vacancies = api.get_vacancies({"text": "python"})
-            
+
             # Должен вернуть пустой список при ошибке
             assert vacancies == []
 
@@ -500,7 +499,7 @@ class TestFullWorkflowIntegration:
 
         # Получаем данные через API
         api = HeadHunterAPI()
-        
+
         # Патчим валидацию для успешного прохождения тестов
         with patch.object(api, '_validate_vacancy', return_value=True):
             raw_vacancies = api.get_vacancies("test")
@@ -508,13 +507,13 @@ class TestFullWorkflowIntegration:
         # Проверяем, что данные корректно получены (сырые данные)
         assert len(raw_vacancies) == 1
         raw_vacancy = raw_vacancies[0]
-        
+
         assert raw_vacancy["id"] == "test_123"
         assert raw_vacancy["name"] == "Test Position"
         assert raw_vacancy["salary"]["from"] == 50000
         assert raw_vacancy["salary"]["to"] == 100000
         assert raw_vacancy["salary"]["currency"] == "RUR"
-        
+
         # Проверяем, что можем создать объект Vacancy из полученных данных
         # (парсеры тестируются отдельно)
         vacancy = Vacancy(
@@ -523,7 +522,7 @@ class TestFullWorkflowIntegration:
             salary=raw_vacancy.get("salary"),
             description="Test description",
             requirements="Test requirements",
-            responsibilities="Test responsibilities", 
+            responsibilities="Test responsibilities",
             experience="Test experience",
             employment="Test employment",
             schedule="Test schedule",
@@ -532,7 +531,7 @@ class TestFullWorkflowIntegration:
             published_at=raw_vacancy.get("published_at", ""),
             source="hh.ru"
         )
-        
+
         assert vacancy.vacancy_id == "test_123"
         assert vacancy.title == "Test Position"
         assert vacancy.salary.salary_from == 50000

@@ -3,7 +3,7 @@
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch, MagicMock, call
 import psycopg2
 from src.storage.db_manager import DBManager
 from src.config.db_config import DatabaseConfig
@@ -58,8 +58,10 @@ class TestDBManager:
         mock_connect.return_value = mock_connection
         mock_connection.__enter__ = Mock(return_value=mock_connection)
         mock_connection.__exit__ = Mock(return_value=None)
-        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
 
         db_manager.create_tables()
 
@@ -77,8 +79,10 @@ class TestDBManager:
         mock_connect.return_value = mock_connection
         mock_connection.__enter__ = Mock(return_value=mock_connection)
         mock_connection.__exit__ = Mock(return_value=None)
-        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
 
         # Имитируем пустую таблицу
         mock_cursor.fetchone.return_value = [0]
@@ -86,7 +90,7 @@ class TestDBManager:
         db_manager.populate_companies_table()
 
         # Проверяем, что был выполнен INSERT запрос
-        insert_calls = [call for call in mock_cursor.execute.call_args_list 
+        insert_calls = [call for call in mock_cursor.execute.call_args_list
                        if 'INSERT INTO companies' in str(call)]
         assert len(insert_calls) >= 1
 
@@ -102,8 +106,10 @@ class TestDBManager:
         mock_connect.return_value = mock_connection
         mock_connection.__enter__ = Mock(return_value=mock_connection)
         mock_connection.__exit__ = Mock(return_value=None)
-        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
 
         # Имитируем результат запроса
         mock_cursor.fetchall.return_value = [
@@ -125,8 +131,10 @@ class TestDBManager:
         mock_connect.return_value = mock_connection
         mock_connection.__enter__ = Mock(return_value=mock_connection)
         mock_connection.__exit__ = Mock(return_value=None)
-        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
 
         # Имитируем результат запроса
         mock_cursor.fetchall.return_value = [
@@ -156,8 +164,10 @@ class TestDBManager:
         mock_connect.return_value = mock_connection
         mock_connection.__enter__ = Mock(return_value=mock_connection)
         mock_connection.__exit__ = Mock(return_value=None)
-        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
 
         # Имитируем результат запроса
         mock_cursor.fetchone.return_value = [125000.0]
@@ -174,8 +184,10 @@ class TestDBManager:
         mock_connect.return_value = mock_connection
         mock_connection.__enter__ = Mock(return_value=mock_connection)
         mock_connection.__exit__ = Mock(return_value=None)
-        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
 
         # Имитируем отсутствие результата
         mock_cursor.fetchone.return_value = [None]
@@ -192,8 +204,10 @@ class TestDBManager:
         mock_connect.return_value = mock_connection
         mock_connection.__enter__ = Mock(return_value=mock_connection)
         mock_connection.__exit__ = Mock(return_value=None)
-        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
 
         # Мокаем get_avg_salary
         with patch.object(db_manager, 'get_avg_salary', return_value=100000.0):
@@ -223,8 +237,10 @@ class TestDBManager:
         mock_connect.return_value = mock_connection
         mock_connection.__enter__ = Mock(return_value=mock_connection)
         mock_connection.__exit__ = Mock(return_value=None)
-        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
 
         # Имитируем результат запроса
         mock_cursor.fetchall.return_value = [
@@ -264,8 +280,10 @@ class TestDBManager:
         mock_connect.return_value = mock_connection
         mock_connection.__enter__ = Mock(return_value=mock_connection)
         mock_connection.__exit__ = Mock(return_value=None)
-        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
 
         # Имитируем результаты разных запросов
         mock_cursor.fetchone.side_effect = [[100], [15], [75], ['2024-01-15']]
@@ -285,8 +303,10 @@ class TestDBManager:
         mock_connect.return_value = mock_connection
         mock_connection.__enter__ = Mock(return_value=mock_connection)
         mock_connection.__exit__ = Mock(return_value=None)
-        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
 
         result = db_manager.check_connection()
 
