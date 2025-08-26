@@ -1,0 +1,969 @@
+~/workspace$ pytest -v
+=========================== test session starts ===========================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0 -- /nix/store/2lcqw1d28vklbk8ikiwad28iq2smwndv-python-wrapped-0.1.0/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.14.1
+collected 186 items / 1 error                                             
+
+================================= ERRORS ==================================
+_______________ ERROR collecting tests/test_integration.py ________________
+tests/test_integration.py:12: in <module>
+    with patch('src.utils.source_manager.source_manager', MockSourceManager()):
+                                                          ^^^^^^^^^^^^^^^^^
+E   NameError: name 'MockSourceManager' is not defined
+========================= short test summary info =========================
+ERROR tests/test_integration.py - NameError: name 'MockSourceManager' is not defined
+!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!
+============================ 1 error in 1.22s =============================
+~/workspace$ pytest -v
+=============================================== test session starts ===============================================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0 -- /nix/store/2lcqw1d28vklbk8ikiwad28iq2smwndv-python-wrapped-0.1.0/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.14.1
+collected 193 items                                                                                               
+
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_hh_data_by_salary_range PASSED                [  0%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_sj_data_by_salary_range PASSED                [  1%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_by_keywords PASSED                            [  1%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_by_location PASSED                            [  2%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_by_experience PASSED                          [  2%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_by_employment_type PASSED                     [  3%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_by_company PASSED                             [  3%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_complex_filter_chain PASSED                          [  4%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_empty_filter_results PASSED                          [  4%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_with_empty_data PASSED                        [  5%]
+tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_invalid_data_structure PASSED                 [  5%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_api_initialization PASSED                                [  6%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_validate_vacancy_valid PASSED                            [  6%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_validate_vacancy_invalid PASSED                          [  7%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_get_vacancies_page_success PASSED                        [  7%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_get_vacancies_empty_response PASSED                      [  8%]
+tests/test_api_modules.py::TestHeadHunterAPI::test_empty_response_structure PASSED                          [  8%]
+tests/test_api_modules.py::TestSuperJobAPI::test_api_initialization_with_custom_key PASSED                  [  9%]
+tests/test_api_modules.py::TestSuperJobAPI::test_validate_vacancy_valid PASSED                              [  9%]
+tests/test_api_modules.py::TestSuperJobAPI::test_validate_vacancy_invalid PASSED                            [ 10%]
+tests/test_api_modules.py::TestSuperJobAPI::test_get_vacancies_page_with_source PASSED                      [ 10%]
+tests/test_api_modules.py::TestSuperJobAPI::test_empty_response_structure PASSED                            [ 11%]
+tests/test_cache.py::TestFileCache::test_cache_initialization PASSED                                        [ 11%]
+tests/test_cache.py::TestFileCache::test_generate_params_hash PASSED                                        [ 12%]
+tests/test_cache.py::TestFileCache::test_generate_params_hash_different_params PASSED                       [ 12%]
+tests/test_cache.py::TestFileCache::test_save_and_load_response PASSED                                      [ 13%]
+tests/test_cache.py::TestFileCache::test_load_response_nonexistent PASSED                                   [ 13%]
+tests/test_cache.py::TestFileCache::test_clear_cache_source PASSED                                          [ 14%]
+tests/test_cache.py::TestFileCache::test_clear_cache_all PASSED                                             [ 15%]
+tests/test_cache.py::TestFileCache::test_cache_with_complex_params PASSED                                   [ 15%]
+tests/test_cache.py::TestFileCache::test_cache_file_corrupted PASSED                                        [ 16%]
+tests/test_cache.py::TestFileCache::test_cache_unicode_support PASSED                                       [ 16%]
+tests/test_config.py::TestAppConfig::test_default_initialization PASSED                                     [ 17%]
+tests/test_config.py::TestAppConfig::test_get_storage_type PASSED                                           [ 17%]
+tests/test_config.py::TestAppConfig::test_set_storage_type_valid PASSED                                     [ 18%]
+tests/test_config.py::TestAppConfig::test_set_storage_type_invalid PASSED                                   [ 18%]
+tests/test_config.py::TestAppConfig::test_get_db_config PASSED                                              [ 19%]
+tests/test_config.py::TestAppConfig::test_db_config_from_env PASSED                                         [ 19%]
+tests/test_config.py::TestDatabaseConfig::test_default_initialization SKIPPED (DatabaseConfig архитекту...) [ 20%]
+tests/test_config.py::TestDatabaseConfig::test_initialization_with_env PASSED                               [ 20%]
+tests/test_config.py::TestDatabaseConfig::test_get_connection_params PASSED                                 [ 21%]
+tests/test_config.py::TestDatabaseConfig::test_get_dsn PASSED                                               [ 21%]
+tests/test_config.py::TestDatabaseConfig::test_test_connection_success PASSED                               [ 22%]
+tests/test_config.py::TestDatabaseConfig::test_test_connection_failure PASSED                               [ 22%]
+tests/test_config.py::TestHHAPIConfig::test_initialization SKIPPED (HHAPIConfig архитектура изменена)       [ 23%]
+tests/test_config.py::TestHHAPIConfig::test_get_headers PASSED                                              [ 23%]
+tests/test_config.py::TestHHAPIConfig::test_get_vacancies_url PASSED                                        [ 24%]
+tests/test_config.py::TestHHAPIConfig::test_get_employers_url PASSED                                        [ 24%]
+tests/test_config.py::TestHHAPIConfig::test_get_areas_url PASSED                                            [ 25%]
+tests/test_config.py::TestHHAPIConfig::test_get_request_params PASSED                                       [ 25%]
+tests/test_config.py::TestSJAPIConfig::test_initialization PASSED                                           [ 26%]
+tests/test_config.py::TestSJAPIConfig::test_initialization_with_secret_key PASSED                           [ 26%]
+tests/test_config.py::TestSJAPIConfig::test_get_headers_without_key PASSED                                  [ 27%]
+tests/test_config.py::TestSJAPIConfig::test_get_headers_with_key PASSED                                     [ 27%]
+tests/test_config.py::TestSJAPIConfig::test_get_vacancies_url PASSED                                        [ 28%]
+tests/test_config.py::TestSJAPIConfig::test_set_secret_key PASSED                                           [ 29%]
+tests/test_config.py::TestSJAPIConfig::test_is_configured PASSED                                            [ 29%]
+tests/test_config.py::TestSJAPIConfig::test_get_request_params PASSED                                       [ 30%]
+tests/test_db_manager.py::TestDBManager::test_get_connection_success PASSED                                 [ 30%]
+tests/test_db_manager.py::TestDBManager::test_get_connection_failure PASSED                                 [ 31%]
+tests/test_db_manager.py::TestDBManager::test_create_tables_success PASSED                                  [ 31%]
+tests/test_db_manager.py::TestDBManager::test_populate_companies_table PASSED                               [ 32%]
+tests/test_db_manager.py::TestDBManager::test_get_companies_and_vacancies_count PASSED                      [ 32%]
+tests/test_db_manager.py::TestDBManager::test_get_all_vacancies PASSED                                      [ 33%]
+tests/test_db_manager.py::TestDBManager::test_get_avg_salary PASSED                                         [ 33%]
+tests/test_db_manager.py::TestDBManager::test_get_avg_salary_no_data PASSED                                 [ 34%]
+tests/test_db_manager.py::TestDBManager::test_get_vacancies_with_higher_salary FAILED                       [ 34%]
+tests/test_db_manager.py::TestDBManager::test_get_vacancies_with_keyword FAILED                             [ 35%]
+tests/test_db_manager.py::TestDBManager::test_get_vacancies_with_keyword_empty PASSED                       [ 35%]
+tests/test_db_manager.py::TestDBManager::test_get_database_stats FAILED                                     [ 36%]
+tests/test_db_manager.py::TestDBManager::test_check_connection_success PASSED                               [ 36%]
+tests/test_db_manager.py::TestDBManager::test_check_connection_failure PASSED                               [ 37%]
+tests/test_db_manager.py::TestDBManager::test_is_target_company_match PASSED                                [ 37%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_demo_initialization FAILED                           [ 38%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_run_demo_exit FAILED                                 [ 38%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_show_companies_and_vacancies_count FAILED            [ 39%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_show_all_vacancies FAILED                            [ 39%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_show_avg_salary FAILED                               [ 40%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_show_vacancies_with_higher_salary FAILED             [ 40%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_search_vacancies_by_keyword FAILED                   [ 41%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_invalid_menu_choice FAILED                           [ 41%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_format_companies_data FAILED                         [ 42%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_format_vacancies_data FAILED                         [ 43%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_get_db_manager_creation FAILED                       [ 43%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_display_menu FAILED                                  [ 44%]
+tests/test_db_manager_demo.py::TestDBManagerDemo::test_error_handling_db_connection FAILED                  [ 44%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_write_json_data PASSED                               [ 45%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_read_json_data PASSED                                [ 45%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_read_nonexistent_json_file PASSED                    [ 46%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_read_empty_json_file PASSED                          [ 46%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_read_invalid_json_file PASSED                        [ 47%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_write_creates_directory FAILED                       [ 47%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_atomic_write_on_error PASSED                         [ 48%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_cache_clearing_on_write PASSED                       [ 48%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_global_json_handler_instance PASSED                  [ 49%]
+tests/test_file_handlers.py::TestJSONFileHandler::test_caching_behavior PASSED                              [ 49%]
+tests/test_integration.py::TestAPIIntegration::test_hh_api_search_integration PASSED                        [ 50%]
+tests/test_integration.py::TestAPIIntegration::test_sj_api_search_integration PASSED                        [ 50%]
+tests/test_integration.py::TestStorageIntegration::test_postgres_saver_integration PASSED                   [ 51%]
+tests/test_integration.py::TestCacheIntegration::test_cached_api_integration PASSED                         [ 51%]
+tests/test_integration.py::TestFullWorkflowIntegration::test_search_and_save_workflow PASSED                [ 52%]
+tests/test_integration.py::TestFullWorkflowIntegration::test_error_handling_integration PASSED              [ 52%]
+tests/test_integration.py::TestFullWorkflowIntegration::test_data_consistency_integration PASSED            [ 53%]
+tests/test_source_manager.py::TestSourceManager::test_source_manager_initialization PASSED                  [ 53%]
+tests/test_source_manager.py::TestSourceManager::test_get_available_sources PASSED                          [ 54%]
+tests/test_source_manager.py::TestSourceManager::test_get_source_config_hh PASSED                           [ 54%]
+tests/test_source_manager.py::TestSourceManager::test_get_source_config_sj PASSED                           [ 55%]
+tests/test_source_manager.py::TestSourceManager::test_get_source_config_invalid PASSED                      [ 55%]
+tests/test_source_manager.py::TestSourceManager::test_is_source_available_true PASSED                       [ 56%]
+tests/test_source_manager.py::TestSourceManager::test_is_source_available_false PASSED                      [ 56%]
+tests/test_source_manager.py::TestSourceManager::test_get_source_display_name PASSED                        [ 57%]
+tests/test_source_manager.py::TestSourceManager::test_get_source_api_limits PASSED                          [ 58%]
+tests/test_source_manager.py::TestSourceManager::test_validate_source_credentials_hh PASSED                 [ 58%]
+tests/test_source_manager.py::TestSourceManager::test_validate_source_credentials_sj_valid PASSED           [ 59%]
+tests/test_source_manager.py::TestSourceManager::test_validate_source_credentials_sj_invalid FAILED         [ 59%]
+tests/test_source_manager.py::TestSourceManager::test_get_source_priority PASSED                            [ 60%]
+tests/test_source_manager.py::TestSourceManager::test_sort_sources_by_priority PASSED                       [ 60%]
+tests/test_source_manager.py::TestSourceManager::test_get_source_features PASSED                            [ 61%]
+tests/test_storage.py::TestPostgresSaver::test_postgres_saver_initialization PASSED                         [ 61%]
+tests/test_storage.py::TestPostgresSaver::test_get_connection PASSED                                        [ 62%]
+tests/test_storage.py::TestPostgresSaver::test_add_vacancy_with_sample_data PASSED                          [ 62%]
+tests/test_storage.py::TestPostgresSaver::test_ensure_database_exists PASSED                                [ 63%]
+tests/test_storage.py::TestPostgresSaver::test_format_vacancy_data PASSED                                   [ 63%]
+tests/test_storage.py::TestStorageFactory::test_get_storage_postgres PASSED                                 [ 64%]
+tests/test_storage.py::TestStorageFactory::test_get_storage_invalid_type PASSED                             [ 64%]
+tests/test_storage.py::TestStorageFactory::test_get_storage_missing_config PASSED                           [ 65%]
+tests/test_ui_helpers.py::TestUIHelpers::test_get_positive_integer_valid PASSED                             [ 65%]
+tests/test_ui_helpers.py::TestUIHelpers::test_get_positive_integer_invalid_then_valid PASSED                [ 66%]
+tests/test_ui_helpers.py::TestUIHelpers::test_get_positive_integer_non_numeric PASSED                       [ 66%]
+tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_in_title PASSED                   [ 67%]
+tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_in_description PASSED             [ 67%]
+tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_case_insensitive PASSED           [ 68%]
+tests/test_ui_helpers.py::TestUIHelpers::test_filter_vacancies_by_keyword_no_matches PASSED                 [ 68%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_both_values PASSED                         [ 69%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_only_min PASSED                            [ 69%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_only_max PASSED                            [ 70%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_single_value PASSED                        [ 70%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_invalid_format PASSED                      [ 71%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_empty_string PASSED                        [ 72%]
+tests/test_ui_helpers.py::TestUIHelpers::test_parse_salary_range_with_spaces PASSED                         [ 72%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_brief PASSED                     [ 73%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_brief_no_number PASSED           [ 73%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_brief_no_salary PASSED           [ 74%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_brief_partial_salary PASSED      [ 74%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_info_with_dict PASSED            [ 75%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_vacancy_info_with_object PASSED          [ 75%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_display_vacancy_info PASSED                     [ 76%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_salary_dict PASSED                       [ 76%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_company_info PASSED                      [ 77%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_company_name PASSED                     [ 77%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_salary_info PASSED                      [ 78%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_description PASSED                      [ 78%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_responsibilities PASSED                 [ 79%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_requirements PASSED                     [ 79%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_extract_conditions PASSED                       [ 80%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_build_vacancy_lines PASSED                      [ 80%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_build_vacancy_lines_with_api_url PASSED         [ 81%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_salary_with_object PASSED                [ 81%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_salary_with_dict PASSED                  [ 82%]
+tests/test_vacancy_formatter.py::TestVacancyFormatter::test_format_salary_none PASSED                       [ 82%]
+tests/test_vacancy_models.py::TestVacancy::test_vacancy_creation_with_dict_salary PASSED                    [ 83%]
+tests/test_vacancy_models.py::TestVacancy::test_vacancy_creation_without_salary PASSED                      [ 83%]
+tests/test_vacancy_models.py::TestVacancy::test_vacancy_string_representation PASSED                        [ 84%]
+tests/test_vacancy_models.py::TestVacancy::test_vacancy_comparison PASSED                                   [ 84%]
+tests/test_vacancy_models.py::TestVacancy::test_vacancy_equality PASSED                                     [ 85%]
+tests/test_vacancy_models.py::TestSalary::test_salary_creation_from_dict PASSED                             [ 86%]
+tests/test_vacancy_models.py::TestSalary::test_salary_string_representation PASSED                          [ 86%]
+tests/test_vacancy_models.py::TestSalary::test_salary_only_from PASSED                                      [ 87%]
+tests/test_vacancy_models.py::TestSalary::test_salary_only_to PASSED                                        [ 87%]
+tests/test_vacancy_models.py::TestSalary::test_salary_comparison PASSED                                     [ 88%]
+tests/test_vacancy_models.py::TestSalary::test_source_detection_from_dict PASSED                            [ 88%]
+tests/test_vacancy_models.py::TestSalary::test_source_fallback_detection PASSED                             [ 89%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_search_vacancies_advanced PASSED              [ 89%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_get_vacancies_with_salary PASSED              [ 90%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_sort_vacancies_by_salary PASSED               [ 90%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_filter_vacancies_by_multiple_keywords PASSED  [ 91%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_search_vacancies_advanced_and_operator PASSED [ 91%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_search_vacancies_advanced_or_operator PASSED  [ 92%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_search_vacancies_advanced_simple_query PASSED [ 92%]
+tests/test_vacancy_operations.py::TestVacancyOperations::test_vacancy_operations_basic_functionality PASSED [ 93%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_get_company_distribution_dict_data PASSED               [ 93%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_get_company_distribution_vacancy_objects PASSED         [ 94%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_extract_company_name_hh_format PASSED                   [ 94%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_extract_company_name_sj_format PASSED                   [ 95%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_extract_company_name_vacancy_object PASSED              [ 95%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_extract_company_name_unknown PASSED                     [ 96%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_extract_company_name_empty_employer PASSED              [ 96%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_display_company_stats_with_data PASSED                  [ 97%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_display_company_stats_empty_data PASSED                 [ 97%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_display_source_stats PASSED                             [ 98%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_analyze_company_mapping PASSED                          [ 98%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_display_company_mapping_analysis PASSED                 [ 99%]
+tests/test_vacancy_stats.py::TestVacancyStats::test_company_distribution_edge_cases PASSED                  [100%]
+
+==================================================== FAILURES =====================================================
+_______________________________ TestDBManager.test_get_vacancies_with_higher_salary _______________________________
+
+self = <tests.test_db_manager.TestDBManager object at 0x7fd673fe79d0>
+mock_connect = <MagicMock name='connect' id='140559036599888'>
+db_manager = <src.storage.db_manager.DBManager object at 0x7fd673725090>
+
+    @patch('src.storage.db_manager.psycopg2.connect')
+    def test_get_vacancies_with_higher_salary(self, mock_connect, db_manager):
+        """Тест получения вакансий с зарплатой выше средней"""
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        mock_connect.return_value = mock_connection
+        mock_connection.__enter__ = Mock(return_value=mock_connection)
+        mock_connection.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+    
+        # Мокаем get_avg_salary
+        with patch.object(db_manager, 'get_avg_salary', return_value=100000.0):
+            # Имитируем результат запроса
+            mock_cursor.fetchall.return_value = [
+                {
+                    'title': 'Senior Python Developer',
+                    'company_name': 'Test Company',
+                    'salary_info': '150000 - 200000 RUR',
+                    'url': 'https://test.com/vacancy/2',
+                    'calculated_salary': 175000.0,
+                    'vacancy_id': 'test_2',
+                    'employer': 'Test Company'
+                }
+            ]
+    
+            result = db_manager.get_vacancies_with_higher_salary()
+    
+>           assert len(result) == 1
+E           assert 0 == 1
+E            +  where 0 = len([])
+
+tests/test_db_manager.py:215: AssertionError
+---------------------------------------------- Captured stderr call -----------------------------------------------
+ERROR:src.storage.db_manager:Неожиданная ошибка в get_vacancies_with_higher_salary: 0
+------------------------------------------------ Captured log call ------------------------------------------------
+ERROR    src.storage.db_manager:db_manager.py:503 Неожиданная ошибка в get_vacancies_with_higher_salary: 0
+__________________________________ TestDBManager.test_get_vacancies_with_keyword __________________________________
+
+self = <tests.test_db_manager.TestDBManager object at 0x7fd673fe7f10>
+mock_connect = <MagicMock name='connect' id='140559041568720'>
+db_manager = <src.storage.db_manager.DBManager object at 0x7fd673bc7ad0>
+
+    @patch('src.storage.db_manager.psycopg2.connect')
+    def test_get_vacancies_with_keyword(self, mock_connect, db_manager):
+        """Тест поиска вакансий по ключевому слову"""
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        mock_connect.return_value = mock_connection
+        mock_connection.__enter__ = Mock(return_value=mock_connection)
+        mock_connection.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+    
+        # Имитируем результат запроса
+        mock_cursor.fetchall.return_value = [
+            {
+                'title': 'Python Developer',
+                'company_name': 'Test Company',
+                'salary_info': '100000 - 150000 RUR',
+                'url': 'https://test.com/vacancy/1',
+                'description': 'Python development position',
+                'vacancy_id': 'test_1',
+                'employer': 'Test Company'
+            }
+        ]
+    
+        result = db_manager.get_vacancies_with_keyword('Python')
+    
+>       assert len(result) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+tests/test_db_manager.py:244: AssertionError
+---------------------------------------------- Captured stderr call -----------------------------------------------
+ERROR:src.storage.db_manager:Неожиданная ошибка в get_vacancies_with_keyword: 0
+------------------------------------------------ Captured log call ------------------------------------------------
+ERROR    src.storage.db_manager:db_manager.py:569 Неожиданная ошибка в get_vacancies_with_keyword: 0
+______________________________________ TestDBManager.test_get_database_stats ______________________________________
+
+self = <tests.test_db_manager.TestDBManager object at 0x7fd673ff4c10>
+mock_connect = <MagicMock name='connect' id='140559036651280'>
+db_manager = <src.storage.db_manager.DBManager object at 0x7fd6737312d0>
+
+    @patch('src.storage.db_manager.psycopg2.connect')
+    def test_get_database_stats(self, mock_connect, db_manager):
+        """Тест получения статистики БД"""
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        mock_connect.return_value = mock_connection
+        mock_connection.__enter__ = Mock(return_value=mock_connection)
+        mock_connection.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+    
+        # Имитируем результаты разных запросов
+        mock_cursor.fetchone.side_effect = [[100], [15], [75], ['2024-01-15']]
+    
+        result = db_manager.get_database_stats()
+    
+>       assert result['total_vacancies'] == 100
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'total_vacancies'
+
+tests/test_db_manager.py:275: KeyError
+---------------------------------------------- Captured stderr call -----------------------------------------------
+ERROR:src.storage.db_manager:Неожиданная ошибка при получении статистики БД: cannot convert dictionary update sequence element #0 to a sequence
+------------------------------------------------ Captured log call ------------------------------------------------
+ERROR    src.storage.db_manager:db_manager.py:649 Неожиданная ошибка при получении статистики БД: cannot convert dictionary update sequence element #0 to a sequence
+___________________________________ TestDBManagerDemo.test_demo_initialization ____________________________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd673fe6d50>
+
+    def test_demo_initialization(self):
+        """Тест инициализации демо"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager'):
+
+tests/test_db_manager_demo.py:37: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd6737cead0>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+______________________________________ TestDBManagerDemo.test_run_demo_exit _______________________________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd673ffeb10>
+mock_input = <MagicMock name='input' id='140559037296912'>
+mock_print = <MagicMock name='print' id='140559037425872'>, mock_db_manager = <Mock id='140559037298960'>
+
+    @patch('builtins.print')
+    @patch('builtins.input', return_value='0')
+    def test_run_demo_exit(self, mock_input, mock_print, mock_db_manager):
+        """Тест запуска демо с немедленным выходом"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd6737eda50>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+____________________________ TestDBManagerDemo.test_show_companies_and_vacancies_count ____________________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd673ffee50>
+mock_input = <MagicMock name='input' id='140559037002128'>
+mock_print = <MagicMock name='print' id='140559036991696'>, mock_db_manager = <Mock id='140559037004176'>
+
+    @patch('builtins.print')
+    @patch('builtins.input', side_effect=['1', '0'])
+    def test_show_companies_and_vacancies_count(self, mock_input, mock_print, mock_db_manager):
+        """Тест показа количества компаний и вакансий"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd673786d50>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+____________________________________ TestDBManagerDemo.test_show_all_vacancies ____________________________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd673fff1d0>
+mock_input = <MagicMock name='input' id='140559032981008'>
+mock_print = <MagicMock name='print' id='140559036695952'>, mock_db_manager = <Mock id='140559032988176'>
+
+    @patch('builtins.print')
+    @patch('builtins.input', side_effect=['2', '0'])
+    def test_show_all_vacancies(self, mock_input, mock_print, mock_db_manager):
+        """Тест показа всех вакансий"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd673727d10>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_____________________________________ TestDBManagerDemo.test_show_avg_salary ______________________________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd673fff510>
+mock_input = <MagicMock name='input' id='140559041294608'>
+mock_print = <MagicMock name='print' id='140559032936912'>, mock_db_manager = <Mock id='140559041498448'>
+
+    @patch('builtins.print')
+    @patch('builtins.input', side_effect=['3', '0'])
+    def test_show_avg_salary(self, mock_input, mock_print, mock_db_manager):
+        """Тест показа средней зарплаты"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd6733a6d10>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+____________________________ TestDBManagerDemo.test_show_vacancies_with_higher_salary _____________________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd673fff890>
+mock_input = <MagicMock name='input' id='140559037431440'>
+mock_print = <MagicMock name='print' id='140559037431504'>, mock_db_manager = <Mock id='140559037428048'>
+
+    @patch('builtins.print')
+    @patch('builtins.input', side_effect=['4', '0'])
+    def test_show_vacancies_with_higher_salary(self, mock_input, mock_print, mock_db_manager):
+        """Тест показа вакансий с зарплатой выше средней"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:104: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd6737edd50>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_______________________________ TestDBManagerDemo.test_search_vacancies_by_keyword ________________________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd673fffe10>
+mock_input = <MagicMock name='input' id='140559036648336'>
+mock_print = <MagicMock name='print' id='140559036660176'>, mock_db_manager = <Mock id='140559036654032'>
+
+    @patch('builtins.print')
+    @patch('builtins.input', side_effect=['5', 'Python', '0'])
+    def test_search_vacancies_by_keyword(self, mock_input, mock_print, mock_db_manager):
+        """Тест поиска вакансий по ключевому слову"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd674be6790>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+___________________________________ TestDBManagerDemo.test_invalid_menu_choice ____________________________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd673b083d0>
+mock_input = <MagicMock name='input' id='140559036706128'>
+mock_print = <MagicMock name='print' id='140559037296144'>, mock_db_manager = <Mock id='140559036699984'>
+
+    @patch('builtins.print')
+    @patch('builtins.input', return_value='invalid')
+    def test_invalid_menu_choice(self, mock_input, mock_print, mock_db_manager):
+        """Тест обработки неверного выбора меню"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:132: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd6737cf690>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+__________________________________ TestDBManagerDemo.test_format_companies_data ___________________________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd673b08a90>
+mock_db_manager = <Mock id='140559036653968'>
+
+    def test_format_companies_data(self, mock_db_manager):
+        """Тест форматирования данных компаний"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd673730610>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+__________________________________ TestDBManagerDemo.test_format_vacancies_data ___________________________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd673b09150>
+mock_db_manager = <Mock id='140559023636048'>
+
+    def test_format_vacancies_data(self, mock_db_manager):
+        """Тест форматирования данных вакансий"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd672ac5bd0>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_________________________________ TestDBManagerDemo.test_get_db_manager_creation __________________________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd673b097d0>
+mock_db_manager_class = <MagicMock name='DBManager' id='140559028184592'>
+
+    @patch('src.storage.db_manager.DBManager')
+    def test_get_db_manager_creation(self, mock_db_manager_class):
+        """Тест создания экземпляра DBManager"""
+        mock_instance = Mock()
+        mock_db_manager_class.return_value = mock_instance
+    
+        demo = DBManagerDemo()
+>       db_manager = demo._get_db_manager()
+                     ^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'DBManagerDemo' object has no attribute '_get_db_manager'
+
+tests/test_db_manager_demo.py:184: AttributeError
+_______________________________________ TestDBManagerDemo.test_display_menu _______________________________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd673b09e50>
+mock_print = <MagicMock name='print' id='140559032554896'>
+
+    @patch('builtins.print')
+    def test_display_menu(self, mock_print):
+        """Тест отображения меню"""
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager'):
+
+tests/test_db_manager_demo.py:192: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd673349650>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_______________________________ TestDBManagerDemo.test_error_handling_db_connection _______________________________
+
+self = <tests.test_db_manager_demo.TestDBManagerDemo object at 0x7fd673b0a4d0>
+mock_print = <MagicMock name='print' id='140559036704848'>, mock_db_manager = <Mock id='140559036709200'>
+
+    @patch('builtins.print')
+    def test_error_handling_db_connection(self, mock_print, mock_db_manager):
+        """Тест обработки ошибок подключения к БД"""
+        # Настраиваем мок для генерации исключения
+        mock_db_manager.get_companies_and_vacancies_count.side_effect = Exception("DB Connection Error")
+    
+>       with patch('src.utils.db_manager_demo.DBManagerDemo._get_db_manager', return_value=mock_db_manager):
+
+tests/test_db_manager_demo.py:208: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7fd6737ec210>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+________________________________ TestJSONFileHandler.test_write_creates_directory _________________________________
+
+self = <tests.test_file_handlers.TestJSONFileHandler object at 0x7fd673b0bb90>
+sample_data = [{'id': '1', 'salary': 100000, 'title': 'Python Developer'}, {'id': '2', 'salary': 120000, 'title': 'Java Developer'}]
+
+    def test_write_creates_directory(self, sample_data):
+        """Тест создания директории при записи"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            nested_path = temp_path / "nested" / "deep" / "test.json"
+    
+            handler = JSONFileHandler()
+            handler.write_json(nested_path, sample_data)
+    
+            assert nested_path.exists()
+            loaded_data = handler.read_json(nested_path)
+            assert loaded_data == sample_data
+>           temp_dir.rmdir()
+            ^^^^^^^^^^^^^^
+E           AttributeError: 'str' object has no attribute 'rmdir'
+
+tests/test_file_handlers.py:96: AttributeError
+__________________________ TestSourceManager.test_validate_source_credentials_sj_invalid __________________________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7fd673b9df90>
+
+    def test_validate_source_credentials_sj_invalid(self):
+        """Тест валидации учетных данных для SJ (невалидные)"""
+        manager = SourceManager()
+    
+        credentials = {}  # Пустые учетные данные
+>       is_valid = manager.validate_source_credentials("superjob.ru", credentials)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_source_manager.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.utils.source_manager.SourceManager object at 0x7fd67378a690>, source = 'superjob.ru', credentials = {}
+
+    def validate_source_credentials(self, source: str, credentials: Dict[str, Any]) -> bool:
+        """
+        Валидация учетных данных для источника
+    
+        Args:
+            source: Идентификатор источника
+            credentials: Словарь с учетными данными
+    
+        Returns:
+            True если учетные данные валидны
+        """
+        if source == "hh.ru":
+            # HH.ru не требует API ключа
+            return True
+        elif source == "superjob.ru":
+            # SuperJob требует API ключ
+            api_key = credentials.get("api_key")
+            if not api_key:
+                # Проверяем в переменных окружения
+                config = SJAPIConfig()
+>               return config.is_configured()
+                       ^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'SJAPIConfig' object has no attribute 'is_configured'
+
+src/utils/source_manager.py:124: AttributeError
+============================================= short test summary info =============================================
+FAILED tests/test_db_manager.py::TestDBManager::test_get_vacancies_with_higher_salary - assert 0 == 1
+FAILED tests/test_db_manager.py::TestDBManager::test_get_vacancies_with_keyword - assert 0 == 1
+FAILED tests/test_db_manager.py::TestDBManager::test_get_database_stats - KeyError: 'total_vacancies'
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_demo_initialization - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_run_demo_exit - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_show_companies_and_vacancies_count - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_show_all_vacancies - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_show_avg_salary - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_show_vacancies_with_higher_salary - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_search_vacancies_by_keyword - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_invalid_menu_choice - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_format_companies_data - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_format_vacancies_data - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_get_db_manager_creation - AttributeError: 'DBManagerDemo' object has no attribute '_get_db_manager'
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_display_menu - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_error_handling_db_connection - AttributeError: <class 'src.utils.db_manager_demo.DBManagerDemo'> does not have the attribute '_get_db_manager'
+FAILED tests/test_file_handlers.py::TestJSONFileHandler::test_write_creates_directory - AttributeError: 'str' object has no attribute 'rmdir'
+FAILED tests/test_source_manager.py::TestSourceManager::test_validate_source_credentials_sj_invalid - AttributeError: 'SJAPIConfig' object has no attribute 'is_configured'
+==================================== 18 failed, 173 passed, 2 skipped in 2.79s ====================================
+~/workspace$ 

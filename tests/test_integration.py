@@ -15,10 +15,28 @@ class MockSourceManager:
     
     def get_source_display_name(self, source):
         return {"hh.ru": "HeadHunter", "superjob.ru": "SuperJob"}.get(source, source)
-
-# Патчим source_manager перед импортом других модулей
-with patch('src.utils.source_manager.source_manager', MockSourceManager()):
-    pass
+    
+    def get_source_config(self, source):
+        return {
+            "name": "Test",
+            "display_name": "Test",
+            "priority": 1,
+            "api_limits": {"requests_per_second": 5},
+            "features": [],
+            "config_class": None
+        }
+    
+    def is_source_available(self, source):
+        return source in ["hh.ru", "superjob.ru"]
+    
+    def validate_source_credentials(self, source, credentials):
+        return True
+    
+    def get_source_priority(self, source):
+        return 1
+    
+    def sort_sources_by_priority(self, sources):
+        return sources
 
 from src.api_modules.hh_api import HeadHunterAPI
 from src.api_modules.sj_api import SuperJobAPI
