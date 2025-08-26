@@ -364,12 +364,31 @@ class PostgresSaver:
                     else str(vacancy.area) if vacancy.area else None
                 )
 
+                # Обработка даты published_at
+                published_date = None
+                if vacancy.published_at:
+                    if isinstance(vacancy.published_at, str):
+                        try:
+                            # Пытаемся парсить ISO формат даты
+                            from datetime import datetime
+                            if 'T' in vacancy.published_at:
+                                # Формат: 2025-08-25T18:47:30+0300
+                                published_date = datetime.fromisoformat(vacancy.published_at.replace('+0300', '+03:00'))
+                            else:
+                                published_date = datetime.fromisoformat(vacancy.published_at)
+                        except (ValueError, TypeError) as e:
+                            logger.warning(f"Не удалось распарсить дату {vacancy.published_at}: {e}")
+                            published_date = None
+                    else:
+                        published_date = vacancy.published_at
+
+
                 insert_data.append((
                     vacancy.vacancy_id, vacancy.title, vacancy.url,
                     salary_from, salary_to, salary_currency,
                     vacancy.description, vacancy.requirements, vacancy.responsibilities,
                     vacancy.experience, vacancy.employment, vacancy.schedule,
-                    employer_str, area_str, vacancy.source, vacancy.published_at,
+                    employer_str, area_str, vacancy.source, published_date,
                     mapped_company_id  # Оставляем как integer
                 ))
 
@@ -684,12 +703,30 @@ class PostgresSaver:
                         else str(vacancy.area) if vacancy.area else None
                     )
 
+                    # Обработка даты published_at
+                    published_date = None
+                    if vacancy.published_at:
+                        if isinstance(vacancy.published_at, str):
+                            try:
+                                # Пытаемся парсить ISO формат даты
+                                from datetime import datetime
+                                if 'T' in vacancy.published_at:
+                                    # Формат: 2025-08-25T18:47:30+0300
+                                    published_date = datetime.fromisoformat(vacancy.published_at.replace('+0300', '+03:00'))
+                                else:
+                                    published_date = datetime.fromisoformat(vacancy.published_at)
+                            except (ValueError, TypeError) as e:
+                                logger.warning(f"Не удалось распарсить дату {vacancy.published_at}: {e}")
+                                published_date = None
+                        else:
+                            published_date = vacancy.published_at
+
                     insert_data.append((
                         vacancy.vacancy_id, vacancy.title, vacancy.url,
                         salary_from, salary_to, salary_currency,
                         vacancy.description, vacancy.requirements, vacancy.responsibilities,
                         vacancy.experience, vacancy.employment, vacancy.schedule,
-                        employer_str, area_str, vacancy.source, vacancy.published_at,
+                        employer_str, area_str, vacancy.source, published_date,
                         mapped_company_id  # Оставляем как integer
                     ))
 
@@ -767,6 +804,25 @@ class PostgresSaver:
                         else str(vacancy.area) if vacancy.area else None
                     )
 
+                    # Обработка даты published_at
+                    published_date = None
+                    if vacancy.published_at:
+                        if isinstance(vacancy.published_at, str):
+                            try:
+                                # Пытаемся парсить ISO формат даты
+                                from datetime import datetime
+                                if 'T' in vacancy.published_at:
+                                    # Формат: 2025-08-25T18:47:30+0300
+                                    published_date = datetime.fromisoformat(vacancy.published_at.replace('+0300', '+03:00'))
+                                else:
+                                    published_date = datetime.fromisoformat(vacancy.published_at)
+                            except (ValueError, TypeError) as e:
+                                logger.warning(f"Не удалось распарсить дату {vacancy.published_at}: {e}")
+                                published_date = None
+                        else:
+                            published_date = vacancy.published_at
+
+
                     update_query = """
                     UPDATE vacancies SET
                         title = %s, url = %s, salary_from = %s, salary_to = %s,
@@ -783,7 +839,7 @@ class PostgresSaver:
                         salary_currency, vacancy.description, vacancy.requirements,
                         vacancy.responsibilities, vacancy.experience, vacancy.employment,
                         vacancy.schedule, employer_str, area_str, vacancy.source,
-                        vacancy.published_at, mapped_company_id, vacancy.vacancy_id
+                        published_date, mapped_company_id, vacancy.vacancy_id
                     ))
 
             connection.commit()
@@ -1396,13 +1452,31 @@ class PostgresSaver:
                     else str(vacancy.area) if vacancy.area else None
                 )
 
+                # Обработка даты published_at
+                published_date = None
+                if vacancy.published_at:
+                    if isinstance(vacancy.published_at, str):
+                        try:
+                            # Пытаемся парсить ISO формат даты
+                            from datetime import datetime
+                            if 'T' in vacancy.published_at:
+                                # Формат: 2025-08-25T18:47:30+0300
+                                published_date = datetime.fromisoformat(vacancy.published_at.replace('+0300', '+03:00'))
+                            else:
+                                published_date = datetime.fromisoformat(vacancy.published_at)
+                        except (ValueError, TypeError) as e:
+                            logger.warning(f"Не удалось распарсить дату {vacancy.published_at}: {e}")
+                            published_date = None
+                    else:
+                        published_date = vacancy.published_at
+
 
                 insert_data.append((
                     vacancy.vacancy_id, vacancy.title, vacancy.url,
                     salary_from, salary_to, salary_currency,
                     vacancy.description, vacancy.requirements, vacancy.responsibilities,
                     vacancy.experience, vacancy.employment, vacancy.schedule,
-                    employer_str, area_str, vacancy.source, vacancy.published_at,
+                    employer_str, area_str, vacancy.source, published_date,
                     mapped_company_id  # Оставляем как integer
                 ))
 

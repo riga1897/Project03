@@ -608,12 +608,12 @@ class DBManager:
                                 WHEN salary_from IS NOT NULL THEN salary_from
                                 WHEN salary_to IS NOT NULL THEN salary_to
                             END) as avg_salary,
-                            MAX(CASE WHEN published_at IS NOT NULL THEN published_at END) as latest_vacancy_date,
-                            MIN(CASE WHEN published_at IS NOT NULL THEN published_at END) as earliest_vacancy_date,
+                            -- Простая обработка дат с проверкой на валидность
+                            MAX(published_at) as latest_vacancy_date,
+                            MIN(published_at) as earliest_vacancy_date,
                             COUNT(CASE WHEN created_at >= CURRENT_DATE - INTERVAL '7 days' THEN 1 END) as vacancies_last_week,
                             COUNT(CASE WHEN created_at >= CURRENT_DATE - INTERVAL '30 days' THEN 1 END) as vacancies_last_month
                         FROM vacancies
-                        WHERE salary_currency IN ('RUR', 'RUB', 'руб.', NULL) OR salary_currency IS NULL
                     """)
                     
                     main_stats = cursor.fetchone()

@@ -293,6 +293,28 @@ class DBManagerDemo:
         """Демонстрирует получение статистики БД"""
         print("\n8. Статистика базы данных:")
         print("----------------------------------------")
+        
+        # Сначала посмотрим примеры дат из БД для отладки
+        try:
+            with self.db_manager._get_connection() as conn:
+                with conn.cursor() as cursor:
+                    cursor.execute("""
+                        SELECT published_at, created_at 
+                        FROM vacancies 
+                        WHERE published_at IS NOT NULL 
+                        LIMIT 3
+                    """)
+                    date_samples = cursor.fetchall()
+                    
+                    if date_samples:
+                        print("🔍 Примеры дат в БД:")
+                        for i, (pub_date, create_date) in enumerate(date_samples, 1):
+                            print(f"   {i}. published_at: {pub_date} (тип: {type(pub_date)})")
+                            print(f"      created_at: {create_date} (тип: {type(create_date)})")
+                        print()
+        except Exception as e:
+            print(f"Ошибка при получении примеров дат: {e}")
+        
         stats = self.db_manager.get_database_stats()
         if stats:
             print(f"Общее количество вакансий: {stats.get('total_vacancies', 0)}")
