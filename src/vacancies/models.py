@@ -199,6 +199,10 @@ class Vacancy(AbstractVacancy):
 
             # Обработка зарплаты (универсальная для всех источников)
             salary = data.get("salary")
+            
+            # Если salary не найден, но есть поле salary_range как строка - парсим его
+            if not salary and data.get("salary_range") and isinstance(data.get("salary_range"), str):
+                salary = data.get("salary_range")
 
             # Обработка работодателя - сохраняем исходную структуру
             employer = data.get("employer")

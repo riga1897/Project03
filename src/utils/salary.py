@@ -15,6 +15,13 @@ class Salary:
         self.gross = False
         self.period = "month"
 
+        # Сначала проверяем, есть ли строковый диапазон для парсинга
+        if isinstance(salary_data, str):
+            salary_data = self._parse_salary_range_string(salary_data)
+        elif isinstance(salary_data, dict) and salary_data.get("salary_range"):
+            range_data = self._parse_salary_range_string(salary_data["salary_range"])
+            salary_data.update(range_data)
+
         self._salary_from = self._validate_salary_value(salary_data.get("from"))
         self._salary_to = self._validate_salary_value(salary_data.get("to"))
         self._currency = self._validate_currency(salary_data.get("currency", "RUR"))
@@ -57,6 +64,69 @@ class Salary:
         if not value or not isinstance(value, str):
             return "RUR"
         return value.upper().strip()
+
+    @staticmethod
+    def _parse_salary_range_string(salary_range: str) -> Dict[str, Any]:
+        """
+        Парсинг строки с диапазоном зарплаты
+        
+        Поддерживаемые форматы:
+        - "100000 - 150000"
+        - "от 100000 до 150000"
+        - "100000-150000"
+        - "от 100000"
+        - "до 150000"
+        """
+        if not salary_range or not isinstance(salary_range, str):
+            return {}
+
+        import re
+        
+        # Очищаем строку от лишних символов и приводим к нижнему регистру
+        clean_range = salary_range.strip().lower()
+        
+        # Паттерны для разных форматов
+        patterns = [
+            # "от X до Y", "от X до Y руб", "от X до Y рублей"
+            r'от\s*(\d+(?:\s?\d{3})*)\s*до\s*(\d+(?:\s?\d{3})*)',
+            # "X - Y", "X-Y"
+            r'(\d+(?:\s?\d{3})*)\s*-\s*(\d+(?:\s?\d{3})*)',
+            # "X до Y"
+            r'(\d+(?:\s?\d{3})*)\s*до\s*(\d+(?:\s?\d{3})*)',
+        ]
+        
+        # Пытаемся найти диапазон
+        for pattern in patterns:
+            match = re.search(pattern, clean_range)
+            if match:
+                from_salary = int(re.sub(r'\s', '', match.group(1)))
+                to_salary = int(re.sub(r'\s', '', match.group(2)))
+                return {
+                    "from": from_salary,
+                    "to": to_salary,
+                    "currency": "RUR"  # По умолчанию рубли
+                }
+        
+        # Паттерны для одиночных значений
+        single_patterns = [
+            # "от X"
+            (r'от\s*(\d+(?:\s?\d{3})*)', "from"),
+            # "до Y"
+            (r'до\s*(\d+(?:\s?\d{3})*)', "to"),
+            # просто число
+            (r'^(\d+(?:\s?\d{3})*)$', "from"),
+        ]
+        
+        for pattern, field in single_patterns:
+            match = re.search(pattern, clean_range)
+            if match:
+                salary_value = int(re.sub(r'\s', '', match.group(1)))
+                return {
+                    field: salary_value,
+                    "currency": "RUR"
+                }
+        
+        return {}
 
     @property
     def salary_from(self) -> Optional[int]:
