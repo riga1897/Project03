@@ -3,7 +3,7 @@ import json
 from typing import List, Dict, Any, Optional
 
 from ..models import Vacancy
-from src.utils.salary import SalaryParser
+from src.utils.salary import Salary
 from src.utils.vacancy_formatter import format_company_name
 from src.utils.cache import FileCache
 
