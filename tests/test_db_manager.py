@@ -271,15 +271,30 @@ class TestDBManager:
         mock_cursor_context.__exit__ = Mock(return_value=None)
         mock_connection.cursor.return_value = mock_cursor_context
 
-        # Имитируем результаты разных запросов - возвращаем кортежи
-        mock_cursor.fetchone.side_effect = [(100,), (15,), (75,), ('2024-01-15',)]
+        # Имитируем результаты разных запросов - возвращаем одиночные значения
+        mock_cursor.fetchone.side_effect = [
+            (100,),  # total_vacancies
+            (15,),   # total_companies  
+            (75,),   # vacancies_with_salary
+            ('2024-01-15',)  # latest_vacancy_date
+        ]
 
         result = db_manager.get_database_stats()
 
+        assert result is not None
         assert result['total_vacancies'] == 100
         assert result['total_companies'] == 15
         assert result['vacancies_with_salary'] == 75
         assert result['latest_vacancy_date'] == '2024-01-15'
+
+    @patch('src.storage.db_manager.psycopg2.connect')
+    def test_get_database_stats_error(self, mock_connect, db_manager):
+        """Тест получения статистики БД при ошибке"""
+        mock_connect.side_effect = psycopg2.Error("Database error")
+
+        result = db_manager.get_database_stats()
+
+        assert result is None
 
     @patch('src.storage.db_manager.psycopg2.connect')
     def test_check_connection_success(self, mock_connect, db_manager):
