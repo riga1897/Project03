@@ -191,39 +191,57 @@ class UnifiedAPI:
         Args:
             sources: Словарь с источниками для очистки
         """
+        cleared_sources = []
+        
         try:
             if sources.get("hh", False):
+                # Очищаем через API
                 self.hh_api.clear_cache("hh")
-                logger.info("Кэш HH.ru очищен")
-                print("✅ Кэш HH.ru очищен")
-
-            if sources.get("sj", False):
-                self.sj_api.clear_cache("sj")
-                logger.info("Кэш SuperJob очищен")
-                print("✅ Кэш SuperJob очищен")
-
-            # Дополнительная проверка - принудительно удаляем файлы кэша
-            import os
-            import glob
-
-            cache_dir = "data/cache"
-            if sources.get("hh", False):
-                hh_files = glob.glob(f"{cache_dir}/hh/hh_*.json")
+                
+                # Принудительно удаляем файлы кэша
+                import os
+                import glob
+                cache_dir = "data/cache/hh"
+                hh_files = glob.glob(f"{cache_dir}/hh_*.json")
+                removed_count = 0
+                
                 for file in hh_files:
                     try:
                         os.remove(file)
+                        removed_count += 1
                     except Exception as e:
                         logger.warning(f"Не удалось удалить файл {file}: {e}")
-                print(f"🗑️ Удалено {len(hh_files)} файлов кэша HH.ru")
+                
+                logger.info("Кэш HH.ru очищен")
+                print(f"✅ Кэш HH.ru очищен (удалено {removed_count} файлов)")
+                cleared_sources.append("HH.ru")
 
             if sources.get("sj", False):
-                sj_files = glob.glob(f"{cache_dir}/sj/sj_*.json")
+                # Очищаем через API
+                self.sj_api.clear_cache("sj")
+                
+                # Принудительно удаляем файлы кэша
+                import os
+                import glob
+                cache_dir = "data/cache/sj"
+                sj_files = glob.glob(f"{cache_dir}/sj_*.json")
+                removed_count = 0
+                
                 for file in sj_files:
                     try:
                         os.remove(file)
+                        removed_count += 1
                     except Exception as e:
                         logger.warning(f"Не удалось удалить файл {file}: {e}")
-                print(f"🗑️ Удалено {len(sj_files)} файлов кэша SuperJob")
+                
+                logger.info("Кэш SuperJob очищен")
+                print(f"✅ Кэш SuperJob очищен (удалено {removed_count} файлов)")
+                cleared_sources.append("SuperJob")
+
+            if cleared_sources:
+                print(f"🎯 Кэш успешно очищен для источников: {', '.join(cleared_sources)}")
+            else:
+                print("⚠️ Не выбраны источники для очистки кэша")
 
         except Exception as e:
             logger.error(f"Ошибка при очистке кэша: {e}")

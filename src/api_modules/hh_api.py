@@ -147,14 +147,26 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
                 logger.info("No vacancies found for query")
                 return []
 
-            total_pages = min(initial_data.get("pages", 1), self._config.get_pagination_params(**kwargs)["max_pages"])
+            # Используем реальное количество страниц из API, но не больше лимита
+            actual_pages = initial_data.get("pages", 1)
+            max_pages = self._config.get_pagination_params(**kwargs)["max_pages"]
+            total_pages = min(actual_pages, max_pages)
+            
+            # Дополнительная проверка - если найдено вакансий меньше чем per_page, то страница только одна
+            found_vacancies = initial_data.get("found", 0)
+            per_page = self._config.hh_config.get_params(**kwargs).get("per_page", 50)
+            if found_vacancies <= per_page:
+                total_pages = 1
 
-            logger.info(f"Found {initial_data.get('found')} vacancies " f"({total_pages} pages to process)")
+            logger.info(f"Found {found_vacancies} vacancies " f"({actual_pages} actual pages, processing {total_pages} pages)")
 
-            # Process all pages
-            results = self._paginator.paginate(
-                fetch_func=lambda p: self.get_vacancies_page(search_query, p, **kwargs), total_pages=total_pages
-            )
+            # Process all pages, но только если есть что обрабатывать
+            if total_pages > 0:
+                results = self._paginator.paginate(
+                    fetch_func=lambda p: self.get_vacancies_page(search_query, p, **kwargs), total_pages=total_pages
+                )
+            else:
+                results = []
 
             logger.info(f"Successfully processed {len(results)} vacancies")
             return results
@@ -256,19 +268,32 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             )
             initial_data = self._CachedAPI__connect_to_api(self.BASE_URL, initial_params, "hh")
             
-            if not initial_data.get("found", 0):
+            found_vacancies = initial_data.get("found", 0)
+            if not found_vacancies:
+                logger.debug(f"Компания {company_id}: вакансий не найдено")
                 return []
 
-            total_pages = min(
-                initial_data.get("pages", 1), 
-                self._config.get_pagination_params(**kwargs)["max_pages"]
-            )
+            # Правильно рассчитываем количество страниц
+            actual_pages = initial_data.get("pages", 1)
+            max_pages = self._config.get_pagination_params(**kwargs)["max_pages"]
+            per_page = self._config.hh_config.get_params(**kwargs).get("per_page", 50)
+            
+            # Если вакансий меньше чем per_page, то страница только одна
+            if found_vacancies <= per_page:
+                total_pages = 1
+            else:
+                total_pages = min(actual_pages, max_pages)
 
-            # Получаем все страницы
-            results = self._paginator.paginate(
-                fetch_func=lambda p: self.get_vacancies_page_by_company(company_id, search_query, p, **kwargs),
-                total_pages=total_pages
-            )
+            logger.debug(f"Компания {company_id}: найдено {found_vacancies} вакансий, обрабатываем {total_pages} страниц")
+
+            # Получаем все страницы только если есть что обрабатывать
+            if total_pages > 0:
+                results = self._paginator.paginate(
+                    fetch_func=lambda p: self.get_vacancies_page_by_company(company_id, search_query, p, **kwargs),
+                    total_pages=total_pages
+                )
+            else:
+                results = []
 
             return results
 

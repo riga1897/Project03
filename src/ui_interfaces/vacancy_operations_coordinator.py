@@ -66,17 +66,13 @@ class VacancyOperationsCoordinator:
 
             self.source_selector.display_sources_info(sources)
             if confirm_action("Вы уверены, что хотите очистить кэш выбранных источников?"):
-                # Очищаем кэш для каждого выбранного источника
-                for source in sources:
-                    if source == "hh.ru":
-                        self.unified_api.clear_cache({"hh": True, "sj": False})
-                    elif source == "superjob.ru":
-                        self.unified_api.clear_cache({"hh": False, "sj": True})
+                # Формируем словарь для очистки кэша
+                cache_sources = {
+                    "hh": "hh.ru" in sources,
+                    "sj": "superjob.ru" in sources
+                }
                 
-                # Если выбраны оба источника, очистим сразу все
-                if len(sources) > 1:
-                    self.unified_api.clear_cache({"hh": True, "sj": True})
-                
+                self.unified_api.clear_cache(cache_sources)
                 print("Кэш выбранных источников успешно очищен.")
             else:
                 print("Очистка кэша отменена.")
