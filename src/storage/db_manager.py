@@ -439,15 +439,10 @@ class DBManager:
             return []
 
         # SQL-запрос для получения вакансий с зарплатой выше средней
-        # Использует WHERE с параметром для фильтрации по средней зарплате
         query = """
-        -- Выборка вакансий с зарплатой выше средней по всем вакансиям
-        -- Использует ту же логику нормализации зарплат, что и в get_avg_salary()
         SELECT
-            v.title,                                                   -- Название вакансии
-            -- COALESCE для выбора первого не-NULL значения названия компании
+            v.title,
             COALESCE(c.name, v.employer, 'Неизвестная компания') as company_name,
-            -- Форматирование зарплаты для отображения (аналогично get_all_vacancies)
             CASE
                 WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
                     CONCAT(v.salary_from, ' - ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
@@ -457,22 +452,19 @@ class DBManager:
                     CONCAT('до ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
                 ELSE 'Не указана'
             END as salary_info,
-            v.url,                                                     -- Ссылка на вакансию
-            -- Расчет нормализованной зарплаты для сортировки (та же логика что в AVG)
+            v.url,
             CASE
                 WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
-                    (v.salary_from + v.salary_to) / 2                  -- Среднее арифметическое диапазона
-                WHEN v.salary_from IS NOT NULL THEN v.salary_from       -- Минимальная зарплата
-                WHEN v.salary_to IS NOT NULL THEN v.salary_to           -- Максимальная зарплата
-                ELSE NULL                                              -- NULL для вакансий без зарплаты
+                    (v.salary_from + v.salary_to) / 2
+                WHEN v.salary_from IS NOT NULL THEN v.salary_from
+                WHEN v.salary_to IS NOT NULL THEN v.salary_to
+                ELSE NULL
             END as calculated_salary,
-            v.vacancy_id,                                              -- ID вакансии
-            v.employer                                                 -- Оригинальное поле работодателя
-        FROM vacancies v                                               -- Основная таблица вакансий
-        LEFT JOIN companies c ON v.company_id = c.company_id          -- Соединение с таблицей компаний
-        -- WHERE с условием фильтрации: зарплата > средней зарплаты (параметр %s)
+            v.vacancy_id,
+            v.employer
+        FROM vacancies v
+        LEFT JOIN companies c ON v.company_id = c.company_id
         WHERE (
-            -- Применяем ту же логику расчета зарплаты для сравнения
             CASE
                 WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
                     (v.salary_from + v.salary_to) / 2
@@ -480,29 +472,35 @@ class DBManager:
                 WHEN v.salary_to IS NOT NULL THEN v.salary_to
                 ELSE NULL
             END
-        ) > %s                                                        -- Параметр: средняя зарплата из get_avg_salary()
-        AND v.salary_currency IN ('RUR', 'RUB', 'руб.', NULL)        -- Фильтр по валюте (только рубли)
-        -- Сортировка: по убыванию зарплаты, затем по компании и названию вакансии
+        ) > %s
+        AND (v.salary_currency IN ('RUR', 'RUB', 'руб.') OR v.salary_currency IS NULL)
         ORDER BY calculated_salary DESC, c.name, v.title
         """
 
         try:
             with self._get_connection() as conn:
-                with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                with conn.cursor() as cursor:
                     cursor.execute(query, (avg_salary,))
                     results = cursor.fetchall()
                     
-                    # Отладочная информация
-                    logger.debug(f"Результаты запроса: {len(results) if results else 0} записей")
-                    if results:
-                        logger.debug(f"Тип первой записи: {type(results[0])}")
-                        logger.debug(f"Первая запись: {results[0]}")
-
-                    # Возвращаем список словарей без вывода
-                    return [dict(row) for row in results]
+                    # Преобразуем результаты в список словарей
+                    columns = ['title', 'company_name', 'salary_info', 'url', 'calculated_salary', 'vacancy_id', 'employer']
+                    vacancies = []
+                    
+                    for row in results:
+                        vacancy_dict = {}
+                        for i, column in enumerate(columns):
+                            vacancy_dict[column] = row[i] if i < len(row) else None
+                        vacancies.append(vacancy_dict)
+                    
+                    logger.debug(f"Найдено {len(vacancies)} вакансий с зарплатой выше средней")
+                    return vacancies
 
         except psycopg2.Error as e:
             logger.error(f"Ошибка при выполнении SQL-запроса для получения вакансий с высокой зарплатой: {e}")
+            return []
+        except Exception as e:
+            logger.error(f"Неожиданная ошибка в get_vacancies_with_higher_salary: {e}")
             return []
 
     def get_vacancies_with_keyword(self, keyword: str) -> List[Dict[str, Any]]:
@@ -520,15 +518,10 @@ class DBManager:
             return []
 
         # SQL-запрос для поиска вакансий по ключевому слову в названии
-        # Использует оператор LIKE для нечеткого поиска подстроки
         query = """
-        -- Поиск вакансий по ключевому слову в названии вакансии
-        -- Использует LIKE для частичного совпадения и LOWER() для регистронезависимого поиска
         SELECT
-            v.title,                                                   -- Название вакансии
-            -- Определение названия компании с приоритетом (аналогично другим запросам)
+            v.title,
             COALESCE(c.name, v.employer, 'Неизвестная компания') as company_name,
-            -- Форматирование зарплаты (стандартная логика)
             CASE
                 WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
                     CONCAT(v.salary_from, ' - ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
@@ -538,15 +531,13 @@ class DBManager:
                     CONCAT('до ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
                 ELSE 'Не указана'
             END as salary_info,
-            v.url,                                                     -- Ссылка на вакансию
-            v.description,                                             -- Описание вакансии
-            v.vacancy_id,                                              -- ID вакансии
-            v.employer                                                 -- Работодатель
-        FROM vacancies v                                               -- Основная таблица вакансий
-        LEFT JOIN companies c ON v.company_id = c.company_id          -- Соединение с компаниями
-        -- WHERE с LIKE для поиска подстроки в названии (регистронезависимо)
-        WHERE LOWER(v.title) LIKE LOWER(%s)                           -- Параметр содержит %keyword%
-        -- Сортировка по компании, затем по названию вакансии
+            v.url,
+            v.description,
+            v.vacancy_id,
+            v.employer
+        FROM vacancies v
+        LEFT JOIN companies c ON v.company_id = c.company_id
+        WHERE LOWER(v.title) LIKE LOWER(%s)
         ORDER BY c.name, v.title
         """
 
@@ -554,20 +545,28 @@ class DBManager:
             search_pattern = f"%{keyword.strip()}%"
 
             with self._get_connection() as conn:
-                with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                with conn.cursor() as cursor:
                     cursor.execute(query, (search_pattern,))
                     results = cursor.fetchall()
                     
-                    # Отладочная информация
-                    logger.debug(f"Поиск по '{keyword}': найдено {len(results) if results else 0} записей")
-                    if results:
-                        logger.debug(f"Тип первой записи: {type(results[0])}")
-
-                    # Возвращаем список словарей без вывода
-                    return [dict(row) for row in results]
+                    # Преобразуем результаты в список словарей
+                    columns = ['title', 'company_name', 'salary_info', 'url', 'description', 'vacancy_id', 'employer']
+                    vacancies = []
+                    
+                    for row in results:
+                        vacancy_dict = {}
+                        for i, column in enumerate(columns):
+                            vacancy_dict[column] = row[i] if i < len(row) else None
+                        vacancies.append(vacancy_dict)
+                    
+                    logger.debug(f"Поиск по '{keyword}': найдено {len(vacancies)} вакансий")
+                    return vacancies
 
         except psycopg2.Error as e:
             logger.error(f"Ошибка при выполнении SQL-запроса для поиска вакансий по ключевому слову '{keyword}': {e}")
+            return []
+        except Exception as e:
+            logger.error(f"Неожиданная ошибка в get_vacancies_with_keyword: {e}")
             return []
 
     def get_database_stats(self) -> Dict[str, Any]:
