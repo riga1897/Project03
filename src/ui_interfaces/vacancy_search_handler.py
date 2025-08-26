@@ -83,14 +83,21 @@ class VacancySearchHandler:
         """
         print("Поиск вакансий только от целевых компаний...")
 
-        # Конвертируем set в list для передачи в UnifiedAPI
-        sources_list = list(sources)
+        # Создаем unified_api для поиска от целевых компаний
+        unified_api = UnifiedAPI()
 
-        # Получаем вакансии от целевых компаний через унифицированный API
+        # Преобразуем источники в правильный формат
+        api_sources = []
+        if "HH.ru" in sources:
+            api_sources.append("hh")
+        if "SuperJob.ru" in sources:
+            api_sources.append("sj")
+
+        # Получаем вакансии от целевых компаний только из выбранных источников
         try:
             vacancies_data = self.unified_api.get_vacancies_from_target_companies(
                 search_query=query,
-                sources=sources_list,
+                sources=api_sources,  # Передаем только выбранные источники
                 period=period
             )
 

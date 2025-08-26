@@ -225,70 +225,57 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
 
     def get_vacancies_from_target_companies(self, search_query: str = "", **kwargs) -> List[Dict]:
         """
-        Получение вакансий от целевых компаний SuperJob
-
-        Поскольку SuperJob API не поддерживает прямую фильтрацию по компаниям,
-        выполняется пост-фильтрация результатов по названиям целевых компаний.
+        Получение вакансий только от целевых компаний
 
         Args:
             search_query: Поисковый запрос (опционально)
-            **kwargs: Дополнительные параметры для API
+            **kwargs: Дополнительные параметры поиска
 
         Returns:
-            List[Dict]: Список сырых данных вакансий от целевых компаний
+            List[Dict]: Список вакансий от целевых компаний
         """
         try:
-            # Импортируем список целевых компаний
-            from src.config.target_companies import get_target_company_names
+            # Проверяем наличие API ключа
+            if not self.config.sj_config.secret_key:
+                logger.warning("SuperJob API ключ не настроен, пропускаем")
+                return []
 
-            target_company_names = get_target_company_names()
-            target_names_lower = [name.lower() for name in target_company_names]
+            # SuperJob не имеет фильтра по конкретным компаниям в API
+            # Получаем все вакансии и фильтруем по целевым компаниям
+            logger.info("SuperJob: получение всех вакансий для фильтрации по целевым компаниям")
 
-            logger.info(f"Поиск вакансий от {len(target_company_names)} целевых компаний в SuperJob")
-
-            # ВАЖНО: Получаем сырые данные без дедупликации
             all_vacancies = self.get_vacancies(search_query, **kwargs)
 
             if not all_vacancies:
-                logger.info("Вакансии не найдены")
                 return []
 
-            # Фильтруем вакансии по целевым компаниям
+            # Фильтруем по целевым компаниям
+            target_companies = get_target_company_names()
             target_vacancies = []
 
-            print(f"Фильтрация {len(all_vacancies)} вакансий SuperJob по целевым компаниям...")
-
-            from tqdm import tqdm
-            with tqdm(total=len(all_vacancies), desc="Фильтрация по компаниям", unit="вакансия") as pbar:
-                for vacancy in all_vacancies:
-                    # ВАЖНО: Работаем с сырыми данными - поле firm_name
-                    firm_name = vacancy.get("firm_name", "").lower().strip()
-
-                    # Проверяем точное совпадение или вхождение названия
-                    is_target_company = any(
-                        target_name in firm_name or firm_name in target_name 
-                        for target_name in target_names_lower
-                    )
-
-                    if is_target_company:
+            for vacancy in all_vacancies:
+                company_name = vacancy.get('firm_name', '').lower()
+                # Проверяем совпадение с целевыми компаниями (нечеткое сравнение)
+                for target_company in target_companies:
+                    if target_company.lower() in company_name or company_name in target_company.lower():
                         target_vacancies.append(vacancy)
-                        logger.debug(f"Найдена вакансия от целевой компании: {firm_name}")
+                        break
 
-                    pbar.update(1)
+            logger.info(f"SuperJob: отфильтровано {len(target_vacancies)} вакансий от целевых компаний")
 
-            logger.info(f"Найдено {len(target_vacancies)} вакансий от целевых компаний из {len(all_vacancies)} общих")
-
+            # Показываем статистику
             if target_vacancies:
-                print(f"Найдено {len(target_vacancies)} вакансий от целевых компаний")
-
-                # Используем общий компонент для статистики с сырыми данными
                 from src.utils.vacancy_stats import VacancyStats
                 VacancyStats.display_company_stats(target_vacancies, "SuperJob - Целевые компании")
 
             return target_vacancies
 
         except Exception as e:
-            logger.error(f"Ошибка получения вакансий от целевых компаний SuperJob: {e}")
+            if "403" in str(e) or "ключ" in str(e).lower():
+                logger.warning(f"SuperJob API ключ недействителен или не настроен: {e}")
+                logger.info("Для использования SuperJob настройте API ключ через пункт меню '9. Настройка SuperJob API'")
+            else:
+                logger.error(f"Ошибка SuperJob API: {e}")
             return []
 
     def clear_cache(self, api_prefix: str) -> None:
