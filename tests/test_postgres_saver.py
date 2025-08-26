@@ -22,7 +22,9 @@ class TestPostgresSaver:
     @pytest.fixture
     def postgres_saver(self, mock_db_manager):
         """Фикстура PostgresSaver"""
-        return PostgresSaver(db_manager=mock_db_manager)
+        saver = PostgresSaver()
+        saver.db_manager = mock_db_manager
+        return saver
 
     def test_initialization(self, postgres_saver, mock_db_manager):
         """Тест инициализации"""

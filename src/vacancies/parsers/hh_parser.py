@@ -1,7 +1,11 @@
 import logging
-from typing import Any, Dict, List
+import json
+from typing import List, Dict, Any, Optional
 
 from ..models import Vacancy
+from src.utils.salary import SalaryParser
+from src.utils.vacancy_formatter import format_company_name
+from src.utils.cache import FileCache
 
 logger = logging.getLogger(__name__)
 

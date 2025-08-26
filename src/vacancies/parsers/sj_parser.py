@@ -1,7 +1,12 @@
 import logging
-from typing import Any, Dict, List
+import json
+from typing import List, Dict, Any, Optional
 
 from ..models import Vacancy
+from src.utils.salary import SalaryParser
+from src.utils.vacancy_formatter import format_company_name
+from src.utils.cache import FileCache
+
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +32,7 @@ class SuperJobParser:
                 # Устанавливаем источник если не установлен
                 if "source" not in vacancy_data or not vacancy_data["source"]:
                     vacancy_data["source"] = "superjob.ru"
-                
+
                 vacancy = Vacancy.from_dict(vacancy_data)
                 parsed_vacancies.append(vacancy)
             except ValueError as e:
@@ -149,7 +154,7 @@ class SuperJobParser:
         try:
             companies = []
             objects = companies_data.get('objects', [])
-            
+
             for company_data in objects:
                 company = {
                     'company_id': str(company_data.get('id', '')),
@@ -158,7 +163,7 @@ class SuperJobParser:
                     'url': company_data.get('link', ''),
                 }
                 companies.append(company)
-                
+
             logger.info(f"Успешно распарсено {len(companies)} компаний SJ")
             return companies
         except Exception as e:

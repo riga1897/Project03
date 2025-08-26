@@ -49,7 +49,7 @@ class TestUnifiedAPI:
 
     def test_get_vacancies_from_all_sources(self, unified_api, mock_hh_api, mock_sj_api):
         """Тест получения вакансий из всех источников"""
-        result = unified_api.get_vacancies_from_all_sources("Python")
+        result = unified_api.get_vacancies_from_sources("Python")
 
         assert len(result) == 2
         mock_hh_api.get_vacancies.assert_called_once_with("Python")
@@ -57,7 +57,7 @@ class TestUnifiedAPI:
 
     def test_get_vacancies_from_source_hh(self, unified_api, mock_hh_api):
         """Тест получения вакансий из HeadHunter"""
-        result = unified_api.get_vacancies_from_source("Python", "hh")
+        result = unified_api.get_vacancies_from_source("hh", "Python")
 
         assert len(result) == 1
         assert result[0]['source'] == 'hh.ru'
@@ -65,7 +65,7 @@ class TestUnifiedAPI:
 
     def test_get_vacancies_from_source_sj(self, unified_api, mock_sj_api):
         """Тест получения вакансий из SuperJob"""
-        result = unified_api.get_vacancies_from_source("Python", "sj")
+        result = unified_api.get_vacancies_from_source("sj", "Python")
 
         assert len(result) == 1
         assert result[0]['source'] == 'superjob.ru'
@@ -73,13 +73,13 @@ class TestUnifiedAPI:
 
     def test_get_vacancies_from_source_unknown(self, unified_api):
         """Тест получения вакансий из неизвестного источника"""
-        result = unified_api.get_vacancies_from_source("Python", "unknown")
+        result = unified_api.get_vacancies_from_source("unknown", "Python")
 
         assert result == []
 
     def test_get_companies_from_all_sources(self, unified_api, mock_hh_api, mock_sj_api):
         """Тест получения компаний из всех источников"""
-        result = unified_api.get_companies_from_all_sources()
+        result = unified_api.get_companies_from_sources()
 
         assert len(result) == 2
         mock_hh_api.get_companies.assert_called_once()
@@ -104,7 +104,7 @@ class TestUnifiedAPI:
     def test_search_with_multiple_keywords(self, unified_api, mock_hh_api, mock_sj_api):
         """Тест поиска с несколькими ключевыми словами"""
         keywords = ["Python", "Django"]
-        result = unified_api.search_with_multiple_keywords(keywords, "hh")
+        result = unified_api.search_with_multiple_keywords(keywords)
 
         # Должен вызваться поиск для каждого ключевого слова
         assert mock_hh_api.get_vacancies.call_count == 2
