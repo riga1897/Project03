@@ -104,13 +104,37 @@ class SuperJobParser:
             type_of_work_info = vacancy_data.get('type_of_work', {})
             place_of_work_info = vacancy_data.get('place_of_work', {})
 
+            # Обработка описания - объединяем vacancyRichText и work
+            description_parts = []
+            if vacancy_data.get('vacancyRichText'):
+                description_parts.append(vacancy_data.get('vacancyRichText'))
+            if vacancy_data.get('work'):
+                description_parts.append(vacancy_data.get('work'))
+            description = ' '.join(filter(None, description_parts))
+
+            # Обработка зарплаты - разбираем диапазон
+            payment_from = vacancy_data.get('payment_from')
+            payment_to = vacancy_data.get('payment_to')
+            
+            # Если зарплата задана одним числом без диапазона, используем его как salary_from
+            if payment_from and not payment_to:
+                salary_from = payment_from
+                salary_to = None
+            elif payment_to and not payment_from:
+                salary_from = None
+                salary_to = payment_to
+            else:
+                salary_from = payment_from
+                salary_to = payment_to
+
             return {
                 'vacancy_id': str(vacancy_data.get('id', '')),
                 'title': vacancy_data.get('profession', ''),
                 'url': vacancy_data.get('link', ''),
-                'salary_from': vacancy_data.get('payment_from'),
-                'salary_to': vacancy_data.get('payment_to'),
+                'salary_from': salary_from,
+                'salary_to': salary_to,
                 'salary_currency': vacancy_data.get('currency'),
+                'description': description or '',
                 'requirements': vacancy_data.get('candidat', ''),
                 'responsibilities': vacancy_data.get('work', ''),
                 'employer': vacancy_data.get('firm_name', ''),
@@ -119,6 +143,7 @@ class SuperJobParser:
                 'employment': type_of_work_info.get('title', '') if type_of_work_info else '',
                 'schedule': place_of_work_info.get('title', '') if place_of_work_info else '',
                 'published_at': vacancy_data.get('date_pub_timestamp', ''),
+                'source': 'superjob.ru',
             }
         except Exception as e:
             logger.error(f"Ошибка при парсинге вакансии SJ: {e}")
@@ -129,6 +154,7 @@ class SuperJobParser:
                 'salary_from': None,
                 'salary_to': None,
                 'salary_currency': None,
+                'description': '',
                 'requirements': '',
                 'responsibilities': '',
                 'employer': '',
@@ -137,6 +163,7 @@ class SuperJobParser:
                 'employment': '',
                 'schedule': '',
                 'published_at': '',
+                'source': 'superjob.ru',
             }
 
     @staticmethod
