@@ -1,0 +1,66 @@
+______________________________________ TestDBManager.test_get_database_stats ______________________________________
+
+self = <tests.test_db_manager.TestDBManager object at 0x7f757e5ecd90>
+mock_connect = <MagicMock name='connect' id='140142607806800'>
+db_manager = <src.storage.db_manager.DBManager object at 0x7f757e555290>
+
+    @patch('src.storage.db_manager.psycopg2.connect')
+    def test_get_database_stats(self, mock_connect, db_manager):
+        """Тест получения статистики БД"""
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        mock_connect.return_value = mock_connection
+        mock_connection.__enter__ = Mock(return_value=mock_connection)
+        mock_connection.__exit__ = Mock(return_value=None)
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
+    
+        # Имитируем результаты разных запросов - возвращаем одиночные значения
+        mock_cursor.fetchone.side_effect = [
+            (100,),  # total_vacancies
+            (15,),   # total_companies
+            (75,),   # vacancies_with_salary
+            ('2024-01-15',)  # latest_vacancy_date
+        ]
+    
+        result = db_manager.get_database_stats()
+    
+        assert result is not None
+>       assert result['total_vacancies'] == 100
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'total_vacancies'
+
+tests/test_db_manager.py:285: KeyError
+---------------------------------------------- Captured stderr call -----------------------------------------------
+ERROR:src.storage.db_manager:Неожиданная ошибка при получении статистики БД: cannot convert dictionary update sequence element #0 to a sequence
+------------------------------------------------ Captured log call ------------------------------------------------
+ERROR    src.storage.db_manager:db_manager.py:649 Неожиданная ошибка при получении статистики БД: cannot convert dictionary update sequence element #0 to a sequence
+___________________________________ TestDBManager.test_get_database_stats_error ___________________________________
+
+self = <tests.test_db_manager.TestDBManager object at 0x7f757e5ed710>
+mock_connect = <MagicMock name='connect' id='140142603011280'>
+db_manager = <src.storage.db_manager.DBManager object at 0x7f757e1227d0>
+
+    @patch('src.storage.db_manager.psycopg2.connect')
+    def test_get_database_stats_error(self, mock_connect, db_manager):
+        """Тест получения статистики БД при ошибке"""
+        mock_connect.side_effect = psycopg2.Error("Database error")
+    
+        result = db_manager.get_database_stats()
+    
+>       assert result is None
+E       assert {} is None
+
+tests/test_db_manager.py:297: AssertionError
+---------------------------------------------- Captured stderr call -----------------------------------------------
+ERROR:src.storage.db_manager:Ошибка подключения к базе данных: Database error
+ERROR:src.storage.db_manager:Ошибка при выполнении SQL-запросов для получения статистики БД: Database error
+------------------------------------------------ Captured log call ------------------------------------------------
+ERROR    src.storage.db_manager:db_manager.py:61 Ошибка подключения к базе данных: Database error
+ERROR    src.storage.db_manager:db_manager.py:646 Ошибка при выполнении SQL-запросов для получения статистики БД: Database error
+============================================= short test summary info =============================================
+FAILED tests/test_db_manager.py::TestDBManager::test_get_database_stats - KeyError: 'total_vacancies'
+FAILED tests/test_db_manager.py::TestDBManager::test_get_database_stats_error - assert {} is None
+==================================== 2 failed, 181 passed, 2 skipped in 1.23s =====================================
