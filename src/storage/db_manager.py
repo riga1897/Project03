@@ -53,7 +53,7 @@ class DBManager:
             # Добавляем явное указание кодировки UTF-8
             connection_params['client_encoding'] = 'utf8'
             connection = psycopg2.connect(**connection_params)
-            
+
             # Устанавливаем кодировку для соединения
             connection.set_client_encoding('UTF8')
             return connection
@@ -112,7 +112,7 @@ class DBManager:
                 with conn.cursor() as cursor:
                     # Устанавливаем кодировку сессии
                     cursor.execute("SET client_encoding TO 'UTF8'")
-                    
+
                     # Сначала создаем таблицу компаний
                     cursor.execute(create_companies_table)
                     logger.info("Таблица компаний создана успешно")
@@ -358,7 +358,6 @@ class DBManager:
             v.url,                                         -- Ссылка на вакансию
             v.vacancy_id,                                  -- ID вакансии
             v.employer,                                    -- Оригинальное поле employer для совместимости
-            v.area,                                        -- Регион/город
             c.company_id                                   -- ID компании из справочника
         FROM vacancies v                                   -- Основная таблица вакансий
         LEFT JOIN companies c ON v.company_id = c.company_id  -- Левое соединение для получения названия компании
@@ -489,17 +488,17 @@ class DBManager:
                 with conn.cursor() as cursor:
                     cursor.execute(query, (avg_salary,))
                     results = cursor.fetchall()
-                    
+
                     # Преобразуем результаты в список словарей
                     columns = ['title', 'company_name', 'salary_info', 'url', 'calculated_salary', 'vacancy_id', 'employer']
                     vacancies = []
-                    
+
                     for row in results:
                         vacancy_dict = {}
                         for i, column in enumerate(columns):
                             vacancy_dict[column] = row[i] if i < len(row) else None
                         vacancies.append(vacancy_dict)
-                    
+
                     logger.debug(f"Найдено {len(vacancies)} вакансий с зарплатой выше средней")
                     return vacancies
 
@@ -564,17 +563,17 @@ class DBManager:
                 with conn.cursor() as cursor:
                     cursor.execute(query, (search_pattern,))
                     results = cursor.fetchall()
-                    
+
                     # Преобразуем результаты в список словарей
                     columns = ['title', 'company_name', 'salary_info', 'url', 'description', 'vacancy_id', 'employer']
                     vacancies = []
-                    
+
                     for row in results:
                         vacancy_dict = {}
                         for i, column in enumerate(columns):
                             vacancy_dict[column] = row[i] if i < len(row) else None
                         vacancies.append(vacancy_dict)
-                    
+
                     logger.debug(f"Поиск по '{keyword}': найдено {len(vacancies)} вакансий")
                     return vacancies
 
@@ -620,7 +619,7 @@ class DBManager:
                             COUNT(CASE WHEN published_at IS NOT NULL THEN 1 END) as vacancies_with_published_date
                         FROM vacancies
                     """)
-                    
+
                     main_stats = cursor.fetchone()
                     if main_stats:
                         stats.update(dict(main_stats))

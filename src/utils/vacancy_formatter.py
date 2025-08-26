@@ -266,6 +266,30 @@ class VacancyFormatter(BaseFormatter):
         # Источник
         lines.append(f"Источник: {getattr(vacancy, 'source', 'Не указан')}")
 
+        # Дата публикации в российском формате
+        published_at = getattr(vacancy, 'published_at', None)
+        if published_at:
+            try:
+                if hasattr(published_at, 'strftime'):
+                    # Форматируем дату в российском формате
+                    formatted_date = published_at.strftime("%d.%m.%Y %H:%M")
+                    lines.append(f"Дата публикации: {formatted_date}")
+                else:
+                    # Если это строка, пытаемся её обработать
+                    from datetime import datetime
+                    if isinstance(published_at, str):
+                        # Пробуем распарсить разные форматы
+                        for fmt in ["%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"]:
+                            try:
+                                parsed_date = datetime.strptime(published_at.replace('+0300', ''), fmt.replace('%z', ''))
+                                formatted_date = parsed_date.strftime("%d.%m.%Y %H:%M")
+                                lines.append(f"Дата публикации: {formatted_date}")
+                                break
+                            except ValueError:
+                                continue
+            except Exception:
+                pass  # Если не удалось отформатировать, просто пропускаем
+
         # Ссылка с преобразованием API-ссылок в веб-ссылки
         url = vacancy.url
         if isinstance(url, str) and url != "Не указана":

@@ -7,6 +7,8 @@
 
 import logging
 from typing import Optional
+import re
+from datetime import datetime
 
 from src.config.target_companies import TargetCompanies
 from src.storage.db_manager import DBManager
@@ -162,7 +164,6 @@ class DBManagerDemo:
                 return 0
 
             # Извлекаем числа из строки зарплаты
-            import re
             numbers = re.findall(r'\d+', salary_info)
             if numbers:
                 # Берем максимальное значение (если есть диапазон)
@@ -293,8 +294,8 @@ class DBManagerDemo:
         """Демонстрирует получение статистики БД"""
         print("\n8. Статистика базы данных:")
         print("----------------------------------------")
-        
-        # Сначала посмотрим примеры дат из БД для отладки
+
+        # Примеры дат убраны для чистоты вывода
         try:
             with self.db_manager._get_connection() as conn:
                 with conn.cursor() as cursor:
@@ -305,16 +306,28 @@ class DBManagerDemo:
                         LIMIT 3
                     """)
                     date_samples = cursor.fetchall()
-                    
+
                     if date_samples:
                         print("🔍 Примеры дат в БД:")
                         for i, (pub_date, create_date) in enumerate(date_samples, 1):
-                            print(f"   {i}. published_at: {pub_date} (тип: {type(pub_date)})")
-                            print(f"      created_at: {create_date} (тип: {type(create_date)})")
+                            # Форматируем даты в российском формате
+                            if isinstance(pub_date, datetime):
+                                pub_date_str = pub_date.strftime('%d.%m.%Y %H:%M:%S')
+                            else:
+                                pub_date_str = str(pub_date)
+                            
+                            if isinstance(create_date, datetime):
+                                create_date_str = create_date.strftime('%d.%m.%Y %H:%M:%S')
+                            else:
+                                create_date_str = str(create_date)
+
+                            print(f"   {i}. published_at: {pub_date_str} (тип: {type(pub_date)})")
+                            print(f"      created_at: {create_date_str} (тип: {type(create_date)})")
                         print()
         except Exception as e:
             print(f"Ошибка при получении примеров дат: {e}")
-        
+
+
         stats = self.db_manager.get_database_stats()
         if stats:
             print(f"Общее количество вакансий: {stats.get('total_vacancies', 0)}")
@@ -327,7 +340,7 @@ class DBManagerDemo:
 
             if latest_date:
                 if hasattr(latest_date, 'strftime'):
-                    latest_str = latest_date.strftime('%Y-%m-%d %H:%M:%S')
+                    latest_str = latest_date.strftime('%d.%m.%Y %H:%M:%S')
                 else:
                     latest_str = str(latest_date)
                 print(f"Дата последней вакансии: {latest_str}")
@@ -336,7 +349,7 @@ class DBManagerDemo:
 
             if earliest_date:
                 if hasattr(earliest_date, 'strftime'):
-                    earliest_str = earliest_date.strftime('%Y-%m-%d %H:%M:%S')
+                    earliest_str = earliest_date.strftime('%d.%m.%Y %H:%M:%S')
                 else:
                     earliest_str = str(earliest_date)
                 print(f"Дата первой вакансии: {earliest_str}")
@@ -348,7 +361,7 @@ class DBManagerDemo:
                 print(f"Вакансий за последнюю неделю: {stats.get('vacancies_last_week', 0)}")
             if stats.get('vacancies_last_month'):
                 print(f"Вакансий за последний месяц: {stats.get('vacancies_last_month', 0)}")
-            
+
             # Статистика заполненности полей
             total = stats.get('total_vacancies', 0)
             if total > 0:
@@ -357,7 +370,7 @@ class DBManagerDemo:
                 req_pct = (stats.get('vacancies_with_requirements', 0) / total * 100) if total else 0
                 area_pct = (stats.get('vacancies_with_area', 0) / total * 100) if total else 0
                 date_pct = (stats.get('vacancies_with_published_date', 0) / total * 100) if total else 0
-                
+
                 print(f"Описание: {stats.get('vacancies_with_description', 0)}/{total} ({desc_pct:.1f}%)")
                 print(f"Требования: {stats.get('vacancies_with_requirements', 0)}/{total} ({req_pct:.1f}%)")
                 print(f"Регион: {stats.get('vacancies_with_area', 0)}/{total} ({area_pct:.1f}%)")
