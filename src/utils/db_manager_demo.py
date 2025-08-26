@@ -267,16 +267,16 @@ class DBManagerDemo:
                 print(f"{'№':<3} {'Название':<50} {'Зарплата':<25}")
                 print("-" * 80)
 
-                # Показываем первые 5 вакансий для экономии места
-                for i, vacancy in enumerate(vacancies[:5], 1):
+                # Показываем первые 10 вакансий
+                for i, vacancy in enumerate(vacancies[:10], 1):
                     # RealDictCursor возвращает словари
                     title = str(vacancy.get('title', ''))[:49]
                     salary = str(vacancy.get('salary_info', ''))[:24]
 
                     print(f"{i:<3} {title:<50} {salary:<25}")
 
-                if len(vacancies) > 5:
-                    print(f"... и еще {len(vacancies) - 5} вакансий")
+                if len(vacancies) > 10:
+                    print(f"... и еще {len(vacancies) - 10} вакансий")
 
             except Exception as e:
                 logger.error(f"Ошибка при поиске по ключевому слову '{keyword}': {e}")
