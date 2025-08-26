@@ -602,17 +602,22 @@ class DBManager:
                         SELECT 
                             COUNT(*) as total_vacancies,
                             COUNT(CASE WHEN salary_from IS NOT NULL OR salary_to IS NOT NULL THEN 1 END) as vacancies_with_salary,
-                            COUNT(DISTINCT employer) as unique_employers,
+                            COUNT(DISTINCT CASE WHEN employer IS NOT NULL AND employer != '' THEN employer END) as unique_employers,
                             AVG(CASE
                                 WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN (salary_from + salary_to) / 2
                                 WHEN salary_from IS NOT NULL THEN salary_from
                                 WHEN salary_to IS NOT NULL THEN salary_to
                             END) as avg_salary,
-                            -- Простая обработка дат с проверкой на валидность
-                            MAX(published_at) as latest_vacancy_date,
-                            MIN(published_at) as earliest_vacancy_date,
+                            -- Улучшенная обработка дат с проверкой на валидность
+                            MAX(CASE WHEN published_at IS NOT NULL THEN published_at END) as latest_vacancy_date,
+                            MIN(CASE WHEN published_at IS NOT NULL THEN published_at END) as earliest_vacancy_date,
                             COUNT(CASE WHEN created_at >= CURRENT_DATE - INTERVAL '7 days' THEN 1 END) as vacancies_last_week,
-                            COUNT(CASE WHEN created_at >= CURRENT_DATE - INTERVAL '30 days' THEN 1 END) as vacancies_last_month
+                            COUNT(CASE WHEN created_at >= CURRENT_DATE - INTERVAL '30 days' THEN 1 END) as vacancies_last_month,
+                            -- Дополнительная статистика по заполненности полей
+                            COUNT(CASE WHEN description IS NOT NULL AND description != '' THEN 1 END) as vacancies_with_description,
+                            COUNT(CASE WHEN requirements IS NOT NULL AND requirements != '' THEN 1 END) as vacancies_with_requirements,
+                            COUNT(CASE WHEN area IS NOT NULL AND area != '' THEN 1 END) as vacancies_with_area,
+                            COUNT(CASE WHEN published_at IS NOT NULL THEN 1 END) as vacancies_with_published_date
                         FROM vacancies
                     """)
                     

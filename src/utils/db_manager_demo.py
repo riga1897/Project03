@@ -348,6 +348,20 @@ class DBManagerDemo:
                 print(f"Вакансий за последнюю неделю: {stats.get('vacancies_last_week', 0)}")
             if stats.get('vacancies_last_month'):
                 print(f"Вакансий за последний месяц: {stats.get('vacancies_last_month', 0)}")
+            
+            # Статистика заполненности полей
+            total = stats.get('total_vacancies', 0)
+            if total > 0:
+                print("\n📊 Заполненность полей:")
+                desc_pct = (stats.get('vacancies_with_description', 0) / total * 100) if total else 0
+                req_pct = (stats.get('vacancies_with_requirements', 0) / total * 100) if total else 0
+                area_pct = (stats.get('vacancies_with_area', 0) / total * 100) if total else 0
+                date_pct = (stats.get('vacancies_with_published_date', 0) / total * 100) if total else 0
+                
+                print(f"Описание: {stats.get('vacancies_with_description', 0)}/{total} ({desc_pct:.1f}%)")
+                print(f"Требования: {stats.get('vacancies_with_requirements', 0)}/{total} ({req_pct:.1f}%)")
+                print(f"Регион: {stats.get('vacancies_with_area', 0)}/{total} ({area_pct:.1f}%)")
+                print(f"Дата публикации: {stats.get('vacancies_with_published_date', 0)}/{total} ({date_pct:.1f}%)")
         else:
             print("❌ Не удалось получить статистику базы данных")
 
