@@ -76,7 +76,7 @@ class DBManager:
                     cursor.execute("""
                         CREATE TABLE IF NOT EXISTS companies (
                             id SERIAL PRIMARY KEY,
-                            name VARCHAR(255) NOT NULL,
+                            name VARCHAR(255) NOT NULL UNIQUE,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                         );
                     """)
@@ -206,14 +206,16 @@ class DBManager:
 
             # Добавляем целевые компании
             for company in TARGET_COMPANIES:
-                cursor.execute("""
-                    INSERT INTO companies (name, description)
-                    VALUES (%s, %s)
-                    ON CONFLICT (name) DO NOTHING
-                """, (
-                    company["name"],
-                    company.get("description", "")
-                ))
+                # Сначала проверяем, существует ли компания
+                cursor.execute("SELECT id FROM companies WHERE name = %s", (company["name"],))
+                if not cursor.fetchone():
+                    cursor.execute("""
+                        INSERT INTO companies (name, description)
+                        VALUES (%s, %s)
+                    """, (
+                        company["name"],
+                        company.get("description", "")
+                    ))
 
             connection.commit()
 

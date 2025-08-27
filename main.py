@@ -34,13 +34,19 @@ if __name__ == "__main__":
 
     except Exception as e:
         logger.error(f"Ошибка при инициализации базы данных: {e}")
-        print(f"⚠️ Работа без базы данных - некоторые функции будут недоступны")
-        db_manager = None
+        print(f"❌ Критическая ошибка базы данных: {e}")
+        print("Программа не может работать без базы данных. Завершение работы.")
+        exit(1)
+
+    # Проверяем, что база данных инициализирована
+    if db_manager is None:
+        print("❌ База данных недоступна. Программа не может работать без базы данных.")
+        exit(1)
 
     # Запускаем пользовательский интерфейс
     try:
         # Импортируем ConsoleInterface здесь, чтобы избежать ошибок при отсутствии БД
-        from src.console_interface import ConsoleInterface 
+        from src.ui_interfaces.console_interface import UserInterface as ConsoleInterface 
         interface = ConsoleInterface(db_manager=db_manager)
         interface.run()
     except KeyboardInterrupt:
