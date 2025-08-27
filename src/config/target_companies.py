@@ -242,6 +242,16 @@ class TargetCompanies:
         return len(cls.COMPANIES)
 
 
+def get_target_company_ids() -> List[str]:
+    """
+    Возвращает список ID целевых компаний для HH.ru
+    
+    Returns:
+        List[str]: Список ID компаний для HH.ru
+    """
+    return TargetCompanies.get_hh_ids()
+
+
 # Для обратной совместимости - список словарей
 TARGET_COMPANIES = [
     {
