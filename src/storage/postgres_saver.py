@@ -407,8 +407,9 @@ class PostgresSaver(AbstractVacancyStorage):
                 company_patterns[original_name] = comp_id
 
 
-            # Подготавливаем данные для вставки/обновления И сохраняем company_id в объектах
+            # Подготавливаем данные для вставки/обновления И фильтруем по целевым компаниям
             insert_data = []
+            filtered_vacancies = []  # Только вакансии от целевых компаний
             vacancy_company_mapping = {}  # Словарь для сохранения соответствия vacancy_id -> company_id
 
             for vacancy in vacancies:
@@ -464,18 +465,24 @@ class PostgresSaver(AbstractVacancyStorage):
                                     logger.debug(f"Найдено соответствие по альтернативному названию: '{employer_name}' -> '{alt_name}' (company_id: {comp_id})")
                                     break
 
-                # 3. Логирование для отладки
+                # 3. Логирование и фильтрация по целевым компаниям
                 if mapped_company_id:
                     logger.debug(f"Сопоставлено: '{employer_name}' (ID: {employer_id}) -> company_id: {mapped_company_id}")
+                    
+                    # Сохраняем соответствие для дальнейшего использования
+                    vacancy_company_mapping[vacancy.vacancy_id] = mapped_company_id
+                    # Устанавливаем company_id напрямую в объект вакансии
+                    vacancy.company_id = mapped_company_id
+                    # Добавляем в список для сохранения только если это целевая компания
+                    filtered_vacancies.append(vacancy)
                 else:
-                    logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (ID: {employer_id}, vacancy_id: {vacancy.vacancy_id})")
+                    logger.debug(f"Вакансия отклонена - не от целевой компании: '{employer_name}' (ID: {employer_id}, vacancy_id: {vacancy.vacancy_id})")
+                    continue  # Пропускаем вакансии не от целевых компаний
 
-                # Сохраняем соответствие для дальнейшего использования
-                vacancy_company_mapping[vacancy.vacancy_id] = mapped_company_id
-
-                # Устанавливаем company_id напрямую в объект вакансии
-                vacancy.company_id = mapped_company_id
-
+                # Обрабатываем только отфильтрованные вакансии от целевых компаний
+            for vacancy in filtered_vacancies:
+                mapped_company_id = vacancy_company_mapping[vacancy.vacancy_id]
+                
                 salary_from = vacancy.salary.salary_from if vacancy.salary else None
                 salary_to = vacancy.salary.salary_to if vacancy.salary else None
                 salary_currency = vacancy.salary.currency if vacancy.salary else None
@@ -505,7 +512,7 @@ class PostgresSaver(AbstractVacancyStorage):
                     vacancy.description, vacancy.requirements, vacancy.responsibilities,
                     vacancy.experience, vacancy.employment, vacancy.schedule,
                     area_str, vacancy.source, published_date,
-                    mapped_company_id  # Оставляем как integer
+                    mapped_company_id  # Всегда будет не None для целевых компаний
                 ))
 
             # Bulk insert во временную таблицу
@@ -596,7 +603,17 @@ class PostgresSaver(AbstractVacancyStorage):
                     update_messages.append(f"... и еще {updated_count - 5} обновленных вакансий")
 
             connection.commit()
-            logger.info(f"Batch операция через временные таблицы: добавлено {new_count}, обновлено {updated_count} вакансий")
+            
+            total_input = len(vacancies)
+            total_filtered = len(filtered_vacancies)
+            filtered_out = total_input - total_filtered
+            
+            logger.info(f"Batch операция через временные таблицы:")
+            logger.info(f"  Входящих вакансий: {total_input}")
+            logger.info(f"  От целевых компаний: {total_filtered}")
+            logger.info(f"  Отфильтровано (не целевые): {filtered_out}")
+            logger.info(f"  Добавлено в БД: {new_count}")
+            logger.info(f"  Обновлено в БД: {updated_count}")
 
         except psycopg2.Error as e:
             logger.error(f"Ошибка при batch операции через временные таблицы: {e}")
