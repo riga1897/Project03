@@ -742,7 +742,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 # salary_currency, description, requirements, responsibilities, experience, employment, schedule, 
                 # area, source, published_at, company_id
                 # Последнее поле: company_name из JOIN
-                
+
                 # Извлекаем данные по индексам (row это кортеж)
                 vacancy_id = row[1]  # vacancy_id
                 title = row[2]       # title
@@ -826,8 +826,70 @@ class PostgresSaver(AbstractVacancyStorage):
         return vacancies
 
     def get_vacancies(self) -> List[Vacancy]:
-        """Возвращает список вакансий"""
-        return self.load_vacancies()
+        """Получить все сохраненные вакансии"""
+        try:
+            with self._get_connection() as conn:
+                with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                    cursor.execute("""
+                        SELECT 
+                            v.*,
+                            c.name as company_name
+                        FROM vacancies v
+                        LEFT JOIN companies c ON v.company_id = c.id
+                        ORDER BY v.created_at DESC
+                    """)
+
+                    rows = cursor.fetchall()
+                    vacancies = []
+
+                    for row in rows:
+                        try:
+                            # Создаем правильную структуру salary
+                            salary_dict = None
+                            if row['salary_from'] is not None or row['salary_to'] is not None:
+                                salary_dict = {
+                                    'from': row['salary_from'],
+                                    'to': row['salary_to'],
+                                    'currency': row['salary_currency'] or 'RUR'
+                                }
+
+                            # Создаем объект Vacancy через from_dict для правильной инициализации
+                            vacancy_data = {
+                                'id': row['vacancy_id'],
+                                'name': row['title'],
+                                'alternate_url': row['url'] or '',
+                                'salary': salary_dict,
+                                'snippet': {
+                                    'requirement': row['requirements'] or '',
+                                    'responsibility': row['responsibilities'] or ''
+                                },
+                                'employer': {'name': row['company_name'] or 'Неизвестная компания'},
+                                'area': {'name': row['area'] or ''},
+                                'experience': {'name': row['experience'] or ''},
+                                'employment': {'name': row['employment'] or ''},
+                                'schedule': {'name': row['schedule'] or ''},
+                                'published_at': row['published_at'].isoformat() if row['published_at'] else None,
+                                'source': row['source'] or 'database'
+                            }
+
+                            # Добавляем description если есть
+                            if row['description']:
+                                vacancy_data['description'] = row['description']
+
+                            vacancy = Vacancy.from_dict(vacancy_data)
+                            vacancies.append(vacancy)
+
+                        except Exception as e:
+                            logger.error(f"Ошибка создания объекта Vacancy из БД: {e}")
+                            logger.error(f"Данные строки: {dict(row)}")
+                            continue
+
+                    logger.info(f"Загружено {len(vacancies)} вакансий из БД")
+                    return vacancies
+
+        except Exception as e:
+            logger.error(f"Ошибка при получении вакансий: {e}")
+            return []
 
     def delete_all_vacancies(self) -> bool:
         """Удаляет все вакансии"""
@@ -1376,7 +1438,7 @@ class PostgresSaver(AbstractVacancyStorage):
                     # Используем индексы для обращения к данным
                     vacancy_id = row[1]  # vacancy_id - второе поле в таблице (после id)
                     company_id = row[-1] if len(row) > 15 else None  # company_id - последнее поле
-                    
+
                     # Находим оригинальную вакансию из списка по ID
                     original_vacancy = next((v for v in vacancies if v.vacancy_id == vacancy_id), None)
                     if original_vacancy:
