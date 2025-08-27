@@ -108,7 +108,7 @@ class UserInterface:
                         self.demo.run_full_demo()
                         print("=" * 60)
                     else:
-                        print("\n❌ База данных недоступна. Демонстрация DBManager невозможна.")
+                        print("\nБаза данных недоступна. Демонстрация DBManager невозможна.")
                         print("Проверьте подключение к PostgreSQL и перезапустите приложение.")
 
                 elif choice == "0":
@@ -553,7 +553,7 @@ class UserInterface:
             if self.db_manager and self.demo:
                 self.demo.run_full_demo()
             else:
-                print("\n❌ База данных недоступна. Демонстрация DBManager невозможна.")
+                print("\nБаза данных недоступна. Демонстрация DBManager невозможна.")
                 print("Проверьте подключение к PostgreSQL и перезапустите приложение.")
 
         except ImportError as e:

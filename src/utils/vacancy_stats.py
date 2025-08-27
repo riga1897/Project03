@@ -120,7 +120,7 @@ class VacancyStats:
             total_vacancies: Общее количество вакансий
             source_name: Название источника для заголовка
         """
-        print(f"\n📊 Распределение вакансий по компаниям{' (' + source_name + ')' if source_name else ''}:")
+        print(f"\nРаспределение вакансий по компаниям{' (' + source_name + ')' if source_name else ''}:")
         print(f"Всего найдено {total_vacancies} вакансий от {len(company_stats)} компаний")
         print("-" * 60)
         
@@ -150,7 +150,7 @@ class VacancyStats:
             print("Нет вакансий для отображения статистики")
             return
         
-        print(f"\n📊 Итого найдено: {total_all} вакансий")
+        print(f"\nИтого найдено: {total_all} вакансий")
         print(f"HH.ru: {total_hh} вакансий")
         print(f"SuperJob: {total_sj} вакансий")
         
@@ -205,7 +205,7 @@ class VacancyStats:
         """
         analysis = VacancyStats.analyze_company_mapping(vacancies)
         
-        print(f"\n🔍 Анализ маппинга компаний:")
+        print(f"\nАнализ маппинга компаний:")
         print(f"Всего вакансий: {analysis['total_vacancies']}")
         print(f"С указанным работодателем: {analysis['with_employer']} ({analysis['employer_coverage']:.1f}%)")
         print(f"Без работодателя: {analysis['without_employer']}")

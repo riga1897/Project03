@@ -274,7 +274,7 @@ class PostgresSaver(AbstractVacancyStorage):
                     except psycopg2.Error as e:
                         logger.error(f"Не удалось пересоздать поле company_id: {e}")
 
-                
+
 
 
             # Создаем индексы для оптимизации запросов
@@ -444,9 +444,9 @@ class PostgresSaver(AbstractVacancyStorage):
 
                     # 4. Логирование для отладки
                     if mapped_company_id:
-                        logger.debug(f"✅ Сопоставлено: '{employer_name}' -> company_id: {mapped_company_id}")
+                        logger.debug(f"Сопоставлено: '{employer_name}' -> company_id: {mapped_company_id}")
                     else:
-                        logger.debug(f"❌ Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
+                        logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
 
                 # Сохраняем соответствие для дальнейшего использования
                 vacancy_company_mapping[vacancy.vacancy_id] = mapped_company_id
@@ -709,9 +709,9 @@ class PostgresSaver(AbstractVacancyStorage):
 
                         # 4. Логирование для отладки
                         if mapped_company_id:
-                            logger.debug(f"✅ Сопоставлено: '{employer_name}' -> company_id: {mapped_company_id}")
+                            logger.debug(f"Сопоставлено: '{employer_name}' -> company_id: {mapped_company_id}")
                         else:
-                            logger.debug(f"❌ Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
+                            logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
 
 
                     has_changes = (

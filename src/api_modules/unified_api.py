@@ -141,13 +141,13 @@ class UnifiedAPI:
                 all_vacancies = base_api._deduplicate_vacancies(all_vacancies, "unified")
                 
                 if all_vacancies:
-                    print(f"✅ Найдено {len(all_vacancies)} уникальных вакансий от целевых компаний")
+                    print(f"Найдено {len(all_vacancies)} уникальных вакансий от целевых компаний")
                 else:
-                    print("⚠️ Не найдено вакансий от целевых компаний")
+                    print("Не найдено вакансий от целевых компаний")
 
             except Exception as e:
                 logger.error(f"Ошибка SQL-дедупликации: {e}")
-                print("⚠️ Переходим к простой дедупликации...")
+                print("Переходим к простой дедупликации...")
 
                 # Fallback: простая дедупликация с фильтрацией
                 from src.config.target_companies import TargetCompanies
@@ -187,7 +187,7 @@ class UnifiedAPI:
                             unique_vacancies.append(vacancy)
 
                 all_vacancies = unique_vacancies
-                print(f"✅ Найдено {len(all_vacancies)} уникальных вакансий от целевых компаний (простая дедупликация)")
+                print(f"Найдено {len(all_vacancies)} уникальных вакансий от целевых компаний (простая дедупликация)")
 
             return all_vacancies
         else:
@@ -272,7 +272,7 @@ class UnifiedAPI:
                         logger.warning(f"Не удалось удалить файл {file}: {e}")
 
                 logger.info("Кэш HH.ru очищен")
-                print(f"✅ Кэш HH.ru очищен (удалено {removed_count} файлов)")
+                print(f"Кэш HH.ru очищен (удалено {removed_count} файлов)")
                 cleared_sources.append("HH.ru")
 
             if sources.get("sj", False):
@@ -294,17 +294,17 @@ class UnifiedAPI:
                         logger.warning(f"Не удалось удалить файл {file}: {e}")
 
                 logger.info("Кэш SuperJob очищен")
-                print(f"✅ Кэш SuperJob очищен (удалено {removed_count} файлов)")
+                print(f"Кэш SuperJob очищен (удалено {removed_count} файлов)")
                 cleared_sources.append("SuperJob")
 
             if cleared_sources:
-                print(f"🎯 Кэш успешно очищен для источников: {', '.join(cleared_sources)}")
+                print(f"Кэш успешно очищен для источников: {', '.join(cleared_sources)}")
             else:
-                print("⚠️ Не выбраны источники для очистки кэша")
+                print("Не выбраны источники для очистки кэша")
 
         except Exception as e:
             logger.error(f"Ошибка при очистке кэша: {e}")
-            print(f"❌ Ошибка при очистке кэша: {e}")
+            print(f"Ошибка при очистке кэша: {e}")
             raise
 
     def get_vacancies_from_target_companies(self, search_query: str = "", sources: List[str] = None, **kwargs) -> List[Dict]:

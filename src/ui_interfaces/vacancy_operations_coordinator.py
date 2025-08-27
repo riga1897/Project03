@@ -190,9 +190,9 @@ class VacancyOperationsCoordinator:
 
         current_key = os.getenv("SUPERJOB_API_KEY")
         if current_key and current_key != "v3.r.137440105.example.test_tool":
-            print("✅ SuperJob API ключ уже настроен")
+            print("SuperJob API ключ уже настроен")
         else:
-            print("❌ SuperJob API ключ не настроен или используется тестовый")
+            print("SuperJob API ключ не настроен или используется тестовый")
 
         print("\nДля получения API ключа SuperJob:")
         print("1. Перейдите на https://api.superjob.ru/register/")
