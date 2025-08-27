@@ -8,5 +8,438 @@ from src.utils.salary import Salary
 from .abstract import AbstractVacancy
 
 logging.basicConfig(level=logging.ERROR)
-logger = logging.getLogger(__name__)\n\n\nclass Vacancy(AbstractVacancy):\n    """
-    Модуль моделей данных для работы с вакансиями.\n\n    Содержит основную модель Vacancy и вспомогательные классы для представления\n    структурированных данных о вакансиях из различных источников (HH.ru, SuperJob).\n    Обеспечивает унификацию данных и их валидацию.\n    """\n\n    __slots__ = (\n        \"vacancy_id\",\n        \"title\",\n        \"url\",\n        \"salary\",\n        \"description\",\n        \"requirements\",\n        \"responsibilities\",\n        \"employer\",\n        \"employer_id\",  # Новое поле для ID работодателя\n        \"experience\",\n        \"employment\",\n        \"schedule\",\n        \"published_at\",\n        \"skills\",\n        \"detailed_description\",\n        \"benefits\",\n        \"source\",\n        \"area\",\n        \"_relevance_score\",\n        \"raw_data\",\n        \"profession\",\n        \"company_id\",\n    )\n\n    def __init__(\n        self,\n        title: str,\n        url: str,\n        salary: Optional[Dict[str, Any]] = None,\n        description: str = \"\",\n        requirements: Optional[str] = None,\n        responsibilities: Optional[str] = None,\n        employer: Optional[Dict[str, Any]] = None,\n        employer_id: Optional[str] = None,  # Новый параметр для ID работодателя\n        experience: Optional[str] = None,\n        employment: Optional[str] = None,\n        schedule: Optional[str] = None,\n        published_at: Optional[str] = None,\n        skills: Optional[List[Dict[str, str]]] = None,\n        detailed_description: Optional[str] = None,\n        benefits: Optional[str] = None,\n        vacancy_id: Optional[str] = None,\n        source: str = \"unknown\",\n        area: Optional[str] = None,\n    ):\n        self._relevance_score = None\n        self.raw_data = None\n        self.profession = None\n        self.company_id = \"\"  # Инициализируем как строку\n        # Используем переданный ID, если есть, иначе генерируем UUID\n        if vacancy_id and str(vacancy_id).strip() and str(vacancy_id) != \"\":\n            self.vacancy_id = str(vacancy_id)\n        else:\n            self.vacancy_id = str(uuid.uuid4())\n        self.title = title\n        self.url = url\n        self.salary = self._validate_salary(salary)\n        self.description = description\n        self.requirements = self._clean_html(requirements) if requirements else None\n        self.responsibilities = self._clean_html(responsibilities) if responsibilities else None\n\n        self.employer = employer\n        self.employer_id = employer_id  # Инициализируем новое поле\n\n        self.experience = experience\n        self.employment = employment\n        self.schedule = schedule\n        self.published_at = self._parse_datetime(published_at) if published_at else None\n        self.skills = skills or []\n        self.detailed_description = detailed_description or description\n        self.benefits = benefits\n        self.source = source\n\n        # Обработка area - может приходить как строка или словарь\n        if isinstance(area, dict):\n            self.area = area.get('name', str(area))\n        else:\n            self.area = area\n\n    @staticmethod\n    def _validate_salary(salary_data: Optional[Dict[str, Any]]) -> Salary:\n        \"\"\"Приватный метод валидации данных о зарплате\"\"\"\n        return Salary(salary_data) if salary_data else Salary()\n\n    @staticmethod\n    def _clean_html(text: str) -> str:\n        \"\"\"Очистка HTML-тегов из текста\"\"\"\n        import re\n\n        return re.sub(r\"<[^>]+>\", \"\", text)\n\n    @staticmethod\n    def _parse_datetime(date_str: Union[str, int, None]) -> Optional[datetime]:\n        \"\"\"\n        Универсальный парсер дат для разных форматов API\n\n        Args:\n            date_str: Строка с датой в различных форматах или timestamp\n\n        Returns:\n            datetime object или None при ошибке\n        \"\"\"\n        if not date_str:\n            return None\n\n        try:\n            # Если это timestamp (для SuperJob)\n            if isinstance(date_str, (int, float)):\n                return datetime.fromtimestamp(date_str)\n\n            # Если это строка\n            if isinstance(date_str, str):\n                # Сначала попробуем как timestamp\n                try:\n                    timestamp = float(date_str)\n                    return datetime.fromtimestamp(timestamp)\n                except (ValueError, TypeError):\n                    pass\n\n                # Попробуем разные форматы строк\n                formats = [\n                    \"%Y-%m-%dT%H:%M:%S%z\",  # ISO with timezone\n                    \"%Y-%m-%dT%H:%M:%S\",  # ISO without timezone\n                    \"%Y-%m-%d %H:%M:%S\",  # Standard format\n                    \"%Y-%m-%d\",  # Date only\n                ]\n\n                for fmt in formats:\n                    try:\n                        return datetime.strptime(date_str, fmt)\n                    except ValueError:\n                        continue\n\n        except Exception as e:\n            logger.error(f\"Ошибка парсинга даты '{date_str}': {e}\")\n\n        return None\n\n    @classmethod\n    def cast_to_object_list(cls, data):\n        \"\"\"Преобразование списка словарей в список объектов Vacancy\"\"\"\n        vacancies = []\n        for i, item in enumerate(data):\n            try:\n                vacancy = cls.from_dict(item)\n                vacancies.append(vacancy)\n            except ValueError as e:\n                logging.warning(f\"Пропуск элемента из-за ошибки валидации: {e}\")\n                continue\n        return vacancies\n\n    @classmethod\n    def from_dict(cls, data: Dict[str, Any]) -> \"Vacancy\":\n        \"\"\"Создает унифицированный объект Vacancy из словаря\"\"\"\n        try:\n            if not isinstance(data, dict):\n                raise ValueError(\"Данные должны быть словарем\")\n\n            # Универсальная обработка полей из разных источников\n            title = data.get(\"title\") or data.get(\"name\") or data.get(\"profession\") or \"Без названия\"\n\n            url = (\n                data.get(\"alternate_url\")  # Веб-версия для HH\n                or data.get(\"link\")  # Веб-версия для SuperJob\n                or data.get(\"url\")  # Fallback на API-ссылку\n                or \"\"\n            )\n\n            # Получаем ID из API данных\n            # Ищем ID в разных полях (из API и из UnifiedAPI)\n            vacancy_id = data.get(\"id\") or data.get(\"vacancy_id\")\n            if vacancy_id:\n                vacancy_id = str(vacancy_id)\n            else:\n                vacancy_id = \"\"\n\n            # Обработка зарплаты (универсальная для всех источников)\n            salary = data.get(\"salary\")\n\n            # Если salary не найден, но есть поле salary_range как строка - парсим его\n            if not salary and data.get(\"salary_range\") and isinstance(data.get(\"salary_range\"), str):\n                salary = data.get(\"salary_range\")\n\n            # Обработка работодателя - сохраняем исходную структуру\n            employer = data.get(\"employer\")\n            company_id = \"\"\n            employer_id = None  # Новое поле для сохранения ID работодателя\n\n            if employer:\n                if isinstance(employer, dict):\n                    company_id = str(employer.get(\"id\", \"\")) if employer.get(\"id\") else \"\"\n                    employer_id = employer.get(\"id\")  # Сохраняем ID работодателя отдельно\n                    # Сохраняем employer как есть\n                elif isinstance(employer, str):\n                    # Если employer - строка, преобразуем в словарь\n                    employer = {\"name\": employer}\n                    company_id = \"\"\n                    employer_id = None\n            elif data.get(\"firm_name\"):\n                # Для SuperJob создаем структуру employer с ID если есть\n                firm_id = data.get(\"firm_id\") or data.get(\"client_id\")\n                employer = {\"name\": data.get(\"firm_name\")}\n                if firm_id:\n                    employer[\"id\"] = str(firm_id)\n                    employer_id = str(firm_id)\n                    company_id = str(firm_id)\n                else:\n                    employer_id = None\n                    company_id = \"\"\n\n            # Если employer все еще None, но есть данные от SuperJob\n            if not employer and data.get(\"firm_name\"):\n                firm_id = data.get(\"firm_id\") or data.get(\"client_id\")\n                employer = {\"name\": data.get(\"firm_name\")}\n                if firm_id:\n                    employer[\"id\"] = str(firm_id)\n                    employer_id = str(firm_id)\n                    company_id = str(firm_id)\n                else:\n                    employer_id = None\n\n            # Обработка опыта работы\n            experience = None\n            experience_data = data.get(\"experience\")\n            if isinstance(experience_data, dict):\n                experience = experience_data.get(\"name\") or experience_data.get(\"title\")\n            elif isinstance(experience_data, str):\n                experience = experience_data\n\n            # Обработка типа занятости\n            employment = None\n            employment_data = data.get(\"employment\") or data.get(\"type_of_work\")\n            if isinstance(employment_data, dict):\n                employment = employment_data.get(\"name\") or employment_data.get(\"title\")\n            elif isinstance(employment_data, str):\n                employment = employment_data\n\n            # Обработка описания и требований\n            description = data.get(\"description\") or data.get(\"vacancyRichText\") or \"\"\n\n            # Для HH API также проверяем snippet\n            snippet = data.get(\"snippet\", {})\n            if not description.strip() and isinstance(snippet, dict):\n                snippet_parts = []\n                if snippet.get(\"requirement\"):\n                    snippet_parts.append(f\"Требования: {snippet.get('requirement')}\")\n                if snippet.get(\"responsibility\"):\n                    snippet_parts.append(f\"Обязанности: {snippet.get('responsibility')}\")\n                if snippet_parts:\n                    description = \" \".join(snippet_parts)\n\n            # Если описание все еще пустое, но есть requirements или responsibilities - объединяем их\n            if not description.strip():\n                desc_parts = []\n                if data.get(\"requirements\"):\n                    desc_parts.append(f\"Требования: {data.get('requirements')}\")\n                if data.get(\"responsibilities\"):\n                    desc_parts.append(f\"Обязанности: {data.get('responsibilities')}\")\n                if data.get(\"candidat\"):  # Для SuperJob\n                    desc_parts.append(f\"Требования: {data.get('candidat')}\")\n                if data.get(\"work\"):  # Для SuperJob\n                    desc_parts.append(f\"Обязанности: {data.get('work')}\")\n                if desc_parts:\n                    description = \" \".join(desc_parts)\n\n            # Если описание все еще пустое, используем название вакансии\n            if not description.strip():\n                description = f\"Вакансия: {title}\"\n\n            requirements = None\n            responsibilities = None\n\n            # Для HH (snippet)\n            snippet = data.get(\"snippet\", {})\n            if isinstance(snippet, dict):\n                requirements = snippet.get(\"requirement\")\n                responsibilities = snippet.get(\"responsibility\")\n\n            # Для SuperJob (прямые поля)\n            if not requirements:\n                requirements = data.get(\"candidat\")\n            if not responsibilities:\n                responsibilities = data.get(\"work\")\n\n            # Определяем источник на основе структуры данных\n            source = data.get(\"source\", \"unknown\")\n            # Fallback логика только если источник не установлен\n            if source == \"unknown\":\n                if \"alternate_url\" in data and \"hh.ru\" in str(data.get(\"alternate_url\", \"\")):\n                    source = \"hh.ru\"\n                elif \"hh.ru\" in url:\n                    source = \"hh.ru\"\n                elif \"superjob.ru\" in url or \"sj.ru\" in url:\n                    source = \"superjob.ru\"\n                elif \"payment_to\" in data or \"payment_from\" in data:\n                    source = \"superjob.ru\"\n                elif \"name\" in data and \"snippet\" in data:\n                    source = \"hh.ru\"\n\n            vacancy = cls(\n                vacancy_id=vacancy_id,\n                title=title,\n                url=url,\n                salary=salary,\n                description=description,\n                requirements=requirements,\n                responsibilities=responsibilities,\n                employer=employer,  # Используем исходную структуру employer\n                employer_id=employer_id,  # Передаем ID работодателя отдельно\n                experience=experience,\n                employment=employment,\n                schedule=data.get(\"schedule\", {}).get(\"name\") if isinstance(data.get(\"schedule\"), dict) else None,\n                published_at=data.get(\"published_at\") or data.get(\"date_published\"),\n                detailed_description=data.get(\"detailed_description\"),\n                benefits=data.get(\"benefits\"),\n                source=source,\n                area=data.get(\"area\")  # Передаем area как есть\n            )\n\n            # Устанавливаем company_id после создания объекта\n            vacancy.company_id = company_id\n            # Устанавливаем источник данных\n            instance.source = source or \"unknown\"\n\n            # Сохраняем исходные данные для извлечения специфичных полей (например, firm_id для SJ)\n            instance._raw_data = data\n\n            return instance\n\n        except Exception as e:\n            logging.error(f\"Ошибка создания унифицированной вакансии из данных: {data}\\nОшибка: {e}\")\n            raise ValueError(f\"Невозможно создать унифицированную вакансию: {e}\")\n\n    def to_dict(self) -> Dict[str, Any]:\n        \"\"\"\n        Преобразование объекта в словарь для сериализации\n\n        Returns:\n            Dict[str, Any]: Словарь с данными вакансии\n        \"\"\"\n        # Безопасная обработка поля company\n        company_value = None\n        if self.employer: # Используем self.employer, так как он был заполнен обработанной компанией\n            if isinstance(self.employer, str):\n                company_value = self.employer.lower()\n            elif isinstance(self.employer, dict):\n                # Если company - словарь, извлекаем имя компании\n                company_value = self.employer.get(\"name\", str(self.employer)).lower() if self.employer.get(\"name\") else str(self.employer).lower()\n            else:\n                company_value = str(self.employer).lower()\n\n        return {\n            \"vacancy_id\": self.vacancy_id,\n            \"title\": self.title,\n            \"link\": self.url, # Использовать self.url вместо self.link\n            \"salary\": self.salary.to_dict() if self.salary else None,\n            \"description\": self.description,\n            \"company\": company_value,\n            \"employer\": self.employer,  # Сохраняем полную структуру employer\n            \"employer_id\": self.employer_id,  # Сохраняем ID работодателя отдельно\n            \"location\": self.area, # Использовать self.area вместо self.location\n            \"source\": self.source,\n            \"published_date\": self.published_at.isoformat() if self.published_at else None, # Использовать self.published_at\n            \"experience\": self.experience,\n            \"employment\": self.employment,\n            \"schedule\": self.schedule,\n        }\n\n    def __str__(self) -> str:\n        \"\"\"Строковое представление унифицированной вакансии\"\"\"\n        # Правильное извлечение имени компании\n        company_name = \"Не указана\"\n        if self.employer:\n            if isinstance(self.employer, dict):\n                company_name = self.employer.get('name', 'Не указана')\n            elif isinstance(self.employer, str):\n                company_name = self.employer\n            else:\n                company_name = str(self.employer)\n\n        parts = [\n            f\"[{self.source.upper()}] Должность: {self.title}\",\n            f\"Компания: {company_name}\",\n            f\"Зарплата: {self.salary}\",\n            f\"Требования: {self.requirements[:100] + '...' if self.requirements else 'Не указаны'}\",\n            f\"Ссылка: {self.url}\",\n        ]\n        return \"\\n\".join(parts)\n\n    def __eq__(self, other) -> bool:\n        \"\"\"Сравнение вакансий по ID\"\"\"\n        if not isinstance(other, Vacancy):\n            return False\n        return self.vacancy_id == other.vacancy_id\n\n    def __lt__(self, other) -> bool:\n        \"\"\"Сравнение по зарплате для сортировки\"\"\"\n        if not isinstance(other, Vacancy):\n            return NotImplemented\n        return self.salary.average < other.salary.average\n\n    def __le__(self, other) -> bool:\n        \"\"\"Сравнение по зарплате (меньше или равно)\"\"\"\n        if not isinstance(other, Vacancy):\n            return NotImplemented\n        return self.salary.average <= other.salary.average\n\n    def __gt__(self, other) -> bool:\n        \"\"\"Сравнение по зарплате (больше)\"\"\"\n        if not isinstance(other, Vacancy):\n            return NotImplemented\n        return self.salary.average > other.salary.average\n\n    def __ge__(self, other) -> bool:\n        \"\"\"Сравнение по зарплате (больше или равно)\"\"\"\n        if not isinstance(other, Vacancy):\n            return NotImplemented\n        return self.salary.average >= other.salary.average\n\n    def __hash__(self) -> int:\n        \"\"\"Хеш для использования в множествах и словарях\"\"\"\n        return hash(self.vacancy_id)\n
+logger = logging.getLogger(__name__)
+
+
+class Vacancy(AbstractVacancy):
+    """
+    Модуль моделей данных для работы с вакансиями.
+
+    Содержит основную модель Vacancy и вспомогательные классы для представления
+    структурированных данных о вакансиях из различных источников (HH.ru, SuperJob).
+    Обеспечивает унификацию данных и их валидацию.
+    """
+
+    __slots__ = (
+        "vacancy_id",
+        "title",
+        "url",
+        "salary",
+        "description",
+        "requirements",
+        "responsibilities",
+        "employer",
+        "employer_id",  # Новое поле для ID работодателя
+        "experience",
+        "employment",
+        "schedule",
+        "published_at",
+        "skills",
+        "detailed_description",
+        "benefits",
+        "source",
+        "area",
+        "_relevance_score",
+        "raw_data",
+        "profession",
+        "company_id",
+    )
+
+    def __init__(
+        self,
+        title: str,
+        url: str,
+        salary: Optional[Dict[str, Any]] = None,
+        description: str = "",
+        requirements: Optional[str] = None,
+        responsibilities: Optional[str] = None,
+        employer: Optional[Dict[str, Any]] = None,
+        employer_id: Optional[str] = None,  # Новый параметр для ID работодателя
+        experience: Optional[str] = None,
+        employment: Optional[str] = None,
+        schedule: Optional[str] = None,
+        published_at: Optional[str] = None,
+        skills: Optional[List[Dict[str, str]]] = None,
+        detailed_description: Optional[str] = None,
+        benefits: Optional[str] = None,
+        vacancy_id: Optional[str] = None,
+        source: str = "unknown",
+        area: Optional[str] = None,
+    ):
+        self._relevance_score = None
+        self.raw_data = None
+        self.profession = None
+        self.company_id = ""  # Инициализируем как строку
+        # Используем переданный ID, если есть, иначе генерируем UUID
+        if vacancy_id and str(vacancy_id).strip() and str(vacancy_id) != "":
+            self.vacancy_id = str(vacancy_id)
+        else:
+            self.vacancy_id = str(uuid.uuid4())
+        self.title = title
+        self.url = url
+        self.salary = self._validate_salary(salary)
+        self.description = description
+        self.requirements = self._clean_html(requirements) if requirements else None
+        self.responsibilities = self._clean_html(responsibilities) if responsibilities else None
+
+        self.employer = employer
+        self.employer_id = employer_id  # Инициализируем новое поле
+
+        self.experience = experience
+        self.employment = employment
+        self.schedule = schedule
+        self.published_at = self._parse_datetime(published_at) if published_at else None
+        self.skills = skills or []
+        self.detailed_description = detailed_description or description
+        self.benefits = benefits
+        self.source = source
+
+        # Обработка area - может приходить как строка или словарь
+        if isinstance(area, dict):
+            self.area = area.get('name', str(area))
+        else:
+            self.area = area
+
+    @staticmethod
+    def _validate_salary(salary_data: Optional[Dict[str, Any]]) -> Salary:
+        """Приватный метод валидации данных о зарплате"""
+        return Salary(salary_data) if salary_data else Salary()
+
+    @staticmethod
+    def _clean_html(text: str) -> str:
+        """Очистка HTML-тегов из текста"""
+        import re
+
+        return re.sub(r"<[^>]+>", "", text)
+
+    @staticmethod
+    def _parse_datetime(date_str: Union[str, int, None]) -> Optional[datetime]:
+        """
+        Универсальный парсер дат для разных форматов API
+
+        Args:
+            date_str: Строка с датой в различных форматах или timestamp
+
+        Returns:
+            datetime object или None при ошибке
+        """
+        if not date_str:
+            return None
+
+        try:
+            # Если это timestamp (для SuperJob)
+            if isinstance(date_str, (int, float)):
+                return datetime.fromtimestamp(date_str)
+
+            # Если это строка
+            if isinstance(date_str, str):
+                # Сначала попробуем как timestamp
+                try:
+                    timestamp = float(date_str)
+                    return datetime.fromtimestamp(timestamp)
+                except (ValueError, TypeError):
+                    pass
+
+                # Попробуем разные форматы строк
+                formats = [
+                    "%Y-%m-%dT%H:%M:%S%z",  # ISO with timezone
+                    "%Y-%m-%dT%H:%M:%S",  # ISO without timezone
+                    "%Y-%m-%d %H:%M:%S",  # Standard format
+                    "%Y-%m-%d",  # Date only
+                ]
+
+                for fmt in formats:
+                    try:
+                        return datetime.strptime(date_str, fmt)
+                    except ValueError:
+                        continue
+
+        except Exception as e:
+            logger.error(f"Ошибка парсинга даты '{date_str}': {e}")
+
+        return None
+
+    @classmethod
+    def cast_to_object_list(cls, data):
+        """Преобразование списка словарей в список объектов Vacancy"""
+        vacancies = []
+        for i, item in enumerate(data):
+            try:
+                vacancy = cls.from_dict(item)
+                vacancies.append(vacancy)
+            except ValueError as e:
+                logging.warning(f"Пропуск элемента из-за ошибки валидации: {e}")
+                continue
+        return vacancies
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "Vacancy":
+        """Создает унифицированный объект Vacancy из словаря"""
+        try:
+            if not isinstance(data, dict):
+                raise ValueError("Данные должны быть словарем")
+
+            # Универсальная обработка полей из разных источников
+            title = data.get("title") or data.get("name") or data.get("profession") or "Без названия"
+
+            url = (
+                data.get("alternate_url")  # Веб-версия для HH
+                or data.get("link")  # Веб-версия для SuperJob
+                or data.get("url")  # Fallback на API-ссылку
+                or ""
+            )
+
+            # Получаем ID из API данных
+            # Ищем ID в разных полях (из API и из UnifiedAPI)
+            vacancy_id = data.get("id") or data.get("vacancy_id")
+            if vacancy_id:
+                vacancy_id = str(vacancy_id)
+            else:
+                vacancy_id = ""
+
+            # Обработка зарплаты (универсальная для всех источников)
+            salary = data.get("salary")
+
+            # Если salary не найден, но есть поле salary_range как строка - парсим его
+            if not salary and data.get("salary_range") and isinstance(data.get("salary_range"), str):
+                salary = data.get("salary_range")
+
+            # Обработка работодателя - сохраняем исходную структуру
+            employer = data.get("employer")
+            company_id = ""
+            employer_id = None  # Новое поле для сохранения ID работодателя
+
+            if employer:
+                if isinstance(employer, dict):
+                    company_id = str(employer.get("id", "")) if employer.get("id") else ""
+                    employer_id = employer.get("id")  # Сохраняем ID работодателя отдельно
+                    # Сохраняем employer как есть
+                elif isinstance(employer, str):
+                    # Если employer - строка, преобразуем в словарь
+                    employer = {"name": employer}
+                    company_id = ""
+                    employer_id = None
+            elif data.get("firm_name"):
+                # Для SuperJob создаем структуру employer с ID если есть
+                firm_id = data.get("firm_id") or data.get("client_id")
+                employer = {"name": data.get("firm_name")}
+                if firm_id:
+                    employer["id"] = str(firm_id)
+                    employer_id = str(firm_id)
+                    company_id = str(firm_id)
+                else:
+                    employer_id = None
+                    company_id = ""
+
+            # Если employer все еще None, но есть данные от SuperJob
+            if not employer and data.get("firm_name"):
+                firm_id = data.get("firm_id") or data.get("client_id")
+                employer = {"name": data.get("firm_name")}
+                if firm_id:
+                    employer["id"] = str(firm_id)
+                    employer_id = str(firm_id)
+                    company_id = str(firm_id)
+                else:
+                    employer_id = None
+
+            # Обработка опыта работы
+            experience = None
+            experience_data = data.get("experience")
+            if isinstance(experience_data, dict):
+                experience = experience_data.get("name") or experience_data.get("title")
+            elif isinstance(experience_data, str):
+                experience = experience_data
+
+            # Обработка типа занятости
+            employment = None
+            employment_data = data.get("employment") or data.get("type_of_work")
+            if isinstance(employment_data, dict):
+                employment = employment_data.get("name") or employment_data.get("title")
+            elif isinstance(employment_data, str):
+                employment = employment_data
+
+            # Обработка описания и требований
+            description = data.get("description") or data.get("vacancyRichText") or ""
+
+            # Для HH API также проверяем snippet
+            snippet = data.get("snippet", {})
+            if not description.strip() and isinstance(snippet, dict):
+                snippet_parts = []
+                if snippet.get("requirement"):
+                    snippet_parts.append(f"Требования: {snippet.get('requirement')}")
+                if snippet.get("responsibility"):
+                    snippet_parts.append(f"Обязанности: {snippet.get('responsibility')}")
+                if snippet_parts:
+                    description = " ".join(snippet_parts)
+
+            # Если описание все еще пустое, но есть requirements или responsibilities - объединяем их
+            if not description.strip():
+                desc_parts = []
+                if data.get("requirements"):
+                    desc_parts.append(f"Требования: {data.get('requirements')}")
+                if data.get("responsibilities"):
+                    desc_parts.append(f"Обязанности: {data.get('responsibilities')}")
+                if data.get("candidat"):  # Для SuperJob
+                    desc_parts.append(f"Требования: {data.get('candidat')}")
+                if data.get("work"):  # Для SuperJob
+                    desc_parts.append(f"Обязанности: {data.get('work')}")
+                if desc_parts:
+                    description = " ".join(desc_parts)
+
+            # Если описание все еще пустое, используем название вакансии
+            if not description.strip():
+                description = f"Вакансия: {title}"
+
+            requirements = None
+            responsibilities = None
+
+            # Для HH (snippet)
+            snippet = data.get("snippet", {})
+            if isinstance(snippet, dict):
+                requirements = snippet.get("requirement")
+                responsibilities = snippet.get("responsibility")
+
+            # Для SuperJob (прямые поля)
+            if not requirements:
+                requirements = data.get("candidat")
+            if not responsibilities:
+                responsibilities = data.get("work")
+
+            # Определяем источник на основе структуры данных
+            source = data.get("source", "unknown")
+            # Fallback логика только если источник не установлен
+            if source == "unknown":
+                if "alternate_url" in data and "hh.ru" in str(data.get("alternate_url", "")):
+                    source = "hh.ru"
+                elif "hh.ru" in url:
+                    source = "hh.ru"
+                elif "superjob.ru" in url or "sj.ru" in url:
+                    source = "superjob.ru"
+                elif "payment_to" in data or "payment_from" in data:
+                    source = "superjob.ru"
+                elif "name" in data and "snippet" in data:
+                    source = "hh.ru"
+
+            vacancy = cls(
+                vacancy_id=vacancy_id,
+                title=title,
+                url=url,
+                salary=salary,
+                description=description,
+                requirements=requirements,
+                responsibilities=responsibilities,
+                employer=employer,  # Используем исходную структуру employer
+                employer_id=employer_id,  # Передаем ID работодателя отдельно
+                experience=experience,
+                employment=employment,
+                schedule=data.get("schedule", {}).get("name") if isinstance(data.get("schedule"), dict) else None,
+                published_at=data.get("published_at") or data.get("date_published"),
+                detailed_description=data.get("detailed_description"),
+                benefits=data.get("benefits"),
+                source=source,
+                area=data.get("area")  # Передаем area как есть
+            )
+
+            # Устанавливаем company_id после создания объекта
+            vacancy.company_id = company_id
+            # Устанавливаем источник данных
+            vacancy.source = source or "unknown"
+
+            # Сохраняем исходные данные для извлечения специфичных полей (например, firm_id для SJ)
+            vacancy._raw_data = data
+
+            return vacancy
+
+        except Exception as e:
+            logger.error(f"Ошибка создания унифицированной вакансии из данных: {data}\nОшибка: {e}")
+            raise ValueError(f"Невозможно создать унифицированную вакансию: {e}")
+
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        Преобразование объекта в словарь для сериализации
+
+        Returns:
+            Dict[str, Any]: Словарь с данными вакансии
+        """
+        # Безопасная обработка поля company
+        company_value = None
+        if self.employer: # Используем self.employer, так как он был заполнен обработанной компанией
+            if isinstance(self.employer, str):
+                company_value = self.employer.lower()
+            elif isinstance(self.employer, dict):
+                # Если company - словарь, извлекаем имя компании
+                company_value = self.employer.get("name", str(self.employer)).lower() if self.employer.get("name") else str(self.employer).lower()
+            else:
+                company_value = str(self.employer).lower()
+
+        return {
+            "vacancy_id": self.vacancy_id,
+            "title": self.title,
+            "link": self.url, # Использовать self.url вместо self.link
+            "salary": self.salary.to_dict() if self.salary else None,
+            "description": self.description,
+            "company": company_value,
+            "employer": self.employer,  # Сохраняем полную структуру employer
+            "employer_id": self.employer_id,  # Сохраняем ID работодателя отдельно
+            "location": self.area, # Использовать self.area вместо self.location
+            "source": self.source,
+            "published_date": self.published_at.isoformat() if self.published_at else None, # Использовать self.published_at
+            "experience": self.experience,
+            "employment": self.employment,
+            "schedule": self.schedule,
+        }
+
+    def __str__(self) -> str:
+        """Строковое представление унифицированной вакансии"""
+        # Правильное извлечение имени компании
+        company_name = "Не указана"
+        if self.employer:
+            if isinstance(self.employer, dict):
+                company_name = self.employer.get('name', 'Не указана')
+            elif isinstance(self.employer, str):
+                company_name = self.employer
+            else:
+                company_name = str(self.employer)
+
+        parts = [
+            f"[{self.source.upper()}] Должность: {self.title}",
+            f"Компания: {company_name}",
+            f"Зарплата: {self.salary}",
+            f"Требования: {self.requirements[:100] + '...' if self.requirements else 'Не указаны'}",
+            f"Ссылка: {self.url}",
+        ]
+        return "\n".join(parts)
+
+    def __eq__(self, other) -> bool:
+        """Сравнение вакансий по ID"""
+        if not isinstance(other, Vacancy):
+            return False
+        return self.vacancy_id == other.vacancy_id
+
+    def __lt__(self, other) -> bool:
+        """Сравнение по зарплате для сортировки"""
+        if not isinstance(other, Vacancy):
+            return NotImplemented
+        return self.salary.average < other.salary.average
+
+    def __le__(self, other) -> bool:
+        """Сравнение по зарплате (меньше или равно)"""
+        if not isinstance(other, Vacancy):
+            return NotImplemented
+        return self.salary.average <= other.salary.average
+
+    def __gt__(self, other) -> bool:
+        """Сравнение по зарплате (больше)"""
+        if not isinstance(other, Vacancy):
+            return NotImplemented
+        return self.salary.average > other.salary.average
+
+    def __ge__(self, other) -> bool:
+        """Сравнение по зарплате (больше или равно)"""
+        if not isinstance(other, Vacancy):
+            return NotImplemented
+        return self.salary.average >= other.salary.average
+
+    def __hash__(self) -> int:
+        """Хеш для использования в множествах и словарях"""
+        return hash(self.vacancy_id)
