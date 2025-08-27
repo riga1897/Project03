@@ -925,8 +925,7 @@ class PostgresSaver:
         try:
             cursor = connection.cursor(cursor_factory=RealDictCursor)
 
-            # Строим базовый запрос
-            # Join with companies to get company name for filtering and display
+            # Строим базовый запрос с JOIN для получения названия компании
             query = "SELECT v.*, c.name as company_name FROM vacancies v LEFT JOIN companies c ON v.company_id = c.id"
             params = []
             where_conditions = []
@@ -945,10 +944,10 @@ class PostgresSaver:
                     where_conditions.append("v.salary_to <= %s")
                     params.append(filters['salary_to'])
 
-                if filters.get('employer'): # Filter by standardized employer name
+                if filters.get('employer'): # Filter by company name from joined table
                     standardized_employer = self._standardize_employer_name(filters['employer'])
                     if standardized_employer:
-                        where_conditions.append("LOWER(v.employer) LIKE LOWER(%s)")
+                        where_conditions.append("LOWER(c.name) LIKE LOWER(%s)")
                         params.append(f"%{standardized_employer}%")
 
                 # Filter by company name directly using the join
@@ -999,10 +998,12 @@ class PostgresSaver:
                         'currency': row['salary_currency']
                     }
 
-                # Convert employer string back to dict format for consistency
+                # Создаем employer на основе company_name из JOIN или используем заглушку
                 employer = None
-                if row['employer']:
-                    employer = {'name': row['employer']}
+                if row.get('company_name'):
+                    employer = {'name': row['company_name']}
+                else:
+                    employer = {'name': 'Неизвестная компания'}
 
                 # Convert published_at string back to proper format
                 published_at = None
@@ -1032,10 +1033,6 @@ class PostgresSaver:
                 # Устанавливаем area напрямую
                 vacancy.area = row['area']
 
-                # Для отладки - также сохраняем название компании напрямую
-                if row['employer']:
-                    vacancy._employer_name = row['employer']
-
                 # Set company_id if available
                 if row.get('company_id'):
                     vacancy.company_id = row['company_id']
@@ -1043,7 +1040,8 @@ class PostgresSaver:
                 # Set company name if available from the join
                 if row.get('company_name'):
                     vacancy.company_name = row['company_name']
-
+                    # Для отладки - также сохраняем название компании напрямую
+                    vacancy._employer_name = row['company_name']
 
                 vacancies.append(vacancy)
 
@@ -1268,7 +1266,7 @@ class PostgresSaver:
         try:
             cursor = connection.cursor()
 
-            query = "SELECT COUNT(*) FROM vacancies"
+            query = "SELECT COUNT(*) FROM vacancies v LEFT JOIN companies c ON v.company_id = c.id"
             params = []
             where_conditions = []
 
@@ -1286,10 +1284,10 @@ class PostgresSaver:
                     where_conditions.append("salary_to <= %s")
                     params.append(filters['salary_to'])
 
-                if filters.get('employer'): # Filter by standardized employer name
+                if filters.get('employer'): # Filter by company name from joined table
                     standardized_employer = self._standardize_employer_name(filters['employer'])
                     if standardized_employer:
-                        where_conditions.append("LOWER(employer) LIKE LOWER(%s)")
+                        where_conditions.append("LOWER(c.name) LIKE LOWER(%s)")
                         params.append(f"%{standardized_employer}%")
 
                 # Filter by company name directly
@@ -1680,10 +1678,10 @@ class PostgresSaver:
             conditions.append("(salary_from <= %s OR salary_to <= %s)")
             params.extend([filters['salary_to'], filters['salary_to']])
 
-        if filters.get('employer'): # Filter by standardized employer name
+        if filters.get('employer'): # Filter by company name (requires JOIN in calling query)
             standardized_employer = self._standardize_employer_name(filters['employer'])
             if standardized_employer:
-                conditions.append("LOWER(employer) LIKE LOWER(%s)")
+                conditions.append("LOWER(c.name) LIKE LOWER(%s)")
                 params.append(f"%{standardized_employer}%")
 
         if filters.get('company_id'): # Filter by company_id
