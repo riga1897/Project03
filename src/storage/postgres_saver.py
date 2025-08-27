@@ -1937,7 +1937,7 @@ class PostgresSaver:
                         cursor.execute(f"CREATE INDEX IF NOT EXISTS {index_name} ON companies({column_name});")
                         logger.info(f"✓ Индекс {index_name} создан")
                 except psycopg2.Error as e:
-                    logger.warning(f"Не удалось создать индекс {index_name}: {e}")
+                    logger.warn(f"Не удалось создать индекс {index_name}: {e}")
 
             connection.commit()
             logger.info("✓ Таблица 'companies' полностью настроена")
@@ -1946,6 +1946,65 @@ class PostgresSaver:
             logger.error(f"Ошибка создания таблицы 'companies': {e}")
             connection.rollback()
             raise
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
+
+    def _get_or_create_company_id(self, company_data: Dict[str, Any]) -> int:
+        """
+        Получает или создает ID компании в таблице companies
+
+        Args:
+            company_data: Данные компании
+
+        Returns:
+            int: ID компании в БД
+        """
+        if not company_data or not isinstance(company_data, dict):
+            return None
+
+        company_name = company_data.get('name', '').strip()
+        if not company_name:
+            return None
+
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor(cursor_factory=RealDictCursor)
+
+            # Пытаемся найти компанию по имени
+            cursor.execute("SELECT id FROM companies WHERE LOWER(name) = LOWER(%s)", (company_name,))
+            company = cursor.fetchone()
+
+            if company:
+                return company['id']
+            else:
+                # Если компания не найдена, создаем новую
+                logger.info(f"Создаем новую компанию: {company_name}")
+
+                # Нормализуем имя компании
+                normalized_name = self._standardize_employer_name(company_name) or company_name
+
+                cursor.execute(
+                    "INSERT INTO companies (name, external_id, source, url, logo_url, site_url) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
+                    (
+                        normalized_name,
+                        company_data.get('external_id'),
+                        company_data.get('source'),
+                        company_data.get('url'),
+                        company_data.get('logo_url'),
+                        company_data.get('site_url')
+                    )
+                )
+                new_company_id = cursor.fetchone()['id']
+                connection.commit()
+                logger.info(f"✓ Компания {company_name} создана с ID: {new_company_id}")
+                return new_company_id
+
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка при работе с компанией {company_name}: {e}")
+            connection.rollback()
+            return None
         finally:
             if 'cursor' in locals():
                 cursor.close()

@@ -1,4 +1,3 @@
-
 """
 Модуль для фильтрации данных API
 """
@@ -18,13 +17,13 @@ class APIDataFilter:
     ) -> List[Dict[str, Any]]:
         """
         Фильтрация по диапазону зарплаты
-        
+
         Args:
             data: Список вакансий
             min_salary: Минимальная зарплата
             max_salary: Максимальная зарплата
             source: Источник данных (hh, sj)
-        
+
         Returns:
             Отфильтрованный список вакансий
         """
@@ -49,11 +48,11 @@ class APIDataFilter:
     ) -> List[Dict[str, Any]]:
         """
         Фильтрация по ключевым словам
-        
+
         Args:
             data: Список вакансий
             keywords: Список ключевых слов для поиска
-        
+
         Returns:
             Отфильтрованный список вакансий
         """
@@ -78,11 +77,11 @@ class APIDataFilter:
     ) -> List[Dict[str, Any]]:
         """
         Фильтрация по местоположению
-        
+
         Args:
             data: Список вакансий
             locations: Список городов/регионов
-        
+
         Returns:
             Отфильтрованный список вакансий
         """
@@ -107,11 +106,11 @@ class APIDataFilter:
     ) -> List[Dict[str, Any]]:
         """
         Фильтрация по опыту работы
-        
+
         Args:
             data: Список вакансий
             experience_levels: Список уровней опыта
-        
+
         Returns:
             Отфильтрованный список вакансий
         """
@@ -136,11 +135,11 @@ class APIDataFilter:
     ) -> List[Dict[str, Any]]:
         """
         Фильтрация по типу занятости
-        
+
         Args:
             data: Список вакансий
             employment_types: Список типов занятости
-        
+
         Returns:
             Отфильтрованный список вакансий
         """
@@ -165,11 +164,11 @@ class APIDataFilter:
     ) -> List[Dict[str, Any]]:
         """
         Фильтрация по компании
-        
+
         Args:
             data: Список вакансий
             companies: Список названий компаний
-        
+
         Returns:
             Отфильтрованный список вакансий
         """
@@ -231,11 +230,11 @@ class APIDataFilter:
     def _get_searchable_text(self, item: Dict[str, Any]) -> str:
         """Получение текста для поиска"""
         text_parts = []
-        
+
         # Название вакансии
         if "name" in item:
             text_parts.append(str(item["name"]))
-        
+
         # Описание
         if "snippet" in item:
             snippet = item["snippet"]
@@ -246,11 +245,11 @@ class APIDataFilter:
                 ])
             else:
                 text_parts.append(str(snippet))
-        
+
         # Для SuperJob
         if "candidat" in item:
             text_parts.append(str(item["candidat"]))
-        
+
         return " ".join(text_parts).lower()
 
     def _contains_keywords(self, text: str, keywords: List[str]) -> bool:
