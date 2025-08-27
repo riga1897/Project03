@@ -351,7 +351,6 @@ class PostgresSaver:
                     experience VARCHAR(200),
                     employment VARCHAR(200),
                     schedule VARCHAR(200),
-                    employer VARCHAR(500),
                     area VARCHAR(200),
                     source VARCHAR(50),
                     published_at TIMESTAMP,
@@ -477,7 +476,7 @@ class PostgresSaver:
                     salary_from, salary_to, salary_currency,
                     vacancy.description, vacancy.requirements, vacancy.responsibilities,
                     vacancy.experience, vacancy.employment, vacancy.schedule,
-                    employer_str, area_str, vacancy.source, published_date,
+                    area_str, vacancy.source, published_date,
                     mapped_company_id  # Оставляем как integer
                 ))
 
@@ -488,7 +487,7 @@ class PostgresSaver:
                 """INSERT INTO temp_new_vacancies (
                     vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
-                    employment, schedule, employer, area, source, published_at, company_id
+                    employment, schedule, area, source, published_at, company_id
                 ) VALUES %s""",
                 insert_data,
                 template=None,
@@ -500,11 +499,11 @@ class PostgresSaver:
                 INSERT INTO vacancies (
                     vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
-                    employment, schedule, employer, area, source, published_at, company_id
+                    employment, schedule, area, source, published_at, company_id
                 )
                 SELECT t.vacancy_id, t.title, t.url, t.salary_from, t.salary_to, t.salary_currency,
                        t.description, t.requirements, t.responsibilities, t.experience,
-                       t.employment, t.schedule, t.employer, t.area, t.source, t.published_at, t.company_id
+                       t.employment, t.schedule, t.area, t.source, t.published_at, t.company_id
                 FROM temp_new_vacancies t
                 LEFT JOIN vacancies v ON t.vacancy_id = v.vacancy_id
                 WHERE v.vacancy_id IS NULL
@@ -521,7 +520,6 @@ class PostgresSaver:
                     experience = t.experience,
                     employment = t.employment,
                     schedule = t.schedule,
-                    employer = t.employer,
                     area = t.area,
                     source = t.source,
                     published_at = t.published_at,
@@ -798,7 +796,7 @@ class PostgresSaver:
                         salary_from, salary_to, salary_currency,
                         vacancy.description, vacancy.requirements, vacancy.responsibilities,
                         vacancy.experience, vacancy.employment, vacancy.schedule,
-                        employer_str, area_str, vacancy.source, published_date,
+                        area_str, vacancy.source, published_date,
                         mapped_company_id  # Оставляем как integer
                     ))
 
@@ -806,7 +804,7 @@ class PostgresSaver:
                 INSERT INTO vacancies (
                     vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
-                    employment, schedule, employer, area, source, published_at, company_id
+                    employment, schedule, area, source, published_at, company_id
                 ) VALUES %s
                 """
 
@@ -886,7 +884,7 @@ class PostgresSaver:
                         title = %s, url = %s, salary_from = %s, salary_to = %s,
                         salary_currency = %s, description = %s, requirements = %s,
                         responsibilities = %s, experience = %s, employment = %s,
-                        schedule = %s, employer = %s, area = %s, source = %s, published_at = %s,
+                        schedule = %s, area = %s, source = %s, published_at = %s,
                         company_id = %s,
                         updated_at = CURRENT_TIMESTAMP
                     WHERE vacancy_id = %s
@@ -896,7 +894,7 @@ class PostgresSaver:
                         vacancy.title, vacancy.url, salary_from, salary_to,
                         salary_currency, vacancy.description, vacancy.requirements,
                         vacancy.responsibilities, vacancy.experience, vacancy.employment,
-                        vacancy.schedule, employer_str, area_str, vacancy.source,
+                        vacancy.schedule, area_str, vacancy.source,
                         published_date, mapped_company_id, vacancy.vacancy_id
                     ))
 
@@ -1399,7 +1397,6 @@ class PostgresSaver:
                     experience VARCHAR(200),
                     employment VARCHAR(200),
                     schedule VARCHAR(200),
-                    employer VARCHAR(500),
                     area VARCHAR(200),
                     source VARCHAR(50),
                     published_at TIMESTAMP,
@@ -1517,7 +1514,7 @@ class PostgresSaver:
                     salary_from, salary_to, salary_currency,
                     vacancy.description, vacancy.requirements, vacancy.responsibilities,
                     vacancy.experience, vacancy.employment, vacancy.schedule,
-                    employer_str, area_str, vacancy.source, published_date,
+                    area_str, vacancy.source, published_date,
                     mapped_company_id  # Оставляем как integer
                 ))
 
@@ -1528,7 +1525,7 @@ class PostgresSaver:
                 """INSERT INTO temp_api_vacancies (
                     vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
-                    employment, schedule, employer, area, source, published_at, company_id
+                    employment, schedule, area, source, published_at, company_id
                 ) VALUES %s""",
                 insert_data,
                 template=None,
