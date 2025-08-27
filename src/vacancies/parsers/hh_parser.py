@@ -2,15 +2,16 @@ import logging
 import json
 from typing import List, Dict, Any, Optional
 
-from ..models import Vacancy
+from src.models import Vacancy
 from src.utils.salary import Salary
 from src.utils.cache import FileCache
+from src.vacancies.parsers.base_parser import BaseParser
 
 logger = logging.getLogger(__name__)
 
 
-class HHParser:
-    """Парсер вакансий с HeadHunter API"""
+class HHParser(BaseParser):
+    """Парсер для обработки данных вакансий с HeadHunter API"""
 
     requirements = None
     responsibilities = None
@@ -65,7 +66,7 @@ class HHParser:
                         desc_parts.append(f"Обязанности: {snippet.get('responsibility')}")
                     if desc_parts:
                         item["description"] = " ".join(desc_parts)
-                
+
                 # Создаем объект вакансии напрямую из данных API
                 vacancy = Vacancy.from_dict(item)
 

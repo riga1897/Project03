@@ -5,12 +5,13 @@ from typing import List, Dict, Any, Optional
 from ..models import Vacancy
 from src.utils.salary import Salary
 from src.utils.cache import FileCache
+from src.vacancies.parsers.base_parser import BaseParser
 
 
 logger = logging.getLogger(__name__)
 
 
-class SuperJobParser:
+class SuperJobParser(BaseParser):
     """Парсер для обработки данных вакансий SuperJob"""
 
     @staticmethod
@@ -115,7 +116,7 @@ class SuperJobParser:
             # Обработка зарплаты - разбираем диапазон
             payment_from = vacancy_data.get('payment_from')
             payment_to = vacancy_data.get('payment_to')
-            
+
             # Если зарплата задана одним числом без диапазона, используем его как salary_from
             if payment_from and not payment_to:
                 salary_from = payment_from

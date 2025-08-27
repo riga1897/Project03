@@ -6,27 +6,17 @@
 """
 
 import logging
-from typing import Dict, List, Optional, Tuple, Any
-import psycopg2
-from psycopg2.extras import RealDictCursor
+from typing import Any, Dict, List, Optional, Tuple
 
-from src.config.db_config import DatabaseConfig
+from src.storage.abstract_db_manager import AbstractDBManager
 
 logger = logging.getLogger(__name__)
 
 
-class DBManager:
+class DBManager(AbstractDBManager):
     """
-    Класс для работы с данными в БД PostgreSQL согласно требованиям проекта
-
-    Предоставляет методы согласно требованиям проекта:
-    - get_companies_and_vacancies_count() — получает список всех компаний и количество вакансий у каждой компании
-    - get_all_vacancies() — получает список всех вакансий с указанием названия компании, названия вакансии, зарплаты и ссылки на вакансию
-    - get_avg_salary() — получает среднюю зарплату по вакансиям
-    - get_vacancies_with_higher_salary() — получает список всех вакансий, у которых зарплата выше средней по всем вакансиям
-    - get_vacancies_with_keyword() — получает список всех вакансий, в названии которых содержатся переданные слова
-
-    Использует библиотеку psycopg2 и SQL-запросы для работы с PostgreSQL.
+    Класс для работы с базой данных PostgreSQL.
+    Предоставляет методы для выполнения специфических запросов к базе данных.
     """
 
     def __init__(self, db_config: Optional[DatabaseConfig] = None):
@@ -86,7 +76,7 @@ class DBManager:
                     # Создаем полную таблицу вакансий сразу
                     cursor.execute("""
                         CREATE TABLE IF NOT EXISTS vacancies (
-                            id SERIAL PRIMARY KEY,
+                            id SERIAL PRIMARYKEY,
                             vacancy_id VARCHAR(255) UNIQUE NOT NULL,
                             title TEXT NOT NULL,
                             url TEXT,
@@ -162,16 +152,16 @@ class DBManager:
                 with connection.cursor() as cursor:
                     # Устанавливаем кодировку сессии
                     cursor.execute("SET client_encoding TO 'UTF8'")
-                    
+
                     # Проверяем, существует ли таблица companies
                     cursor.execute("""
                         SELECT EXISTS (
-                            SELECT FROM information_schema.tables 
-                            WHERE table_schema = 'public' 
+                            SELECT FROM information_schema.tables
+                            WHERE table_schema = 'public'
                             AND table_name = 'companies'
                         );
                     """)
-                    
+
                     table_exists = cursor.fetchone()[0]
                     if not table_exists:
                         logger.warning("Таблица companies не существует. Таблицы должны быть созданы заранее.")

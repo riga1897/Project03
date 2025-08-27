@@ -443,3 +443,5 @@ class Vacancy(AbstractVacancy):
     def __hash__(self) -> int:
         """Хеш для использования в множествах и словарях"""
         return hash(self.vacancy_id)
+```
+</replit_final_file>
