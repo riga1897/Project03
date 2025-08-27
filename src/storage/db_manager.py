@@ -394,7 +394,8 @@ class DBManager(AbstractDBManager):
             END as salary_info,
             v.url,                                         -- Ссылка на вакансию
             v.vacancy_id,                                  -- ID вакансии
-            c.id as company_id                             -- ID компании из справочника
+            v.company_id as raw_company_id,                -- Raw company_id из вакансии для диагностики
+            c.id as linked_company_id                      -- ID компании из справочника
         FROM vacancies v                                   -- Основная таблица вакансий
         LEFT JOIN companies c ON v.company_id = c.id  -- Левое соединение для получения названия компании
         -- Сортировка по названию компании, затем по названию вакансии
@@ -408,6 +409,19 @@ class DBManager(AbstractDBManager):
                 with conn.cursor(cursor_factory=RealDictCursor) as cursor:
                     cursor.execute(query)
                     results = cursor.fetchall()
+
+                    # Диагностика связей company_id
+                    unlinked_count = 0
+                    linked_count = 0
+                    for row in results:
+                        if row.get('raw_company_id') is not None and row.get('linked_company_id') is None:
+                            unlinked_count += 1
+                        elif row.get('linked_company_id') is not None:
+                            linked_count += 1
+                    
+                    if unlinked_count > 0:
+                        logger.warning(f"Найдено {unlinked_count} вакансий с company_id, но без связи с таблицей companies")
+                        logger.info(f"Связанных вакансий: {linked_count}")
 
                     # Возвращаем список словарей без вывода
                     return [dict(row) for row in results]

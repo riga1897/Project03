@@ -179,20 +179,31 @@ class DBManagerDemo:
         sorted_vacancies = sorted(all_vacancies,
                                 key=lambda x: (-get_salary_value(x), x.get('title', '')))
 
-        print(f"{'№':<3} {'Название':<50} {'Зарплата':<25}")
-        print("-" * 80)
+        print(f"{'№':<3} {'Название':<40} {'Компания':<20} {'Зарплата':<20}")
+        print("-" * 85)
 
         # Показываем первые 25 вакансий
         for i, vacancy in enumerate(sorted_vacancies[:25], 1):
-            title = vacancy['title'][:49] if len(vacancy['title']) > 49 else vacancy['title']
-            salary = vacancy['salary_info'][:24] if len(vacancy['salary_info']) > 24 else vacancy['salary_info']
+            title = vacancy['title'][:39] if len(vacancy['title']) > 39 else vacancy['title']
+            company = vacancy.get('company_name', 'Неизвестная')[:19] if len(vacancy.get('company_name', 'Неизвестная')) > 19 else vacancy.get('company_name', 'Неизвестная')
+            salary = vacancy['salary_info'][:19] if len(vacancy['salary_info']) > 19 else vacancy['salary_info']
 
-            print(f"{i:<3} {title:<50} {salary:<25}")
+            print(f"{i:<3} {title:<40} {company:<20} {salary:<20}")
 
         if len(sorted_vacancies) > 25:
             print(f"... и еще {len(sorted_vacancies) - 25} вакансий")
 
         print(f"\nВсего вакансий: {len(sorted_vacancies)}")
+        
+        # Добавляем анализ по компаниям
+        companies_with_vacancies = {}
+        for vacancy in all_vacancies:
+            company_name = vacancy.get('company_name', 'Неизвестная компания')
+            companies_with_vacancies[company_name] = companies_with_vacancies.get(company_name, 0) + 1
+        
+        print(f"\nРаспределение по компаниям:")
+        for company, count in sorted(companies_with_vacancies.items(), key=lambda x: -x[1]):
+            print(f"  {company}: {count} вакансий")
 
     def _demo_avg_salary(self) -> None:
         """Демонстрирует метод get_avg_salary()"""
