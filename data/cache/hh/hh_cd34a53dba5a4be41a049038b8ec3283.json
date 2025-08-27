@@ -1,0 +1,201 @@
+{
+  "timestamp": 1756288771.6049767,
+  "meta": {
+    "params": {
+      "area": 1,
+      "per_page": 1,
+      "only_with_salary": false,
+      "text": "1",
+      "page": 0,
+      "period": 1
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "124511142",
+        "premium": false,
+        "name": "Инженер по снабжению проекта",
+        "department": {
+          "id": "62136-62136-gpSnab",
+          "name": "Sminex Генеральный подрядчик. Снабжение"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 169000,
+          "to": 250000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 169000,
+          "to": 250000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Кадашёвская набережная",
+          "building": "6/1/2",
+          "lat": 55.742706,
+          "lng": 37.617734,
+          "description": null,
+          "raw": "Москва, Кадашёвская набережная, 6/1/2",
+          "metro": {
+            "station_name": "Новокузнецкая",
+            "line_name": "Замоскворецкая",
+            "station_id": "2.89",
+            "line_id": "2",
+            "lat": 55.742391,
+            "lng": 37.62928
+          },
+          "metro_stations": [
+            {
+              "station_name": "Новокузнецкая",
+              "line_name": "Замоскворецкая",
+              "station_id": "2.89",
+              "line_id": "2",
+              "lat": 55.742391,
+              "lng": 37.62928
+            },
+            {
+              "station_name": "Полянка",
+              "line_name": "Серпуховско-Тимирязевская",
+              "station_id": "9.115",
+              "line_id": "9",
+              "lat": 55.736795,
+              "lng": 37.618594
+            },
+            {
+              "station_name": "Третьяковская",
+              "line_name": "Калужско-Рижская",
+              "station_id": "6.90",
+              "line_id": "6",
+              "lat": 55.74073,
+              "lng": 37.625624
+            },
+            {
+              "station_name": "Третьяковская",
+              "line_name": "Калининская",
+              "station_id": "8.91",
+              "line_id": "8",
+              "lat": 55.741125,
+              "lng": 37.626142
+            }
+          ],
+          "id": "3531439"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-26T18:02:00+0300",
+        "created_at": "2025-08-26T18:02:00+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124511142",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124511142?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124511142",
+        "relations": [],
+        "employer": {
+          "id": "62136",
+          "name": "Sminex",
+          "url": "https://api.hh.ru/employers/62136",
+          "alternate_url": "https://hh.ru/employer/62136",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1453849.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7435017.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7435018.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=62136",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт в сфере закупок или логистики. Умение вести переговоры. Владение MS Office и <highlighttext>1</highlighttext>С. Хорошие аналитические и коммуникативные навыки. ",
+          "responsibility": "Заключать договоры аренды складов. Заносить первичные бухгалтерские документы в <highlighttext>1</highlighttext>С и работать в ЭДО (при отсутствии кладовщика). "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "66",
+            "name": "Менеджер по закупкам"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 21023,
+    "pages": 2000,
+    "page": 0,
+    "per_page": 1,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=1&enable_snippets=true&items_on_page=1&search_period=1&text=1"
+  }
+}
