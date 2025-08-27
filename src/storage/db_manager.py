@@ -101,10 +101,23 @@ class DBManager(AbstractDBManager):
                             source VARCHAR(50),
                             published_at TIMESTAMP,
                             company_id INTEGER,
+                            employer VARCHAR(255),
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                         );
                     """)
+                    
+                    # Проверяем и добавляем поле employer если его нет в существующей таблице
+                    cursor.execute("""
+                        SELECT column_name 
+                        FROM information_schema.columns 
+                        WHERE table_name = 'vacancies' AND column_name = 'employer'
+                    """)
+                    
+                    if not cursor.fetchone():
+                        logger.info("Добавляем поле employer в таблицу vacancies...")
+                        cursor.execute("ALTER TABLE vacancies ADD COLUMN employer VARCHAR(255)")
+                        logger.info("✓ Поле employer добавлено")
                     logger.info("✓ Таблица vacancies создана/проверена")
 
                     # Создаем индексы
