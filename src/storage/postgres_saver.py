@@ -587,337 +587,54 @@ class PostgresSaver(AbstractVacancyStorage):
 
     def add_vacancy(self, vacancies: Union[Vacancy, List[Vacancy]]) -> List[str]:
         """
-        Добавляет вакансии в БД. Использует оптимизированный метод для больших объемов.
+        Добавляет вакансии в БД. Всегда использует batch операции.
         """
         if not isinstance(vacancies, list):
             vacancies = [vacancies]
 
-        # Для небольших объемов используем старый алгоритм, для больших - оптимизированный
-        if len(vacancies) <= 50:
-            return self._add_vacancy_small_batch(vacancies)
-        else:
-            return self.add_vacancy_batch_optimized(vacancies)
+        # Всегда используем оптимизированный batch метод
+        return self.add_vacancy_batch_optimized(vacancies)
 
-    def _add_vacancy_small_batch(self, vacancies: List[Vacancy]) -> List[str]:
-        """Оригинальный алгоритм для небольших batch-операций"""
-        if not vacancies:
-            return []
+    def _find_company_by_employer_info(self, employer_name: str, employer_id: str = None, company_mapping: Dict[str, int] = None) -> Optional[int]:
+        """
+        Находит ID компании по информации о работодателе
 
-        connection = self._get_connection()
-        update_messages: List[str] = []
+        Args:
+            employer_name: Название работодателя (не используется)
+            employer_id: ID работодателя из API
+            company_mapping: Кэш соответствий названий -> ID (не используется)
+
+        Returns:
+            ID компании из таблицы companies или None
+        """
+        if not employer_id:
+            return None
 
         try:
-            cursor = connection.cursor(cursor_factory=RealDictCursor)
+            connection = self._get_connection()
+            cursor = connection.cursor()
 
-            # Получаем сопоставление компаний из БД с расширенным поиском
+            # Ищем точное соответствие только по hh_id или sj_id
             cursor.execute("""
-                SELECT id, name, LOWER(name) as normalized_name 
-                FROM companies
-            """)
+                SELECT id FROM companies 
+                WHERE hh_id = %s OR sj_id = %s
+                LIMIT 1
+            """, (employer_id, employer_id))
 
-            company_mapping = {}
-            company_patterns = {}  # Для поиска по частичному совпадению
+            result = cursor.fetchone()
+            if result:
+                return result[0]
 
-            for comp_id, original_name, normalized_name in cursor.fetchall():
-                company_mapping[normalized_name] = comp_id
-                company_patterns[original_name] = comp_id
+            return None
 
-                # Добавляем альтернативные названия для известных компаний
-                alternatives = {
-                    "яндекс": ["yandex"],
-                    "тинькофф": ["т-банк", "tinkoff", "t-bank", "tcs"],
-                    "сбер": ["сбербанк", "sberbank", "sber"],
-                    "wildberries": ["wb", "вайлдберриз"],
-                    "ozon": ["озон"],
-                    "vk": ["вконтакте", "вк", "mail.ru group", "vk group"],
-                    "лаборатория касперского": ["kaspersky", "касперский", "лаборатория касперского"],
-                    "авито": ["avito"],
-                    "x5 retail group": ["x5", "x5 tech", "пятёрочка"],
-                    "ростелеком": ["rostelecom", "ростелеком информационные технологии"],
-                    "альфа-банк": ["alfa-bank", "alfabank"],
-                    "jetbrains": ["джетбрейнс"],
-                    "2gis": ["2гис", "дубльгис"],
-                    "skyeng": ["скайэнг"],
-                    "delivery club": ["деливери клаб"]
-                }
-
-                for main_name, alt_names in alternatives.items():
-                    if main_name in normalized_name.lower():
-                        for alt_name in alt_names:
-                            company_mapping[alt_name.lower()] = comp_id
-
-
-            # Batch проверка существования вакансий
-            vacancy_ids = [v.vacancy_id for v in vacancies]
-            placeholders = ','.join(['%s'] * len(vacancy_ids))
-
-            cursor.execute(
-                f"SELECT vacancy_id, title, description, salary_from, salary_to, salary_currency, company_id FROM vacancies WHERE vacancy_id IN ({placeholders})",
-                vacancy_ids
-            )
-
-            existing_map = {row['vacancy_id']: row for row in cursor.fetchall()}
-
-            # Разделяем на новые и обновляемые вакансии
-            new_vacancies = []
-            update_vacancies = []
-
-            for vacancy in vacancies:
-                if vacancy.vacancy_id in existing_map:
-                    existing = existing_map[vacancy.vacancy_id]
-
-                    # Проверяем изменения
-                    salary_from = vacancy.salary.salary_from if vacancy.salary else None
-                    salary_to = vacancy.salary.salary_to if vacancy.salary else None
-                    salary_currency = vacancy.salary.currency if vacancy.salary else None
-
-                    # Определяем company_id для связи с таблицей companies
-                    mapped_company_id = None
-                    employer_name = None
-
-                    if vacancy.employer:
-                        if isinstance(vacancy.employer, dict):
-                            employer_name = vacancy.employer.get('name', '').strip()
-                        else:
-                            employer_name = str(vacancy.employer).strip()
-
-                    if employer_name:
-                        employer_lower = employer_name.lower()
-
-                        # 1. Поиск точного соответствия в нормализованных названиях
-                        mapped_company_id = company_mapping.get(employer_lower)
-
-                        # 2. Поиск по частичному соответствию с ключевыми словами
-                        if not mapped_company_id:
-                            for pattern_name, comp_id in company_patterns.items():
-                                pattern_lower = pattern_name.lower()
-                                # Проверяем вхождение ключевых слов
-                                if len(pattern_lower) > 3:
-                                    if pattern_lower in employer_lower or employer_lower in pattern_lower:
-                                        mapped_company_id = comp_id
-                                        logger.debug(f"Найдено соответствие по частичному совпадению: '{employer_name}' -> '{pattern_name}' (company_id: {comp_id})")
-                                        break
-
-                        # 3. Дополнительный поиск по альтернативным названиям
-                        if not mapped_company_id:
-                            for alt_name, comp_id in company_mapping.items():
-                                if isinstance(alt_name, str) and len(alt_name) > 2:
-                                    if alt_name in employer_lower:
-                                        mapped_company_id = comp_id
-                                        logger.debug(f"Найдено соответствие по альтернативному названию: '{employer_name}' -> '{alt_name}' (company_id: {comp_id})")
-                                        break
-
-                        # 4. Логирование для отладки
-                        if mapped_company_id:
-                            logger.debug(f"Сопоставлено: '{employer_name}' -> company_id: {mapped_company_id}")
-                        else:
-                            logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
-
-
-                    has_changes = (
-                        existing['title'] != vacancy.title or
-                        existing['description'] != vacancy.description or
-                        existing['salary_from'] != salary_from or
-                        existing['salary_to'] != salary_to or
-                        existing['salary_currency'] != salary_currency or
-                        existing['company_id'] != mapped_company_id # Сравнение company_id
-                    )
-
-                    if has_changes:
-                        update_vacancies.append(vacancy)
-                        update_messages.append(f"Вакансия ID {vacancy.vacancy_id} обновлена: '{vacancy.title}'")
-                else:
-                    new_vacancies.append(vacancy)
-                    update_messages.append(f"Добавлена новая вакансия ID {vacancy.vacancy_id}: '{vacancy.title}'")
-
-            # Batch insert новых вакансий
-            if new_vacancies:
-                insert_data = []
-                for vacancy in new_vacancies:
-                    salary_from = vacancy.salary.salary_from if vacancy.salary else None
-                    salary_to = vacancy.salary.salary_to if vacancy.salary else None
-                    salary_currency = vacancy.salary.currency if vacancy.salary else None
-
-                    # Определяем company_id для связи с таблицей companies
-                    mapped_company_id = None
-                    employer_name = None
-                    employer_id = None
-
-                    if vacancy.employer:
-                        if isinstance(vacancy.employer, dict):
-                            employer_name = vacancy.employer.get('name')
-                            employer_id = vacancy.employer.get('id')
-                        elif isinstance(vacancy.employer, str):
-                            employer_name = vacancy.employer
-                        else:
-                            employer_name = str(vacancy.employer)
-
-                    # Поиск компании только по названию
-                    if employer_name and employer_name.strip():
-                        employer_lower = employer_name.lower().strip()
-
-                        # 1. Прямое соответствие по названию
-                        mapped_company_id = company_mapping.get(employer_lower)
-
-                        # 2. Поиск частичного соответствия
-                        if not mapped_company_id:
-                            # Сначала ищем точные вхождения
-                            for alt_name, comp_id in company_mapping.items():
-                                if isinstance(alt_name, str) and alt_name == employer_lower:
-                                    mapped_company_id = comp_id
-                                    break
-
-                        # 3. Поиск частичного соответствия
-                        if not mapped_company_id:
-                            for alt_name, comp_id in company_mapping.items():
-                                if isinstance(alt_name, str) and len(alt_name) > 2 and (alt_name in employer_lower or employer_lower in alt_name):
-                                    mapped_company_id = comp_id
-                                    break
-
-                        # 4. Логирование для отладки
-                        if not mapped_company_id and employer_name:
-                            logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
-
-
-                    # Конвертируем employer в строку для сохранения в БД
-                    employer_str = None
-                    if vacancy.employer:
-                        if isinstance(vacancy.employer, dict):
-                            employer_str = vacancy.employer.get('name', str(vacancy.employer))
-                        else:
-                            employer_str = str(vacancy.employer)
-
-                    # Конвертируем area в строку для сохранения в БД
-                    area_str = None
-                    if vacancy.area:
-                        if isinstance(vacancy.area, dict):
-                            area_str = vacancy.area.get('name', str(vacancy.area))
-                        else:
-                            area_str = str(vacancy.area)
-
-                    # Обработка даты published_at
-                    published_date = self._normalize_published_date(vacancy.published_at)
-
-                    insert_data.append((
-                        vacancy.vacancy_id, vacancy.title, vacancy.url,
-                        salary_from, salary_to, salary_currency,
-                        vacancy.description, vacancy.requirements, vacancy.responsibilities,
-                        vacancy.experience, vacancy.employment, vacancy.schedule,
-                        area_str, vacancy.source, published_date,
-                        mapped_company_id  # Оставляем как integer
-                    ))
-
-                insert_query = """
-                INSERT INTO vacancies (
-                    vacancy_id, title, url, salary_from, salary_to, salary_currency,
-                    description, requirements, responsibilities, experience,
-                    employment, schedule, area, source, published_at, company_id
-                ) VALUES %s
-                """
-
-                from psycopg2.extras import execute_values
-                execute_values(cursor, insert_query, insert_data, template=None, page_size=100)
-
-            # Batch update существующих вакансий
-            if update_vacancies:
-                for vacancy in update_vacancies:
-                    salary_from = vacancy.salary.salary_from if vacancy.salary else None
-                    salary_to = vacancy.salary.salary_to if vacancy.salary else None
-                    salary_currency = vacancy.salary.currency if vacancy.salary else None
-
-                    # Определяем company_id для связи с таблицей companies
-                    mapped_company_id = None
-                    employer_name = None
-                    employer_id = None
-
-                    if vacancy.employer:
-                        # Правильно извлекаем имя работодателя и ID
-                        if isinstance(vacancy.employer, dict):
-                            employer_name = vacancy.employer.get('name')
-                            employer_id = vacancy.employer.get('id')
-                        elif isinstance(vacancy.employer, str):
-                            employer_name = vacancy.employer
-                        else:
-                            employer_name = str(vacancy.employer)
-
-                    # Поиск компании только по названию
-                    if employer_name and employer_name.strip():
-                        employer_lower = employer_name.lower().strip()
-
-                        # 1. Прямое соответствие по названию
-                        mapped_company_id = company_mapping.get(employer_lower)
-
-                        # 2. Поиск частичного соответствия
-                        if not mapped_company_id:
-                            # Сначала ищем точные вхождения
-                            for alt_name, comp_id in company_mapping.items():
-                                if isinstance(alt_name, str) and alt_name == employer_lower:
-                                    mapped_company_id = comp_id
-                                    break
-
-                        # 3. Поиск частичного соответствия
-                        if not mapped_company_id:
-                            for alt_name, comp_id in company_mapping.items():
-                                if isinstance(alt_name, str) and len(alt_name) > 2 and (alt_name in employer_lower or employer_lower in alt_name):
-                                    mapped_company_id = comp_id
-                                    break
-
-                        # 4. Логирование для отладки
-                        if not mapped_company_id and employer_name:
-                            logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
-
-
-                    # Конвертируем employer в строку для сохранения в БД
-                    employer_str = None
-                    if vacancy.employer:
-                        if isinstance(vacancy.employer, dict):
-                            employer_str = vacancy.employer.get('name', str(vacancy.employer))
-                        else:
-                            employer_str = str(vacancy.employer)
-
-                    # Конвертируем area в строку для сохранения в БД
-                    area_str = None
-                    if vacancy.area:
-                        if isinstance(vacancy.area, dict):
-                            area_str = vacancy.area.get('name', str(vacancy.area))
-                        else:
-                            area_str = str(vacancy.area)
-
-                    # Обработка даты published_at
-                    published_date = self._normalize_published_date(vacancy.published_at)
-
-                    update_query = """
-                    UPDATE vacancies SET
-                        title = %s, url = %s, salary_from = %s, salary_to = %s,
-                        salary_currency = %s, description = %s, requirements = %s,
-                        responsibilities = %s, experience = %s, employment = %s,
-                        schedule = %s, area = %s, source = %s, published_at = %s,
-                        company_id = %s,
-                        updated_at = CURRENT_TIMESTAMP
-                    WHERE vacancy_id = %s
-                    """
-
-                    cursor.execute(update_query, (
-                        vacancy.title, vacancy.url, salary_from, salary_to,
-                        salary_currency, vacancy.description, vacancy.requirements,
-                        vacancy.responsibilities, vacancy.experience, vacancy.employment,
-                        vacancy.schedule, area_str, vacancy.source,
-                        published_date, mapped_company_id, vacancy.vacancy_id
-                    ))
-
-            connection.commit()
-            logger.info(f"Малый batch: добавлено {len(new_vacancies)}, обновлено {len(update_vacancies)} вакансий")
-
-        except psycopg2.Error as e:
-            logger.error(f"Ошибка при малом batch добавлении вакансий: {e}")
-            connection.rollback()
-            raise
+        except Exception as e:
+            logger.error(f"Ошибка поиска компании по ID {employer_id}: {e}")
+            return None
         finally:
             if 'cursor' in locals():
                 cursor.close()
-            connection.close()
-
-        return update_messages
+            if 'connection' in locals():
+                connection.close()
 
     def load_vacancies(self, limit: Optional[int] = None, offset: int = 0, filters: Optional[Dict[str, Any]] = None) -> List[Vacancy]:
         """
