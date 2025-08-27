@@ -175,7 +175,7 @@ class DBManager:
                             AND constraint_type = 'FOREIGN KEY'
                             AND constraint_name = 'fk_vacancies_company_id';
                         """)
-                        
+
                         if not cursor.fetchone():
                             cursor.execute("""
                                 ALTER TABLE vacancies 
@@ -428,7 +428,7 @@ class DBManager:
             v.employer,                                    -- Оригинальное поле employer для совместимости
             c.company_id                                   -- ID компании из справочника
         FROM vacancies v                                   -- Основная таблица вакансий
-        LEFT JOIN companies c ON v.company_id = c.company_id  -- Левое соединение для получения названия компании
+        LEFT JOIN companies c ON v.company_id = c.id  -- Левое соединение для получения названия компании
         -- Сортировка по названию компании, затем по названию вакансии
         ORDER BY
             CASE
@@ -530,7 +530,7 @@ class DBManager:
             v.vacancy_id,
             v.employer
         FROM vacancies v
-        LEFT JOIN companies c ON v.company_id = c.company_id
+        LEFT JOIN companies c ON v.company_id = c.id
         WHERE (
             CASE
                 WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
@@ -610,7 +610,7 @@ class DBManager:
             v.vacancy_id,
             v.employer
         FROM vacancies v
-        LEFT JOIN companies c ON v.company_id = c.company_id
+        LEFT JOIN companies c ON v.company_id = c.id
         WHERE LOWER(v.title) LIKE LOWER(%s)
         -- Сортировка: сначала по зарплате (убывание), затем по названию вакансии (возрастание)
         ORDER BY

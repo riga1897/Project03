@@ -206,7 +206,7 @@ class PostgresSaver:
                 ("area", "VARCHAR(200)"),
                 ("source", "VARCHAR(50) DEFAULT 'unknown'"),
                 ("published_at", "TIMESTAMP"),
-                ("company_id", "INTEGER")
+                ("company_id", "INTEGER REFERENCES companies(id)")
             ]
 
             # Проверяем и добавляем недостающие поля
@@ -250,13 +250,25 @@ class PostgresSaver:
                 except psycopg2.Error as e:
                     logger.warning(f"Не удалось создать индекс {index_name}: {e}")
 
-            # Теперь можем создать правильный внешний ключ (опционально, так как это может вызывать проблемы)
-            # cursor.execute("""
-            #     ALTER TABLE vacancies 
-            #     ADD CONSTRAINT fk_vacancies_company_id 
-            #     FOREIGN KEY (company_id) REFERENCES companies(id)
-            #     ON DELETE SET NULL
-            # """)
+            # Создаем внешний ключ если его еще нет
+            try:
+                cursor.execute("""
+                    SELECT constraint_name FROM information_schema.table_constraints
+                    WHERE table_name = 'vacancies' 
+                    AND constraint_type = 'FOREIGN KEY'
+                    AND constraint_name = 'fk_vacancies_company_id'
+                """)
+                
+                if not cursor.fetchone():
+                    cursor.execute("""
+                        ALTER TABLE vacancies 
+                        ADD CONSTRAINT fk_vacancies_company_id 
+                        FOREIGN KEY (company_id) REFERENCES companies(id)
+                        ON DELETE SET NULL
+                    """)
+                    logger.info("✓ Внешний ключ fk_vacancies_company_id создан")
+            except psycopg2.Error as e:
+                logger.warning(f"Не удалось создать внешний ключ: {e}")
 
             connection.commit()
             logger.info("✓ Таблицы успешно созданы/проверены")
