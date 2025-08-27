@@ -137,6 +137,25 @@ class PostgresSaver:
             # Устанавливаем кодировку сессии
             cursor.execute("SET client_encoding TO 'UTF8'")
 
+            # Сначала создаем таблицу companies если её нет
+            self._ensure_companies_table_exists()
+
+            # Проверяем, есть ли внешний ключ, который может вызывать проблемы
+            cursor.execute("""
+                SELECT constraint_name FROM information_schema.table_constraints
+                WHERE table_name = 'vacancies' 
+                AND constraint_type = 'FOREIGN KEY'
+                AND constraint_name = 'vacancies_company_id_fkey'
+            """)
+            
+            if cursor.fetchone():
+                logger.info("Удаляем проблемный внешний ключ...")
+                try:
+                    cursor.execute("ALTER TABLE vacancies DROP CONSTRAINT IF EXISTS vacancies_company_id_fkey")
+                    logger.info("✓ Внешний ключ vacancies_company_id_fkey удален")
+                except psycopg2.Error as e:
+                    logger.warning(f"Не удалось удалить внешний ключ: {e}")
+
             # Создаем таблицу для вакансий
             create_table_query = """
             CREATE TABLE IF NOT EXISTS vacancies (
@@ -159,7 +178,7 @@ class PostgresSaver:
                 published_at TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                company_id INTEGER -- Ссылка на компанию
+                company_id INTEGER -- Ссылка на компанию (используем внутренний id из companies)
             );
             """
 
@@ -177,7 +196,7 @@ class PostgresSaver:
                 cursor.execute("ALTER TABLE vacancies ADD COLUMN source VARCHAR(50) DEFAULT 'unknown';")
                 logger.info("✓ Поле source добавлено")
 
-            # Проверяем существование поля company_id и добавляем если его нет
+            # Проверяем существование поля company_id и его тип
             cursor.execute("""
                 SELECT column_name, data_type
                 FROM information_schema.columns 
@@ -189,16 +208,16 @@ class PostgresSaver:
                 logger.info("Добавляем поле company_id в существующую таблицу...")
                 cursor.execute("ALTER TABLE vacancies ADD COLUMN company_id INTEGER;")
                 logger.info("✓ Поле company_id добавлено")
-            elif company_id_info[1] == 'integer':
-                logger.info("Поле company_id уже имеет тип integer.")
-            else:
-                logger.warning(f"Поле company_id имеет неожиданный тип: {company_id_info[1]}. Попытка изменить на INTEGER.")
+            elif company_id_info[1] != 'integer':
+                logger.warning(f"Поле company_id имеет тип {company_id_info[1]}, но должен быть INTEGER.")
+                logger.info("Пересоздаем поле company_id с правильным типом...")
                 try:
-                    cursor.execute("ALTER TABLE vacancies ALTER COLUMN company_id TYPE INTEGER USING company_id::integer;")
-                    logger.info("✓ Тип поля company_id изменен на INTEGER")
+                    # Удаляем старое поле и создаем новое
+                    cursor.execute("ALTER TABLE vacancies DROP COLUMN IF EXISTS company_id CASCADE")
+                    cursor.execute("ALTER TABLE vacancies ADD COLUMN company_id INTEGER")
+                    logger.info("✓ Поле company_id пересоздано с типом INTEGER")
                 except psycopg2.Error as e:
-                    logger.error(f"Не удалось изменить тип поля company_id на INTEGER: {e}. Поле останется как есть.")
-
+                    logger.error(f"Не удалось пересоздать поле company_id: {e}")
 
             # Создаем индексы
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_vacancy_id ON vacancies(vacancy_id);")
@@ -207,6 +226,13 @@ class PostgresSaver:
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_source ON vacancies(source);")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_company_id ON vacancies(company_id);")
 
+            # Теперь можем создать правильный внешний ключ (опционально, так как это может вызывать проблемы)
+            # cursor.execute("""
+            #     ALTER TABLE vacancies 
+            #     ADD CONSTRAINT fk_vacancies_company_id 
+            #     FOREIGN KEY (company_id) REFERENCES companies(id)
+            #     ON DELETE SET NULL
+            # """)
 
             connection.commit()
             logger.info("✓ Таблицы успешно созданы/проверены")
@@ -1807,8 +1833,8 @@ class PostgresSaver:
             create_table_query = """
             CREATE TABLE IF NOT EXISTS companies (
                 id SERIAL PRIMARY KEY,
-                hh_id INTEGER,
-                sj_id INTEGER,
+                hh_id VARCHAR(50),
+                sj_id VARCHAR(50),
                 company_id VARCHAR(255) UNIQUE,
                 name VARCHAR(255) NOT NULL,
                 description TEXT,
@@ -1822,26 +1848,36 @@ class PostgresSaver:
             """
             cursor.execute(create_table_query)
 
-            # Add indexes if they don't exist
-            cursor.execute("SELECT COUNT(*) FROM pg_indexes WHERE tablename = 'companies' AND indexname = 'idx_companies_hh_id';")
-            if cursor.fetchone()[0] == 0:
-                cursor.execute("CREATE INDEX idx_companies_hh_id ON companies(hh_id);")
-
-            cursor.execute("SELECT COUNT(*) FROM pg_indexes WHERE tablename = 'companies' AND indexname = 'idx_companies_sj_id';")
-            if cursor.fetchone()[0] == 0:
-                cursor.execute("CREATE INDEX idx_companies_sj_id ON companies(sj_id);")
-
-            cursor.execute("SELECT COUNT(*) FROM pg_indexes WHERE tablename = 'companies' AND indexname = 'idx_companies_company_id';")
-            if cursor.fetchone()[0] == 0:
-                cursor.execute("CREATE INDEX idx_companies_company_id ON companies(company_id);")
-
-            cursor.execute("SELECT COUNT(*) FROM pg_indexes WHERE tablename = 'companies' AND indexname = 'idx_companies_name';")
-            if cursor.fetchone()[0] == 0:
-                cursor.execute("CREATE INDEX idx_companies_name ON companies(name);")
+            # Проверяем и обновляем типы полей при необходимости
+            cursor.execute("""
+                SELECT column_name, data_type
+                FROM information_schema.columns 
+                WHERE table_name = 'companies' AND column_name IN ('hh_id', 'sj_id');
+            """)
             
-            cursor.execute("SELECT COUNT(*) FROM pg_indexes WHERE tablename = 'companies' AND indexname = 'idx_companies_source';")
-            if cursor.fetchone()[0] == 0:
-                cursor.execute("CREATE INDEX idx_companies_source ON companies(source);")
+            columns_info = cursor.fetchall()
+            for col_name, data_type in columns_info:
+                if data_type == 'integer':
+                    logger.info(f"Изменяем тип поля {col_name} с INTEGER на VARCHAR...")
+                    try:
+                        cursor.execute(f"ALTER TABLE companies ALTER COLUMN {col_name} TYPE VARCHAR(50) USING {col_name}::VARCHAR(50)")
+                        logger.info(f"✓ Тип поля {col_name} изменен на VARCHAR(50)")
+                    except psycopg2.Error as e:
+                        logger.warning(f"Не удалось изменить тип поля {col_name}: {e}")
+
+            # Add indexes if they don't exist
+            indexes_to_create = [
+                ("idx_companies_hh_id", "hh_id"),
+                ("idx_companies_sj_id", "sj_id"),
+                ("idx_companies_company_id", "company_id"),
+                ("idx_companies_name", "name"),
+                ("idx_companies_source", "source")
+            ]
+
+            for index_name, column_name in indexes_to_create:
+                cursor.execute(f"SELECT COUNT(*) FROM pg_indexes WHERE tablename = 'companies' AND indexname = '{index_name}';")
+                if cursor.fetchone()[0] == 0:
+                    cursor.execute(f"CREATE INDEX {index_name} ON companies({column_name});")
 
             connection.commit()
             logger.info("✓ Таблица 'companies' успешно создана/проверена")

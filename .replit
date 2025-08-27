@@ -15,3 +15,120 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python main.py"
+
+[[workflows.workflow]]
+name = "Fix Database"
+author = 45171279
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python -c \""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "import psycopg2"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "from src.utils.env_loader import EnvLoader"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = ""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "# Подключение к БД"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "conn = psycopg2.connect("
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "    host=EnvLoader.get_env_var('PGHOST', 'localhost'),"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "    port=EnvLoader.get_env_var('PGPORT', '5432'), "
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "    database=EnvLoader.get_env_var('PGDATABASE', 'Project03'),"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "    user=EnvLoader.get_env_var('PGUSER', 'postgres'),"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "    password=EnvLoader.get_env_var('PGPASSWORD', '')"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = ")"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = ""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cursor = conn.cursor()"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "print('Исправляем проблемы с базой данных...')"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = ""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "# Удаляем проблемные внешние ключи"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cursor.execute('ALTER TABLE IF EXISTS vacancies DROP CONSTRAINT IF EXISTS vacancies_company_id_fkey CASCADE')"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = ""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "# Удаляем и пересоздаем таблицы"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cursor.execute('DROP TABLE IF EXISTS vacancies CASCADE')"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cursor.execute('DROP TABLE IF EXISTS companies CASCADE')"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = ""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "conn.commit()"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cursor.close()"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "conn.close()"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "print('✓ Проблемные таблицы удалены. Запустите приложение заново.')"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "\""
