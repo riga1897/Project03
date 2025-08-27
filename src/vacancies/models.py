@@ -39,9 +39,6 @@ class Vacancy(AbstractVacancy):
         "benefits",
         "source",
         "area",
-        "_relevance_score",
-        "raw_data",
-        "profession",
         "company_id",
     )
 
@@ -66,9 +63,6 @@ class Vacancy(AbstractVacancy):
         source: str = "unknown",
         area: Optional[str] = None,
     ):
-        self._relevance_score = None
-        self.raw_data = None
-        self.profession = None
         self.company_id = ""  # Инициализируем как строку
         # Используем переданный ID, если есть, иначе генерируем UUID
         if vacancy_id and str(vacancy_id).strip() and str(vacancy_id) != "":
@@ -344,9 +338,6 @@ class Vacancy(AbstractVacancy):
             vacancy.company_id = company_id
             # Устанавливаем источник данных
             vacancy.source = source or "unknown"
-
-            # Сохраняем исходные данные для извлечения специфичных полей (например, firm_id для SJ)
-            vacancy._raw_data = data
 
             return vacancy
 

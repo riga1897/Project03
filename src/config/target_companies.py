@@ -242,41 +242,6 @@ class TargetCompanies:
         return len(cls.COMPANIES)
 
 
-# Для обратной совместимости - используем методы класса TargetCompanies
-def get_target_company_ids() -> List[str]:
-    """Возвращает список HH ID целевых компаний"""
-    return TargetCompanies.get_hh_ids()
-
-def get_target_company_names() -> List[str]:
-    """Возвращает список названий целевых компаний"""
-    return TargetCompanies.get_company_names()
-
-def get_company_by_id(hh_id: str) -> Dict[str, str]:
-    """Возвращает информацию о компании по HH ID"""
-    company = TargetCompanies.get_company_by_hh_id(hh_id)
-    if company:
-        return {
-            "name": company.name,
-            "hh_id": company.hh_id,
-            "description": company.description
-        }
-    return {}
-
-def get_company_by_name(name: str) -> Dict[str, str]:
-    """Возвращает информацию о компании по названию"""
-    company = TargetCompanies.find_company_by_name(name)
-    if company:
-        return {
-            "name": company.name,
-            "hh_id": company.hh_id,
-            "description": company.description
-        }
-    return {}
-
-# Константы для быстрого доступа - используем методы класса
-TARGET_COMPANY_IDS = TargetCompanies.get_hh_ids()
-TARGET_COMPANY_NAMES = TargetCompanies.get_company_names()
-
 # Для обратной совместимости - список словарей
 TARGET_COMPANIES = [
     {
