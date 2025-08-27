@@ -271,6 +271,19 @@ class PostgresSaver(AbstractVacancyStorage):
                         logger.info("✓ Поле company_id пересоздано с типом INTEGER")
                     except psycopg2.Error as e:
                         logger.error(f"Не удалось пересоздать поле company_id: {e}")
+                
+                # Добавляем поле employer если оно отсутствует
+                if field_name == 'employer':
+                    cursor.execute("""
+                        SELECT column_name
+                        FROM information_schema.columns
+                        WHERE table_name = 'vacancies' AND column_name = %s;
+                    """, ('employer',))
+                    if not cursor.fetchone():
+                        logger.info("Добавляем поле employer в таблицу vacancies...")
+                        cursor.execute("ALTER TABLE vacancies ADD COLUMN employer VARCHAR(255)")
+                        logger.info("✓ Поле employer добавлено")
+
 
             # Создаем индексы для оптимизации запросов
             indexes_to_create = [
@@ -736,6 +749,7 @@ class PostgresSaver(AbstractVacancyStorage):
                     # Определяем company_id для связи с таблицей companies
                     mapped_company_id = None
                     employer_name = None
+                    employer_id = None
 
                     if vacancy.employer:
                         if isinstance(vacancy.employer, dict):

@@ -271,35 +271,41 @@ class DBManager(AbstractDBManager):
                     for target_company in TARGET_COMPANIES:
                         company_name = target_company.name
 
-                        # Fallback SQL-запрос для поиска вакансий по названию компании в поле employer
-                        # Используется когда нет связанных данных через внешний ключ company_id
-                        fallback_query = """
-                        -- Подсчет вакансий через JOIN с таблицей companies
-                        -- Использует LIKE для нечеткого поиска и LOWER() для регистронезависимого поиска
-                        SELECT COUNT(*) as vacancy_count              -- Количество найденных вакансий
-                        FROM vacancies v                             -- Таблица вакансий
-                        LEFT JOIN companies c ON v.company_id = c.id -- JOIN с таблицей компаний
-                        WHERE LOWER(c.name) LIKE LOWER(%s)           -- Поиск по названию компании
-                        """
+                        # Сначала пытаемся найти компанию по ID в таблице companies
+                        cursor.execute("SELECT id FROM companies WHERE name = %s", (company_name,))
+                        company_record = cursor.fetchone()
 
-                        cursor.execute(fallback_query, (f"%{company_name}%",))
-                        count_result = cursor.fetchone()
-                        vacancy_count = count_result[0] if count_result else 0
+                        vacancy_count = 0
 
-                        # Дополнительные проверки для известных альтернативных названий
+                        if company_record:
+                            # Если компания найдена в таблице companies, ищем по company_id
+                            company_db_id = company_record[0]
+                            cursor.execute("""
+                                SELECT COUNT(*) FROM vacancies 
+                                WHERE company_id = %s
+                            """, (company_db_id,))
+                            count_result = cursor.fetchone()
+                            vacancy_count = count_result[0] if count_result else 0
+
+                        # Если вакансий по company_id не найдено, ищем по полю employer
                         if vacancy_count == 0:
-                            # Альтернативные названия компаний
-                            alternatives = {
-                                "Тинькофф": ["т-банк", "tinkoff"],
-                                "СБЕР": ["сбербанк", "сбер"],
-                                "VK (ВКонтакте)": ["vk", "вконтакте"],
-                                "OZON": ["ozon"],
-                                "Wildberries": ["wildberries"]
-                            }
+                            fallback_query = """
+                            -- Подсчет вакансий по полю employer (fallback)
+                            -- Использует LIKE для нечеткого поиска и LOWER() для регистронезависимого поиска
+                            SELECT COUNT(*) as vacancy_count              -- Количество найденных вакансий
+                            FROM vacancies v                             -- Таблица вакансий
+                            WHERE LOWER(v.employer) LIKE LOWER(%s)       -- Поиск по названию работодателя
+                            """
 
-                            if company_name in alternatives:
-                                for alt_name in alternatives[company_name]:
-                                    cursor.execute(fallback_query, (f"%{alt_name}%",))
+                            cursor.execute(fallback_query, (f"%{company_name}%",))
+                            count_result = cursor.fetchone()
+                            vacancy_count = count_result[0] if count_result else 0
+
+                            # Дополнительные проверки для известных альтернативных названий
+                            if vacancy_count == 0:
+                                # Используем псевдонимы из конфигурации целевых компаний
+                                for alias in target_company.aliases:
+                                    cursor.execute(fallback_query, (f"%{alias}%",))
                                     count_result = cursor.fetchone()
                                     if count_result and count_result[0] > 0:
                                         vacancy_count = count_result[0]
