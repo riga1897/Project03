@@ -7,11 +7,12 @@ from psycopg2.extras import RealDictCursor
 import json
 
 from src.vacancies.models import Vacancy
+from src.storage.abstract import AbstractVacancyStorage
 
 logger = logging.getLogger(__name__)
 
 
-class PostgresSaver:
+class PostgresSaver(AbstractVacancyStorage):
     """
     Класс для работы с PostgreSQL хранилищем вакансий.
 
@@ -1123,6 +1124,13 @@ class PostgresSaver:
             if 'cursor' in locals():
                 cursor.close()
             connection.close()
+
+    def delete_vacancy(self, vacancy: "AbstractVacancy") -> None:
+        """
+        Удаляет вакансию из PostgreSQL хранилища
+        :param vacancy: Объект вакансии для удаления
+        """
+        self.delete_vacancy_by_id(vacancy.vacancy_id)
 
     def delete_vacancies_batch(self, vacancy_ids: List[str]) -> int:
         """
