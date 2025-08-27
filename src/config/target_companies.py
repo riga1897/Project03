@@ -112,25 +112,7 @@ class TargetCompanies:
             description="Чешская компания по разработке ПО с российскими корнями",
             aliases=["Джетбрейнс", "jetbrains"]
         ),
-        CompanyInfo(
-            name="2GIS",
-            hh_id="64356",
-            sj_id="2628",
-            description="Российская IT-компания, справочно-навигационные сервисы",
-            aliases=["2ГИС", "ДубльГИС", "дубльгис", "2gis"]
-        ),
-        CompanyInfo(
-            name="Skyeng",
-            hh_id="1201321",
-            description="Российская EdTech-компания, онлайн-образование",
-            aliases=["skyeng", "скайэнг"]
-        ),
-        CompanyInfo(
-            name="Delivery Club",
-            hh_id="633442",
-            description="Российский сервис доставки еды",
-            aliases=["delivery club", "деливери клаб"]
-        )
+        
     ]
 
     @classmethod
