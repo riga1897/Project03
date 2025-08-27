@@ -1891,9 +1891,7 @@ class PostgresSaver:
             create_table_query = """
             CREATE TABLE IF NOT EXISTS companies (
                 id SERIAL PRIMARY KEY,
-                hh_id VARCHAR(50),
-                sj_id VARCHAR(50),
-                company_id VARCHAR(255) UNIQUE,
+                external_id VARCHAR(50),
                 name VARCHAR(255) NOT NULL,
                 description TEXT,
                 url TEXT,
@@ -1906,28 +1904,9 @@ class PostgresSaver:
             """
             cursor.execute(create_table_query)
 
-            # Проверяем и обновляем типы полей при необходимости
-            cursor.execute("""
-                SELECT column_name, data_type
-                FROM information_schema.columns 
-                WHERE table_name = 'companies' AND column_name IN ('hh_id', 'sj_id');
-            """)
-
-            columns_info = cursor.fetchall()
-            for col_name, data_type in columns_info:
-                if data_type == 'integer':
-                    logger.info(f"Изменяем тип поля {col_name} с INTEGER на VARCHAR...")
-                    try:
-                        cursor.execute(f"ALTER TABLE companies ALTER COLUMN {col_name} TYPE VARCHAR(50) USING {col_name}::VARCHAR(50)")
-                        logger.info(f"✓ Тип поля {col_name} изменен на VARCHAR(50)")
-                    except psycopg2.Error as e:
-                        logger.warning(f"Не удалось изменить тип поля {col_name}: {e}")
-
             # Add indexes if they don't exist
             indexes_to_create = [
-                ("idx_companies_hh_id", "hh_id"),
-                ("idx_companies_sj_id", "sj_id"),
-                ("idx_companies_company_id", "company_id"),
+                ("idx_companies_external_id", "external_id"),
                 ("idx_companies_name", "name"),
                 ("idx_companies_source", "source")
             ]
