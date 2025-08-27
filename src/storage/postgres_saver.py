@@ -99,8 +99,21 @@ class PostgresSaver:
     def _ensure_database_exists(self):
         """Создает базу данных Project03 если она не существует"""
         # Подключаемся к системной БД postgres для создания новой БД
-        connection = self._get_connection('postgres')
-        connection.autocommit = True
+        try:
+            connection = self._get_connection('postgres')
+            connection.autocommit = True
+        except psycopg2.Error as e:
+            logger.error(f"Не удается подключиться к системной БД postgres: {e}")
+            logger.info("Пытаемся подключиться к целевой БД напрямую...")
+            try:
+                # Если не можем подключиться к postgres, пробуем сразу к целевой БД
+                test_connection = self._get_connection()
+                test_connection.close()
+                logger.info(f"✓ База данных {self.database} уже доступна")
+                return
+            except psycopg2.Error:
+                logger.error(f"База данных {self.database} недоступна и не может быть создана")
+                raise
 
         try:
             cursor = connection.cursor()
@@ -117,12 +130,19 @@ class PostgresSaver:
                 logger.info(f"✓ База данных {self.database} уже существует")
             else:
                 # Создаем новую базу данных только если её нет
+                logger.info(f"Создаём базу данных {self.database}...")
                 cursor.execute(f'CREATE DATABASE "{self.database}"')
-                logger.info(f"✓ База данных {self.database} создана")
+                logger.info(f"✓ База данных {self.database} успешно создана")
 
         except psycopg2.Error as e:
             logger.error(f"Ошибка при создании базы данных {self.database}: {e}")
-            raise
+            # Пытаемся подключиться к целевой БД - возможно она уже существует
+            try:
+                test_connection = self._get_connection()
+                test_connection.close()
+                logger.info(f"✓ База данных {self.database} доступна (возможно уже существовала)")
+            except psycopg2.Error:
+                raise e
         finally:
             if 'cursor' in locals():
                 cursor.close()
@@ -156,75 +176,79 @@ class PostgresSaver:
                 except psycopg2.Error as e:
                     logger.warning(f"Не удалось удалить внешний ключ: {e}")
 
-            # Создаем таблицу для вакансий
+            # Создаем таблицу для вакансий с базовой структурой
             create_table_query = """
             CREATE TABLE IF NOT EXISTS vacancies (
                 id SERIAL PRIMARY KEY,
                 vacancy_id VARCHAR(50) UNIQUE NOT NULL,
                 title VARCHAR(500) NOT NULL,
-                url TEXT,
-                salary_from INTEGER,
-                salary_to INTEGER,
-                salary_currency VARCHAR(10),
-                description TEXT,
-                requirements TEXT,
-                responsibilities TEXT,
-                experience VARCHAR(200),
-                employment VARCHAR(200),
-                schedule VARCHAR(200),
-                employer VARCHAR(500),
-                area VARCHAR(200),
-                source VARCHAR(50) DEFAULT 'unknown',
-                published_at TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                company_id INTEGER -- Ссылка на компанию (используем внутренний id из companies)
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
             """
 
             cursor.execute(create_table_query)
+            logger.info("✓ Базовая структура таблицы vacancies проверена")
 
-            # Проверяем существование поля source и добавляем если его нет
-            cursor.execute("""
-                SELECT column_name 
-                FROM information_schema.columns 
-                WHERE table_name = 'vacancies' AND column_name = 'source';
-            """)
+            # Список всех полей, которые должны быть в таблице vacancies
+            required_fields = [
+                ("url", "TEXT"),
+                ("salary_from", "INTEGER"),
+                ("salary_to", "INTEGER"),
+                ("salary_currency", "VARCHAR(10)"),
+                ("description", "TEXT"),
+                ("requirements", "TEXT"),
+                ("responsibilities", "TEXT"),
+                ("experience", "VARCHAR(200)"),
+                ("employment", "VARCHAR(200)"),
+                ("schedule", "VARCHAR(200)"),
+                ("employer", "VARCHAR(500)"),
+                ("area", "VARCHAR(200)"),
+                ("source", "VARCHAR(50) DEFAULT 'unknown'"),
+                ("published_at", "TIMESTAMP"),
+                ("company_id", "INTEGER")
+            ]
 
-            if not cursor.fetchone():
-                logger.info("Добавляем поле source в существующую таблицу...")
-                cursor.execute("ALTER TABLE vacancies ADD COLUMN source VARCHAR(50) DEFAULT 'unknown';")
-                logger.info("✓ Поле source добавлено")
+            # Проверяем и добавляем недостающие поля
+            for field_name, field_type in required_fields:
+                cursor.execute("""
+                    SELECT column_name, data_type
+                    FROM information_schema.columns 
+                    WHERE table_name = 'vacancies' AND column_name = %s;
+                """, (field_name,))
 
-            # Проверяем существование поля company_id и его тип
-            cursor.execute("""
-                SELECT column_name, data_type
-                FROM information_schema.columns 
-                WHERE table_name = 'vacancies' AND column_name = 'company_id';
-            """)
+                field_info = cursor.fetchone()
+                if not field_info:
+                    logger.info(f"Добавляем поле {field_name} в таблицу vacancies...")
+                    cursor.execute(f"ALTER TABLE vacancies ADD COLUMN {field_name} {field_type};")
+                    logger.info(f"✓ Поле {field_name} добавлено")
+                elif field_name == 'company_id' and field_info[1] != 'integer':
+                    # Специальная обработка для company_id - должен быть INTEGER
+                    logger.warning(f"Поле company_id имеет тип {field_info[1]}, исправляем на INTEGER...")
+                    try:
+                        cursor.execute("ALTER TABLE vacancies DROP COLUMN IF EXISTS company_id CASCADE")
+                        cursor.execute("ALTER TABLE vacancies ADD COLUMN company_id INTEGER")
+                        logger.info("✓ Поле company_id пересоздано с типом INTEGER")
+                    except psycopg2.Error as e:
+                        logger.error(f"Не удалось пересоздать поле company_id: {e}")
 
-            company_id_info = cursor.fetchone()
-            if not company_id_info:
-                logger.info("Добавляем поле company_id в существующую таблицу...")
-                cursor.execute("ALTER TABLE vacancies ADD COLUMN company_id INTEGER;")
-                logger.info("✓ Поле company_id добавлено")
-            elif company_id_info[1] != 'integer':
-                logger.warning(f"Поле company_id имеет тип {company_id_info[1]}, но должен быть INTEGER.")
-                logger.info("Пересоздаем поле company_id с правильным типом...")
+            # Создаем индексы для оптимизации запросов
+            indexes_to_create = [
+                ("idx_vacancy_id", "vacancy_id"),
+                ("idx_title", "title"),
+                ("idx_salary", "salary_from, salary_to"),
+                ("idx_source", "source"),
+                ("idx_company_id", "company_id"),
+                ("idx_employer", "employer"),
+                ("idx_published_at", "published_at")
+            ]
+
+            for index_name, columns in indexes_to_create:
                 try:
-                    # Удаляем старое поле и создаем новое
-                    cursor.execute("ALTER TABLE vacancies DROP COLUMN IF EXISTS company_id CASCADE")
-                    cursor.execute("ALTER TABLE vacancies ADD COLUMN company_id INTEGER")
-                    logger.info("✓ Поле company_id пересоздано с типом INTEGER")
+                    cursor.execute(f"CREATE INDEX IF NOT EXISTS {index_name} ON vacancies({columns});")
+                    logger.info(f"✓ Индекс {index_name} проверен/создан")
                 except psycopg2.Error as e:
-                    logger.error(f"Не удалось пересоздать поле company_id: {e}")
-
-            # Создаем индексы
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_vacancy_id ON vacancies(vacancy_id);")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_title ON vacancies(title);")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_salary ON vacancies(salary_from, salary_to);")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_source ON vacancies(source);")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_company_id ON vacancies(company_id);")
+                    logger.warning(f"Не удалось создать индекс {index_name}: {e}")
 
             # Теперь можем создать правильный внешний ключ (опционально, так как это может вызывать проблемы)
             # cursor.execute("""
@@ -1883,52 +1907,47 @@ class PostgresSaver:
         return {'conditions': conditions, 'params': params}
 
     def _ensure_companies_table_exists(self):
-        """Создает таблицу companies если она не существует"""
+        """Создает таблицу companies если она не существует, добавляет недостающие поля"""
         connection = self._get_connection()
         try:
             cursor = connection.cursor()
 
+            # Сначала создаем таблицу с базовой структурой
             create_table_query = """
             CREATE TABLE IF NOT EXISTS companies (
                 id SERIAL PRIMARY KEY,
-                external_id VARCHAR(50),
                 name VARCHAR(255) NOT NULL,
-                description TEXT,
-                url TEXT,
-                logo_url TEXT,
-                site_url TEXT,
-                source VARCHAR(50),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
             """
             cursor.execute(create_table_query)
+            logger.info("✓ Базовая структура таблицы companies проверена")
 
-            # Проверяем существование поля external_id и добавляем если его нет
-            cursor.execute("""
-                SELECT column_name 
-                FROM information_schema.columns 
-                WHERE table_name = 'companies' AND column_name = 'external_id';
-            """)
+            # Список всех полей, которые должны быть в таблице
+            required_fields = [
+                ("external_id", "VARCHAR(50)"),
+                ("description", "TEXT"),
+                ("url", "TEXT"),
+                ("logo_url", "TEXT"),
+                ("site_url", "TEXT"),
+                ("source", "VARCHAR(50)")
+            ]
 
-            if not cursor.fetchone():
-                logger.info("Добавляем поле external_id в существующую таблицу companies...")
-                cursor.execute("ALTER TABLE companies ADD COLUMN external_id VARCHAR(50);")
-                logger.info("✓ Поле external_id добавлено")
+            # Проверяем и добавляем недостающие поля
+            for field_name, field_type in required_fields:
+                cursor.execute("""
+                    SELECT column_name 
+                    FROM information_schema.columns 
+                    WHERE table_name = 'companies' AND column_name = %s;
+                """, (field_name,))
 
-            # Проверяем существование поля source и добавляем если его нет
-            cursor.execute("""
-                SELECT column_name 
-                FROM information_schema.columns 
-                WHERE table_name = 'companies' AND column_name = 'source';
-            """)
+                if not cursor.fetchone():
+                    logger.info(f"Добавляем поле {field_name} в таблицу companies...")
+                    cursor.execute(f"ALTER TABLE companies ADD COLUMN {field_name} {field_type};")
+                    logger.info(f"✓ Поле {field_name} добавлено")
 
-            if not cursor.fetchone():
-                logger.info("Добавляем поле source в существующую таблицу companies...")
-                cursor.execute("ALTER TABLE companies ADD COLUMN source VARCHAR(50);")
-                logger.info("✓ Поле source добавлено")
-
-            # Add indexes if they don't exist
+            # Создаем индексы если их нет
             indexes_to_create = [
                 ("idx_companies_external_id", "external_id"),
                 ("idx_companies_name", "name"),
@@ -1936,12 +1955,16 @@ class PostgresSaver:
             ]
 
             for index_name, column_name in indexes_to_create:
-                cursor.execute(f"SELECT COUNT(*) FROM pg_indexes WHERE tablename = 'companies' AND indexname = '{index_name}';")
-                if cursor.fetchone()[0] == 0:
-                    cursor.execute(f"CREATE INDEX {index_name} ON companies({column_name});")
+                try:
+                    cursor.execute(f"SELECT COUNT(*) FROM pg_indexes WHERE tablename = 'companies' AND indexname = '{index_name}';")
+                    if cursor.fetchone()[0] == 0:
+                        cursor.execute(f"CREATE INDEX IF NOT EXISTS {index_name} ON companies({column_name});")
+                        logger.info(f"✓ Индекс {index_name} создан")
+                except psycopg2.Error as e:
+                    logger.warning(f"Не удалось создать индекс {index_name}: {e}")
 
             connection.commit()
-            logger.info("✓ Таблица 'companies' успешно создана/проверена")
+            logger.info("✓ Таблица 'companies' полностью настроена")
 
         except psycopg2.Error as e:
             logger.error(f"Ошибка создания таблицы 'companies': {e}")

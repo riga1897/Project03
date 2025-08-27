@@ -64,48 +64,7 @@ class DBManager:
     def create_tables(self):
         """
         Создает таблицы компаний и вакансий в базе данных, если они не существуют
-        """
-        # SQL для создания таблиц с явным указанием кодировки
-        create_companies_table = """
-        -- Создание таблицы компаний для хранения информации о работодателях
-        -- Используется IF NOT EXISTS для безопасного создания таблицы
-        CREATE TABLE IF NOT EXISTS companies (
-            id SERIAL PRIMARY KEY,                          -- Автоинкрементный первичный ключ
-            company_id VARCHAR(255) UNIQUE NOT NULL,        -- Уникальный идентификатор компании из API
-            name VARCHAR(255) NOT NULL,                     -- Название компании
-            description TEXT,                               -- Описание компании
-            hh_id VARCHAR(255),                            -- ID компании в системе HeadHunter
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- Время создания записи
-        );
-        """
-
-        create_vacancies_table = """
-        -- Создание таблицы вакансий для хранения всей информации о вакансиях
-        -- Связана с таблицей companies через внешний ключ company_id
-        CREATE TABLE IF NOT EXISTS vacancies (
-            id SERIAL PRIMARY KEY,                          -- Автоинкрементный первичный ключ
-            vacancy_id VARCHAR(255) UNIQUE NOT NULL,        -- Уникальный идентификатор вакансии из API
-            title TEXT NOT NULL,                           -- Название вакансии (обязательное поле)
-            url TEXT,                                      -- Ссылка на вакансию
-            salary_from INTEGER,                           -- Минимальная зарплата (может быть NULL)
-            salary_to INTEGER,                             -- Максимальная зарплата (может быть NULL)
-            salary_currency VARCHAR(10),                   -- Валюта зарплаты (RUR, USD, EUR и т.д.)
-            description TEXT,                              -- Полное описание вакансии
-            requirements TEXT,                             -- Требования к кандидату
-            responsibilities TEXT,                         -- Обязанности на позиции
-            experience VARCHAR(100),                       -- Требуемый опыт работы
-            employment VARCHAR(100),                       -- Тип занятости (полная, частичная и т.д.)
-            schedule VARCHAR(100),                         -- График работы (полный день, удаленка и т.д.)
-            employer TEXT,                                 -- Название работодателя (дублирование для совместимости)
-            area TEXT,                                     -- Регион/город размещения вакансии
-            source VARCHAR(50),                            -- Источник данных (hh.ru, superjob.ru)
-            published_at TIMESTAMP,                        -- Дата публикации вакансии
-            company_id VARCHAR(255),                       -- Связь с таблицей компаний (внешний ключ)
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Время создания записи в БД
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Время последнего обновления записи
-            -- Внешний ключ для связи с таблицей компаний
-            FOREIGN KEY (company_id) REFERENCES companies(company_id)
-        );
+        Автоматически добавляет недостающие поля в существующие таблицы
         """
         try:
             with self._get_connection() as conn:
@@ -113,13 +72,122 @@ class DBManager:
                     # Устанавливаем кодировку сессии
                     cursor.execute("SET client_encoding TO 'UTF8'")
 
-                    # Сначала создаем таблицу компаний
-                    cursor.execute(create_companies_table)
-                    logger.info("Таблица компаний создана успешно")
+                    # Сначала создаем базовую таблицу компаний
+                    cursor.execute("""
+                        CREATE TABLE IF NOT EXISTS companies (
+                            id SERIAL PRIMARY KEY,
+                            name VARCHAR(255) NOT NULL,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        );
+                    """)
+                    logger.info("✓ Базовая структура таблицы companies проверена")
 
-                    # Затем создаем таблицу вакансий с FK
-                    cursor.execute(create_vacancies_table)
-                    logger.info("Таблица вакансий создана успешно")
+                    # Добавляем недостающие поля в таблицу companies
+                    company_fields = [
+                        ("company_id", "VARCHAR(255) UNIQUE"),
+                        ("description", "TEXT"),
+                        ("hh_id", "VARCHAR(255)"),
+                        ("external_id", "VARCHAR(50)"),
+                        ("url", "TEXT"),
+                        ("logo_url", "TEXT"),
+                        ("site_url", "TEXT"),
+                        ("source", "VARCHAR(50)")
+                    ]
+
+                    for field_name, field_type in company_fields:
+                        cursor.execute("""
+                            SELECT column_name 
+                            FROM information_schema.columns 
+                            WHERE table_name = 'companies' AND column_name = %s;
+                        """, (field_name,))
+
+                        if not cursor.fetchone():
+                            logger.info(f"Добавляем поле {field_name} в таблицу companies...")
+                            cursor.execute(f"ALTER TABLE companies ADD COLUMN {field_name} {field_type};")
+                            logger.info(f"✓ Поле {field_name} добавлено")
+
+                    # Создаем базовую таблицу вакансий
+                    cursor.execute("""
+                        CREATE TABLE IF NOT EXISTS vacancies (
+                            id SERIAL PRIMARY KEY,
+                            vacancy_id VARCHAR(255) UNIQUE NOT NULL,
+                            title TEXT NOT NULL,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        );
+                    """)
+                    logger.info("✓ Базовая структура таблицы vacancies проверена")
+
+                    # Добавляем недостающие поля в таблицу вакансий
+                    vacancy_fields = [
+                        ("url", "TEXT"),
+                        ("salary_from", "INTEGER"),
+                        ("salary_to", "INTEGER"),
+                        ("salary_currency", "VARCHAR(10)"),
+                        ("description", "TEXT"),
+                        ("requirements", "TEXT"),
+                        ("responsibilities", "TEXT"),
+                        ("experience", "VARCHAR(100)"),
+                        ("employment", "VARCHAR(100)"),
+                        ("schedule", "VARCHAR(100)"),
+                        ("employer", "TEXT"),
+                        ("area", "TEXT"),
+                        ("source", "VARCHAR(50)"),
+                        ("published_at", "TIMESTAMP"),
+                        ("company_id", "VARCHAR(255)")
+                    ]
+
+                    for field_name, field_type in vacancy_fields:
+                        cursor.execute("""
+                            SELECT column_name 
+                            FROM information_schema.columns 
+                            WHERE table_name = 'vacancies' AND column_name = %s;
+                        """, (field_name,))
+
+                        if not cursor.fetchone():
+                            logger.info(f"Добавляем поле {field_name} в таблицу vacancies...")
+                            cursor.execute(f"ALTER TABLE vacancies ADD COLUMN {field_name} {field_type};")
+                            logger.info(f"✓ Поле {field_name} добавлено")
+
+                    # Создаем индексы
+                    indexes = [
+                        ("idx_companies_company_id", "companies", "company_id"),
+                        ("idx_companies_name", "companies", "name"),
+                        ("idx_vacancies_vacancy_id", "vacancies", "vacancy_id"),
+                        ("idx_vacancies_title", "vacancies", "title"),
+                        ("idx_vacancies_company_id", "vacancies", "company_id"),
+                        ("idx_vacancies_salary", "vacancies", "salary_from, salary_to")
+                    ]
+
+                    for index_name, table_name, columns in indexes:
+                        try:
+                            cursor.execute(f"CREATE INDEX IF NOT EXISTS {index_name} ON {table_name}({columns});")
+                            logger.info(f"✓ Индекс {index_name} проверен/создан")
+                        except Exception as e:
+                            logger.warning(f"Не удалось создать индекс {index_name}: {e}")
+
+                    # Пытаемся создать внешний ключ (если таблицы совместимы)
+                    try:
+                        cursor.execute("""
+                            SELECT constraint_name 
+                            FROM information_schema.table_constraints 
+                            WHERE table_name = 'vacancies' 
+                            AND constraint_type = 'FOREIGN KEY'
+                            AND constraint_name = 'fk_vacancies_company_id';
+                        """)
+                        
+                        if not cursor.fetchone():
+                            cursor.execute("""
+                                ALTER TABLE vacancies 
+                                ADD CONSTRAINT fk_vacancies_company_id 
+                                FOREIGN KEY (company_id) REFERENCES companies(company_id)
+                                ON DELETE SET NULL;
+                            """)
+                            logger.info("✓ Внешний ключ fk_vacancies_company_id создан")
+                    except Exception as e:
+                        logger.warning(f"Не удалось создать внешний ключ: {e}")
+
+                    logger.info("✓ Все таблицы и структуры успешно созданы/проверены")
 
         except Exception as e:
             logger.error(f"Ошибка при создании таблиц: {e}")
