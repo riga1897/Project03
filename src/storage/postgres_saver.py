@@ -165,12 +165,7 @@ class PostgresSaver:
 
             # Добавляем недостающие поля
             company_fields = [
-                ("external_id", "VARCHAR(50)"),
                 ("description", "TEXT"),
-                ("url", "TEXT"),
-                ("logo_url", "TEXT"),
-                ("site_url", "TEXT"),
-                ("source", "VARCHAR(50)")
             ]
 
             for field_name, field_type in company_fields:
@@ -187,9 +182,7 @@ class PostgresSaver:
 
             # Создаем индексы
             indexes = [
-                ("idx_companies_external_id", "external_id"),
                 ("idx_companies_name", "name"),
-                ("idx_companies_source", "source")
             ]
 
             for index_name, columns in indexes:
@@ -223,22 +216,6 @@ class PostgresSaver:
             # Сначала создаем таблицу companies если её нет
             self._ensure_companies_table_exists()
 
-            # Проверяем, есть ли внешний ключ, который может вызывать проблемы
-            cursor.execute("""
-                SELECT constraint_name FROM information_schema.table_constraints
-                WHERE table_name = 'vacancies'
-                AND constraint_type = 'FOREIGN KEY'
-                AND constraint_name = 'vacancies_company_id_fkey'
-            """)
-
-            if cursor.fetchone():
-                logger.info("Удаляем проблемный внешний ключ...")
-                try:
-                    cursor.execute("ALTER TABLE vacancies DROP CONSTRAINT IF EXISTS vacancies_company_id_fkey")
-                    logger.info("✓ Внешний ключ vacancies_company_id_fkey удален")
-                except psycopg2.Error as e:
-                    logger.warning(f"Не удалось удалить внешний ключ: {e}")
-
             # Создаем таблицу для вакансий с базовой структурой
             create_table_query = """
             CREATE TABLE IF NOT EXISTS vacancies (
@@ -265,7 +242,6 @@ class PostgresSaver:
                 ("experience", "VARCHAR(200)"),
                 ("employment", "VARCHAR(200)"),
                 ("schedule", "VARCHAR(200)"),
-                ("employer", "VARCHAR(500)"),
                 ("area", "VARCHAR(200)"),
                 ("source", "VARCHAR(50) DEFAULT 'unknown'"),
                 ("published_at", "TIMESTAMP"),
@@ -301,8 +277,6 @@ class PostgresSaver:
                 ("idx_title", "title"),
                 ("idx_salary", "salary_from, salary_to"),
                 ("idx_source", "source"),
-                ("idx_company_id", "company_id"),
-                ("idx_employer", "employer"),
                 ("idx_published_at", "published_at")
             ]
 
