@@ -84,7 +84,7 @@ class HHParser(BaseParser):
                     print(f"DEBUG HH Parser: Созданная вакансия имеет ID: {vacancy.vacancy_id}")
                     print(f"DEBUG HH Parser: Ожидали ID: {vacancy_id}")
                     if vacancy.vacancy_id != vacancy_id:
-                        print(f"❌ ОШИБКА: ID изменился с {vacancy_id} на {vacancy.vacancy_id}!")
+                        print(f"ОШИБКА: ID изменился с {vacancy_id} на {vacancy.vacancy_id}!")
 
                 vacancies.append(vacancy)
 
