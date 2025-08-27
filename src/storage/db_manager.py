@@ -12,7 +12,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 
 from src.storage.abstract_db_manager import AbstractDBManager
-from src.config.database import DatabaseConfig
+from src.config.db_config import DatabaseConfig
 from src.config.target_companies import TargetCompanies
 
 logger = logging.getLogger(__name__)
