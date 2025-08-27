@@ -217,14 +217,14 @@ class DBManager(AbstractDBManager):
 
             # Если нет данных, возвращаем все целевые компании с нулями
             if not all_data:
-                return [(company['name'], 0) for company in TARGET_COMPANIES]
+                return [(company.name, 0) for company in TARGET_COMPANIES]
 
             return all_data  # Метод уже возвращает данные по целевым компаниям
 
         except Exception as e:
             logger.error(f"Ошибка при анализе целевых компаний: {e}")
             # В случае ошибки возвращаем все целевые компании с нулями
-            return [(company['name'], 0) for company in TARGET_COMPANIES]
+            return [(company.name, 0) for company in TARGET_COMPANIES]
 
     def get_companies_and_vacancies_count(self) -> List[Tuple[str, int]]:
         """
@@ -237,7 +237,7 @@ class DBManager(AbstractDBManager):
         # Проверяем подключение к БД
         if not self.check_connection():
             logger.warning("Нет подключения к базе данных")
-            return [(company['name'], 0) for company in TARGET_COMPANIES]
+            return [(company.name, 0) for company in TARGET_COMPANIES]
 
         try:
             with self._get_connection() as conn:
@@ -269,7 +269,7 @@ class DBManager(AbstractDBManager):
                     company_results = []
 
                     for target_company in TARGET_COMPANIES:
-                        company_name = target_company['name']
+                        company_name = target_company.name
 
                         # Fallback SQL-запрос для поиска вакансий по названию компании в поле employer
                         # Используется когда нет связанных данных через внешний ключ company_id
@@ -314,7 +314,7 @@ class DBManager(AbstractDBManager):
         except Exception as e:
             logger.error(f"Ошибка при получении списка компаний и количества вакансий: {e}")
             # В случае ошибки возвращаем все целевые компании с нулями
-            return [(company['name'], 0) for company in TARGET_COMPANIES]
+            return [(company.name, 0) for company in TARGET_COMPANIES]
 
     def _is_target_company_match(self, target_name: str, db_name: str) -> bool:
         """
