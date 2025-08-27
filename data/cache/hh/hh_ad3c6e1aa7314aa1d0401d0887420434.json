@@ -1,0 +1,390 @@
+{
+  "meta": {
+    "params": {
+      "area": 1,
+      "per_page": 50,
+      "only_with_salary": false,
+      "text": "python",
+      "page": 0,
+      "period": 1,
+      "employer_id": "80"
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "123530613",
+        "premium": false,
+        "name": "Аналитик данных в МФК",
+        "department": {
+          "id": "80-80-expert",
+          "name": "Альфа-Банк. Центральный офис"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Замоскворецкая линия",
+          "building": "метро Технопарк",
+          "lat": 55.693906,
+          "lng": 37.66442,
+          "description": null,
+          "raw": "Москва, Замоскворецкая линия, метро Технопарк",
+          "metro": {
+            "station_name": "Технопарк",
+            "line_name": "Замоскворецкая",
+            "station_id": "2.512",
+            "line_id": "2",
+            "lat": 55.695,
+            "lng": 37.664167
+          },
+          "metro_stations": [
+            {
+              "station_name": "Технопарк",
+              "line_name": "Замоскворецкая",
+              "station_id": "2.512",
+              "line_id": "2",
+              "lat": 55.695,
+              "lng": 37.664167
+            }
+          ],
+          "id": "597779"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-27T09:42:36+0300",
+        "created_at": "2025-08-27T09:42:36+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123530613",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123530613?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123530613",
+        "relations": [],
+        "employer": {
+          "id": "80",
+          "name": "Альфа-Банк",
+          "url": "https://api.hh.ru/employers/80",
+          "alternate_url": "https://hh.ru/employer/80",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/663873.png",
+            "90": "https://img.hhcdn.ru/employer-logo/3096624.png",
+            "240": "https://img.hhcdn.ru/employer-logo/3096625.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=80",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Владение SQL, Excel, Power Point, <highlighttext>Python</highlighttext>, опыт работы с BI-инструментами. Умение работать с большими объемами информации в сжатые сроки.",
+          "responsibility": "Проводить мультифакторный анализ данных по ключевым метрикам продукта, выявление закономерностей, трендов, аномалий по продуктам и их сегментам. Анализировать действующие стратегии..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "156",
+            "name": "BI-аналитик, аналитик данных"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123533293",
+        "premium": false,
+        "name": "Бизнес-аналитик (Управление повышения эффективности розничных продаж)",
+        "department": {
+          "id": "80-80-expert",
+          "name": "Альфа-Банк. Центральный офис"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-27T09:42:36+0300",
+        "created_at": "2025-08-27T09:42:36+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123533293",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": {
+          "id": "32631",
+          "url": "https://hh.ru/interview/32631?employerId=80"
+        },
+        "url": "https://api.hh.ru/vacancies/123533293?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123533293",
+        "relations": [],
+        "employer": {
+          "id": "80",
+          "name": "Альфа-Банк",
+          "url": "https://api.hh.ru/employers/80",
+          "alternate_url": "https://hh.ru/employer/80",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/663873.png",
+            "90": "https://img.hhcdn.ru/employer-logo/3096624.png",
+            "240": "https://img.hhcdn.ru/employer-logo/3096625.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=80",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Способность представлять сложные данные в визуальных форматах, которые просты для понимания и передачи. Базовые навыки программирования <highlighttext>Python</highlighttext>. Владение: PowerPoint, Excel...",
+          "responsibility": "Разрабатывать функциональные бизнес-требования и управлять ими (сбор, детализация, регламентирование, согласование, постановка и передача команде разработки на оценку и реализацию). "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "150",
+            "name": "Бизнес-аналитик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123306474",
+        "premium": false,
+        "name": "Senior/Lead Data Engineer",
+        "department": {
+          "id": "80-80-bank",
+          "name": "Альфа-Банк"
+        },
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-27T11:22:46+0300",
+        "created_at": "2025-08-27T11:22:46+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123306474",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": {
+          "id": "32631",
+          "url": "https://hh.ru/interview/32631?employerId=80"
+        },
+        "url": "https://api.hh.ru/vacancies/123306474?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123306474",
+        "relations": [],
+        "employer": {
+          "id": "80",
+          "name": "Альфа-Банк",
+          "url": "https://api.hh.ru/employers/80",
+          "alternate_url": "https://hh.ru/employer/80",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/663873.png",
+            "90": "https://img.hhcdn.ru/employer-logo/3096624.png",
+            "240": "https://img.hhcdn.ru/employer-logo/3096625.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=80",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт проектирования data-платформ в продакшене (от ingestion до витрин). Отличное знание SQL, <highlighttext>Python</highlighttext> (или Scala), опыт работы с Apache...",
+          "responsibility": "Проектирование и развитие масштабируемой data-инфраструктуры (batch и streaming пайплайны)( ClickHouse (MergeTree); S3 Data Lake; Kafka; Airflow (ETL/ELT..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "156",
+            "name": "BI-аналитик, аналитик данных"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 3,
+    "pages": 1,
+    "page": 0,
+    "per_page": 50,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=1&employer_id=80&enable_snippets=true&items_on_page=50&search_period=1&text=python"
+  }
+}
