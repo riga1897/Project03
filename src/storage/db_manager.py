@@ -82,12 +82,10 @@ class DBManager:
                     """)
                     logger.info("✓ Базовая структура таблицы companies проверена")
 
-                    # Добавляем недостающие поля в таблицу companies
+                    # Добавляем недостающие поля в таблицу companies (убираем лишние поля)
                     company_fields = [
-                        ("company_id", "VARCHAR(255) UNIQUE"),
-                        ("description", "TEXT"),
-                        ("hh_id", "VARCHAR(255)"),
                         ("external_id", "VARCHAR(50)"),
+                        ("description", "TEXT"),
                         ("url", "TEXT"),
                         ("logo_url", "TEXT"),
                         ("site_url", "TEXT"),
@@ -179,7 +177,7 @@ class DBManager:
                             cursor.execute("""
                                 ALTER TABLE vacancies
                                 ADD CONSTRAINT fk_vacancies_company_id
-                                FOREIGN KEY (company_id) REFERENCES companies(company_id)
+                                FOREIGN KEY (company_id) REFERENCES companies(id)
                                 ON DELETE SET NULL;
                             """)
                             logger.info("✓ Внешний ключ fk_vacancies_company_id создан")
@@ -213,7 +211,7 @@ class DBManager:
                 cursor.execute("""
                     INSERT INTO companies (name, external_id, source, description)
                     VALUES (%s, %s, %s, %s)
-                    ON CONFLICT (external_id, source) DO NOTHING
+                    ON CONFLICT DO NOTHING
                 """, (
                     company["name"],
                     company["hh_id"],

@@ -148,6 +148,69 @@ class PostgresSaver:
                 cursor.close()
             connection.close()
 
+    def _ensure_companies_table_exists(self):
+        """Создает таблицу companies если она не существует"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+
+            # Создаем базовую таблицу companies
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS companies (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+
+            # Добавляем недостающие поля
+            company_fields = [
+                ("external_id", "VARCHAR(50)"),
+                ("description", "TEXT"),
+                ("url", "TEXT"),
+                ("logo_url", "TEXT"),
+                ("site_url", "TEXT"),
+                ("source", "VARCHAR(50)")
+            ]
+
+            for field_name, field_type in company_fields:
+                cursor.execute("""
+                    SELECT column_name
+                    FROM information_schema.columns
+                    WHERE table_name = 'companies' AND column_name = %s;
+                """, (field_name,))
+
+                if not cursor.fetchone():
+                    logger.info(f"Добавляем поле {field_name} в таблицу companies...")
+                    cursor.execute(f"ALTER TABLE companies ADD COLUMN {field_name} {field_type};")
+                    logger.info(f"✓ Поле {field_name} добавлено")
+
+            # Создаем индексы
+            indexes = [
+                ("idx_companies_external_id", "external_id"),
+                ("idx_companies_name", "name"),
+                ("idx_companies_source", "source")
+            ]
+
+            for index_name, columns in indexes:
+                try:
+                    cursor.execute(f"CREATE INDEX IF NOT EXISTS {index_name} ON companies({columns});")
+                    logger.info(f"✓ Индекс {index_name} проверен/создан")
+                except psycopg2.Error as e:
+                    logger.warning(f"Не удалось создать индекс {index_name}: {e}")
+
+            connection.commit()
+            logger.info("✓ Таблица companies успешно создана/проверена")
+
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка создания таблицы companies: {e}")
+            connection.rollback()
+            raise
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
+
     def _ensure_tables_exist(self):
         """Создает таблицы если они не существуют"""
         connection = self._get_connection()
