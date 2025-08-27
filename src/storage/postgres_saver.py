@@ -260,7 +260,7 @@ class PostgresSaver:
                 # Ensure companies table exists before querying
                 self._ensure_companies_table_exists()
 
-                cursor.execute("SELECT company_id, company_id, name FROM companies")
+                cursor.execute("SELECT hh_id, company_id, name FROM companies")
                 companies = cursor.fetchall()
 
                 for company in companies:
@@ -556,7 +556,7 @@ class PostgresSaver:
                 # Ensure companies table exists before querying
                 self._ensure_companies_table_exists()
 
-                cursor.execute("SELECT company_id, company_id, name FROM companies")
+                cursor.execute("SELECT hh_id, company_id, name FROM companies")
                 companies = cursor.fetchall()
 
                 for company in companies:
@@ -1443,7 +1443,7 @@ class PostgresSaver:
                 # Ensure companies table exists before querying
                 self._ensure_companies_table_exists()
 
-                cursor.execute("SELECT company_id, company_id, name FROM companies")
+                cursor.execute("SELECT hh_id, company_id, name FROM companies")
                 companies = cursor.fetchall()
 
                 for company in companies:
