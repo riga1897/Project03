@@ -195,6 +195,7 @@ class DBManager(AbstractDBManager):
                                 getattr(company, 'hh_id', None),
                                 getattr(company, 'sj_id', None)
                             ))
+                            logger.info(f"Добавлена целевая компания: {company.name}")
 
                     # Проверяем результат
                     cursor.execute("SELECT COUNT(*) FROM companies")

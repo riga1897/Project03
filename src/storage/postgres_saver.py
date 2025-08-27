@@ -385,7 +385,7 @@ class PostgresSaver(AbstractVacancyStorage):
                     "wildberries": ["wb", "вайлдберриз"],
                     "ozon": ["озон"],
                     "vk": ["вконтакте", "вк", "mail.ru group", "vk group"],
-                    "лаборатория касперского": ["kaspersky", "касперский"],
+                    "лаборатория касперского": ["kaspersky", "касперский", "лаборатория касперского"],
                     "авито": ["avito"],
                     "x5 retail group": ["x5", "x5 tech", "пятёрочка"],
                     "ростелеком": ["rostelecom", "ростелеком информационные технологии"],
@@ -630,7 +630,7 @@ class PostgresSaver(AbstractVacancyStorage):
                     "wildberries": ["wb", "вайлдберриз"],
                     "ozon": ["озон"],
                     "vk": ["вконтакте", "вк", "mail.ru group", "vk group"],
-                    "лаборатория касперского": ["kaspersky", "касперский"],
+                    "лаборатория касперского": ["kaspersky", "касперский", "лаборатория касперского"],
                     "авито": ["avito"],
                     "x5 retail group": ["x5", "x5 tech", "пятёрочка"],
                     "ростелеком": ["rostelecom", "ростелеком информационные технологии"],
@@ -1437,7 +1437,7 @@ class PostgresSaver(AbstractVacancyStorage):
                     "wildberries": ["wb", "вайлдберриз"],
                     "ozon": ["озон"],
                     "vk": ["вконтакте", "вк", "mail.ru group", "vk group"],
-                    "лаборатория касперского": ["kaspersky", "касперский"],
+                    "лаборатория касперского": ["kaspersky", "касперский", "лаборатория касперского"],
                     "авито": ["avito"],
                     "x5 retail group": ["x5", "x5 tech", "пятёрочка"],
                     "ростелеком": ["rostelecom", "ростелеком информационные технологии"],
@@ -1667,8 +1667,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 cursor.close()
             connection.close()
 
-    @property
-    def filename(self) -> str:
+    def get_file_size(self) -> int:
         """Возвращает информацию о БД (для совместимости)"""
         return f"PostgreSQL://{self.host}:{self.port}/{self.database}"
 
