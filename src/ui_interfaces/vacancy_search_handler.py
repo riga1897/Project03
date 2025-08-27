@@ -66,8 +66,12 @@ class VacancySearchHandler:
             self._handle_search_results(all_vacancies, query)
 
         except Exception as e:
-            logger.error(f"Ошибка поиска вакансий: {e}")
+            logger.error(f"Ошибка поиска вакансий: {e}", exc_info=True)
             print(f"Произошла ошибка при поиске: {e}")
+            if hasattr(e, '__class__'):
+                print(f"Тип ошибки: {e.__class__.__name__}")
+            import traceback
+            traceback.print_exc()
 
     def _fetch_vacancies_from_sources(self, sources: set, query: str, period: int) -> List[Vacancy]:
         """
@@ -169,13 +173,24 @@ class VacancySearchHandler:
         Args:
             vacancies: Список вакансий для сохранения
         """
-        # Сохраняем новые вакансии оптимизированным методом
-        update_messages = self.storage.add_vacancy_batch_optimized(vacancies)
+        try:
+            print(f"Сохранение {len(vacancies)} вакансий...")
+            
+            # Сохраняем новые вакансии оптимизированным методом
+            update_messages = self.storage.add_vacancy_batch_optimized(vacancies)
 
-        for message in update_messages:
-            print(f"  • {message}")
+            if update_messages:
+                for message in update_messages:
+                    print(f"  • {message}")
+            else:
+                print(f"  • Сохранено {len(vacancies)} вакансий")
+                
+            print(f"Успешно сохранено {len(vacancies)} вакансий в базу данных")
 
-        print()  # Пустая строка для лучшего форматирования
+        except Exception as e:
+            logger.error(f"Ошибка при сохранении вакансий: {e}")
+            print(f"Ошибка при сохранении вакансий: {e}")
+            raise
 
     def _check_existing_vacancies(self, vacancies: List[Vacancy]) -> dict:
         """
