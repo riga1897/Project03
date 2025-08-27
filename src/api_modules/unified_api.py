@@ -152,7 +152,7 @@ class UnifiedAPI:
                 # Fallback: простая дедупликация с фильтрацией
                 from src.config.target_companies import TargetCompanies
                 TARGET_COMPANIES = TargetCompanies.get_all_companies()
-                target_company_names = [company['name'].lower() for company in TARGET_COMPANIES]
+                target_company_names = [company.name.lower() for company in TARGET_COMPANIES]
 
                 seen = set()
                 unique_vacancies = []

@@ -114,7 +114,7 @@ class BaseJobAPI(ABC):
             # Создаем расширенный список альтернативных названий
             target_company_patterns = set()
             for company in TARGET_COMPANIES:
-                name = company['name'].lower()
+                name = company.name.lower()
                 target_company_patterns.add(name)
 
                 # Добавляем известные альтернативы
@@ -329,7 +329,7 @@ class BaseJobAPI(ABC):
         """
         from src.config.target_companies import TargetCompanies
         TARGET_COMPANIES = TargetCompanies.get_all_companies()
-        target_company_names = [company['name'].lower() for company in TARGET_COMPANIES]
+        target_company_names = [company.name.lower() for company in TARGET_COMPANIES]
 
         seen = set()
         unique_vacancies = []
