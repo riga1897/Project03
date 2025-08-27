@@ -184,14 +184,14 @@ class DBManager(AbstractDBManager):
                     # Добавляем целевые компании
                     for company in TARGET_COMPANIES:
                         # Сначала проверяем, существует ли компания
-                        cursor.execute("SELECT id FROM companies WHERE name = %s", (company["name"],))
+                        cursor.execute("SELECT id FROM companies WHERE name = %s", (company.name,))
                         if not cursor.fetchone():
                             cursor.execute("""
                                 INSERT INTO companies (name, description)
                                 VALUES (%s, %s)
                             """, (
-                                company["name"],
-                                company.get("description", "")
+                                company.name,
+                                company.description or ""
                             ))
 
                     # Проверяем результат
@@ -773,7 +773,7 @@ class DBManager(AbstractDBManager):
             return []
 
         # Создаем список названий целевых компаний для SQL-поиска
-        target_company_names = [company['name'].lower() for company in TARGET_COMPANIES]
+        target_company_names = [company.name.lower() for company in TARGET_COMPANIES]
 
         try:
             with self._get_connection() as conn:

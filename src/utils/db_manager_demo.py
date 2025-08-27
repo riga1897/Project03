@@ -94,8 +94,12 @@ class DBManagerDemo:
         print()
 
         for i, company in enumerate(TARGET_COMPANIES, 1):
-            print(f"{i:2d}. {company['name']} (HH ID: {company['hh_id']})")
-            print(f"    {company['description']}")
+            print(f"{i:2d}. {company.name} (HH ID: {company.hh_id})")
+            if company.sj_id:
+                print(f"      SuperJob ID: {company.sj_id}")
+            if company.description:
+                print(f"      {company.description}")
+            print()
 
         print(f"\nВсего целевых компаний: {len(TARGET_COMPANIES)}")
 
