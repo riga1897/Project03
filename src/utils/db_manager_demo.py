@@ -87,7 +87,8 @@ class DBManagerDemo:
         print("\n2. Целевые компании проекта (15 компаний):")
         print("-" * 60)
 
-        from src.config.target_companies import TARGET_COMPANIES
+        from src.config.target_companies import TargetCompanies
+        TARGET_COMPANIES = TargetCompanies.get_all_companies()
 
         print("Анализ будет проводиться по следующим целевым компаниям:")
         print()
@@ -103,7 +104,8 @@ class DBManagerDemo:
         print("\n3. get_companies_and_vacancies_count() - Анализ вакансий по целевым компаниям:")
         print("-" * 80)
 
-        from src.config.target_companies import TARGET_COMPANIES
+        from src.config.target_companies import TargetCompanies
+        TARGET_COMPANIES = TargetCompanies.get_all_companies()
 
         print("📋 Анализ показывает только данные от целевых компаний из конфигурации проекта")
         print("🎯 Метод фильтрует результаты и показывает статистику по всем 15 целевым компаниям")
@@ -186,7 +188,7 @@ class DBManagerDemo:
         if len(sorted_vacancies) > 25:
             print(f"... и еще {len(sorted_vacancies) - 25} вакансий")
 
-        print(f"\nВсего вакансий: {len(all_vacancies)}")
+        print(f"\nВсего вакансий: {len(sorted_vacancies)}")
 
     def _demo_avg_salary(self) -> None:
         """Демонстрирует метод get_avg_salary()"""
@@ -300,9 +302,9 @@ class DBManagerDemo:
             with self.db_manager._get_connection() as conn:
                 with conn.cursor() as cursor:
                     cursor.execute("""
-                        SELECT published_at, created_at 
-                        FROM vacancies 
-                        WHERE published_at IS NOT NULL 
+                        SELECT published_at, created_at
+                        FROM vacancies
+                        WHERE published_at IS NOT NULL
                         LIMIT 3
                     """)
                     date_samples = cursor.fetchall()
@@ -315,7 +317,7 @@ class DBManagerDemo:
                                 pub_date_str = pub_date.strftime('%d.%m.%Y %H:%M:%S')
                             else:
                                 pub_date_str = str(pub_date)
-                            
+
                             if isinstance(create_date, datetime):
                                 create_date_str = create_date.strftime('%d.%m.%Y %H:%M:%S')
                             else:

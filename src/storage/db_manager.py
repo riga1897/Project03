@@ -8,9 +8,17 @@
 import logging
 from typing import Any, Dict, List, Optional, Tuple
 
+import psycopg2
+from psycopg2.extras import RealDictCursor
+
 from src.storage.abstract_db_manager import AbstractDBManager
+from src.config.database import DatabaseConfig
+from src.config.target_companies import TargetCompanies
 
 logger = logging.getLogger(__name__)
+
+# Получаем список целевых компаний из единого источника
+TARGET_COMPANIES = TargetCompanies.get_all_companies()
 
 
 class DBManager(AbstractDBManager):
@@ -144,8 +152,6 @@ class DBManager(AbstractDBManager):
 
     def populate_companies_table(self):
         """Заполняет таблицу companies целевыми компаниями"""
-        from src.config.target_companies import TARGET_COMPANIES
-
         try:
             # Используем контекстный менеджер для безопасной работы с подключением
             with self._get_connection() as connection:
@@ -205,8 +211,6 @@ class DBManager(AbstractDBManager):
         Returns:
             List[Tuple[str, int]]: Список кортежей (название_целевой_компании, количество_вакансий)
         """
-        from src.config.target_companies import TARGET_COMPANIES
-
         try:
             # Сначала получаем все данные
             all_data = self.get_companies_and_vacancies_count()
@@ -230,8 +234,6 @@ class DBManager(AbstractDBManager):
         Returns:
             List[Tuple[str, int]]: Список кортежей (название_компании, количество_вакансий)
         """
-        from src.config.target_companies import TARGET_COMPANIES
-
         # Проверяем подключение к БД
         if not self.check_connection():
             logger.warning("Нет подключения к базе данных")
@@ -767,8 +769,6 @@ class DBManager(AbstractDBManager):
         Returns:
             List[Dict[str, Any]]: Отфильтрованный список целевых компаний
         """
-        from src.config.target_companies import TARGET_COMPANIES
-
         if not api_companies:
             return []
 

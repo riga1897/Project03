@@ -108,8 +108,8 @@ class BaseJobAPI(ABC):
 
         try:
             # Получаем список целевых компаний
-            from src.config.target_companies import TARGET_COMPANIES
-            target_company_names = [company['name'].lower() for company in TARGET_COMPANIES]
+            from src.config.target_companies import TargetCompanies
+            TARGET_COMPANIES = TargetCompanies.get_all_companies()
 
             # Создаем расширенный список альтернативных названий
             target_company_patterns = set()
@@ -292,10 +292,10 @@ class BaseJobAPI(ABC):
     def _normalize_text(self, text: str) -> str:
         """
         Нормализация текста для сравнения
-        
+
         Args:
             text: Исходный текст
-            
+
         Returns:
             str: Нормализованный текст
         """
@@ -306,10 +306,10 @@ class BaseJobAPI(ABC):
     def _get_salary_key(self, vacancy: Dict) -> str:
         """
         Получение ключа зарплаты для дедупликации
-        
+
         Args:
             vacancy: Данные вакансии
-            
+
         Returns:
             str: Ключ зарплаты в формате "от-до"
         """
@@ -327,7 +327,8 @@ class BaseJobAPI(ABC):
         """
         Простая дедупликация с фильтрацией как fallback при ошибках SQL
         """
-        from src.config.target_companies import TARGET_COMPANIES
+        from src.config.target_companies import TargetCompanies
+        TARGET_COMPANIES = TargetCompanies.get_all_companies()
         target_company_names = [company['name'].lower() for company in TARGET_COMPANIES]
 
         seen = set()
