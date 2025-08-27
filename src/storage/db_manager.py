@@ -408,7 +408,6 @@ class DBManager(AbstractDBManager):
             END as salary_info,
             v.url,                                         -- Ссылка на вакансию
             v.vacancy_id,                                  -- ID вакансии
-            v.employer,                                    -- Оригинальное поле employer для совместимости
             c.id as company_id                             -- ID компании из справочника
         FROM vacancies v                                   -- Основная таблица вакансий
         LEFT JOIN companies c ON v.company_id = c.id  -- Левое соединение для получения названия компании
@@ -494,7 +493,7 @@ class DBManager(AbstractDBManager):
         query = """
         SELECT
             v.title,
-            COALESCE(c.name, v.employer, 'Неизвестная компания') as company_name,
+            COALESCE(c.name, 'Неизвестная компания') as company_name,
             CASE
                 WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
                     CONCAT(v.salary_from, ' - ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
@@ -512,8 +511,7 @@ class DBManager(AbstractDBManager):
                 WHEN v.salary_to IS NOT NULL THEN v.salary_to
                 ELSE NULL
             END as calculated_salary,
-            v.vacancy_id,
-            v.employer
+            v.vacancy_id
         FROM vacancies v
         LEFT JOIN companies c ON v.company_id = c.id
         WHERE (
@@ -528,11 +526,7 @@ class DBManager(AbstractDBManager):
         AND (v.salary_currency IN ('RUR', 'RUB', 'руб.') OR v.salary_currency IS NULL)
         -- Сортировка аналогично get_all_vacancies(): по зарплате (убывание), компании, названию вакансии
         ORDER BY calculated_salary DESC,
-            CASE
-                WHEN c.name IS NOT NULL THEN c.name        -- Сортировка по названию из справочника
-                WHEN v.employer IS NOT NULL AND v.employer != '' THEN v.employer  -- или по полю employer
-                ELSE 'Неизвестная компания'               -- или по значению по умолчанию
-            END,
+            COALESCE(c.name, 'Неизвестная компания'),
             v.title                                        -- Вторичная сортировка по названию вакансии
         """
 
@@ -543,7 +537,7 @@ class DBManager(AbstractDBManager):
                     results = cursor.fetchall()
 
                     # Преобразуем результаты в список словарей
-                    columns = ['title', 'company_name', 'salary_info', 'url', 'calculated_salary', 'vacancy_id', 'employer']
+                    columns = ['title', 'company_name', 'salary_info', 'url', 'calculated_salary', 'vacancy_id']
                     vacancies = []
 
                     for row in results:
@@ -583,7 +577,7 @@ class DBManager(AbstractDBManager):
         query = """
         SELECT
             v.title,
-            COALESCE(c.name, v.employer, 'Неизвестная компания') as company_name,
+            COALESCE(c.name, 'Неизвестная компания') as company_name,
             CASE
                 WHEN v.salary_from IS NOT NULL AND v.salary_to IS NOT NULL THEN
                     CONCAT(v.salary_from, ' - ', v.salary_to, ' ', COALESCE(v.salary_currency, 'RUR'))
@@ -595,8 +589,7 @@ class DBManager(AbstractDBManager):
             END as salary_info,
             v.url,
             v.description,
-            v.vacancy_id,
-            v.employer
+            v.vacancy_id
         FROM vacancies v
         LEFT JOIN companies c ON v.company_id = c.id
         WHERE LOWER(v.title) LIKE LOWER(%s)
@@ -621,7 +614,7 @@ class DBManager(AbstractDBManager):
                     results = cursor.fetchall()
 
                     # Преобразуем результаты в список словарей
-                    columns = ['title', 'company_name', 'salary_info', 'url', 'description', 'vacancy_id', 'employer']
+                    columns = ['title', 'company_name', 'salary_info', 'url', 'description', 'vacancy_id']
                     vacancies = []
 
                     for row in results:
