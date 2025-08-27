@@ -84,7 +84,7 @@ class DBManager(AbstractDBManager):
                     # Создаем полную таблицу вакансий сразу
                     cursor.execute("""
                         CREATE TABLE IF NOT EXISTS vacancies (
-                            id SERIAL PRIMARYKEY,
+                            id SERIAL PRIMARY KEY,
                             vacancy_id VARCHAR(255) UNIQUE NOT NULL,
                             title TEXT NOT NULL,
                             url TEXT,
