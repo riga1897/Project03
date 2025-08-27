@@ -101,23 +101,11 @@ class DBManager(AbstractDBManager):
                             source VARCHAR(50),
                             published_at TIMESTAMP,
                             company_id INTEGER,
-                            employer VARCHAR(255),
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                         );
                     """)
                     
-                    # Проверяем и добавляем поле employer если его нет в существующей таблице
-                    cursor.execute("""
-                        SELECT column_name 
-                        FROM information_schema.columns 
-                        WHERE table_name = 'vacancies' AND column_name = 'employer'
-                    """)
-                    
-                    if not cursor.fetchone():
-                        logger.info("Добавляем поле employer в таблицу vacancies...")
-                        cursor.execute("ALTER TABLE vacancies ADD COLUMN employer VARCHAR(255)")
-                        logger.info("✓ Поле employer добавлено")
                     logger.info("✓ Таблица vacancies создана/проверена")
 
                     # Создаем индексы
@@ -301,29 +289,7 @@ class DBManager(AbstractDBManager):
                             count_result = cursor.fetchone()
                             vacancy_count = count_result[0] if count_result else 0
 
-                        # Если вакансий по company_id не найдено, ищем по полю employer
-                        if vacancy_count == 0:
-                            fallback_query = """
-                            -- Подсчет вакансий по полю employer (fallback)
-                            -- Использует LIKE для нечеткого поиска и LOWER() для регистронезависимого поиска
-                            SELECT COUNT(*) as vacancy_count              -- Количество найденных вакансий
-                            FROM vacancies v                             -- Таблица вакансий
-                            WHERE LOWER(v.employer) LIKE LOWER(%s)       -- Поиск по названию работодателя
-                            """
-
-                            cursor.execute(fallback_query, (f"%{company_name}%",))
-                            count_result = cursor.fetchone()
-                            vacancy_count = count_result[0] if count_result else 0
-
-                            # Дополнительные проверки для известных альтернативных названий
-                            if vacancy_count == 0:
-                                # Используем псевдонимы из конфигурации целевых компаний
-                                for alias in target_company.aliases:
-                                    cursor.execute(fallback_query, (f"%{alias}%",))
-                                    count_result = cursor.fetchone()
-                                    if count_result and count_result[0] > 0:
-                                        vacancy_count = count_result[0]
-                                        break
+                        
 
                         company_results.append((company_name, vacancy_count))
 
@@ -670,7 +636,7 @@ class DBManager(AbstractDBManager):
                         SELECT
                             COUNT(*) as total_vacancies,
                             COUNT(CASE WHEN salary_from IS NOT NULL OR salary_to IS NOT NULL THEN 1 END) as vacancies_with_salary,
-                            COUNT(DISTINCT CASE WHEN employer IS NOT NULL AND employer != '' THEN employer END) as unique_employers,
+                            COUNT(DISTINCT CASE WHEN company_id IS NOT NULL THEN company_id END) as unique_employers,
                             AVG(CASE
                                 WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN (salary_from + salary_to) / 2
                                 WHEN salary_from IS NOT NULL THEN salary_from
@@ -701,10 +667,11 @@ class DBManager(AbstractDBManager):
 
                     # Топ работодателей по количеству вакансий
                     cursor.execute("""
-                        SELECT employer, COUNT(*) as vacancy_count
-                        FROM vacancies
-                        WHERE employer IS NOT NULL AND employer != ''
-                        GROUP BY employer
+                        SELECT c.name as employer, COUNT(*) as vacancy_count
+                        FROM vacancies v
+                        JOIN companies c ON v.company_id = c.id
+                        WHERE c.name IS NOT NULL AND c.name != ''
+                        GROUP BY c.name
                         ORDER BY vacancy_count DESC
                         LIMIT 10
                     """)
