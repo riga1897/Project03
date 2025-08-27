@@ -104,6 +104,7 @@ class BaseJobAPI(ABC):
         if not vacancies:
             return []
 
+        print("Выполняется дедупликация и фильтрация по целевым компаниям...")
         logger.info(f"Начинаем SQL-дедупликацию с фильтрацией по целевым компаниям для {len(vacancies)} вакансий из источника {source}")
 
         try:

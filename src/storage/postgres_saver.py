@@ -186,6 +186,8 @@ class PostgresSaver(AbstractVacancyStorage):
             # Создаем индексы
             indexes = [
                 ("idx_companies_name", "name"),
+                ("idx_companies_hh_id", "hh_id"),
+                ("idx_companies_sj_id", "sj_id")
             ]
 
             for index_name, columns in indexes:
@@ -198,6 +200,9 @@ class PostgresSaver(AbstractVacancyStorage):
             connection.commit()
             logger.info("✓ Таблица companies успешно создана/проверена")
 
+            # Инициализируем целевые компании
+            self._initialize_target_companies()
+
         except psycopg2.Error as e:
             logger.error(f"Ошибка создания таблицы companies: {e}")
             connection.rollback()
@@ -206,6 +211,44 @@ class PostgresSaver(AbstractVacancyStorage):
             if 'cursor' in locals():
                 cursor.close()
             connection.close()
+
+    def _initialize_target_companies(self):
+        """Инициализирует целевые компании в таблице companies"""
+        try:
+            from src.config.target_companies import TargetCompanies
+            TARGET_COMPANIES = TargetCompanies.get_all_companies()
+            
+            connection = self._get_connection()
+            cursor = connection.cursor()
+
+            for company in TARGET_COMPANIES:
+                # Проверяем, есть ли компания в БД
+                cursor.execute("""
+                    SELECT id FROM companies 
+                    WHERE hh_id = %s OR sj_id = %s OR name = %s
+                    LIMIT 1
+                """, (company.hh_id, company.sj_id, company.name))
+
+                if not cursor.fetchone():
+                    # Добавляем компанию если её нет
+                    cursor.execute("""
+                        INSERT INTO companies (name, hh_id, sj_id)
+                        VALUES (%s, %s, %s)
+                    """, (company.name, company.hh_id, company.sj_id))
+                    logger.info(f"✓ Добавлена целевая компания: {company.name} (HH ID: {company.hh_id})")
+
+            connection.commit()
+            logger.info("✓ Целевые компании инициализированы")
+
+        except Exception as e:
+            logger.error(f"Ошибка инициализации целевых компаний: {e}")
+            if 'connection' in locals():
+                connection.rollback()
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            if 'connection' in locals():
+                connection.close()
 
     def _ensure_tables_exist(self):
         """Создает таблицы если они не существуют"""
@@ -409,20 +452,36 @@ class PostgresSaver(AbstractVacancyStorage):
                 # Определяем company_id для связи с таблицей companies
                 mapped_company_id = None
                 employer_name = None
+                employer_id = None
 
                 if vacancy.employer:
                     if isinstance(vacancy.employer, dict):
                         employer_name = vacancy.employer.get('name', '').strip()
+                        employer_id = vacancy.employer.get('id', '').strip()
                     else:
                         employer_name = str(vacancy.employer).strip()
 
-                if employer_name:
+                # 1. Приоритет: поиск по hh_id/sj_id из данных вакансии
+                if employer_id:
+                    cursor.execute("""
+                        SELECT id FROM companies 
+                        WHERE hh_id = %s OR sj_id = %s
+                        LIMIT 1
+                    """, (employer_id, employer_id))
+                    
+                    result = cursor.fetchone()
+                    if result:
+                        mapped_company_id = result[0]
+                        logger.debug(f"Найдено точное соответствие по ID: employer_id={employer_id} -> company_id={mapped_company_id}")
+
+                # 2. Fallback: поиск по названию только если не найден по ID
+                if not mapped_company_id and employer_name:
                     employer_lower = employer_name.lower()
 
-                    # 1. Поиск точного соответствия в нормализованных названиях
+                    # 2.1. Поиск точного соответствия в нормализованных названиях
                     mapped_company_id = company_mapping.get(employer_lower)
 
-                    # 2. Поиск по частичному соответствию с ключевыми словами
+                    # 2.2. Поиск по частичному соответствию с ключевыми словами
                     if not mapped_company_id:
                         for pattern_name, comp_id in company_patterns.items():
                             pattern_lower = pattern_name.lower()
@@ -433,7 +492,7 @@ class PostgresSaver(AbstractVacancyStorage):
                                     logger.debug(f"Найдено соответствие по частичному совпадению: '{employer_name}' -> '{pattern_name}' (company_id: {comp_id})")
                                     break
 
-                    # 3. Дополнительный поиск по альтернативным названиям
+                    # 2.3. Дополнительный поиск по альтернативным названиям
                     if not mapped_company_id:
                         for alt_name, comp_id in company_mapping.items():
                             if isinstance(alt_name, str) and len(alt_name) > 2:
@@ -442,11 +501,11 @@ class PostgresSaver(AbstractVacancyStorage):
                                     logger.debug(f"Найдено соответствие по альтернативному названию: '{employer_name}' -> '{alt_name}' (company_id: {comp_id})")
                                     break
 
-                    # 4. Логирование для отладки
-                    if mapped_company_id:
-                        logger.debug(f"Сопоставлено: '{employer_name}' -> company_id: {mapped_company_id}")
-                    else:
-                        logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
+                # 3. Логирование для отладки
+                if mapped_company_id:
+                    logger.debug(f"Сопоставлено: '{employer_name}' (ID: {employer_id}) -> company_id: {mapped_company_id}")
+                else:
+                    logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (ID: {employer_id}, vacancy_id: {vacancy.vacancy_id})")
 
                 # Сохраняем соответствие для дальнейшего использования
                 vacancy_company_mapping[vacancy.vacancy_id] = mapped_company_id
