@@ -416,33 +416,12 @@ class PostgresSaver(AbstractVacancyStorage):
             company_mapping = {}
             company_patterns = {}  # Для поиска по частичному совпадению
 
-            for comp_id, original_name, normalized_name in cursor.fetchall():
+            results = cursor.fetchall()
+            for row in results:
+                comp_id, original_name, normalized_name = row[0], row[1], row[2]
                 company_mapping[normalized_name] = comp_id
                 company_patterns[original_name] = comp_id
 
-                # Добавляем альтернативные названия для известных компаний
-                alternatives = {
-                    "яндекс": ["yandex"],
-                    "тинькофф": ["т-банк", "tinkoff", "t-bank", "tcs"],
-                    "сбер": ["сбербанк", "sberbank", "sber"],
-                    "wildberries": ["wb", "вайлдберриз"],
-                    "ozon": ["озон"],
-                    "vk": ["вконтакте", "вк", "mail.ru group", "vk group"],
-                    "лаборатория касперского": ["kaspersky", "касперский", "лаборатория касперского"],
-                    "авито": ["avito"],
-                    "x5 retail group": ["x5", "x5 tech", "пятёрочка"],
-                    "ростелеком": ["rostelecom", "ростелеком информационные технологии"],
-                    "альфа-банк": ["alfa-bank", "alfabank"],
-                    "jetbrains": ["джетбрейнс"],
-                    "2gis": ["2гис", "дубльгис"],
-                    "skyeng": ["скайэнг"],
-                    "delivery club": ["деливери клаб"]
-                }
-
-                for main_name, alt_names in alternatives.items():
-                    if main_name in normalized_name.lower():
-                        for alt_name in alt_names:
-                            company_mapping[alt_name.lower()] = comp_id
 
             # Подготавливаем данные для вставки/обновления И сохраняем company_id в объектах
             insert_data = []
@@ -1201,33 +1180,12 @@ class PostgresSaver(AbstractVacancyStorage):
             company_mapping = {}
             company_patterns = {}  # Для поиска по частичному совпадению
 
-            for comp_id, original_name, normalized_name in cursor.fetchall():
+            results = cursor.fetchall()
+            for row in results:
+                comp_id, original_name, normalized_name = row[0], row[1], row[2]
                 company_mapping[normalized_name] = comp_id
                 company_patterns[original_name] = comp_id
 
-                # Добавляем альтернативные названия для известных компаний
-                alternatives = {
-                    "яндекс": ["yandex"],
-                    "тинькофф": ["т-банк", "tinkoff", "t-bank", "tcs"],
-                    "сбер": ["сбербанк", "sberbank", "sber"],
-                    "wildberries": ["wb", "вайлдберриз"],
-                    "ozon": ["озон"],
-                    "vk": ["вконтакте", "вк", "mail.ru group", "vk group"],
-                    "лаборатория касперского": ["kaspersky", "касперский", "лаборатория касперского"],
-                    "авито": ["avito"],
-                    "x5 retail group": ["x5", "x5 tech", "пятёрочка"],
-                    "ростелеком": ["rostelecom", "ростелеком информационные технологии"],
-                    "альфа-банк": ["alfa-bank", "alfabank"],
-                    "jetbrains": ["джетбрейнс"],
-                    "2gis": ["2гис", "дубльгис"],
-                    "skyeng": ["скайэнг"],
-                    "delivery club": ["деливери клаб"]
-                }
-
-                for main_name, alt_names in alternatives.items():
-                    if main_name in normalized_name.lower():
-                        for alt_name in alt_names:
-                            company_mapping[alt_name.lower()] = comp_id
 
             # Подготавливаем данные для вставки
             insert_data = []
