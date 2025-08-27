@@ -134,21 +134,24 @@ class VacancySearchHandler:
         # Выводим информацию о дублях
         self._display_duplicate_info(duplicate_info)
 
-        # Предпросмотр вакансий
-        show_vacancies = confirm_action("Показать найденные вакансии?")
-        if show_vacancies:
+        # Предпросмотр только новых вакансий (которые будут сохранены)
+        if duplicate_info["new_vacancies"]:
+            show_vacancies = confirm_action(f"Показать {len(duplicate_info['new_vacancies'])} новых вакансий для сохранения?")
+            if show_vacancies:
 
-            def format_vacancy(vacancy: Vacancy, number: Optional[int] = None) -> str:
-                if vacancy is None:
-                    raise ValueError("Received a vacancy object of None type.")
-                return VacancyFormatter.format_vacancy_info(vacancy, number)
+                def format_vacancy(vacancy: Vacancy, number: Optional[int] = None) -> str:
+                    if vacancy is None:
+                        raise ValueError("Received a vacancy object of None type.")
+                    return VacancyFormatter.format_vacancy_info(vacancy, number)
 
-            quick_paginate(
-                vacancies,
-                formatter=format_vacancy,
-                header=f"Найденные вакансии от целевых компаний по запросу '{query}'",
-                items_per_page=5,
-            )
+                quick_paginate(
+                    duplicate_info["new_vacancies"],
+                    formatter=format_vacancy,
+                    header=f"Новые вакансии для сохранения по запросу '{query}'",
+                    items_per_page=5,
+                )
+        elif duplicate_info["total_count"] > 0:
+            print("Нет новых вакансий для предпросмотра - все найденные вакансии уже есть в базе данных.")
 
         # Предлагаем сохранить только новые вакансии
         if duplicate_info["new_vacancies"]:
