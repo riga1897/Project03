@@ -242,22 +242,9 @@ class DBManager:
         """
         from src.config.target_companies import TARGET_COMPANIES
 
-        # Убеждаемся, что таблицы созданы
-        try:
-            # Проверяем подключение к БД
-            if not self.check_connection():
-                logger.warning("Нет подключения к базе данных")
-                return [(company['name'], 0) for company in TARGET_COMPANIES]
-                
-            # Создаем таблицы если их нет
-            self.create_tables()
-            
-            # Заполняем таблицу companies если она пустая
-            self.populate_companies_table()
-            
-        except Exception as e:
-            logger.warning(f"Не удалось создать/заполнить таблицы: {e}")
-            # Возвращаем целевые компании с нулями если нет БД
+        # Проверяем подключение к БД
+        if not self.check_connection():
+            logger.warning("Нет подключения к базе данных")
             return [(company['name'], 0) for company in TARGET_COMPANIES]
 
         try:

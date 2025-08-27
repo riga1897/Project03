@@ -20,18 +20,12 @@ if __name__ == "__main__":
         if not db_manager.check_connection():
             raise Exception("Не удается подключиться к базе данных")
 
-        # Создаем таблицы если их нет
-        logger.info("Создание/проверка таблиц в базе данных...")
+        # Инициализируем базу данных (создание таблиц + заполнение компаний)
+        logger.info("Инициализация структуры базы данных...")
         db_manager.create_tables()
-        logger.info("✓ Таблицы созданы/проверены")
-
-        # Заполняем таблицу компаний целевыми компаниями  
-        logger.info("Заполнение таблицы companies...")
         db_manager.populate_companies_table()
-        logger.info("✓ Таблица companies заполнена")
         
-        # Дополнительная проверка корректности инициализации
-        logger.info("Проверка корректности инициализации...")
+        # Проверка корректности инициализации
         test_companies = db_manager.get_companies_and_vacancies_count()
         logger.info(f"✓ База данных инициализирована корректно. Найдено {len(test_companies)} компаний")
 
