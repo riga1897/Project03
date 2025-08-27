@@ -96,8 +96,8 @@ class DBManager:
 
                     for field_name, field_type in company_fields:
                         cursor.execute("""
-                            SELECT column_name 
-                            FROM information_schema.columns 
+                            SELECT column_name
+                            FROM information_schema.columns
                             WHERE table_name = 'companies' AND column_name = %s;
                         """, (field_name,))
 
@@ -138,8 +138,8 @@ class DBManager:
 
                     for field_name, field_type in vacancy_fields:
                         cursor.execute("""
-                            SELECT column_name 
-                            FROM information_schema.columns 
+                            SELECT column_name
+                            FROM information_schema.columns
                             WHERE table_name = 'vacancies' AND column_name = %s;
                         """, (field_name,))
 
@@ -168,17 +168,17 @@ class DBManager:
                     # Пытаемся создать внешний ключ (если таблицы совместимы)
                     try:
                         cursor.execute("""
-                            SELECT constraint_name 
-                            FROM information_schema.table_constraints 
-                            WHERE table_name = 'vacancies' 
+                            SELECT constraint_name
+                            FROM information_schema.table_constraints
+                            WHERE table_name = 'vacancies'
                             AND constraint_type = 'FOREIGN KEY'
                             AND constraint_name = 'fk_vacancies_company_id';
                         """)
 
                         if not cursor.fetchone():
                             cursor.execute("""
-                                ALTER TABLE vacancies 
-                                ADD CONSTRAINT fk_vacancies_company_id 
+                                ALTER TABLE vacancies
+                                ADD CONSTRAINT fk_vacancies_company_id
                                 FOREIGN KEY (company_id) REFERENCES companies(company_id)
                                 ON DELETE SET NULL;
                             """)
@@ -193,43 +193,49 @@ class DBManager:
             raise
 
     def populate_companies_table(self):
-        """
-        Заполняет таблицу компаний данными из конфигурации
-        """
+        """Заполняет таблицу companies целевыми компаниями"""
         from src.config.target_companies import TARGET_COMPANIES
 
+        connection = self._get_connection()
         try:
-            with self._get_connection() as conn:
-                with conn.cursor() as cursor:
-                    # Проверяем, есть ли уже данные
-                    cursor.execute("SELECT COUNT(*) FROM companies")
-                    count = cursor.fetchone()[0]
+            cursor = connection.cursor()
 
-                    if count == 0:
-                        # Вставляем данные о компаниях
-                        insert_sql = """
-                        INSERT INTO companies (company_id, name, description, hh_id)
-                        VALUES (%s, %s, %s, %s)
-                        ON CONFLICT (company_id) DO NOTHING
-                        """
+            # Проверяем, есть ли уже данные в таблице
+            cursor.execute("SELECT COUNT(*) FROM companies")
+            companies_count = cursor.fetchone()[0]
 
-                        for company in TARGET_COMPANIES:
-                            cursor.execute(insert_sql, (
-                                company["hh_id"],
-                                company["name"],
-                                company["description"],
-                                company["hh_id"]
-                            ))
+            if companies_count > 0:
+                logger.info(f"✓ Таблица companies уже содержит {companies_count} компаний")
+                return
 
-                        logger.info(f"Добавлено {len(TARGET_COMPANIES)} компаний в базу данных")
-                    else:
-                        logger.info(f"Таблица компаний уже содержит {count} записей")
+            # Добавляем целевые компании
+            for company in TARGET_COMPANIES:
+                cursor.execute("""
+                    INSERT INTO companies (name, external_id, source, description)
+                    VALUES (%s, %s, %s, %s)
+                    ON CONFLICT (external_id, source) DO NOTHING
+                """, (
+                    company["name"],
+                    company["hh_id"],
+                    "hh.ru",
+                    company.get("description", "")
+                ))
 
-        except Exception as e:
-            logger.error(f"Ошибка при заполнении таблицы компаний: {e}")
+            connection.commit()
+
+            # Проверяем результат
+            cursor.execute("SELECT COUNT(*) FROM companies")
+            final_count = cursor.fetchone()[0]
+            logger.info(f"✓ Добавлено компаний в таблицу companies: {final_count}")
+
+        except psycopg2.Error as e:
+            logger.error(f"Ошибка заполнения таблицы companies: {e}")
+            connection.rollback()
             raise
-
-
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            connection.close()
 
     def get_target_companies_analysis(self) -> List[Tuple[str, int]]:
         """
@@ -655,7 +661,7 @@ class DBManager:
                 with conn.cursor(cursor_factory=RealDictCursor) as cursor:
                     # Основная статистика одним запросом
                     cursor.execute("""
-                        SELECT 
+                        SELECT
                             COUNT(*) as total_vacancies,
                             COUNT(CASE WHEN salary_from IS NOT NULL OR salary_to IS NOT NULL THEN 1 END) as vacancies_with_salary,
                             COUNT(DISTINCT CASE WHEN employer IS NOT NULL AND employer != '' THEN employer END) as unique_employers,
@@ -700,7 +706,7 @@ class DBManager:
 
                     # Распределение зарплат по диапазонам
                     cursor.execute("""
-                        SELECT 
+                        SELECT
                             CASE
                                 WHEN COALESCE(salary_from, salary_to, 0) < 50000 THEN 'до 50k'
                                 WHEN COALESCE(salary_from, salary_to, 0) < 100000 THEN '50k-100k'

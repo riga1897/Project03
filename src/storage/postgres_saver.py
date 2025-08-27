@@ -436,47 +436,16 @@ class PostgresSaver:
                     else:
                         employer_str = str(vacancy.employer)
 
-                area_str = (
-                    vacancy.area.get('name') if isinstance(vacancy.area, dict)
-                    else str(vacancy.area) if vacancy.area else None
-                )
+                # Конвертируем area в строку для сохранения в БД
+                area_str = None
+                if vacancy.area:
+                    if isinstance(vacancy.area, dict):
+                        area_str = vacancy.area.get('name', str(vacancy.area))
+                    else:
+                        area_str = str(vacancy.area)
 
                 # Обработка даты published_at
-                published_date = None
-                if vacancy.published_at:
-                    if isinstance(vacancy.published_at, str):
-                        try:
-                            # Пытаемся парсить ISO формат даты
-                            from datetime import datetime
-                            if 'T' in vacancy.published_at:
-                                # Формат: 2025-08-25T18:47:30+0300
-                                if '+' in vacancy.published_at:
-                                    # Заменяем +0300 на +03:00 для совместимости с Python
-                                    date_str = vacancy.published_at
-                                    if date_str.endswith('+0300'):
-                                        date_str = date_str.replace('+0300', '+03:00')
-                                    elif date_str.endswith('+0000'):
-                                        date_str = date_str.replace('+0000', '+00:00')
-                                    published_date = datetime.fromisoformat(date_str)
-                                else:
-                                    published_date = datetime.fromisoformat(vacancy.published_at)
-                            else:
-                                published_date = datetime.fromisoformat(vacancy.published_at)
-                        except (ValueError, TypeError) as e:
-                            logger.warning(f"Не удалось распарсить дату {vacancy.published_at}: {e}")
-                            # Пытаемся использовать текущую дату как fallback
-                            from datetime import datetime
-                            published_date = datetime.now()
-                    elif hasattr(vacancy.published_at, 'isoformat'):
-                        # Это уже datetime объект
-                        published_date = vacancy.published_at
-                    else:
-                        # Пытаемся преобразовать в datetime
-                        try:
-                            from datetime import datetime
-                            published_date = datetime.fromisoformat(str(vacancy.published_at))
-                        except:
-                            published_date = datetime.now()
+                published_date = self._normalize_published_date(vacancy.published_at)
 
                 insert_data.append((
                     vacancy.vacancy_id, vacancy.title, vacancy.url,
@@ -827,48 +796,16 @@ class PostgresSaver:
                         else:
                             employer_str = str(vacancy.employer)
 
-                    area_str = (
-                        vacancy.area.get('name') if isinstance(vacancy.area, dict)
-                        else str(vacancy.area) if vacancy.area else None
-                    )
+                    # Конвертируем area в строку для сохранения в БД
+                    area_str = None
+                    if vacancy.area:
+                        if isinstance(vacancy.area, dict):
+                            area_str = vacancy.area.get('name', str(vacancy.area))
+                        else:
+                            area_str = str(vacancy.area)
 
                     # Обработка даты published_at
-                    published_date = None
-                    if vacancy.published_at:
-                        if isinstance(vacancy.published_at, str):
-                            try:
-                                # Пытаемся парсить ISO формат даты
-                                from datetime import datetime
-                                if 'T' in vacancy.published_at:
-                                    # Формат: 2025-08-25T18:47:30+0300
-                                    if '+' in vacancy.published_at:
-                                        # Заменяем +0300 на +03:00 для совместимости с Python
-                                        date_str = vacancy.published_at
-                                        if date_str.endswith('+0300'):
-                                            date_str = date_str.replace('+0300', '+03:00')
-                                        elif date_str.endswith('+0000'):
-                                            date_str = date_str.replace('+0000', '+00:00')
-                                        published_date = datetime.fromisoformat(date_str)
-                                    else:
-                                        published_date = datetime.fromisoformat(vacancy.published_at)
-                                else:
-                                    published_date = datetime.fromisoformat(vacancy.published_at)
-                            except (ValueError, TypeError) as e:
-                                logger.warning(f"Не удалось распарсить дату {vacancy.published_at}: {e}")
-                                # Пытаемся использовать текущую дату как fallback
-                                from datetime import datetime
-                                published_date = datetime.now()
-                        elif hasattr(vacancy.published_at, 'isoformat'):
-                            # Это уже datetime объект
-                            published_date = vacancy.published_at
-                        else:
-                            # Пытаемся преобразовать в datetime
-                            try:
-                                from datetime import datetime
-                                published_date = datetime.fromisoformat(str(vacancy.published_at))
-                            except:
-                                published_date = datetime.now()
-
+                    published_date = self._normalize_published_date(vacancy.published_at)
 
                     insert_data.append((
                         vacancy.vacancy_id, vacancy.title, vacancy.url,
@@ -972,48 +909,16 @@ class PostgresSaver:
                         else:
                             employer_str = str(vacancy.employer)
 
-                    area_str = (
-                        vacancy.area.get('name') if isinstance(vacancy.area, dict)
-                        else str(vacancy.area) if vacancy.area else None
-                    )
+                    # Конвертируем area в строку для сохранения в БД
+                    area_str = None
+                    if vacancy.area:
+                        if isinstance(vacancy.area, dict):
+                            area_str = vacancy.area.get('name', str(vacancy.area))
+                        else:
+                            area_str = str(vacancy.area)
 
                     # Обработка даты published_at
-                    published_date = None
-                    if vacancy.published_at:
-                        if isinstance(vacancy.published_at, str):
-                            try:
-                                # Пытаемся парсить ISO формат даты
-                                from datetime import datetime
-                                if 'T' in vacancy.published_at:
-                                    # Формат: 2025-08-25T18:47:30+0300
-                                    if '+' in vacancy.published_at:
-                                        # Заменяем +0300 на +03:00 для совместимости с Python
-                                        date_str = vacancy.published_at
-                                        if date_str.endswith('+0300'):
-                                            date_str = date_str.replace('+0300', '+03:00')
-                                        elif date_str.endswith('+0000'):
-                                            date_str = date_str.replace('+0000', '+00:00')
-                                        published_date = datetime.fromisoformat(date_str)
-                                    else:
-                                        published_date = datetime.fromisoformat(vacancy.published_at)
-                                else:
-                                    published_date = datetime.fromisoformat(vacancy.published_at)
-                            except (ValueError, TypeError) as e:
-                                logger.warning(f"Не удалось распарсить дату {vacancy.published_at}: {e}")
-                                # Пытаемся использовать текущую дату как fallback
-                                from datetime import datetime
-                                published_date = datetime.now()
-                        elif hasattr(vacancy.published_at, 'isoformat'):
-                            # Это уже datetime объект
-                            published_date = vacancy.published_at
-                        else:
-                            # Пытаемся преобразовать в datetime
-                            try:
-                                from datetime import datetime
-                                published_date = datetime.fromisoformat(str(vacancy.published_at))
-                            except:
-                                published_date = datetime.now()
-
+                    published_date = self._normalize_published_date(vacancy.published_at)
 
                     update_query = """
                     UPDATE vacancies SET
@@ -1649,47 +1554,16 @@ class PostgresSaver:
                     else:
                         employer_str = str(vacancy.employer)
 
-                area_str = (
-                    vacancy.area.get('name') if isinstance(vacancy.area, dict)
-                    else str(vacancy.area) if vacancy.area else None
-                )
+                # Конвертируем area в строку для сохранения в БД
+                area_str = None
+                if vacancy.area:
+                    if isinstance(vacancy.area, dict):
+                        area_str = vacancy.area.get('name', str(vacancy.area))
+                    else:
+                        area_str = str(vacancy.area)
 
                 # Обработка даты published_at
-                published_date = None
-                if vacancy.published_at:
-                    if isinstance(vacancy.published_at, str):
-                        try:
-                            # Пытаемся парсить ISO формат даты
-                            from datetime import datetime
-                            if 'T' in vacancy.published_at:
-                                # Формат: 2025-08-25T18:47:30+0300
-                                if '+' in vacancy.published_at:
-                                    # Заменяем +0300 на +03:00 для совместимости с Python
-                                    date_str = vacancy.published_at
-                                    if date_str.endswith('+0300'):
-                                        date_str = date_str.replace('+0300', '+03:00')
-                                    elif date_str.endswith('+0000'):
-                                        date_str = date_str.replace('+0000', '+00:00')
-                                    published_date = datetime.fromisoformat(date_str)
-                                else:
-                                    published_date = datetime.fromisoformat(vacancy.published_at)
-                            else:
-                                published_date = datetime.fromisoformat(vacancy.published_at)
-                        except (ValueError, TypeError) as e:
-                            logger.warning(f"Не удалось распарсить дату {vacancy.published_at}: {e}")
-                            # Пытаемся использовать текущую дату как fallback
-                            from datetime import datetime
-                            published_date = datetime.now()
-                    elif hasattr(vacancy.published_at, 'isoformat'):
-                        # Это уже datetime объект
-                        published_date = vacancy.published_at
-                    else:
-                        # Пытаемся преобразовать в datetime
-                        try:
-                            from datetime import datetime
-                            published_date = datetime.fromisoformat(str(vacancy.published_at))
-                        except:
-                            published_date = datetime.now()
+                published_date = self._normalize_published_date(vacancy.published_at)
 
                 insert_data.append((
                     vacancy.vacancy_id, vacancy.title, vacancy.url,
@@ -2009,3 +1883,42 @@ class PostgresSaver:
             if 'cursor' in locals():
                 cursor.close()
             connection.close()
+
+    def _normalize_published_date(self, published_at: Any) -> Optional[datetime]:
+        """
+        Нормализует дату published_at, пытаясь преобразовать ее в объект datetime.
+        Поддерживает строки в формате ISO и объекты datetime.
+        """
+        if not published_at:
+            return None
+
+        if isinstance(published_at, datetime):
+            return published_at
+
+        if isinstance(published_at, str):
+            try:
+                # Пытаемся парсить ISO формат даты
+                if 'T' in published_at:
+                    # Формат: 2025-08-25T18:47:30+0300
+                    if '+' in published_at:
+                        # Заменяем +0300 на +03:00 для совместимости с Python
+                        date_str = published_at
+                        if date_str.endswith('+0300'):
+                            date_str = date_str.replace('+0300', '+03:00')
+                        elif date_str.endswith('+0000'):
+                            date_str = date_str.replace('+0000', '+00:00')
+                        return datetime.fromisoformat(date_str)
+                    else:
+                        return datetime.fromisoformat(published_at)
+                else:
+                    return datetime.fromisoformat(published_at)
+            except (ValueError, TypeError) as e:
+                logger.warning(f"Не удалось распарсить дату {published_at}: {e}")
+                return None
+        else:
+            # Пытаемся преобразовать в datetime, если это числовой тип или другой формат
+            try:
+                return datetime.fromisoformat(str(published_at))
+            except (ValueError, TypeError):
+                logger.warning(f"Не удалось распознать формат даты: {published_at}")
+                return None
