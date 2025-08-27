@@ -163,7 +163,7 @@ class PostgresSaver:
             # Проверяем, есть ли внешний ключ, который может вызывать проблемы
             cursor.execute("""
                 SELECT constraint_name FROM information_schema.table_constraints
-                WHERE table_name = 'vacancies' 
+                WHERE table_name = 'vacancies'
                 AND constraint_type = 'FOREIGN KEY'
                 AND constraint_name = 'vacancies_company_id_fkey'
             """)
@@ -213,7 +213,7 @@ class PostgresSaver:
             for field_name, field_type in required_fields:
                 cursor.execute("""
                     SELECT column_name, data_type
-                    FROM information_schema.columns 
+                    FROM information_schema.columns
                     WHERE table_name = 'vacancies' AND column_name = %s;
                 """, (field_name,))
 
@@ -254,15 +254,15 @@ class PostgresSaver:
             try:
                 cursor.execute("""
                     SELECT constraint_name FROM information_schema.table_constraints
-                    WHERE table_name = 'vacancies' 
+                    WHERE table_name = 'vacancies'
                     AND constraint_type = 'FOREIGN KEY'
                     AND constraint_name = 'fk_vacancies_company_id'
                 """)
 
                 if not cursor.fetchone():
                     cursor.execute("""
-                        ALTER TABLE vacancies 
-                        ADD CONSTRAINT fk_vacancies_company_id 
+                        ALTER TABLE vacancies
+                        ADD CONSTRAINT fk_vacancies_company_id
                         FOREIGN KEY (company_id) REFERENCES companies(id)
                         ON DELETE SET NULL
                     """)
@@ -428,8 +428,14 @@ class PostgresSaver:
                 salary_to = vacancy.salary.salary_to if vacancy.salary else None
                 salary_currency = vacancy.salary.currency if vacancy.salary else None
 
-                # Employer информация теперь хранится только в таблице companies
-                
+                # Конвертируем employer в строку для сохранения в БД
+                employer_str = None
+                if vacancy.employer:
+                    if isinstance(vacancy.employer, dict):
+                        employer_str = vacancy.employer.get('name', str(vacancy.employer))
+                    else:
+                        employer_str = str(vacancy.employer)
+
                 area_str = (
                     vacancy.area.get('name') if isinstance(vacancy.area, dict)
                     else str(vacancy.area) if vacancy.area else None
@@ -472,28 +478,12 @@ class PostgresSaver:
                         except:
                             published_date = datetime.now()
 
-                # Валидация описания
-                final_description = vacancy.description
-                if not final_description or not final_description.strip():
-                    # Если описание пустое, формируем его из доступных данных
-                    desc_parts = []
-                    if vacancy.requirements:
-                        desc_parts.append(f"Требования: {vacancy.requirements}")
-                    if vacancy.responsibilities:
-                        desc_parts.append(f"Обязанности: {vacancy.responsibilities}")
-                    if desc_parts:
-                        final_description = " ".join(desc_parts)
-                    else:
-                        final_description = f"Вакансия: {vacancy.title}"
-
-                    logger.debug(f"Сформировано описание для вакансии {vacancy.vacancy_id}: {final_description[:100]}...")
-
                 insert_data.append((
                     vacancy.vacancy_id, vacancy.title, vacancy.url,
                     salary_from, salary_to, salary_currency,
-                    final_description, vacancy.requirements, vacancy.responsibilities,
+                    vacancy.description, vacancy.requirements, vacancy.responsibilities,
                     vacancy.experience, vacancy.employment, vacancy.schedule,
-                    vacancy.employer, area_str, vacancy.source, published_date,
+                    employer_str, area_str, vacancy.source, published_date,
                     mapped_company_id  # Оставляем как integer
                 ))
 
@@ -560,7 +550,7 @@ class PostgresSaver:
 
             # Получаем информацию о добавленных и обновленных вакансиях для сообщений
             cursor.execute("""
-                SELECT t.vacancy_id, t.title, 
+                SELECT t.vacancy_id, t.title,
                        CASE WHEN v.vacancy_id IS NULL THEN 'new' ELSE 'updated' END as action
                 FROM temp_new_vacancies t
                 LEFT JOIN vacancies v ON t.vacancy_id = v.vacancy_id
@@ -829,8 +819,14 @@ class PostgresSaver:
                             logger.debug(f"Company_id не найден для работодателя: '{employer_name}'{source_info} (vacancy_id: {vacancy.vacancy_id})")
 
 
-                    # Employer информация теперь хранится только в таблице companies
-                    
+                    # Конвертируем employer в строку для сохранения в БД
+                    employer_str = None
+                    if vacancy.employer:
+                        if isinstance(vacancy.employer, dict):
+                            employer_str = vacancy.employer.get('name', str(vacancy.employer))
+                        else:
+                            employer_str = str(vacancy.employer)
+
                     area_str = (
                         vacancy.area.get('name') if isinstance(vacancy.area, dict)
                         else str(vacancy.area) if vacancy.area else None
@@ -879,7 +875,7 @@ class PostgresSaver:
                         salary_from, salary_to, salary_currency,
                         vacancy.description, vacancy.requirements, vacancy.responsibilities,
                         vacancy.experience, vacancy.employment, vacancy.schedule,
-                        vacancy.employer, area_str, vacancy.source, published_date,
+                        employer_str, area_str, vacancy.source, published_date,
                         mapped_company_id  # Оставляем как integer
                     ))
 
@@ -968,8 +964,14 @@ class PostgresSaver:
                             logger.debug(f"Company_id не найден для работодателя: '{employer_name}'{source_info} (vacancy_id: {vacancy.vacancy_id})")
 
 
-                    # Employer информация теперь хранится только в таблице companies
-                    
+                    # Конвертируем employer в строку для сохранения в БД
+                    employer_str = None
+                    if vacancy.employer:
+                        if isinstance(vacancy.employer, dict):
+                            employer_str = vacancy.employer.get('name', str(vacancy.employer))
+                        else:
+                            employer_str = str(vacancy.employer)
+
                     area_str = (
                         vacancy.area.get('name') if isinstance(vacancy.area, dict)
                         else str(vacancy.area) if vacancy.area else None
@@ -1028,7 +1030,7 @@ class PostgresSaver:
                         vacancy.title, vacancy.url, salary_from, salary_to,
                         salary_currency, vacancy.description, vacancy.requirements,
                         vacancy.responsibilities, vacancy.experience, vacancy.employment,
-                        vacancy.schedule, vacancy.employer, area_str, vacancy.source,
+                        vacancy.schedule, employer_str, area_str, vacancy.source,
                         published_date, mapped_company_id, vacancy.vacancy_id
                     ))
 
@@ -1639,8 +1641,14 @@ class PostgresSaver:
                             logger.debug(f"Company_id не найден для работодателя: '{employer_name}'{source_info} (vacancy_id: {vacancy.vacancy_id})")
 
 
-                # Employer информация теперь хранится только в таблице companies
-                
+                # Конвертируем employer в строку для сохранения в БД
+                employer_str = None
+                if vacancy.employer:
+                    if isinstance(vacancy.employer, dict):
+                        employer_str = vacancy.employer.get('name', str(vacancy.employer))
+                    else:
+                        employer_str = str(vacancy.employer)
+
                 area_str = (
                     vacancy.area.get('name') if isinstance(vacancy.area, dict)
                     else str(vacancy.area) if vacancy.area else None
@@ -1688,7 +1696,7 @@ class PostgresSaver:
                     salary_from, salary_to, salary_currency,
                     vacancy.description, vacancy.requirements, vacancy.responsibilities,
                     vacancy.experience, vacancy.employment, vacancy.schedule,
-                    vacancy.employer, area_str, vacancy.source, published_date,
+                    employer_str, area_str, vacancy.source, published_date,
                     mapped_company_id  # Оставляем как integer
                 ))
 
@@ -1777,7 +1785,7 @@ class PostgresSaver:
             if filters.get('exclude_existing', False):
                 where_conditions.append("""
                     NOT EXISTS (
-                        SELECT 1 FROM vacancies v 
+                        SELECT 1 FROM vacancies v
                         WHERE v.vacancy_id = temp_api_vacancies.vacancy_id
                     )
                 """)
@@ -1905,8 +1913,8 @@ class PostgresSaver:
             # Проверяем и добавляем недостающие поля
             for field_name, field_type in required_fields:
                 cursor.execute("""
-                    SELECT column_name 
-                    FROM information_schema.columns 
+                    SELECT column_name
+                    FROM information_schema.columns
                     WHERE table_name = 'companies' AND column_name = %s;
                 """, (field_name,))
 
