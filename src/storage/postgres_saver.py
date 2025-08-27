@@ -217,7 +217,7 @@ class PostgresSaver(AbstractVacancyStorage):
         try:
             from src.config.target_companies import TargetCompanies
             TARGET_COMPANIES = TargetCompanies.get_all_companies()
-            
+
             connection = self._get_connection()
             cursor = connection.cursor()
 
@@ -383,7 +383,7 @@ class PostgresSaver(AbstractVacancyStorage):
         update_messages: List[str] = []
 
         try:
-            cursor = connection.cursor(cursor_factory=RealDictCursor)
+            cursor = connection.cursor()
 
             # Создаем временную таблицу для новых вакансий
             cursor.execute("""
@@ -468,10 +468,10 @@ class PostgresSaver(AbstractVacancyStorage):
                         WHERE hh_id = %s OR sj_id = %s
                         LIMIT 1
                     """, (employer_id, employer_id))
-                    
+
                     result = cursor.fetchone()
                     if result:
-                        mapped_company_id = result[0]
+                        mapped_company_id = result[0]  # Используем индекс для обычного cursor
                         logger.debug(f"Найдено точное соответствие по ID: employer_id={employer_id} -> company_id={mapped_company_id}")
 
                 # 2. Fallback: поиск по названию только если не найден по ID
@@ -682,7 +682,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
             result = cursor.fetchone()
             if result:
-                return result[0]
+                return result[0]  # Используем индекс для обычного cursor
 
             return None
 
@@ -706,7 +706,7 @@ class PostgresSaver(AbstractVacancyStorage):
         """
         connection = self._get_connection()
         try:
-            cursor = connection.cursor(cursor_factory=RealDictCursor)
+            cursor = connection.cursor()
 
             # Строим базовый запрос с JOIN для получения названия компании
             query = "SELECT v.*, c.name as company_name FROM vacancies v LEFT JOIN companies c ON v.company_id = c.id"
@@ -1116,7 +1116,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
         connection = self._get_connection()
         try:
-            cursor = connection.cursor(cursor_factory=RealDictCursor)
+            cursor = connection.cursor()
 
             # Строим условия поиска
             search_conditions = []
@@ -1168,7 +1168,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
         connection = self._get_connection()
         try:
-            cursor = connection.cursor(cursor_factory=RealDictCursor)
+            cursor = connection.cursor()
 
             # Создаем временную таблицу для вакансий из API
             cursor.execute("""
