@@ -130,11 +130,10 @@ class DBManager:
                         ("experience", "VARCHAR(100)"),
                         ("employment", "VARCHAR(100)"),
                         ("schedule", "VARCHAR(100)"),
-                        ("employer", "TEXT"),
                         ("area", "TEXT"),
                         ("source", "VARCHAR(50)"),
                         ("published_at", "TIMESTAMP"),
-                        ("company_id", "VARCHAR(255)")
+                        ("company_id", "INTEGER REFERENCES companies(id)")
                     ]
 
                     for field_name, field_type in vacancy_fields:
@@ -302,11 +301,12 @@ class DBManager:
                         # Fallback SQL-запрос для поиска вакансий по названию компании в поле employer
                         # Используется когда нет связанных данных через внешний ключ company_id
                         fallback_query = """
-                        -- Подсчет вакансий по частичному совпадению названия компании
+                        -- Подсчет вакансий через JOIN с таблицей companies
                         -- Использует LIKE для нечеткого поиска и LOWER() для регистронезависимого поиска
                         SELECT COUNT(*) as vacancy_count              -- Количество найденных вакансий
-                        FROM vacancies                               -- Таблица вакансий
-                        WHERE LOWER(employer) LIKE LOWER(%s)         -- Поиск по полю employer с игнорированием регистра
+                        FROM vacancies v                             -- Таблица вакансий
+                        LEFT JOIN companies c ON v.company_id = c.id -- JOIN с таблицей компаний
+                        WHERE LOWER(c.name) LIKE LOWER(%s)           -- Поиск по названию компании
                         """
 
                         cursor.execute(fallback_query, (f"%{company_name}%",))
@@ -403,15 +403,8 @@ class DBManager:
         -- Использует LEFT JOIN для связи вакансий с компаниями и CASE для форматирования данных
         SELECT
             v.title,                                       -- Название вакансии
-            -- CASE для определения названия компании с приоритетом:
-            -- 1. Название из справочника companies (если есть связь по company_id)
-            -- 2. Название из поля employer вакансии (если заполнено)  
-            -- 3. Значение по умолчанию "Неизвестная компания"
-            CASE
-                WHEN c.name IS NOT NULL THEN c.name                           -- Приоритет: справочник компаний
-                WHEN v.employer IS NOT NULL AND v.employer != '' THEN v.employer  -- Fallback: поле employer
-                ELSE 'Неизвестная компания'                                   -- По умолчанию
-            END as company_name,
+            -- Название компании берется только из таблицы companies
+            COALESCE(c.name, 'Неизвестная компания') as company_name,
             -- CASE для форматирования информации о зарплате:
             -- Объединяет salary_from, salary_to и currency в читаемый формат
             CASE
@@ -431,11 +424,7 @@ class DBManager:
         LEFT JOIN companies c ON v.company_id = c.id  -- Левое соединение для получения названия компании
         -- Сортировка по названию компании, затем по названию вакансии
         ORDER BY
-            CASE
-                WHEN c.name IS NOT NULL THEN c.name        -- Сортировка по названию из справочника
-                WHEN v.employer IS NOT NULL AND v.employer != '' THEN v.employer  -- или по полю employer
-                ELSE 'Неизвестная компания'               -- или по значению по умолчанию
-            END,
+            COALESCE(c.name, 'Неизвестная компания'),     -- Сортировка по названию компании
             v.title                                        -- Вторичная сортировка по названию вакансии
         """
 

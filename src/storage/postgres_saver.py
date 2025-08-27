@@ -258,7 +258,7 @@ class PostgresSaver:
                     AND constraint_type = 'FOREIGN KEY'
                     AND constraint_name = 'fk_vacancies_company_id'
                 """)
-                
+
                 if not cursor.fetchone():
                     cursor.execute("""
                         ALTER TABLE vacancies 
@@ -322,7 +322,7 @@ class PostgresSaver:
                 ) ON COMMIT DROP
             """)
 
-            # Получаем соответствие employer -> company_id из таблицы companies
+            # Получаем соответствие external_id -> company_id из таблицы companies
             company_mapping = {}
             try:
                 # Ensure companies table exists before querying
@@ -428,15 +428,8 @@ class PostgresSaver:
                 salary_to = vacancy.salary.salary_to if vacancy.salary else None
                 salary_currency = vacancy.salary.currency if vacancy.salary else None
 
-                # Standardize employer name before storing
-                raw_employer_name = None
-                if isinstance(vacancy.employer, dict):
-                    raw_employer_name = vacancy.employer.get('name')
-                elif vacancy.employer:
-                    raw_employer_name = str(vacancy.employer)
-
-                employer_str = self._standardize_employer_name(raw_employer_name)
-
+                # Employer информация теперь хранится только в таблице companies
+                
                 area_str = (
                     vacancy.area.get('name') if isinstance(vacancy.area, dict)
                     else str(vacancy.area) if vacancy.area else None
@@ -500,7 +493,7 @@ class PostgresSaver:
                     salary_from, salary_to, salary_currency,
                     final_description, vacancy.requirements, vacancy.responsibilities,
                     vacancy.experience, vacancy.employment, vacancy.schedule,
-                    employer_str, area_str, vacancy.source, published_date,
+                    vacancy.employer, area_str, vacancy.source, published_date,
                     mapped_company_id  # Оставляем как integer
                 ))
 
@@ -628,7 +621,7 @@ class PostgresSaver:
         try:
             cursor = connection.cursor(cursor_factory=RealDictCursor)
 
-            # Получаем соответствие employer -> company_id из таблицы companies
+            # Получаем соответствие external_id -> company_id из таблицы companies
             company_mapping = {}
             try:
                 # Ensure companies table exists before querying
@@ -836,15 +829,8 @@ class PostgresSaver:
                             logger.debug(f"Company_id не найден для работодателя: '{employer_name}'{source_info} (vacancy_id: {vacancy.vacancy_id})")
 
 
-                    # Standardize employer name before storing
-                    raw_employer_name = None
-                    if isinstance(vacancy.employer, dict):
-                        raw_employer_name = vacancy.employer.get('name')
-                    elif vacancy.employer:
-                        raw_employer_name = str(vacancy.employer)
-
-                    employer_str = self._standardize_employer_name(raw_employer_name)
-
+                    # Employer информация теперь хранится только в таблице companies
+                    
                     area_str = (
                         vacancy.area.get('name') if isinstance(vacancy.area, dict)
                         else str(vacancy.area) if vacancy.area else None
@@ -887,29 +873,13 @@ class PostgresSaver:
                             except:
                                 published_date = datetime.now()
 
-                    # Валидация описания
-                    final_description = vacancy.description
-                    if not final_description or not final_description.strip():
-                        # Если описание пустое, формируем его из доступных данных
-                        desc_parts = []
-                        if vacancy.requirements:
-                            desc_parts.append(f"Требования: {vacancy.requirements}")
-                        if vacancy.responsibilities:
-                            desc_parts.append(f"Обязанности: {vacancy.responsibilities}")
-                        if desc_parts:
-                            final_description = " ".join(desc_parts)
-                        else:
-                            final_description = f"Вакансия: {vacancy.title}"
-
-                        logger.debug(f"Сформировано описание для вакансии {vacancy.vacancy_id}: {final_description[:100]}...")
-
 
                     insert_data.append((
                         vacancy.vacancy_id, vacancy.title, vacancy.url,
                         salary_from, salary_to, salary_currency,
-                        final_description, vacancy.requirements, vacancy.responsibilities,
+                        vacancy.description, vacancy.requirements, vacancy.responsibilities,
                         vacancy.experience, vacancy.employment, vacancy.schedule,
-                        employer_str, area_str, vacancy.source, published_date,
+                        vacancy.employer, area_str, vacancy.source, published_date,
                         mapped_company_id  # Оставляем как integer
                     ))
 
@@ -998,15 +968,8 @@ class PostgresSaver:
                             logger.debug(f"Company_id не найден для работодателя: '{employer_name}'{source_info} (vacancy_id: {vacancy.vacancy_id})")
 
 
-                    # Standardize employer name before storing
-                    raw_employer_name = None
-                    if isinstance(vacancy.employer, dict):
-                        raw_employer_name = vacancy.employer.get('name')
-                    elif vacancy.employer:
-                        raw_employer_name = str(vacancy.employer)
-
-                    employer_str = self._standardize_employer_name(raw_employer_name)
-
+                    # Employer информация теперь хранится только в таблице companies
+                    
                     area_str = (
                         vacancy.area.get('name') if isinstance(vacancy.area, dict)
                         else str(vacancy.area) if vacancy.area else None
@@ -1065,7 +1028,7 @@ class PostgresSaver:
                         vacancy.title, vacancy.url, salary_from, salary_to,
                         salary_currency, vacancy.description, vacancy.requirements,
                         vacancy.responsibilities, vacancy.experience, vacancy.employment,
-                        vacancy.schedule, employer_str, area_str, vacancy.source,
+                        vacancy.schedule, vacancy.employer, area_str, vacancy.source,
                         published_date, mapped_company_id, vacancy.vacancy_id
                     ))
 
@@ -1576,7 +1539,7 @@ class PostgresSaver:
                 ) ON COMMIT DROP
             """)
 
-            # Получаем соответствие employer -> company_id из таблицы companies
+            # Получаем соответствие external_id -> company_id из таблицы companies
             company_mapping = {}
             try:
                 # Ensure companies table exists before querying
@@ -1676,15 +1639,8 @@ class PostgresSaver:
                             logger.debug(f"Company_id не найден для работодателя: '{employer_name}'{source_info} (vacancy_id: {vacancy.vacancy_id})")
 
 
-                # Standardize employer name before storing
-                raw_employer_name = None
-                if isinstance(vacancy.employer, dict):
-                    raw_employer_name = vacancy.employer.get('name')
-                elif vacancy.employer:
-                    raw_employer_name = str(vacancy.employer)
-
-                employer_str = self._standardize_employer_name(raw_employer_name)
-
+                # Employer информация теперь хранится только в таблице companies
+                
                 area_str = (
                     vacancy.area.get('name') if isinstance(vacancy.area, dict)
                     else str(vacancy.area) if vacancy.area else None
@@ -1732,7 +1688,7 @@ class PostgresSaver:
                     salary_from, salary_to, salary_currency,
                     vacancy.description, vacancy.requirements, vacancy.responsibilities,
                     vacancy.experience, vacancy.employment, vacancy.schedule,
-                    employer_str, area_str, vacancy.source, published_date,
+                    vacancy.employer, area_str, vacancy.source, published_date,
                     mapped_company_id  # Оставляем как integer
                 ))
 
