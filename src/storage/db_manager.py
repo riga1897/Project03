@@ -424,6 +424,20 @@ class DBManager:
 
         return False
 
+    def _ensure_tables_exist(self) -> bool:
+        """
+        Убеждается, что таблицы созданы
+
+        Returns:
+            bool: True если таблицы созданы, False иначе
+        """
+        try:
+            self.create_tables()
+            return True
+        except Exception as e:
+            logger.warning(f"Не удалось создать таблицы: {e}")
+            return False
+
     def get_all_vacancies(self) -> List[Dict[str, Any]]:
         """
         Получает список всех вакансий с указанием названия компании,
@@ -433,11 +447,7 @@ class DBManager:
         Returns:
             List[Dict[str, Any]]: Список словарей с информацией о вакансиях
         """
-        # Убеждаемся, что таблицы созданы
-        try:
-            self.create_tables()
-        except Exception as e:
-            logger.warning(f"Не удалось создать таблицы: {e}")
+        if not self._ensure_tables_exist():
             return []
 
         query = """
@@ -491,11 +501,7 @@ class DBManager:
         Returns:
             Optional[float]: Средняя зарплата или None если данных нет
         """
-        # Убеждаемся, что таблицы созданы
-        try:
-            self.create_tables()
-        except Exception as e:
-            logger.warning(f"Не удалось создать таблицы: {e}")
+        if not self._ensure_tables_exist():
             return None
 
         query = """
@@ -536,11 +542,7 @@ class DBManager:
         Returns:
             List[Dict[str, Any]]: Список словарей с информацией о вакансиях
         """
-        # Убеждаемся, что таблицы созданы
-        try:
-            self.create_tables()
-        except Exception as e:
-            logger.warning(f"Не удалось создать таблицы: {e}")
+        if not self._ensure_tables_exist():
             return []
 
         # Сначала получаем среднюю зарплату
@@ -636,11 +638,7 @@ class DBManager:
         if not keyword or not keyword.strip():
             return []
 
-        # Убеждаемся, что таблицы созданы
-        try:
-            self.create_tables()
-        except Exception as e:
-            logger.warning(f"Не удалось создать таблицы: {e}")
+        if not self._ensure_tables_exist():
             return []
 
         # SQL-запрос для поиска вакансий по ключевому слову в названии

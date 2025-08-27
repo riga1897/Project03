@@ -177,17 +177,7 @@ class VacancyOperationsCoordinator:
     def _show_vacancy_for_confirmation(self, vacancy: Vacancy) -> None:
         """Показать информацию о вакансии для подтверждения удаления"""
         print("\nВакансия для удаления:")
-        print(f"ID: {vacancy.vacancy_id}")
-        print(f"Название: {vacancy.title or 'Не указано'}")
-        if vacancy.employer:
-            print(f"Компания: {vacancy.employer.get('name', 'Не указана')}")
-        if vacancy.salary:
-            print(f"Зарплата: {vacancy.salary}")
-        else:
-            print("Зарплата: Не указана")
-        if vacancy.experience:
-            print(f"Опыт: {vacancy.experience}")
-        print(f"Ссылка: {vacancy.url}")
+        print(VacancyFormatter.format_vacancy_info(vacancy))
 
     @staticmethod
     def handle_superjob_setup() -> None:
@@ -251,7 +241,7 @@ class VacancyOperationsCoordinator:
             return vacancies
 
         except Exception as e:
-            self.logger.error(f"Ошибка при получении вакансий из источников: {e}")
+            logger.error(f"Ошибка при получении вакансий из источников: {e}")
             return []
 
     def get_vacancies_from_target_companies(self, search_query: str = "", sources: List[str] = None, **kwargs) -> List[Vacancy]:
@@ -285,5 +275,5 @@ class VacancyOperationsCoordinator:
             return vacancies
 
         except Exception as e:
-            self.logger.error(f"Ошибка при получении вакансий от целевых компаний: {e}")
+            logger.error(f"Ошибка при получении вакансий от целевых компаний: {e}")
             return []

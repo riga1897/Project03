@@ -39,12 +39,9 @@ class VacancyDisplayHandler:
 
             print(f"\nСохраненных вакансий: {len(vacancies)}")
 
-            def format_vacancy(vacancy, number=None):
-                return VacancyFormatter.format_vacancy_info(vacancy, number)
-
             quick_paginate(
                 vacancies,
-                formatter=format_vacancy,
+                formatter=VacancyFormatter.format_vacancy_info,
                 header="Сохраненные вакансии",
                 items_per_page=ui_pagination_config.get_items_per_page("saved"),
             )
@@ -79,12 +76,9 @@ class VacancyDisplayHandler:
 
             print(f"\nТоп {len(top_vacancies)} сохраненных вакансий по зарплате:")
 
-            def format_vacancy(vacancy, number=None):
-                return VacancyFormatter.format_vacancy_info(vacancy, number)
-
             quick_paginate(
                 top_vacancies,
-                formatter=format_vacancy,
+                formatter=VacancyFormatter.format_vacancy_info,
                 header=f"Топ {len(top_vacancies)} вакансий по зарплате",
                 items_per_page=ui_pagination_config.get_items_per_page("top"),
             )
@@ -116,12 +110,9 @@ class VacancyDisplayHandler:
 
             print(f"\nНайдено {len(filtered_vacancies)} сохраненных вакансий с ключевым словом '{keyword}':")
 
-            def format_vacancy(vacancy, number=None):
-                return VacancyFormatter.format_vacancy_info(vacancy, number)
-
             quick_paginate(
                 filtered_vacancies,
-                formatter=format_vacancy,
+                formatter=VacancyFormatter.format_vacancy_info,
                 header=f"Вакансии с ключевым словом '{keyword}'",
                 items_per_page=ui_pagination_config.get_items_per_page("search"),
             )
