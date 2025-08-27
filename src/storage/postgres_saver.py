@@ -732,64 +732,90 @@ class PostgresSaver(AbstractVacancyStorage):
                 cursor.close()
             connection.close()
 
-    def _convert_rows_to_vacancies(self, rows: List[Dict]) -> List[Vacancy]:
+    def _convert_rows_to_vacancies(self, rows: List) -> List[Vacancy]:
         """Конвертирует строки БД в объекты Vacancy"""
         vacancies = []
         for row in rows:
             try:
+                # Порядок полей из SQL запроса: "SELECT v.*, c.name as company_name FROM vacancies v LEFT JOIN companies c ON v.company_id = c.id"
+                # Поля таблицы vacancies: id, vacancy_id, title, created_at, updated_at, url, salary_from, salary_to, 
+                # salary_currency, description, requirements, responsibilities, experience, employment, schedule, 
+                # area, source, published_at, company_id
+                # Последнее поле: company_name из JOIN
+                
+                # Извлекаем данные по индексам (row это кортеж)
+                vacancy_id = row[1]  # vacancy_id
+                title = row[2]       # title
+                # row[3] - created_at, row[4] - updated_at
+                url = row[5]         # url
+                salary_from = row[6] # salary_from
+                salary_to = row[7]   # salary_to
+                salary_currency = row[8] # salary_currency
+                description = row[9] # description
+                requirements = row[10] # requirements
+                responsibilities = row[11] # responsibilities
+                experience = row[12] # experience
+                employment = row[13] # employment
+                schedule = row[14]   # schedule
+                area = row[15]       # area
+                source = row[16]     # source
+                published_at_db = row[17] # published_at
+                company_id = row[18] # company_id
+                company_name = row[19] if len(row) > 19 else None # company_name из JOIN
+
                 # Создаем словарь salary_data для передачи в конструктор Vacancy
                 salary_data = None
-                if row['salary_from'] or row['salary_to']:
+                if salary_from or salary_to:
                     salary_data = {
-                        'from': row['salary_from'],
-                        'to': row['salary_to'],
-                        'currency': row['salary_currency']
+                        'from': salary_from,
+                        'to': salary_to,
+                        'currency': salary_currency
                     }
 
                 # Создаем employer на основе company_name из JOIN или используем заглушку
                 employer = None
-                if row.get('company_name'):
-                    employer = {'name': row['company_name']}
+                if company_name:
+                    employer = {'name': company_name}
                 else:
                     employer = {'name': 'Неизвестная компания'}
 
                 # Convert published_at string back to proper format
                 published_at = None
-                if row['published_at']:
+                if published_at_db:
                     # Конвертируем datetime объект в строку ISO формата
-                    if hasattr(row['published_at'], 'isoformat'):
-                        published_at = row['published_at'].isoformat()
+                    if hasattr(published_at_db, 'isoformat'):
+                        published_at = published_at_db.isoformat()
                     else:
-                        published_at = str(row['published_at'])
+                        published_at = str(published_at_db)
 
                 vacancy = Vacancy(
-                    title=row['title'],
-                    url=row['url'],
+                    title=title,
+                    url=url,
                     salary=salary_data,  # Передаем словарь, а не объект Salary
-                    description=row['description'],
-                    requirements=row['requirements'],
-                    responsibilities=row['responsibilities'],
-                    experience=row['experience'],
-                    employment=row['employment'],
-                    schedule=row['schedule'],
+                    description=description,
+                    requirements=requirements,
+                    responsibilities=responsibilities,
+                    experience=experience,
+                    employment=employment,
+                    schedule=schedule,
                     employer=employer,
-                    vacancy_id=row['vacancy_id'],
+                    vacancy_id=vacancy_id,
                     published_at=published_at,
-                    source=row.get('source', 'unknown')
+                    source=source or 'unknown'
                 )
 
                 # Устанавливаем area напрямую
-                vacancy.area = row['area']
+                vacancy.area = area
 
                 # Set company_id if available
-                if row.get('company_id'):
-                    vacancy.company_id = row['company_id']
+                if company_id:
+                    vacancy.company_id = company_id
 
                 # Set company name if available from the join
-                if row.get('company_name'):
-                    vacancy.company_name = row['company_name']
+                if company_name:
+                    vacancy.company_name = company_name
                     # Для отладки - также сохраняем название компании напрямую
-                    vacancy._employer_name = row['company_name']
+                    vacancy._employer_name = company_name
 
                 vacancies.append(vacancy)
 
