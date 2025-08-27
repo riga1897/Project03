@@ -19,6 +19,14 @@ from src.ui_interfaces.vacancy_display_handler import VacancyDisplayHandler
 from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
 from src.ui_interfaces.vacancy_search_handler import VacancySearchHandler
 from src.storage.storage_factory import StorageFactory
+# Импортируем DBManager и DBManagerDemo для демонстрации
+try:
+    from src.storage.db_manager import DBManager
+    from src.utils.db_manager_demo import DBManagerDemo
+except ImportError:
+    DBManager = None
+    DBManagerDemo = None
+
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +40,7 @@ class UserInterface:
     специализированным обработчикам.
     """
 
-    def __init__(self, storage=None):
+    def __init__(self, storage=None, db_manager=None):
         """Инициализация пользовательского интерфейса"""
         from src.config.app_config import AppConfig
         # from src.storage.storage_factory import StorageFactory # Импорт перемещен в начало файла
@@ -55,6 +63,13 @@ class UserInterface:
         self.search_handler = VacancySearchHandler(self.unified_api, self.storage)
         self.display_handler = VacancyDisplayHandler(self.storage)
         self.operations_coordinator = VacancyOperationsCoordinator(self.unified_api, self.storage)
+
+        # DB Manager для демонстрации
+        self.db_manager = db_manager
+        if self.db_manager and DBManagerDemo:
+            self.demo = DBManagerDemo(self.db_manager)
+        else:
+            self.demo = None
 
 
     def run(self) -> None:
@@ -86,7 +101,16 @@ class UserInterface:
                 elif choice == "9":
                     self._configure_superjob_api()
                 elif choice == "10":
-                    self._demo_db_manager()
+                    if self.db_manager and self.demo:
+                        print("\n" + "=" * 60)
+                        print("ДЕМОНСТРАЦИЯ DBMANAGER")
+                        print("=" * 60)
+                        self.demo.run_full_demo()
+                        print("=" * 60)
+                    else:
+                        print("\n❌ База данных недоступна. Демонстрация DBManager невозможна.")
+                        print("Проверьте подключение к PostgreSQL и перезапустите приложение.")
+
                 elif choice == "0":
                     print("Спасибо за использование! До свидания!")
                     break
@@ -119,7 +143,8 @@ class UserInterface:
         print("7. Удалить сохраненные вакансии")
         print("8. Очистить кэш API")
         print("9. Настройка SuperJob API")
-        print("10. Демонстрация DBManager (анализ данных в БД)")
+        if DBManager and DBManagerDemo:
+            print("10. Демонстрация DBManager (анализ данных в БД)")
         print("0. Выход")
         print_menu_separator()
 
@@ -525,14 +550,11 @@ class UserInterface:
             print("• get_vacancies_with_keyword()")
             print("=" * 60)
 
-            from src.utils.db_manager_demo import DBManagerDemo
-            from src.storage.db_manager import DBManager
-
-            # Создаем DBManager с той же конфигурацией
-            db_manager = DBManager()
-
-            demo = DBManagerDemo(db_manager)
-            demo.run_full_demo()
+            if self.db_manager and self.demo:
+                self.demo.run_full_demo()
+            else:
+                print("\n❌ База данных недоступна. Демонстрация DBManager невозможна.")
+                print("Проверьте подключение к PostgreSQL и перезапустите приложение.")
 
         except ImportError as e:
             logger.error(f"Ошибка импорта модулей DBManager: {e}")

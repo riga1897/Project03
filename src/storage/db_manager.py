@@ -189,6 +189,9 @@ class DBManager:
         """Заполняет таблицу companies целевыми компаниями"""
         from src.config.target_companies import TARGET_COMPANIES
 
+        # Сначала убеждаемся, что таблицы созданы
+        self.create_tables()
+
         connection = self._get_connection()
         try:
             cursor = connection.cursor()
@@ -262,6 +265,15 @@ class DBManager:
             List[Tuple[str, int]]: Список кортежей (название_компании, количество_вакансий)
         """
         from src.config.target_companies import TARGET_COMPANIES
+
+        # Убеждаемся, что таблицы созданы
+        try:
+            self.create_tables()
+            self.populate_companies_table()
+        except Exception as e:
+            logger.warning(f"Не удалось создать/заполнить таблицы: {e}")
+            # Возвращаем целевые компании с нулями если нет БД
+            return [(company['name'], 0) for company in TARGET_COMPANIES]
 
         try:
             with self._get_connection() as conn:
@@ -395,6 +407,13 @@ class DBManager:
         Returns:
             List[Dict[str, Any]]: Список словарей с информацией о вакансиях
         """
+        # Убеждаемся, что таблицы созданы
+        try:
+            self.create_tables()
+        except Exception as e:
+            logger.warning(f"Не удалось создать таблицы: {e}")
+            return []
+
         query = """
         -- Получение списка всех вакансий с названием компании, зарплатой и ссылкой
         -- Использует LEFT JOIN для связи вакансий с компаниями и CASE для форматирования данных
@@ -446,6 +465,13 @@ class DBManager:
         Returns:
             Optional[float]: Средняя зарплата или None если данных нет
         """
+        # Убеждаемся, что таблицы созданы
+        try:
+            self.create_tables()
+        except Exception as e:
+            logger.warning(f"Не удалось создать таблицы: {e}")
+            return None
+
         query = """
         -- Расчет средней зарплаты по всем вакансиям с использованием функции AVG()
         -- Учитывает различные варианты указания зарплаты и нормализует их к единому значению
@@ -484,6 +510,13 @@ class DBManager:
         Returns:
             List[Dict[str, Any]]: Список словарей с информацией о вакансиях
         """
+        # Убеждаемся, что таблицы созданы
+        try:
+            self.create_tables()
+        except Exception as e:
+            logger.warning(f"Не удалось создать таблицы: {e}")
+            return []
+
         # Сначала получаем среднюю зарплату
         avg_salary = self.get_avg_salary()
 
@@ -575,6 +608,13 @@ class DBManager:
             List[Dict[str, Any]]: Список словарей с информацией о вакансиях
         """
         if not keyword or not keyword.strip():
+            return []
+
+        # Убеждаемся, что таблицы созданы
+        try:
+            self.create_tables()
+        except Exception as e:
+            logger.warning(f"Не удалось создать таблицы: {e}")
             return []
 
         # SQL-запрос для поиска вакансий по ключевому слову в названии
