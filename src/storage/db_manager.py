@@ -70,12 +70,13 @@ class DBManager(AbstractDBManager):
                     # Устанавливаем кодировку сессии
                     cursor.execute("SET client_encoding TO 'UTF8'")
 
-                    # Создаем полную таблицу компаний сразу
+                    # Создаем упрощенную таблицу компаний для целевых компаний
                     cursor.execute("""
                         CREATE TABLE IF NOT EXISTS companies (
                             id SERIAL PRIMARY KEY,
                             name VARCHAR(255) NOT NULL UNIQUE,
-                            description TEXT,
+                            hh_id VARCHAR(50),
+                            sj_id VARCHAR(50),
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                         );
                     """)
@@ -194,17 +195,18 @@ class DBManager(AbstractDBManager):
                         logger.info(f"✓ Таблица companies уже содержит {companies_count} компаний")
                         return
 
-                    # Добавляем целевые компании
+                    # Добавляем целевые компании с их API идентификаторами
                     for company in TARGET_COMPANIES:
                         # Сначала проверяем, существует ли компания
                         cursor.execute("SELECT id FROM companies WHERE name = %s", (company.name,))
                         if not cursor.fetchone():
                             cursor.execute("""
-                                INSERT INTO companies (name, description)
-                                VALUES (%s, %s)
+                                INSERT INTO companies (name, hh_id, sj_id)
+                                VALUES (%s, %s, %s)
                             """, (
                                 company.name,
-                                company.description or ""
+                                getattr(company, 'hh_id', None),
+                                getattr(company, 'sj_id', None)
                             ))
 
                     # Проверяем результат

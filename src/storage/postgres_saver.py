@@ -155,21 +155,24 @@ class PostgresSaver(AbstractVacancyStorage):
         try:
             cursor = connection.cursor()
 
-            # Создаем базовую таблицу companies
+            # Создаем упрощенную таблицу companies для целевых компаний
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS companies (
                     id SERIAL PRIMARY KEY,
                     name VARCHAR(255) NOT NULL,
+                    hh_id VARCHAR(50),
+                    sj_id VARCHAR(50),
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             """)
 
-            # Добавляем недостающие поля
-            company_fields = [
-                ("description", "TEXT"),
+            # Проверяем и добавляем недостающие поля hh_id и sj_id
+            required_fields = [
+                ("hh_id", "VARCHAR(50)"),
+                ("sj_id", "VARCHAR(50)")
             ]
 
-            for field_name, field_type in company_fields:
+            for field_name, field_type in required_fields:
                 cursor.execute("""
                     SELECT column_name
                     FROM information_schema.columns
@@ -1720,133 +1723,9 @@ class PostgresSaver(AbstractVacancyStorage):
 
         return {'conditions': conditions, 'params': params}
 
-    def _ensure_companies_table_exists(self):
-        """Создает таблицу companies если она не существует, добавляет недостающие поля"""
-        connection = self._get_connection()
-        try:
-            cursor = connection.cursor()
+    
 
-            # Сначала создаем таблицу с базовой структурой
-            create_table_query = """
-            CREATE TABLE IF NOT EXISTS companies (
-                id SERIAL PRIMARY KEY,
-                name VARCHAR(255) NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-            """
-            cursor.execute(create_table_query)
-            logger.info("✓ Базовая структура таблицы companies проверена")
-
-            # Список всех полей, которые должны быть в таблице
-            required_fields = [
-                ("external_id", "VARCHAR(50)"),
-                ("description", "TEXT"),
-                ("url", "TEXT"),
-                ("logo_url", "TEXT"),
-                ("site_url", "TEXT"),
-                ("source", "VARCHAR(50)")
-            ]
-
-            # Проверяем и добавляем недостающие поля
-            for field_name, field_type in required_fields:
-                cursor.execute("""
-                    SELECT column_name
-                    FROM information_schema.columns
-                    WHERE table_name = 'companies' AND column_name = %s;
-                """, (field_name,))
-
-                if not cursor.fetchone():
-                    logger.info(f"Добавляем поле {field_name} в таблицу companies...")
-                    cursor.execute(f"ALTER TABLE companies ADD COLUMN {field_name} {field_type};")
-                    logger.info(f"✓ Поле {field_name} добавлено")
-
-            # Создаем индексы если их нет
-            indexes_to_create = [
-                ("idx_companies_external_id", "external_id"),
-                ("idx_companies_name", "name"),
-                ("idx_companies_source", "source")
-            ]
-
-            for index_name, column_name in indexes_to_create:
-                try:
-                    cursor.execute(f"SELECT COUNT(*) FROM pg_indexes WHERE tablename = 'companies' AND indexname = '{index_name}';")
-                    if cursor.fetchone()[0] == 0:
-                        cursor.execute(f"CREATE INDEX IF NOT EXISTS {index_name} ON companies({column_name});")
-                        logger.info(f"✓ Индекс {index_name} создан")
-                except psycopg2.Error as e:
-                    logger.warn(f"Не удалось создать индекс {index_name}: {e}")
-
-            connection.commit()
-            logger.info("✓ Таблица 'companies' полностью настроена")
-
-        except psycopg2.Error as e:
-            logger.error(f"Ошибка создания таблицы 'companies': {e}")
-            connection.rollback()
-            raise
-        finally:
-            if 'cursor' in locals():
-                cursor.close()
-            connection.close()
-
-    def _get_or_create_company_id(self, company_data: Dict[str, Any]) -> int:
-        """
-        Получает или создает ID компании в таблице companies
-
-        Args:
-            company_data: Данные компании
-
-        Returns:
-            int: ID компании в БД
-        """
-        if not company_data or not isinstance(company_data, dict):
-            return None
-
-        company_name = company_data.get('name', '').strip()
-        if not company_name:
-            return None
-
-        connection = self._get_connection()
-        try:
-            cursor = connection.cursor(cursor_factory=RealDictCursor)
-
-            # Пытаемся найти компанию по имени
-            cursor.execute("SELECT id FROM companies WHERE LOWER(name) = LOWER(%s)", (company_name,))
-            company = cursor.fetchone()
-
-            if company:
-                return company['id']
-            else:
-                # Если компания не найдена, создаем новую
-                logger.info(f"Создаем новую компанию: {company_name}")
-
-                # Нормализуем имя компании
-                normalized_name = self._standardize_employer_name(company_name) or company_name
-
-                cursor.execute(
-                    "INSERT INTO companies (name, external_id, source, url, logo_url, site_url) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
-                    (
-                        normalized_name,
-                        company_data.get('external_id'),
-                        company_data.get('source'),
-                        company_data.get('url'),
-                        company_data.get('logo_url'),
-                        company_data.get('site_url')
-                    )
-                )
-                new_company_id = cursor.fetchone()['id']
-                connection.commit()
-                logger.info(f"✓ Компания {company_name} создана с ID: {new_company_id}")
-                return new_company_id
-
-        except psycopg2.Error as e:
-            logger.error(f"Ошибка при работе с компанией {company_name}: {e}")
-            connection.rollback()
-            return None
-        finally:
-            if 'cursor' in locals():
-                cursor.close()
-            connection.close()
+    
 
     def _normalize_published_date(self, published_at: Any) -> Optional[datetime]:
         """

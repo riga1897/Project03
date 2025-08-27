@@ -1,4 +1,3 @@
-
 """
 Конфигурация целевых компаний для поиска вакансий.
 
@@ -18,7 +17,7 @@ class CompanyInfo:
     sj_id: Optional[str] = None
     description: str = ""
     aliases: List[str] = None
-    
+
     def __post_init__(self):
         if self.aliases is None:
             self.aliases = []
@@ -26,7 +25,7 @@ class CompanyInfo:
 
 class TargetCompanies:
     """Класс для работы с целевыми компаниями"""
-    
+
     # Основной список целевых компаний
     COMPANIES = [
         CompanyInfo(
@@ -133,27 +132,27 @@ class TargetCompanies:
             aliases=["delivery club", "деливери клаб"]
         )
     ]
-    
+
     @classmethod
     def get_all_companies(cls) -> List[CompanyInfo]:
         """Возвращает список всех целевых компаний"""
         return cls.COMPANIES.copy()
-    
+
     @classmethod
     def get_hh_ids(cls) -> List[str]:
         """Возвращает список ID компаний для HH.ru"""
         return [company.hh_id for company in cls.COMPANIES if company.hh_id]
-    
+
     @classmethod
     def get_sj_ids(cls) -> List[str]:
         """Возвращает список ID компаний для SuperJob"""
         return [company.sj_id for company in cls.COMPANIES if company.sj_id]
-    
+
     @classmethod
     def get_company_names(cls) -> List[str]:
         """Возвращает список названий компаний"""
         return [company.name for company in cls.COMPANIES]
-    
+
     @classmethod
     def get_all_names_and_aliases(cls) -> Set[str]:
         """Возвращает множество всех названий и псевдонимов компаний (в нижнем регистре)"""
@@ -162,7 +161,7 @@ class TargetCompanies:
             names.add(company.name.lower())
             names.update(alias.lower() for alias in company.aliases)
         return names
-    
+
     @classmethod
     def get_company_by_hh_id(cls, hh_id: str) -> Optional[CompanyInfo]:
         """Возвращает компанию по HH ID"""
@@ -170,7 +169,7 @@ class TargetCompanies:
             if company.hh_id == hh_id:
                 return company
         return None
-    
+
     @classmethod
     def get_company_by_sj_id(cls, sj_id: str) -> Optional[CompanyInfo]:
         """Возвращает компанию по SuperJob ID"""
@@ -178,50 +177,50 @@ class TargetCompanies:
             if company.sj_id == sj_id:
                 return company
         return None
-    
+
     @classmethod
     def find_company_by_name(cls, name: str) -> Optional[CompanyInfo]:
         """
         Поиск компании по названию или псевдониму (регистронезависимо)
-        
+
         Args:
             name: Название для поиска
-            
+
         Returns:
             CompanyInfo или None если не найдено
         """
         search_name = name.lower().strip()
-        
+
         for company in cls.COMPANIES:
             # Проверяем основное название
             if company.name.lower() == search_name:
                 return company
-            
+
             # Проверяем псевдонимы
             if search_name in (alias.lower() for alias in company.aliases):
                 return company
-            
+
             # Проверяем частичное вхождение
             if search_name in company.name.lower() or company.name.lower() in search_name:
                 return company
-            
+
             # Проверяем частичное вхождение в псевдонимах
             for alias in company.aliases:
                 if search_name in alias.lower() or alias.lower() in search_name:
                     return company
-        
+
         return None
-    
+
     @classmethod
     def is_target_company(cls, name: str) -> bool:
         """Проверяет, является ли компания целевой"""
         return cls.find_company_by_name(name) is not None
-    
+
     @classmethod
     def get_search_patterns_for_sql(cls) -> List[str]:
         """
         Возвращает список паттернов для SQL LIKE запросов
-        
+
         Returns:
             Список строк для использования в SQL запросах с LIKE
         """
@@ -229,13 +228,13 @@ class TargetCompanies:
         for company in cls.COMPANIES:
             # Основное название
             patterns.append(f"%{company.name.lower()}%")
-            
+
             # Псевдонимы
             for alias in company.aliases:
                 patterns.append(f"%{alias.lower()}%")
-        
+
         return patterns
-    
+
     @classmethod
     def get_company_count(cls) -> int:
         """Возвращает количество целевых компаний"""
@@ -245,7 +244,7 @@ class TargetCompanies:
 def get_target_company_ids() -> List[str]:
     """
     Возвращает список ID целевых компаний для HH.ru
-    
+
     Returns:
         List[str]: Список ID компаний для HH.ru
     """
@@ -255,7 +254,7 @@ def get_target_company_ids() -> List[str]:
 def get_target_company_names() -> List[str]:
     """
     Возвращает список названий целевых компаний
-    
+
     Returns:
         List[str]: Список названий компаний
     """
