@@ -385,26 +385,10 @@ class PostgresSaver(AbstractVacancyStorage):
         try:
             cursor = connection.cursor()
 
-            # Создаем временную таблицу для новых вакансий
+            # Создаем временную таблицу с такой же структурой как основная таблица vacancies
             cursor.execute("""
-                CREATE TEMP TABLE temp_new_vacancies (
-                    vacancy_id VARCHAR(50),
-                    title VARCHAR(500),
-                    url TEXT,
-                    salary_from INTEGER,
-                    salary_to INTEGER,
-                    salary_currency VARCHAR(10),
-                    description TEXT,
-                    requirements TEXT,
-                    responsibilities TEXT,
-                    experience VARCHAR(200),
-                    employment VARCHAR(200),
-                    schedule VARCHAR(200),
-                    area VARCHAR(200),
-                    source VARCHAR(50),
-                    published_at TIMESTAMP,
-                    company_id INTEGER
-                ) ON COMMIT DROP
+                CREATE TEMP TABLE temp_new_vacancies AS 
+                SELECT * FROM vacancies WHERE 1=0
             """)
 
             # Получаем сопоставление компаний из БД с расширенным поиском
@@ -596,10 +580,12 @@ class PostgresSaver(AbstractVacancyStorage):
 
             results = cursor.fetchall()
             for row in results:
-                if row['action'] == 'new':
-                    update_messages.append(f"Добавлена новая вакансия ID {row['vacancy_id']}: '{row['title']}'")
+                # Используем индексы вместо ключей для обычного cursor
+                vacancy_id, title, action = row[0], row[1], row[2]
+                if action == 'new':
+                    update_messages.append(f"Добавлена новая вакансия ID {vacancy_id}: '{title}'")
                 else:
-                    update_messages.append(f"Вакансия ID {row['vacancy_id']} обновлена: '{row['title']}'")
+                    update_messages.append(f"Вакансия ID {vacancy_id} обновлена: '{title}'")
 
             # Добавляем сводку если много операций
             total_processed = len(vacancies)
@@ -1149,26 +1135,10 @@ class PostgresSaver(AbstractVacancyStorage):
         try:
             cursor = connection.cursor()
 
-            # Создаем временную таблицу для вакансий из API
+            # Создаем временную таблицу с такой же структурой как основная таблица vacancies
             cursor.execute("""
-                CREATE TEMP TABLE temp_api_vacancies (
-                    vacancy_id VARCHAR(50),
-                    title VARCHAR(500),
-                    url TEXT,
-                    salary_from INTEGER,
-                    salary_to INTEGER,
-                    salary_currency VARCHAR(10),
-                    description TEXT,
-                    requirements TEXT,
-                    responsibilities TEXT,
-                    experience VARCHAR(200),
-                    employment VARCHAR(200),
-                    schedule VARCHAR(200),
-                    area VARCHAR(200),
-                    source VARCHAR(50),
-                    published_at TIMESTAMP,
-                    company_id INTEGER
-                ) ON COMMIT DROP
+                CREATE TEMP TABLE temp_api_vacancies AS 
+                SELECT * FROM vacancies WHERE 1=0
             """)
 
             # Получаем сопоставление компаний из БД с расширенным поиском
@@ -1377,14 +1347,18 @@ class PostgresSaver(AbstractVacancyStorage):
             filtered_vacancies = []
             for row in results:
                 try:
+                    # Используем индексы для обращения к данным
+                    vacancy_id = row[1]  # vacancy_id - второе поле в таблице (после id)
+                    company_id = row[-1] if len(row) > 15 else None  # company_id - последнее поле
+                    
                     # Находим оригинальную вакансию из списка по ID
-                    original_vacancy = next((v for v in vacancies if v.vacancy_id == row['vacancy_id']), None)
+                    original_vacancy = next((v for v in vacancies if v.vacancy_id == vacancy_id), None)
                     if original_vacancy:
                         # Update company_id in the original vacancy object
-                        original_vacancy.company_id = row['company_id']
+                        original_vacancy.company_id = company_id
                         filtered_vacancies.append(original_vacancy)
                 except Exception as e:
-                    logger.error(f"Ошибка при восстановлении вакансии {row['vacancy_id']}: {e}")
+                    logger.error(f"Ошибка при восстановлении вакансии: {e}")
                     continue
 
             connection.commit()
