@@ -1904,6 +1904,30 @@ class PostgresSaver:
             """
             cursor.execute(create_table_query)
 
+            # Проверяем существование поля external_id и добавляем если его нет
+            cursor.execute("""
+                SELECT column_name 
+                FROM information_schema.columns 
+                WHERE table_name = 'companies' AND column_name = 'external_id';
+            """)
+
+            if not cursor.fetchone():
+                logger.info("Добавляем поле external_id в существующую таблицу companies...")
+                cursor.execute("ALTER TABLE companies ADD COLUMN external_id VARCHAR(50);")
+                logger.info("✓ Поле external_id добавлено")
+
+            # Проверяем существование поля source и добавляем если его нет
+            cursor.execute("""
+                SELECT column_name 
+                FROM information_schema.columns 
+                WHERE table_name = 'companies' AND column_name = 'source';
+            """)
+
+            if not cursor.fetchone():
+                logger.info("Добавляем поле source в существующую таблицу companies...")
+                cursor.execute("ALTER TABLE companies ADD COLUMN source VARCHAR(50);")
+                logger.info("✓ Поле source добавлено")
+
             # Add indexes if they don't exist
             indexes_to_create = [
                 ("idx_companies_external_id", "external_id"),
