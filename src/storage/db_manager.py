@@ -72,78 +72,45 @@ class DBManager:
                     # Устанавливаем кодировку сессии
                     cursor.execute("SET client_encoding TO 'UTF8'")
 
-                    # Сначала создаем базовую таблицу компаний
+                    # Создаем полную таблицу компаний сразу
                     cursor.execute("""
                         CREATE TABLE IF NOT EXISTS companies (
                             id SERIAL PRIMARY KEY,
                             name VARCHAR(255) NOT NULL UNIQUE,
+                            description TEXT,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                         );
                     """)
-                    logger.info("✓ Базовая структура таблицы companies проверена")
+                    logger.info("✓ Таблица companies создана/проверена")
 
-                    # Добавляем недостающие поля в таблицу companies (только description)
-                    company_fields = [
-                        ("description", "TEXT")
-                    ]
-
-                    for field_name, field_type in company_fields:
-                        cursor.execute("""
-                            SELECT column_name
-                            FROM information_schema.columns
-                            WHERE table_name = 'companies' AND column_name = %s;
-                        """, (field_name,))
-
-                        if not cursor.fetchone():
-                            logger.info(f"Добавляем поле {field_name} в таблицу companies...")
-                            cursor.execute(f"ALTER TABLE companies ADD COLUMN {field_name} {field_type};")
-                            logger.info(f"✓ Поле {field_name} добавлено")
-
-                    # Создаем базовую таблицу вакансий
+                    # Создаем полную таблицу вакансий сразу
                     cursor.execute("""
                         CREATE TABLE IF NOT EXISTS vacancies (
                             id SERIAL PRIMARY KEY,
                             vacancy_id VARCHAR(255) UNIQUE NOT NULL,
                             title TEXT NOT NULL,
+                            url TEXT,
+                            salary_from INTEGER,
+                            salary_to INTEGER,
+                            salary_currency VARCHAR(10),
+                            description TEXT,
+                            requirements TEXT,
+                            responsibilities TEXT,
+                            experience VARCHAR(100),
+                            employment VARCHAR(100),
+                            schedule VARCHAR(100),
+                            area TEXT,
+                            source VARCHAR(50),
+                            published_at TIMESTAMP,
+                            company_id INTEGER,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                         );
                     """)
-                    logger.info("✓ Базовая структура таблицы vacancies проверена")
-
-                    # Добавляем недостающие поля в таблицу вакансий
-                    vacancy_fields = [
-                        ("url", "TEXT"),
-                        ("salary_from", "INTEGER"),
-                        ("salary_to", "INTEGER"),
-                        ("salary_currency", "VARCHAR(10)"),
-                        ("description", "TEXT"),
-                        ("requirements", "TEXT"),
-                        ("responsibilities", "TEXT"),
-                        ("experience", "VARCHAR(100)"),
-                        ("employment", "VARCHAR(100)"),
-                        ("schedule", "VARCHAR(100)"),
-                        ("area", "TEXT"),
-                        ("source", "VARCHAR(50)"),
-                        ("published_at", "TIMESTAMP"),
-                        ("company_id", "INTEGER REFERENCES companies(id)")
-                    ]
-
-                    for field_name, field_type in vacancy_fields:
-                        cursor.execute("""
-                            SELECT column_name
-                            FROM information_schema.columns
-                            WHERE table_name = 'vacancies' AND column_name = %s;
-                        """, (field_name,))
-
-                        if not cursor.fetchone():
-                            logger.info(f"Добавляем поле {field_name} в таблицу vacancies...")
-                            cursor.execute(f"ALTER TABLE vacancies ADD COLUMN {field_name} {field_type};")
-                            logger.info(f"✓ Поле {field_name} добавлено")
+                    logger.info("✓ Таблица vacancies создана/проверена")
 
                     # Создаем индексы
                     indexes = [
-                        ("idx_companies_company_id", "companies", "company_id"),
                         ("idx_companies_name", "companies", "name"),
                         ("idx_vacancies_vacancy_id", "vacancies", "vacancy_id"),
                         ("idx_vacancies_title", "vacancies", "title"),
@@ -158,7 +125,7 @@ class DBManager:
                         except Exception as e:
                             logger.warning(f"Не удалось создать индекс {index_name}: {e}")
 
-                    # Пытаемся создать внешний ключ (если таблицы совместимы)
+                    # Создаем внешний ключ
                     try:
                         cursor.execute("""
                             SELECT constraint_name
@@ -193,6 +160,9 @@ class DBManager:
             # Используем контекстный менеджер для безопасной работы с подключением
             with self._get_connection() as connection:
                 with connection.cursor() as cursor:
+                    # Устанавливаем кодировку сессии
+                    cursor.execute("SET client_encoding TO 'UTF8'")
+                    
                     # Проверяем, существует ли таблица companies
                     cursor.execute("""
                         SELECT EXISTS (
@@ -204,10 +174,8 @@ class DBManager:
                     
                     table_exists = cursor.fetchone()[0]
                     if not table_exists:
-                        logger.error("Таблица companies не существует. Вызываем create_tables()...")
-                        # Если таблица не существует, создаем ее
-                        self.create_tables()
-                        return self.populate_companies_table()  # Рекурсивный вызов после создания
+                        logger.warning("Таблица companies не существует. Таблицы должны быть созданы заранее.")
+                        return
 
                     # Проверяем, есть ли уже данные в таблице
                     cursor.execute("SELECT COUNT(*) FROM companies")
