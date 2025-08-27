@@ -190,64 +190,51 @@ class DBManager:
         from src.config.target_companies import TARGET_COMPANIES
 
         try:
-            # Сначала убеждаемся, что таблицы созданы
-            self.create_tables()
-            
-            connection = self._get_connection()
-            try:
-                cursor = connection.cursor()
+            # Используем контекстный менеджер для безопасной работы с подключением
+            with self._get_connection() as connection:
+                with connection.cursor() as cursor:
+                    # Проверяем, существует ли таблица companies
+                    cursor.execute("""
+                        SELECT EXISTS (
+                            SELECT FROM information_schema.tables 
+                            WHERE table_schema = 'public' 
+                            AND table_name = 'companies'
+                        );
+                    """)
+                    
+                    table_exists = cursor.fetchone()[0]
+                    if not table_exists:
+                        logger.error("Таблица companies не существует. Вызываем create_tables()...")
+                        # Если таблица не существует, создаем ее
+                        self.create_tables()
+                        return self.populate_companies_table()  # Рекурсивный вызов после создания
 
-                # Проверяем, существует ли таблица companies
-                cursor.execute("""
-                    SELECT EXISTS (
-                        SELECT FROM information_schema.tables 
-                        WHERE table_schema = 'public' 
-                        AND table_name = 'companies'
-                    );
-                """)
-                
-                table_exists = cursor.fetchone()[0]
-                if not table_exists:
-                    logger.error("Таблица companies не существует после создания")
-                    return
+                    # Проверяем, есть ли уже данные в таблице
+                    cursor.execute("SELECT COUNT(*) FROM companies")
+                    companies_count = cursor.fetchone()[0]
 
-                # Проверяем, есть ли уже данные в таблице
-                cursor.execute("SELECT COUNT(*) FROM companies")
-                companies_count = cursor.fetchone()[0]
+                    if companies_count > 0:
+                        logger.info(f"✓ Таблица companies уже содержит {companies_count} компаний")
+                        return
 
-                if companies_count > 0:
-                    logger.info(f"✓ Таблица companies уже содержит {companies_count} компаний")
-                    return
+                    # Добавляем целевые компании
+                    for company in TARGET_COMPANIES:
+                        # Сначала проверяем, существует ли компания
+                        cursor.execute("SELECT id FROM companies WHERE name = %s", (company["name"],))
+                        if not cursor.fetchone():
+                            cursor.execute("""
+                                INSERT INTO companies (name, description)
+                                VALUES (%s, %s)
+                            """, (
+                                company["name"],
+                                company.get("description", "")
+                            ))
 
-            # Добавляем целевые компании
-                for company in TARGET_COMPANIES:
-                    # Сначала проверяем, существует ли компания
-                    cursor.execute("SELECT id FROM companies WHERE name = %s", (company["name"],))
-                    if not cursor.fetchone():
-                        cursor.execute("""
-                            INSERT INTO companies (name, description)
-                            VALUES (%s, %s)
-                        """, (
-                            company["name"],
-                            company.get("description", "")
-                        ))
+                    # Проверяем результат
+                    cursor.execute("SELECT COUNT(*) FROM companies")
+                    final_count = cursor.fetchone()[0]
+                    logger.info(f"✓ Добавлено компаний в таблицу companies: {final_count}")
 
-                connection.commit()
-
-                # Проверяем результат
-                cursor.execute("SELECT COUNT(*) FROM companies")
-                final_count = cursor.fetchone()[0]
-                logger.info(f"✓ Добавлено компаний в таблицу companies: {final_count}")
-
-            except psycopg2.Error as e:
-                logger.error(f"Ошибка заполнения таблицы companies: {e}")
-                connection.rollback()
-                raise
-            finally:
-                if 'cursor' in locals():
-                    cursor.close()
-                connection.close()
-                
         except Exception as e:
             logger.error(f"Ошибка при заполнении таблицы companies: {e}")
             raise
@@ -294,8 +281,12 @@ class DBManager:
                 logger.warning("Нет подключения к базе данных")
                 return [(company['name'], 0) for company in TARGET_COMPANIES]
                 
+            # Создаем таблицы если их нет
             self.create_tables()
+            
+            # Заполняем таблицу companies если она пустая
             self.populate_companies_table()
+            
         except Exception as e:
             logger.warning(f"Не удалось создать/заполнить таблицы: {e}")
             # Возвращаем целевые компании с нулями если нет БД
