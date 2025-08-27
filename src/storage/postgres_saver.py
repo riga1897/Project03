@@ -197,7 +197,7 @@ class PostgresSaver:
                     cursor.execute(f"CREATE INDEX IF NOT EXISTS {index_name} ON companies({columns});")
                     logger.info(f"✓ Индекс {index_name} проверен/создан")
                 except psycopg2.Error as e:
-                    logger.warning(f"Не удалось создать индекс {index_name}: {e}")
+                    logger.warn(f"Не удалось создать индекс {index_name}: {e}")
 
             connection.commit()
             logger.info("✓ Таблица companies успешно создана/проверена")
@@ -391,19 +391,13 @@ class PostgresSaver:
                 # Ensure companies table exists before querying
                 self._ensure_companies_table_exists()
 
-                cursor.execute("SELECT id, external_id, name, source FROM companies")
+                cursor.execute("SELECT id, name FROM companies")
                 companies = cursor.fetchall()
 
                 for company in companies:
-                    id, external_id, name, source = company
+                    id, name = company
 
-                    # Добавляем маппинг по внешнему ID с указанием источника
-                    if external_id:
-                        company_mapping[f"{source}:{external_id}"] = id
-                        # Также добавляем просто по external_id для обратной совместимости
-                        company_mapping[str(external_id)] = id
-
-                    # Добавляем маппинг по названию
+                    # Добавляем маппинг только по названию
                     if name:
                         company_mapping[name.lower()] = id
 
@@ -430,38 +424,14 @@ class PostgresSaver:
                     else:
                         employer_name = str(vacancy.employer)
 
-                # Поиск по внешнему ID с учетом источника
-                if employer_id and hasattr(vacancy, 'source'):
-                    # Формируем ключ поиска с указанием источника
-                    source_key = f"{vacancy.source}:{employer_id}"
-                    mapped_company_id = company_mapping.get(source_key)
-
-                    # Если не найдено с источником, пробуем без источника
-                    if not mapped_company_id:
-                        mapped_company_id = company_mapping.get(str(employer_id))
-
-                # Также проверяем специфичные поля для SJ
-                if not mapped_company_id and hasattr(vacancy, 'source') and vacancy.source == 'superjob.ru':
-                    # Для SuperJob проверяем firm_id или client_id в исходных данных
-                    if hasattr(vacancy, '_raw_data') and vacancy._raw_data:
-                        sj_firm_id = vacancy._raw_data.get('firm_id') or vacancy._raw_data.get('client_id')
-                        if sj_firm_id:
-                            source_key = f"superjob.ru:{sj_firm_id}"
-                            mapped_company_id = company_mapping.get(source_key) or company_mapping.get(str(sj_firm_id))
-
-                # Если ID не найден по внешнему ID, ищем по имени
-                if not mapped_company_id and employer_name and employer_name.strip():
+                # Поиск компании только по названию
+                if employer_name and employer_name.strip():
                     employer_lower = employer_name.lower().strip()
 
-                    # 1. Поиск по внешнему ID (для HH)
-                    if employer_id and not mapped_company_id:
-                        mapped_company_id = company_mapping.get(str(employer_id))
+                    # 1. Прямое соответствие по названию
+                    mapped_company_id = company_mapping.get(employer_lower)
 
-                    # 2. Прямое соответствие по названию
-                    if not mapped_company_id:
-                        mapped_company_id = company_mapping.get(employer_lower)
-
-                    # 3. Поиск частичного соответствия (улучшенный)
+                    # 2. Поиск частичного соответствия
                     if not mapped_company_id:
                         # Сначала ищем точные вхождения
                         for alt_name, comp_id in company_mapping.items():
@@ -469,17 +439,16 @@ class PostgresSaver:
                                 mapped_company_id = comp_id
                                 break
 
-                        # 4. Поиск частичного соответствия
-                        if not mapped_company_id:
-                            for alt_name, comp_id in company_mapping.items():
-                                if isinstance(alt_name, str) and len(alt_name) > 2 and (alt_name in employer_lower or employer_lower in alt_name):
-                                    mapped_company_id = comp_id
-                                    break
+                    # 3. Поиск частичного соответствия
+                    if not mapped_company_id:
+                        for alt_name, comp_id in company_mapping.items():
+                            if isinstance(alt_name, str) and len(alt_name) > 2 and (alt_name in employer_lower or employer_lower in alt_name):
+                                mapped_company_id = comp_id
+                                break
 
-                        # 5. Логирование для отладки
-                        if not mapped_company_id and employer_name:
-                            source_info = f" (source: {getattr(vacancy, 'source', 'unknown')})"
-                            logger.debug(f"Company_id не найден для работодателя: '{employer_name}'{source_info} (vacancy_id: {vacancy.vacancy_id})")
+                    # 4. Логирование для отладки
+                    if not mapped_company_id and employer_name:
+                        logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
 
                 # Сохраняем соответствие для дальнейшего использования
                 vacancy_company_mapping[vacancy.vacancy_id] = mapped_company_id
@@ -649,19 +618,13 @@ class PostgresSaver:
                 # Ensure companies table exists before querying
                 self._ensure_companies_table_exists()
 
-                cursor.execute("SELECT id, external_id, name, source FROM companies")
+                cursor.execute("SELECT id, name FROM companies")
                 companies = cursor.fetchall()
 
                 for company in companies:
-                    id, external_id, name, source = company
+                    id, name = company
 
-                    # Добавляем маппинг по внешнему ID с указанием источника
-                    if external_id:
-                        company_mapping[f"{source}:{external_id}"] = id
-                        # Также добавляем просто по external_id для обратной совместимости
-                        company_mapping[str(external_id)] = id
-
-                    # Добавляем маппинг по названию
+                    # Добавляем маппинг только по названию
                     if name:
                         company_mapping[name.lower()] = id
 
@@ -674,7 +637,7 @@ class PostgresSaver:
             placeholders = ','.join(['%s'] * len(vacancy_ids))
 
             cursor.execute(
-                f"SELECT vacancy_id, title, url, description, salary_from, salary_to, salary_currency, company_id FROM vacancies WHERE vacancy_id IN ({placeholders})",
+                f"SELECT vacancy_id, title, description, salary_from, salary_to, salary_currency, company_id FROM vacancies WHERE vacancy_id IN ({placeholders})",
                 vacancy_ids
             )
 
@@ -708,38 +671,14 @@ class PostgresSaver:
                         else:
                             employer_name = str(vacancy.employer)
 
-                    # Поиск по внешнему ID с учетом источника
-                    if employer_id and hasattr(vacancy, 'source'):
-                        # Формируем ключ поиска с указанием источника
-                        source_key = f"{vacancy.source}:{employer_id}"
-                        mapped_company_id = company_mapping.get(source_key)
-
-                        # Если не найдено с источником, пробуем без источника
-                        if not mapped_company_id:
-                            mapped_company_id = company_mapping.get(str(employer_id))
-
-                    # Также проверяем специфичные поля для SJ
-                    if not mapped_company_id and hasattr(vacancy, 'source') and vacancy.source == 'superjob.ru':
-                        # Для SuperJob проверяем firm_id или client_id в исходных данных
-                        if hasattr(vacancy, '_raw_data') and vacancy._raw_data:
-                            sj_firm_id = vacancy._raw_data.get('firm_id') or vacancy._raw_data.get('client_id')
-                            if sj_firm_id:
-                                source_key = f"superjob.ru:{sj_firm_id}"
-                                mapped_company_id = company_mapping.get(source_key) or company_mapping.get(str(sj_firm_id))
-
-                    # Если ID не найден по внешнему ID, ищем по имени
-                    if not mapped_company_id and employer_name and employer_name.strip():
+                    # Поиск компании только по названию
+                    if employer_name and employer_name.strip():
                         employer_lower = employer_name.lower().strip()
 
-                        # 1. Поиск по внешнему ID (для HH)
-                        if employer_id and not mapped_company_id:
-                            mapped_company_id = company_mapping.get(str(employer_id))
+                        # 1. Прямое соответствие по названию
+                        mapped_company_id = company_mapping.get(employer_lower)
 
-                        # 2. Прямое соответствие по названию
-                        if not mapped_company_id:
-                            mapped_company_id = company_mapping.get(employer_lower)
-
-                        # 3. Поиск частичного соответствия (улучшенный)
+                        # 2. Поиск частичного соответствия
                         if not mapped_company_id:
                             # Сначала ищем точные вхождения
                             for alt_name, comp_id in company_mapping.items():
@@ -747,21 +686,19 @@ class PostgresSaver:
                                     mapped_company_id = comp_id
                                     break
 
-                        # 4. Поиск частичного соответствия
+                        # 3. Поиск частичного соответствия
                         if not mapped_company_id:
                             for alt_name, comp_id in company_mapping.items():
                                 if isinstance(alt_name, str) and len(alt_name) > 2 and (alt_name in employer_lower or employer_lower in alt_name):
                                     mapped_company_id = comp_id
                                     break
 
-                        # 5. Логирование для отладки
+                        # 4. Логирование для отладки
                         if not mapped_company_id and employer_name:
-                            source_info = f" (source: {getattr(vacancy, 'source', 'unknown')})"
-                            logger.debug(f"Company_id не найден для работодателя: '{employer_name}'{source_info} (vacancy_id: {vacancy.vacancy_id})")
+                            logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
 
                     has_changes = (
                         existing['title'] != vacancy.title or
-                        existing['url'] != vacancy.url or
                         existing['description'] != vacancy.description or
                         existing['salary_from'] != salary_from or
                         existing['salary_to'] != salary_to or
@@ -799,38 +736,14 @@ class PostgresSaver:
                         else:
                             employer_name = str(vacancy.employer)
 
-                    # Поиск по внешнему ID с учетом источника
-                    if employer_id and hasattr(vacancy, 'source'):
-                        # Формируем ключ поиска с указанием источника
-                        source_key = f"{vacancy.source}:{employer_id}"
-                        mapped_company_id = company_mapping.get(source_key)
-
-                        # Если не найдено с источником, пробуем без источника
-                        if not mapped_company_id:
-                            mapped_company_id = company_mapping.get(str(employer_id))
-
-                    # Также проверяем специфичные поля для SJ
-                    if not mapped_company_id and hasattr(vacancy, 'source') and vacancy.source == 'superjob.ru':
-                        # Для SuperJob проверяем firm_id или client_id в исходных данных
-                        if hasattr(vacancy, '_raw_data') and vacancy._raw_data:
-                            sj_firm_id = vacancy._raw_data.get('firm_id') or vacancy._raw_data.get('client_id')
-                            if sj_firm_id:
-                                source_key = f"superjob.ru:{sj_firm_id}"
-                                mapped_company_id = company_mapping.get(source_key) or company_mapping.get(str(sj_firm_id))
-
-                    # Если ID не найден по внешнему ID, ищем по имени
-                    if not mapped_company_id and employer_name and employer_name.strip():
+                    # Поиск компании только по названию
+                    if employer_name and employer_name.strip():
                         employer_lower = employer_name.lower().strip()
 
-                        # 1. Поиск по внешнему ID (для HH)
-                        if employer_id and not mapped_company_id:
-                            mapped_company_id = company_mapping.get(str(employer_id))
+                        # 1. Прямое соответствие по названию
+                        mapped_company_id = company_mapping.get(employer_lower)
 
-                        # 2. Прямое соответствие по названию
-                        if not mapped_company_id:
-                            mapped_company_id = company_mapping.get(employer_lower)
-
-                        # 3. Поиск частичного соответствия (улучшенный)
+                        # 2. Поиск частичного соответствия
                         if not mapped_company_id:
                             # Сначала ищем точные вхождения
                             for alt_name, comp_id in company_mapping.items():
@@ -838,17 +751,16 @@ class PostgresSaver:
                                     mapped_company_id = comp_id
                                     break
 
-                        # 4. Поиск частичного соответствия
+                        # 3. Поиск частичного соответствия
                         if not mapped_company_id:
                             for alt_name, comp_id in company_mapping.items():
                                 if isinstance(alt_name, str) and len(alt_name) > 2 and (alt_name in employer_lower or employer_lower in alt_name):
                                     mapped_company_id = comp_id
                                     break
 
-                        # 5. Логирование для отладки
+                        # 4. Логирование для отладки
                         if not mapped_company_id and employer_name:
-                            source_info = f" (source: {getattr(vacancy, 'source', 'unknown')})"
-                            logger.debug(f"Company_id не найден для работодателя: '{employer_name}'{source_info} (vacancy_id: {vacancy.vacancy_id})")
+                            logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
 
 
                     # Конвертируем employer в строку для сохранения в БД
@@ -912,38 +824,14 @@ class PostgresSaver:
                         else:
                             employer_name = str(vacancy.employer)
 
-                    # Поиск по внешнему ID с учетом источника
-                    if employer_id and hasattr(vacancy, 'source'):
-                        # Формируем ключ поиска с указанием источника
-                        source_key = f"{vacancy.source}:{employer_id}"
-                        mapped_company_id = company_mapping.get(source_key)
-
-                        # Если не найдено с источником, пробуем без источника
-                        if not mapped_company_id:
-                            mapped_company_id = company_mapping.get(str(employer_id))
-
-                    # Также проверяем специфичные поля для SJ
-                    if not mapped_company_id and hasattr(vacancy, 'source') and vacancy.source == 'superjob.ru':
-                        # Для SuperJob проверяем firm_id или client_id в исходных данных
-                        if hasattr(vacancy, '_raw_data') and vacancy._raw_data:
-                            sj_firm_id = vacancy._raw_data.get('firm_id') or vacancy._raw_data.get('client_id')
-                            if sj_firm_id:
-                                source_key = f"superjob.ru:{sj_firm_id}"
-                                mapped_company_id = company_mapping.get(source_key) or company_mapping.get(str(sj_firm_id))
-
-                    # Если ID не найден по внешнему ID, ищем по имени
-                    if not mapped_company_id and employer_name and employer_name.strip():
+                    # Поиск компании только по названию
+                    if employer_name and employer_name.strip():
                         employer_lower = employer_name.lower().strip()
 
-                        # 1. Поиск по внешнему ID (для HH)
-                        if employer_id and not mapped_company_id:
-                            mapped_company_id = company_mapping.get(str(employer_id))
+                        # 1. Прямое соответствие по названию
+                        mapped_company_id = company_mapping.get(employer_lower)
 
-                        # 2. Прямое соответствие по названию
-                        if not mapped_company_id:
-                            mapped_company_id = company_mapping.get(employer_lower)
-
-                        # 3. Поиск частичного соответствия (улучшенный)
+                        # 2. Поиск частичного соответствия
                         if not mapped_company_id:
                             # Сначала ищем точные вхождения
                             for alt_name, comp_id in company_mapping.items():
@@ -951,17 +839,16 @@ class PostgresSaver:
                                     mapped_company_id = comp_id
                                     break
 
-                        # 4. Поиск частичного соответствия
+                        # 3. Поиск частичного соответствия
                         if not mapped_company_id:
                             for alt_name, comp_id in company_mapping.items():
                                 if isinstance(alt_name, str) and len(alt_name) > 2 and (alt_name in employer_lower or employer_lower in alt_name):
                                     mapped_company_id = comp_id
                                     break
 
-                        # 5. Логирование для отладки
+                        # 4. Логирование для отладки
                         if not mapped_company_id and employer_name:
-                            source_info = f" (source: {getattr(vacancy, 'source', 'unknown')})"
-                            logger.debug(f"Company_id не найден для работодателя: '{employer_name}'{source_info} (vacancy_id: {vacancy.vacancy_id})")
+                            logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
 
 
                     # Конвертируем employer в строку для сохранения в БД
@@ -1515,19 +1402,13 @@ class PostgresSaver:
                 # Ensure companies table exists before querying
                 self._ensure_companies_table_exists()
 
-                cursor.execute("SELECT id, external_id, name, source FROM companies")
+                cursor.execute("SELECT id, name FROM companies")
                 companies = cursor.fetchall()
 
                 for company in companies:
-                    id, external_id, name, source = company
+                    id, name = company
 
-                    # Добавляем маппинг по внешнему ID с указанием источника
-                    if external_id:
-                        company_mapping[f"{source}:{external_id}"] = id
-                        # Также добавляем просто по external_id для обратной совместимости
-                        company_mapping[str(external_id)] = id
-
-                    # Добавляем маппинг по названию
+                    # Добавляем маппинг только по названию
                     if name:
                         company_mapping[name.lower()] = id
 
@@ -1557,38 +1438,14 @@ class PostgresSaver:
                     else:
                         employer_name = str(vacancy.employer)
 
-                # Поиск по внешнему ID с учетом источника
-                if employer_id and hasattr(vacancy, 'source'):
-                    # Формируем ключ поиска с указанием источника
-                    source_key = f"{vacancy.source}:{employer_id}"
-                    mapped_company_id = company_mapping.get(source_key)
-
-                    # Если не найдено с источником, пробуем без источника
-                    if not mapped_company_id:
-                        mapped_company_id = company_mapping.get(str(employer_id))
-
-                # Также проверяем специфичные поля для SJ
-                if not mapped_company_id and hasattr(vacancy, 'source') and vacancy.source == 'superjob.ru':
-                    # Для SuperJob проверяем firm_id или client_id в исходных данных
-                    if hasattr(vacancy, '_raw_data') and vacancy._raw_data:
-                        sj_firm_id = vacancy._raw_data.get('firm_id') or vacancy._raw_data.get('client_id')
-                        if sj_firm_id:
-                            source_key = f"superjob.ru:{sj_firm_id}"
-                            mapped_company_id = company_mapping.get(source_key) or company_mapping.get(str(sj_firm_id))
-
-                # Если ID не найден по внешнему ID, ищем по имени
-                if not mapped_company_id and employer_name and employer_name.strip():
+                # Поиск компании только по названию
+                if employer_name and employer_name.strip():
                     employer_lower = employer_name.lower().strip()
 
-                    # 1. Поиск по внешнему ID (для HH)
-                    if employer_id and not mapped_company_id:
-                        mapped_company_id = company_mapping.get(str(employer_id))
+                    # 1. Прямое соответствие по названию
+                    mapped_company_id = company_mapping.get(employer_lower)
 
-                    # 2. Прямое соответствие по названию
-                    if not mapped_company_id:
-                        mapped_company_id = company_mapping.get(employer_lower)
-
-                    # 3. Поиск частичного соответствия (улучшенный)
+                    # 2. Поиск частичного соответствия
                     if not mapped_company_id:
                         # Сначала ищем точные вхождения
                         for alt_name, comp_id in company_mapping.items():
@@ -1596,17 +1453,16 @@ class PostgresSaver:
                                 mapped_company_id = comp_id
                                 break
 
-                        # 4. Поиск частичного соответствия
-                        if not mapped_company_id:
-                            for alt_name, comp_id in company_mapping.items():
-                                if isinstance(alt_name, str) and len(alt_name) > 2 and (alt_name in employer_lower or employer_lower in alt_name):
-                                    mapped_company_id = comp_id
-                                    break
+                    # 3. Поиск частичного соответствия
+                    if not mapped_company_id:
+                        for alt_name, comp_id in company_mapping.items():
+                            if isinstance(alt_name, str) and len(alt_name) > 2 and (alt_name in employer_lower or employer_lower in alt_name):
+                                mapped_company_id = comp_id
+                                break
 
-                        # 5. Логирование для отладки
-                        if not mapped_company_id and employer_name:
-                            source_info = f" (source: {getattr(vacancy, 'source', 'unknown')})"
-                            logger.debug(f"Company_id не найден для работодателя: '{employer_name}'{source_info} (vacancy_id: {vacancy.vacancy_id})")
+                    # 4. Логирование для отладки
+                    if not mapped_company_id and employer_name:
+                        logger.debug(f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})")
 
 
                 # Конвертируем employer в строку для сохранения в БД

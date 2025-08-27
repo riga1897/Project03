@@ -82,14 +82,9 @@ class DBManager:
                     """)
                     logger.info("✓ Базовая структура таблицы companies проверена")
 
-                    # Добавляем недостающие поля в таблицу companies (убираем лишние поля)
+                    # Добавляем недостающие поля в таблицу companies (только description)
                     company_fields = [
-                        ("external_id", "VARCHAR(50)"),
-                        ("description", "TEXT"),
-                        ("url", "TEXT"),
-                        ("logo_url", "TEXT"),
-                        ("site_url", "TEXT"),
-                        ("source", "VARCHAR(50)")
+                        ("description", "TEXT")
                     ]
 
                     for field_name, field_type in company_fields:
@@ -209,13 +204,11 @@ class DBManager:
             # Добавляем целевые компании
             for company in TARGET_COMPANIES:
                 cursor.execute("""
-                    INSERT INTO companies (name, external_id, source, description)
-                    VALUES (%s, %s, %s, %s)
-                    ON CONFLICT DO NOTHING
+                    INSERT INTO companies (name, description)
+                    VALUES (%s, %s)
+                    ON CONFLICT (name) DO NOTHING
                 """, (
                     company["name"],
-                    company["hh_id"],
-                    "hh.ru",
                     company.get("description", "")
                 ))
 
@@ -281,8 +274,8 @@ class DBManager:
                         c.name as company_name,                    -- Название компании из справочника
                         COUNT(v.id) as vacancy_count               -- Подсчет количества вакансий для каждой компании
                     FROM companies c                               -- Основная таблица компаний
-                    LEFT JOIN vacancies v ON c.company_id = v.company_id  -- Левое соединение с таблицей вакансий
-                    GROUP BY c.name, c.company_id                  -- Группировка по компании для агрегации COUNT()
+                    LEFT JOIN vacancies v ON c.id = v.company_id  -- Левое соединение с таблицей вакансий
+                    GROUP BY c.name, c.id                  -- Группировка по компании для агрегации COUNT()
                     ORDER BY vacancy_count DESC, company_name      -- Сортировка: сначала по количеству (убывание), затем по имени
                     """
 
@@ -423,7 +416,7 @@ class DBManager:
             v.url,                                         -- Ссылка на вакансию
             v.vacancy_id,                                  -- ID вакансии
             v.employer,                                    -- Оригинальное поле employer для совместимости
-            c.company_id                                   -- ID компании из справочника
+            c.id as company_id                             -- ID компании из справочника
         FROM vacancies v                                   -- Основная таблица вакансий
         LEFT JOIN companies c ON v.company_id = c.id  -- Левое соединение для получения названия компании
         -- Сортировка по названию компании, затем по названию вакансии
