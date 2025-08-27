@@ -76,8 +76,7 @@ class DBManager(AbstractDBManager):
                             id SERIAL PRIMARY KEY,
                             name VARCHAR(255) NOT NULL UNIQUE,
                             hh_id VARCHAR(50),
-                            sj_id VARCHAR(50),
-                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            sj_id VARCHAR(50)
                         );
                     """)
                     logger.info("✓ Таблица companies создана/проверена")

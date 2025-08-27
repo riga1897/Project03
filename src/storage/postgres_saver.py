@@ -161,8 +161,7 @@ class PostgresSaver(AbstractVacancyStorage):
                     id SERIAL PRIMARY KEY,
                     name VARCHAR(255) NOT NULL,
                     hh_id VARCHAR(50),
-                    sj_id VARCHAR(50),
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    sj_id VARCHAR(50)
                 );
             """)
 
@@ -274,7 +273,7 @@ class PostgresSaver(AbstractVacancyStorage):
                         logger.info("✓ Поле company_id пересоздано с типом INTEGER")
                     except psycopg2.Error as e:
                         logger.error(f"Не удалось пересоздать поле company_id: {e}")
-                
+
                 # Добавляем поле employer если оно отсутствует
                 if field_name == 'employer':
                     cursor.execute("""
@@ -1723,9 +1722,9 @@ class PostgresSaver(AbstractVacancyStorage):
 
         return {'conditions': conditions, 'params': params}
 
-    
 
-    
+
+
 
     def _normalize_published_date(self, published_at: Any) -> Optional[datetime]:
         """
