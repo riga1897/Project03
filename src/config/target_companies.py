@@ -252,6 +252,16 @@ def get_target_company_ids() -> List[str]:
     return TargetCompanies.get_hh_ids()
 
 
+def get_target_company_names() -> List[str]:
+    """
+    Возвращает список названий целевых компаний
+    
+    Returns:
+        List[str]: Список названий компаний
+    """
+    return TargetCompanies.get_company_names()
+
+
 # Для обратной совместимости - список словарей
 TARGET_COMPANIES = [
     {
