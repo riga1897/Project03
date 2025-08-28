@@ -147,67 +147,9 @@ class UnifiedAPI:
 
             except Exception as e:
                 logger.error(f"Ошибка SQL-дедупликации: {e}")
-                print("Переходим к простой дедупликации...")
-
-                # Fallback: простая дедупликация с фильтрацией
-                from src.config.target_companies import TargetCompanies
-                TARGET_COMPANIES = TargetCompanies.get_all_companies()
-                target_company_names = [company.name.lower() for company in TARGET_COMPANIES]
-
-                seen = set()
-                unique_vacancies = []
-
-                for vacancy in all_vacancies:
-                    # Проверяем, является ли компания целевой (усиленная проверка)
-                    company = vacancy.get("employer", {}).get("name", vacancy.get("firm_name", "")).lower().strip()
-                    
-                    is_target = False
-                    # Более строгая проверка с использованием TargetCompanies.find_company_by_name
-                    target_company = TargetCompanies.find_company_by_name(company)
-                    if target_company:
-                        is_target = True
-                    else:
-                        # Дополнительная проверка по aliases и частичному вхождению
-                        for target_company_info in TARGET_COMPANIES:
-                            target_name_lower = target_company_info.name.lower()
-                            # Точное совпадение или содержание
-                            if (target_name_lower == company or 
-                                company in target_name_lower or 
-                                target_name_lower in company):
-                                is_target = True
-                                break
-                            # Проверяем aliases
-                            for alias in target_company_info.aliases:
-                                alias_lower = alias.lower()
-                                if (alias_lower == company or 
-                                    company in alias_lower or 
-                                    alias_lower in company):
-                                    is_target = True
-                                    break
-                            if is_target:
-                                break
-
-                    if is_target:
-                        # Создаем ключ дедупликации
-                        title = vacancy.get("name", vacancy.get("profession", "")).lower().strip()
-                        
-                        salary_key = ""
-                        if "salary" in vacancy and vacancy["salary"]:
-                            salary = vacancy["salary"]
-                            salary_from = salary.get("from", 0) or 0
-                            salary_to = salary.get("to", 0) or 0
-                            salary_key = f"{salary_from}-{salary_to}"
-                        elif "payment_from" in vacancy:
-                            salary_key = f"{vacancy.get('payment_from', 0)}-{vacancy.get('payment_to', 0)}"
-
-                        dedup_key = (title, company, salary_key)
-
-                        if dedup_key not in seen:
-                            seen.add(dedup_key)
-                            unique_vacancies.append(vacancy)
-
-                all_vacancies = unique_vacancies
-                print(f"Найдено {len(all_vacancies)} уникальных вакансий от целевых компаний (простая дедупликация)")
+                logger.error("SQL-дедупликация обязательна. Fallback логика отключена.")
+                print("Ошибка SQL-дедупликации. Операция прервана.")
+                all_vacancies = []
 
             return all_vacancies
         else:

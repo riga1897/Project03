@@ -291,8 +291,9 @@ class BaseJobAPI(ABC):
 
         except Exception as e:
             logger.error(f"Ошибка при SQL-дедупликации с фильтрацией: {e}")
-            # Fallback на простую фильтрацию
-            return self._simple_deduplicate_with_filter_fallback(vacancies, source)
+            # Строгая логика - если SQL не работает, возвращаем пустой список
+            logger.error("SQL-дедупликация обязательна. Fallback логика отключена.")
+            return []
 
     def _normalize_text(self, text: str) -> str:
         """
@@ -328,58 +329,7 @@ class BaseJobAPI(ABC):
         else:
             return "0-0"
 
-    def _simple_deduplicate_with_filter_fallback(self, vacancies: List[Dict], source: str = None) -> List[Dict]:
-        """
-        Простая дедупликация с фильтрацией как fallback при ошибках SQL
-        """
-        from src.config.target_companies import TargetCompanies
-        TARGET_COMPANIES = TargetCompanies.get_all_companies()
-        target_company_names = [company.name.lower() for company in TARGET_COMPANIES]
-
-        seen = set()
-        unique_vacancies = []
-        target_vacancies = []
-
-        # Сначала фильтруем по целевым компаниям
-        for vacancy in vacancies:
-            company = ""
-            if "employer" in vacancy and vacancy["employer"]:
-                company = vacancy["employer"].get("name", "").lower()
-            elif "firm_name" in vacancy:
-                company = vacancy.get("firm_name", "").lower()
-
-            # Проверяем, является ли компания целевой
-            is_target = False
-            for target_name in target_company_names:
-                if target_name in company or company in target_name:
-                    is_target = True
-                    break
-
-            if is_target:
-                target_vacancies.append(vacancy)
-
-        # Затем дедуплицируем целевые вакансии
-        for vacancy in target_vacancies:
-            title = self._normalize_text(vacancy.get("name", vacancy.get("profession", "")))
-
-            company = ""
-            if "employer" in vacancy and vacancy["employer"]:
-                company = self._normalize_text(vacancy["employer"].get("name", ""))
-            elif "firm_name" in vacancy:
-                company = self._normalize_text(vacancy.get("firm_name", ""))
-
-            salary_key = self._get_salary_key(vacancy)
-
-            dedup_key = (title, company, salary_key)
-
-            if dedup_key not in seen:
-                seen.add(dedup_key)
-                unique_vacancies.append(vacancy)
-
-        duplicates_found = len(target_vacancies) - len(unique_vacancies)
-        logger.info(f"Fallback дедупликация с фильтрацией: {len(vacancies)} -> {len(target_vacancies)} целевых -> {len(unique_vacancies)} уникальных (удалено {duplicates_found} дубликатов)")
-
-        return unique_vacancies
+    
 
     def clear_cache(self, source: str) -> None:
         """
