@@ -6,6 +6,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 
 from src.storage.abstract import AbstractVacancyStorage
+from src.vacancies.abstract import AbstractVacancy
 from src.vacancies.models import Vacancy
 
 logger = logging.getLogger(__name__)
