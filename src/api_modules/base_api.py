@@ -112,33 +112,22 @@ class BaseJobAPI(ABC):
             from src.config.target_companies import TargetCompanies
             TARGET_COMPANIES = TargetCompanies.get_all_companies()
 
-            # Создаем расширенный список альтернативных названий
-            target_company_patterns = set()
+            # Создаем паттерны для поиска целевых компаний (более точные)
+            target_patterns = []
+            exact_names = []  # Для точного совпадения
+
             for company in TARGET_COMPANIES:
-                name = company.name.lower()
-                target_company_patterns.add(name)
+                # Основное название компании
+                clean_name = company.name.lower().strip()
+                target_patterns.append(f"%{clean_name}%")
+                exact_names.append(clean_name)
 
-                # Добавляем известные альтернативы
-                alternatives = {
-                    "яндекс": ["яндекс"],
-                    "тинькофф": ["т-банк", "tinkoff", "тинькофф"],
-                    "сбер": ["сбербанк", "сбер", "sberbank"],
-                    "wildberries": ["wildberries", "wb"],
-                    "ozon": ["ozon"],
-                    "vk (вконтакте)": ["vk", "вконтакте", "вк"],
-                    "kaspersky": ["kaspersky", "лаборатория касперского"],
-                    "авито": ["авито", "avito"],
-                    "x5 retail group": ["x5", "x5 retail group"],
-                    "ростелеком": ["ростелеком", "rostelecom"],
-                    "альфа-банк": ["альфа-банк", "alfa-bank"],
-                    "jetbrains": ["jetbrains"],
-                    "2gis": ["2гис", "2gis"],
-                    "skyeng": ["skyeng"],
-                    "delivery club": ["delivery club"]
-                }
+                # Добавляем aliases
+                for alias in company.aliases:
+                    clean_alias = alias.lower().strip()
+                    target_patterns.append(f"%{clean_alias}%")
+                    exact_names.append(clean_alias)
 
-                if name in alternatives:
-                    target_company_patterns.update(alternatives[name])
 
             # Используем PostgresSaver для SQL-операций
             from src.storage.postgres_saver import PostgresSaver
@@ -174,16 +163,6 @@ class BaseJobAPI(ABC):
                         elif "firm_name" in vacancy:
                             company = self._normalize_text(vacancy.get("firm_name", ""))
 
-                        # Проверяем, является ли компания целевой
-                        is_target = False
-                        if company:
-                            company_lower = company.lower()
-                            # Проверяем точное совпадение или частичное
-                            for pattern in target_company_patterns:
-                                if pattern == company_lower or pattern in company_lower or company_lower in pattern:
-                                    is_target = True
-                                    break
-
                         # Нормализуем зарплату
                         salary_key = self._get_salary_key(vacancy)
 
@@ -206,23 +185,43 @@ class BaseJobAPI(ABC):
                             area,
                             dedup_key,
                             source or "unknown",
-                            is_target
+                            False # Флаг будет обновлен позже
                         ))
 
-                    # Bulk insert данных для анализа
-                    from psycopg2.extras import execute_values
-                    execute_values(
-                        cursor,
-                        """INSERT INTO temp_dedup_analysis (
+                    # Вставляем данные без определения целевых компаний
+                    insert_query = """
+                        INSERT INTO temp_dedup_analysis (
                             original_index, vacancy_id, title_normalized, company_normalized,
                             salary_key, area_normalized, dedup_key, source, is_target_company
-                        ) VALUES %s""",
-                        analysis_data,
-                        template=None,
-                        page_size=1000
+                        ) VALUES %s
+                    """
+
+                    from psycopg2.extras import execute_values
+                    execute_values(
+                        cursor, insert_query, analysis_data,
+                        template=None, page_size=1000
                     )
 
-                    # SQL-запрос для поиска уникальных вакансий от целевых компаний
+                    # Обновляем флаг целевых компаний более точно
+                    # Сначала точное совпадение
+                    for exact_name in exact_names:
+                        cursor.execute("""
+                            UPDATE temp_dedup_analysis 
+                            SET is_target_company = TRUE 
+                            WHERE LOWER(company_normalized) = %s
+                        """, (exact_name,))
+
+                    # Потом частичное совпадение только для оставшихся
+                    like_conditions = " OR ".join(["LOWER(company_normalized) LIKE %s"] * len(target_patterns))
+                    if target_patterns:
+                        cursor.execute(f"""
+                            UPDATE temp_dedup_analysis 
+                            SET is_target_company = TRUE 
+                            WHERE is_target_company = FALSE AND ({like_conditions})
+                        """, target_patterns)
+
+                    # Получаем только уникальные записи от целевых компаний
+                    # Приоритет: сначала фильтруем по целевым компаниям, потом дедуплицируем
                     cursor.execute("""
                         SELECT original_index
                         FROM (
@@ -230,12 +229,17 @@ class BaseJobAPI(ABC):
                                 original_index,
                                 ROW_NUMBER() OVER (
                                     PARTITION BY dedup_key 
-                                    ORDER BY original_index
+                                    ORDER BY 
+                                        CASE WHEN is_target_company THEN 0 ELSE 1 END,
+                                        original_index
                                 ) as row_num
                             FROM temp_dedup_analysis
-                            WHERE is_target_company = TRUE
                         ) ranked
-                        WHERE row_num = 1
+                        WHERE row_num = 1 AND original_index IN (
+                            SELECT original_index 
+                            FROM temp_dedup_analysis 
+                            WHERE is_target_company = TRUE
+                        )
                         ORDER BY original_index
                     """)
 

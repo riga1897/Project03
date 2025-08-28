@@ -158,14 +158,34 @@ class UnifiedAPI:
                 unique_vacancies = []
 
                 for vacancy in all_vacancies:
-                    # Проверяем, является ли компания целевой
+                    # Проверяем, является ли компания целевой (усиленная проверка)
                     company = vacancy.get("employer", {}).get("name", vacancy.get("firm_name", "")).lower().strip()
                     
                     is_target = False
-                    for target_name in target_company_names:
-                        if target_name in company or company in target_name:
-                            is_target = True
-                            break
+                    # Более строгая проверка с использованием TargetCompanies.find_company_by_name
+                    target_company = TargetCompanies.find_company_by_name(company)
+                    if target_company:
+                        is_target = True
+                    else:
+                        # Дополнительная проверка по aliases и частичному вхождению
+                        for target_company_info in TARGET_COMPANIES:
+                            target_name_lower = target_company_info.name.lower()
+                            # Точное совпадение или содержание
+                            if (target_name_lower == company or 
+                                company in target_name_lower or 
+                                target_name_lower in company):
+                                is_target = True
+                                break
+                            # Проверяем aliases
+                            for alias in target_company_info.aliases:
+                                alias_lower = alias.lower()
+                                if (alias_lower == company or 
+                                    company in alias_lower or 
+                                    alias_lower in company):
+                                    is_target = True
+                                    break
+                            if is_target:
+                                break
 
                     if is_target:
                         # Создаем ключ дедупликации
