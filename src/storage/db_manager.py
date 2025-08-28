@@ -81,7 +81,7 @@ class DBManager(AbstractDBManager):
                     """)
                     logger.info("✓ Таблица companies создана/проверена")
 
-                    # Создаем полную таблицу вакансий сразу
+                    # Создаем полную таблицу вакансий сразу с правильными типами
                     cursor.execute("""
                         CREATE TABLE IF NOT EXISTS vacancies (
                             id SERIAL PRIMARY KEY,
@@ -105,6 +105,41 @@ class DBManager(AbstractDBManager):
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                         );
                     """)
+                    
+                    # Проверяем и исправляем тип company_id если нужно
+                    cursor.execute("""
+                        SELECT data_type 
+                        FROM information_schema.columns 
+                        WHERE table_name = 'vacancies' AND column_name = 'company_id'
+                    """)
+                    
+                    result = cursor.fetchone()
+                    if result and result[0] not in ('integer', 'bigint'):
+                        logger.warning(f"Поле company_id имеет неправильный тип {result[0]}, исправляем...")
+                        try:
+                            # Сохраняем данные
+                            cursor.execute("ALTER TABLE vacancies RENAME COLUMN company_id TO company_id_old")
+                            # Создаем новое поле с правильным типом
+                            cursor.execute("ALTER TABLE vacancies ADD COLUMN company_id INTEGER")
+                            # Пытаемся скопировать данные с приведением типа
+                            cursor.execute("""
+                                UPDATE vacancies SET company_id = 
+                                CASE 
+                                    WHEN company_id_old ~ '^[0-9]+$' THEN company_id_old::INTEGER 
+                                    ELSE NULL 
+                                END
+                            """)
+                            # Удаляем старое поле
+                            cursor.execute("ALTER TABLE vacancies DROP COLUMN company_id_old")
+                            logger.info("✓ Поле company_id исправлено на INTEGER")
+                        except Exception as e:
+                            logger.warning(f"Не удалось исправить тип company_id: {e}")
+                            # Откатываемся
+                            try:
+                                cursor.execute("ALTER TABLE vacancies DROP COLUMN IF EXISTS company_id")
+                                cursor.execute("ALTER TABLE vacancies RENAME COLUMN company_id_old TO company_id")
+                            except:
+                                pass
                     
                     logger.info("✓ Таблица vacancies создана/проверена")
 

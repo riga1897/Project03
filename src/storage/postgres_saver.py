@@ -291,7 +291,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 ("area", "VARCHAR(200)"),
                 ("source", "VARCHAR(50) DEFAULT 'unknown'"),
                 ("published_at", "TIMESTAMP"),
-                ("company_id", "INTEGER REFERENCES companies(id)")
+                ("company_id", "INTEGER")
             ]
 
             # Проверяем и добавляем недостающие поля
@@ -307,11 +307,13 @@ class PostgresSaver(AbstractVacancyStorage):
                     logger.info(f"Добавляем поле {field_name} в таблицу vacancies...")
                     cursor.execute(f"ALTER TABLE vacancies ADD COLUMN {field_name} {field_type};")
                     logger.info(f"✓ Поле {field_name} добавлено")
-                elif field_name == 'company_id' and field_info[1] != 'integer':
+                elif field_name == 'company_id' and field_info[1] not in ('integer', 'bigint'):
                     # Специальная обработка для company_id - должен быть INTEGER
                     logger.warning(f"Поле company_id имеет тип {field_info[1]}, исправляем на INTEGER...")
                     try:
+                        # Удаляем старое поле с неправильным типом
                         cursor.execute("ALTER TABLE vacancies DROP COLUMN IF EXISTS company_id CASCADE")
+                        # Добавляем новое поле с правильным типом
                         cursor.execute("ALTER TABLE vacancies ADD COLUMN company_id INTEGER")
                         logger.info("✓ Поле company_id пересоздано с типом INTEGER")
                     except psycopg2.Error as e:
