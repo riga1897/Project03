@@ -7,10 +7,8 @@
 
 import logging
 import re
-from datetime import datetime
 from typing import Optional
 
-from src.config.target_companies import TargetCompanies
 from src.storage.db_manager import DBManager
 
 logger = logging.getLogger(__name__)
@@ -142,10 +140,10 @@ class DBManagerDemo:
                 companies_with_vacancies += 1
 
         print("-" * 80)
-        print(f"АНАЛИЗ ПО ЦЕЛЕВЫМ КОМПАНИЯМ:")
-        print(f"   • Целевых компаний с вакансиями: {companies_with_vacancies} из {len(TARGET_COMPANIES)}")
+        print("АНАЛИЗ ПО ЦЕЛЕВЫМ КОМПАНИЯМ:")
+        print(f"   • Целевых компаний с вакансиями: {companies_with_vacancies} из {len(TargetCompanies.get_all_companies())}")
         print(f"   • Всего вакансий от целевых компаний: {total_vacancies}")
-        print(f"   • Покрытие целевых компаний: {(companies_with_vacancies/len(TARGET_COMPANIES)*100):.1f}%")
+        print(f"   • Покрытие целевых компаний: {(companies_with_vacancies/len(TargetCompanies.get_all_companies())*100):.1f}%")
 
         if total_vacancies == 0:
             print("СОВЕТ: Для получения данных выполните поиск вакансий через пункт меню 1")
@@ -206,7 +204,7 @@ class DBManagerDemo:
             company_name = vacancy.get("company_name", "Неизвестная компания")
             companies_with_vacancies[company_name] = companies_with_vacancies.get(company_name, 0) + 1
 
-        print(f"\nРаспределение по компаниям:")
+        print("\nРаспределение по компаниям:")
         for company, count in sorted(companies_with_vacancies.items(), key=lambda x: -x[1]):
             print(f"  {company}: {count} вакансий")
 
