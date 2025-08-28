@@ -7,7 +7,6 @@ import logging
 
 from src.config.app_config import AppConfig
 from src.storage.storage_factory import StorageFactory
-from src.ui_interfaces.console_interface import UserInterface
 
 # Настройка логирования
 logging.basicConfig(
