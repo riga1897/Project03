@@ -109,8 +109,6 @@ class DBManagerDemo:
 
         from src.config.target_companies import TargetCompanies
 
-        TARGET_COMPANIES = TargetCompanies.get_all_companies()
-
         print("Анализ показывает только данные от целевых компаний из конфигурации проекта")
         print("Метод фильтрует результаты и показывает статистику по всем 15 целевым компаниям")
         print()
