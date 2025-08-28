@@ -102,7 +102,7 @@ class FileCache:
             return False
 
     def load_response(self, source: str, params: Dict[str, Any]) -> Optional[Dict]:
-        """Загрузка кэшированного ответа"""
+        """Загрузка кэшированного ответа с проверкой целостности"""
         try:
             params_hash = self._generate_params_hash(params)
             filename = f"{source}_{params_hash}.json"
@@ -111,16 +111,71 @@ class FileCache:
             if not filepath.exists():
                 return None
 
+            # Проверяем размер файла - слишком маленькие файлы могут быть повреждены
+            file_size = filepath.stat().st_size
+            if file_size < 50:  # Минимальный размер для валидного JSON с мета-данными
+                logger.warning(f"Файл кэша слишком маленький ({file_size} байт), удаляем: {filepath}")
+                filepath.unlink()
+                return None
+
             with open(filepath, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except (json.JSONDecodeError, OSError, Exception):
+                cached_data = json.load(f)
+
+            # Проверяем структуру кэшированных данных
+            if not self._validate_cached_structure(cached_data):
+                logger.warning(f"Некорректная структура кэша, удаляем: {filepath}")
+                filepath.unlink()
+                return None
+
+            return cached_data
+
+        except (json.JSONDecodeError, OSError, Exception) as e:
+            logger.warning(f"Ошибка чтения кэша {filepath}: {e}")
             # При ошибке декодирования или доступа к файлу, считаем кэш невалидным
             if filepath.exists():
                 try:
                     filepath.unlink()  # Удаляем некорректный файл
+                    logger.info(f"Удален поврежденный файл кэша: {filepath}")
                 except OSError as e:
                     logger.error(f"Ошибка удаления некорректного файла кэша {filepath}: {e}")
             return None
+
+    def _validate_cached_structure(self, cached_data: Dict) -> bool:
+        """
+        Валидация структуры кэшированных данных
+
+        Args:
+            cached_data: Загруженные из кэша данные
+
+        Returns:
+            bool: True если структура валидна
+        """
+        try:
+            # Проверяем наличие обязательных полей кэша
+            if not isinstance(cached_data, dict):
+                return False
+
+            required_fields = ["timestamp", "data", "meta"]
+            for field in required_fields:
+                if field not in cached_data:
+                    logger.warning(f"Отсутствует обязательное поле кэша: {field}")
+                    return False
+
+            # Проверяем структуру данных
+            data = cached_data.get("data", {})
+            if not isinstance(data, dict):
+                return False
+
+            # Для API данных проверяем наличие items
+            if "items" in data and not isinstance(data["items"], list):
+                logger.warning("Поле items должно быть списком")
+                return False
+
+            return True
+
+        except Exception as e:
+            logger.error(f"Ошибка валидации структуры кэша: {e}")
+            return False
 
     def clear(self, source: Optional[str] = None) -> None:
         """Очистка кэша"""

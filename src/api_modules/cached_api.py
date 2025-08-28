@@ -111,16 +111,30 @@ class CachedAPI(BaseJobAPI, ABC):
             data = self.connector._APIConnector__connect(url, params)
             logger.debug(f"Данные получены из API для {api_prefix}")
 
-            # Параллельно сохраняем в файловый кэш только валидные данные
-            if data and data != self._get_empty_response():
-                # Сохраняем в файловый кэш в data/cache/
-                self.cache.save_response(api_prefix, params, data)
-                logger.debug(f"Данные сохранены в файловый кэш data/cache/ для {api_prefix}")
+            # Проверяем целостность полученных данных перед кэшированием
+            if data and data != self._get_empty_response() and self._is_complete_response(data, params):
+                # Дополнительная валидация структуры данных
+                if self._validate_response_structure(data):
+                    # Сохраняем в файловый кэш только полные и валидные данные
+                    self.cache.save_response(api_prefix, params, data)
+                    logger.debug(f"Данные сохранены в файловый кэш data/cache/ для {api_prefix}")
+                else:
+                    logger.warning(f"Данные не прошли валидацию структуры, кэширование пропущено для {api_prefix}")
+            elif data and data != self._get_empty_response():
+                logger.warning(f"Данные неполные или повреждены, кэширование пропущено для {api_prefix}")
 
             return data
 
+        except (ConnectionError, TimeoutError) as e:
+            logger.error(f"Ошибка соединения с API {api_prefix}: {e}")
+            # При ошибке соединения не возвращаем пустой ответ, а пробуем кэш
+            cached_fallback = self.cache.load_response(api_prefix, params)
+            if cached_fallback:
+                logger.info(f"Используем устаревший кэш из-за проблем с соединением для {api_prefix}")
+                return cached_fallback.get("data", self._get_empty_response())
+            return self._get_empty_response()
         except Exception as e:
-            logger.error(f"Ошибка многоуровневого кэширования: {e}")
+            logger.error(f"Неизвестная ошибка API {api_prefix}: {e}")
             return self._get_empty_response()
 
     def clear_cache(self, api_prefix: str) -> None:
@@ -223,6 +237,79 @@ class CachedAPI(BaseJobAPI, ABC):
         except Exception as e:
             logger.error(f"Ошибка получения статуса кэша: {e}")
             return {"error": str(e)}
+
+    def _is_complete_response(self, data: Dict, params: Dict) -> bool:
+        """
+        Проверка полноты ответа API
+
+        Args:
+            data: Данные ответа API
+            params: Параметры запроса
+
+        Returns:
+            bool: True если ответ полный
+        """
+        try:
+            # Базовые проверки структуры
+            if not isinstance(data, dict):
+                return False
+
+            # Проверка наличия обязательных полей
+            if "items" not in data:
+                return False
+
+            items = data.get("items", [])
+            found = data.get("found", 0)
+            page = params.get("page", 0)
+            per_page = params.get("per_page", 20)
+
+            # Если это не последняя страница, должно быть максимальное количество элементов
+            if page == 0 and found > per_page and len(items) < per_page:
+                logger.warning(f"Неполная первая страница: получено {len(items)} из ожидаемых {per_page}")
+                return False
+
+            # Если найдено вакансий больше чем на странице, но список пустой - данные неполные
+            if found > 0 and not items and page == 0:
+                logger.warning("Найдены вакансии, но список пуст - возможно прерванное соединение")
+                return False
+
+            return True
+
+        except Exception as e:
+            logger.error(f"Ошибка проверки полноты ответа: {e}")
+            return False
+
+    def _validate_response_structure(self, data: Dict) -> bool:
+        """
+        Валидация структуры ответа API
+
+        Args:
+            data: Данные для валидации
+
+        Returns:
+            bool: True если структура валидна
+        """
+        try:
+            # Проверяем базовую структуру
+            if not isinstance(data, dict):
+                return False
+
+            items = data.get("items", [])
+            if not isinstance(items, list):
+                return False
+
+            # Проверяем несколько вакансий на корректность структуры
+            sample_size = min(3, len(items))
+            for i in range(sample_size):
+                if not self._validate_vacancy(items[i]):
+                    logger.warning(f"Некорректная структура вакансии в позиции {i}")
+                    return False
+
+            return True
+
+        except Exception as e:
+            logger.error(f"Ошибка валидации структуры ответа: {e}")
+            return False
 
     @abstractmethod
     def _get_empty_response(self) -> Dict:
