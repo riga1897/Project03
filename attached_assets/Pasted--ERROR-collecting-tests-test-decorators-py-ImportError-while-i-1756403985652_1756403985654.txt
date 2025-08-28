@@ -1,0 +1,30 @@
+__________________ ERROR collecting tests/test_decorators.py __________________
+ImportError while importing test module '/home/runner/workspace/tests/test_decorators.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_decorators.py:9: in <module>
+    from src.utils.decorators import timing_decorator, cache_result, error_handler
+E   ImportError: cannot import name 'timing_decorator' from 'src.utils.decorators' (/home/runner/workspace/src/utils/decorators.py)
+_________________ ERROR collecting tests/test_search_utils.py _________________
+ImportError while importing test module '/home/runner/workspace/tests/test_search_utils.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_search_utils.py:7: in <module>
+    from src.utils.search_utils import SearchUtils
+E   ImportError: cannot import name 'SearchUtils' from 'src.utils.search_utils' (/home/runner/workspace/src/utils/search_utils.py)
+________________ ERROR collecting tests/test_ui_navigation.py _________________
+ImportError while importing test module '/home/runner/workspace/tests/test_ui_navigation.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_ui_navigation.py:8: in <module>
+    from src.utils.ui_navigation import quick_paginate, navigate_pages, confirm_navigation
+E   ImportError: cannot import name 'navigate_pages' from 'src.utils.ui_navigation' (/home/runner/workspace/src/utils/ui_navigation.py)
