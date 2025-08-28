@@ -7,6 +7,7 @@ import logging
 
 from src.config.app_config import AppConfig
 from src.storage.storage_factory import StorageFactory
+from src.ui_interfaces.console_interface import UserInterface
 
 # Настройка логирования
 logging.basicConfig(
@@ -43,7 +44,7 @@ def main() -> None:
 
         # Проверка корректности инициализации
         test_companies = db_manager.get_companies_and_vacancies_count()
-        logger.info(f"✓ База данных инициализирована корректно. Найдено {len(test_companies)} компаний")
+        logger.info(f"База данных инициализирована корректно. Найдено {len(test_companies)} компаний")
 
         # Инициализируем конфигурацию приложения
         app_config = AppConfig()
@@ -53,9 +54,8 @@ def main() -> None:
         logger.info(f"Используется хранилище: {type(storage).__name__}")
 
         # Создаем пользовательский интерфейс с правильным хранилищем и db_manager
-        from src.ui_interfaces.console_interface import UserInterface as ConsoleInterface
 
-        user_interface = ConsoleInterface(storage, db_manager=db_manager)
+        user_interface = UserInterface(storage, db_manager=db_manager)
 
         # Запускаем основной цикл интерфейса
         user_interface.run()
@@ -65,7 +65,7 @@ def main() -> None:
         logger.info("Приложение завершено пользователем")
     except Exception as e:
         logger.error(f"Критическая ошибка: {e}")
-        print(f"\n❌ Критическая ошибка: {e}")
+        print(f"\nКритическая ошибка: {e}")
         if "базы данных" in str(e).lower() or "database" in str(e).lower():
             print("Программа не может работать без базы данных. Завершение работы.")
         else:

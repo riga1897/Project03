@@ -2,7 +2,7 @@
 Модуль для фильтрации данных API
 """
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 
 class APIDataFilter:

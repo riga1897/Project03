@@ -1,0 +1,158 @@
+{
+  "timestamp": 1756387917.6093724,
+  "meta": {
+    "params": {
+      "area": 1,
+      "per_page": 1,
+      "only_with_salary": false,
+      "text": "python",
+      "page": 0,
+      "period": 1
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "124600502",
+        "premium": false,
+        "name": "QA инженер",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 70000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 70000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Калининград",
+          "street": "Советский проспект",
+          "building": "234",
+          "lat": 54.749226,
+          "lng": 20.45852,
+          "description": null,
+          "raw": "Калининград, Советский проспект, 234",
+          "metro": null,
+          "metro_stations": [],
+          "id": "14274219"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-28T16:02:18+0300",
+        "created_at": "2025-08-28T16:02:18+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124600502",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124600502?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124600502",
+        "relations": [],
+        "employer": {
+          "id": "9641588",
+          "name": "Ритейл-Процессинг",
+          "url": "https://api.hh.ru/employers/9641588",
+          "alternate_url": "https://hh.ru/employer/9641588",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1160746.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6263434.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6263435.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=9641588",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Дополнительными преимуществами будут: Опыт тестирования мобильных платежных систем. Опыт написания автотестов (<highlighttext>Python</highlighttext>) — даже простых скриптов. Знание основ Git (можете объяснить...",
+          "responsibility": "Тестировать мобильные приложения. Тестировать работу платежного сервиса. Анализировать сетевые запросы, тестировать API. Оформлять баг-репорты и сопровождать баг до фикса. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "124",
+            "name": "Тестировщик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 461,
+    "pages": 461,
+    "page": 0,
+    "per_page": 1,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=1&enable_snippets=true&items_on_page=1&search_period=1&text=python"
+  }
+}
