@@ -1,5 +1,3 @@
-from typing import Optional
-
 from src.storage.abstract import AbstractVacancyStorage
 from src.storage.postgres_saver import PostgresSaver
 

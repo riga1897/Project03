@@ -1556,11 +1556,9 @@ class PostgresSaver(AbstractVacancyStorage):
         finally:
             if "cursor" in locals():
                 cursor.close()
-            connection.close()
+            connection.close
 
-    
-
-    def _build_where_conditions(self, filters: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+    def _build_where_condons(self, filters: Optional[Dict[str, Any]]) -> Dict[str, Any]:
         """Вспомогательный метод для построения WHERE условий"""
         conditions = []
         params = []

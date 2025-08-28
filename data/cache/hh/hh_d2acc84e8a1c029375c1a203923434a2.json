@@ -1,0 +1,197 @@
+{
+  "timestamp": 1756384080.2558048,
+  "meta": {
+    "params": {
+      "area": 1,
+      "per_page": 1,
+      "only_with_salary": false,
+      "text": "java",
+      "page": 0,
+      "period": 1
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "124593890",
+        "premium": false,
+        "name": "Java-разработчик в продуктовый проект",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": null,
+          "to": 100000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": null,
+          "to": 100000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Электрозаводская улица",
+          "building": "52с8",
+          "lat": 55.792812,
+          "lng": 37.70832,
+          "description": null,
+          "raw": "Москва, Электрозаводская улица, 52с8",
+          "metro": {
+            "station_name": "Преображенская площадь",
+            "line_name": "Сокольническая",
+            "station_id": "1.117",
+            "line_id": "1",
+            "lat": 55.796322,
+            "lng": 37.713582
+          },
+          "metro_stations": [
+            {
+              "station_name": "Преображенская площадь",
+              "line_name": "Сокольническая",
+              "station_id": "1.117",
+              "line_id": "1",
+              "lat": 55.796322,
+              "lng": 37.713582
+            },
+            {
+              "station_name": "Электрозаводская",
+              "line_name": "Арбатско-Покровская",
+              "station_id": "3.161",
+              "line_id": "3",
+              "lat": 55.782057,
+              "lng": 37.7053
+            },
+            {
+              "station_name": "Электрозаводская",
+              "line_name": "Большая кольцевая линия",
+              "station_id": "97.803",
+              "line_id": "97",
+              "lat": 55.782057,
+              "lng": 37.7053
+            },
+            {
+              "station_name": "Электрозаводская",
+              "line_name": "Некрасовская",
+              "station_id": "98.802",
+              "line_id": "98",
+              "lat": 55.782057,
+              "lng": 37.7053
+            }
+          ],
+          "id": "18219366"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-28T14:04:03+0300",
+        "created_at": "2025-08-28T14:04:03+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124593890",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124593890?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124593890",
+        "relations": [],
+        "employer": {
+          "id": "11958366",
+          "name": "Каунсил Девелопмент",
+          "url": "https://api.hh.ru/employers/11958366",
+          "alternate_url": "https://hh.ru/employer/11958366",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1416595.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7286029.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7286030.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=11958366",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Умение работать в команде. Требования: Хороший уровень владения <highlighttext>Java</highlighttext> 17-21, Spring, SQL (PL/SQL). Знание ОРМ Hibernate, spring-boot...",
+          "responsibility": "Разработка нового функционала, интеграционных микросервисов. Поддержка и модификация существующих проектов. Повышенное качество кода."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 147,
+    "pages": 147,
+    "page": 0,
+    "per_page": 1,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=1&enable_snippets=true&items_on_page=1&search_period=1&text=java"
+  }
+}
