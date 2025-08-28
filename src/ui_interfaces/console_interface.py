@@ -60,6 +60,7 @@ class UserInterface:
         self.display_handler = VacancyDisplayHandler(self.storage)
         # Removed unused import: VacancyOperationsCoordinator
         from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
+
         self.operations_coordinator = VacancyOperationsCoordinator(self.unified_api, self.storage)
 
         # DB Manager для демонстрации

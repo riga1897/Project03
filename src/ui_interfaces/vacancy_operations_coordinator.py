@@ -135,7 +135,7 @@ class VacancyOperationsCoordinator:
             return
 
         print(f"\nНайдено {len(filtered_vacancies)} вакансий с ключевым словом '{keyword}'")
-        
+
         # Показываем первые несколько вакансий для подтверждения
         print("\nПример найденных вакансий:")
         for i, vacancy in enumerate(filtered_vacancies[:5], 1):
@@ -148,7 +148,7 @@ class VacancyOperationsCoordinator:
                     print(f"   Компания: {vacancy.employer}")
             print(f"   Ссылка: {vacancy.url}")
             print("-" * 40)
-        
+
         if len(filtered_vacancies) > 5:
             print(f"... и еще {len(filtered_vacancies) - 5} вакансий")
 
