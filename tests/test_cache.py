@@ -6,7 +6,29 @@
 import pytest
 import tempfile
 import os
-from unittest.mock import patch, Mock
+from unittest.mock import patch, Mock, MagicMock
+
+# Мокаем файловую систему и внешние запросы
+@pytest.fixture(autouse=True)
+def mock_file_operations():
+    """Мокает операции с файловой системой"""
+    with patch('os.makedirs') as mock_makedirs, \
+         patch('builtins.open', create=True) as mock_open, \
+         patch('json.dump') as mock_json_dump, \
+         patch('json.load') as mock_json_load:
+        
+        mock_makedirs.return_value = None
+        mock_file = MagicMock()
+        mock_open.return_value.__enter__.return_value = mock_file
+        mock_json_load.return_value = {"data": "test"}
+        
+        yield {
+            'makedirs': mock_makedirs,
+            'open': mock_open,
+            'json_dump': mock_json_dump,
+            'json_load': mock_json_load
+        }
+
 from src.utils.cache import FileCache
 
 

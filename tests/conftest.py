@@ -116,3 +116,31 @@ def mock_api_response():
         "page": 0,
         "per_page": 20
     }
+
+@pytest.fixture(autouse=True)
+def mock_all_external_resources():
+    """Глобально мокает все внешние ресурсы для всех тестов"""
+    with patch('requests.get') as mock_requests, \
+         patch('requests.post') as mock_post, \
+         patch('psycopg2.connect') as mock_db, \
+         patch('src.utils.env_loader.EnvLoader.load_env_file') as mock_env, \
+         patch('os.path.exists') as mock_exists, \
+         patch('os.makedirs') as mock_makedirs:
+
+        # Настраиваем моки
+        mock_response = Mock()
+        mock_response.json.return_value = {"items": [], "found": 0}
+        mock_response.status_code = 200
+        mock_requests.return_value = mock_response
+        mock_post.return_value = mock_response
+
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_conn.cursor.return_value = mock_cursor
+        mock_db.return_value = mock_conn
+
+        mock_env.return_value = {}
+        mock_exists.return_value = True
+        mock_makedirs.return_value = None
+
+        yield

@@ -4,7 +4,7 @@
 """
 
 import pytest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 from src.utils.search_utils import filter_vacancies_by_keyword, vacancy_contains_keyword
 from src.vacancies.models import Vacancy
 

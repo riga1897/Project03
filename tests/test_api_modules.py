@@ -8,6 +8,18 @@
 
 import pytest
 from unittest.mock import Mock, patch
+
+# Мокаем все внешние API запросы
+@pytest.fixture(autouse=True)
+def mock_api_requests():
+    """Мокает все API запросы для тестов"""
+    with patch('requests.get') as mock_get:
+        mock_response = Mock()
+        mock_response.json.return_value = {"items": [], "found": 0}
+        mock_response.status_code = 200
+        mock_get.return_value = mock_response
+        yield mock_get
+
 from src.api_modules.hh_api import HeadHunterAPI
 from src.api_modules.sj_api import SuperJobAPI
 from src.config.api_config import APIConfig
