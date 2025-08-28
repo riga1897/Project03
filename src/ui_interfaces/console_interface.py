@@ -20,7 +20,6 @@ from src.vacancies.models import Vacancy
 # from src.storage.json_saver import JSONSaver # Удален JSONSaver
 
 
-
 # Импортируем DBManager и DBManagerDemo для демонстрации
 try:
     from src.storage.db_manager import DBManager

@@ -225,7 +225,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 # Проверяем, есть ли компания в БД
                 cursor.execute(
                     """
-                    SELECT id FROM companies 
+                    SELECT id FROM companies
                     WHERE hh_id = %s OR sj_id = %s OR name = %s
                     LIMIT 1
                 """,
@@ -400,7 +400,7 @@ class PostgresSaver(AbstractVacancyStorage):
             # Создаем временную таблицу с такой же структурой как основная таблица vacancies
             cursor.execute(
                 """
-                CREATE TEMP TABLE temp_new_vacancies AS 
+                CREATE TEMP TABLE temp_new_vacancies AS
                 SELECT * FROM vacancies WHERE 1=0
             """
             )
@@ -408,7 +408,7 @@ class PostgresSaver(AbstractVacancyStorage):
             # Получаем сопоставление компаний из БД с расширенным поиском
             cursor.execute(
                 """
-                SELECT id, name, LOWER(name) as normalized_name 
+                SELECT id, name, LOWER(name) as normalized_name
                 FROM companies
             """
             )
@@ -444,7 +444,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 if employer_id:
                     cursor.execute(
                         """
-                        SELECT id FROM companies 
+                        SELECT id FROM companies
                         WHERE hh_id = %s OR sj_id = %s
                         LIMIT 1
                     """,
@@ -655,7 +655,7 @@ class PostgresSaver(AbstractVacancyStorage):
             total_filtered = len(filtered_vacancies)
             filtered_out = total_input - total_filtered
 
-            logger.info(f"Batch операция через временные таблицы:")
+            logger.info("Batch операция через временные таблицы:")
             logger.info(f"  Входящих вакансий: {total_input}")
             logger.info(f"  От целевых компаний: {total_filtered}")
             logger.info(f"  Отфильтровано (не целевые): {filtered_out}")
@@ -707,7 +707,7 @@ class PostgresSaver(AbstractVacancyStorage):
             # Ищем точное соответствие только по hh_id или sj_id
             cursor.execute(
                 """
-                SELECT id FROM companies 
+                SELECT id FROM companies
                 WHERE hh_id = %s OR sj_id = %s
                 LIMIT 1
             """,
@@ -898,7 +898,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 with conn.cursor(cursor_factory=RealDictCursor) as cursor:
                     cursor.execute(
                         """
-                        SELECT 
+                        SELECT
                             v.*,
                             c.name as company_name
                         FROM vacancies v
