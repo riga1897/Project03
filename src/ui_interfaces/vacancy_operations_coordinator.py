@@ -148,7 +148,6 @@ class VacancyOperationsCoordinator:
                     print(f"   Компания: {vacancy.employer}")
             print(f"   Ссылка: {vacancy.url}")
             print("-" * 40)
-        
         if len(filtered_vacancies) > 5:
             print(f"... и еще {len(filtered_vacancies) - 5} вакансий")
 
