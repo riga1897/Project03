@@ -113,8 +113,8 @@ class DBManager(AbstractDBManager):
                     # Проверяем и исправляем тип company_id если нужно
                     cursor.execute(
                         """
-                        SELECT data_type 
-                        FROM information_schema.columns 
+                        SELECT data_type
+                        FROM information_schema.columns
                         WHERE table_name = 'vacancies' AND column_name = 'company_id'
                     """
                     )
@@ -130,10 +130,10 @@ class DBManager(AbstractDBManager):
                             # Пытаемся скопировать данные с приведением типа
                             cursor.execute(
                                 """
-                                UPDATE vacancies SET company_id = 
-                                CASE 
-                                    WHEN company_id_old ~ '^[0-9]+$' THEN company_id_old::INTEGER 
-                                    ELSE NULL 
+                                UPDATE vacancies SET company_id =
+                                CASE
+                                    WHEN company_id_old ~ '^[0-9]+$' THEN company_id_old::INTEGER
+                                    ELSE NULL
                                 END
                             """
                             )
@@ -142,12 +142,10 @@ class DBManager(AbstractDBManager):
                             logger.info("✓ Поле company_id исправлено на INTEGER")
                         except Exception as e:
                             logger.warning(f"Не удалось исправить тип company_id: {e}")
+
                             # Откатываемся
-                            try:
-                                cursor.execute("ALTER TABLE vacancies DROP COLUMN IF EXISTS company_id")
-                                cursor.execute("ALTER TABLE vacancies RENAME COLUMN company_id_old TO company_id")
-                            except:
-                                pass
+                            cursor.execute("ALTER TABLE vacancies DROP COLUMN IF EXISTS company_id")
+                            cursor.execute("ALTER TABLE vacancies RENAME COLUMN company_id_old TO company_id")
 
                     logger.info("✓ Таблица vacancies создана/проверена")
 
@@ -333,7 +331,7 @@ class DBManager(AbstractDBManager):
                             company_db_id = company_record[0]
                             cursor.execute(
                                 """
-                                SELECT COUNT(*) FROM vacancies 
+                                SELECT COUNT(*) FROM vacancies
                                 WHERE company_id = %s
                             """,
                                 (company_db_id,),

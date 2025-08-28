@@ -6,7 +6,7 @@
 """
 
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Set
+from typing import List, Optional, Set
 
 
 @dataclass
