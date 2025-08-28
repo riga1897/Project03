@@ -163,5 +163,3 @@ class SuperJobParser(BaseParser):
                 "published_at": "",
                 "source": "superjob.ru",
             }
-
-    

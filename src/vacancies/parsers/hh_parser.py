@@ -19,7 +19,6 @@ class HHParser(BaseParser):
         """Парсинг вакансий по предоставленным сырым данным"""
         if not raw_vacancies:
             return []
-            
         parsed_vacancies = self._parse_items(raw_vacancies)
         return [Vacancy.to_dict(vacancy) for vacancy in parsed_vacancies]
 
@@ -130,8 +129,6 @@ class HHParser(BaseParser):
                 "schedule": "",
                 "published_at": "",
             }
-
-    
 
     @staticmethod
     def convert_to_unified_format(hh_vacancy: Vacancy) -> Vacancy:
