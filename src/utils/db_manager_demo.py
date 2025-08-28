@@ -312,39 +312,6 @@ class DBManagerDemo:
         print("\n8. Статистика базы данных:")
         print("----------------------------------------")
 
-        # Примеры дат убраны для чистоты вывода
-        try:
-            with self.db_manager._get_connection() as conn:
-                with conn.cursor() as cursor:
-                    cursor.execute("""
-                        SELECT published_at, created_at
-                        FROM vacancies
-                        WHERE published_at IS NOT NULL
-                        LIMIT 3
-                    """)
-                    date_samples = cursor.fetchall()
-
-                    if date_samples:
-                        print(" Примеры дат в БД:")
-                        for i, (pub_date, create_date) in enumerate(date_samples, 1):
-                            # Форматируем даты в российском формате
-                            if isinstance(pub_date, datetime):
-                                pub_date_str = pub_date.strftime('%d.%m.%Y %H:%M:%S')
-                            else:
-                                pub_date_str = str(pub_date)
-
-                            if isinstance(create_date, datetime):
-                                create_date_str = create_date.strftime('%d.%m.%Y %H:%M:%S')
-                            else:
-                                create_date_str = str(create_date)
-
-                            print(f"   {i}. published_at: {pub_date_str} (тип: {type(pub_date)})")
-                            print(f"      created_at: {create_date_str} (тип: {type(create_date)})")
-                        print()
-        except Exception as e:
-            print(f"Ошибка при получении примеров дат: {e}")
-
-
         stats = self.db_manager.get_database_stats()
         if stats:
             print(f"Общее количество вакансий: {stats.get('total_vacancies', 0)}")
