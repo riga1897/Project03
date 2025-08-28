@@ -121,21 +121,32 @@ class TestVacancyDisplayHandler:
 
     @patch('builtins.input', return_value='')
     @patch('builtins.print')
-    def test_search_saved_vacancies_by_keyword_empty_query(self, mock_print, mock_input, display_handler, mock_storage):
+    @patch('src.utils.ui_helpers.filter_vacancies_by_keyword')
+    def test_search_saved_vacancies_by_keyword_empty_query(self, mock_filter, mock_print, mock_input, display_handler, mock_storage):
         """Тест поиска сохраненных вакансий по ключевому слову - пустой запрос"""
+        # Настраиваем моки чтобы не было реальных вызовов
+        mock_storage.get_vacancies.return_value = []
+        mock_filter.return_value = []
+        
         display_handler.search_saved_vacancies_by_keyword()
         
         mock_print.assert_called()
+        # Проверяем что фильтр не вызывался для пустого запроса
+        mock_filter.assert_not_called()
 
     @patch('builtins.print')
-    def test_search_saved_vacancies_by_keyword_no_saved_vacancies(self, mock_print, display_handler, mock_storage):
+    @patch('src.utils.ui_helpers.filter_vacancies_by_keyword')
+    def test_search_saved_vacancies_by_keyword_no_saved_vacancies(self, mock_filter, mock_print, display_handler, mock_storage):
         """Тест поиска сохраненных вакансий - нет сохраненных вакансий"""
         mock_storage.get_vacancies.return_value = []
+        mock_filter.return_value = []
         
         with patch('builtins.input', return_value='python'):
             display_handler.search_saved_vacancies_by_keyword()
             
             mock_print.assert_called()
+            # Фильтр не должен вызываться если нет сохраненных вакансий
+            mock_filter.assert_not_called()
 
     def test_format_vacancy_for_display(self, display_handler, sample_vacancies):
         """Тест форматирования вакансии для отображения"""
