@@ -135,9 +135,27 @@ class VacancyOperationsCoordinator:
             return
 
         print(f"\nНайдено {len(filtered_vacancies)} вакансий с ключевым словом '{keyword}'")
+        
+        # Показываем первые несколько вакансий для подтверждения
+        print("\nПример найденных вакансий:")
+        for i, vacancy in enumerate(filtered_vacancies[:5], 1):
+            print(f"{i}. ID: {vacancy.vacancy_id}")
+            print(f"   Название: {vacancy.title or 'Не указано'}")
+            if vacancy.employer:
+                if isinstance(vacancy.employer, dict):
+                    print(f"   Компания: {vacancy.employer.get('name', 'Неизвестная компания')}")
+                else:
+                    print(f"   Компания: {vacancy.employer}")
+            print(f"   Ссылка: {vacancy.url}")
+            print("-" * 40)
+        
+        if len(filtered_vacancies) > 5:
+            print(f"... и еще {len(filtered_vacancies) - 5} вакансий")
 
         if confirm_action(f"Удалить {len(filtered_vacancies)} вакансий?"):
-            deleted_count = self.storage.delete_vacancies_by_keyword(keyword)
+            # Удаляем вакансии по ID (batch операция)
+            vacancy_ids = [v.vacancy_id for v in filtered_vacancies]
+            deleted_count = self.storage.delete_vacancies_batch(vacancy_ids)
             if deleted_count > 0:
                 print(f"Удалено {deleted_count} вакансий.")
             else:
