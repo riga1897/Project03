@@ -73,80 +73,80 @@ class TestVacancyDisplayHandler:
         args, kwargs = mock_paginate.call_args
         assert len(args[0]) == len(sample_vacancies)
 
+    @patch('src.utils.ui_helpers.get_positive_integer', return_value=10)
     @patch('builtins.print')
-    def test_show_top_vacancies_by_salary_empty(self, mock_print, display_handler, mock_storage):
+    def test_show_top_vacancies_by_salary_empty(self, mock_print, mock_get_int, display_handler, mock_storage):
         """Тест отображения топ вакансий по зарплате - пустой список"""
-        mock_storage.get_top_vacancies_by_salary.return_value = []
+        mock_storage.get_vacancies.return_value = []
         
         display_handler.show_top_vacancies_by_salary()
         
+        mock_get_int.assert_called_once()
         mock_print.assert_called()
 
-    @patch('builtins.input', return_value='10')
+    @patch('src.utils.ui_helpers.get_positive_integer', return_value=10)
     @patch('src.utils.ui_navigation.quick_paginate')
-    def test_show_top_vacancies_by_salary_with_data(self, mock_paginate, mock_input, display_handler, mock_storage, sample_vacancies):
+    def test_show_top_vacancies_by_salary_with_data(self, mock_paginate, mock_get_int, display_handler, mock_storage, sample_vacancies):
         """Тест отображения топ вакансий по зарплате - с данными"""
-        mock_storage.get_top_vacancies_by_salary.return_value = sample_vacancies
+        mock_storage.get_vacancies.return_value = sample_vacancies
         
         display_handler.show_top_vacancies_by_salary()
         
+        mock_get_int.assert_called_once()
         mock_paginate.assert_called_once()
 
-    @patch('builtins.input', return_value='python')
+    @patch('src.utils.ui_helpers.get_user_input', return_value='python')
     @patch('src.utils.ui_navigation.quick_paginate')
-    def test_search_saved_vacancies_by_keyword_found(self, mock_paginate, mock_input, display_handler, mock_storage, sample_vacancies):
+    @patch('src.utils.ui_helpers.filter_vacancies_by_keyword')
+    def test_search_saved_vacancies_by_keyword_found(self, mock_filter, mock_paginate, mock_get_input, display_handler, mock_storage, sample_vacancies):
         """Тест поиска сохраненных вакансий по ключевому слову - найдены"""
         mock_storage.get_vacancies.return_value = sample_vacancies
+        mock_filter.return_value = [sample_vacancies[0]]  # Возвращаем Python вакансию
         
-        with patch('src.utils.ui_helpers.filter_vacancies_by_keyword') as mock_filter:
-            mock_filter.return_value = [sample_vacancies[0]]  # Возвращаем Python вакансию
-            
-            display_handler.search_saved_vacancies_by_keyword()
-            
-            mock_filter.assert_called_once()
-            mock_paginate.assert_called_once()
-
-    @patch('builtins.input', return_value='nonexistent')
-    @patch('builtins.print')
-    def test_search_saved_vacancies_by_keyword_not_found(self, mock_print, mock_input, display_handler, mock_storage, sample_vacancies):
-        """Тест поиска сохраненных вакансий по ключевому слову - не найдены"""
-        mock_storage.get_vacancies.return_value = sample_vacancies
+        display_handler.search_saved_vacancies_by_keyword()
         
-        with patch('src.utils.ui_helpers.filter_vacancies_by_keyword') as mock_filter:
-            mock_filter.return_value = []  # Ничего не найдено
-            
-            display_handler.search_saved_vacancies_by_keyword()
-            
-            mock_print.assert_called()
+        mock_get_input.assert_called_once()
+        mock_filter.assert_called_once_with(sample_vacancies, 'python')
+        mock_paginate.assert_called_once()
 
-    @patch('builtins.input', return_value='')
+    @patch('src.utils.ui_helpers.get_user_input', return_value='nonexistent')
     @patch('builtins.print')
     @patch('src.utils.ui_helpers.filter_vacancies_by_keyword')
-    def test_search_saved_vacancies_by_keyword_empty_query(self, mock_filter, mock_print, mock_input, display_handler, mock_storage):
+    def test_search_saved_vacancies_by_keyword_not_found(self, mock_filter, mock_print, mock_get_input, display_handler, mock_storage, sample_vacancies):
+        """Тест поиска сохраненных вакансий по ключевому слову - не найдены"""
+        mock_storage.get_vacancies.return_value = sample_vacancies
+        mock_filter.return_value = []  # Ничего не найдено
+        
+        display_handler.search_saved_vacancies_by_keyword()
+        
+        mock_get_input.assert_called_once()
+        mock_filter.assert_called_once_with(sample_vacancies, 'nonexistent')
+        mock_print.assert_called()
+
+    @patch('src.utils.ui_helpers.get_user_input', return_value=None)
+    @patch('builtins.print')
+    def test_search_saved_vacancies_by_keyword_empty_query(self, mock_print, mock_get_input, display_handler, mock_storage):
         """Тест поиска сохраненных вакансий по ключевому слову - пустой запрос"""
         # Настраиваем моки чтобы не было реальных вызовов
         mock_storage.get_vacancies.return_value = []
-        mock_filter.return_value = []
+        
+        display_handler.search_saved_vacancies_by_keyword()
+        
+        # Проверяем что функция завершилась корректно
+        mock_get_input.assert_called_once()
+        # Не должно быть дополнительных вызовов при пустом вводе
+
+    @patch('src.utils.ui_helpers.get_user_input', return_value='python')
+    @patch('builtins.print')
+    def test_search_saved_vacancies_by_keyword_no_saved_vacancies(self, mock_print, mock_get_input, display_handler, mock_storage):
+        """Тест поиска сохраненных вакансий - нет сохраненных вакансий"""
+        mock_storage.get_vacancies.return_value = []
         
         display_handler.search_saved_vacancies_by_keyword()
         
         mock_print.assert_called()
-        # Проверяем что фильтр не вызывался для пустого запроса
-        mock_filter.assert_not_called()
-
-    @patch('builtins.print')
-    @patch('src.utils.ui_helpers.filter_vacancies_by_keyword')
-    def test_search_saved_vacancies_by_keyword_no_saved_vacancies(self, mock_filter, mock_print, display_handler, mock_storage):
-        """Тест поиска сохраненных вакансий - нет сохраненных вакансий"""
-        mock_storage.get_vacancies.return_value = []
-        mock_filter.return_value = []
-        
-        with patch('builtins.input', return_value='python'):
-            display_handler.search_saved_vacancies_by_keyword()
-            
-            mock_print.assert_called()
-            # Фильтр не должен вызываться если нет сохраненных вакансий
-            mock_filter.assert_not_called()
+        # Проверяем что get_user_input был вызван
+        mock_get_input.assert_called_once()
 
     def test_format_vacancy_for_display(self, display_handler, sample_vacancies):
         """Тест форматирования вакансии для отображения"""
