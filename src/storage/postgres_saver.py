@@ -1558,9 +1558,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 cursor.close()
             connection.close()
 
-    def get_file_size(self) -> int:
-        """Возвращает информацию о БД (для совместимости)"""
-        return f"PostgreSQL://{self.host}:{self.port}/{self.database}"
+    
 
     def _build_where_conditions(self, filters: Optional[Dict[str, Any]]) -> Dict[str, Any]:
         """Вспомогательный метод для построения WHERE условий"""
