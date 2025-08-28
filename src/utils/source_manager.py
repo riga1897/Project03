@@ -3,6 +3,7 @@
 """
 
 from typing import Any, Dict, List, Optional
+
 from src.config.hh_api_config import HHAPIConfig
 from src.config.sj_api_config import SJAPIConfig
 
@@ -16,26 +17,18 @@ class SourceManager:
                 "name": "HeadHunter",
                 "display_name": "HeadHunter",
                 "priority": 1,
-                "api_limits": {
-                    "requests_per_second": 5,
-                    "max_pages": 20,
-                    "max_per_page": 100
-                },
+                "api_limits": {"requests_per_second": 5, "max_pages": 20, "max_per_page": 100},
                 "features": ["free_access", "large_database", "detailed_info"],
-                "config_class": HHAPIConfig
+                "config_class": HHAPIConfig,
             },
             "superjob.ru": {
                 "name": "SuperJob",
                 "display_name": "SuperJob",
                 "priority": 2,
-                "api_limits": {
-                    "requests_per_second": 3,
-                    "max_pages": 50,
-                    "max_per_page": 100
-                },
+                "api_limits": {"requests_per_second": 3, "max_pages": 50, "max_per_page": 100},
                 "features": ["api_key_required", "salary_details", "contact_info"],
-                "config_class": SJAPIConfig
-            }
+                "config_class": SJAPIConfig,
+            },
         }
 
     def get_available_sources(self) -> List[str]:

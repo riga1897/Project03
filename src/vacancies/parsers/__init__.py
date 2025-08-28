@@ -1,5 +1,6 @@
 import abc
 
+
 class AbstractVacancy(abc.ABC):
     @abc.abstractmethod
     def get_title(self) -> str:

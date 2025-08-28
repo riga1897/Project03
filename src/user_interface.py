@@ -25,10 +25,10 @@ def main() -> None:
     """
     try:
         logger.info("Запуск приложения поиска вакансий")
-        
+
         # Инициализация и проверка базы данных
         from src.storage.db_manager import DBManager
-        
+
         logger.info("Инициализация базы данных...")
         db_manager = DBManager()
 
@@ -41,7 +41,7 @@ def main() -> None:
         logger.info("Инициализация структуры базы данных...")
         db_manager.create_tables()
         db_manager.populate_companies_table()
-        
+
         # Проверка корректности инициализации
         test_companies = db_manager.get_companies_and_vacancies_count()
         logger.info(f"✓ База данных инициализирована корректно. Найдено {len(test_companies)} компаний")
@@ -54,7 +54,8 @@ def main() -> None:
         logger.info(f"Используется хранилище: {type(storage).__name__}")
 
         # Создаем пользовательский интерфейс с правильным хранилищем и db_manager
-        from src.ui_interfaces.console_interface import UserInterface as ConsoleInterface 
+        from src.ui_interfaces.console_interface import UserInterface as ConsoleInterface
+
         user_interface = ConsoleInterface(storage, db_manager=db_manager)
 
         # Запускаем основной цикл интерфейса

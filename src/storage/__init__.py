@@ -5,4 +5,4 @@ from .db_manager import DBManager
 from .postgres_saver import PostgresSaver
 from .storage_factory import StorageFactory
 
-__all__ = ['AbstractVacancyStorage', 'AbstractDBManager', 'DBManager', 'PostgresSaver', 'StorageFactory']
+__all__ = ["AbstractVacancyStorage", "AbstractDBManager", "DBManager", "PostgresSaver", "StorageFactory"]

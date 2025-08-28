@@ -67,11 +67,8 @@ class VacancyOperationsCoordinator:
             self.source_selector.display_sources_info(sources)
             if confirm_action("Вы уверены, что хотите очистить кэш выбранных источников?"):
                 # Формируем словарь для очистки кэша
-                cache_sources = {
-                    "hh": "hh.ru" in sources,
-                    "sj": "superjob.ru" in sources
-                }
-                
+                cache_sources = {"hh": "hh.ru" in sources, "sj": "superjob.ru" in sources}
+
                 self.unified_api.clear_cache(cache_sources)
                 print("Кэш выбранных источников успешно очищен.")
             else:
@@ -225,9 +222,7 @@ class VacancyOperationsCoordinator:
         try:
             # Получаем данные через унифицированный API
             vacancy_data = self.unified_api.get_vacancies_from_sources(
-                search_query=search_query,
-                sources=sources,
-                **kwargs
+                search_query=search_query, sources=sources, **kwargs
             )
 
             # Конвертируем в объекты Vacancy
@@ -244,7 +239,9 @@ class VacancyOperationsCoordinator:
             logger.error(f"Ошибка при получении вакансий из источников: {e}")
             return []
 
-    def get_vacancies_from_target_companies(self, search_query: str = "", sources: List[str] = None, **kwargs) -> List[Vacancy]:
+    def get_vacancies_from_target_companies(
+        self, search_query: str = "", sources: List[str] = None, **kwargs
+    ) -> List[Vacancy]:
         """
         Получение вакансий только от целевых компаний
 
@@ -259,9 +256,7 @@ class VacancyOperationsCoordinator:
         try:
             # Получаем данные через унифицированный API
             vacancy_data = self.unified_api.get_vacancies_from_target_companies(
-                search_query=search_query,
-                sources=sources,
-                **kwargs
+                search_query=search_query, sources=sources, **kwargs
             )
 
             # Конвертируем в объекты Vacancy

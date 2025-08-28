@@ -45,5 +45,3 @@ class AbstractVacancyStorage(ABC):
         :param vacancies: Список вакансий для добавления
         :return: Список сообщений об операциях
         """
-
-    

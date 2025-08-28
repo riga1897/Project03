@@ -164,37 +164,37 @@ class CachedAPI(BaseJobAPI, ABC):
             newest_file = None
             file_sizes = []
             search_queries = []
-            
+
             for cache_file in cache_files:
                 try:
                     stat = cache_file.stat()
                     total_size += stat.st_size
                     file_sizes.append(stat.st_size)
-                    
+
                     # Отслеживаем самый старый и новый файл
                     if oldest_file is None or stat.st_mtime < oldest_file[1]:
                         oldest_file = (cache_file.name, stat.st_mtime)
                     if newest_file is None or stat.st_mtime > newest_file[1]:
                         newest_file = (cache_file.name, stat.st_mtime)
-                    
+
                     # Проверяем валидность JSON и извлекаем метаданные
-                    with open(cache_file, 'r', encoding='utf-8') as f:
+                    with open(cache_file, "r", encoding="utf-8") as f:
                         data = json.load(f)
                         valid_files += 1
-                        
+
                         # Извлекаем поисковые запросы
-                        meta = data.get('meta', {})
-                        params = meta.get('params', {})
-                        if 'text' in params:
-                            search_queries.append(params['text'])
-                            
+                        meta = data.get("meta", {})
+                        params = meta.get("params", {})
+                        if "text" in params:
+                            search_queries.append(params["text"])
+
                 except Exception:
                     invalid_files += 1
-            
+
             # Статистика по размерам файлов
             avg_file_size = sum(file_sizes) / len(file_sizes) if file_sizes else 0
             max_file_size = max(file_sizes) if file_sizes else 0
-            
+
             # Популярные поисковые запросы
             query_stats = {}
             for query in search_queries:

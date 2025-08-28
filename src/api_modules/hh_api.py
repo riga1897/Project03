@@ -134,8 +134,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
 
             # Получаем метаданные для определения количества страниц
             initial_params = self._config.hh_config.get_params(
-                text=search_query.lower() if search_query else "", 
-                page=0, per_page=1, **kwargs
+                text=search_query.lower() if search_query else "", page=0, per_page=1, **kwargs
             )
             initial_data = self._CachedAPI__connect_to_api(self.BASE_URL, initial_params, "hh")
 
@@ -159,8 +158,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             # Получаем все страницы
             if total_pages > 0:
                 results = self._paginator.paginate(
-                    fetch_func=lambda p: self.get_vacancies_page(search_query, p, **kwargs),
-                    total_pages=total_pages
+                    fetch_func=lambda p: self.get_vacancies_page(search_query, p, **kwargs), total_pages=total_pages
                 )
             else:
                 results = []
@@ -234,6 +232,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         # Показываем статистику по компаниям (используем сырые данные)
         if all_vacancies:
             from src.utils.vacancy_stats import VacancyStats
+
             VacancyStats.display_company_stats(all_vacancies, "HH.ru - Целевые компании")
 
         return self._deduplicate_vacancies(all_vacancies)
@@ -252,7 +251,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         """
         try:
             # Добавляем фильтр по компании в параметры
-            kwargs['employer_id'] = company_id
+            kwargs["employer_id"] = company_id
 
             if search_query:
                 search_query_lower = search_query.lower()
@@ -260,9 +259,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
                 search_query_lower = ""
 
             # Получаем метаданные для определения количества страниц
-            initial_params = self._config.hh_config.get_params(
-                text=search_query_lower, page=0, per_page=1, **kwargs
-            )
+            initial_params = self._config.hh_config.get_params(text=search_query_lower, page=0, per_page=1, **kwargs)
             initial_data = self._CachedAPI__connect_to_api(self.BASE_URL, initial_params, "hh")
 
             found_vacancies = initial_data.get("found", 0)
@@ -281,13 +278,15 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             else:
                 total_pages = min(actual_pages, max_pages)
 
-            logger.debug(f"Компания {company_id}: найдено {found_vacancies} вакансий, обрабатываем {total_pages} страниц")
+            logger.debug(
+                f"Компания {company_id}: найдено {found_vacancies} вакансий, обрабатываем {total_pages} страниц"
+            )
 
             # Получаем все страницы только если есть что обрабатывать
             if total_pages > 0:
                 results = self._paginator.paginate(
                     fetch_func=lambda p: self.get_vacancies_page_by_company(company_id, search_query, p, **kwargs),
-                    total_pages=total_pages
+                    total_pages=total_pages,
                 )
             else:
                 results = []
@@ -313,7 +312,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         """
         try:
             # Добавляем фильтр по компании
-            kwargs['employer_id'] = company_id
+            kwargs["employer_id"] = company_id
 
             search_query_lower = search_query.lower() if search_query else ""
             params = self._config.hh_config.get_params(text=search_query_lower, page=page, **kwargs)

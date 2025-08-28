@@ -1,7 +1,7 @@
-
 from typing import Optional
-from src.storage.postgres_saver import PostgresSaver
+
 from src.storage.abstract import AbstractVacancyStorage
+from src.storage.postgres_saver import PostgresSaver
 
 
 class StorageFactory:
@@ -20,8 +20,9 @@ class StorageFactory:
         """
         if storage_type != "postgres":
             raise ValueError(f"Поддерживается только PostgreSQL хранилище, получен: {storage_type}")
-        
+
         from src.config.app_config import AppConfig
+
         app_config = AppConfig()
         return PostgresSaver(app_config.get_db_config())
 

@@ -1,7 +1,7 @@
 import logging
 from typing import Optional, Set
 
-from src.utils.source_manager import source_manager, DataSource
+from src.utils.source_manager import DataSource, source_manager
 
 logger = logging.getLogger(__name__)
 

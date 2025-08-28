@@ -1,7 +1,6 @@
 import logging
 
 from src.config.ui_config import ui_pagination_config
-
 from src.utils.ui_helpers import filter_vacancies_by_keyword, get_positive_integer
 from src.utils.ui_navigation import quick_paginate
 from src.utils.vacancy_formatter import VacancyFormatter

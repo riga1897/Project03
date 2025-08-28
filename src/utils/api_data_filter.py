@@ -13,7 +13,7 @@ class APIDataFilter:
         data: List[Dict[str, Any]],
         min_salary: Optional[int] = None,
         max_salary: Optional[int] = None,
-        source: str = "hh"
+        source: str = "hh",
     ) -> List[Dict[str, Any]]:
         """
         Фильтрация по диапазону зарплаты
@@ -41,11 +41,7 @@ class APIDataFilter:
 
         return filtered
 
-    def filter_by_keywords(
-        self,
-        data: List[Dict[str, Any]],
-        keywords: List[str]
-    ) -> List[Dict[str, Any]]:
+    def filter_by_keywords(self, data: List[Dict[str, Any]], keywords: List[str]) -> List[Dict[str, Any]]:
         """
         Фильтрация по ключевым словам
 
@@ -70,11 +66,7 @@ class APIDataFilter:
 
         return filtered
 
-    def filter_by_location(
-        self,
-        data: List[Dict[str, Any]],
-        locations: List[str]
-    ) -> List[Dict[str, Any]]:
+    def filter_by_location(self, data: List[Dict[str, Any]], locations: List[str]) -> List[Dict[str, Any]]:
         """
         Фильтрация по местоположению
 
@@ -99,11 +91,7 @@ class APIDataFilter:
 
         return filtered
 
-    def filter_by_experience(
-        self,
-        data: List[Dict[str, Any]],
-        experience_levels: List[str]
-    ) -> List[Dict[str, Any]]:
+    def filter_by_experience(self, data: List[Dict[str, Any]], experience_levels: List[str]) -> List[Dict[str, Any]]:
         """
         Фильтрация по опыту работы
 
@@ -129,9 +117,7 @@ class APIDataFilter:
         return filtered
 
     def filter_by_employment_type(
-        self,
-        data: List[Dict[str, Any]],
-        employment_types: List[str]
+        self, data: List[Dict[str, Any]], employment_types: List[str]
     ) -> List[Dict[str, Any]]:
         """
         Фильтрация по типу занятости
@@ -157,11 +143,7 @@ class APIDataFilter:
 
         return filtered
 
-    def filter_by_company(
-        self,
-        data: List[Dict[str, Any]],
-        companies: List[str]
-    ) -> List[Dict[str, Any]]:
+    def filter_by_company(self, data: List[Dict[str, Any]], companies: List[str]) -> List[Dict[str, Any]]:
         """
         Фильтрация по компании
 
@@ -194,18 +176,11 @@ class APIDataFilter:
             salary_from = item.get("payment_from")
             salary_to = item.get("payment_to")
             if salary_from or salary_to:
-                return {
-                    "from": salary_from,
-                    "to": salary_to,
-                    "currency": item.get("currency", "rub")
-                }
+                return {"from": salary_from, "to": salary_to, "currency": item.get("currency", "rub")}
         return None
 
     def _salary_in_range(
-        self,
-        salary_info: Dict[str, Any],
-        min_salary: Optional[int],
-        max_salary: Optional[int]
+        self, salary_info: Dict[str, Any], min_salary: Optional[int], max_salary: Optional[int]
     ) -> bool:
         """Проверка, попадает ли зарплата в диапазон"""
         salary_from = salary_info.get("from")
@@ -239,10 +214,7 @@ class APIDataFilter:
         if "snippet" in item:
             snippet = item["snippet"]
             if isinstance(snippet, dict):
-                text_parts.extend([
-                    snippet.get("requirement", ""),
-                    snippet.get("responsibility", "")
-                ])
+                text_parts.extend([snippet.get("requirement", ""), snippet.get("responsibility", "")])
             else:
                 text_parts.append(str(snippet))
 

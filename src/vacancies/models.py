@@ -90,7 +90,7 @@ class Vacancy(AbstractVacancy):
 
         # Обработка area - может приходить как строка или словарь
         if isinstance(area, dict):
-            self.area = area.get('name', str(area))
+            self.area = area.get("name", str(area))
         else:
             self.area = area
 
@@ -331,7 +331,7 @@ class Vacancy(AbstractVacancy):
                 detailed_description=data.get("detailed_description"),
                 benefits=data.get("benefits"),
                 source=source,
-                area=data.get("area")  # Передаем area как есть
+                area=data.get("area"),  # Передаем area как есть
             )
 
             # Устанавливаем company_id после создания объекта
@@ -354,27 +354,33 @@ class Vacancy(AbstractVacancy):
         """
         # Безопасная обработка поля company
         company_value = None
-        if self.employer: # Используем self.employer, так как он был заполнен обработанной компанией
+        if self.employer:  # Используем self.employer, так как он был заполнен обработанной компанией
             if isinstance(self.employer, str):
                 company_value = self.employer.lower()
             elif isinstance(self.employer, dict):
                 # Если company - словарь, извлекаем имя компании
-                company_value = self.employer.get("name", str(self.employer)).lower() if self.employer.get("name") else str(self.employer).lower()
+                company_value = (
+                    self.employer.get("name", str(self.employer)).lower()
+                    if self.employer.get("name")
+                    else str(self.employer).lower()
+                )
             else:
                 company_value = str(self.employer).lower()
 
         return {
             "vacancy_id": self.vacancy_id,
             "title": self.title,
-            "link": self.url, # Использовать self.url вместо self.link
+            "link": self.url,  # Использовать self.url вместо self.link
             "salary": self.salary.to_dict() if self.salary else None,
             "description": self.description,
             "company": company_value,
             "employer": self.employer,  # Сохраняем полную структуру employer
             "employer_id": self.employer_id,  # Сохраняем ID работодателя отдельно
-            "location": self.area, # Использовать self.area вместо self.location
+            "location": self.area,  # Использовать self.area вместо self.location
             "source": self.source,
-            "published_date": self.published_at.isoformat() if self.published_at else None, # Использовать self.published_at
+            "published_date": (
+                self.published_at.isoformat() if self.published_at else None
+            ),  # Использовать self.published_at
             "experience": self.experience,
             "employment": self.employment,
             "schedule": self.schedule,
@@ -386,7 +392,7 @@ class Vacancy(AbstractVacancy):
         company_name = "Не указана"
         if self.employer:
             if isinstance(self.employer, dict):
-                company_name = self.employer.get('name', 'Не указана')
+                company_name = self.employer.get("name", "Не указана")
             elif isinstance(self.employer, str):
                 company_name = self.employer
             else:

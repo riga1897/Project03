@@ -41,16 +41,16 @@ def get_positive_integer(prompt: str, default: Optional[int] = None) -> Optional
     """
     try:
         user_input = input(prompt).strip()
-        
+
         # Если ввод пустой и есть значение по умолчанию
         if not user_input and default is not None:
             return default
-            
+
         # Если ввод пустой и нет значения по умолчанию
         if not user_input:
             print("Введите корректное число!")
             return None
-            
+
         value = int(user_input)
         if value <= 0:
             print("Число должно быть положительным!")

@@ -11,9 +11,9 @@ from typing import Any, Dict, List, Optional, Tuple
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-from src.storage.abstract_db_manager import AbstractDBManager
 from src.config.db_config import DatabaseConfig
 from src.config.target_companies import TargetCompanies
+from src.storage.abstract_db_manager import AbstractDBManager
 
 logger = logging.getLogger(__name__)
 
@@ -49,11 +49,11 @@ class DBManager(AbstractDBManager):
         try:
             connection_params = self.db_config.get_connection_params()
             # Добавляем явное указание кодировки UTF-8
-            connection_params['client_encoding'] = 'utf8'
+            connection_params["client_encoding"] = "utf8"
             connection = psycopg2.connect(**connection_params)
 
             # Устанавливаем кодировку для соединения
-            connection.set_client_encoding('UTF8')
+            connection.set_client_encoding("UTF8")
             return connection
         except psycopg2.Error as e:
             logger.error(f"Ошибка подключения к базе данных: {e}")
@@ -71,18 +71,21 @@ class DBManager(AbstractDBManager):
                     cursor.execute("SET client_encoding TO 'UTF8'")
 
                     # Создаем упрощенную таблицу компаний для целевых компаний
-                    cursor.execute("""
+                    cursor.execute(
+                        """
                         CREATE TABLE IF NOT EXISTS companies (
                             id SERIAL PRIMARY KEY,
                             name VARCHAR(255) NOT NULL UNIQUE,
                             hh_id VARCHAR(50),
                             sj_id VARCHAR(50)
                         );
-                    """)
+                    """
+                    )
                     logger.info("✓ Таблица companies создана/проверена")
 
                     # Создаем полную таблицу вакансий сразу с правильными типами
-                    cursor.execute("""
+                    cursor.execute(
+                        """
                         CREATE TABLE IF NOT EXISTS vacancies (
                             id SERIAL PRIMARY KEY,
                             vacancy_id VARCHAR(255) UNIQUE NOT NULL,
@@ -104,17 +107,20 @@ class DBManager(AbstractDBManager):
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                         );
-                    """)
-                    
+                    """
+                    )
+
                     # Проверяем и исправляем тип company_id если нужно
-                    cursor.execute("""
+                    cursor.execute(
+                        """
                         SELECT data_type 
                         FROM information_schema.columns 
                         WHERE table_name = 'vacancies' AND column_name = 'company_id'
-                    """)
-                    
+                    """
+                    )
+
                     result = cursor.fetchone()
-                    if result and result[0] not in ('integer', 'bigint'):
+                    if result and result[0] not in ("integer", "bigint"):
                         logger.warning(f"Поле company_id имеет неправильный тип {result[0]}, исправляем...")
                         try:
                             # Сохраняем данные
@@ -122,13 +128,15 @@ class DBManager(AbstractDBManager):
                             # Создаем новое поле с правильным типом
                             cursor.execute("ALTER TABLE vacancies ADD COLUMN company_id INTEGER")
                             # Пытаемся скопировать данные с приведением типа
-                            cursor.execute("""
+                            cursor.execute(
+                                """
                                 UPDATE vacancies SET company_id = 
                                 CASE 
                                     WHEN company_id_old ~ '^[0-9]+$' THEN company_id_old::INTEGER 
                                     ELSE NULL 
                                 END
-                            """)
+                            """
+                            )
                             # Удаляем старое поле
                             cursor.execute("ALTER TABLE vacancies DROP COLUMN company_id_old")
                             logger.info("✓ Поле company_id исправлено на INTEGER")
@@ -140,7 +148,7 @@ class DBManager(AbstractDBManager):
                                 cursor.execute("ALTER TABLE vacancies RENAME COLUMN company_id_old TO company_id")
                             except:
                                 pass
-                    
+
                     logger.info("✓ Таблица vacancies создана/проверена")
 
                     # Создаем индексы
@@ -149,7 +157,7 @@ class DBManager(AbstractDBManager):
                         ("idx_vacancies_vacancy_id", "vacancies", "vacancy_id"),
                         ("idx_vacancies_title", "vacancies", "title"),
                         ("idx_vacancies_company_id", "vacancies", "company_id"),
-                        ("idx_vacancies_salary", "vacancies", "salary_from, salary_to")
+                        ("idx_vacancies_salary", "vacancies", "salary_from, salary_to"),
                     ]
 
                     for index_name, table_name, columns in indexes:
@@ -161,21 +169,25 @@ class DBManager(AbstractDBManager):
 
                     # Создаем внешний ключ
                     try:
-                        cursor.execute("""
+                        cursor.execute(
+                            """
                             SELECT constraint_name
                             FROM information_schema.table_constraints
                             WHERE table_name = 'vacancies'
                             AND constraint_type = 'FOREIGN KEY'
                             AND constraint_name = 'fk_vacancies_company_id';
-                        """)
+                        """
+                        )
 
                         if not cursor.fetchone():
-                            cursor.execute("""
+                            cursor.execute(
+                                """
                                 ALTER TABLE vacancies
                                 ADD CONSTRAINT fk_vacancies_company_id
                                 FOREIGN KEY (company_id) REFERENCES companies(id)
                                 ON DELETE SET NULL;
-                            """)
+                            """
+                            )
                             logger.info("✓ Внешний ключ fk_vacancies_company_id создан")
                     except Exception as e:
                         logger.warning(f"Не удалось создать внешний ключ: {e}")
@@ -196,13 +208,15 @@ class DBManager(AbstractDBManager):
                     cursor.execute("SET client_encoding TO 'UTF8'")
 
                     # Проверяем, существует ли таблица companies
-                    cursor.execute("""
+                    cursor.execute(
+                        """
                         SELECT EXISTS (
                             SELECT FROM information_schema.tables
                             WHERE table_schema = 'public'
                             AND table_name = 'companies'
                         );
-                    """)
+                    """
+                    )
 
                     table_exists = cursor.fetchone()[0]
                     if not table_exists:
@@ -222,14 +236,13 @@ class DBManager(AbstractDBManager):
                         # Сначала проверяем, существует ли компания
                         cursor.execute("SELECT id FROM companies WHERE name = %s", (company.name,))
                         if not cursor.fetchone():
-                            cursor.execute("""
+                            cursor.execute(
+                                """
                                 INSERT INTO companies (name, hh_id, sj_id)
                                 VALUES (%s, %s, %s)
-                            """, (
-                                company.name,
-                                getattr(company, 'hh_id', None),
-                                getattr(company, 'sj_id', None)
-                            ))
+                            """,
+                                (company.name, getattr(company, "hh_id", None), getattr(company, "sj_id", None)),
+                            )
                             logger.info(f"Добавлена целевая компания: {company.name}")
 
                     # Проверяем результат
@@ -318,14 +331,15 @@ class DBManager(AbstractDBManager):
                         if company_record:
                             # Если компания найдена в таблице companies, ищем по company_id
                             company_db_id = company_record[0]
-                            cursor.execute("""
+                            cursor.execute(
+                                """
                                 SELECT COUNT(*) FROM vacancies 
                                 WHERE company_id = %s
-                            """, (company_db_id,))
+                            """,
+                                (company_db_id,),
+                            )
                             count_result = cursor.fetchone()
                             vacancy_count = count_result[0] if count_result else 0
-
-                        
 
                         company_results.append((company_name, vacancy_count))
 
@@ -365,7 +379,7 @@ class DBManager(AbstractDBManager):
             "JetBrains": ["jetbrains"],
             "2GIS": ["2гис", "2gis"],
             "Skyeng": ["skyeng"],
-            "Delivery Club": ["delivery club"]
+            "Delivery Club": ["delivery club"],
         }
 
         target_lower = target_name.lower()
@@ -450,13 +464,15 @@ class DBManager(AbstractDBManager):
                     unlinked_count = 0
                     linked_count = 0
                     for row in results:
-                        if row.get('raw_company_id') is not None and row.get('linked_company_id') is None:
+                        if row.get("raw_company_id") is not None and row.get("linked_company_id") is None:
                             unlinked_count += 1
-                        elif row.get('linked_company_id') is not None:
+                        elif row.get("linked_company_id") is not None:
                             linked_count += 1
-                    
+
                     if unlinked_count > 0:
-                        logger.warning(f"Найдено {unlinked_count} вакансий с company_id, но без связи с таблицей companies")
+                        logger.warning(
+                            f"Найдено {unlinked_count} вакансий с company_id, но без связи с таблицей companies"
+                        )
                         logger.info(f"Связанных вакансий: {linked_count}")
 
                     # Возвращаем список словарей без вывода
@@ -573,7 +589,7 @@ class DBManager(AbstractDBManager):
                     results = cursor.fetchall()
 
                     # Преобразуем результаты в список словарей
-                    columns = ['title', 'company_name', 'salary_info', 'url', 'calculated_salary', 'vacancy_id']
+                    columns = ["title", "company_name", "salary_info", "url", "calculated_salary", "vacancy_id"]
                     vacancies = []
 
                     for row in results:
@@ -650,7 +666,7 @@ class DBManager(AbstractDBManager):
                     results = cursor.fetchall()
 
                     # Преобразуем результаты в список словарей
-                    columns = ['title', 'company_name', 'salary_info', 'url', 'description', 'vacancy_id']
+                    columns = ["title", "company_name", "salary_info", "url", "description", "vacancy_id"]
                     vacancies = []
 
                     for row in results:
@@ -682,7 +698,8 @@ class DBManager(AbstractDBManager):
             with self._get_connection() as conn:
                 with conn.cursor(cursor_factory=RealDictCursor) as cursor:
                     # Основная статистика одним запросом
-                    cursor.execute("""
+                    cursor.execute(
+                        """
                         SELECT
                             COUNT(*) as total_vacancies,
                             COUNT(CASE WHEN salary_from IS NOT NULL OR salary_to IS NOT NULL THEN 1 END) as vacancies_with_salary,
@@ -703,7 +720,8 @@ class DBManager(AbstractDBManager):
                             COUNT(CASE WHEN area IS NOT NULL AND area != '' THEN 1 END) as vacancies_with_area,
                             COUNT(CASE WHEN published_at IS NOT NULL THEN 1 END) as vacancies_with_published_date
                         FROM vacancies
-                    """)
+                    """
+                    )
 
                     main_stats = cursor.fetchone()
                     if main_stats:
@@ -713,10 +731,11 @@ class DBManager(AbstractDBManager):
                     cursor.execute("SELECT COUNT(*) as total_companies FROM companies")
                     company_result = cursor.fetchone()
                     if company_result:
-                        stats['total_companies'] = company_result['total_companies']
+                        stats["total_companies"] = company_result["total_companies"]
 
                     # Топ работодателей по количеству вакансий
-                    cursor.execute("""
+                    cursor.execute(
+                        """
                         SELECT c.name as employer, COUNT(*) as vacancy_count
                         FROM vacancies v
                         JOIN companies c ON v.company_id = c.id
@@ -724,11 +743,13 @@ class DBManager(AbstractDBManager):
                         GROUP BY c.name
                         ORDER BY vacancy_count DESC
                         LIMIT 10
-                    """)
-                    stats['top_employers'] = [dict(row) for row in cursor.fetchall()]
+                    """
+                    )
+                    stats["top_employers"] = [dict(row) for row in cursor.fetchall()]
 
                     # Распределение зарплат по диапазонам
-                    cursor.execute("""
+                    cursor.execute(
+                        """
                         SELECT
                             CASE
                                 WHEN COALESCE(salary_from, salary_to, 0) < 50000 THEN 'до 50k'
@@ -743,8 +764,9 @@ class DBManager(AbstractDBManager):
                         AND (salary_currency IN ('RUR', 'RUB', 'руб.') OR salary_currency IS NULL)
                         GROUP BY salary_range
                         ORDER BY MIN(COALESCE(salary_from, salary_to, 0))
-                    """)
-                    stats['salary_distribution'] = [dict(row) for row in cursor.fetchall()]
+                    """
+                    )
+                    stats["salary_distribution"] = [dict(row) for row in cursor.fetchall()]
 
             return stats
 
@@ -809,33 +831,36 @@ class DBManager(AbstractDBManager):
             with self._get_connection() as conn:
                 with conn.cursor() as cursor:
                     # Создаем временную таблицу для компаний из API
-                    cursor.execute("""
+                    cursor.execute(
+                        """
                         CREATE TEMP TABLE temp_api_companies (
                             company_id VARCHAR(50),
                             company_name VARCHAR(500)
                         ) ON COMMIT DROP
-                    """)
+                    """
+                    )
 
                     # Вставляем данные о компаниях из API
-                    api_data = [(str(comp.get('id', '')), comp.get('name', '')) for comp in api_companies]
+                    api_data = [(str(comp.get("id", "")), comp.get("name", "")) for comp in api_companies]
                     from psycopg2.extras import execute_values
+
                     execute_values(
                         cursor,
                         "INSERT INTO temp_api_companies (company_id, company_name) VALUES %s",
                         api_data,
                         template=None,
-                        page_size=1000
+                        page_size=1000,
                     )
 
                     # SQL-запрос для поиска целевых компаний
-                    placeholders = ','.join(['%s'] * len(target_company_names))
+                    placeholders = ",".join(["%s"] * len(target_company_names))
                     query = f"""
                     SELECT company_id, company_name
                     FROM temp_api_companies
                     WHERE LOWER(company_name) IN ({placeholders})
-                    OR """ + " OR ".join([
-                        "LOWER(company_name) LIKE %s" for _ in target_company_names
-                    ])
+                    OR """ + " OR ".join(
+                        ["LOWER(company_name) LIKE %s" for _ in target_company_names]
+                    )
 
                     # Параметры: точные совпадения + LIKE поиск
                     params = target_company_names + [f"%{name}%" for name in target_company_names]
@@ -845,13 +870,15 @@ class DBManager(AbstractDBManager):
 
                     # Возвращаем найденные компании из исходного списка
                     found_ids = {row[0] for row in results}
-                    return [comp for comp in api_companies if str(comp.get('id', '')) in found_ids]
+                    return [comp for comp in api_companies if str(comp.get("id", "")) in found_ids]
 
         except psycopg2.Error as e:
             logger.error(f"Ошибка SQL-фильтрации компаний: {e}")
             return api_companies
 
-    def analyze_api_data_with_sql(self, api_data: List[Dict[str, Any]], analysis_type: str = 'vacancy_stats') -> Dict[str, Any]:
+    def analyze_api_data_with_sql(
+        self, api_data: List[Dict[str, Any]], analysis_type: str = "vacancy_stats"
+    ) -> Dict[str, Any]:
         """
         Анализирует данные из API используя SQL-запросы для получения статистики
 
@@ -869,7 +896,8 @@ class DBManager(AbstractDBManager):
             with self._get_connection() as conn:
                 with conn.cursor(cursor_factory=RealDictCursor) as cursor:
                     # Создаем временную таблицу для данных из API
-                    cursor.execute("""
+                    cursor.execute(
+                        """
                         CREATE TEMP TABLE temp_api_analysis (
                             item_id VARCHAR(50),
                             title VARCHAR(500),
@@ -881,25 +909,37 @@ class DBManager(AbstractDBManager):
                             experience VARCHAR(200),
                             employment VARCHAR(200)
                         ) ON COMMIT DROP
-                    """)
+                    """
+                    )
 
                     # Подготавливаем данные для анализа
                     analysis_data = []
                     for item in api_data:
-                        salary = item.get('salary', {}) or {}
-                        analysis_data.append((
-                            str(item.get('id', '')),
-                            item.get('name', ''),
-                            salary.get('from'),
-                            salary.get('to'),
-                            salary.get('currency'),
-                            str(item.get('employer', {}).get('name', '') if item.get('employer') else ''),
-                            str(item.get('area', {}).get('name', '') if item.get('area') else ''),
-                            item.get('experience', {}).get('name', '') if isinstance(item.get('experience'), dict) else str(item.get('experience', '')),
-                            item.get('employment', {}).get('name', '') if isinstance(item.get('employment'), dict) else str(item.get('employment', ''))
-                        ))
+                        salary = item.get("salary", {}) or {}
+                        analysis_data.append(
+                            (
+                                str(item.get("id", "")),
+                                item.get("name", ""),
+                                salary.get("from"),
+                                salary.get("to"),
+                                salary.get("currency"),
+                                str(item.get("employer", {}).get("name", "") if item.get("employer") else ""),
+                                str(item.get("area", {}).get("name", "") if item.get("area") else ""),
+                                (
+                                    item.get("experience", {}).get("name", "")
+                                    if isinstance(item.get("experience"), dict)
+                                    else str(item.get("experience", ""))
+                                ),
+                                (
+                                    item.get("employment", {}).get("name", "")
+                                    if isinstance(item.get("employment"), dict)
+                                    else str(item.get("employment", ""))
+                                ),
+                            )
+                        )
 
                     from psycopg2.extras import execute_values
+
                     execute_values(
                         cursor,
                         """INSERT INTO temp_api_analysis (
@@ -908,14 +948,15 @@ class DBManager(AbstractDBManager):
                         ) VALUES %s""",
                         analysis_data,
                         template=None,
-                        page_size=1000
+                        page_size=1000,
                     )
 
                     results = {}
 
-                    if analysis_type == 'vacancy_stats':
+                    if analysis_type == "vacancy_stats":
                         # Статистика по вакансиям
-                        cursor.execute("""
+                        cursor.execute(
+                            """
                             SELECT
                                 COUNT(*) as total_vacancies,
                                 COUNT(DISTINCT employer) as unique_employers,
@@ -927,25 +968,29 @@ class DBManager(AbstractDBManager):
                                 END) as avg_salary
                             FROM temp_api_analysis
                             WHERE salary_currency IN ('RUR', 'RUB', 'руб.', NULL) OR salary_currency IS NULL
-                        """)
+                        """
+                        )
 
                         stats = cursor.fetchone()
                         results.update(dict(stats))
 
                         # Топ работодателей
-                        cursor.execute("""
+                        cursor.execute(
+                            """
                             SELECT employer, COUNT(*) as vacancy_count
                             FROM temp_api_analysis
                             WHERE employer IS NOT NULL AND employer != ''
                             GROUP BY employer
                             ORDER BY vacancy_count DESC
                             LIMIT 10
-                        """)
-                        results['top_employers'] = [dict(row) for row in cursor.fetchall()]
+                        """
+                        )
+                        results["top_employers"] = [dict(row) for row in cursor.fetchall()]
 
-                    elif analysis_type == 'salary_analysis':
+                    elif analysis_type == "salary_analysis":
                         # Анализ зарплат
-                        cursor.execute("""
+                        cursor.execute(
+                            """
                             SELECT
                                 MIN(CASE
                                     WHEN salary_from IS NOT NULL AND salary_to IS NOT NULL THEN (salary_from + salary_to) / 2
@@ -965,7 +1010,8 @@ class DBManager(AbstractDBManager):
                                 COUNT(CASE WHEN salary_from IS NOT NULL OR salary_to IS NOT NULL THEN 1 END) as count_with_salary
                             FROM temp_api_analysis
                             WHERE salary_currency IN ('RUR', 'RUB', 'руб.', NULL) OR salary_currency IS NULL
-                        """)
+                        """
+                        )
 
                         results.update(dict(cursor.fetchone()))
 

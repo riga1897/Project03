@@ -1,10 +1,10 @@
-import logging
 import json
-from typing import List, Dict, Any, Optional
+import logging
+from typing import Any, Dict, List, Optional
 
 from src.models import Vacancy
-from src.utils.salary import Salary
 from src.utils.cache import FileCache
+from src.utils.salary import Salary
 from src.vacancies.parsers.base_parser import BaseParser
 
 logger = logging.getLogger(__name__)
@@ -106,47 +106,47 @@ class HHParser(BaseParser):
             Dict[str, Any]: Словарь с данными вакансии
         """
         try:
-            salary_info = vacancy_data.get('salary', {})
-            snippet_info = vacancy_data.get('snippet', {})
-            employer_info = vacancy_data.get('employer', {})
-            area_info = vacancy_data.get('area', {})
-            experience_info = vacancy_data.get('experience', {})
-            employment_info = vacancy_data.get('employment', {})
-            schedule_info = vacancy_data.get('schedule', {})
+            salary_info = vacancy_data.get("salary", {})
+            snippet_info = vacancy_data.get("snippet", {})
+            employer_info = vacancy_data.get("employer", {})
+            area_info = vacancy_data.get("area", {})
+            experience_info = vacancy_data.get("experience", {})
+            employment_info = vacancy_data.get("employment", {})
+            schedule_info = vacancy_data.get("schedule", {})
 
             return {
-                'vacancy_id': str(vacancy_data.get('id', '')),
-                'title': vacancy_data.get('name', ''),
-                'url': vacancy_data.get('alternate_url', ''),
-                'salary_from': salary_info.get('from') if salary_info else None,
-                'salary_to': salary_info.get('to') if salary_info else None,
-                'salary_currency': salary_info.get('currency') if salary_info else None,
-                'requirements': snippet_info.get('requirement', '') if snippet_info else '',
-                'responsibilities': snippet_info.get('responsibility', '') if snippet_info else '',
-                'employer': employer_info.get('name', '') if employer_info else '',
-                'area': area_info.get('name', '') if area_info else '',
-                'experience': experience_info.get('name', '') if experience_info else '',
-                'employment': employment_info.get('name', '') if employment_info else '',
-                'schedule': schedule_info.get('name', '') if schedule_info else '',
-                'published_at': vacancy_data.get('published_at', ''),
+                "vacancy_id": str(vacancy_data.get("id", "")),
+                "title": vacancy_data.get("name", ""),
+                "url": vacancy_data.get("alternate_url", ""),
+                "salary_from": salary_info.get("from") if salary_info else None,
+                "salary_to": salary_info.get("to") if salary_info else None,
+                "salary_currency": salary_info.get("currency") if salary_info else None,
+                "requirements": snippet_info.get("requirement", "") if snippet_info else "",
+                "responsibilities": snippet_info.get("responsibility", "") if snippet_info else "",
+                "employer": employer_info.get("name", "") if employer_info else "",
+                "area": area_info.get("name", "") if area_info else "",
+                "experience": experience_info.get("name", "") if experience_info else "",
+                "employment": employment_info.get("name", "") if employment_info else "",
+                "schedule": schedule_info.get("name", "") if schedule_info else "",
+                "published_at": vacancy_data.get("published_at", ""),
             }
         except Exception as e:
             logger.error(f"Ошибка при парсинге вакансии HH: {e}")
             return {
-                'vacancy_id': str(vacancy_data.get('id', '')),
-                'title': vacancy_data.get('name', ''),
-                'url': '',
-                'salary_from': None,
-                'salary_to': None,
-                'salary_currency': None,
-                'requirements': '',
-                'responsibilities': '',
-                'employer': '',
-                'area': '',
-                'experience': '',
-                'employment': '',
-                'schedule': '',
-                'published_at': '',
+                "vacancy_id": str(vacancy_data.get("id", "")),
+                "title": vacancy_data.get("name", ""),
+                "url": "",
+                "salary_from": None,
+                "salary_to": None,
+                "salary_currency": None,
+                "requirements": "",
+                "responsibilities": "",
+                "employer": "",
+                "area": "",
+                "experience": "",
+                "employment": "",
+                "schedule": "",
+                "published_at": "",
             }
 
     @staticmethod
@@ -162,18 +162,18 @@ class HHParser(BaseParser):
         """
         try:
             return {
-                'company_id': str(company_data.get('id', '')),
-                'name': company_data.get('name', ''),
-                'description': company_data.get('description', ''),
-                'url': company_data.get('alternate_url', ''),
+                "company_id": str(company_data.get("id", "")),
+                "name": company_data.get("name", ""),
+                "description": company_data.get("description", ""),
+                "url": company_data.get("alternate_url", ""),
             }
         except Exception as e:
             logger.error(f"Ошибка при парсинге компании HH: {e}")
             return {
-                'company_id': str(company_data.get('id', '')),
-                'name': company_data.get('name', ''),
-                'description': '',
-                'url': '',
+                "company_id": str(company_data.get("id", "")),
+                "name": company_data.get("name", ""),
+                "description": "",
+                "url": "",
             }
 
     @staticmethod
@@ -189,7 +189,7 @@ class HHParser(BaseParser):
         """
         try:
             companies = []
-            items = companies_data.get('items', [])
+            items = companies_data.get("items", [])
 
             for company_data in items:
                 company = HHParser.parse_company(company_data)

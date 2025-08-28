@@ -1,14 +1,13 @@
 import logging
-from typing import Dict, List, Any
+from typing import Any, Dict, List
+
+from tqdm import tqdm
 
 from src.vacancies.models import Vacancy
 from src.vacancies.parsers.sj_parser import SuperJobParser
 
 from .hh_api import HeadHunterAPI
 from .sj_api import SuperJobAPI
-
-from tqdm import tqdm
-
 
 logger = logging.getLogger(__name__)
 
@@ -34,8 +33,6 @@ class UnifiedAPI:
         """
         if not all_vacancies:
             return []
-
-
 
         seen = set()
         unique_vacancies = []
@@ -74,7 +71,9 @@ class UnifiedAPI:
         logger.info(f"Межплатформенная дедупликация: {len(all_vacancies)} -> {len(unique_vacancies)} вакансий")
         return unique_vacancies
 
-    def get_vacancies_from_sources(self, search_query: str, sources: List[str] = None, **kwargs: dict[str, Any]) -> List[Dict]:
+    def get_vacancies_from_sources(
+        self, search_query: str, sources: List[str] = None, **kwargs: dict[str, Any]
+    ) -> List[Dict]:
         """
         Получение вакансий из выбранных источников с дедупликацией
 
@@ -125,21 +124,22 @@ class UnifiedAPI:
         # SQL-дедупликация с фильтрацией по целевым компаниям
         if all_vacancies:
             logger.info(f"Всего получено {len(all_vacancies)} вакансий, применяем SQL-дедупликацию с фильтрацией")
-            
+
             try:
                 # Используем SQL для эффективной дедупликации с фильтрацией
                 from src.api_modules.base_api import BaseJobAPI
-                
+
                 # Создаем временную реализацию BaseJobAPI для доступа к методу
                 class TempAPI(BaseJobAPI):
                     def get_vacancies(self, search_query: str, **kwargs):
                         return []
+
                     def _validate_vacancy(self, vacancy):
                         return True
-                
+
                 base_api = TempAPI()
                 all_vacancies = base_api._deduplicate_vacancies(all_vacancies, "unified")
-                
+
                 if all_vacancies:
                     print(f"Найдено {len(all_vacancies)} уникальных вакансий от целевых компаний")
                 else:
@@ -220,8 +220,9 @@ class UnifiedAPI:
                 self.hh_api.clear_cache("hh")
 
                 # Принудительно удаляем файлы кэша
-                import os
                 import glob
+                import os
+
                 cache_dir = "data/cache/hh"
                 hh_files = glob.glob(f"{cache_dir}/hh_*.json")
                 removed_count = 0
@@ -242,8 +243,9 @@ class UnifiedAPI:
                 self.sj_api.clear_cache("sj")
 
                 # Принудительно удаляем файлы кэша
-                import os
                 import glob
+                import os
+
                 cache_dir = "data/cache/sj"
                 sj_files = glob.glob(f"{cache_dir}/sj_*.json")
                 removed_count = 0
@@ -269,7 +271,9 @@ class UnifiedAPI:
             print(f"Ошибка при очистке кэша: {e}")
             raise
 
-    def get_vacancies_from_target_companies(self, search_query: str = "", sources: List[str] = None, **kwargs) -> List[Dict]:
+    def get_vacancies_from_target_companies(
+        self, search_query: str = "", sources: List[str] = None, **kwargs
+    ) -> List[Dict]:
         """
         Получение вакансий от целевых компаний из указанных источников
 
@@ -435,7 +439,7 @@ class UnifiedAPI:
         unique_results = []
 
         for result in all_results:
-            vacancy_id = result.get('id') or result.get('vacancy_id')
+            vacancy_id = result.get("id") or result.get("vacancy_id")
             if vacancy_id not in seen_ids:
                 seen_ids.add(vacancy_id)
                 unique_results.append(result)

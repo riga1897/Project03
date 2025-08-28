@@ -6,9 +6,9 @@
 """
 
 import logging
-from typing import Optional
 import re
 from datetime import datetime
+from typing import Optional
 
 from src.config.target_companies import TargetCompanies
 from src.storage.db_manager import DBManager
@@ -88,6 +88,7 @@ class DBManagerDemo:
         print("-" * 60)
 
         from src.config.target_companies import TargetCompanies
+
         TARGET_COMPANIES = TargetCompanies.get_all_companies()
 
         print("Анализ будет проводиться по следующим целевым компаниям:")
@@ -109,6 +110,7 @@ class DBManagerDemo:
         print("-" * 80)
 
         from src.config.target_companies import TargetCompanies
+
         TARGET_COMPANIES = TargetCompanies.get_all_companies()
 
         print("Анализ показывает только данные от целевых компаний из конфигурации проекта")
@@ -165,28 +167,31 @@ class DBManagerDemo:
         # Сортируем вакансии: сначала по убыванию зарплаты, потом по названию
         def get_salary_value(vacancy):
             """Извлекает числовое значение зарплаты для сортировки"""
-            salary_info = vacancy.get('salary_info', 'Не указана')
-            if salary_info == 'Не указана':
+            salary_info = vacancy.get("salary_info", "Не указана")
+            if salary_info == "Не указана":
                 return 0
 
             # Извлекаем числа из строки зарплаты
-            numbers = re.findall(r'\d+', salary_info)
+            numbers = re.findall(r"\d+", salary_info)
             if numbers:
                 # Берем максимальное значение (если есть диапазон)
                 return max(int(num) for num in numbers)
             return 0
 
-        sorted_vacancies = sorted(all_vacancies,
-                                key=lambda x: (-get_salary_value(x), x.get('title', '')))
+        sorted_vacancies = sorted(all_vacancies, key=lambda x: (-get_salary_value(x), x.get("title", "")))
 
         print(f"{'№':<3} {'Название':<40} {'Компания':<20} {'Зарплата':<20}")
         print("-" * 85)
 
         # Показываем первые 25 вакансий
         for i, vacancy in enumerate(sorted_vacancies[:25], 1):
-            title = vacancy['title'][:39] if len(vacancy['title']) > 39 else vacancy['title']
-            company = vacancy.get('company_name', 'Неизвестная')[:19] if len(vacancy.get('company_name', 'Неизвестная')) > 19 else vacancy.get('company_name', 'Неизвестная')
-            salary = vacancy['salary_info'][:19] if len(vacancy['salary_info']) > 19 else vacancy['salary_info']
+            title = vacancy["title"][:39] if len(vacancy["title"]) > 39 else vacancy["title"]
+            company = (
+                vacancy.get("company_name", "Неизвестная")[:19]
+                if len(vacancy.get("company_name", "Неизвестная")) > 19
+                else vacancy.get("company_name", "Неизвестная")
+            )
+            salary = vacancy["salary_info"][:19] if len(vacancy["salary_info"]) > 19 else vacancy["salary_info"]
 
             print(f"{i:<3} {title:<40} {company:<20} {salary:<20}")
 
@@ -194,13 +199,13 @@ class DBManagerDemo:
             print(f"... и еще {len(sorted_vacancies) - 25} вакансий")
 
         print(f"\nВсего вакансий: {len(sorted_vacancies)}")
-        
+
         # Добавляем анализ по компаниям
         companies_with_vacancies = {}
         for vacancy in all_vacancies:
-            company_name = vacancy.get('company_name', 'Неизвестная компания')
+            company_name = vacancy.get("company_name", "Неизвестная компания")
             companies_with_vacancies[company_name] = companies_with_vacancies.get(company_name, 0) + 1
-        
+
         print(f"\nРаспределение по компаниям:")
         for company, count in sorted(companies_with_vacancies.items(), key=lambda x: -x[1]):
             print(f"  {company}: {count} вакансий")
@@ -239,9 +244,9 @@ class DBManagerDemo:
             # Показываем первые 15 вакансий с высокой зарплатой
             for i, vacancy in enumerate(high_salary_vacancies[:15], 1):
                 # RealDictCursor возвращает словари
-                title = str(vacancy.get('title', ''))[:34]
-                company = str(vacancy.get('company_name', ''))[:24]
-                salary = str(vacancy.get('salary_info', ''))[:19]
+                title = str(vacancy.get("title", ""))[:34]
+                company = str(vacancy.get("company_name", ""))[:24]
+                salary = str(vacancy.get("salary_info", ""))[:19]
 
                 print(f"{i:<3} {title:<35} {company:<25} {salary:<20}")
 
@@ -253,11 +258,13 @@ class DBManagerDemo:
         except Exception as e:
             logger.error(f"Ошибка при демонстрации вакансий с высокой зарплатой: {e}")
             print(f"Ошибка при получении вакансий с высокой зарплатой: {e}")
-            print(f"Тип данных результата: {type(high_salary_vacancies) if 'high_salary_vacancies' in locals() else 'не определен'}")
-            if 'high_salary_vacancies' in locals() and high_salary_vacancies and len(high_salary_vacancies) > 0:
+            print(
+                f"Тип данных результата: {type(high_salary_vacancies) if 'high_salary_vacancies' in locals() else 'не определен'}"
+            )
+            if "high_salary_vacancies" in locals() and high_salary_vacancies and len(high_salary_vacancies) > 0:
                 print(f"Первый элемент: {high_salary_vacancies[0]}")
                 print(f"Тип первого элемента: {type(high_salary_vacancies[0])}")
-                if hasattr(high_salary_vacancies[0], 'keys'):
+                if hasattr(high_salary_vacancies[0], "keys"):
                     print(f"Ключи: {list(high_salary_vacancies[0].keys())}")
             print("\nВозможные причины:")
             print("• Нет подключения к базе данных")
@@ -288,8 +295,8 @@ class DBManagerDemo:
                 # Показываем первые 15 вакансий
                 for i, vacancy in enumerate(vacancies[:15], 1):
                     # RealDictCursor возвращает словари
-                    title = str(vacancy.get('title', ''))[:49]
-                    salary = str(vacancy.get('salary_info', ''))[:24]
+                    title = str(vacancy.get("title", ""))[:49]
+                    salary = str(vacancy.get("salary_info", ""))[:24]
 
                     print(f"{i:<3} {title:<50} {salary:<25}")
 
@@ -301,10 +308,10 @@ class DBManagerDemo:
                 print(f" Ошибка при поиске по ключевому слову '{keyword}': {e}")
                 print("   Возможные причины: проблемы с SQL-запросом или данными")
                 print(f"   Тип результата: {type(vacancies) if 'vacancies' in locals() else 'не определен'}")
-                if 'vacancies' in locals() and vacancies and len(vacancies) > 0:
+                if "vacancies" in locals() and vacancies and len(vacancies) > 0:
                     print(f"   Первый элемент: {vacancies[0]}")
                     print(f"   Тип первого элемента: {type(vacancies[0])}")
-                    if hasattr(vacancies[0], 'keys'):
+                    if hasattr(vacancies[0], "keys"):
                         print(f"   Ключи: {list(vacancies[0].keys())}")
 
     def _demo_database_stats(self) -> None:
@@ -319,12 +326,12 @@ class DBManagerDemo:
             print(f"Вакансий с указанной зарплатой: {stats.get('vacancies_with_salary', 0)}")
 
             # Обрабатываем даты
-            latest_date = stats.get('latest_vacancy_date')
-            earliest_date = stats.get('earliest_vacancy_date')
+            latest_date = stats.get("latest_vacancy_date")
+            earliest_date = stats.get("earliest_vacancy_date")
 
             if latest_date:
-                if hasattr(latest_date, 'strftime'):
-                    latest_str = latest_date.strftime('%d.%m.%Y %H:%M:%S')
+                if hasattr(latest_date, "strftime"):
+                    latest_str = latest_date.strftime("%d.%m.%Y %H:%M:%S")
                 else:
                     latest_str = str(latest_date)
                 print(f"Дата последней вакансии: {latest_str}")
@@ -332,8 +339,8 @@ class DBManagerDemo:
                 print("Дата последней вакансии: Не указана")
 
             if earliest_date:
-                if hasattr(earliest_date, 'strftime'):
-                    earliest_str = earliest_date.strftime('%d.%m.%Y %H:%M:%S')
+                if hasattr(earliest_date, "strftime"):
+                    earliest_str = earliest_date.strftime("%d.%m.%Y %H:%M:%S")
                 else:
                     earliest_str = str(earliest_date)
                 print(f"Дата первой вакансии: {earliest_str}")
@@ -341,19 +348,19 @@ class DBManagerDemo:
                 print("Дата первой вакансии: Не указана")
 
             # Дополнительная статистика если есть
-            if stats.get('vacancies_last_week'):
+            if stats.get("vacancies_last_week"):
                 print(f"Вакансий за последнюю неделю: {stats.get('vacancies_last_week', 0)}")
-            if stats.get('vacancies_last_month'):
+            if stats.get("vacancies_last_month"):
                 print(f"Вакансий за последний месяц: {stats.get('vacancies_last_month', 0)}")
 
             # Статистика заполненности полей
-            total = stats.get('total_vacancies', 0)
+            total = stats.get("total_vacancies", 0)
             if total > 0:
                 print("\n📊 Заполненность полей:")
-                desc_pct = (stats.get('vacancies_with_description', 0) / total * 100) if total else 0
-                req_pct = (stats.get('vacancies_with_requirements', 0) / total * 100) if total else 0
-                area_pct = (stats.get('vacancies_with_area', 0) / total * 100) if total else 0
-                date_pct = (stats.get('vacancies_with_published_date', 0) / total * 100) if total else 0
+                desc_pct = (stats.get("vacancies_with_description", 0) / total * 100) if total else 0
+                req_pct = (stats.get("vacancies_with_requirements", 0) / total * 100) if total else 0
+                area_pct = (stats.get("vacancies_with_area", 0) / total * 100) if total else 0
+                date_pct = (stats.get("vacancies_with_published_date", 0) / total * 100) if total else 0
 
                 print(f"Описание: {stats.get('vacancies_with_description', 0)}/{total} ({desc_pct:.1f}%)")
                 print(f"Требования: {stats.get('vacancies_with_requirements', 0)}/{total} ({req_pct:.1f}%)")

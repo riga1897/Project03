@@ -5,13 +5,14 @@
 для различных источников данных (HH.ru, SuperJob).
 """
 
-from typing import List, Dict, Set, Optional
 from dataclasses import dataclass
+from typing import Dict, List, Optional, Set
 
 
 @dataclass
 class CompanyInfo:
     """Информация о компании"""
+
     name: str
     hh_id: str
     sj_id: Optional[str] = None
@@ -33,86 +34,85 @@ class TargetCompanies:
             hh_id="1740",
             sj_id="19421",
             description="Российская IT-компания, разработчик поисковой системы",
-            aliases=["Yandex", "яндекс"]
+            aliases=["Yandex", "яндекс"],
         ),
         CompanyInfo(
             name="Тинькофф",
             hh_id="78638",
             sj_id="2324",
             description="Частный российский банк и экосистема финансовых сервисов",
-            aliases=["Т-Банк", "Tinkoff", "T-Bank", "TCS", "тинькофф", "т-банк"]
+            aliases=["Т-Банк", "Tinkoff", "T-Bank", "TCS", "тинькофф", "т-банк"],
         ),
         CompanyInfo(
             name="СБЕР",
             hh_id="3529",
             sj_id="16134",
             description="Крупнейший банк России и финтех-экосистема",
-            aliases=["Сбербанк", "Sber", "Sberbank", "сбер", "сбербанк"]
+            aliases=["Сбербанк", "Sber", "Sberbank", "сбер", "сбербанк"],
         ),
         CompanyInfo(
             name="Wildberries",
             hh_id="64174",
             sj_id="49357",
             description="Крупнейший российский интернет-ритейлер",
-            aliases=["WB", "Вайлдберриз", "вайлдберриз", "wildberries"]
+            aliases=["WB", "Вайлдберриз", "вайлдберриз", "wildberries"],
         ),
         CompanyInfo(
             name="OZON",
             hh_id="2180",
             sj_id="38292",
             description="Российская e-commerce площадка и экосистема сервисов",
-            aliases=["Ozon", "Озон", "озон"]
+            aliases=["Ozon", "Озон", "озон"],
         ),
         CompanyInfo(
             name="VK",
             hh_id="15478",
             sj_id="15618",
             description="Российская IT-компания, социальные сети и интернет-сервисы",
-            aliases=["ВКонтакте", "ВК", "Mail.ru Group", "VK Group", "вк", "вконтакте"]
+            aliases=["ВКонтакте", "ВК", "Mail.ru Group", "VK Group", "вк", "вконтакте"],
         ),
         CompanyInfo(
             name="Лаборатория Касперского",
             hh_id="1057",
             sj_id="1165",
             description="Российская компания по разработке систем защиты информации",
-            aliases=["Kaspersky", "Касперский", "касперского"]
+            aliases=["Kaspersky", "Касперский", "касперского"],
         ),
         CompanyInfo(
             name="Авито",
             hh_id="84585",
             sj_id="12258",
             description="Российский сервис объявлений и маркетплейс",
-            aliases=["Avito", "авито"]
+            aliases=["Avito", "авито"],
         ),
         CompanyInfo(
             name="X5 Retail Group",
             hh_id="4934",
             sj_id="2664",
             description="Российская продуктовая розничная сеть",
-            aliases=["X5", "Пятёрочка", "Карусель", "Перекрёсток"]
+            aliases=["X5", "Пятёрочка", "Карусель", "Перекрёсток"],
         ),
         CompanyInfo(
             name="Ростелеком",
             hh_id="2748",
             sj_id="1145",
             description="Крупнейший российский провайдер телекоммуникационных услуг",
-            aliases=["Rostelecom", "ростелеком"]
+            aliases=["Rostelecom", "ростелеком"],
         ),
         CompanyInfo(
             name="Альфа-Банк",
             hh_id="80",
             sj_id="1390",
             description="Частный российский банк",
-            aliases=["Alfa-Bank", "Alfabank", "альфа"]
+            aliases=["Alfa-Bank", "Alfabank", "альфа"],
         ),
         CompanyInfo(
             name="JetBrains",
             hh_id="1122",
             sj_id="1237",
             description="Чешская компания по разработке ПО с российскими корнями",
-            aliases=["Джетбрейнс", "jetbrains"]
+            aliases=["Джетбрейнс", "jetbrains"],
         ),
-        
     ]
 
     @classmethod
@@ -250,7 +250,7 @@ TARGET_COMPANIES = [
         "hh_id": company.hh_id,
         "sj_id": company.sj_id,
         "description": company.description,
-        "aliases": company.aliases
+        "aliases": company.aliases,
     }
     for company in TargetCompanies.COMPANIES
 ]

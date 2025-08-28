@@ -230,7 +230,9 @@ class VacancyOperations:
             return filter_vacancies_by_keyword(vacancies, query)
 
     @staticmethod
-    def search_vacancies_by_keyword(self, vacancies: List[Vacancy], keyword: str, use_sql: bool = True) -> List[Vacancy]:
+    def search_vacancies_by_keyword(
+        self, vacancies: List[Vacancy], keyword: str, use_sql: bool = True
+    ) -> List[Vacancy]:
         """
         Поиск вакансий по ключевому слову в названии или описании
         Поддерживает как SQL-поиск (быстрый), так и Python-поиск (для данных из API)
@@ -250,6 +252,7 @@ class VacancyOperations:
         if use_sql:
             try:
                 from src.storage.postgres_saver import PostgresSaver
+
                 postgres_saver = PostgresSaver()
 
                 # SQL-поиск по ключевому слову в БД

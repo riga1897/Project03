@@ -6,10 +6,9 @@ from functools import wraps
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
+from .decorators import simple_cache
 from .env_loader import EnvLoader
 from .file_handlers import json_handler
-from .decorators import simple_cache
-
 
 # Configure logger
 logger = logging.getLogger(__name__)
@@ -51,18 +50,12 @@ class FileCache:
                 logger.debug(f"Пропускаем сохранение некорректного ответа в кэш: {params}")
                 return
 
-            cache_key = self._generate_params_hash(params) # Renamed from _generate_cache_key to _generate_params_hash
-            file_path = self.cache_dir / f"{prefix}_{cache_key}.json" # Added prefix to filename
+            cache_key = self._generate_params_hash(params)  # Renamed from _generate_cache_key to _generate_params_hash
+            file_path = self.cache_dir / f"{prefix}_{cache_key}.json"  # Added prefix to filename
 
-            cache_data = {
-                "timestamp": time.time(),
-                "meta": {
-                    "params": params
-                },
-                "data": data
-            }
+            cache_data = {"timestamp": time.time(), "meta": {"params": params}, "data": data}
 
-            with open(file_path, 'w', encoding='utf-8') as f:
+            with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(cache_data, f, indent=2, ensure_ascii=False)
 
             logger.debug(f"Ответ сохранен в кэш: {file_path}")
@@ -124,7 +117,7 @@ class FileCache:
             # При ошибке декодирования или доступа к файлу, считаем кэш невалидным
             if filepath.exists():
                 try:
-                    filepath.unlink() # Удаляем некорректный файл
+                    filepath.unlink()  # Удаляем некорректный файл
                 except OSError as e:
                     logger.error(f"Ошибка удаления некорректного файла кэша {filepath}: {e}")
             return None

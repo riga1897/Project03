@@ -69,7 +69,7 @@ class Salary:
     def _parse_salary_range_string(salary_range: str) -> Dict[str, Any]:
         """
         Парсинг строки с диапазоном зарплаты
-        
+
         Поддерживаемые форматы:
         - "100000 - 150000"
         - "от 100000 до 150000"
@@ -81,51 +81,44 @@ class Salary:
             return {}
 
         import re
-        
+
         # Очищаем строку от лишних символов и приводим к нижнему регистру
         clean_range = salary_range.strip().lower()
-        
+
         # Паттерны для разных форматов
         patterns = [
             # "от X до Y", "от X до Y руб", "от X до Y рублей"
-            r'от\s*(\d+(?:\s?\d{3})*)\s*до\s*(\d+(?:\s?\d{3})*)',
+            r"от\s*(\d+(?:\s?\d{3})*)\s*до\s*(\d+(?:\s?\d{3})*)",
             # "X - Y", "X-Y"
-            r'(\d+(?:\s?\d{3})*)\s*-\s*(\d+(?:\s?\d{3})*)',
+            r"(\d+(?:\s?\d{3})*)\s*-\s*(\d+(?:\s?\d{3})*)",
             # "X до Y"
-            r'(\d+(?:\s?\d{3})*)\s*до\s*(\d+(?:\s?\d{3})*)',
+            r"(\d+(?:\s?\d{3})*)\s*до\s*(\d+(?:\s?\d{3})*)",
         ]
-        
+
         # Пытаемся найти диапазон
         for pattern in patterns:
             match = re.search(pattern, clean_range)
             if match:
-                from_salary = int(re.sub(r'\s', '', match.group(1)))
-                to_salary = int(re.sub(r'\s', '', match.group(2)))
-                return {
-                    "from": from_salary,
-                    "to": to_salary,
-                    "currency": "RUR"  # По умолчанию рубли
-                }
-        
+                from_salary = int(re.sub(r"\s", "", match.group(1)))
+                to_salary = int(re.sub(r"\s", "", match.group(2)))
+                return {"from": from_salary, "to": to_salary, "currency": "RUR"}  # По умолчанию рубли
+
         # Паттерны для одиночных значений
         single_patterns = [
             # "от X"
-            (r'от\s*(\d+(?:\s?\d{3})*)', "from"),
+            (r"от\s*(\d+(?:\s?\d{3})*)", "from"),
             # "до Y"
-            (r'до\s*(\d+(?:\s?\d{3})*)', "to"),
+            (r"до\s*(\d+(?:\s?\d{3})*)", "to"),
             # просто число
-            (r'^(\d+(?:\s?\d{3})*)$', "from"),
+            (r"^(\d+(?:\s?\d{3})*)$", "from"),
         ]
-        
+
         for pattern, field in single_patterns:
             match = re.search(pattern, clean_range)
             if match:
-                salary_value = int(re.sub(r'\s', '', match.group(1)))
-                return {
-                    field: salary_value,
-                    "currency": "RUR"
-                }
-        
+                salary_value = int(re.sub(r"\s", "", match.group(1)))
+                return {field: salary_value, "currency": "RUR"}
+
         return {}
 
     @property

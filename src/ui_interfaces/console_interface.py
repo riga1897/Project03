@@ -5,8 +5,10 @@ from src.api_modules.hh_api import HeadHunterAPI
 from src.api_modules.sj_api import SuperJobAPI
 from src.api_modules.unified_api import UnifiedAPI
 from src.config.ui_config import ui_pagination_config
-# from src.storage.json_saver import JSONSaver # Удален JSONSaver
-
+from src.storage.storage_factory import StorageFactory
+from src.ui_interfaces.vacancy_display_handler import VacancyDisplayHandler
+from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
+from src.ui_interfaces.vacancy_search_handler import VacancySearchHandler
 from src.utils.menu_manager import create_main_menu, print_menu_separator, print_section_header
 from src.utils.ui_helpers import (confirm_action, display_vacancy_info, filter_vacancies_by_keyword, get_user_input,
                                   parse_salary_range)
@@ -15,10 +17,10 @@ from src.utils.vacancy_formatter import VacancyFormatter
 from src.utils.vacancy_operations import VacancyOperations
 from src.vacancies.models import Vacancy
 
-from src.ui_interfaces.vacancy_display_handler import VacancyDisplayHandler
-from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
-from src.ui_interfaces.vacancy_search_handler import VacancySearchHandler
-from src.storage.storage_factory import StorageFactory
+# from src.storage.json_saver import JSONSaver # Удален JSONSaver
+
+
+
 # Импортируем DBManager и DBManagerDemo для демонстрации
 try:
     from src.storage.db_manager import DBManager
@@ -71,7 +73,6 @@ class UserInterface:
         else:
             self.demo = None
 
-
     def run(self) -> None:
         """Основной цикл взаимодействия с пользователем"""
         print_section_header("Добро пожаловать в поисковик вакансий!")
@@ -93,7 +94,7 @@ class UserInterface:
                 elif choice == "6":
                     self._filter_saved_vacancies_by_salary()
                 elif choice == "7":
-                    self.operations_coordinator.handle_delete_vacancies() # Изменено: используется operations_coordinator
+                    self.operations_coordinator.handle_delete_vacancies()  # Изменено: используется operations_coordinator
 
                 elif choice == "8":
                     self._clear_api_cache()
@@ -152,25 +153,25 @@ class UserInterface:
 
     def _search_vacancies(self) -> None:
         """Поиск вакансий по запросу пользователя"""
-        self.operations_coordinator.handle_vacancy_search() # Изменено: используется operations_coordinator
+        self.operations_coordinator.handle_vacancy_search()  # Изменено: используется operations_coordinator
 
     def _show_saved_vacancies(self) -> None:
         """Отображение сохраненных вакансий с постраничным просмотром"""
-        self.operations_coordinator.handle_show_saved_vacancies() # Изменено: используется operations_coordinator
+        self.operations_coordinator.handle_show_saved_vacancies()  # Изменено: используется operations_coordinator
 
     def _get_top_saved_vacancies_by_salary(self) -> None:
         """Получение топ N сохраненных вакансий по зарплате"""
-        self.operations_coordinator.handle_top_vacancies_by_salary() # Изменено: используется operations_coordinator
+        self.operations_coordinator.handle_top_vacancies_by_salary()  # Изменено: используется operations_coordinator
 
     def _search_saved_vacancies_by_keyword(self) -> None:
         """Поиск в сохраненных вакансиях с ключевым словом в описании"""
-        self.operations_coordinator.handle_search_saved_by_keyword() # Изменено: используется operations_coordinator
+        self.operations_coordinator.handle_search_saved_by_keyword()  # Изменено: используется operations_coordinator
 
     def _advanced_search_vacancies(self) -> None:
         """Расширенный поиск по вакансиям"""
         try:
             # Используем self.storage для получения вакансий
-            vacancies = self.storage.get_vacancies() # Изменено: используется storage
+            vacancies = self.storage.get_vacancies()  # Изменено: используется storage
 
             if not vacancies:
                 print("Нет сохраненных вакансий.")
@@ -225,7 +226,7 @@ class UserInterface:
         """Фильтрация сохраненных вакансий по зарплате"""
         try:
             # Используем self.storage для получения вакансий
-            vacancies = self.storage.get_vacancies() # Изменено: используется storage
+            vacancies = self.storage.get_vacancies()  # Изменено: используется storage
 
             if not vacancies:
                 print("Нет сохраненных вакансий.")
@@ -300,11 +301,11 @@ class UserInterface:
 
     def _delete_saved_vacancies(self) -> None:
         """Удаление сохраненных вакансий"""
-        self.operations_coordinator.handle_delete_vacancies() # Изменено: используется operations_coordinator
+        self.operations_coordinator.handle_delete_vacancies()  # Изменено: используется operations_coordinator
 
     def _clear_api_cache(self) -> None:
         """Очистка кэша API"""
-        self.operations_coordinator.handle_cache_cleanup() # Изменено: используется operations_coordinator
+        self.operations_coordinator.handle_cache_cleanup()  # Изменено: используется operations_coordinator
 
     @staticmethod
     def _get_period_choice() -> Optional[int]:
@@ -354,7 +355,7 @@ class UserInterface:
 
     def _setup_superjob_api(self) -> None:
         """Настройка SuperJob API"""
-        self.operations_coordinator.handle_superjob_setup() # Изменено: используется operations_coordinator
+        self.operations_coordinator.handle_superjob_setup()  # Изменено: используется operations_coordinator
 
     @staticmethod
     def _display_vacancies(vacancies: List[Vacancy], start_number: int = 1) -> None:
@@ -438,7 +439,7 @@ class UserInterface:
             elif choice == "a":
                 if confirm_action(f"Удалить ВСЕ {len(vacancies)} вакансий с ключевым словом '{keyword}'?"):
                     # Используем storage для удаления
-                    deleted_count = self.storage.delete_vacancies_by_keyword(keyword) # Изменено: используется storage
+                    deleted_count = self.storage.delete_vacancies_by_keyword(keyword)  # Изменено: используется storage
                     if deleted_count > 0:
                         print(f"Удалено {deleted_count} вакансий.")
                     else:
@@ -477,7 +478,9 @@ class UserInterface:
                             deleted_count = 0
                             for vacancy in vacancies_to_delete:
                                 # Используем storage для удаления
-                                if self.storage.delete_vacancy_by_id(vacancy.vacancy_id): # Изменено: используется storage
+                                if self.storage.delete_vacancy_by_id(
+                                    vacancy.vacancy_id
+                                ):  # Изменено: используется storage
                                     vacancies.remove(vacancy)
                                     deleted_count += 1
 
@@ -515,7 +518,9 @@ class UserInterface:
 
                     if confirm_action("Удалить эту вакансию?"):
                         # Используем storage для удаления
-                        if self.storage.delete_vacancy_by_id(vacancy_to_delete.vacancy_id): # Изменено: используется storage
+                        if self.storage.delete_vacancy_by_id(
+                            vacancy_to_delete.vacancy_id
+                        ):  # Изменено: используется storage
                             print("Вакансия успешно удалена.")
                             # Удаляем из локального списка и обновляем отображение
                             vacancies.remove(vacancy_to_delete)

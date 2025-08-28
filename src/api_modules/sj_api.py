@@ -255,7 +255,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             target_vacancies = []
 
             for vacancy in all_vacancies:
-                company_name = vacancy.get('firm_name', '').lower()
+                company_name = vacancy.get("firm_name", "").lower()
                 # Проверяем совпадение с целевыми компаниями (нечеткое сравнение)
                 for target_company in target_companies:
                     if target_company.lower() in company_name or company_name in target_company.lower():
@@ -267,6 +267,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             # Показываем статистику
             if target_vacancies:
                 from src.utils.vacancy_stats import VacancyStats
+
                 VacancyStats.display_company_stats(target_vacancies, "SuperJob - Целевые компании")
 
             return target_vacancies
@@ -274,7 +275,9 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
         except Exception as e:
             if "403" in str(e) or "ключ" in str(e).lower():
                 logger.warning(f"SuperJob API ключ недействителен или не настроен: {e}")
-                logger.info("Для использования SuperJob настройте API ключ через пункт меню '9. Настройка SuperJob API'")
+                logger.info(
+                    "Для использования SuperJob настройте API ключ через пункт меню '9. Настройка SuperJob API'"
+                )
             else:
                 logger.error(f"Ошибка SuperJob API: {e}")
             return []

@@ -12,11 +12,11 @@ class AppConfig:
 
         # Настройки БД
         self.db_config = {
-            'host': os.getenv('PGHOST', 'localhost'),
-            'port': os.getenv('PGPORT', '5432'),
-            'database': os.getenv('PGDATABASE', 'Project03'),
-            'username': os.getenv('PGUSER', 'postgres'),
-            'password': os.getenv('PGPASSWORD', '')
+            "host": os.getenv("PGHOST", "localhost"),
+            "port": os.getenv("PGPORT", "5432"),
+            "database": os.getenv("PGDATABASE", "Project03"),
+            "username": os.getenv("PGUSER", "postgres"),
+            "password": os.getenv("PGPASSWORD", ""),
         }
 
     def get_storage_type(self) -> str:
@@ -25,7 +25,7 @@ class AppConfig:
 
     def set_storage_type(self, storage_type: str) -> None:
         """Устанавливает тип хранилища"""
-        if storage_type != 'postgres':
+        if storage_type != "postgres":
             raise ValueError(f"Поддерживается только PostgreSQL: {storage_type}")
         self.storage_type = storage_type
 

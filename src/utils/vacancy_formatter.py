@@ -59,7 +59,7 @@ class VacancyFormatter(BaseFormatter):
         # Получаем зарплату
         salary_str = "Зарплата не указана"
         if vacancy.salary:
-            if hasattr(vacancy.salary, 'salary_from') and hasattr(vacancy.salary, 'salary_to'):
+            if hasattr(vacancy.salary, "salary_from") and hasattr(vacancy.salary, "salary_to"):
                 if vacancy.salary.salary_from and vacancy.salary.salary_to:
                     salary_str = f"{vacancy.salary.salary_from:,} - {vacancy.salary.salary_to:,} ₽"
                 elif vacancy.salary.salary_from:
@@ -71,7 +71,7 @@ class VacancyFormatter(BaseFormatter):
         employer_name = "Не указан"
         if vacancy.employer:
             if isinstance(vacancy.employer, dict):
-                employer_name = vacancy.employer.get('name', 'Не указан')
+                employer_name = vacancy.employer.get("name", "Не указан")
             else:
                 employer_name = str(vacancy.employer)
 
@@ -96,7 +96,7 @@ class VacancyFormatter(BaseFormatter):
             str: Отформатированная строка с информацией о вакансии
         """
         # Получаем данные о вакансии
-        if hasattr(vacancy, 'to_dict'):
+        if hasattr(vacancy, "to_dict"):
             # Если это объект Vacancy
             vacancy_data = vacancy
         else:
@@ -104,25 +104,25 @@ class VacancyFormatter(BaseFormatter):
             vacancy_data = vacancy
 
         # Извлекаем информацию
-        if hasattr(vacancy_data, 'vacancy_id'):
+        if hasattr(vacancy_data, "vacancy_id"):
             vacancy_id = vacancy_data.vacancy_id
         elif isinstance(vacancy_data, dict):
-            vacancy_id = vacancy_data.get('vacancy_id', 'N/A')
+            vacancy_id = vacancy_data.get("vacancy_id", "N/A")
         else:
-            vacancy_id = 'N/A'
+            vacancy_id = "N/A"
 
-        if hasattr(vacancy_data, 'title'):
+        if hasattr(vacancy_data, "title"):
             title = vacancy_data.title
         elif isinstance(vacancy_data, dict):
-            title = vacancy_data.get('title', 'Название не указано')
+            title = vacancy_data.get("title", "Название не указано")
         else:
-            title = 'Название не указано'
-        if hasattr(vacancy_data, 'url'):
-            url = vacancy_data.url or ''
+            title = "Название не указано"
+        if hasattr(vacancy_data, "url"):
+            url = vacancy_data.url or ""
         elif isinstance(vacancy_data, dict):
-            url = vacancy_data.get('url', '') or vacancy_data.get('link', '')
+            url = vacancy_data.get("url", "") or vacancy_data.get("link", "")
         else:
-            url = ''
+            url = ""
 
         # Получение информации о компании
         company_name = VacancyFormatter._extract_company_name(vacancy_data)
@@ -131,28 +131,28 @@ class VacancyFormatter(BaseFormatter):
         salary_info = VacancyFormatter._extract_salary_info(vacancy_data)
 
         # Опыт работы
-        if hasattr(vacancy_data, 'experience'):
-            experience = vacancy_data.experience or 'Не указан'
+        if hasattr(vacancy_data, "experience"):
+            experience = vacancy_data.experience or "Не указан"
         elif isinstance(vacancy_data, dict):
-            experience = vacancy_data.get('experience', 'Не указан')
+            experience = vacancy_data.get("experience", "Не указан")
         else:
-            experience = 'Не указан'
+            experience = "Не указан"
 
         # Тип занятости
-        if hasattr(vacancy_data, 'employment'):
-            employment = vacancy_data.employment or 'Не указана'
+        if hasattr(vacancy_data, "employment"):
+            employment = vacancy_data.employment or "Не указана"
         elif isinstance(vacancy_data, dict):
-            employment = vacancy_data.get('employment', 'Не указана')
+            employment = vacancy_data.get("employment", "Не указана")
         else:
-            employment = 'Не указана'
+            employment = "Не указана"
 
         # Источник
-        if hasattr(vacancy_data, 'source'):
-            source = vacancy_data.source or 'unknown'
+        if hasattr(vacancy_data, "source"):
+            source = vacancy_data.source or "unknown"
         elif isinstance(vacancy_data, dict):
-            source = vacancy_data.get('source', 'unknown')
+            source = vacancy_data.get("source", "unknown")
         else:
-            source = 'unknown'
+            source = "unknown"
 
         # Описание (ограничиваем длину)
         description = VacancyFormatter._extract_description(vacancy_data)
@@ -163,17 +163,19 @@ class VacancyFormatter(BaseFormatter):
         if number is not None:
             result_parts.append(f"{number}.")
 
-        result_parts.extend([
-            f"ID: {vacancy_id}",
-            f"Название: {title}",
-            f"Компания: {company_name}",
-            f"Зарплата: {salary_info}",
-            f"Опыт: {experience}",
-            f"Занятость: {employment}",
-            f"Источник: {source}",
-            f"Ссылка: {url}",
-            f"Описание вакансии: {description}",
-        ])
+        result_parts.extend(
+            [
+                f"ID: {vacancy_id}",
+                f"Название: {title}",
+                f"Компания: {company_name}",
+                f"Зарплата: {salary_info}",
+                f"Опыт: {experience}",
+                f"Занятость: {employment}",
+                f"Источник: {source}",
+                f"Ссылка: {url}",
+                f"Описание вакансии: {description}",
+            ]
+        )
 
         return "\n".join(result_parts)
 
@@ -267,21 +269,24 @@ class VacancyFormatter(BaseFormatter):
         lines.append(f"Источник: {getattr(vacancy, 'source', 'Не указан')}")
 
         # Дата публикации в российском формате
-        published_at = getattr(vacancy, 'published_at', None)
+        published_at = getattr(vacancy, "published_at", None)
         if published_at:
             try:
-                if hasattr(published_at, 'strftime'):
+                if hasattr(published_at, "strftime"):
                     # Форматируем дату в российском формате
                     formatted_date = published_at.strftime("%d.%m.%Y %H:%M")
                     lines.append(f"Дата публикации: {formatted_date}")
                 else:
                     # Если это строка, пытаемся её обработать
                     from datetime import datetime
+
                     if isinstance(published_at, str):
                         # Пробуем распарсить разные форматы
                         for fmt in ["%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"]:
                             try:
-                                parsed_date = datetime.strptime(published_at.replace('+0300', ''), fmt.replace('%z', ''))
+                                parsed_date = datetime.strptime(
+                                    published_at.replace("+0300", ""), fmt.replace("%z", "")
+                                )
                                 formatted_date = parsed_date.strftime("%d.%m.%Y %H:%M")
                                 lines.append(f"Дата публикации: {formatted_date}")
                                 break
@@ -418,14 +423,14 @@ class VacancyFormatter(BaseFormatter):
         """
         # Приоритет 1: поле employer (полная структура)
         employer_info = None
-        if hasattr(vacancy_data, 'employer'):
+        if hasattr(vacancy_data, "employer"):
             employer_info = vacancy_data.employer
-        elif isinstance(vacancy_data, dict) and 'employer' in vacancy_data:
-            employer_info = vacancy_data.get('employer')
+        elif isinstance(vacancy_data, dict) and "employer" in vacancy_data:
+            employer_info = vacancy_data.get("employer")
 
         if employer_info:
             if isinstance(employer_info, dict):
-                return employer_info.get('name', 'Не указана')
+                return employer_info.get("name", "Не указана")
             elif isinstance(employer_info, str) and employer_info.strip():
                 return employer_info
             else:
@@ -434,11 +439,11 @@ class VacancyFormatter(BaseFormatter):
 
         # Приоритет 2: fallback на поле company (для совместимости)
         company_info = None
-        if hasattr(vacancy_data, 'company'):
+        if hasattr(vacancy_data, "company"):
             company_info = vacancy_data.company
-        elif isinstance(vacancy_data, dict) and 'company' in vacancy_data:
-            company_info = vacancy_data.get('company')
-        
+        elif isinstance(vacancy_data, dict) and "company" in vacancy_data:
+            company_info = vacancy_data.get("company")
+
         if company_info and str(company_info).strip():
             return str(company_info).title()
 
@@ -450,28 +455,28 @@ class VacancyFormatter(BaseFormatter):
         Извлекает и форматирует информацию о зарплате.
         """
         salary_data = None
-        if hasattr(vacancy_data, 'salary'):
+        if hasattr(vacancy_data, "salary"):
             salary_data = vacancy_data.salary
-        elif isinstance(vacancy_data, dict) and 'salary' in vacancy_data:
-            salary_data = vacancy_data.get('salary')
+        elif isinstance(vacancy_data, dict) and "salary" in vacancy_data:
+            salary_data = vacancy_data.get("salary")
 
         if not salary_data:
             return "Не указана"
 
         if isinstance(salary_data, dict):
             return VacancyFormatter._format_salary_dict(salary_data)
-        elif hasattr(salary_data, 'salary_from') and hasattr(salary_data, 'salary_to'):
+        elif hasattr(salary_data, "salary_from") and hasattr(salary_data, "salary_to"):
             # Форматирование, если salary является объектом с атрибутами
             from_value = salary_data.salary_from
             to_value = salary_data.salary_to
-            currency = getattr(salary_data, 'currency', '₽') # Используем ₽ по умолчанию, если нет валюты
+            currency = getattr(salary_data, "currency", "₽")  # Используем ₽ по умолчанию, если нет валюты
 
             salary_parts = []
             if from_value is not None:
                 salary_parts.append(f"от {from_value:,}")
             if to_value is not None:
                 salary_parts.append(f"до {to_value:,}")
-            
+
             if salary_parts:
                 return " ".join(salary_parts) + f" {currency}".strip()
             else:
@@ -486,20 +491,21 @@ class VacancyFormatter(BaseFormatter):
         Извлекает и форматирует описание вакансии, ограничивая длину.
         """
         description_text = None
-        if hasattr(vacancy_data, 'description') and vacancy_data.description:
+        if hasattr(vacancy_data, "description") and vacancy_data.description:
             description_text = str(vacancy_data.description).strip()
-        elif hasattr(vacancy_data, 'detailed_description') and vacancy_data.detailed_description:
+        elif hasattr(vacancy_data, "detailed_description") and vacancy_data.detailed_description:
             description_text = str(vacancy_data.detailed_description).strip()
-        elif isinstance(vacancy_data, dict) and vacancy_data.get('description'):
-            description_text = str(vacancy_data.get('description')).strip()
-        elif isinstance(vacancy_data, dict) and vacancy_data.get('detailed_description'):
-            description_text = str(vacancy_data.get('detailed_description')).strip()
+        elif isinstance(vacancy_data, dict) and vacancy_data.get("description"):
+            description_text = str(vacancy_data.get("description")).strip()
+        elif isinstance(vacancy_data, dict) and vacancy_data.get("detailed_description"):
+            description_text = str(vacancy_data.get("detailed_description")).strip()
 
         if not description_text or description_text == "Не указано" or description_text == "":
             return "Описание отсутствует"
 
         # Очистка HTML-тегов
         import re
+
         cleaned_description = re.sub(r"<[^>]+>", "", description_text)
         cleaned_description = cleaned_description.strip()
 

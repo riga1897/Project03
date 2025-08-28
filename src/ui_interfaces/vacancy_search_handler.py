@@ -19,7 +19,7 @@ class VacancySearchHandler:
     их отображение и сохранение.
     """
 
-    def __init__(self, unified_api: UnifiedAPI, storage: 'PostgresSaver'):
+    def __init__(self, unified_api: UnifiedAPI, storage: "PostgresSaver"):
         """
         Инициализация обработчика поиска
 
@@ -68,9 +68,10 @@ class VacancySearchHandler:
         except Exception as e:
             logger.error(f"Ошибка поиска вакансий: {e}", exc_info=True)
             print(f"Произошла ошибка при поиске: {e}")
-            if hasattr(e, '__class__'):
+            if hasattr(e, "__class__"):
                 print(f"Тип ошибки: {e.__class__.__name__}")
             import traceback
+
             traceback.print_exc()
 
     def _fetch_vacancies_from_sources(self, sources: set, query: str, period: int) -> List[Vacancy]:
@@ -97,9 +98,7 @@ class VacancySearchHandler:
 
         # Используем обычный метод поиска, который делает реальные API запросы
         vacancies_data = self.unified_api.get_vacancies_from_sources(
-            search_query=query,
-            sources=source_list,
-            period=period
+            search_query=query, sources=source_list, period=period
         )
 
         # Конвертируем данные в объекты Vacancy
@@ -140,7 +139,9 @@ class VacancySearchHandler:
 
         # Предпросмотр только новых вакансий (которые будут сохранены)
         if duplicate_info["new_vacancies"]:
-            show_vacancies = confirm_action(f"Показать {len(duplicate_info['new_vacancies'])} новых вакансий для сохранения?")
+            show_vacancies = confirm_action(
+                f"Показать {len(duplicate_info['new_vacancies'])} новых вакансий для сохранения?"
+            )
             if show_vacancies:
 
                 def format_vacancy(vacancy: Vacancy, number: Optional[int] = None) -> str:
@@ -175,7 +176,7 @@ class VacancySearchHandler:
         """
         try:
             print(f"Сохранение {len(vacancies)} вакансий...")
-            
+
             # Сохраняем новые вакансии оптимизированным методом
             update_messages = self.storage.add_vacancy_batch_optimized(vacancies)
 
@@ -184,7 +185,7 @@ class VacancySearchHandler:
                     print(f"  • {message}")
             else:
                 print(f"  • Сохранено {len(vacancies)} вакансий")
-                
+
             print(f"Успешно сохранено {len(vacancies)} вакансий в базу данных")
 
         except Exception as e:
@@ -203,13 +204,7 @@ class VacancySearchHandler:
             dict: Словарь с информацией о дубликатах и новых вакансиях
         """
         if not vacancies:
-            return {
-                "total_count": 0,
-                "duplicates": [],
-                "new_vacancies": [],
-                "duplicate_count": 0,
-                "new_count": 0
-            }
+            return {"total_count": 0, "duplicates": [], "new_vacancies": [], "duplicate_count": 0, "new_count": 0}
 
         print(f"Проверка {len(vacancies)} вакансий на дубликаты...")
 
@@ -230,7 +225,7 @@ class VacancySearchHandler:
             "duplicates": duplicates,
             "new_vacancies": new_vacancies,
             "duplicate_count": len(duplicates),
-            "new_count": len(new_vacancies)
+            "new_count": len(new_vacancies),
         }
 
     @staticmethod

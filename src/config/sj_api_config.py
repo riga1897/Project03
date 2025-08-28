@@ -1,13 +1,15 @@
-from dataclasses import dataclass
-from typing import Any, Dict, Optional
 import json
 import logging
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, Dict, Optional
 
 from src.utils.file_handlers import json_handler
+
 from .api_config import APIConfig
 
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class SJAPIConfig:
