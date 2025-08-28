@@ -1,5 +1,5 @@
 {
-  "timestamp": 1756325135.9364522,
+  "timestamp": 1756382559.423612,
   "meta": {
     "params": {
       "area": 1,
@@ -13,124 +13,58 @@
   "data": {
     "items": [
       {
-        "id": "124557987",
+        "id": "124590457",
         "premium": false,
         "name": "Frontend-разработчик",
         "department": null,
         "has_test": false,
         "response_letter_required": false,
         "area": {
-          "id": "2053",
-          "name": "Одинцово (Московская область)",
-          "url": "https://api.hh.ru/areas/2053"
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
         },
-        "salary": {
-          "from": 265000,
-          "to": 290000,
-          "currency": "RUR",
-          "gross": true
-        },
-        "salary_range": {
-          "from": 265000,
-          "to": 290000,
-          "currency": "RUR",
-          "gross": true,
-          "mode": {
-            "id": "MONTH",
-            "name": "За месяц"
-          },
-          "frequency": null
-        },
+        "salary": null,
+        "salary_range": null,
         "type": {
           "id": "open",
           "name": "Открытая"
         },
-        "address": {
-          "city": null,
-          "street": null,
-          "building": null,
-          "lat": null,
-          "lng": null,
-          "description": null,
-          "raw": null,
-          "metro": {
-            "station_name": "Баковка",
-            "line_name": "МЦД-1",
-            "station_id": "131.709",
-            "line_id": "131",
-            "lat": 55.682816,
-            "lng": 37.315205
-          },
-          "metro_stations": [
-            {
-              "station_name": "Баковка",
-              "line_name": "МЦД-1",
-              "station_id": "131.709",
-              "line_id": "131",
-              "lat": 55.682816,
-              "lng": 37.315205
-            },
-            {
-              "station_name": "Немчиновка",
-              "line_name": "МЦД-1",
-              "station_id": "131.707",
-              "line_id": "131",
-              "lat": 55.715668,
-              "lng": 37.374611
-            },
-            {
-              "station_name": "Переделкино",
-              "line_name": "МЦД-4",
-              "station_id": "136.907",
-              "line_id": "136",
-              "lat": 55.656111,
-              "lng": 37.353889
-            },
-            {
-              "station_name": "Сетунь",
-              "line_name": "МЦД-1",
-              "station_id": "131.706",
-              "line_id": "131",
-              "lat": 55.723713,
-              "lng": 37.397259
-            }
-          ],
-          "id": "19266625"
-        },
+        "address": null,
         "response_url": null,
         "sort_point_distance": null,
-        "published_at": "2025-08-27T16:43:23+0300",
-        "created_at": "2025-08-27T16:43:23+0300",
+        "published_at": "2025-08-28T13:00:44+0300",
+        "created_at": "2025-08-28T13:00:44+0300",
         "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124557987",
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124590457",
         "show_logo_in_search": null,
         "show_contacts": false,
         "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124557987?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124557987",
+        "url": "https://api.hh.ru/vacancies/124590457?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124590457",
         "relations": [],
         "employer": {
-          "id": "637743",
-          "name": "Агентство КИТ Консалт",
-          "url": "https://api.hh.ru/employers/637743",
-          "alternate_url": "https://hh.ru/employer/637743",
+          "id": "3144945",
+          "name": "Ростелеком Информационные Технологии",
+          "url": "https://api.hh.ru/employers/3144945",
+          "alternate_url": "https://hh.ru/employer/3144945",
           "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/1395338.png",
-            "90": "https://img.hhcdn.ru/employer-logo/7201135.png",
-            "240": "https://img.hhcdn.ru/employer-logo/7201136.png"
+            "original": "https://img.hhcdn.ru/employer-logo-original/607382.png",
+            "90": "https://img.hhcdn.ru/employer-logo/2870680.png",
+            "240": "https://img.hhcdn.ru/employer-logo/2870681.png"
           },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=637743",
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3144945",
           "accredited_it_employer": false,
           "trusted": true
         },
         "snippet": {
-          "requirement": "Желательно: - Опыт создания интерактивных планов или схем. - Знание fabric.js. - Опыт работы с <highlighttext>Python</highlighttext>, Redis, PostgreSQL. - Опыт настройки Nginx, работы с...",
-          "responsibility": "Разработка пользовательского интерфейса сервера для мониторинга и управления бизнес-задачами автоматизированной складской техники. - Взаимодействие с командой проектировщиков и backend-разработчиков..."
+          "requirement": "Опыт работы с Docker. Знание и опыт работы с <highlighttext>Python</highlighttext>. Опыт разработки БД: реляционная алгебра, индексы, оптимизация запросов. ",
+          "responsibility": "Участие в разработке высонагруженной no code платформы Акола для создания веб приложений, порталов: Разработка Front-end сервисов для платформы на..."
         },
         "contacts": null,
         "schedule": {
-          "id": "fullDay",
-          "name": "Полный день"
+          "id": "remote",
+          "name": "Удаленная работа"
         },
         "working_days": [],
         "working_time_intervals": [],
@@ -139,8 +73,8 @@
         "fly_in_fly_out_duration": [],
         "work_format": [
           {
-            "id": "HYBRID",
-            "name": "Гибрид"
+            "id": "REMOTE",
+            "name": "Удалённо"
           }
         ],
         "working_hours": [
@@ -181,8 +115,8 @@
         "adv_context": null
       }
     ],
-    "found": 508,
-    "pages": 508,
+    "found": 465,
+    "pages": 465,
     "page": 0,
     "per_page": 1,
     "clusters": null,
