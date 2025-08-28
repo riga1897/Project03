@@ -12,6 +12,7 @@ from src.ui_interfaces.source_selector import SourceSelector
 from src.ui_interfaces.vacancy_display_handler import VacancyDisplayHandler
 from src.ui_interfaces.vacancy_search_handler import VacancySearchHandler
 from src.utils.ui_helpers import confirm_action, get_user_input
+from src.utils.vacancy_formatter import VacancyFormatter
 from src.vacancies.models import Vacancy
 
 logger = logging.getLogger(__name__)
