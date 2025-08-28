@@ -1,10 +1,8 @@
-import json
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from src.models import Vacancy
 from src.utils.cache import FileCache
-from src.utils.salary import Salary
 from src.vacancies.parsers.base_parser import BaseParser
 
 logger = logging.getLogger(__name__)
@@ -76,7 +74,7 @@ class HHParser(BaseParser):
                     print(f"DEBUG HH Parser: Обрабатывается вакансия ID {vacancy_id}: {item.get('name')}")
                     print(f"DEBUG HH Parser: item содержит ключи: {list(item.keys())}")
                     print(f"DEBUG HH Parser: item['id'] = {item.get('id')}")
-                    print(f"DEBUG HH Parser: Передаем в Vacancy.from_dict...")
+                    print("DEBUG HH Parser: Передаем в Vacancy.from_dict...")
 
                 vacancy = Vacancy.from_dict(item)
 

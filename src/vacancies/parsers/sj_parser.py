@@ -1,9 +1,6 @@
-import json
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
-from src.utils.cache import FileCache
-from src.utils.salary import Salary
 from src.vacancies.parsers.base_parser import BaseParser
 
 from ..models import Vacancy
