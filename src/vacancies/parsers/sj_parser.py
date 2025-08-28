@@ -164,32 +164,4 @@ class SuperJobParser(BaseParser):
                 "source": "superjob.ru",
             }
 
-    @staticmethod
-    def parse_companies(companies_data: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """
-        Парсинг списка компаний SJ
-
-        Args:
-            companies_data: Данные компаний от API SJ
-
-        Returns:
-            List[Dict[str, Any]]: Список словарей с данными компаний
-        """
-        try:
-            companies = []
-            objects = companies_data.get("objects", [])
-
-            for company_data in objects:
-                company = {
-                    "company_id": str(company_data.get("id", "")),
-                    "name": company_data.get("title", ""),
-                    "description": company_data.get("description", ""),
-                    "url": company_data.get("link", ""),
-                }
-                companies.append(company)
-
-            logger.info(f"Успешно распарсено {len(companies)} компаний SJ")
-            return companies
-        except Exception as e:
-            logger.error(f"Ошибка при парсинге списка компаний SJ: {e}")
-            return []
+    

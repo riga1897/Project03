@@ -11,33 +11,17 @@ logger = logging.getLogger(__name__)
 class HHParser(BaseParser):
     """Парсер для обработки данных вакансий с HeadHunter API"""
 
-    requirements = None
-    responsibilities = None
-
     def __init__(self, cache_dir: str = "data/cache/hh"):
         self.cache = FileCache(cache_dir)
         self.base_url = "https://api.hh.ru/vacancies"
 
-    def parse_vacancies(self, raw_vacancies: List[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
-        """Парсинг вакансий по предоставленным сырым данным или через API"""
-
-        # If raw vacancies are not provided, fetch from the API
+    def parse_vacancies(self, raw_vacancies: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Парсинг вакансий по предоставленным сырым данным"""
         if not raw_vacancies:
-            raw_vacancies = self._fetch_from_api()
-
-            # Сохранение в кэш
-            # Make sure search_params is defined somewhere in this context
-            search_params = {}  # You need to define this based on the real logic
-            self.cache.save_response("hh", search_params, raw_vacancies)
-
+            return []
+            
         parsed_vacancies = self._parse_items(raw_vacancies)
         return [Vacancy.to_dict(vacancy) for vacancy in parsed_vacancies]
-
-    @staticmethod
-    def _fetch_from_api() -> List[Dict[str, Any]]:
-        """Заглушка для реального запроса к API"""
-        # В реальной реализации здесь будет код для работы с API
-        return []
 
     def _parse_items(self, raw_data: List[Dict[str, Any]]) -> List[Vacancy]:
         """Преобразование сырых данных HH в объекты Vacancy"""
@@ -147,57 +131,7 @@ class HHParser(BaseParser):
                 "published_at": "",
             }
 
-    @staticmethod
-    def parse_company(company_data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Парсинг данных компании HH
-
-        Args:
-            company_data: Данные компании от API HH
-
-        Returns:
-            Dict[str, Any]: Словарь с данными компании
-        """
-        try:
-            return {
-                "company_id": str(company_data.get("id", "")),
-                "name": company_data.get("name", ""),
-                "description": company_data.get("description", ""),
-                "url": company_data.get("alternate_url", ""),
-            }
-        except Exception as e:
-            logger.error(f"Ошибка при парсинге компании HH: {e}")
-            return {
-                "company_id": str(company_data.get("id", "")),
-                "name": company_data.get("name", ""),
-                "description": "",
-                "url": "",
-            }
-
-    @staticmethod
-    def parse_companies(companies_data: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """
-        Парсинг списка компаний HH
-
-        Args:
-            companies_data: Данные компаний от API HH
-
-        Returns:
-            List[Dict[str, Any]]: Список словарей с данными компаний
-        """
-        try:
-            companies = []
-            items = companies_data.get("items", [])
-
-            for company_data in items:
-                company = HHParser.parse_company(company_data)
-                companies.append(company)
-
-            logger.info(f"Успешно распарсено {len(companies)} компаний HH")
-            return companies
-        except Exception as e:
-            logger.error(f"Ошибка при парсинге списка компаний HH: {e}")
-            return []
+    
 
     @staticmethod
     def convert_to_unified_format(hh_vacancy: Vacancy) -> Vacancy:
