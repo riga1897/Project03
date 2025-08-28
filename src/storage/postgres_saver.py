@@ -1296,7 +1296,7 @@ class PostgresSaver(AbstractVacancyStorage):
             # Создаем временную таблицу с такой же структурой как основная таблица vacancies
             cursor.execute(
                 """
-                CREATE TEMP TABLE temp_api_vacancies AS 
+                CREATE TEMP TABLE temp_api_vacancies AS
                 SELECT * FROM vacancies WHERE 1=0
             """
             )
@@ -1304,7 +1304,7 @@ class PostgresSaver(AbstractVacancyStorage):
             # Получаем сопоставление компаний из БД с расширенным поиском
             cursor.execute(
                 """
-                SELECT id, name, LOWER(name) as normalized_name 
+                SELECT id, name, LOWER(name) as normalized_name
                 FROM companies
             """
             )
