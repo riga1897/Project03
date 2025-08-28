@@ -1,1 +1,540 @@
-\n\"\"\"\nИнтеграционные тесты для проверки взаимодействия компонентов\n\"\"\"\n\nimport pytest\nimport tempfile\nimport os\nfrom unittest.mock import Mock, patch, MagicMock\n\n# Мок для source_manager перед импортом модулей, которые его используют\nclass MockSourceManager:\n    def get_available_sources(self):\n        return [\"hh.ru\", \"superjob.ru\"]\n\n    def get_source_display_name(self, source):\n        return {\"hh.ru\": \"HeadHunter\", \"superjob.ru\": \"SuperJob\"}.get(source, source)\n\n    def get_source_config(self, source):\n        return {\n            \"name\": \"Test\",\n            \"display_name\": \"Test\",\n            \"priority\": 1,\n            \"api_limits\": {\"requests_per_second\": 5},\n            \"features\": [],\n            \"config_class\": None\n        }\n\n    def is_source_available(self, source):\n        return source in [\"hh.ru\", \"superjob.ru\"]\n\n    def validate_source_credentials(self, source, credentials):\n        return True\n\n    def get_source_priority(self, source):\n        return 1\n\n    def sort_sources_by_priority(self, sources):\n        return sources\n\nfrom src.api_modules.hh_api import HeadHunterAPI\nfrom src.api_modules.sj_api import SuperJobAPI\nfrom src.storage.postgres_saver import PostgresSaver\nfrom src.vacancies.models import Vacancy\nfrom src.utils.cache import FileCache\nfrom src.ui_interfaces.console_interface import UserInterface\n\n# Заглушка для CachedAPI\nclass CachedAPI:\n    def __init__(self, api, cache_manager, source):\n        self.api = api\n        self.cache_manager = cache_manager\n        self.source = source\n\n    def search_vacancies(self, **kwargs):\n        return self.api.search_vacancies(**kwargs)\n\n\nclass TestAPIIntegration:\n    \"\"\"Тесты интеграции API модулей\"\"\"\n\n    @pytest.fixture\n    def mock_hh_response(self):\n        \"\"\"Мок ответ от HH API\"\"\"\n        return {\n            \"items\": [\n                {\n                    \"id\": \"12345\",\n                    \"name\": \"Python Developer\",\n                    \"url\": \"https://api.hh.ru/vacancies/12345\",\n                    \"salary\": {\n                        \"from\": 100000,\n                        \"to\": 150000,\n                        \"currency\": \"RUR\"\n                    },\n                    \"snippet\": {\n                        \"requirement\": \"Знание Python\",\n                        \"responsibility\": \"Разработка приложений\"\n                    },\n                    \"employer\": {\n                        \"id\": \"1\",\n                        \"name\": \"Test Company\"\n                    },\n                    \"area\": {\n                        \"id\": \"1\",\n                        \"name\": \"Москва\"\n                    },\n                    \"experience\": {\n                        \"id\": \"between1And3\",\n                        \"name\": \"От 1 года до 3 лет\"\n                    },\n                    \"employment\": {\n                        \"id\": \"full\",\n                        \"name\": \"Полная занятость\"\n                    },\n                    \"schedule\": {\n                        \"id\": \"fullDay\",\n                        \"name\": \"Полный день\"\n                    },\n                    \"published_at\": \"2024-01-15T10:00:00+0300\"\n                }\n            ],\n            \"found\": 1,\n            \"pages\": 1,\n            \"page\": 0,\n            \"per_page\": 20\n        }\n\n    @patch('requests.get')\n    def test_hh_api_search_integration(self, mock_get, mock_hh_response):\n        \"\"\"Интеграционный тест поиска через HH API\"\"\"\n        # Настраиваем мок ответ\n        mock_response = Mock()\n        mock_response.status_code = 200\n        mock_response.json.return_value = mock_hh_response\n        mock_get.return_value = mock_response\n\n        # Создаем API и выполняем поиск\n        api = HeadHunterAPI()\n\n        # Патчим валидацию для успешного прохождения тестов\n        with patch.object(api, '_validate_vacancy', return_value=True):\n            raw_vacancies = api.get_vacancies(\"python\", area=\"1\")\n\n        # Проверяем результат (API возвращает сырые данные)\n        assert len(raw_vacancies) == 1\n        assert isinstance(raw_vacancies[0], dict)\n        assert raw_vacancies[0][\"name\"] == \"Python Developer\"\n        assert raw_vacancies[0][\"id\"] == \"12345\"\n\n        # Проверяем, что можем создать объект Vacancy из полученных данных\n        # (парсеры тестируются отдельно)\n        if raw_vacancies:\n            raw_vacancy = raw_vacancies[0]\n            vacancy = Vacancy(\n                title=raw_vacancy.get(\"name\", \"\"),\n                url=raw_vacancy.get(\"url\", \"\"),\n                salary=raw_vacancy.get(\"salary\"),\n                description=\"Test description\",\n                requirements=\"Test requirements\",\n                responsibilities=\"Test responsibilities\",\n                experience=\"Test experience\",\n                employment=\"Test employment\",\n                schedule=\"Test schedule\",\n                employer=raw_vacancy.get(\"employer\"),\n                vacancy_id=raw_vacancy.get(\"id\", \"\"),\n                published_at=raw_vacancy.get(\"published_at\", \"\"),\n                source=\"hh.ru\"\n            )\n\n            assert vacancy.title == \"Python Developer\"\n            assert vacancy.vacancy_id == \"12345\"\n\n    @patch('requests.get')\n    def test_sj_api_search_integration(self, mock_get):\n        \"\"\"Интеграционный тест поиска через SJ API\"\"\"\n        mock_sj_response = {\n            \"objects\": [\n                {\n                    \"id\": 67890,\n                    \"profession\": \"Java Developer\",\n                    \"link\": \"https://www.superjob.ru/vakansii/java-developer-67890.html\",\n                    \"payment_from\": 120000,\n                    \"payment_to\": 180000,\n                    \"currency\": \"rub\",\n                    \"candidat\": \"Знание Java\",\n                    \"work\": \"Разработка систем\",\n                    \"firm_name\": \"SJ Test Company\",\n                    \"town\": {\n                        \"id\": 4,\n                        \"title\": \"Москва\"\n                    },\n                    \"experience\": {\n                        \"id\": 2,\n                        \"title\": \"От 1 года до 3 лет\"\n                    },\n                    \"type_of_work\": {\n                        \"id\": 1,\n                        \"title\": \"Полная занятость\"\n                    },\n                    \"place_of_work\": {\n                        \"id\": 1,\n                        \"title\": \"Полный день\"\n                    },\n                    \"date_pub_timestamp\": 1705312800\n                }\n            ],\n            \"total\": 1\n        }\n\n        # Настраиваем мок ответ\n        mock_response = Mock()\n        mock_response.status_code = 200\n        mock_response.json.return_value = mock_sj_response\n        mock_get.return_value = mock_response\n\n        # Создаем API с тестовым ключом\n        api = SuperJobAPI()\n        api.config.secret_key = \"test_key\"\n\n        # Патчим валидацию для успешного прохождения тестов\n        with patch.object(api, '_validate_vacancy', return_value=True):\n            raw_vacancies = api.get_vacancies(\"java\", town=4)\n\n        # Проверяем результат (API возвращает сырые данные)\n        assert len(raw_vacancies) == 1\n        assert isinstance(raw_vacancies[0], dict)\n        assert raw_vacancies[0][\"profession\"] == \"Java Developer\"\n\n        # Проверяем, что можем создать объект Vacancy из полученных данных\n        # (парсеры тестируются отдельно)\n        if raw_vacancies:\n            raw_vacancy = raw_vacancies[0]\n            vacancy = Vacancy(\n                title=raw_vacancy.get(\"profession\", \"\"),\n                url=raw_vacancy.get(\"link\", \"\"),\n                salary={\n                    'from': raw_vacancy.get(\"payment_from\"),\n                    'to': raw_vacancy.get(\"payment_to\"),\n                    'currency': raw_vacancy.get(\"currency\", \"rub\")\n                },\n                description=\"Test description\",\n                requirements=\"Test requirements\",\n                responsibilities=\"Test responsibilities\",\n                experience=\"Test experience\",\n                employment=\"Test employment\",\n                schedule=\"Test schedule\",\n                employer={'name': raw_vacancy.get(\"firm_name\", \"\")},\n                vacancy_id=str(raw_vacancy.get(\"id\", \"\")),\n                published_at=\"2024-01-15T10:00:00\",\n                source=\"sj.ru\"\n            )\n\n            assert vacancy.title == \"Java Developer\"\n\n\nclass TestStorageIntegration:\n    \"\"\"Тесты интеграции с хранилищем\"\"\"\n\n    @pytest.fixture\n    def sample_vacancies(self):\n        \"\"\"Фикстура с тестовыми вакансиями\"\"\"\n        return [\n            Vacancy(\n                title=\"Python Developer\",\n                url=\"https://test.com/vacancy/1\",\n                salary={'from': 100000, 'to': 150000, 'currency': 'RUR'},\n                description=\"Python разработка\",\n                requirements=\"Python, Django\",\n                responsibilities=\"Разработка веб-приложений\",\n                experience=\"От 3 лет\",\n                employment=\"Полная занятость\",\n                schedule=\"Полный день\",\n                employer={'name': 'Test Company'},\n                vacancy_id=\"test_1\",\n                published_at=\"2024-01-15T10:00:00\",\n                source=\"hh.ru\"\n            ),\n            Vacancy(\n                title=\"Java Developer\",\n                url=\"https://test.com/vacancy/2\",\n                salary={'from': 120000, 'to': 180000, 'currency': 'RUR'},\n                description=\"Java разработка\",\n                requirements=\"Java, Spring\",\n                responsibilities=\"Разработка систем\",\n                experience=\"От 2 лет\",\n                employment=\"Полная занятость\",\n                schedule=\"Полный день\",\n                employer={'name': 'Another Company'},\n                vacancy_id=\"test_2\",\n                published_at=\"2024-01-16T10:00:00\",\n                source=\"sj.ru\"\n            )\n        ]\n\n    @patch('src.storage.postgres_saver.psycopg2.connect')\n    def test_postgres_saver_integration(self, mock_connect, sample_vacancies):\n        \"\"\"Интеграционный тест PostgresSaver\"\"\"\n        # Настраиваем мок соединения\n        mock_connection = Mock()\n        mock_cursor = Mock()\n        mock_connect.return_value = mock_connection\n        mock_connection.cursor.return_value = mock_cursor\n        mock_connection.encoding = 'UTF8'\n\n        # Настраиваем мок для существования БД и таблиц\n        mock_cursor.fetchone.side_effect = [\n            [True],  # DB exists check\n            None,    # Source column check\n            None,    # Company_id column check\n        ]\n        mock_cursor.fetchall.return_value = []\n\n        # Создаем сохранялку\n        db_config = {\n            'host': 'localhost',\n            'port': '5432',\n            'database': 'test_db',\n            'username': 'test_user',\n            'password': 'test_pass'\n        }\n\n        with patch.object(PostgresSaver, '_ensure_database_exists'), \\\n             patch.object(PostgresSaver, '_ensure_tables_exist'), \\\n             patch.object(PostgresSaver, '_ensure_companies_table_exists'), \\\n             patch('psycopg2.extras.execute_values') as mock_execute_values:\n\n            saver = PostgresSaver(db_config)\n\n            # Сохраняем вакансии\n            messages = saver.add_vacancy(sample_vacancies)\n\n            # Проверяем, что операции выполнены\n            assert isinstance(messages, list)\n            assert mock_execute_values.called\n\n\nclass TestCacheIntegration:\n    \"\"\"Тесты интеграции кэширования\"\"\"\n\n    @pytest.fixture\n    def temp_cache_dir(self):\n        \"\"\"Временная директория для кэша\"\"\"\n        with tempfile.TemporaryDirectory() as temp_dir:\n            yield temp_dir\n\n    @patch('requests.get')\n    def test_cached_api_integration(self, mock_get, temp_cache_dir):\n        \"\"\"Интеграционный тест кэширования API\"\"\"\n        # Мок ответ от API\n        mock_response = Mock()\n        mock_response.status_code = 200\n        mock_response.json.return_value = {\n            \"items\": [],\n            \"found\": 0\n        }\n        mock_get.return_value = mock_response\n\n        # Создаем файловый кэш\n        file_cache = FileCache(temp_cache_dir)\n\n        # Тестируем кэш напрямую с правильными параметрами\n        source = \"hh\"\n        params = {\"text\": \"python\", \"area\": \"1\"}\n        test_data = {\"items\": [{\"name\": \"Test Vacancy\"}], \"found\": 1}\n\n        # Сохраняем в кэш с правильными параметрами (source, params, data)\n        file_cache.save_response(source, params, test_data)\n\n        # Загружаем из кэша\n        cached_response = file_cache.load_response(source, params)\n\n        # Проверяем структуру кэшированного ответа\n        assert cached_response is not None\n        assert \"data\" in cached_response\n        assert \"meta\" in cached_response\n        assert cached_response[\"data\"] == test_data\n        assert cached_response[\"meta\"][\"params\"] == params\n\n        # Проверяем, что кэш создал правильный файл\n        params_hash = file_cache._generate_params_hash(params)\n        cache_file = file_cache.cache_dir / f\"{source}_{params_hash}.json\"\n        assert cache_file.exists()\n\n\nclass TestFullWorkflowIntegration:\n    \"\"\"Тесты полного рабочего процесса\"\"\"\n\n    @patch('builtins.input')\n    @patch('requests.get')\n    @patch('src.storage.postgres_saver.psycopg2.connect')\n    def test_search_and_save_workflow(self, mock_connect, mock_get, mock_input):\n        \"\"\"Тест полного цикла: поиск -> сохранение -> отображение\"\"\"\n        # Настраиваем мок ввода пользователя\n        mock_input.side_effect = [\n            '1',  # Выбор HH\n            'python',  # Поисковый запрос\n            '1',  # Регион\n            'y',  # Сохранить результаты\n            '0'   # Выход\n        ]\n\n        # Настраиваем мок API ответ\n        mock_response = Mock()\n        mock_response.status_code = 200\n        mock_response.json.return_value = {\n            \"items\": [\n                {\n                    \"id\": \"12345\",\n                    \"name\": \"Python Developer\",\n                    \"url\": \"https://api.hh.ru/vacancies/12345\",\n                    \"salary\": None,\n                    \"snippet\": {\n                        \"requirement\": \"Python\",\n                        \"responsibility\": \"Разработка\"\n                    },\n                    \"employer\": {\"name\": \"Test Company\"},\n                    \"area\": {\"name\": \"Москва\"},\n                    \"experience\": {\"name\": \"От 1 года\"},\n                    \"employment\": {\"name\": \"Полная занятость\"},\n                    \"schedule\": {\"name\": \"Полный день\"},\n                    \"published_at\": \"2024-01-15T10:00:00+0300\"\n                }\n            ],\n            \"found\": 1\n        }\n        mock_get.return_value = mock_response\n\n        # Настраиваем мок БД\n        mock_connection = Mock()\n        mock_cursor = Mock()\n        mock_connect.return_value = mock_connection\n        mock_connection.cursor.return_value = mock_cursor\n        mock_connection.encoding = 'UTF8'\n        mock_cursor.fetchone.side_effect = [\n            [True],  # DB exists\n            None,    # Column checks\n            None,\n            []       # Company mapping\n        ]\n        mock_cursor.fetchall.return_value = []\n\n        # Импортируем сначала\n        from src.api_modules.hh_api import HeadHunterAPI\n        from src.storage.postgres_saver import PostgresSaver\n\n        # Патчим методы создания БД и таблиц\n        with patch.object(PostgresSaver, '_ensure_database_exists'), \\\n             patch.object(PostgresSaver, '_ensure_tables_exist'), \\\n             patch.object(PostgresSaver, '_ensure_companies_table_exists'), \\\n             patch('builtins.print') as mock_print:\n\n            # Тестируем API\n            api = HeadHunterAPI()\n\n            # Патчим правильный метод, который используется в CachedAPI\n            with patch.object(api, '_CachedAPI__connect_to_api', return_value=mock_response.json.return_value) as mock_api_connect, \\\n                 patch.object(api, '_validate_vacancy', return_value=True):\n\n                vacancies = api.get_vacancies(\"python\")\n\n            # Тестируем сохранение (мокаем)\n            db_config = {\n                'host': 'localhost', 'port': '5432',\n                'database': 'test_db', 'username': 'test_user',\n                'password': 'test_pass'\n            }\n            saver = PostgresSaver(db_config)\n\n            # Проверяем, что компоненты работают\n            assert mock_api_connect.called  # Проверяем вызов метода CachedAPI\n            assert len(vacancies) >= 0  # API может вернуть пустой список\n\n    def test_error_handling_integration(self):\n        \"\"\"Тест обработки ошибок в интегрированной системе\"\"\"\n        from src.api_modules.hh_api import HeadHunterAPI\n\n        # Тестируем обработку ошибок API\n        with patch('requests.get') as mock_get:\n            mock_get.side_effect = Exception(\"Network error\")\n\n            api = HeadHunterAPI()\n            vacancies = api.get_vacancies({\"text\": \"python\"})\n\n            # Должен вернуть пустой список при ошибке\n            assert vacancies == []\n\n    @patch('requests.get')\n    def test_data_consistency_integration(self, mock_get):\n        \"\"\"Тест консистентности данных между компонентами\"\"\"\n        # Мок ответ от HH API\n        mock_response = Mock()\n        mock_response.status_code = 200\n        mock_response.json.return_value = {\n            \"items\": [\n                {\n                    \"id\": \"test_123\",\n                    \"name\": \"Test Position\",\n                    \"url\": \"https://api.hh.ru/vacancies/test_123\",\n                    \"salary\": {\n                        \"from\": 50000,\n                        \"to\": 100000,\n                        \"currency\": \"RUR\"\n                    },\n                    \"snippet\": {\n                        \"requirement\": \"Test requirement\",\n                        \"responsibility\": \"Test responsibility\"\n                    },\n                    \"employer\": {\"name\": \"Test Employer\"},\n                    \"area\": {\"name\": \"Test City\"},\n                    \"experience\": {\"name\": \"Test Experience\"},\n                    \"employment\": {\"name\": \"Test Employment\"},\n                    \"schedule\": {\"name\": \"Test Schedule\"},\n                    \"published_at\": \"2024-01-15T10:00:00+0300\"\n                }\n            ],\n            \"found\": 1\n        }\n        mock_get.return_value = mock_response\n\n        # Получаем данные через API\n        api = HeadHunterAPI()\n\n        # Патчим валидацию для успешного прохождения тестов\n        with patch.object(api, '_validate_vacancy', return_value=True):\n            raw_vacancies = api.get_vacancies(\"test\")\n\n        # Проверяем, что данные корректно получены (сырые данные)\n        assert len(raw_vacancies) == 1\n        raw_vacancy = raw_vacancies[0]\n\n        assert raw_vacancy[\"id\"] == \"test_123\"\n        assert raw_vacancy[\"name\"] == \"Test Position\"\n        assert raw_vacancy[\"salary\"][\"from\"] == 50000\n        assert raw_vacancy[\"salary\"][\"to\"] == 100000\n        assert raw_vacancy[\"salary\"][\"currency\"] == \"RUR\"\n\n        # Проверяем, что можем создать объект Vacancy из полученных данных\n        # (парсеры тестируются отдельно)\n        vacancy = Vacancy(\n            title=raw_vacancy.get(\"name\", \"\"),\n            url=raw_vacancy.get(\"url\", \"\"),\n            salary=raw_vacancy.get(\"salary\"),\n            description=\"Test description\",\n            requirements=\"Test requirements\",\n            responsibilities=\"Test responsibilities\",\n            experience=\"Test experience\",\n            employment=\"Test employment\",\n            schedule=\"Test schedule\",\n            employer=raw_vacancy.get(\"employer\"),\n            vacancy_id=raw_vacancy.get(\"id\", \"\"),\n            published_at=raw_vacancy.get(\"published_at\", \"\"),\n            source=\"hh.ru\"\n        )\n\n        assert vacancy.vacancy_id == \"test_123\"\n        assert vacancy.title == \"Test Position\"\n        assert vacancy.salary.salary_from == 50000\n        assert vacancy.salary.salary_to == 100000\n        assert vacancy.salary.currency == \"RUR\"\n
+
+"""
+Интеграционные тесты для проверки взаимодействия компонентов
+"""
+
+import pytest
+import tempfile
+import os
+from unittest.mock import Mock, patch, MagicMock
+
+# Мок для source_manager перед импортом модулей, которые его используют
+class MockSourceManager:
+    def get_available_sources(self):
+        return ["hh.ru", "superjob.ru"]
+
+    def get_source_display_name(self, source):
+        return {"hh.ru": "HeadHunter", "superjob.ru": "SuperJob"}.get(source, source)
+
+    def get_source_config(self, source):
+        return {
+            "name": "Test",
+            "display_name": "Test",
+            "priority": 1,
+            "api_limits": {"requests_per_second": 5},
+            "features": [],
+            "config_class": None
+        }
+
+    def is_source_available(self, source):
+        return source in ["hh.ru", "superjob.ru"]
+
+    def validate_source_credentials(self, source, credentials):
+        return True
+
+    def get_source_priority(self, source):
+        return 1
+
+    def sort_sources_by_priority(self, sources):
+        return sources
+
+from src.api_modules.hh_api import HeadHunterAPI
+from src.api_modules.sj_api import SuperJobAPI
+from src.storage.postgres_saver import PostgresSaver
+from src.vacancies.models import Vacancy
+from src.utils.cache import FileCache
+from src.ui_interfaces.console_interface import UserInterface
+
+# Заглушка для CachedAPI
+class CachedAPI:
+    def __init__(self, api, cache_manager, source):
+        self.api = api
+        self.cache_manager = cache_manager
+        self.source = source
+
+    def search_vacancies(self, **kwargs):
+        return self.api.search_vacancies(**kwargs)
+
+
+class TestAPIIntegration:
+    """Тесты интеграции API модулей"""
+
+    @pytest.fixture
+    def mock_hh_response(self):
+        """Мок ответ от HH API"""
+        return {
+            "items": [
+                {
+                    "id": "12345",
+                    "name": "Python Developer",
+                    "url": "https://api.hh.ru/vacancies/12345",
+                    "salary": {
+                        "from": 100000,
+                        "to": 150000,
+                        "currency": "RUR"
+                    },
+                    "snippet": {
+                        "requirement": "Знание Python",
+                        "responsibility": "Разработка приложений"
+                    },
+                    "employer": {
+                        "id": "1",
+                        "name": "Test Company"
+                    },
+                    "area": {
+                        "id": "1",
+                        "name": "Москва"
+                    },
+                    "experience": {
+                        "id": "between1And3",
+                        "name": "От 1 года до 3 лет"
+                    },
+                    "employment": {
+                        "id": "full",
+                        "name": "Полная занятость"
+                    },
+                    "schedule": {
+                        "id": "fullDay",
+                        "name": "Полный день"
+                    },
+                    "published_at": "2024-01-15T10:00:00+0300"
+                }
+            ],
+            "found": 1,
+            "pages": 1,
+            "page": 0,
+            "per_page": 20
+        }
+
+    @patch('requests.get')
+    def test_hh_api_search_integration(self, mock_get, mock_hh_response):
+        """Интеграционный тест поиска через HH API"""
+        # Настраиваем мок ответ
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = mock_hh_response
+        mock_get.return_value = mock_response
+
+        # Создаем API и выполняем поиск
+        api = HeadHunterAPI()
+
+        # Патчим валидацию для успешного прохождения тестов
+        with patch.object(api, '_validate_vacancy', return_value=True):
+            raw_vacancies = api.get_vacancies("python", area="1")
+
+        # Проверяем результат (API возвращает сырые данные)
+        assert len(raw_vacancies) == 1
+        assert isinstance(raw_vacancies[0], dict)
+        assert raw_vacancies[0]["name"] == "Python Developer"
+        assert raw_vacancies[0]["id"] == "12345"
+
+        # Проверяем, что можем создать объект Vacancy из полученных данных
+        # (парсеры тестируются отдельно)
+        if raw_vacancies:
+            raw_vacancy = raw_vacancies[0]
+            vacancy = Vacancy(
+                title=raw_vacancy.get("name", ""),
+                url=raw_vacancy.get("url", ""),
+                salary=raw_vacancy.get("salary"),
+                description="Test description",
+                requirements="Test requirements",
+                responsibilities="Test responsibilities",
+                experience="Test experience",
+                employment="Test employment",
+                schedule="Test schedule",
+                employer=raw_vacancy.get("employer"),
+                vacancy_id=raw_vacancy.get("id", ""),
+                published_at=raw_vacancy.get("published_at", ""),
+                source="hh.ru"
+            )
+
+            assert vacancy.title == "Python Developer"
+            assert vacancy.vacancy_id == "12345"
+
+    @patch('requests.get')
+    def test_sj_api_search_integration(self, mock_get):
+        """Интеграционный тест поиска через SJ API"""
+        mock_sj_response = {
+            "objects": [
+                {
+                    "id": 67890,
+                    "profession": "Java Developer",
+                    "link": "https://www.superjob.ru/vakansii/java-developer-67890.html",
+                    "payment_from": 120000,
+                    "payment_to": 180000,
+                    "currency": "rub",
+                    "candidat": "Знание Java",
+                    "work": "Разработка систем",
+                    "firm_name": "SJ Test Company",
+                    "town": {
+                        "id": 4,
+                        "title": "Москва"
+                    },
+                    "experience": {
+                        "id": 2,
+                        "title": "От 1 года до 3 лет"
+                    },
+                    "type_of_work": {
+                        "id": 1,
+                        "title": "Полная занятость"
+                    },
+                    "place_of_work": {
+                        "id": 1,
+                        "title": "Полный день"
+                    },
+                    "date_pub_timestamp": 1705312800
+                }
+            ],
+            "total": 1
+        }
+
+        # Настраиваем мок ответ
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = mock_sj_response
+        mock_get.return_value = mock_response
+
+        # Создаем API с тестовым ключом
+        api = SuperJobAPI()
+        api.config.secret_key = "test_key"
+
+        # Патчим валидацию для успешного прохождения тестов
+        with patch.object(api, '_validate_vacancy', return_value=True):
+            raw_vacancies = api.get_vacancies("java", town=4)
+
+        # Проверяем результат (API возвращает сырые данные)
+        assert len(raw_vacancies) == 1
+        assert isinstance(raw_vacancies[0], dict)
+        assert raw_vacancies[0]["profession"] == "Java Developer"
+
+        # Проверяем, что можем создать объект Vacancy из полученных данных
+        # (парсеры тестируются отдельно)
+        if raw_vacancies:
+            raw_vacancy = raw_vacancies[0]
+            vacancy = Vacancy(
+                title=raw_vacancy.get("profession", ""),
+                url=raw_vacancy.get("link", ""),
+                salary={
+                    'from': raw_vacancy.get("payment_from"),
+                    'to': raw_vacancy.get("payment_to"),
+                    'currency': raw_vacancy.get("currency", "rub")
+                },
+                description="Test description",
+                requirements="Test requirements",
+                responsibilities="Test responsibilities",
+                experience="Test experience",
+                employment="Test employment",
+                schedule="Test schedule",
+                employer={'name': raw_vacancy.get("firm_name", "")},
+                vacancy_id=str(raw_vacancy.get("id", "")),
+                published_at="2024-01-15T10:00:00",
+                source="sj.ru"
+            )
+
+            assert vacancy.title == "Java Developer"
+
+
+class TestStorageIntegration:
+    """Тесты интеграции с хранилищем"""
+
+    @pytest.fixture
+    def sample_vacancies(self):
+        """Фикстура с тестовыми вакансиями"""
+        return [
+            Vacancy(
+                title="Python Developer",
+                url="https://test.com/vacancy/1",
+                salary={'from': 100000, 'to': 150000, 'currency': 'RUR'},
+                description="Python разработка",
+                requirements="Python, Django",
+                responsibilities="Разработка веб-приложений",
+                experience="От 3 лет",
+                employment="Полная занятость",
+                schedule="Полный день",
+                employer={'name': 'Test Company'},
+                vacancy_id="test_1",
+                published_at="2024-01-15T10:00:00",
+                source="hh.ru"
+            ),
+            Vacancy(
+                title="Java Developer",
+                url="https://test.com/vacancy/2",
+                salary={'from': 120000, 'to': 180000, 'currency': 'RUR'},
+                description="Java разработка",
+                requirements="Java, Spring",
+                responsibilities="Разработка систем",
+                experience="От 2 лет",
+                employment="Полная занятость",
+                schedule="Полный день",
+                employer={'name': 'Another Company'},
+                vacancy_id="test_2",
+                published_at="2024-01-16T10:00:00",
+                source="sj.ru"
+            )
+        ]
+
+    @patch('src.storage.postgres_saver.psycopg2.connect')
+    def test_postgres_saver_integration(self, mock_connect, sample_vacancies):
+        """Интеграционный тест PostgresSaver"""
+        # Настраиваем мок соединения
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        mock_connect.return_value = mock_connection
+        mock_connection.cursor.return_value = mock_cursor
+        mock_connection.encoding = 'UTF8'
+
+        # Настраиваем мок для существования БД и таблиц
+        mock_cursor.fetchone.side_effect = [
+            [True],  # DB exists check
+            None,    # Source column check
+            None,    # Company_id column check
+        ]
+        mock_cursor.fetchall.return_value = []
+
+        # Создаем сохранялку
+        db_config = {
+            'host': 'localhost',
+            'port': '5432',
+            'database': 'test_db',
+            'username': 'test_user',
+            'password': 'test_pass'
+        }
+
+        with patch.object(PostgresSaver, '_ensure_database_exists'), \
+             patch.object(PostgresSaver, '_ensure_tables_exist'), \
+             patch.object(PostgresSaver, '_ensure_companies_table_exists'), \
+             patch('psycopg2.extras.execute_values') as mock_execute_values:
+
+            saver = PostgresSaver(db_config)
+
+            # Сохраняем вакансии
+            messages = saver.add_vacancy(sample_vacancies)
+
+            # Проверяем, что операции выполнены
+            assert isinstance(messages, list)
+            assert mock_execute_values.called
+
+
+class TestCacheIntegration:
+    """Тесты интеграции кэширования"""
+
+    @pytest.fixture
+    def temp_cache_dir(self):
+        """Временная директория для кэша"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            yield temp_dir
+
+    @patch('requests.get')
+    def test_cached_api_integration(self, mock_get, temp_cache_dir):
+        """Интеграционный тест кэширования API"""
+        # Мок ответ от API
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "items": [],
+            "found": 0
+        }
+        mock_get.return_value = mock_response
+
+        # Создаем файловый кэш
+        file_cache = FileCache(temp_cache_dir)
+
+        # Тестируем кэш напрямую с правильными параметрами
+        source = "hh"
+        params = {"text": "python", "area": "1"}
+        test_data = {"items": [{"name": "Test Vacancy"}], "found": 1}
+
+        # Сохраняем в кэш с правильными параметрами (source, params, data)
+        file_cache.save_response(source, params, test_data)
+
+        # Загружаем из кэша
+        cached_response = file_cache.load_response(source, params)
+
+        # Проверяем структуру кэшированного ответа
+        assert cached_response is not None
+        assert "data" in cached_response
+        assert "meta" in cached_response
+        assert cached_response["data"] == test_data
+        assert cached_response["meta"]["params"] == params
+
+        # Проверяем, что кэш создал правильный файл
+        params_hash = file_cache._generate_params_hash(params)
+        cache_file = file_cache.cache_dir / f"{source}_{params_hash}.json"
+        assert cache_file.exists()
+
+
+class TestFullWorkflowIntegration:
+    """Тесты полного рабочего процесса"""
+
+    @patch('builtins.input')
+    @patch('requests.get')
+    @patch('src.storage.postgres_saver.psycopg2.connect')
+    def test_search_and_save_workflow(self, mock_connect, mock_get, mock_input):
+        """Тест полного цикла: поиск -> сохранение -> отображение"""
+        # Настраиваем мок ввода пользователя
+        mock_input.side_effect = [
+            '1',  # Выбор HH
+            'python',  # Поисковый запрос
+            '1',  # Регион
+            'y',  # Сохранить результаты
+            '0'   # Выход
+        ]
+
+        # Настраиваем мок API ответ
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "items": [
+                {
+                    "id": "12345",
+                    "name": "Python Developer",
+                    "url": "https://api.hh.ru/vacancies/12345",
+                    "salary": None,
+                    "snippet": {
+                        "requirement": "Python",
+                        "responsibility": "Разработка"
+                    },
+                    "employer": {"name": "Test Company"},
+                    "area": {"name": "Москва"},
+                    "experience": {"name": "От 1 года"},
+                    "employment": {"name": "Полная занятость"},
+                    "schedule": {"name": "Полный день"},
+                    "published_at": "2024-01-15T10:00:00+0300"
+                }
+            ],
+            "found": 1
+        }
+        mock_get.return_value = mock_response
+
+        # Настраиваем мок БД
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        mock_connect.return_value = mock_connection
+        mock_connection.cursor.return_value = mock_cursor
+        mock_connection.encoding = 'UTF8'
+        mock_cursor.fetchone.side_effect = [
+            [True],  # DB exists
+            None,    # Column checks
+            None,
+            []       # Company mapping
+        ]
+        mock_cursor.fetchall.return_value = []
+
+        # Импортируем сначала
+        from src.api_modules.hh_api import HeadHunterAPI
+        from src.storage.postgres_saver import PostgresSaver
+
+        # Патчим методы создания БД и таблиц
+        with patch.object(PostgresSaver, '_ensure_database_exists'), \
+             patch.object(PostgresSaver, '_ensure_tables_exist'), \
+             patch.object(PostgresSaver, '_ensure_companies_table_exists'), \
+             patch('builtins.print') as mock_print:
+
+            # Тестируем API
+            api = HeadHunterAPI()
+
+            # Патчим правильный метод, который используется в CachedAPI
+            with patch.object(api, '_CachedAPI__connect_to_api', return_value=mock_response.json.return_value) as mock_api_connect, \
+                 patch.object(api, '_validate_vacancy', return_value=True):
+
+                vacancies = api.get_vacancies("python")
+
+            # Тестируем сохранение (мокаем)
+            db_config = {
+                'host': 'localhost', 'port': '5432',
+                'database': 'test_db', 'username': 'test_user',
+                'password': 'test_pass'
+            }
+            saver = PostgresSaver(db_config)
+
+            # Проверяем, что компоненты работают
+            assert mock_api_connect.called  # Проверяем вызов метода CachedAPI
+            assert len(vacancies) >= 0  # API может вернуть пустой список
+
+    def test_error_handling_integration(self):
+        """Тест обработки ошибок в интегрированной системе"""
+        from src.api_modules.hh_api import HeadHunterAPI
+
+        # Тестируем обработку ошибок API
+        with patch('requests.get') as mock_get:
+            mock_get.side_effect = Exception("Network error")
+
+            api = HeadHunterAPI()
+            vacancies = api.get_vacancies({"text": "python"})
+
+            # Должен вернуть пустой список при ошибке
+            assert vacancies == []
+
+    @patch('requests.get')
+    def test_data_consistency_integration(self, mock_get):
+        """Тест консистентности данных между компонентами"""
+        # Мок ответ от HH API
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "items": [
+                {
+                    "id": "test_123",
+                    "name": "Test Position",
+                    "url": "https://api.hh.ru/vacancies/test_123",
+                    "salary": {
+                        "from": 50000,
+                        "to": 100000,
+                        "currency": "RUR"
+                    },
+                    "snippet": {
+                        "requirement": "Test requirement",
+                        "responsibility": "Test responsibility"
+                    },
+                    "employer": {"name": "Test Employer"},
+                    "area": {"name": "Test City"},
+                    "experience": {"name": "Test Experience"},
+                    "employment": {"name": "Test Employment"},
+                    "schedule": {"name": "Test Schedule"},
+                    "published_at": "2024-01-15T10:00:00+0300"
+                }
+            ],
+            "found": 1
+        }
+        mock_get.return_value = mock_response
+
+        # Получаем данные через API
+        api = HeadHunterAPI()
+
+        # Патчим валидацию для успешного прохождения тестов
+        with patch.object(api, '_validate_vacancy', return_value=True):
+            raw_vacancies = api.get_vacancies("test")
+
+        # Проверяем, что данные корректно получены (сырые данные)
+        assert len(raw_vacancies) == 1
+        raw_vacancy = raw_vacancies[0]
+
+        assert raw_vacancy["id"] == "test_123"
+        assert raw_vacancy["name"] == "Test Position"
+        assert raw_vacancy["salary"]["from"] == 50000
+        assert raw_vacancy["salary"]["to"] == 100000
+        assert raw_vacancy["salary"]["currency"] == "RUR"
+
+        # Проверяем, что можем создать объект Vacancy из полученных данных
+        # (парсеры тестируются отдельно)
+        vacancy = Vacancy(
+            title=raw_vacancy.get("name", ""),
+            url=raw_vacancy.get("url", ""),
+            salary=raw_vacancy.get("salary"),
+            description="Test description",
+            requirements="Test requirements",
+            responsibilities="Test responsibilities",
+            experience="Test experience",
+            employment="Test employment",
+            schedule="Test schedule",
+            employer=raw_vacancy.get("employer"),
+            vacancy_id=raw_vacancy.get("id", ""),
+            published_at=raw_vacancy.get("published_at", ""),
+            source="hh.ru"
+        )
+
+        assert vacancy.vacancy_id == "test_123"
+        assert vacancy.title == "Test Position"
+        assert vacancy.salary.salary_from == 50000
+        assert vacancy.salary.salary_to == 100000
+        assert vacancy.salary.currency == "RUR"
