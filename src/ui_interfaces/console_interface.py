@@ -1,17 +1,13 @@
 import logging
 from typing import List, Optional
 
-from src.api_modules.hh_api import HeadHunterAPI
-from src.api_modules.sj_api import SuperJobAPI
 from src.api_modules.unified_api import UnifiedAPI
 from src.config.ui_config import ui_pagination_config
 from src.storage.storage_factory import StorageFactory
 from src.ui_interfaces.vacancy_display_handler import VacancyDisplayHandler
-from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
 from src.ui_interfaces.vacancy_search_handler import VacancySearchHandler
 from src.utils.menu_manager import create_main_menu, print_menu_separator, print_section_header
-from src.utils.ui_helpers import (confirm_action, display_vacancy_info, filter_vacancies_by_keyword, get_user_input,
-                                  parse_salary_range)
+from src.utils.ui_helpers import confirm_action, display_vacancy_info, get_user_input, parse_salary_range
 from src.utils.ui_navigation import quick_paginate
 from src.utils.vacancy_formatter import VacancyFormatter
 from src.utils.vacancy_operations import VacancyOperations
@@ -43,9 +39,8 @@ class UserInterface:
 
     def __init__(self, storage=None, db_manager=None):
         """Инициализация пользовательского интерфейса"""
-        from src.config.app_config import AppConfig
-        # from src.storage.storage_factory import StorageFactory # Импорт перемещен в начало файла
-        from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
+        # Removed unused import: AppConfig
+        # Removed unused import: VacancyOperationsCoordinator
 
         self.unified_api = UnifiedAPI()
 
@@ -63,6 +58,8 @@ class UserInterface:
         # Инициализация обработчиков
         self.search_handler = VacancySearchHandler(self.unified_api, self.storage)
         self.display_handler = VacancyDisplayHandler(self.storage)
+        # Removed unused import: VacancyOperationsCoordinator
+        from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
         self.operations_coordinator = VacancyOperationsCoordinator(self.unified_api, self.storage)
 
         # DB Manager для демонстрации
