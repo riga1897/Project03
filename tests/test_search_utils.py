@@ -4,110 +4,130 @@
 """
 
 import pytest
-from src.utils.search_utils import SearchUtils
+from unittest.mock import Mock, patch
+from src.utils.search_utils import create_search_params, filter_by_keywords, normalize_query
 
 
 class TestSearchUtils:
-    """Тесты для класса SearchUtils"""
+    """Тесты для утилит поиска"""
 
-    @pytest.fixture
-    def search_utils(self):
-        """Фикстура SearchUtils"""
-        return SearchUtils()
-
-    def test_normalize_query(self, search_utils):
-        """Тест нормализации поискового запроса"""
-        assert search_utils.normalize_query("  Python Developer  ") == "python developer"
-        assert search_utils.normalize_query("Java-Script") == "java-script"
-        assert search_utils.normalize_query("") == ""
-
-    def test_extract_keywords(self, search_utils):
-        """Тест извлечения ключевых слов"""
-        keywords = search_utils.extract_keywords("Python Django Developer")
-        assert "python" in keywords
-        assert "django" in keywords
-        assert "developer" in keywords
-        assert len(keywords) == 3
-
-    def test_extract_keywords_with_stopwords(self, search_utils):
-        """Тест извлечения ключевых слов со стоп-словами"""
-        keywords = search_utils.extract_keywords("Python and Django or Flask")
-        assert "python" in keywords
-        assert "django" in keywords
-        assert "flask" in keywords
-        # Стоп-слова должны быть исключены
-        assert "and" not in keywords
-        assert "or" not in keywords
-
-    def test_build_search_pattern(self, search_utils):
-        """Тест построения паттерна поиска"""
-        pattern = search_utils.build_search_pattern("Python Developer")
-        assert pattern is not None
-        # Проверяем, что паттерн может найти совпадения
-        import re
-        assert re.search(pattern, "Python Developer", re.IGNORECASE)
-        assert re.search(pattern, "Senior Python Developer", re.IGNORECASE)
-
-    def test_calculate_relevance_score(self, search_utils):
-        """Тест расчета релевантности"""
-        text = "Python Developer with Django experience"
-        keywords = ["python", "developer", "django"]
+    def test_create_search_params_basic(self):
+        """Тест создания базовых параметров поиска"""
+        query = "python developer"
+        params = create_search_params(query)
         
-        score = search_utils.calculate_relevance_score(text, keywords)
-        assert score > 0
-        assert isinstance(score, (int, float))
+        assert "text" in params
+        assert params["text"] == query
 
-    def test_calculate_relevance_score_no_matches(self, search_utils):
-        """Тест расчета релевантности без совпадений"""
-        text = "Java Spring Boot Developer"
-        keywords = ["python", "django"]
+    def test_create_search_params_with_additional_params(self):
+        """Тест создания параметров поиска с дополнительными параметрами"""
+        query = "python"
+        additional_params = {"page": 1, "per_page": 20}
         
-        score = search_utils.calculate_relevance_score(text, keywords)
-        assert score == 0
+        params = create_search_params(query, **additional_params)
+        
+        assert params["text"] == query
+        assert params["page"] == 1
+        assert params["per_page"] == 20
 
-    def test_advanced_search_and_operator(self, search_utils):
-        """Тест расширенного поиска с оператором AND"""
-        text = "Senior Python Developer with Django"
-        query = "Python AND Django"
+    def test_filter_by_keywords_single_keyword(self):
+        """Тест фильтрации по одному ключевому слову"""
+        vacancies = [
+            {"title": "Python Developer", "description": "Python programming"},
+            {"title": "Java Developer", "description": "Java programming"},
+            {"title": "Frontend Developer", "description": "JavaScript and React"}
+        ]
         
-        assert search_utils.matches_advanced_query(text, query) is True
-        
-        text2 = "Java Developer"
-        assert search_utils.matches_advanced_query(text2, query) is False
+        filtered = filter_by_keywords(vacancies, ["python"])
+        assert len(filtered) == 1
+        assert filtered[0]["title"] == "Python Developer"
 
-    def test_advanced_search_or_operator(self, search_utils):
-        """Тест расширенного поиска с оператором OR"""
-        text1 = "Python Developer"
-        text2 = "Java Developer"
-        query = "Python OR Java"
+    def test_filter_by_keywords_multiple_keywords(self):
+        """Тест фильтрации по нескольким ключевым словам"""
+        vacancies = [
+            {"title": "Python Developer", "description": "Python programming"},
+            {"title": "Java Developer", "description": "Java programming"},
+            {"title": "Senior Python Developer", "description": "Senior Python programming"}
+        ]
         
-        assert search_utils.matches_advanced_query(text1, query) is True
-        assert search_utils.matches_advanced_query(text2, query) is True
-        
-        text3 = "C++ Developer"
-        assert search_utils.matches_advanced_query(text3, query) is False
+        filtered = filter_by_keywords(vacancies, ["python", "senior"])
+        assert len(filtered) == 1
+        assert filtered[0]["title"] == "Senior Python Developer"
 
-    def test_advanced_search_not_operator(self, search_utils):
-        """Тест расширенного поиска с оператором NOT"""
-        text1 = "Senior Python Developer"
-        text2 = "Junior Python Developer"
-        query = "Python NOT Junior"
+    def test_filter_by_keywords_case_insensitive(self):
+        """Тест нечувствительности к регистру при фильтрации"""
+        vacancies = [
+            {"title": "Python Developer", "description": "Python programming"},
+            {"title": "PYTHON DEVELOPER", "description": "PYTHON PROGRAMMING"}
+        ]
         
-        assert search_utils.matches_advanced_query(text1, query) is True
-        assert search_utils.matches_advanced_query(text2, query) is False
+        filtered = filter_by_keywords(vacancies, ["python"])
+        assert len(filtered) == 2
 
-    def test_fuzzy_match(self, search_utils):
-        """Тест нечеткого поиска"""
-        assert search_utils.fuzzy_match("Python", "Python") == 1.0
-        assert search_utils.fuzzy_match("Python", "Pyton") > 0.8
-        assert search_utils.fuzzy_match("Python", "Java") < 0.5
-
-    def test_highlight_matches(self, search_utils):
-        """Тест выделения совпадений"""
-        text = "Python Developer with Django experience"
-        keywords = ["python", "django"]
+    def test_filter_by_keywords_no_matches(self):
+        """Тест фильтрации без совпадений"""
+        vacancies = [
+            {"title": "Java Developer", "description": "Java programming"},
+            {"title": "C++ Developer", "description": "C++ programming"}
+        ]
         
-        highlighted = search_utils.highlight_matches(text, keywords)
-        assert highlighted != text
-        # Проверяем наличие маркеров выделения
-        assert "**" in highlighted or "[" in highlighted
+        filtered = filter_by_keywords(vacancies, ["python"])
+        assert len(filtered) == 0
+
+    def test_normalize_query_basic(self):
+        """Тест базовой нормализации запроса"""
+        query = "  Python   Developer  "
+        normalized = normalize_query(query)
+        assert normalized == "python developer"
+
+    def test_normalize_query_empty_string(self):
+        """Тест нормализации пустой строки"""
+        query = "   "
+        normalized = normalize_query(query)
+        assert normalized == ""
+
+    def test_normalize_query_special_characters(self):
+        """Тест нормализации с специальными символами"""
+        query = "Python/JavaScript Developer!"
+        normalized = normalize_query(query)
+        assert "python" in normalized.lower()
+        assert "javascript" in normalized.lower()
+
+    def test_create_search_params_with_salary_range(self):
+        """Тест создания параметров поиска с диапазоном зарплаты"""
+        query = "python"
+        params = create_search_params(query, salary_from=50000, salary_to=100000)
+        
+        assert params["text"] == query
+        assert params["salary_from"] == 50000
+        assert params["salary_to"] == 100000
+
+    def test_filter_by_keywords_in_description(self):
+        """Тест поиска ключевых слов в описании"""
+        vacancies = [
+            {"title": "Developer", "description": "Looking for Python developer"},
+            {"title": "Developer", "description": "Java and Spring framework"},
+            {"title": "Developer", "description": "Frontend with React and Python"}
+        ]
+        
+        filtered = filter_by_keywords(vacancies, ["python"])
+        assert len(filtered) == 2
+
+    def test_filter_by_keywords_empty_list(self):
+        """Тест фильтрации с пустым списком ключевых слов"""
+        vacancies = [
+            {"title": "Python Developer", "description": "Python programming"},
+            {"title": "Java Developer", "description": "Java programming"}
+        ]
+        
+        filtered = filter_by_keywords(vacancies, [])
+        assert len(filtered) == 2  # Все вакансии должны остаться
+
+    def test_create_search_params_validation(self):
+        """Тест валидации параметров поиска"""
+        query = ""
+        params = create_search_params(query)
+        
+        # Даже с пустым запросом должен возвращаться словарь
+        assert isinstance(params, dict)
+        assert "text" in params

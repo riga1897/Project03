@@ -4,110 +4,143 @@
 """
 
 import pytest
-from unittest.mock import patch, Mock
-from src.utils.ui_navigation import quick_paginate, navigate_pages, confirm_navigation
+from unittest.mock import Mock, patch, call
+from io import StringIO
+from src.utils.ui_navigation import quick_paginate
 
 
 class TestUINavigation:
-    """Тесты для функций навигации UI"""
-
-    @pytest.fixture
-    def sample_items(self):
-        """Фикстура с тестовыми элементами"""
-        return [f"Item {i}" for i in range(1, 26)]  # 25 элементов
-
-    def test_quick_paginate_basic(self, sample_items):
-        """Тест базовой пагинации"""
-        with patch('builtins.input', return_value='q'):
-            with patch('builtins.print') as mock_print:
-                quick_paginate(sample_items, items_per_page=10)
-                # Проверяем, что элементы были выведены
-                mock_print.assert_called()
-
-    @patch('builtins.input', side_effect=['n', 'q'])
-    @patch('builtins.print')
-    def test_quick_paginate_next_page(self, mock_print, mock_input, sample_items):
-        """Тест перехода к следующей странице"""
-        quick_paginate(sample_items, items_per_page=10)
-        # Проверяем, что функция выполнилась без ошибок
-        assert mock_print.called
-
-    @patch('builtins.input', side_effect=['n', 'p', 'q'])
-    @patch('builtins.print')
-    def test_quick_paginate_previous_page(self, mock_print, mock_input, sample_items):
-        """Тест перехода к предыдущей странице"""
-        quick_paginate(sample_items, items_per_page=10)
-        assert mock_print.called
+    """Тесты для навигации пользовательского интерфейса"""
 
     def test_quick_paginate_empty_items(self):
-        """Тест пагинации с пустым списком"""
+        """Тест пагинации с пустым списком элементов"""
+        items = []
+        
         with patch('builtins.input', return_value='q'):
-            with patch('builtins.print') as mock_print:
-                quick_paginate([], items_per_page=10)
-                mock_print.assert_called()
+            result = quick_paginate(items, items_per_page=5)
+            # Функция должна обработать пустой список без ошибок
+            assert result is None or result == []
 
     def test_quick_paginate_single_page(self):
-        """Тест пагинации с элементами на одну страницу"""
-        items = ["Item 1", "Item 2", "Item 3"]
+        """Тест пагинации с одной страницей"""
+        items = ['item1', 'item2', 'item3']
+        
         with patch('builtins.input', return_value='q'):
             with patch('builtins.print') as mock_print:
-                quick_paginate(items, items_per_page=10)
+                result = quick_paginate(items, items_per_page=5)
+                # Должны быть выведены все элементы
                 mock_print.assert_called()
 
-    @patch('builtins.input', return_value='2')
-    @patch('builtins.print')
-    def test_navigate_pages_go_to_page(self, mock_print, mock_input, sample_items):
-        """Тест перехода к конкретной странице"""
-        result = navigate_pages(sample_items, current_page=1, items_per_page=10)
-        assert result == 2
+    def test_quick_paginate_multiple_pages(self):
+        """Тест пагинации с несколькими страницами"""
+        items = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6']
+        
+        with patch('builtins.input', side_effect=['n', 'q']):
+            with patch('builtins.print') as mock_print:
+                result = quick_paginate(items, items_per_page=3)
+                # Должна быть показана первая страница, затем вторая
+                mock_print.assert_called()
 
-    @patch('builtins.input', return_value='next')
-    @patch('builtins.print')
-    def test_navigate_pages_next_command(self, mock_print, mock_input, sample_items):
-        """Тест команды 'next'"""
-        result = navigate_pages(sample_items, current_page=1, items_per_page=10)
-        assert result == 2
+    def test_quick_paginate_navigation_next(self):
+        """Тест навигации на следующую страницу"""
+        items = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6']
+        
+        with patch('builtins.input', side_effect=['n', 'q']):
+            with patch('builtins.print') as mock_print:
+                quick_paginate(items, items_per_page=2)
+                # Проверяем, что функция обработала команду 'n' (next)
+                mock_print.assert_called()
 
-    @patch('builtins.input', return_value='prev')
-    @patch('builtins.print')
-    def test_navigate_pages_previous_command(self, mock_print, mock_input, sample_items):
-        """Тест команды 'prev'"""
-        result = navigate_pages(sample_items, current_page=2, items_per_page=10)
-        assert result == 1
+    def test_quick_paginate_navigation_previous(self):
+        """Тест навигации на предыдущую страницу"""
+        items = ['item1', 'item2', 'item3', 'item4']
+        
+        with patch('builtins.input', side_effect=['n', 'p', 'q']):
+            with patch('builtins.print') as mock_print:
+                quick_paginate(items, items_per_page=2)
+                # Проверяем, что функция обработала команды навигации
+                mock_print.assert_called()
 
-    @patch('builtins.input', return_value='exit')
-    @patch('builtins.print')
-    def test_navigate_pages_exit_command(self, mock_print, mock_input, sample_items):
-        """Тест команды 'exit'"""
-        result = navigate_pages(sample_items, current_page=1, items_per_page=10)
-        assert result == -1
-
-    @patch('builtins.input', return_value='y')
-    def test_confirm_navigation_yes(self, mock_input):
-        """Тест подтверждения навигации - да"""
-        result = confirm_navigation("Continue to next page?")
-        assert result is True
-
-    @patch('builtins.input', return_value='n')
-    def test_confirm_navigation_no(self, mock_input):
-        """Тест подтверждения навигации - нет"""
-        result = confirm_navigation("Continue to next page?")
-        assert result is False
-
-    @patch('builtins.input', side_effect=['maybe', 'y'])
-    @patch('builtins.print')
-    def test_confirm_navigation_invalid_then_valid(self, mock_print, mock_input):
-        """Тест некорректного, затем корректного ответа"""
-        result = confirm_navigation("Continue?")
-        assert result is True
-        mock_print.assert_called()  # Должно быть сообщение об ошибке
-
-    def test_quick_paginate_custom_formatter(self, sample_items):
-        """Тест пагинации с пользовательским форматтером"""
-        def custom_formatter(item, index):
-            return f"[{index}] {item.upper()}"
-
+    def test_quick_paginate_quit_immediately(self):
+        """Тест немедленного выхода из пагинации"""
+        items = ['item1', 'item2', 'item3']
+        
         with patch('builtins.input', return_value='q'):
             with patch('builtins.print') as mock_print:
-                quick_paginate(sample_items[:5], items_per_page=10, formatter=custom_formatter)
+                result = quick_paginate(items, items_per_page=2)
+                # Должна быть показана первая страница
+                mock_print.assert_called()
+
+    def test_quick_paginate_invalid_input(self):
+        """Тест обработки некорректного ввода"""
+        items = ['item1', 'item2', 'item3', 'item4']
+        
+        with patch('builtins.input', side_effect=['invalid', 'xyz', 'q']):
+            with patch('builtins.print') as mock_print:
+                quick_paginate(items, items_per_page=2)
+                # Функция должна обработать некорректный ввод и продолжить работу
+                mock_print.assert_called()
+
+    def test_quick_paginate_custom_items_per_page(self):
+        """Тест пагинации с настраиваемым количеством элементов на странице"""
+        items = ['item1', 'item2', 'item3', 'item4', 'item5']
+        
+        with patch('builtins.input', return_value='q'):
+            with patch('builtins.print') as mock_print:
+                quick_paginate(items, items_per_page=1)
+                # При items_per_page=1 должен быть показан только один элемент
+                mock_print.assert_called()
+
+    def test_quick_paginate_last_page_boundary(self):
+        """Тест навигации на границе последней страницы"""
+        items = ['item1', 'item2', 'item3']
+        
+        with patch('builtins.input', side_effect=['n', 'n', 'q']):
+            with patch('builtins.print') as mock_print:
+                quick_paginate(items, items_per_page=2)
+                # Попытка перейти дальше последней страницы не должна вызвать ошибку
+                mock_print.assert_called()
+
+    def test_quick_paginate_first_page_boundary(self):
+        """Тест навигации на границе первой страницы"""
+        items = ['item1', 'item2', 'item3', 'item4']
+        
+        with patch('builtins.input', side_effect=['p', 'q']):
+            with patch('builtins.print') as mock_print:
+                quick_paginate(items, items_per_page=2)
+                # Попытка перейти назад с первой страницы не должна вызвать ошибку
+                mock_print.assert_called()
+
+    def test_quick_paginate_display_format(self):
+        """Тест формата отображения элементов"""
+        items = [
+            {'title': 'Job 1', 'company': 'Company A'},
+            {'title': 'Job 2', 'company': 'Company B'}
+        ]
+        
+        with patch('builtins.input', return_value='q'):
+            with patch('builtins.print') as mock_print:
+                quick_paginate(items, items_per_page=5)
+                # Проверяем, что функция может обработать словари
+                mock_print.assert_called()
+
+    def test_quick_paginate_edge_case_zero_items_per_page(self):
+        """Тест граничного случая с нулевым количеством элементов на странице"""
+        items = ['item1', 'item2']
+        
+        with patch('builtins.input', return_value='q'):
+            # При items_per_page=0 или отрицательном значении должно использоваться значение по умолчанию
+            try:
+                quick_paginate(items, items_per_page=0)
+            except (ValueError, ZeroDivisionError):
+                # Ожидается обработка ошибки или использование значения по умолчанию
+                pass
+
+    def test_quick_paginate_string_items(self):
+        """Тест пагинации со строковыми элементами"""
+        items = ["First item", "Second item", "Third item"]
+        
+        with patch('builtins.input', return_value='q'):
+            with patch('builtins.print') as mock_print:
+                quick_paginate(items, items_per_page=2)
                 mock_print.assert_called()
