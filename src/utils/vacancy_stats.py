@@ -204,14 +204,14 @@ class VacancyStats:
         """
         analysis = VacancyStats.analyze_company_mapping(vacancies)
 
-        print(f"\nАнализ маппинга компаний:")
+        print("\nАнализ маппинга компаний:")
         print(f"Всего вакансий: {analysis['total_vacancies']}")
         print(f"С указанным работодателем: {analysis['with_employer']} ({analysis['employer_coverage']:.1f}%)")
         print(f"Без работодателя: {analysis['without_employer']}")
         print(f"Уникальных работодателей: {analysis['unique_employers']}")
 
         if analysis["employer_names"]:
-            print(f"\nТоп-10 работодателей:")
+            print("\nТоп-10 работодателей:")
             for i, employer in enumerate(analysis["employer_names"][:10], 1):
                 print(f"  {i}. {employer}")
 

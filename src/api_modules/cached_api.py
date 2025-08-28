@@ -14,7 +14,8 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Dict, List
 
-from src.utils.cache import FileCache, simple_cache
+from src.utils.cache import FileCache
+from src.utils.decorators import simple_cache
 
 from .base_api import BaseJobAPI
 
