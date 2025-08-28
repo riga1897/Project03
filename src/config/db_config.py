@@ -1,4 +1,3 @@
-import os
 from typing import Dict, Optional
 
 from src.utils.env_loader import EnvLoader
@@ -38,21 +37,6 @@ class DatabaseConfig:
             config.update(custom_config)
             return config
         return self.default_config
-
-    def get_connection_params(self) -> Dict[str, str]:
-        """
-        Возвращает параметры подключения в формате для psycopg2
-
-        Returns:
-            Dict[str, str]: Параметры подключения
-        """
-        return {
-            "host": self.default_config["host"],
-            "port": self.default_config["port"],
-            "database": self.default_config["database"],
-            "user": self.default_config["username"],
-            "password": self.default_config["password"],
-        }
 
     def get_connection_params(self) -> Dict[str, str]:
         """
