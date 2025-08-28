@@ -278,7 +278,6 @@ class BaseJobAPI(ABC):
                     target_count = stats[1]
                     unique_target_count = stats[2]
                     target_duplicates = stats[3]
-                    unique_companies = stats[4]
                     target_companies_found = stats[5]
 
                     # Получаем список найденных целевых компаний для логирования

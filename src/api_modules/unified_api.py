@@ -91,8 +91,6 @@ class UnifiedAPI:
             sources = self.validate_sources(sources)
 
         all_vacancies = []
-        hh_vacancies = []
-        sj_vacancies = []
 
         # Получение из HeadHunter
         if "hh" in sources:
