@@ -1,7 +1,7 @@
 import logging
 from typing import Any, Dict, List
 
-from src.models import Vacancy
+from src.vacancies.models import Vacancy
 from src.utils.cache import FileCache
 from src.vacancies.parsers.base_parser import BaseParser
 
@@ -18,20 +18,20 @@ class HHParser(BaseParser):
         self.cache = FileCache(cache_dir)
         self.base_url = "https://api.hh.ru/vacancies"
 
-    def parse_vacancies(self, search_params: Dict[str, Any]) -> List[Vacancy]:
-        """Парсинг вакансий по параметрам поиска"""
-        # Проверка кэша
-        cached = self.cache.load_response("hh", search_params)
-        if cached:
-            return self._parse_items(cached.get("data", []))
+    def parse_vacancies(self, raw_vacancies: List[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        """Парсинг вакансий по предоставленным сырым данным или через API"""
 
-        # Запрос к API (заглушка для примера)
-        # В реальной реализации здесь будет запрос к API
-        vacancies_data = self._fetch_from_api()
+        # If raw vacancies are not provided, fetch from the API
+        if not raw_vacancies:
+            raw_vacancies = self._fetch_from_api()
 
-        # Сохранение в кэш
-        self.cache.save_response("hh", search_params, vacancies_data)
-        return self._parse_items(vacancies_data)
+            # Сохранение в кэш
+            # Make sure search_params is defined somewhere in this context
+            search_params = {}  # You need to define this based on the real logic
+            self.cache.save_response("hh", search_params, raw_vacancies)
+
+        parsed_vacancies = self._parse_items(raw_vacancies)
+        return [Vacancy.to_dict(vacancy) for vacancy in parsed_vacancies]
 
     @staticmethod
     def _fetch_from_api() -> List[Dict[str, Any]]:
