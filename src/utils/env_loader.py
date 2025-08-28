@@ -21,10 +21,27 @@ class EnvLoader:
         if cls._loaded:
             return
 
-        if not os.path.exists(env_file_path):
-            logger.warning(f"Файл {env_file_path} не найден. Используются переменные окружения системы.")
+        # Ищем .env файл в нескольких местах
+        possible_paths = [
+            env_file_path,  # Относительный путь
+            os.path.abspath(env_file_path),  # Абсолютный путь
+            os.path.join(os.getcwd(), env_file_path),  # В текущей рабочей директории
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", env_file_path),  # В корне проекта
+        ]
+        
+        env_file_found = None
+        for path in possible_paths:
+            if os.path.exists(path):
+                env_file_found = path
+                break
+        
+        if not env_file_found:
+            logger.warning(f"Файл .env не найден в следующих местах: {possible_paths}")
+            logger.warning("Используются переменные окружения системы.")
             cls._loaded = True
             return
+        
+        env_file_path = env_file_found
 
         try:
             with open(env_file_path, "r", encoding="utf-8") as file:
