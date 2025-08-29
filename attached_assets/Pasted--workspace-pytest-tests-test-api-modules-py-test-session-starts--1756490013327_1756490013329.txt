@@ -1,0 +1,158 @@
+~/workspace$ pytest tests/test_api_modules.py 
+============================ test session starts =============================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace/tests
+configfile: pytest.ini
+plugins: mock-3.14.1, cov-6.2.1
+collected 15 items                                                           
+
+tests/test_api_modules.py ............F.F                              [100%]
+
+================================== FAILURES ==================================
+_______________ TestUnifiedAPI.test_get_vacancies_from_sources _______________
+
+self = <tests.test_api_modules.TestUnifiedAPI object at 0x7fdbd43d54d0>
+mock_sj_get = <MagicMock name='get_vacancies' id='140582130624464'>
+mock_hh_get = <MagicMock name='get_vacancies' id='140582130630160'>
+
+    @patch.object(HeadHunterAPI, 'get_vacancies')
+    @patch.object(SuperJobAPI, 'get_vacancies')
+    def test_get_vacancies_from_sources(self, mock_sj_get, mock_hh_get):
+        """Тест получения вакансий из нескольких источников"""
+        # Мокируем результаты
+        mock_hh_get.return_value = [{"id": "1", "name": "HH Vacancy", "source": "hh.ru"}]
+        mock_sj_get.return_value = [{"id": "2", "profession": "SJ Vacancy", "source": "superjob.ru"}]
+    
+        api = UnifiedAPI()
+    
+        # Мокируем SQL дедупликацию
+>       with patch('src.api_modules.base_api.BaseJobAPI._deduplicate_vacancies') as mock_dedup:
+
+tests/test_api_modules.py:206: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7fdbd3f5d7d0>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.api_modules.base_api.BaseJobAPI'> does not have the attribute '_deduplicate_vacancies'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+__________ TestUnifiedAPI.test_get_vacancies_from_target_companies ___________
+
+self = <tests.test_api_modules.TestUnifiedAPI object at 0x7fdbd43d6210>
+mock_sj_target = <MagicMock name='get_vacancies_from_target_companies' id='140582122247568'>
+mock_hh_target = <MagicMock name='get_vacancies_from_target_companies' id='140582126568784'>
+
+    @patch.object(HeadHunterAPI, 'get_vacancies_from_target_companies')
+    @patch.object(SuperJobAPI, 'get_vacancies_from_target_companies')
+    def test_get_vacancies_from_target_companies(self, mock_sj_target, mock_hh_target):
+        """Тест получения вакансий от целевых компаний"""
+        mock_hh_target.return_value = [{"id": "1", "name": "Target HH", "source": "hh.ru"}]
+        mock_sj_target.return_value = [{"id": "2", "profession": "Target SJ", "source": "superjob.ru"}]
+    
+        api = UnifiedAPI()
+>       vacancies = api.get_vacancies_from_target_companies("python")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_api_modules.py:235: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.api_modules.unified_api.UnifiedAPI object at 0x7fdbd3755290>
+search_query = 'python', sources = ['hh', 'sj'], kwargs = {}
+all_vacancies = [{'id': '1', 'name': 'Target HH', 'source': 'hh.ru'}, {'id': '2', 'profession': 'Target SJ', 'source': 'superjob.ru'}]
+normalized_sources = ['hh', 'sj'], source = 'sj'
+hh_vacancies = [{'id': '1', 'name': 'Target HH', 'source': 'hh.ru'}]
+sj_vacancies = [{'id': '2', 'profession': 'Target SJ', 'source': 'superjob.ru'}]
+
+    def get_vacancies_from_target_companies(
+        self, search_query: str = "", sources: List[str] = None, **kwargs
+    ) -> List[Dict]:
+        """
+        Получение вакансий от целевых компаний из указанных источников
+    
+        Args:
+            search_query: Поисковый запрос
+            sources: Список источников (hh, sj). Если None - используются все доступные
+            **kwargs: Дополнительные параметры поиска
+    
+        Returns:
+            List[Dict]: Объединенный список вакансий от всех источников
+        """
+        all_vacancies = []
+    
+        # Определяем какие источники использовать
+        if sources is None:
+            sources = ["hh", "sj"]
+    
+        # Нормализуем названия источников
+        normalized_sources = []
+        for source in sources:
+            if source.lower() in ["hh", "hh.ru", "headhunter"]:
+                normalized_sources.append("hh")
+            elif source.lower() in ["sj", "superjob", "superjob.ru"]:
+                normalized_sources.append("sj")
+    
+        logger.info(f"Получение вакансий от целевых компаний из источников: {normalized_sources}")
+    
+        # HH.ru
+        if "hh" in normalized_sources:
+            try:
+                logger.info("Поиск через HH.ru API...")
+                hh_vacancies = self.hh_api.get_vacancies_from_target_companies(search_query, **kwargs)
+                if hh_vacancies:
+                    all_vacancies.extend(hh_vacancies)
+                    logger.info(f"HH.ru: найдено {len(hh_vacancies)} вакансий")
+                else:
+                    logger.info("HH.ru: вакансий не найдено")
+            except Exception as e:
+                logger.error(f"Ошибка получения вакансий от HH.ru: {e}")
+    
+        # SuperJob - только если явно указан в источниках
+        if "sj" in normalized_sources:
+            try:
+                logger.info("Поиск через SuperJob API...")
+                sj_vacancies = self.sj_api.get_vacancies_from_target_companies(search_query, **kwargs)
+                if sj_vacancies:
+                    all_vacancies.extend(sj_vacancies)
+                    logger.info(f"SuperJob: найдено {len(sj_vacancies)} вакансий")
+                else:
+                    logger.info("SuperJob: вакансий не найдено")
+            except Exception as e:
+                logger.error(f"Ошибка получения вакансий от SuperJob: {e}")
+    
+        # Дедупликация только если есть вакансии
+        if all_vacancies:
+>           unique_vacancies = self._deduplicate_cross_platform(all_vacancies)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'UnifiedAPI' object has no attribute '_deduplicate_cross_platform'
+
+src/api_modules/unified_api.py:316: AttributeError
+========================== short test summary info ===========================
+FAILED tests/test_api_modules.py::TestUnifiedAPI::test_get_vacancies_from_sources - AttributeError: <class 'src.api_modules.base_api.BaseJobAPI'> does not ha...
+FAILED tests/test_api_modules.py::TestUnifiedAPI::test_get_vacancies_from_target_companies - AttributeError: 'UnifiedAPI' object has no attribute '_deduplicate_cross_...
+======================== 2 failed, 13 passed in 0.27s ========================
+~/workspace$ 
