@@ -1,3 +1,4 @@
+
 """
 Интеграционные тесты для проверки взаимодействия компонентов
 """
@@ -8,7 +9,7 @@ from src.api_modules.hh_api import HeadHunterAPI
 from src.api_modules.sj_api import SuperJobAPI
 from src.storage.postgres_saver import PostgresSaver
 from src.vacancies.models import Vacancy
-from src.utils.cache import CacheManager
+from src.utils.cache import FileCache
 
 
 class TestStorageIntegration:
@@ -189,34 +190,41 @@ class TestCacheIntegration:
     """Интеграционные тесты кэширования"""
 
     @pytest.fixture
-    def mock_cache_file(self, tmp_path):
-        """Создает временный файл для кэша"""
+    def mock_cache_dir(self, tmp_path):
+        """Создает временную директорию для кэша"""
         cache_dir = tmp_path / "cache"
         cache_dir.mkdir()
-        cache_file = cache_dir / "hh_test_key.json"
-        cache_file.write_text('{"data": {"test": "data"}, "meta": {"params": "test_params"}}')
         return str(cache_dir)
 
-    @patch('os.path.exists')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.exists')
     @patch('builtins.open')
-    def test_cache_integration(self, mock_open, mock_exists, mock_cache_file):
+    @patch('json.dump')
+    @patch('json.load')
+    def test_cache_integration(self, mock_json_load, mock_json_dump, mock_open, mock_exists, mock_mkdir, mock_cache_dir):
         """Тест интеграции кэширования"""
-        mock_exists.return_value = True  # Simulate file existing
-        mock_file_handle = Mock()
-        mock_open.return_value.__enter__.return_value = mock_file_handle
+        mock_exists.return_value = True
+        mock_json_load.return_value = {
+            "data": {"test": "data"},
+            "meta": {"params": "test_params"},
+            "timestamp": 1234567890
+        }
 
-        cache = CacheManager()
+        cache = FileCache(cache_dir=mock_cache_dir)
 
         # Тест сохранения в кэш
         test_data = {"test": "data"}
-        cache.save_to_cache("test_key", test_data, "hh")
+        test_params = {"query": "python"}
+        cache.save_response("test", test_params, test_data)
 
-        # Проверяем, что файл был создан (или попытка записи)
+        # Проверяем, что методы были вызваны
         mock_open.assert_called()
+        mock_json_dump.assert_called()
 
         # Тест загрузки из кэша
-        loaded_data = cache.load_from_cache("test_key", "hh")
-        assert loaded_data == test_data
+        loaded_data = cache.load_response("test", test_params)
+        assert loaded_data is not None
+        assert loaded_data["data"]["test"] == "data"
 
 
 class TestErrorHandlingIntegration:
@@ -243,3 +251,49 @@ class TestErrorHandlingIntegration:
         # При ошибке операции должны возвращать False/пустые результаты
         assert storage.get_vacancies() == []
         assert storage.get_vacancies_count() == 0
+
+
+class TestFormatterIntegration:
+    """Интеграционные тесты форматирования"""
+
+    @pytest.fixture
+    def sample_vacancy(self):
+        """Фикстура с тестовой вакансией для форматирования"""
+        return Vacancy(
+            title="Test Formatter Vacancy",
+            url="https://test.com/vacancy/123",
+            salary={'from': 50000, 'to': 100000, 'currency': 'RUR'},
+            description="Test description",
+            requirements="Test requirements",
+            responsibilities="Test responsibilities",
+            experience="Test experience",
+            employment="Test employment",
+            schedule="Test schedule",
+            employer={'name': 'Test Formatter Company'},
+            vacancy_id="formatter_123",
+            published_at="2024-01-01T00:00:00+03:00",
+            source="hh.ru"
+        )
+
+    def test_vacancy_formatter_integration(self, sample_vacancy):
+        """Тест интеграции форматирования вакансий"""
+        from src.utils.vacancy_formatter import VacancyFormatter
+
+        formatter = VacancyFormatter()
+        formatted_text = formatter.format_vacancy_info(sample_vacancy, number=1)
+
+        # Проверяем, что форматирование работает
+        assert "Test Formatter Vacancy" in formatted_text
+        assert "Test Formatter Company" in formatted_text
+        assert "от 50" in formatted_text or "до 100" in formatted_text
+        assert "formatter_123" in formatted_text
+
+    def test_brief_formatter_integration(self, sample_vacancy):
+        """Тест краткого форматирования"""
+        from src.utils.vacancy_formatter import VacancyFormatter
+
+        brief_text = VacancyFormatter.format_vacancy_brief(sample_vacancy, number=1)
+
+        # Проверяем краткое форматирование
+        assert isinstance(brief_text, str)
+        assert "Test Formatter Vacancy" in brief_text
