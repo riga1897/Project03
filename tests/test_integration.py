@@ -38,14 +38,19 @@ class TestStorageIntegration:
             source="hh.ru",
         )
 
+    @patch("psycopg2.extras.execute_values")
     @patch("psycopg2.connect")
-    def test_postgres_saver_integration(self, mock_connect, sample_vacancy):
+    def test_postgres_saver_integration(self, mock_connect, mock_execute_values, sample_vacancy):
         """Тест интеграции с PostgreSQL"""
         # Настраиваем мок подключения
         mock_conn = Mock()
         mock_cursor = Mock()
         mock_cursor.rowcount = 1
         mock_cursor.fetchall.return_value = []
+        # Настраиваем кодировку для psycopg2
+        mock_conn.encoding = "UTF8"
+        mock_cursor.connection = mock_conn
+        
         # Исправляем мок для field_info - возвращаем правильную структуру
         # Добавляем больше ответов для всех возможных запросов
         mock_responses = [
@@ -63,6 +68,9 @@ class TestStorageIntegration:
         mock_cursor.fetchone.side_effect = mock_responses
         mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
+        
+        # Настраиваем мок для execute_values
+        mock_execute_values.return_value = None
 
         # Создаем хранилище и тестируем операции
         storage = PostgresSaver()
@@ -156,9 +164,10 @@ class TestFullWorkflowIntegration:
             source="hh.ru",
         )
 
+    @patch("psycopg2.extras.execute_values")
     @patch("psycopg2.connect")
     @patch("src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api")
-    def test_search_and_save_workflow(self, mock_connect_api, mock_connect_db, sample_vacancy):
+    def test_search_and_save_workflow(self, mock_connect_api, mock_connect_db, mock_execute_values, sample_vacancy):
         """Тест полного процесса поиска и сохранения"""
         # Настраиваем мок для API
         mock_connect_api.return_value = {
@@ -181,6 +190,10 @@ class TestFullWorkflowIntegration:
         mock_cursor = Mock()
         mock_cursor.rowcount = 1
         mock_cursor.fetchall.return_value = []
+        # Настраиваем кодировку для psycopg2
+        mock_conn.encoding = "UTF8"
+        mock_cursor.connection = mock_conn
+        
         # Настраиваем правильные ответы для всех запросов
         mock_responses = [
             (0,),  # для check database exists
@@ -197,6 +210,9 @@ class TestFullWorkflowIntegration:
         mock_cursor.fetchone.side_effect = mock_responses
         mock_conn.cursor.return_value = mock_cursor
         mock_connect_db.return_value = mock_conn
+        
+        # Настраиваем мок для execute_values
+        mock_execute_values.return_value = None
 
         # Выполняем поиск
         api = HeadHunterAPI()

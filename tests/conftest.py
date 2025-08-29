@@ -168,7 +168,9 @@ def mock_all_external_resources():
         "os.path.exists"
     ) as mock_exists, patch(
         "os.makedirs"
-    ) as mock_makedirs:
+    ) as mock_makedirs, patch(
+        "psycopg2.extras.execute_values"
+    ) as mock_execute_values:
 
         # Настраиваем моки для HTTP запросов
         mock_response = Mock()
@@ -179,14 +181,19 @@ def mock_all_external_resources():
         mock_post.return_value = mock_response
 
         # Настраиваем мок для базы данных
-        mock_conn = Mock()
+        mock_connection = Mock()
         mock_cursor = Mock()
-        mock_cursor.fetchall.return_value = []
         mock_cursor.fetchone.return_value = None
+        mock_cursor.fetchall.return_value = []
         mock_cursor.rowcount = 0
-        mock_conn.cursor.return_value = mock_cursor
-        mock_conn.commit.return_value = None
-        mock_db.return_value = mock_conn
+        # Настраиваем кодировку для psycopg2
+        mock_connection.encoding = "UTF8"
+        mock_cursor.connection = mock_connection
+        mock_connection.cursor.return_value = mock_cursor
+        mock_db.return_value = mock_connection
+
+        # Настраиваем мок для execute_values
+        mock_execute_values.return_value = None
 
         # Настраиваем мок для ввода пользователя
         mock_input.return_value = "test_input"
