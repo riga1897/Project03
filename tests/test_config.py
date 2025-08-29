@@ -73,17 +73,6 @@ class TestAppConfig:
 class TestDatabaseConfig:
     """Тесты конфигурации базы данных"""
 
-    @pytest.mark.skip(reason="DatabaseConfig архитектура изменена")
-    def test_default_initialization(self):
-        """Тест инициализации по умолчанию"""
-        config = DatabaseConfig()
-
-        assert config.host == 'localhost'
-        assert config.port == '5432'
-        assert config.database == 'Project03'
-        assert config.username == 'postgres'
-        assert config.password == ''
-
     @patch.dict(os.environ, {
         'PGHOST': 'custom_host',
         'PGPORT': '5433',
@@ -124,17 +113,6 @@ class TestDatabaseConfig:
 
 class TestHHAPIConfig:
     """Тесты конфигурации HH API"""
-
-    @pytest.mark.skip(reason="HHAPIConfig архитектура изменена")
-    def test_initialization(self):
-        """Тест инициализации конфигурации HH API"""
-        config = HHAPIConfig()
-
-        assert config.base_url == "https://api.hh.ru"
-        assert config.vacancies_endpoint == "/vacancies"
-        assert config.employers_endpoint == "/employers"
-        assert config.areas_endpoint == "/areas"
-        assert config.user_agent.startswith("VacancySearchApp")
 
     def test_get_headers(self):
         """Тест получения заголовков"""
