@@ -1,0 +1,84 @@
+============================ test session starts =============================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace/tests
+configfile: pytest.ini
+plugins: mock-3.14.1, cov-6.2.1
+collected 15 items                                                           
+
+tests/test_api_modules.py .F.......F.....                              [100%]
+
+================================== FAILURES ==================================
+________________ TestHeadHunterAPI.test_get_vacancies_success ________________
+
+self = <tests.test_api_modules.TestHeadHunterAPI object at 0x7fcec5de1c50>
+mock_connect = <MagicMock name='_CachedAPI__connect_to_api' id='140526054615376'>
+
+    @patch('src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api')
+    def test_get_vacancies_success(self, mock_connect):
+        """Тест успешного получения вакансий"""
+        # Настраиваем мок ответа для метаданных (первый запрос)
+        mock_connect.side_effect = [
+            {
+                "items": [],
+                "found": 1,
+                "pages": 1
+            },
+            # Второй запрос за данными
+            {
+                "items": [
+                    {
+                        "id": "12345",
+                        "name": "Python Developer",
+                        "alternate_url": "https://hh.ru/vacancy/12345",
+                        "salary": {"from": 100000, "to": 150000, "currency": "RUR"},
+                        "snippet": {"requirement": "Python", "responsibility": "Development"},
+                        "employer": {"name": "Test Company"},
+                        "published_at": "2024-01-01T00:00:00+03:00"
+                    }
+                ],
+                "found": 1,
+                "pages": 1
+            }
+        ]
+    
+        api = HeadHunterAPI()
+        vacancies = api.get_vacancies(search_query="Python", per_page=1)
+    
+>       assert len(vacancies) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+tests/test_api_modules.py:59: AssertionError
+---------------------------- Captured stderr call ----------------------------
+ERROR:src.api_modules.hh_api:Ошибка получения вакансий: src.config.api_config.HHAPIConfig.get_params() got multiple values for keyword argument 'per_page'
+----------------------------- Captured log call ------------------------------
+ERROR    src.api_modules.hh_api:hh_api.py:174 Ошибка получения вакансий: src.config.api_config.HHAPIConfig.get_params() got multiple values for keyword argument 'per_page'
+______________ TestUnifiedAPI.test_get_vacancies_single_source _______________
+
+self = <tests.test_api_modules.TestUnifiedAPI object at 0x7fcec5ded490>
+mock_hh_get = <MagicMock name='get_vacancies' id='140526050455184'>
+
+    @patch.object(HeadHunterAPI, 'get_vacancies')
+    def test_get_vacancies_single_source(self, mock_hh_get):
+        """Тест получения вакансий из одного источника"""
+        # Мокируем результат получения
+        mock_vacancy = {
+            "id": "1",
+            "name": "Test Vacancy",
+            "source": "hh.ru",
+            "alternate_url": "https://hh.ru/vacancy/1"
+        }
+        mock_hh_get.return_value = [mock_vacancy]
+    
+        api = UnifiedAPI()
+        vacancies = api.get_vacancies_from_source("python", "hh.ru")
+    
+>       assert len(vacancies) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+tests/test_api_modules.py:171: AssertionError
+========================== short test summary info ===========================
+FAILED tests/test_api_modules.py::TestHeadHunterAPI::test_get_vacancies_success - assert 0 == 1
+FAILED tests/test_api_modules.py::TestUnifiedAPI::test_get_vacancies_single_source - assert 0 == 1
+======================== 2 failed, 13 passed in 0.23s ========================
