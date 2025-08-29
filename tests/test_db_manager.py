@@ -253,9 +253,9 @@ class TestDBManager:
         mock_connect.return_value = mock_conn
 
         # Настраиваем ответы для SQL запросов:
-        # 1. Проверка существования таблицы companies
+        # 1. Проверка существования таблицы companies  
         # 2. Начальный подсчет компаний
-        # 3. Проверка существования каждой компании (15 раз) 
+        # 3. Проверка существования каждой компании (15 раз)
         # 4. Финальный подсчет компаний
         fetchone_responses = [
             (True,),   # 1. Таблица существует
@@ -266,7 +266,7 @@ class TestDBManager:
         for _ in range(15):
             fetchone_responses.append(None)
             
-        # 4. Финальное количество компаний после вставки
+        # 4. Финальный подсчет компаний после вставки - ОБЯЗАТЕЛЬНО!
         fetchone_responses.append((15,))
         
         mock_cursor.fetchone.side_effect = fetchone_responses
