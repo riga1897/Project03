@@ -140,28 +140,36 @@ class TestDBManager:
     def test_create_tables(self, mock_connect):
         """Тест создания таблиц"""
         mock_conn = Mock()
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
         mock_cursor = Mock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
         mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
 
         db_manager = DBManager()
         db_manager.create_tables()
 
-        # Проверяем, что execute был вызван несколько раз (для создания таблиц)
-        assert mock_cursor.execute.call_count >= 2
+        # Проверяем, что execute был вызван для создания таблиц
+        assert mock_cursor.execute.call_count >= 2  # Минимум 2 таблицы
         mock_conn.commit.assert_called()
 
     @patch('psycopg2.connect')
     def test_populate_companies_table(self, mock_connect):
         """Тест заполнения таблицы компаний"""
         mock_conn = Mock()
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
         mock_cursor = Mock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
         mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
 
         db_manager = DBManager()
         db_manager.populate_companies_table()
 
-        # Проверяем, что были выполнены SQL запросы
+        # Проверяем, что execute был вызван для заполнения таблицы
         assert mock_cursor.execute.call_count > 0
         mock_conn.commit.assert_called()
