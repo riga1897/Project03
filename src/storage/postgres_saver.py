@@ -499,7 +499,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
             # Обрабатываем ВСЕ переданные вакансии
             for vacancy in vacancies:
-                mapped_company_id = vacancy_company_mapping[vacancy.vacancy_id]
+                mapped_company_id = vacancy_company_mapping.get(vacancy.vacancy_id, None)
 
                 salary_from = vacancy.salary.salary_from if vacancy.salary else None
                 salary_to = vacancy.salary.salary_to if vacancy.salary else None

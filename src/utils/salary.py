@@ -151,12 +151,13 @@ class Salary:
         }
 
     def get_max_salary(self) -> Optional[int]:
-        """Возвращает максимальную зарплату для сортировки"""
-        if self.amount_to:
-            return self.amount_to
-        elif self.amount_from:
-            return self.amount_from
-        return None
+        """Возвращает максимальную зарплату из диапазона"""
+        if self.salary_to is not None:
+            return self.salary_to
+        elif self.salary_from is not None:
+            return self.salary_from
+        else:
+            return 0
 
     CURRENCY_SYMBOLS = {"RUR": "руб.", "USD": "$", "EUR": "€"}
 

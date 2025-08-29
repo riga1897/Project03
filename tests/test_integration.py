@@ -327,6 +327,8 @@ class TestVacancyOperationsIntegration:
     @pytest.fixture
     def test_vacancies(self):
         """Фикстура с тестовыми вакансиями"""
+        from src.utils.salary import Salary
+        
         return [
             Vacancy(
                 title="Python Developer",
@@ -351,6 +353,7 @@ class TestVacancyOperationsIntegration:
                 url="https://test.com/3",
                 vacancy_id="3",
                 source="hh.ru",
+                salary=None,  # Явно указываем None для вакансии без зарплаты
                 description="JavaScript React Vue",
                 requirements="JavaScript, React, Vue",
             ),
