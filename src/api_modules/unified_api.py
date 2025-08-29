@@ -81,7 +81,7 @@ class UnifiedAPI:
         self, search_query: str, sources: List[str] = None, **kwargs: dict[str, Any]
     ) -> List[Dict]:
         """
-        Получение вакансий из выбранных источников с дедупликацией
+        Получение вакансий из выбранных источников с фильтрацией по целевым компаниям и дедупликацией
 
         Args:
             search_query: Поисковый запрос
@@ -89,7 +89,7 @@ class UnifiedAPI:
             **kwargs: Дополнительные параметры для API
 
         Returns:
-            List[Dict]: Список всех уникальных вакансий
+            List[Dict]: Список всех уникальных вакансий от целевых компаний
         """
         if sources is None:
             sources = self.get_available_sources()
@@ -125,40 +125,112 @@ class UnifiedAPI:
             except Exception as e:
                 logger.error(f"Ошибка получения вакансий с SuperJob: {e}")
 
-        # SQL-дедупликация с фильтрацией по целевым компаниям
-        if all_vacancies:
-            logger.info(f"Всего получено {len(all_vacancies)} вакансий, применяем SQL-дедупликацию с фильтрацией")
-
-            try:
-                # Используем SQL для эффективной дедупликации с фильтрацией
-                from src.api_modules.base_api import BaseJobAPI
-
-                # Создаем временную реализацию BaseJobAPI для доступа к методу
-                class TempAPI(BaseJobAPI):
-                    def get_vacancies(self, search_query: str, **kwargs):
-                        return []
-
-                    def _validate_vacancy(self, vacancy):
-                        return True
-
-                base_api = TempAPI()
-                all_vacancies = base_api._deduplicate_vacancies(all_vacancies, "unified")
-
-                if all_vacancies:
-                    print(f"Найдено {len(all_vacancies)} уникальных вакансий от целевых компаний")
-                else:
-                    print("Не найдено вакансий от целевых компаний")
-
-            except Exception as e:
-                logger.error(f"Ошибка SQL-дедупликации: {e}")
-                logger.error("SQL-дедупликация обязательна. Fallback логика отключена.")
-                print("Ошибка SQL-дедупликации. Операция прервана.")
-                all_vacancies = []
-
-            return all_vacancies
-        else:
+        if not all_vacancies:
             logger.info("Вакансии не найдены")
             return []
+
+        # СНАЧАЛА фильтруем по целевым компаниям
+        logger.info(f"Всего получено {len(all_vacancies)} вакансий, применяем фильтрацию по целевым компаниям")
+        filtered_vacancies = self._filter_by_target_companies(all_vacancies)
+        
+        if not filtered_vacancies:
+            print("Не найдено вакансий от целевых компаний")
+            return []
+
+        print(f"Найдено {len(filtered_vacancies)} вакансий от целевых компаний")
+        
+        # ПОТОМ дедуплицируем уже отфильтрованные вакансии
+        try:
+            from src.api_modules.base_api import BaseJobAPI
+
+            class TempAPI(BaseJobAPI):
+                def get_vacancies(self, search_query: str, **kwargs):
+                    return []
+
+                def _validate_vacancy(self, vacancy):
+                    return True
+
+            base_api = TempAPI()
+            unique_vacancies = base_api._deduplicate_vacancies(filtered_vacancies, "unified")
+
+            if unique_vacancies:
+                print(f"После дедупликации: {len(unique_vacancies)} уникальных вакансий от целевых компаний")
+            else:
+                print("После дедупликации не осталось вакансий")
+
+            return unique_vacancies
+
+        except Exception as e:
+            logger.error(f"Ошибка дедупликации: {e}")
+            logger.warning("Возвращаем отфильтрованные вакансии без дедупликации")
+            return filtered_vacancies
+
+    def _filter_by_target_companies(self, vacancies: List[Dict]) -> List[Dict]:
+        """
+        Фильтрация вакансий по целевым компаниям
+
+        Args:
+            vacancies: Список всех вакансий
+
+        Returns:
+            List[Dict]: Список вакансий от целевых компаний
+        """
+        if not vacancies:
+            return []
+
+        try:
+            from src.config.target_companies import TargetCompanies
+
+            TARGET_COMPANIES = TargetCompanies.get_all_companies()
+            
+            # Создаем множества для быстрого поиска
+            target_names = set()
+            target_aliases = set()
+            
+            for company in TARGET_COMPANIES:
+                target_names.add(company.name.lower().strip())
+                for alias in company.aliases:
+                    target_aliases.add(alias.lower().strip())
+            
+            filtered_vacancies = []
+            
+            for vacancy in vacancies:
+                company_name = ""
+                
+                # Извлекаем название компании
+                if "employer" in vacancy and vacancy["employer"]:
+                    company_name = vacancy["employer"].get("name", "").lower().strip()
+                elif "firm_name" in vacancy:
+                    company_name = vacancy.get("firm_name", "").lower().strip()
+                
+                if not company_name:
+                    continue
+                
+                # Проверяем точное совпадение
+                if company_name in target_names or company_name in target_aliases:
+                    filtered_vacancies.append(vacancy)
+                    continue
+                
+                # Проверяем частичное совпадение
+                found = False
+                for target_name in target_names:
+                    if len(target_name) > 3 and (target_name in company_name or company_name in target_name):
+                        filtered_vacancies.append(vacancy)
+                        found = True
+                        break
+                
+                if not found:
+                    for alias in target_aliases:
+                        if len(alias) > 3 and (alias in company_name or company_name in alias):
+                            filtered_vacancies.append(vacancy)
+                            break
+            
+            logger.info(f"Фильтрация по целевым компаниям: {len(vacancies)} -> {len(filtered_vacancies)} вакансий")
+            return filtered_vacancies
+            
+        except Exception as e:
+            logger.error(f"Ошибка фильтрации по целевым компаниям: {e}")
+            return vacancies
 
     def get_hh_vacancies(self, query: str, **kwargs) -> List[Vacancy]:
         """Получение вакансий только с HH.ru с дедупликацией"""

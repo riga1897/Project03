@@ -91,46 +91,23 @@ class BaseJobAPI(ABC):
 
     def _deduplicate_vacancies(self, vacancies: List[Dict], source: str = None) -> List[Dict]:
         """
-        Удаление дублирующихся вакансий с одновременной фильтрацией по целевым компаниям.
-        Использует временную таблицу PostgreSQL для эффективного анализа.
+        Удаление дублирующихся вакансий БЕЗ фильтрации по целевым компаниям.
+        Фильтрация должна происходить на более раннем этапе.
 
         Args:
             vacancies: Список вакансий для дедупликации
             source: Источник данных (для логирования)
 
         Returns:
-            List[Dict]: Список уникальных вакансий от целевых компаний
+            List[Dict]: Список уникальных вакансий
         """
         if not vacancies:
             return []
 
-        print("Выполняется дедупликация и фильтрация по целевым компаниям...")
-        # logger.info(
-        #     f"Начинаем SQL-дедупликацию с фильтрацией по целевым компаниям для {len(vacancies)} вакансий из источника {source}"
-        # )
+        print("Выполняется дедупликация вакансий...")
+        logger.info(f"Начинаем дедупликацию для {len(vacancies)} вакансий из источника {source}")
 
         try:
-            # Получаем список целевых компаний
-            from src.config.target_companies import TargetCompanies
-
-            TARGET_COMPANIES = TargetCompanies.get_all_companies()
-
-            # Создаем паттерны для поиска целевых компаний (более точные)
-            target_patterns = []
-            exact_names = []  # Для точного совпадения
-
-            for company in TARGET_COMPANIES:
-                # Основное название компании
-                clean_name = company.name.lower().strip()
-                target_patterns.append(f"%{clean_name}%")
-                exact_names.append(clean_name)
-
-                # Добавляем aliases
-                for alias in company.aliases:
-                    clean_alias = alias.lower().strip()
-                    target_patterns.append(f"%{clean_alias}%")
-                    exact_names.append(clean_alias)
-
             # Используем PostgresSaver для SQL-операций
             from src.storage.postgres_saver import PostgresSaver
 
@@ -149,8 +126,7 @@ class BaseJobAPI(ABC):
                             salary_key VARCHAR(50),
                             area_normalized VARCHAR(200),
                             dedup_key VARCHAR(1000),
-                            source VARCHAR(20),
-                            is_target_company BOOLEAN DEFAULT FALSE
+                            source VARCHAR(20)
                         ) ON COMMIT DROP
                     """
                     )
@@ -191,15 +167,14 @@ class BaseJobAPI(ABC):
                                 area,
                                 dedup_key,
                                 source or "unknown",
-                                False,  # Флаг будет обновлен позже
                             )
                         )
 
-                    # Вставляем данные без определения целевых компаний
+                    # Вставляем данные
                     insert_query = """
                         INSERT INTO temp_dedup_analysis (
                             original_index, vacancy_id, title_normalized, company_normalized,
-                            salary_key, area_normalized, dedup_key, source, is_target_company
+                            salary_key, area_normalized, dedup_key, source
                         ) VALUES %s
                     """
 
@@ -207,32 +182,7 @@ class BaseJobAPI(ABC):
 
                     execute_values(cursor, insert_query, analysis_data, template=None, page_size=1000)
 
-                    # Обновляем флаг целевых компаний более точно
-                    # Сначала точное совпадение
-                    for exact_name in exact_names:
-                        cursor.execute(
-                            """
-                            UPDATE temp_dedup_analysis
-                            SET is_target_company = TRUE
-                            WHERE LOWER(company_normalized) = %s
-                        """,
-                            (exact_name,),
-                        )
-
-                    # Потом частичное совпадение только для оставшихся
-                    like_conditions = " OR ".join(["LOWER(company_normalized) LIKE %s"] * len(target_patterns))
-                    if target_patterns:
-                        cursor.execute(
-                            f"""
-                            UPDATE temp_dedup_analysis
-                            SET is_target_company = TRUE
-                            WHERE is_target_company = FALSE AND ({like_conditions})
-                        """,
-                            target_patterns,
-                        )
-
-                    # Получаем только уникальные записи от целевых компаний
-                    # Приоритет: сначала фильтруем по целевым компаниям, потом дедуплицируем
+                    # Получаем только уникальные записи
                     cursor.execute(
                         """
                         SELECT original_index
@@ -241,77 +191,39 @@ class BaseJobAPI(ABC):
                                 original_index,
                                 ROW_NUMBER() OVER (
                                     PARTITION BY dedup_key
-                                    ORDER BY
-                                        CASE WHEN is_target_company THEN 0 ELSE 1 END,
-                                        original_index
+                                    ORDER BY original_index
                                 ) as row_num
                             FROM temp_dedup_analysis
                         ) ranked
-                        WHERE row_num = 1 AND original_index IN (
-                            SELECT original_index
-                            FROM temp_dedup_analysis
-                            WHERE is_target_company = TRUE
-                        )
+                        WHERE row_num = 1
                         ORDER BY original_index
                     """
                     )
 
                     unique_indices = [row[0] for row in cursor.fetchall()]
 
-                    # Получаем подробную статистику
-                    cursor.execute(
-                        """
-                        SELECT
-                            COUNT(*) as total_vacancies,
-                            COUNT(CASE WHEN is_target_company THEN 1 END) as target_company_vacancies,
-                            COUNT(DISTINCT CASE WHEN is_target_company THEN dedup_key END) as unique_target_vacancies,
-                            COUNT(CASE WHEN is_target_company THEN 1 END) -
-                            COUNT(DISTINCT CASE WHEN is_target_company THEN dedup_key END) as target_duplicates,
-                            COUNT(DISTINCT company_normalized) as unique_companies,
-                            COUNT(DISTINCT CASE WHEN is_target_company THEN company_normalized END) as target_companies_found
-                        FROM temp_dedup_analysis
-                    """
-                    )
-
-                    stats = cursor.fetchone()
-                    total_count = stats[0]
-                    target_count = stats[1]
-                    unique_target_count = stats[2]
-                    target_duplicates = stats[3]
-                    target_companies_found = stats[5]
-
-                    # Получаем список найденных целевых компаний для логирования
-                    cursor.execute(
-                        """
-                        SELECT DISTINCT company_normalized
-                        FROM temp_dedup_analysis
-                        WHERE is_target_company = TRUE AND company_normalized != ''
-                        ORDER BY company_normalized
-                    """
-                    )
-                    found_companies = [row[0] for row in cursor.fetchall()]
-
-                    # Формируем результат из уникальных вакансий целевых компаний
+                    # Формируем результат из уникальных вакансий
                     unique_vacancies = [vacancies[idx] for idx in unique_indices]
 
-                    logger.info("SQL-дедупликация с фильтрацией завершена:")
-                    logger.info(f"  Всего вакансий: {total_count}")
-                    logger.info(f"  От целевых компаний: {target_count}")
-                    logger.info(f"  Уникальных от целевых: {unique_target_count}")
-                    logger.info(f"  Удалено дубликатов: {target_duplicates}")
-                    logger.info(f"  Найдено целевых компаний: {target_companies_found}")
-                    if found_companies:
-                        logger.info(
-                            f"  Компании: {', '.join(found_companies[:5])}{'...' if len(found_companies) > 5 else ''}"
-                        )
+                    duplicates_removed = len(vacancies) - len(unique_vacancies)
+                    logger.info(f"Дедупликация завершена: {len(vacancies)} -> {len(unique_vacancies)} вакансий (удалено {duplicates_removed} дублей)")
 
                     return unique_vacancies
 
         except Exception as e:
-            logger.error(f"Ошибка при SQL-дедупликации с фильтрацией: {e}")
-            # Строгая логика - если SQL не работает, возвращаем пустой список
-            logger.error("SQL-дедупликация обязательна. Fallback логика отключена.")
-            return []
+            logger.error(f"Ошибка при дедупликации: {e}")
+            logger.warning("Используем простую дедупликацию как fallback")
+            
+            # Простая дедупликация по ID
+            seen = set()
+            unique_vacancies = []
+            for vacancy in vacancies:
+                vacancy_id = vacancy.get("id") or vacancy.get("vacancy_id")
+                if vacancy_id and vacancy_id not in seen:
+                    seen.add(vacancy_id)
+                    unique_vacancies.append(vacancy)
+            
+            return unique_vacancies
 
     def _normalize_text(self, text: str) -> str:
         """

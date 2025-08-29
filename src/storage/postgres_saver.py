@@ -423,9 +423,8 @@ class PostgresSaver(AbstractVacancyStorage):
                 company_mapping[normalized_name] = comp_id
                 company_patterns[original_name] = comp_id
 
-            # Подготавливаем данные для вставки/обновления И фильтруем по целевым компаниям
+            # Подготавливаем данные для вставки/обновления (все переданные вакансии)
             insert_data = []
-            filtered_vacancies = []  # Только вакансии от целевых компаний
             vacancy_company_mapping = {}  # Словарь для сохранения соответствия vacancy_id -> company_id
 
             for vacancy in vacancies:
@@ -490,26 +489,16 @@ class PostgresSaver(AbstractVacancyStorage):
                                     )
                                     break
 
-                # 3. Логирование и фильтрация по целевым компаниям
+                # Сохраняем соответствие и устанавливаем company_id
                 if mapped_company_id:
+                    vacancy_company_mapping[vacancy.vacancy_id] = mapped_company_id
+                    vacancy.company_id = mapped_company_id
                     logger.debug(
                         f"Сопоставлено: '{employer_name}' (ID: {employer_id}) -> company_id: {mapped_company_id}"
                     )
 
-                    # Сохраняем соответствие для дальнейшего использования
-                    vacancy_company_mapping[vacancy.vacancy_id] = mapped_company_id
-                    # Устанавливаем company_id напрямую в объект вакансии
-                    vacancy.company_id = mapped_company_id
-                    # Добавляем в список для сохранения только если это целевая компания
-                    filtered_vacancies.append(vacancy)
-                else:
-                    logger.debug(
-                        f"Вакансия отклонена - не от целевой компании: '{employer_name}' (ID: {employer_id}, vacancy_id: {vacancy.vacancy_id})"
-                    )
-                    continue  # Пропускаем вакансии не от целевых компаний
-
-                # Обрабатываем только отфильтрованные вакансии от целевых компаний
-            for vacancy in filtered_vacancies:
+            # Обрабатываем ВСЕ переданные вакансии
+            for vacancy in vacancies:
                 mapped_company_id = vacancy_company_mapping[vacancy.vacancy_id]
 
                 salary_from = vacancy.salary.salary_from if vacancy.salary else None
@@ -653,13 +642,9 @@ class PostgresSaver(AbstractVacancyStorage):
             connection.commit()
 
             total_input = len(vacancies)
-            total_filtered = len(filtered_vacancies)
-            filtered_out = total_input - total_filtered
 
             logger.info("Batch операция через временные таблицы:")
             logger.info(f"  Входящих вакансий: {total_input}")
-            logger.info(f"  От целевых компаний: {total_filtered}")
-            logger.info(f"  Отфильтровано (не целевые): {filtered_out}")
             logger.info(f"  Добавлено в БД: {new_count}")
             logger.info(f"  Обновлено в БД: {updated_count}")
 
@@ -669,23 +654,7 @@ class PostgresSaver(AbstractVacancyStorage):
             logger.info(f"  Итого записей в БД после операции: {total_in_db}")
 
             # Показываем сводку результатов
-            logger.info(f"Результат: сохранено {new_count + updated_count} из {total_input} вакансий (новых: {new_count}, обновлено: {updated_count}, отфильтровано: {filtered_out})")
-
-            if filtered_out > 0:
-                logger.debug("Отфильтрованные вакансии (примеры):")
-                non_target_count = 0
-                for vacancy in vacancies:
-                    if vacancy not in filtered_vacancies:
-                        employer_name = "Неизвестно"
-                        if vacancy.employer:
-                            if isinstance(vacancy.employer, dict):
-                                employer_name = vacancy.employer.get("name", "Неизвестно")
-                            else:
-                                employer_name = str(vacancy.employer)
-                        logger.debug(f"    - ID {vacancy.vacancy_id}: '{vacancy.title}' от '{employer_name}'")
-                        non_target_count += 1
-                        if non_target_count >= 3:  # Показываем только первые 3 примера
-                            break
+            logger.info(f"Результат: сохранено {new_count + updated_count} из {total_input} вакансий (новых: {new_count}, обновлено: {updated_count})")
 
         except psycopg2.Error as e:
             logger.error(f"Ошибка при batch операции через временные таблицы: {e}")
