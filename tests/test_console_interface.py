@@ -43,7 +43,7 @@ class TestUserInterface:
         with patch('src.ui_interfaces.console_interface.UnifiedAPI') as mock_unified_api, \
              patch('src.ui_interfaces.console_interface.VacancySearchHandler') as mock_search_handler, \
              patch('src.ui_interfaces.console_interface.VacancyDisplayHandler') as mock_display_handler, \
-             patch('src.ui_interfaces.console_interface.VacancyOperationsCoordinator') as mock_coordinator:
+             patch('src.ui_interfaces.vacancy_operations_coordinator.VacancyOperationsCoordinator') as mock_coordinator:
             
             # Настройка моков
             mock_unified_api_instance = Mock()
@@ -76,7 +76,7 @@ class TestUserInterface:
              patch('src.ui_interfaces.console_interface.UnifiedAPI'), \
              patch('src.ui_interfaces.console_interface.VacancySearchHandler'), \
              patch('src.ui_interfaces.console_interface.VacancyDisplayHandler'), \
-             patch('src.ui_interfaces.console_interface.VacancyOperationsCoordinator'):
+             patch('src.ui_interfaces.vacancy_operations_coordinator.VacancyOperationsCoordinator'):
             
             mock_storage = Mock()
             mock_factory.return_value = mock_storage
@@ -136,11 +136,16 @@ class TestUserInterface:
     @patch('builtins.print')
     def test_show_vacancies_for_deletion_all(self, mock_print, mock_input, user_interface):
         """Тест отображения всех вакансий для удаления"""
-        # Настройка мок данных
-        vacancies = [
-            Mock(vacancy_id='1', title='Test Vacancy 1'),
-            Mock(vacancy_id='2', title='Test Vacancy 2')
-        ]
+        # Настройка мок данных с полными атрибутами
+        vacancies = []
+        for i in range(1, 3):
+            vacancy = Mock()
+            vacancy.vacancy_id = str(i)
+            vacancy.title = f'Test Vacancy {i}'
+            vacancy.employer = {'name': f'Test Company {i}'}
+            vacancy.salary = f'{i * 50000} руб.'
+            vacancy.url = f'http://test{i}.com'
+            vacancies.append(vacancy)
         
         # В реальном коде метод требует список вакансий и ключевое слово
         user_interface._show_vacancies_for_deletion(vacancies, "test")
@@ -151,7 +156,13 @@ class TestUserInterface:
     @patch('builtins.print')
     def test_show_vacancies_for_deletion_single(self, mock_print, mock_input, user_interface):
         """Тест отображения одной вакансии для удаления"""
-        vacancies = [Mock(vacancy_id='1', title='Test Vacancy')]
+        vacancy = Mock()
+        vacancy.vacancy_id = '1'
+        vacancy.title = 'Test Vacancy'
+        vacancy.employer = {'name': 'Test Company'}
+        vacancy.salary = '50000 руб.'
+        vacancy.url = 'http://test.com'
+        vacancies = [vacancy]
         
         user_interface._show_vacancies_for_deletion(vacancies, "test")
         
@@ -160,7 +171,13 @@ class TestUserInterface:
     @patch('builtins.input', return_value='q')
     def test_show_vacancies_for_deletion_quit(self, mock_input, user_interface):
         """Тест выхода из удаления вакансий"""
-        vacancies = [Mock(vacancy_id='1', title='Test Vacancy')]
+        vacancy = Mock()
+        vacancy.vacancy_id = '1'
+        vacancy.title = 'Test Vacancy'
+        vacancy.employer = {'name': 'Test Company'}
+        vacancy.salary = '50000 руб.'
+        vacancy.url = 'http://test.com'
+        vacancies = [vacancy]
         
         user_interface._show_vacancies_for_deletion(vacancies, "test")
 
@@ -168,12 +185,15 @@ class TestUserInterface:
     @patch('builtins.print')
     def test_show_vacancies_for_deletion_range(self, mock_print, mock_input, user_interface):
         """Тест удаления диапазона вакансий"""
-        vacancies = [
-            Mock(vacancy_id='1', title='Test 1'),
-            Mock(vacancy_id='2', title='Test 2'),
-            Mock(vacancy_id='3', title='Test 3'),
-            Mock(vacancy_id='4', title='Test 4')
-        ]
+        vacancies = []
+        for i in range(1, 5):
+            vacancy = Mock()
+            vacancy.vacancy_id = str(i)
+            vacancy.title = f'Test {i}'
+            vacancy.employer = {'name': f'Company {i}'}
+            vacancy.salary = f'{i * 10000} руб.'
+            vacancy.url = f'http://test{i}.com'
+            vacancies.append(vacancy)
         
         user_interface._show_vacancies_for_deletion(vacancies, "test")
         
@@ -183,7 +203,13 @@ class TestUserInterface:
     @patch('builtins.print')
     def test_show_vacancies_for_deletion_invalid_range(self, mock_print, mock_input, user_interface):
         """Тест обработки некорректного диапазона"""
-        vacancies = [Mock(vacancy_id='1', title='Test Vacancy')]
+        vacancy = Mock()
+        vacancy.vacancy_id = '1'
+        vacancy.title = 'Test Vacancy'
+        vacancy.employer = {'name': 'Test Company'}
+        vacancy.salary = '50000 руб.'
+        vacancy.url = 'http://test.com'
+        vacancies = [vacancy]
         
         user_interface._show_vacancies_for_deletion(vacancies, "test")
         
@@ -194,7 +220,15 @@ class TestUserInterface:
     def test_show_vacancies_for_deletion_pagination(self, mock_print, mock_input, user_interface):
         """Тест пагинации при удалении вакансий"""
         # Создаем много вакансий для тестирования пагинации
-        vacancies = [Mock(vacancy_id=str(i), title=f'Test {i}') for i in range(1, 25)]
+        vacancies = []
+        for i in range(1, 25):
+            vacancy = Mock()
+            vacancy.vacancy_id = str(i)
+            vacancy.title = f'Test {i}'
+            vacancy.employer = {'name': f'Company {i}'}
+            vacancy.salary = f'{i * 10000} руб.'
+            vacancy.url = f'http://test{i}.com'
+            vacancies.append(vacancy)
         
         user_interface._show_vacancies_for_deletion(vacancies, "test")
         
@@ -203,10 +237,16 @@ class TestUserInterface:
     @patch('builtins.print')
     def test_display_vacancies_static_method(self, mock_print):
         """Тест статического метода отображения вакансий"""
-        vacancies = [
-            Mock(vacancy_id='1', title='Test Vacancy 1'),
-            Mock(vacancy_id='2', title='Test Vacancy 2')
-        ]
+        vacancies = []
+        for i in range(1, 3):
+            vacancy = Mock()
+            vacancy.vacancy_id = str(i)
+            vacancy.title = f'Test Vacancy {i}'
+            vacancy.employer = {'name': f'Company {i}'}
+            vacancy.salary = f'{i * 50000} руб.'
+            vacancy.url = f'http://test{i}.com'
+            vacancy.description = f'Test description {i}'
+            vacancies.append(vacancy)
         
         # В реальном коде это приватный метод _display_vacancies
         UserInterface._display_vacancies(vacancies)
@@ -218,7 +258,17 @@ class TestUserInterface:
     @patch('builtins.print')
     def test_display_vacancies_with_pagination_static_method(self, mock_print, mock_input):
         """Тест статического метода отображения вакансий с пагинацией"""
-        vacancies = [Mock(vacancy_id=str(i), title=f'Test {i}') for i in range(1, 25)]
+        # Создаем моки вакансий с необходимыми атрибутами
+        vacancies = []
+        for i in range(1, 25):
+            vacancy = Mock()
+            vacancy.vacancy_id = str(i)
+            vacancy.title = f'Test {i}'
+            vacancy.employer = {'name': f'Company {i}'}
+            vacancy.salary = f'{i * 10000} руб.'
+            vacancy.url = f'http://test{i}.com'
+            vacancy.description = f'Test description {i}'
+            vacancies.append(vacancy)
         
         # В реальном коде это приватный метод _display_vacancies_with_pagination
         UserInterface._display_vacancies_with_pagination(vacancies)
@@ -253,7 +303,14 @@ class TestUserInterface:
     @patch('builtins.print')
     def test_advanced_search_vacancies(self, mock_print, mock_input, user_interface):
         """Тест расширенного поиска вакансий"""
-        mock_vacancies = [Mock(vacancy_id='1', title='Python Django Developer')]
+        vacancy = Mock()
+        vacancy.vacancy_id = '1'
+        vacancy.title = 'Python Django Developer'
+        vacancy.employer = {'name': 'Tech Company'}
+        vacancy.salary = '100000 руб.'
+        vacancy.url = 'http://test.com'
+        vacancy.description = 'Python Django development'
+        mock_vacancies = [vacancy]
         user_interface.storage.get_vacancies.return_value = mock_vacancies
         
         # Вызываем приватный метод напрямую
@@ -271,15 +328,21 @@ class TestUserInterface:
         
         assert mock_print.call_count > 0
 
-    @patch('builtins.input', return_value='50000')
+    @patch('builtins.input', side_effect=['1', '50000'])
     @patch('builtins.print')
     def test_filter_saved_vacancies_by_salary_min(self, mock_print, mock_input, user_interface):
         """Тест фильтрации сохраненных вакансий по минимальной зарплате"""
-        mock_vacancies = [Mock(vacancy_id='1', title='High Salary Job')]
+        vacancy = Mock()
+        vacancy.vacancy_id = '1'
+        vacancy.title = 'High Salary Job'
+        vacancy.employer = {'name': 'Rich Company'}
+        vacancy.salary = '100000 руб.'
+        vacancy.url = 'http://test.com'
+        vacancy.description = 'High paying job'
+        mock_vacancies = [vacancy]
         user_interface.storage.get_vacancies.return_value = mock_vacancies
         
-        with patch('builtins.input', side_effect=['1', '50000']):
-            user_interface._filter_saved_vacancies_by_salary()
+        user_interface._filter_saved_vacancies_by_salary()
         
         assert mock_print.call_count > 0
 
@@ -339,7 +402,7 @@ class TestUserInterface:
     @patch('src.ui_interfaces.console_interface.UnifiedAPI')
     @patch('src.ui_interfaces.console_interface.VacancySearchHandler')
     @patch('src.ui_interfaces.console_interface.VacancyDisplayHandler')
-    @patch('src.ui_interfaces.console_interface.VacancyOperationsCoordinator')
+    @patch('src.ui_interfaces.vacancy_operations_coordinator.VacancyOperationsCoordinator')
     def test_initialization_with_mocks(self, mock_coordinator, mock_display, mock_search, mock_api, mock_storage, mock_db_manager):
         """Тест инициализации с полными моками"""
         interface = UserInterface(mock_storage, mock_db_manager)
