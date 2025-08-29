@@ -1,0 +1,222 @@
+~/workspace$ pytest tests/test_db_manager.py
+============================ test session starts =============================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace/tests
+configfile: pytest.ini
+plugins: mock-3.14.1, cov-6.2.1
+collected 10 items                                                           
+
+tests/test_db_manager.py ....F..FFF                                    [100%]
+
+================================== FAILURES ==================================
+____________________ TestDBManager.test_get_all_vacancies ____________________
+
+self = <tests.test_db_manager.TestDBManager object at 0x7f6dcefb1e90>
+mock_connect = <MagicMock name='connect' id='140109592337232'>
+
+    @patch('psycopg2.connect')
+    def test_get_all_vacancies(self, mock_connect):
+        """Тест получения всех вакансий"""
+        mock_conn = Mock()
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
+        mock_cursor = Mock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
+        mock_cursor.fetchall.return_value = [
+            {"title": "Python Developer", "company_name": "СБЕР", "salary_info": "100000 - 150000 RUR",
+             "url": "https://hh.ru/vacancy/12345", "vacancy_id": "12345", "raw_company_id": 1, "linked_company_id": 1}
+        ]
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+        with patch('psycopg2.extras.RealDictCursor'):
+            db_manager = DBManager()
+            vacancies = db_manager.get_all_vacancies()
+    
+>           assert len(vacancies) == 1
+E           assert 0 == 1
+E            +  where 0 = len([])
+
+tests/test_db_manager.py:102: AssertionError
+---------------------------- Captured stderr call ----------------------------
+ERROR:src.storage.db_manager:Ошибка при создании таблиц: 'Mock' object is not subscriptable
+----------------------------- Captured log call ------------------------------
+ERROR    src.storage.db_manager:db_manager.py:196 Ошибка при создании таблиц: 'Mock' object is not subscriptable
+_______________ TestDBManager.test_get_vacancies_with_keyword ________________
+
+self = <tests.test_db_manager.TestDBManager object at 0x7f6dcefa3e50>
+mock_connect = <MagicMock name='connect' id='140109587663760'>
+
+    @patch('psycopg2.connect')
+    def test_get_vacancies_with_keyword(self, mock_connect):
+        """Тест поиска вакансий по ключевому слову"""
+        mock_conn = Mock()
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
+        mock_cursor = Mock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
+        mock_cursor.fetchall.return_value = [
+            ("Python Developer", "СБЕР", "100000 - 150000 RUR",
+             "https://hh.ru/vacancy/12345", "Python development", "12345")
+        ]
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+        db_manager = DBManager()
+        vacancies = db_manager.get_vacancies_with_keyword("python")
+    
+>       assert len(vacancies) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+tests/test_db_manager.py:177: AssertionError
+---------------------------- Captured stderr call ----------------------------
+ERROR:src.storage.db_manager:Ошибка при создании таблиц: 'Mock' object is not subscriptable
+----------------------------- Captured log call ------------------------------
+ERROR    src.storage.db_manager:db_manager.py:196 Ошибка при создании таблиц: 'Mock' object is not subscriptable
+______________________ TestDBManager.test_create_tables ______________________
+
+self = <Mock name='connect().commit' id='140109587992016'>
+
+    def assert_called(self):
+        """assert that the mock was called at least once
+        """
+        if self.call_count == 0:
+            msg = ("Expected '%s' to have been called." %
+                   (self._mock_name or 'mock'))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'commit' to have been called.
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:908: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_db_manager.TestDBManager object at 0x7f6dcefa3b90>
+mock_connect = <MagicMock name='connect' id='140109587923600'>
+
+    @patch('psycopg2.connect')
+    def test_create_tables(self, mock_connect):
+        """Тест создания таблиц"""
+        mock_conn = Mock()
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
+        mock_cursor = Mock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+        # Настраиваем ответы для различных SQL запросов
+        mock_cursor.fetchone.side_effect = [
+            ("integer",),  # Для проверки типа company_id
+            (True,),       # Для проверки существования constraint
+        ]
+    
+        db_manager = DBManager()
+        db_manager.create_tables()
+    
+        # Проверяем, что execute был вызван для создания таблиц
+        assert mock_cursor.execute.call_count >= 2  # Минимум 2 таблицы
+>       mock_conn.commit.assert_called()
+E       AssertionError: Expected 'commit' to have been called.
+
+tests/test_db_manager.py:204: AssertionError
+________________ TestDBManager.test_populate_companies_table _________________
+
+self = <tests.test_db_manager.TestDBManager object at 0x7f6dcefa0190>
+mock_connect = <MagicMock name='connect' id='140109587664592'>
+
+    @patch('psycopg2.connect')
+    def test_populate_companies_table(self, mock_connect):
+        """Тест заполнения таблицы компаний"""
+        mock_conn = Mock()
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
+        mock_cursor = Mock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+        # Настраиваем ответы для SQL запросов
+        mock_cursor.fetchone.side_effect = [
+            (True,),   # Таблица существует
+            (0,),      # Количество компаний = 0
+            None,      # Компания не существует (для каждой проверки)
+            None, None, None, None, None, None, None, None, None, None, None, None, None,  # Для каждой целевой компании
+            (12,)      # Финальное количество компаний
+        ]
+    
+        db_manager = DBManager()
+>       db_manager.populate_companies_table()
+
+tests/test_db_manager.py:228: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.storage.db_manager.DBManager object at 0x7f6dce33c610>
+
+    def populate_companies_table(self):
+        """Заполняет таблицу companies целевыми компаниями"""
+        try:
+            # Используем контекстный менеджер для безопасной работы с подключением
+            with self._get_connection() as connection:
+                with connection.cursor() as cursor:
+                    # Устанавливаем кодировку сессии
+                    cursor.execute("SET client_encoding TO 'UTF8'")
+    
+                    # Проверяем, существует ли таблица companies
+                    cursor.execute(
+                        """
+                        SELECT EXISTS (
+                            SELECT FROM information_schema.tables
+                            WHERE table_schema = 'public'
+                            AND table_name = 'companies'
+                        );
+                    """
+                    )
+    
+                    table_exists = cursor.fetchone()[0]
+                    if not table_exists:
+                        logger.warning("Таблица companies не существует. Таблицы должны быть созданы заранее.")
+                        return
+    
+                    # Проверяем, есть ли уже данные в таблице
+                    cursor.execute("SELECT COUNT(*) FROM companies")
+                    companies_count = cursor.fetchone()[0]
+    
+                    if companies_count > 0:
+                        logger.info(f"✓ Таблица companies уже содержит {companies_count} компаний")
+                        return
+    
+                    # Добавляем целевые компании с их API идентификаторами
+                    for company in TARGET_COMPANIES:
+                        # Сначала проверяем, существует ли компания
+                        cursor.execute("SELECT id FROM companies WHERE name = %s", (company.name,))
+                        if not cursor.fetchone():
+                            cursor.execute(
+                                """
+                                INSERT INTO companies (name, hh_id, sj_id)
+                                VALUES (%s, %s, %s)
+                            """,
+                                (company.name, getattr(company, "hh_id", None), getattr(company, "sj_id", None)),
+                            )
+                            logger.info(f"Добавлена целевая компания: {company.name}")
+    
+                    # Проверяем результат
+                    cursor.execute("SELECT COUNT(*) FROM companies")
+>                   final_count = cursor.fetchone()[0]
+                                  ^^^^^^^^^^^^^^^^^^^^
+E                   TypeError: 'NoneType' object is not subscriptable
+
+src/storage/db_manager.py:248: TypeError
+---------------------------- Captured stderr call ----------------------------
+ERROR:src.storage.db_manager:Ошибка при заполнении таблицы companies: 'NoneType' object is not subscriptable
+----------------------------- Captured log call ------------------------------
+ERROR    src.storage.db_manager:db_manager.py:252 Ошибка при заполнении таблицы companies: 'NoneType' object is not subscriptable
+========================== short test summary info ===========================
+FAILED tests/test_db_manager.py::TestDBManager::test_get_all_vacancies - assert 0 == 1
+FAILED tests/test_db_manager.py::TestDBManager::test_get_vacancies_with_keyword - assert 0 == 1
+FAILED tests/test_db_manager.py::TestDBManager::test_create_tables - AssertionError: Expected 'commit' to have been called.
+FAILED tests/test_db_manager.py::TestDBManager::test_populate_companies_table - TypeError: 'NoneType' object is not subscriptable
