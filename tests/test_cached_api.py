@@ -6,6 +6,7 @@
 import tempfile
 import pytest
 from unittest.mock import patch, MagicMock, mock_open
+from pathlib import Path
 from src.api_modules.cached_api import CachedAPI
 
 
@@ -41,7 +42,8 @@ class TestCachedAPI:
         """Тест инициализации"""
         with tempfile.TemporaryDirectory() as temp_dir:
             api = ConcreteCachedAPI(temp_dir)
-            assert api.cache_dir == temp_dir
+            assert str(api.cache_dir) == temp_dir
+            assert api.cache_dir.exists()
     
     @patch('src.api_modules.get_api.APIConnector')
     def test_connect_to_api_with_cache(self, mock_connector_class):
@@ -51,132 +53,136 @@ class TestCachedAPI:
         mock_connector_class.return_value = mock_connector
         
         test_data = {"items": [{"id": "1", "title": "Test"}]}
-        mock_connector.get_json.return_value = test_data
+        mock_connector._APIConnector__connect.return_value = test_data
         
         with tempfile.TemporaryDirectory() as temp_dir:
             api = ConcreteCachedAPI(temp_dir)
             
-            # Мокаем методы кэша
-            with patch.object(api, '_get_cache_path', return_value='test_cache.json'), \
-                 patch('os.path.exists', return_value=False), \
-                 patch('builtins.open', mock_open()):
+            # Мокаем FileCache
+            with patch.object(api.cache, 'load_response', return_value=None), \
+                 patch.object(api.cache, 'save_response'):
                 
                 result = api._CachedAPI__connect_to_api("http://test.com", {}, "test")
                 
                 assert result == test_data
-                mock_connector.get_json.assert_called_once()
+                mock_connector._APIConnector__connect.assert_called_once()
     
     @patch('src.api_modules.get_api.APIConnector')
-    def test_connect_to_api_without_cache(self, mock_connector_class):
-        """Тест подключения к API без кэша"""
+    def test_connect_to_api_from_file_cache(self, mock_connector_class):
+        """Тест получения данных из файлового кэша"""
         # Настройка мока
         mock_connector = MagicMock()
         mock_connector_class.return_value = mock_connector
         
-        test_data = {"items": [{"id": "2", "title": "Test2"}]}
-        mock_connector.get_json.return_value = test_data
+        cached_data = {"items": [{"id": "2", "title": "Cached Test"}]}
         
         with tempfile.TemporaryDirectory() as temp_dir:
             api = ConcreteCachedAPI(temp_dir)
             
-            # Мокаем методы для случая без кэша
-            with patch.object(api, '_get_cache_path', return_value='test_cache.json'), \
-                 patch('os.path.exists', return_value=False), \
-                 patch('builtins.open', mock_open()):
+            # Мокаем FileCache для возврата кэшированных данных
+            with patch.object(api.cache, 'load_response', return_value={"data": cached_data}):
                 
                 result = api._CachedAPI__connect_to_api("http://test.com", {}, "test")
                 
-                assert result == test_data
+                assert result == cached_data
+                # API не должен вызываться, так как данные берутся из кэша
+                mock_connector._APIConnector__connect.assert_not_called()
     
     def test_clear_cache(self):
         """Тест очистки кэша"""
         with tempfile.TemporaryDirectory() as temp_dir:
             api = ConcreteCachedAPI(temp_dir)
             
-            # Мокаем существование файлов кэша
-            with patch('os.listdir', return_value=['test_cache.json', 'other_file.txt']), \
-                 patch('os.path.isfile', return_value=True), \
-                 patch('os.remove') as mock_remove:
+            # Мокаем методы FileCache
+            with patch.object(api.cache, 'clear') as mock_clear, \
+                 patch.object(api._cached_api_request, 'clear_cache', create=True) as mock_memory_clear:
                 
                 api.clear_cache("test")
                 
-                # Проверяем, что файл кэша был удален
-                mock_remove.assert_called()
+                # Проверяем, что методы очистки были вызваны
+                mock_clear.assert_called_once_with("test")
+                mock_memory_clear.assert_called_once()
     
-    def test_get_cache_path(self):
-        """Тест генерации пути к кэшу"""
+    def test_get_cache_status(self):
+        """Тест получения статуса кэша"""
         with tempfile.TemporaryDirectory() as temp_dir:
             api = ConcreteCachedAPI(temp_dir)
             
-            url = "http://api.test.com/vacancies"
-            params = {"text": "python", "page": "0"}
-            prefix = "test"
+            # Создаем тестовый файл кэша
+            test_cache_file = Path(temp_dir) / "test_cache.json"
+            test_cache_file.write_text('{"test": "data"}')
             
-            cache_path = api._get_cache_path(url, params, prefix)
+            status = api.get_cache_status("test")
             
-            # Проверяем, что путь содержит правильные компоненты
-            assert temp_dir in cache_path
-            assert prefix in cache_path
-            assert cache_path.endswith('.json')
+            assert isinstance(status, dict)
+            assert "cache_dir" in status
+            assert "cache_dir_exists" in status
+            assert status["cache_dir_exists"] is True
     
-    def test_is_cache_valid(self):
-        """Тест проверки валидности кэша"""
+    def test_is_complete_response_valid(self):
+        """Тест проверки полноты валидного ответа"""
         with tempfile.TemporaryDirectory() as temp_dir:
             api = ConcreteCachedAPI(temp_dir)
             
-            # Мокаем файл с недавней датой модификации
-            import time
-            recent_time = time.time() - 1800  # 30 минут назад
+            valid_data = {
+                "items": [{"id": "1", "title": "Test"}],
+                "found": 1
+            }
+            params = {"page": 0, "per_page": 20}
             
-            with patch('os.path.getmtime', return_value=recent_time):
-                assert api._is_cache_valid('test_file.json') is True
-            
-            # Мокаем файл со старой датой модификации
-            old_time = time.time() - 7200  # 2 часа назад
-            
-            with patch('os.path.getmtime', return_value=old_time):
-                assert api._is_cache_valid('test_file.json') is False
+            assert api._is_complete_response(valid_data, params) is True
     
-    def test_save_to_cache(self):
-        """Тест сохранения в кэш"""
+    def test_is_complete_response_invalid(self):
+        """Тест проверки полноты невалидного ответа"""
         with tempfile.TemporaryDirectory() as temp_dir:
             api = ConcreteCachedAPI(temp_dir)
             
-            test_data = {"test": "data"}
-            cache_path = "test_cache.json"
+            # Ответ без обязательного поля items
+            invalid_data = {"found": 1}
+            params = {"page": 0, "per_page": 20}
             
-            with patch('os.makedirs'), \
-                 patch('builtins.open', mock_open()) as mock_file:
+            assert api._is_complete_response(invalid_data, params) is False
+    
+    def test_validate_response_structure_valid(self):
+        """Тест валидации корректной структуры ответа"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            api = ConcreteCachedAPI(temp_dir)
+            
+            valid_data = {
+                "items": [{"id": "1", "title": "Test"}]
+            }
+            
+            assert api._validate_response_structure(valid_data) is True
+    
+    def test_validate_response_structure_invalid(self):
+        """Тест валидации некорректной структуры ответа"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            api = ConcreteCachedAPI(temp_dir)
+            
+            # Некорректная структура - items не список
+            invalid_data = {
+                "items": "not a list"
+            }
+            
+            assert api._validate_response_structure(invalid_data) is False
+    
+    @patch('src.api_modules.get_api.APIConnector')
+    def test_memory_cache_integration(self, mock_connector_class):
+        """Тест интеграции с кэшем в памяти"""
+        mock_connector = MagicMock()
+        mock_connector_class.return_value = mock_connector
+        
+        test_data = {"items": [{"id": "1", "title": "Memory Test"}]}
+        
+        with tempfile.TemporaryDirectory() as temp_dir:
+            api = ConcreteCachedAPI(temp_dir)
+            
+            # Мокаем кэш в памяти для возврата данных
+            with patch.object(api, '_cached_api_request', return_value=test_data):
                 
-                api._save_to_cache(test_data, cache_path)
+                result = api._CachedAPI__connect_to_api("http://test.com", {}, "test")
                 
-                # Проверяем, что файл был открыт для записи
-                mock_file.assert_called_once()
-    
-    def test_load_from_cache(self):
-        """Тест загрузки из кэша"""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            api = ConcreteCachedAPI(temp_dir)
-            
-            test_data = '{"test": "cached_data"}'
-            
-            with patch('builtins.open', mock_open(read_data=test_data)):
-                result = api._load_from_cache('test_cache.json')
-                
-                assert result == {"test": "cached_data"}
-    
-    def test_load_from_cache_invalid_json(self):
-        """Тест загрузки невалидного JSON из кэша"""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            api = ConcreteCachedAPI(temp_dir)
-            
-            invalid_json = '{"test": invalid_json}'
-            
-            with patch('builtins.open', mock_open(read_data=invalid_json)):
-                result = api._load_from_cache('test_cache.json')
-                
-                # При ошибке парсинга должен возвращаться None
-                assert result is None
+                assert result == test_data
     
     def test_inherited_abstract_methods(self):
         """Тест что конкретная реализация имеет все необходимые методы"""
@@ -197,3 +203,18 @@ class TestCachedAPI:
             page_vacancies = api.get_vacancies_page("python", 0)
             assert isinstance(page_vacancies, list)
             assert len(page_vacancies) > 0
+    
+    def test_error_handling_in_cache_operations(self):
+        """Тест обработки ошибок в операциях кэша"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            api = ConcreteCachedAPI(temp_dir)
+            
+            # Тестируем обработку ошибок при очистке кэша
+            with patch.object(api.cache, 'clear', side_effect=Exception("Cache error")):
+                # Не должно вызывать исключение
+                api.clear_cache("test")
+            
+            # Тестируем обработку ошибок при получении статуса
+            with patch.object(api.cache_dir, 'glob', side_effect=Exception("Glob error")):
+                status = api.get_cache_status("test")
+                assert "error" in status
