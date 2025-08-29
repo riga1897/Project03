@@ -28,13 +28,27 @@ def retry(attempts=3, delay=0.1):
 # Моковый декоратор cache_result для тестов
 def cache_result(ttl=300):
     cache = {}
+    timestamps = {}
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             key = f"{func.__name__}_{args}_{kwargs}"
-            if key not in cache:
-                cache[key] = func(*args, **kwargs)
-            return cache[key]
+            current_time = time.time()
+            
+            # Проверяем есть ли кэш и не истек ли TTL
+            if key in cache and key in timestamps:
+                if current_time - timestamps[key] < ttl:
+                    return cache[key]
+                else:
+                    # TTL истек, удаляем из кэша
+                    del cache[key]
+                    del timestamps[key]
+            
+            # Выполняем функцию и кэшируем результат
+            result = func(*args, **kwargs)
+            cache[key] = result
+            timestamps[key] = current_time
+            return result
         return wrapper
     return decorator
 
