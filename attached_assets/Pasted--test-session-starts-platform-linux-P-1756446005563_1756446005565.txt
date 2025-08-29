@@ -1,0 +1,179 @@
+============================= test session starts =============================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0 -- /nix/store/2lcqw1d28vklbk8ikiwad28iq2smwndv-python-wrapped-0.1.0/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/runner/workspace/tests
+configfile: pytest.ini
+plugins: mock-3.14.1, cov-6.2.1
+collected 24 items                                                            
+
+tests/test_base_formatter.py::TestBaseFormatter::test_format_salary_full_range ERROR [  4%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_salary_from_only ERROR [  8%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_salary_to_only ERROR [ 12%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_salary_none ERROR [ 16%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_salary_empty_dict ERROR [ 20%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_currency_rur ERROR [ 25%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_currency_usd ERROR [ 29%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_currency_eur ERROR [ 33%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_currency_unknown ERROR [ 37%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_text_truncate ERROR [ 41%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_text_short ERROR [ 45%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_text_none ERROR [ 50%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_date_string ERROR [ 54%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_date_none ERROR [ 58%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_experience_string ERROR [ 62%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_experience_none ERROR [ 66%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_employment_type ERROR [ 70%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_schedule ERROR [ 75%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_company_name ERROR [ 79%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_company_name_dict ERROR [ 83%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_company_name_none ERROR [ 87%]
+tests/test_base_formatter.py::TestBaseFormatter::test_clean_html_tags ERROR [ 91%]
+tests/test_base_formatter.py::TestBaseFormatter::test_clean_html_none ERROR [ 95%]
+tests/test_base_formatter.py::TestBaseFormatter::test_format_number_thousands ERROR [100%]
+
+=================================== ERRORS ====================================
+______ ERROR at setup of TestBaseFormatter.test_format_salary_full_range ______
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+______ ERROR at setup of TestBaseFormatter.test_format_salary_from_only _______
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+_______ ERROR at setup of TestBaseFormatter.test_format_salary_to_only ________
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+_________ ERROR at setup of TestBaseFormatter.test_format_salary_none _________
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+______ ERROR at setup of TestBaseFormatter.test_format_salary_empty_dict ______
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+________ ERROR at setup of TestBaseFormatter.test_format_currency_rur _________
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+________ ERROR at setup of TestBaseFormatter.test_format_currency_usd _________
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+________ ERROR at setup of TestBaseFormatter.test_format_currency_eur _________
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+______ ERROR at setup of TestBaseFormatter.test_format_currency_unknown _______
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+________ ERROR at setup of TestBaseFormatter.test_format_text_truncate ________
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+_________ ERROR at setup of TestBaseFormatter.test_format_text_short __________
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+__________ ERROR at setup of TestBaseFormatter.test_format_text_none __________
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+_________ ERROR at setup of TestBaseFormatter.test_format_date_string _________
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+__________ ERROR at setup of TestBaseFormatter.test_format_date_none __________
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+______ ERROR at setup of TestBaseFormatter.test_format_experience_string ______
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+_______ ERROR at setup of TestBaseFormatter.test_format_experience_none _______
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+_______ ERROR at setup of TestBaseFormatter.test_format_employment_type _______
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+__________ ERROR at setup of TestBaseFormatter.test_format_schedule ___________
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+________ ERROR at setup of TestBaseFormatter.test_format_company_name _________
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+______ ERROR at setup of TestBaseFormatter.test_format_company_name_dict ______
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+______ ERROR at setup of TestBaseFormatter.test_format_company_name_none ______
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+__________ ERROR at setup of TestBaseFormatter.test_clean_html_tags ___________
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+__________ ERROR at setup of TestBaseFormatter.test_clean_html_none ___________
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+______ ERROR at setup of TestBaseFormatter.test_format_number_thousands _______
+tests/test_base_formatter.py:16: in formatter
+    return BaseFormatter()
+           ^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+=========================== short test summary info ===========================
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_salary_full_range - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_salary_from_only - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_salary_to_only - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_salary_none - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_salary_empty_dict - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_currency_rur - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_currency_usd - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_currency_eur - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_currency_unknown - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_text_truncate - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_text_short - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_text_none - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_date_string - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_date_none - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_experience_string - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_experience_none - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_employment_type - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_schedule - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_company_name - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_company_name_dict - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_company_name_none - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_clean_html_tags - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_clean_html_none - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_number_thousands - TypeError: Can't instantiate abstract class BaseFormatter with abstract method format_vacancy_info
