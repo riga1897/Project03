@@ -65,58 +65,55 @@ class TestStorageIntegration:
 class TestAPIIntegration:
     """Интеграционные тесты для API"""
 
-    @patch('requests.get')
-    def test_hh_api_integration(self, mock_get):
+    @patch('src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api')
+    def test_hh_api_integration(self, mock_connect):
         """Тест интеграции с HeadHunter API"""
         # Настраиваем мок ответа
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
+        mock_connect.return_value = {
             "items": [
                 {
                     "id": "123",
                     "name": "Test Vacancy",
                     "alternate_url": "https://hh.ru/vacancy/123",
                     "employer": {"name": "Test Company"},
-                    "published_at": "2024-01-01T00:00:00+03:00"
+                    "published_at": "2024-01-01T00:00:00+03:00",
+                    "source": "hh.ru"
                 }
             ],
-            "found": 1
+            "found": 1,
+            "pages": 1
         }
-        mock_get.return_value = mock_response
 
         api = HeadHunterAPI()
-        vacancies = api.search_vacancies(query="python")
+        vacancies = api.get_vacancies(search_query="python")
 
         assert len(vacancies) == 1
-        assert vacancies[0].title == "Test Vacancy"
-        assert vacancies[0].source == "hh.ru"
+        assert vacancies[0]["name"] == "Test Vacancy"
+        assert vacancies[0]["source"] == "hh.ru"
 
-    @patch('requests.get')
-    def test_superjob_api_integration(self, mock_get):
+    @patch('src.api_modules.sj_api.SuperJobAPI._CachedAPI__connect_to_api')
+    def test_superjob_api_integration(self, mock_connect):
         """Тест интеграции с SuperJob API"""
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
+        mock_connect.return_value = {
             "objects": [
                 {
                     "id": 456,
                     "profession": "Test Job",
                     "link": "https://superjob.ru/vakansii/test-456.html",
                     "firm_name": "SJ Company",
-                    "date_published": 1704067200
+                    "date_published": 1704067200,
+                    "source": "superjob.ru"
                 }
             ],
             "total": 1
         }
-        mock_get.return_value = mock_response
 
         api = SuperJobAPI()
-        vacancies = api.search_vacancies(query="java")
+        vacancies = api.get_vacancies(search_query="java")
 
         assert len(vacancies) == 1
-        assert vacancies[0].title == "Test Job"
-        assert vacancies[0].source == "superjob.ru"
+        assert vacancies[0]["profession"] == "Test Job"
+        assert vacancies[0]["source"] == "superjob.ru"
 
 
 class TestFullWorkflowIntegration:
@@ -142,25 +139,24 @@ class TestFullWorkflowIntegration:
         )
 
     @patch('psycopg2.connect')
-    @patch('requests.get')
-    def test_search_and_save_workflow(self, mock_get, mock_connect, sample_vacancy):
+    @patch('src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api')
+    def test_search_and_save_workflow(self, mock_connect_api, mock_connect_db, sample_vacancy):
         """Тест полного процесса поиска и сохранения"""
         # Настраиваем мок для API
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
+        mock_connect_api.return_value = {
             "items": [
                 {
                     "id": "789",
                     "name": "Integration Test Job",
                     "alternate_url": "https://hh.ru/vacancy/789",
                     "employer": {"name": "Integration Company"},
-                    "published_at": "2024-01-01T00:00:00+03:00"
+                    "published_at": "2024-01-01T00:00:00+03:00",
+                    "source": "hh.ru"
                 }
             ],
-            "found": 1
+            "found": 1,
+            "pages": 1
         }
-        mock_get.return_value = mock_response
 
         # Настраиваем мок для базы данных
         mock_conn = Mock()
@@ -169,11 +165,15 @@ class TestFullWorkflowIntegration:
         mock_cursor.fetchall.return_value = []
         mock_cursor.fetchone.return_value = (0,)
         mock_conn.cursor.return_value = mock_cursor
-        mock_connect.return_value = mock_conn
+        mock_connect_db.return_value = mock_conn
 
         # Выполняем поиск
         api = HeadHunterAPI()
-        vacancies = api.search_vacancies(query="python")
+        vacancies_data = api.get_vacancies(search_query="python")
+
+        # Конвертируем в объекты Vacancy
+        from src.vacancies.models import Vacancy
+        vacancies = [Vacancy.from_dict(item) for item in vacancies_data]
 
         # Сохраняем результаты
         storage = PostgresSaver()
@@ -230,13 +230,13 @@ class TestCacheIntegration:
 class TestErrorHandlingIntegration:
     """Интеграционные тесты обработки ошибок"""
 
-    @patch('requests.get')
-    def test_api_error_handling(self, mock_get):
+    @patch('src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api')
+    def test_api_error_handling(self, mock_connect):
         """Тест обработки ошибок API"""
-        mock_get.side_effect = Exception("Network error")
+        mock_connect.side_effect = Exception("Network error")
 
         api = HeadHunterAPI()
-        vacancies = api.search_vacancies(query="python")
+        vacancies = api.get_vacancies(search_query="python")
 
         # При ошибке должен возвращаться пустой список
         assert vacancies == []

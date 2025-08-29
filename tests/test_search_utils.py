@@ -217,3 +217,110 @@ class TestSearchUtils:
         
         filtered = filter_vacancies_by_keyword(vacancies, "python")
         assert len(filtered) == 0
+"""
+Тесты для утилит поиска
+"""
+
+import pytest
+from unittest.mock import Mock
+from src.utils.search_utils import SearchUtils
+from src.vacancies.models import Vacancy
+
+
+class TestSearchUtils:
+    """Тесты для SearchUtils"""
+
+    @pytest.fixture
+    def sample_vacancies(self):
+        """Фикстура с тестовыми вакансиями"""
+        return [
+            Vacancy(
+                title="Python Developer",
+                url="https://test.com/vacancy/1",
+                salary={'from': 100000, 'to': 150000, 'currency': 'RUR'},
+                description="Python development",
+                requirements="Python, Django",
+                responsibilities="Backend development",
+                experience="3-5 лет",
+                employment="Полная занятость",
+                schedule="Полный день",
+                employer={'name': 'Python Corp'},
+                vacancy_id="1",
+                published_at="2024-01-15T10:00:00",
+                source="hh.ru"
+            ),
+            Vacancy(
+                title="Java Developer",
+                url="https://test.com/vacancy/2",
+                salary={'from': 120000, 'to': 180000, 'currency': 'RUR'},
+                description="Java development",
+                requirements="Java, Spring",
+                responsibilities="Backend development",
+                experience="5+ лет",
+                employment="Полная занятость",
+                schedule="Полный день",
+                employer={'name': 'Java Corp'},
+                vacancy_id="2",
+                published_at="2024-01-15T11:00:00",
+                source="hh.ru"
+            )
+        ]
+
+    def test_search_by_keyword(self, sample_vacancies):
+        """Тест поиска по ключевому слову"""
+        utils = SearchUtils()
+        
+        # Поиск по названию
+        result = utils.search_by_keyword(sample_vacancies, "Python")
+        assert len(result) == 1
+        assert result[0].title == "Python Developer"
+        
+        # Поиск по описанию
+        result = utils.search_by_keyword(sample_vacancies, "development")
+        assert len(result) == 2
+
+    def test_search_case_insensitive(self, sample_vacancies):
+        """Тест поиска без учета регистра"""
+        utils = SearchUtils()
+        
+        result = utils.search_by_keyword(sample_vacancies, "python")
+        assert len(result) == 1
+        assert result[0].title == "Python Developer"
+
+    def test_search_multiple_keywords(self, sample_vacancies):
+        """Тест поиска по нескольким ключевым словам"""
+        utils = SearchUtils()
+        
+        keywords = ["Python", "Java"]
+        result = utils.search_by_multiple_keywords(sample_vacancies, keywords)
+        assert len(result) == 2
+
+    def test_search_no_results(self, sample_vacancies):
+        """Тест поиска без результатов"""
+        utils = SearchUtils()
+        
+        result = utils.search_by_keyword(sample_vacancies, "C++")
+        assert len(result) == 0
+
+    def test_filter_by_experience(self, sample_vacancies):
+        """Тест фильтрации по опыту"""
+        utils = SearchUtils()
+        
+        result = utils.filter_by_experience(sample_vacancies, "3-5")
+        assert len(result) == 1
+        assert result[0].experience == "3-5 лет"
+
+    def test_filter_by_employment(self, sample_vacancies):
+        """Тест фильтрации по типу занятости"""
+        utils = SearchUtils()
+        
+        result = utils.filter_by_employment(sample_vacancies, "Полная")
+        assert len(result) == 2
+
+    def test_filter_by_company(self, sample_vacancies):
+        """Тест фильтрации по компании"""
+        utils = SearchUtils()
+        
+        result = utils.filter_by_company(sample_vacancies, "Python Corp")
+        assert len(result) == 1
+        assert result[0].employer['name'] == "Python Corp"

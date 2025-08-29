@@ -1,4 +1,3 @@
-
 """
 Тесты для модулей API
 
@@ -23,15 +22,13 @@ class TestHeadHunterAPI:
         api = HeadHunterAPI()
         assert api is not None
         assert hasattr(api, 'get_vacancies')
-        assert hasattr(api, 'base_url')
+        assert hasattr(api, 'BASE_URL')
 
-    @patch('requests.get')
-    def test_get_vacancies_success(self, mock_get):
+    @patch('src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api')
+    def test_get_vacancies_success(self, mock_connect):
         """Тест успешного получения вакансий"""
         # Настраиваем мок ответа
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
+        mock_connect.return_value = {
             "items": [
                 {
                     "id": "12345",
@@ -40,40 +37,38 @@ class TestHeadHunterAPI:
                     "salary": {"from": 100000, "to": 150000, "currency": "RUR"},
                     "snippet": {"requirement": "Python", "responsibility": "Development"},
                     "employer": {"name": "Test Company"},
-                    "published_at": "2024-01-01T00:00:00+03:00"
+                    "published_at": "2024-01-01T00:00:00+03:00",
+                    "source": "hh.ru"
                 }
             ],
-            "found": 1
+            "found": 1,
+            "pages": 1
         }
-        mock_get.return_value = mock_response
 
         api = HeadHunterAPI()
-        vacancies = api.get_vacancies(query="Python", per_page=1)
+        vacancies = api.get_vacancies(search_query="Python", per_page=1)
 
         assert len(vacancies) == 1
-        assert vacancies[0].title == "Python Developer"
-        assert vacancies[0].source == "hh.ru"
+        assert vacancies[0]["name"] == "Python Developer"
+        assert vacancies[0]["source"] == "hh.ru"
 
-    @patch('requests.get')
-    def test_get_vacancies_empty_response(self, mock_get):
+    @patch('src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api')
+    def test_get_vacancies_empty_response(self, mock_connect):
         """Тест получения пустого результата"""
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {"items": [], "found": 0}
-        mock_get.return_value = mock_response
+        mock_connect.return_value = {"items": [], "found": 0}
 
         api = HeadHunterAPI()
-        vacancies = api.get_vacancies(query="NonExistentJob")
+        vacancies = api.get_vacancies(search_query="NonExistentJob")
 
         assert len(vacancies) == 0
 
-    @patch('requests.get')
-    def test_get_vacancies_network_error(self, mock_get):
+    @patch('src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api')
+    def test_get_vacancies_network_error(self, mock_connect):
         """Тест обработки сетевой ошибки"""
-        mock_get.side_effect = Exception("Network error")
+        mock_connect.side_effect = Exception("Network error")
 
         api = HeadHunterAPI()
-        vacancies = api.get_vacancies(query="Python")
+        vacancies = api.get_vacancies(search_query="Python")
 
         # При ошибке должен возвращаться пустой список
         assert vacancies == []
@@ -87,7 +82,7 @@ class TestSuperJobAPI:
         api = SuperJobAPI()
         assert api is not None
         assert hasattr(api, 'get_vacancies')
-        assert hasattr(api, 'base_url')
+        assert hasattr(api, 'BASE_URL')
 
     @patch('requests.get')
     def test_get_vacancies_success(self, mock_get):
