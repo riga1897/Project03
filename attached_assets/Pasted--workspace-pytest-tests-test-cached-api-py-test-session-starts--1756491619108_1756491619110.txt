@@ -1,0 +1,275 @@
+~/workspace$ pytest tests/test_cached_api.py
+============================ test session starts =============================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace/tests
+configfile: pytest.ini
+plugins: mock-3.14.1, cov-6.2.1
+collected 10 items                                                           
+
+tests/test_cached_api.py FFFFFFFFF.                                    [100%]
+
+================================== FAILURES ==================================
+_____________________ TestCachedAPI.test_initialization ______________________
+
+self = <tests.test_cached_api.TestCachedAPI object at 0x7f9c3a34b0d0>
+
+    def test_initialization(self):
+        """Тест инициализации"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            api = ConcreteCachedAPI(temp_dir)
+>           assert api.cache_dir == temp_dir
+E           AssertionError: assert PosixPath('/tmp/tmphe5vowaw') == '/tmp/tmphe5vowaw'
+E            +  where PosixPath('/tmp/tmphe5vowaw') = <tests.test_cached_api.ConcreteCachedAPI object at 0x7f9c3892a110>.cache_dir
+
+tests/test_cached_api.py:44: AssertionError
+________________ TestCachedAPI.test_connect_to_api_with_cache ________________
+
+self = <tests.test_cached_api.TestCachedAPI object at 0x7f9c3892ab10>
+mock_connector_class = <MagicMock name='APIConnector' id='140308932395792'>
+
+    @patch('src.api_modules.get_api.APIConnector')
+    def test_connect_to_api_with_cache(self, mock_connector_class):
+        """Тест подключения к API с кэшем"""
+        # Настройка мока
+        mock_connector = MagicMock()
+        mock_connector_class.return_value = mock_connector
+    
+        test_data = {"items": [{"id": "1", "title": "Test"}]}
+        mock_connector.get_json.return_value = test_data
+    
+        with tempfile.TemporaryDirectory() as temp_dir:
+            api = ConcreteCachedAPI(temp_dir)
+    
+            # Мокаем методы кэша
+>           with patch.object(api, '_get_cache_path', return_value='test_cache.json'), \
+                 patch('os.path.exists', return_value=False), \
+                 patch('builtins.open', mock_open()):
+
+tests/test_cached_api.py:60: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f9c38d33390>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <tests.test_cached_api.ConcreteCachedAPI object at 0x7f9c381b51d0> does not have the attribute '_get_cache_path'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+______________ TestCachedAPI.test_connect_to_api_without_cache _______________
+
+self = <tests.test_cached_api.TestCachedAPI object at 0x7f9c3892b150>
+mock_connector_class = <MagicMock name='APIConnector' id='140308940612560'>
+
+    @patch('src.api_modules.get_api.APIConnector')
+    def test_connect_to_api_without_cache(self, mock_connector_class):
+        """Тест подключения к API без кэша"""
+        # Настройка мока
+        mock_connector = MagicMock()
+        mock_connector_class.return_value = mock_connector
+    
+        test_data = {"items": [{"id": "2", "title": "Test2"}]}
+        mock_connector.get_json.return_value = test_data
+    
+        with tempfile.TemporaryDirectory() as temp_dir:
+            api = ConcreteCachedAPI(temp_dir)
+    
+            # Мокаем методы для случая без кэша
+>           with patch.object(api, '_get_cache_path', return_value='test_cache.json'), \
+                 patch('os.path.exists', return_value=False), \
+                 patch('builtins.open', mock_open()):
+
+tests/test_cached_api.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f9c381efc50>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <tests.test_cached_api.ConcreteCachedAPI object at 0x7f9c393e0950> does not have the attribute '_get_cache_path'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_______________________ TestCachedAPI.test_clear_cache _______________________
+
+self = <MagicMock name='remove' id='140308928904272'>
+
+    def assert_called(self):
+        """assert that the mock was called at least once
+        """
+        if self.call_count == 0:
+            msg = ("Expected '%s' to have been called." %
+                   (self._mock_name or 'mock'))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'remove' to have been called.
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:908: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_cached_api.TestCachedAPI object at 0x7f9c3892bfd0>
+
+    def test_clear_cache(self):
+        """Тест очистки кэша"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            api = ConcreteCachedAPI(temp_dir)
+    
+            # Мокаем существование файлов кэша
+            with patch('os.listdir', return_value=['test_cache.json', 'other_file.txt']), \
+                 patch('os.path.isfile', return_value=True), \
+                 patch('os.remove') as mock_remove:
+    
+                api.clear_cache("test")
+    
+                # Проверяем, что файл кэша был удален
+>               mock_remove.assert_called()
+E               AssertionError: Expected 'remove' to have been called.
+
+tests/test_cached_api.py:104: AssertionError
+_____________________ TestCachedAPI.test_get_cache_path ______________________
+
+self = <tests.test_cached_api.TestCachedAPI object at 0x7f9c3892b990>
+
+    def test_get_cache_path(self):
+        """Тест генерации пути к кэшу"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            api = ConcreteCachedAPI(temp_dir)
+    
+            url = "http://api.test.com/vacancies"
+            params = {"text": "python", "page": "0"}
+            prefix = "test"
+    
+>           cache_path = api._get_cache_path(url, params, prefix)
+                         ^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'ConcreteCachedAPI' object has no attribute '_get_cache_path'
+
+tests/test_cached_api.py:115: AttributeError
+_____________________ TestCachedAPI.test_is_cache_valid ______________________
+
+self = <tests.test_cached_api.TestCachedAPI object at 0x7f9c389bb350>
+
+    def test_is_cache_valid(self):
+        """Тест проверки валидности кэша"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            api = ConcreteCachedAPI(temp_dir)
+    
+            # Мокаем файл с недавней датой модификации
+            import time
+            recent_time = time.time() - 1800  # 30 минут назад
+    
+            with patch('os.path.getmtime', return_value=recent_time):
+>               assert api._is_cache_valid('test_file.json') is True
+                       ^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'ConcreteCachedAPI' object has no attribute '_is_cache_valid'
+
+tests/test_cached_api.py:132: AttributeError
+______________________ TestCachedAPI.test_save_to_cache ______________________
+
+self = <tests.test_cached_api.TestCachedAPI object at 0x7f9c389bb4d0>
+
+    def test_save_to_cache(self):
+        """Тест сохранения в кэш"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            api = ConcreteCachedAPI(temp_dir)
+    
+            test_data = {"test": "data"}
+            cache_path = "test_cache.json"
+    
+            with patch('os.makedirs'), \
+                 patch('builtins.open', mock_open()) as mock_file:
+    
+>               api._save_to_cache(test_data, cache_path)
+                ^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'ConcreteCachedAPI' object has no attribute '_save_to_cache'
+
+tests/test_cached_api.py:151: AttributeError
+_____________________ TestCachedAPI.test_load_from_cache _____________________
+
+self = <tests.test_cached_api.TestCachedAPI object at 0x7f9c389bb410>
+
+    def test_load_from_cache(self):
+        """Тест загрузки из кэша"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            api = ConcreteCachedAPI(temp_dir)
+    
+            test_data = '{"test": "cached_data"}'
+    
+            with patch('builtins.open', mock_open(read_data=test_data)):
+>               result = api._load_from_cache('test_cache.json')
+                         ^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'ConcreteCachedAPI' object has no attribute '_load_from_cache'
+
+tests/test_cached_api.py:164: AttributeError
+______________ TestCachedAPI.test_load_from_cache_invalid_json _______________
+
+self = <tests.test_cached_api.TestCachedAPI object at 0x7f9c389b9890>
+
+    def test_load_from_cache_invalid_json(self):
+        """Тест загрузки невалидного JSON из кэша"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            api = ConcreteCachedAPI(temp_dir)
+    
+            invalid_json = '{"test": invalid_json}'
+    
+            with patch('builtins.open', mock_open(read_data=invalid_json)):
+>               result = api._load_from_cache('test_cache.json')
+                         ^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'ConcreteCachedAPI' object has no attribute '_load_from_cache'
+
+tests/test_cached_api.py:176: AttributeError
+========================== short test summary info ===========================
+FAILED tests/test_cached_api.py::TestCachedAPI::test_initialization - AssertionError: assert PosixPath('/tmp/tmphe5vowaw') == '/tmp/tmphe5vowaw'
+FAILED tests/test_cached_api.py::TestCachedAPI::test_connect_to_api_with_cache - AttributeError: <tests.test_cached_api.ConcreteCachedAPI object at 0x7f9c...
+FAILED tests/test_cached_api.py::TestCachedAPI::test_connect_to_api_without_cache - AttributeError: <tests.test_cached_api.ConcreteCachedAPI object at 0x7f9c...
+FAILED tests/test_cached_api.py::TestCachedAPI::test_clear_cache - AssertionError: Expected 'remove' to have been called.
+FAILED tests/test_cached_api.py::TestCachedAPI::test_get_cache_path - AttributeError: 'ConcreteCachedAPI' object has no attribute '_get_cache_p...
+FAILED tests/test_cached_api.py::TestCachedAPI::test_is_cache_valid - AttributeError: 'ConcreteCachedAPI' object has no attribute '_is_cache_va...
+FAILED tests/test_cached_api.py::TestCachedAPI::test_save_to_cache - AttributeError: 'ConcreteCachedAPI' object has no attribute '_save_to_cache'
+FAILED tests/test_cached_api.py::TestCachedAPI::test_load_from_cache - AttributeError: 'ConcreteCachedAPI' object has no attribute '_load_from_c...
+FAILED tests/test_cached_api.py::TestCachedAPI::test_load_from_cache_invalid_json - AttributeError: 'ConcreteCachedAPI' object has no attribute '_load_from_c...
+======================== 9 failed, 1 passed in 0.42s =========================
+~/workspace$ 
