@@ -26,57 +26,6 @@ class UnifiedAPI:
         }
 
 
-    @staticmethod
-    def _deduplicate_cross_platform(all_vacancies: List[Dict]) -> List[Dict]:
-        """
-        Межплатформенная дедупликация вакансий из разных источников
-
-        Args:
-            all_vacancies: Список всех вакансий из разных источников
-
-        Returns:
-            List[Dict]: Список вакансий без дублей между платформами
-        """
-        if not all_vacancies:
-            return []
-
-        seen = set()
-        unique_vacancies = []
-
-        print("Выполняется поиск дубликатов между платформами...")
-        with tqdm(total=len(all_vacancies), desc="Поиск дубликатов", unit="вакансия") as pbar:
-            for vacancy in all_vacancies:
-                # Универсальная логика для дедупликации между источниками
-                title = vacancy.get("name", vacancy.get("profession", "")).lower().strip()
-                company = vacancy.get("employer", {}).get("name", vacancy.get("firm_name", "")).lower().strip()
-
-                # Нормализуем зарплату для межплатформенного сравнения
-                salary_key = ""
-                if "salary" in vacancy and vacancy["salary"]:
-                    salary = vacancy["salary"]
-                    salary_from = salary.get("from", 0) or 0
-                    salary_to = salary.get("to", 0) or 0
-                    salary_key = f"{salary_from}-{salary_to}"
-                elif "payment_from" in vacancy:
-                    salary_key = f"{vacancy.get('payment_from', 0)}-{vacancy.get('payment_to', 0)}"
-
-                dedup_key = (title, company, salary_key)
-
-                if dedup_key not in seen:
-                    seen.add(dedup_key)
-                    unique_vacancies.append(vacancy)
-                else:
-                    logger.debug(f"Межплатформенный дубль отфильтрован: {title} в {company}")
-
-                pbar.update(1)
-
-        duplicates_found = len(all_vacancies) - len(unique_vacancies)
-        if duplicates_found > 0:
-            print(f"Найдено и удалено {duplicates_found} дубликатов между платформами")
-
-        logger.info(f"Межплатформенная дедупликация: {len(all_vacancies)} -> {len(unique_vacancies)} вакансий")
-        return unique_vacancies
-
     def get_vacancies_from_sources(
         self, search_query: str, sources: List[str] = None, **kwargs: dict[str, Any]
     ) -> List[Dict]:

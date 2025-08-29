@@ -230,7 +230,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
 
             VacancyStats.display_company_stats(all_vacancies, "HH.ru - Целевые компании")
 
-        return self._deduplicate_vacancies(all_vacancies)
+        return all_vacancies
 
     def get_vacancies_by_company(self, company_id: str, search_query: str = "", **kwargs) -> List[Dict]:
         """
