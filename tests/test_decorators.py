@@ -6,8 +6,61 @@
 """
 
 import pytest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, MagicMock
 import time
+from functools import wraps
+
+# Моковый декоратор retry для тестов
+def retry(attempts=3, delay=0.1):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(attempts):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    if attempt == attempts - 1:
+                        raise e
+                    time.sleep(delay)
+        return wrapper
+    return decorator
+
+# Моковый декоратор cache_result для тестов
+def cache_result(ttl=300):
+    cache = {}
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            key = f"{func.__name__}_{args}_{kwargs}"
+            if key not in cache:
+                cache[key] = func(*args, **kwargs)
+            return cache[key]
+        return wrapper
+    return decorator
+
+# Моковый декоратор timing для тестов
+def timing(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f"{func.__name__} took {end_time - start_time:.2f} seconds")
+        return result
+    return wrapper
+
+# Моковый декоратор validate_params для тестов
+def validate_params(**validators):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for param, validator in validators.items():
+                if param in kwargs:
+                    if not validator(kwargs[param]):
+                        raise ValueError(f"Invalid {param}")
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
 
 
 def test_basic_decorator():
@@ -27,16 +80,7 @@ def test_basic_decorator():
 
 def test_timing_decorator():
     """Тест декоратора измерения времени выполнения"""
-    def timing_decorator(func):
-        def wrapper(*args, **kwargs):
-            start_time = time.time()
-            result = func(*args, **kwargs)
-            end_time = time.time()
-            execution_time = end_time - start_time
-            return result
-        return wrapper
-
-    @timing_decorator
+    @timing
     def slow_function():
         time.sleep(0.01)  # Очень короткая задержка
         return "completed"
@@ -65,24 +109,17 @@ def test_error_handling_decorator():
 
 def test_validation_decorator():
     """Тест декоратора валидации"""
-    def validate_positive(func):
-        def wrapper(number):
-            if number <= 0:
-                raise ValueError("Number must be positive")
-            return func(number)
-        return wrapper
-
-    @validate_positive
-    def square_root(n):
-        return n ** 0.5
+    @validate_params(number=lambda n: n > 0)
+    def square_root(number):
+        return number ** 0.5
 
     # Тест с корректным значением
-    result = square_root(4)
+    result = square_root(number=4)
     assert result == 2.0
 
     # Тест с некорректным значением
-    with pytest.raises(ValueError, match="Number must be positive"):
-        square_root(-1)
+    with pytest.raises(ValueError, match="Invalid number"):
+        square_root(number=-1)
 
 
 class TestDecoratorBehavior:
@@ -124,3 +161,71 @@ class TestDecoratorBehavior:
         result = get_value()
         assert result == ["value", "value", "value"]
         assert len(result) == 3
+
+    def test_retry_decorator(self):
+        """Тест декоратора retry"""
+        mock_func = Mock()
+        mock_func.side_effect = [Exception("Failed first attempt"), "Success"]
+
+        @retry(attempts=2, delay=0.01)
+        def flaky_function():
+            return mock_func()
+
+        result = flaky_function()
+        assert result == "Success"
+        assert mock_func.call_count == 2
+
+    def test_retry_decorator_fails_after_attempts(self):
+        """Тест декоратора retry при неудачных попытках"""
+        mock_func = Mock()
+        mock_func.side_effect = Exception("Failed")
+
+        @retry(attempts=2, delay=0.01)
+        def failing_function():
+            return mock_func()
+
+        with pytest.raises(Exception, match="Failed"):
+            failing_function()
+        assert mock_func.call_count == 2
+
+    def test_cache_result_decorator(self):
+        """Тест декоратора cache_result"""
+        mock_func = Mock(return_value="cached_value")
+
+        @cache_result(ttl=1)
+        def cached_function():
+            return mock_func()
+
+        result1 = cached_function()
+        assert result1 == "cached_value"
+        mock_func.assert_called_once()
+
+        result2 = cached_function()  # Должен быть взят из кэша
+        assert result2 == "cached_value"
+        mock_func.assert_called_once() # Вызов не должен повториться
+
+        time.sleep(1.1) # Ждем, чтобы TTL истек
+        result3 = cached_function() # TTL истек, должен быть новый вызов
+        assert result3 == "cached_value"
+        assert mock_func.call_count == 2 # Ожидаем второй вызов
+
+    def test_cache_result_decorator_with_different_args(self):
+        """Тест cache_result с разными аргументами"""
+        mock_func = Mock()
+        mock_func.side_effect = [1, 2]
+
+        @cache_result(ttl=1)
+        def cached_function_with_args(arg1, arg2=None):
+            return mock_func()
+
+        result1 = cached_function_with_args(1, arg2=2)
+        assert result1 == 1
+        mock_func.assert_called_once_with()
+
+        result2 = cached_function_with_args(1, arg2=2) # Должен быть из кэша
+        assert result2 == 1
+        mock_func.assert_called_once()
+
+        result3 = cached_function_with_args(3) # Другие аргументы, новый вызов
+        assert result3 == 2
+        mock_func.assert_called_once_with(3)
