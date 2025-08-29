@@ -927,7 +927,22 @@ class PostgresSaver(AbstractVacancyStorage):
                 vacancies.append(vacancy)
 
             except Exception as e:
-                logger.error(f"Ошибка конвертации строки в Vacancy: {e}")
+                skipped_count += 1
+                logger.error(f"Ошибка создания объекта Vacancy из БД (строка {skipped_count}): {e}")
+                logger.error(f"Данные проблемной строки: vacancy_id={row.get('vacancy_id', 'N/A')}, title={row.get('title', 'N/A')}")
+                logger.debug(f"Полные данные проблемной строки: {dict(row)}")
+
+                # Дополнительная диагностика для выявления конкретных проблем
+                try:
+                    if not row.get('vacancy_id'):
+                        logger.error("  -> Проблема: отсутствует vacancy_id")
+                    if not row.get('title'):
+                        logger.error("  -> Проблема: отсутствует title")
+                    if not row.get('url') and not row.get('alternate_url'):
+                        logger.error("  -> Проблема: отсутствует URL")
+                except Exception as diag_error:
+                    logger.error(f"  -> Ошибка диагностики: {diag_error}")
+
                 continue
 
         return vacancies
