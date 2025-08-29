@@ -520,7 +520,7 @@ class TestVacancyFormatter:
         text2 = '\n'.join(lines2)
         assert "sj_456" in text2
         assert "SJ Job" in text2
-        assert "https://superjob.ru/vakansii/456" in text2(self):
+        assert "https://superjob.ru/vakansii/456" in text2
         """Тест форматирования отсутствующего названия компании"""
         formatter = VacancyFormatter()
         result = formatter.format_company_name(None)
