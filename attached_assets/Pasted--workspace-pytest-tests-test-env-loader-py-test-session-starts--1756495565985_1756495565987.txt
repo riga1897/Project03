@@ -1,0 +1,118 @@
+~/workspace$ pytest tests/test_env_loader.py
+============================ test session starts ============================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace/tests
+configfile: pytest.ini
+plugins: mock-3.14.1, cov-6.2.1
+collected 24 items                                                          
+
+tests/test_env_loader.py ................FFFF.F..                     [100%]
+
+================================= FAILURES ==================================
+___________ TestEnvLoader.test_validate_required_env_vars_success ___________
+
+self = <tests.test_env_loader.TestEnvLoader object at 0x7f45f3b8edd0>
+
+    def test_validate_required_env_vars_success(self):
+        """Тест валидации обязательных переменных - успешный случай"""
+        required_vars = ["PATH"]  # PATH всегда должен существовать
+    
+>       missing = EnvLoader.validate_required_env_vars(required_vars)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'EnvLoader' has no attribute 'validate_required_env_vars'
+
+tests/test_env_loader.py:227: AttributeError
+___________ TestEnvLoader.test_validate_required_env_vars_missing ___________
+
+self = <tests.test_env_loader.TestEnvLoader object at 0x7f45f3b8f4d0>
+
+    def test_validate_required_env_vars_missing(self):
+        """Тест валидации обязательных переменных - недостающие переменные"""
+        required_vars = ["NON_EXISTENT_VAR1", "NON_EXISTENT_VAR2"]
+    
+>       missing = EnvLoader.validate_required_env_vars(required_vars)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'EnvLoader' has no attribute 'validate_required_env_vars'
+
+tests/test_env_loader.py:234: AttributeError
+_______________ TestEnvLoader.test_load_environment_variables _______________
+
+self = <tests.test_env_loader.TestEnvLoader object at 0x7f45f3b8fbd0>
+
+    def test_load_environment_variables(self):
+        """Тест загрузки всех переменных окружения"""
+        variables = {
+            "VAR1": "value1",
+            "VAR2": "value2",
+            "VAR3": "value3"
+        }
+    
+        # Перед загрузкой убедимся, что эти переменные не существуют в os.environ
+        for key in variables:
+            if key in os.environ:
+                del os.environ[key]
+    
+>       EnvLoader.load_environment_variables(variables)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'EnvLoader' has no attribute 'load_environment_variables'
+
+tests/test_env_loader.py:252: AttributeError
+______________ TestEnvLoader.test_reset_environment_variables _______________
+
+self = <tests.test_env_loader.TestEnvLoader object at 0x7f45f3b94250>
+
+    @patch.dict(os.environ, {}, clear=True)
+    def test_reset_environment_variables(self):
+        """Тест сброса переменных окружения"""
+        EnvLoader.set_env_var("TEST_VAR", "test_value")
+        EnvLoader.set_env_var("ANOTHER_VAR", "another_value")
+    
+        # Проверяем, что переменные установились
+        assert EnvLoader.get_env_var("TEST_VAR") == "test_value"
+        assert EnvLoader.get_env_var("ANOTHER_VAR") == "another_value"
+    
+>       EnvLoader.reset_environment_variables()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'EnvLoader' has no attribute 'reset_environment_variables'
+
+tests/test_env_loader.py:274: AttributeError
+_____________ TestEnvLoaderIntegration.test_load_multiple_times _____________
+
+self = <tests.test_env_loader.TestEnvLoaderIntegration object at 0x7f45f3b8e3d0>
+
+    def test_load_multiple_times(self):
+        """Тест многократной загрузки из одного файла"""
+        env_content = "COUNTER=1"
+        file_path = ".multiple_loads.env"
+        with open(file_path, "w") as f:
+            f.write(env_content)
+    
+        try:
+            EnvLoader.load_from_file(file_path)
+            assert EnvLoader.get_env_var("COUNTER") == "1"
+    
+            # Изменяем содержимое файла
+            env_content_updated = "COUNTER=2"
+            with open(file_path, "w") as f:
+                f.write(env_content_updated)
+    
+            # Перезагружаем - значение должно обновиться (если логика позволяет, но наша очищает кэш)
+            # Наша текущая логика load_from_file не очищает кэш, поэтому значение не обновится
+            # Если бы мы хотели, чтобы значение обновилось, нам нужно было бы сначала очистить кэш
+            # EnvLoader.clear_cache()
+            EnvLoader.load_from_file(file_path) # Загрузка не меняет кэш, если переменная уже есть
+>           assert EnvLoader.get_env_var("COUNTER") == "1" # Ожидаем старое значение из-за кэша
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: assert '2' == '1'
+E             
+E             - 1
+E             + 2
+
+tests/test_env_loader.py:336: AssertionError
+========================== short test summary info ==========================
+FAILED tests/test_env_loader.py::TestEnvLoader::test_validate_required_env_vars_success - AttributeError: type object 'EnvLoader' has no attribute 'validate_requi...
+FAILED tests/test_env_loader.py::TestEnvLoader::test_validate_required_env_vars_missing - AttributeError: type object 'EnvLoader' has no attribute 'validate_requi...
+FAILED tests/test_env_loader.py::TestEnvLoader::test_load_environment_variables - AttributeError: type object 'EnvLoader' has no attribute 'load_environme...
+FAILED tests/test_env_loader.py::TestEnvLoader::test_reset_environment_variables - AttributeError: type object 'EnvLoader' has no attribute 'reset_environm...
+FAILED tests/test_env_loader.py::TestEnvLoaderIntegration::test_load_multiple_times - AssertionError: assert '2' == '1'
+======================= 5 failed, 19 passed in 0.50s ========================
