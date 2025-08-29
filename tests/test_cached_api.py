@@ -14,6 +14,8 @@ class ConcreteCachedAPI(CachedAPI):
     
     def __init__(self, cache_dir):
         super().__init__(cache_dir)
+        from src.api_modules.get_api import APIConnector
+        self.connector = APIConnector()
     
     def get_vacancies(self, search_query=None, **kwargs):
         """Реализация абстрактного метода"""
@@ -22,6 +24,14 @@ class ConcreteCachedAPI(CachedAPI):
     def get_vacancies_page(self, search_query=None, page=0, **kwargs):
         """Реализация абстрактного метода"""
         return [{"id": f"page_{page}_1", "title": f"Test Vacancy Page {page}"}]
+    
+    def _get_empty_response(self):
+        """Реализация абстрактного метода"""
+        return {"items": []}
+    
+    def _validate_vacancy(self, vacancy):
+        """Реализация абстрактного метода"""
+        return isinstance(vacancy, dict) and "id" in vacancy
 
 
 class TestCachedAPI:
