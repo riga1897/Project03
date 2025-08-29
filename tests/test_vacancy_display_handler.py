@@ -120,7 +120,7 @@ class TestVacancyDisplayHandler:
         mock_paginate.assert_called_once()
 
     @patch('src.ui_interfaces.vacancy_display_handler.quick_paginate')
-    @patch('src.ui_interfaces.vacancy_display_handler.get_user_input')
+    @patch('src.utils.ui_helpers.get_user_input')
     @patch('src.ui_interfaces.vacancy_display_handler.filter_vacancies_by_keyword')
     @patch('src.ui_interfaces.vacancy_display_handler.VacancyFormatter')
     @patch('src.ui_interfaces.vacancy_display_handler.ui_pagination_config')
@@ -138,7 +138,7 @@ class TestVacancyDisplayHandler:
         mock_filter.assert_called_once_with(sample_vacancies, 'python')
         mock_paginate.assert_called_once()
 
-    @patch('src.ui_interfaces.vacancy_display_handler.get_user_input')
+    @patch('src.utils.ui_helpers.get_user_input')
     @patch('src.ui_interfaces.vacancy_display_handler.filter_vacancies_by_keyword')
     @patch('builtins.print')
     def test_search_saved_vacancies_by_keyword_not_found(self, mock_print, mock_filter, mock_input, display_handler, mock_storage, sample_vacancies):
@@ -156,7 +156,7 @@ class TestVacancyDisplayHandler:
         output = " ".join(print_calls)
         assert "не найдено" in output.lower()
 
-    @patch('src.ui_interfaces.vacancy_display_handler.get_user_input')
+    @patch('src.utils.ui_helpers.get_user_input')
     @patch('builtins.print')
     def test_search_saved_vacancies_by_keyword_empty_query(self, mock_print, mock_input, display_handler, mock_storage):
         """Тест поиска сохраненных вакансий по ключевому слову - пустой запрос"""
@@ -168,7 +168,7 @@ class TestVacancyDisplayHandler:
         # Функция должна завершиться раньше времени из-за пустого ввода
         mock_input.assert_called_once()
 
-    @patch('src.ui_interfaces.vacancy_display_handler.get_user_input')
+    @patch('src.utils.ui_helpers.get_user_input')
     @patch('builtins.print')
     def test_search_saved_vacancies_by_keyword_no_saved_vacancies(self, mock_print, mock_input, display_handler, mock_storage):
         """Тест поиска сохраненных вакансий - нет сохраненных вакансий"""
@@ -247,7 +247,7 @@ class TestVacancyDisplayHandler:
         output = " ".join(print_calls)
         assert "нет ни одной с указанной зарплатой" in output.lower()
 
-    @patch('src.ui_interfaces.vacancy_display_handler.get_user_input')
+    @patch('src.utils.ui_helpers.get_user_input')
     @patch('builtins.print')
     def test_search_saved_vacancies_exception_handling(self, mock_print, mock_input, display_handler, mock_storage):
         """Тест обработки исключений при поиске вакансий"""
