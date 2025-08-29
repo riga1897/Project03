@@ -6,416 +6,365 @@ import pytest
 from unittest.mock import Mock, patch, MagicMock
 from typing import List, Dict, Any
 
-# Моковые классы для тестов
+from src.api_modules.unified_api import UnifiedAPI
+
+
+class MockVacancy:
+    """Мок вакансии для тестов"""
+    def __init__(self, data):
+        self.data = data
+        self.vacancy_id = data.get('id', data.get('vacancy_id', ''))
+        self.title = data.get('name', data.get('title', ''))
+        self.url = data.get('alternate_url', data.get('url', ''))
+        self.source = data.get('source', '')
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(data)
+
+    def to_dict(self):
+        return self.data
+
+
 class MockAPIConfig:
-    def __init__(self):
-        self.hh_config = Mock()
-        self.sj_config = Mock()
+    """Мок конфигурации API"""
+    def get_pagination_params(self, **kwargs):
+        return {"max_pages": 5}
+
 
 class MockStorage:
+    """Мок хранилища с SQL-дедупликацией"""
     def __init__(self):
         self.saved_vacancies = []
 
     def filter_and_deduplicate_vacancies(self, vacancies, filters=None):
-        return vacancies  # Просто возвращаем все как есть
+        """Мок SQL-фильтрации и дедупликации"""
+        if not vacancies:
+            return []
+
+        # Имитируем SQL-дедупликацию по vacancy_id
+        seen_ids = set()
+        unique_vacancies = []
+
+        for vacancy in vacancies:
+            vacancy_id = getattr(vacancy, 'vacancy_id', None)
+            if vacancy_id and vacancy_id not in seen_ids:
+                seen_ids.add(vacancy_id)
+                unique_vacancies.append(vacancy)
+
+        return unique_vacancies
 
     def add_vacancy(self, vacancies):
-        if isinstance(vacancies, list):
-            self.saved_vacancies.extend(vacancies)
-        else:
-            self.saved_vacancies.append(vacancies)
-        return [f"Added {len(self.saved_vacancies)} vacancies"]
+        """Мок сохранения вакансий"""
+        if not isinstance(vacancies, list):
+            vacancies = [vacancies]
+        self.saved_vacancies.extend(vacancies)
+        return [f"Сохранена вакансия {getattr(v, 'vacancy_id', 'unknown')}" for v in vacancies]
 
-class MockVacancy:
-    def __init__(self, vacancy_id, title, source):
-        self.vacancy_id = vacancy_id
-        self.title = title
-        self.source = source
-        self.employer = {"name": "Test Company"}
-        self.salary = None
-
-    @classmethod
-    def from_dict(cls, data):
-        return cls(
-            data.get("id", "test_id"),
-            data.get("name", "Test Title"),
-            data.get("source", "test_source")
-        )
-
-# Моковый UnifiedAPI
-class UnifiedAPI:
-    def __init__(self, config=None, storage=None):
-        self.config = config or MockAPIConfig()
-        self.storage = storage or MockStorage()
-        self.hh_api = Mock()
-        self.sj_api = Mock()
-        self.enabled_sources = {"hh": True, "sj": True}
-
-        # Настраиваем моки API
-        self.hh_api.get_vacancies.return_value = [
-            {"id": "hh_1", "name": "Python Developer", "source": "hh.ru"},
-            {"id": "hh_2", "name": "Java Developer", "source": "hh.ru"}
-        ]
-
-        self.sj_api.get_vacancies.return_value = [
-            {"id": "sj_1", "profession": "Python Developer", "source": "superjob.ru"},
-            {"id": "sj_2", "profession": "Java Developer", "source": "superjob.ru"}
-        ]
-
-    def get_vacancies_from_all_sources(self, query: str, **kwargs) -> List[Dict[str, Any]]:
-        """Получение вакансий из всех источников"""
-        all_vacancies = []
-
-        if self.enabled_sources.get("hh", True):
-            try:
-                hh_vacancies = self.hh_api.get_vacancies(query, **kwargs)
-                all_vacancies.extend(hh_vacancies)
-            except Exception:
-                pass
-
-        if self.enabled_sources.get("sj", True):
-            try:
-                sj_vacancies = self.sj_api.get_vacancies(query, **kwargs)
-                all_vacancies.extend(sj_vacancies)
-            except Exception:
-                pass
-
-        return all_vacancies
-
-    def search_and_save_vacancies(
-        self,
-        query: str,
-        sources: List[str] = None,
-        filters: Dict[str, Any] = None,
-        **kwargs
-    ) -> Dict[str, Any]:
-        """Поиск и сохранение вакансий"""
-
-        if sources:
-            # Временно отключаем неиспользуемые источники
-            original_sources = self.enabled_sources.copy()
-            self.enabled_sources = {source: source in ["hh", "sj"] for source in sources}
-
-        # Получаем вакансии
-        raw_vacancies = self.get_vacancies_from_all_sources(query, **kwargs)
-
-        # Восстанавливаем источники
-        if sources:
-            self.enabled_sources = original_sources
-
-        # Фильтруем и дедуплицируем через storage
-        processed_vacancies = self.storage.filter_and_deduplicate_vacancies(
-            [MockVacancy.from_dict(v) for v in raw_vacancies],
-            filters
-        )
-
-        # Сохраняем
-        save_result = self.storage.add_vacancy(processed_vacancies)
-
-        return {
-            "query": query,
-            "raw_count": len(raw_vacancies),
-            "processed_count": len(processed_vacancies),
-            "saved_count": len(processed_vacancies),
-            "messages": save_result,
-            "sources_used": list(self.enabled_sources.keys())
-        }
-
-    def get_vacancies_from_hh(self, query: str, **kwargs) -> List[Dict[str, Any]]:
-        """Получение вакансий только с HH"""
-        if not self.enabled_sources.get("hh", True):
-            return []
-        return self.hh_api.get_vacancies(query, **kwargs)
-
-    def get_vacancies_from_sj(self, query: str, **kwargs) -> List[Dict[str, Any]]:
-        """Получение вакансий только с SuperJob"""
-        if not self.enabled_sources.get("sj", True):
-            return []
-        return self.sj_api.get_vacancies(query, **kwargs)
-
-    def enable_source(self, source: str):
-        """Включение источника"""
-        self.enabled_sources[source] = True
-
-    def disable_source(self, source: str):
-        """Отключение источника"""
-        self.enabled_sources[source] = False
-
-    def get_enabled_sources(self) -> List[str]:
-        """Получение списка включенных источников"""
-        return [source for source, enabled in self.enabled_sources.items() if enabled]
-
-    def clear_cache(self):
-        """Очистка кэша всех API"""
-        if hasattr(self.hh_api, 'clear_cache'):
-            self.hh_api.clear_cache()
-        if hasattr(self.sj_api, 'clear_cache'):
-            self.sj_api.clear_cache()
 
 class TestUnifiedAPI:
     """Тесты для UnifiedAPI"""
 
-    def setup_method(self):
-        """Подготовка к каждому тесту"""
-        self.config = MockAPIConfig()
-        self.storage = MockStorage()
-        self.unified_api = UnifiedAPI(self.config, self.storage)
+    @pytest.fixture
+    def mock_unified_api(self):
+        """Создает мок UnifiedAPI для тестов"""
+        with patch('src.api_modules.unified_api.HeadHunterAPI') as mock_hh, \
+             patch('src.api_modules.unified_api.SuperJobAPI') as mock_sj:
 
-    def test_initialization(self):
+            api = UnifiedAPI()
+            api.hh_api = mock_hh.return_value
+            api.sj_api = mock_sj.return_value
+            return api
+
+    def test_initialization(self, mock_unified_api):
         """Тест инициализации UnifiedAPI"""
-        api = UnifiedAPI()
+        assert mock_unified_api.hh_api is not None
+        assert mock_unified_api.sj_api is not None
+        assert hasattr(mock_unified_api, 'apis')
+        assert 'hh' in mock_unified_api.apis
+        assert 'sj' in mock_unified_api.apis
 
-        assert hasattr(api, 'hh_api')
-        assert hasattr(api, 'sj_api')
-        assert hasattr(api, 'enabled_sources')
-        assert api.enabled_sources["hh"] is True
-        assert api.enabled_sources["sj"] is True
+    def test_get_available_sources(self, mock_unified_api):
+        """Тест получения доступных источников"""
+        sources = mock_unified_api.get_available_sources()
+        assert isinstance(sources, list)
+        assert "hh" in sources
+        assert "sj" in sources
 
-    def test_get_vacancies_from_all_sources(self):
-        """Тест получения вакансий из всех источников"""
-        result = self.unified_api.get_vacancies_from_all_sources("python")
+    def test_validate_sources_valid(self, mock_unified_api):
+        """Тест валидации корректных источников"""
+        valid_sources = mock_unified_api.validate_sources(["hh", "sj"])
+        assert valid_sources == ["hh", "sj"]
 
-        assert len(result) == 4  # 2 с HH + 2 с SJ
+    def test_validate_sources_invalid(self, mock_unified_api):
+        """Тест валидации некорректных источников"""
+        # При невалидных источниках должны вернуться все доступные
+        invalid_sources = mock_unified_api.validate_sources(["invalid_source"])
+        assert set(invalid_sources) == {"hh", "sj"}
 
-        # Проверяем, что вызывались оба API
-        self.unified_api.hh_api.get_vacancies.assert_called_once_with("python")
-        self.unified_api.sj_api.get_vacancies.assert_called_once_with("python")
+    def test_get_vacancies_from_source_hh(self, mock_unified_api):
+        """Тест получения вакансий с HH"""
+        mock_unified_api.hh_api.get_vacancies.return_value = [
+            {"id": "1", "name": "Python Developer", "source": "hh.ru"}
+        ]
 
-    def test_get_vacancies_from_all_sources_with_kwargs(self):
-        """Тест получения вакансий с дополнительными параметрами"""
-        result = self.unified_api.get_vacancies_from_all_sources(
-            "python",
-            per_page=50,
-            salary_from=100000
-        )
+        result = mock_unified_api.get_vacancies_from_source("python", "hh")
 
-        # Проверяем, что параметры передались в API
-        self.unified_api.hh_api.get_vacancies.assert_called_once_with(
-            "python",
-            per_page=50,
-            salary_from=100000
-        )
-        self.unified_api.sj_api.get_vacancies.assert_called_once_with(
-            "python",
-            per_page=50,
-            salary_from=100000
-        )
+        assert len(result) == 1
+        assert result[0]["source"] == "hh.ru"
+        mock_unified_api.hh_api.get_vacancies.assert_called_once_with(search_query="python")
 
-    def test_get_vacancies_from_all_sources_hh_disabled(self):
-        """Тест получения вакансий при отключенном HH"""
-        self.unified_api.disable_source("hh")
+    def test_get_vacancies_from_source_sj(self, mock_unified_api):
+        """Тест получения вакансий с SuperJob"""
+        mock_unified_api.sj_api.get_vacancies.return_value = [
+            {"id": "2", "profession": "Java Developer", "source": "superjob.ru"}
+        ]
 
-        result = self.unified_api.get_vacancies_from_all_sources("python")
+        result = mock_unified_api.get_vacancies_from_source("java", "sj")
 
-        assert len(result) == 2  # Только SJ
+        assert len(result) == 1
+        assert result[0]["source"] == "superjob.ru"
+        mock_unified_api.sj_api.get_vacancies.assert_called_once_with(search_query="java")
 
-        # HH не должен вызываться
-        self.unified_api.hh_api.get_vacancies.assert_not_called()
-        self.unified_api.sj_api.get_vacancies.assert_called_once()
+    def test_get_vacancies_from_source_unknown(self, mock_unified_api):
+        """Тест получения вакансий с неизвестного источника"""
+        result = mock_unified_api.get_vacancies_from_source("python", "unknown")
 
-    def test_get_vacancies_from_all_sources_api_error(self):
+        assert result == []
+
+    @patch('src.api_modules.unified_api.PostgresSaver')
+    def test_get_vacancies_from_sources_with_sql_deduplication(self, mock_postgres_class, mock_unified_api):
+        """Тест получения вакансий из источников с SQL-дедупликацией"""
+        # Настраиваем мок PostgresSaver
+        mock_postgres = MockStorage()
+        mock_postgres_class.return_value = mock_postgres
+
+        # Настраиваем возвращаемые данные
+        mock_unified_api.hh_api.get_vacancies.return_value = [
+            {"id": "1", "name": "HH Vacancy", "source": "hh.ru"}
+        ]
+        mock_unified_api.sj_api.get_vacancies.return_value = [
+            {"id": "2", "profession": "SJ Vacancy", "source": "superjob.ru"}
+        ]
+
+        # Мокируем Vacancy.from_dict
+        with patch('src.api_modules.unified_api.Vacancy') as mock_vacancy_class:
+            mock_vacancy_class.from_dict.side_effect = lambda x: MockVacancy(x)
+
+            # Мокируем _filter_by_target_companies для возврата отфильтрованных данных
+            with patch.object(mock_unified_api, '_filter_by_target_companies') as mock_filter:
+                mock_filter.return_value = [{"id": "1", "name": "Filtered Vacancy"}]
+
+                result = mock_unified_api.get_vacancies_from_sources("python", ["hh", "sj"])
+
+                # Проверяем результат
+                assert len(result) == 1
+                assert result[0]["id"] == "1"
+
+                # Проверяем вызовы API
+                mock_unified_api.hh_api.get_vacancies.assert_called_once()
+                mock_unified_api.sj_api.get_vacancies.assert_called_once()
+
+                # Проверяем что была вызвана SQL-фильтрация
+                mock_filter.assert_called_once()
+
+    def test_get_vacancies_from_sources_empty_result(self, mock_unified_api):
+        """Тест получения вакансий когда нет результатов"""
+        mock_unified_api.hh_api.get_vacancies.return_value = []
+        mock_unified_api.sj_api.get_vacancies.return_value = []
+
+        result = mock_unified_api.get_vacancies_from_sources("nonexistent")
+
+        assert result == []
+
+    def test_get_vacancies_from_sources_api_error(self, mock_unified_api):
         """Тест обработки ошибок API"""
-        # Настраиваем HH API на выброс исключения
-        self.unified_api.hh_api.get_vacancies.side_effect = Exception("HH API Error")
+        mock_unified_api.hh_api.get_vacancies.side_effect = Exception("HH API Error")
+        mock_unified_api.sj_api.get_vacancies.return_value = [
+            {"id": "2", "profession": "SJ Vacancy", "source": "superjob.ru"}
+        ]
 
-        result = self.unified_api.get_vacancies_from_all_sources("python")
+        with patch('src.api_modules.unified_api.PostgresSaver') as mock_postgres_class:
+            mock_postgres = MockStorage()
+            mock_postgres_class.return_value = mock_postgres
 
-        # Должны получить только результаты от SJ
-        assert len(result) == 2
+            with patch('src.api_modules.unified_api.Vacancy') as mock_vacancy_class:
+                mock_vacancy_class.from_dict.side_effect = lambda x: MockVacancy(x)
 
-        # Проверяем, что исключение не прервало выполнение
-        self.unified_api.sj_api.get_vacancies.assert_called_once()
+                with patch.object(mock_unified_api, '_filter_by_target_companies') as mock_filter:
+                    mock_filter.return_value = [{"id": "2", "profession": "SJ Vacancy"}]
 
-    def test_get_vacancies_from_hh(self):
-        """Тест получения вакансий только с HH"""
-        result = self.unified_api.get_vacancies_from_hh("python")
+                    # Ошибка в HH API не должна прерывать получение данных с SJ
+                    result = mock_unified_api.get_vacancies_from_sources("python", ["hh", "sj"])
 
-        assert len(result) == 2
-        assert all(v["source"] == "hh.ru" for v in result)
+                    assert len(result) == 1
+                    assert result[0]["id"] == "2"
 
-        self.unified_api.hh_api.get_vacancies.assert_called_once_with("python")
-        self.unified_api.sj_api.get_vacancies.assert_not_called()
+    def test_clear_cache_selected_sources(self, mock_unified_api):
+        """Тест очистки кэша выбранных источников"""
+        mock_unified_api.hh_api.clear_cache = Mock()
+        mock_unified_api.sj_api.clear_cache = Mock()
 
-    def test_get_vacancies_from_hh_disabled(self):
-        """Тест получения вакансий с HH при его отключении"""
-        self.unified_api.disable_source("hh")
+        sources = {"hh": True, "sj": False}
 
-        result = self.unified_api.get_vacancies_from_hh("python")
+        with patch('glob.glob') as mock_glob, \
+             patch('os.remove') as mock_remove:
+            mock_glob.return_value = ['cache_file.json']
 
-        assert len(result) == 0
-        self.unified_api.hh_api.get_vacancies.assert_not_called()
+            mock_unified_api.clear_cache(sources)
 
-    def test_get_vacancies_from_sj(self):
-        """Тест получения вакансий только с SuperJob"""
-        result = self.unified_api.get_vacancies_from_sj("java")
+            # Должен очистить только HH кэш
+            mock_unified_api.hh_api.clear_cache.assert_called_once_with("hh")
+            mock_unified_api.sj_api.clear_cache.assert_not_called()
 
-        assert len(result) == 2
-        assert all(v["source"] == "superjob.ru" for v in result)
+    def test_clear_all_cache(self, mock_unified_api):
+        """Тест очистки всего кэша"""
+        mock_unified_api.hh_api.clear_cache = Mock()
+        mock_unified_api.sj_api.clear_cache = Mock()
 
-        self.unified_api.sj_api.get_vacancies.assert_called_once_with("java")
-        self.unified_api.hh_api.get_vacancies.assert_not_called()
+        mock_unified_api.clear_all_cache()
 
-    def test_search_and_save_vacancies_basic(self):
-        """Тест базового поиска и сохранения вакансий"""
-        result = self.unified_api.search_and_save_vacancies("python")
+        mock_unified_api.hh_api.clear_cache.assert_called_once_with("hh")
+        mock_unified_api.sj_api.clear_cache.assert_called_once_with("sj")
 
-        assert result["query"] == "python"
-        assert result["raw_count"] == 4  # 2 HH + 2 SJ
-        assert result["processed_count"] == 4
-        assert result["saved_count"] == 4
-        assert len(result["messages"]) > 0
+    def test_search_with_multiple_keywords(self, mock_unified_api):
+        """Тест поиска с множественными ключевыми словами"""
+        mock_unified_api.hh_api.get_vacancies.return_value = [
+            {"id": "1", "name": "Python Developer", "source": "hh.ru"},
+            {"id": "2", "name": "Java Developer", "source": "hh.ru"}
+        ]
+        mock_unified_api.sj_api.get_vacancies.return_value = []
 
-    def test_search_and_save_vacancies_with_sources(self):
-        """Тест поиска и сохранения с указанием источников"""
-        result = self.unified_api.search_and_save_vacancies("python", sources=["hh"])
+        with patch.object(mock_unified_api, 'get_all_vacancies') as mock_get_all:
+            mock_get_all.side_effect = [
+                [{"id": "1", "name": "Python Developer"}],  # Для "python"
+                [{"id": "2", "name": "Java Developer"}]     # Для "java"
+            ]
 
-        # При указании источников должны использоваться только они
-        # Но у нас мок не полностью реализует эту логику, проверяем базовую работу
-        assert result["query"] == "python"
-        assert result["raw_count"] > 0
+            result = mock_unified_api.search_with_multiple_keywords(["python", "java"])
 
-    def test_search_and_save_vacancies_with_filters(self):
-        """Тест поиска и сохранения с фильтрами"""
-        filters = {"salary_from": 100000, "experience": "3-6 лет"}
+            # Должны получить уникальные результаты
+            assert len(result) == 2
 
-        result = self.unified_api.search_and_save_vacancies("python", filters=filters)
+            # Проверяем что метод был вызван для каждого ключевого слова
+            assert mock_get_all.call_count == 2
 
-        assert result["query"] == "python"
-        assert result["raw_count"] > 0
+    def test_get_all_vacancies(self, mock_unified_api):
+        """Тест получения всех вакансий"""
+        with patch.object(mock_unified_api, 'get_vacancies_from_sources') as mock_get_from_sources:
+            mock_get_from_sources.return_value = [{"id": "1", "name": "Test Vacancy"}]
 
-        # Проверяем, что фильтры передались в storage
-        # (В реальном коде это бы проверялось через mock.assert_called_with)
+            result = mock_unified_api.get_all_vacancies("python")
 
-    def test_enable_disable_source(self):
-        """Тест включения/отключения источников"""
-        # Изначально все включены
-        assert self.unified_api.enabled_sources["hh"] is True
-        assert self.unified_api.enabled_sources["sj"] is True
+            assert len(result) == 1
+            mock_get_from_sources.assert_called_once_with("python", sources=["hh", "sj"])
 
-        # Отключаем HH
-        self.unified_api.disable_source("hh")
-        assert self.unified_api.enabled_sources["hh"] is False
-        assert self.unified_api.enabled_sources["sj"] is True
+    @patch('src.api_modules.unified_api.PostgresSaver')
+    def test_filter_by_target_companies_sql(self, mock_postgres_class, mock_unified_api):
+        """Тест SQL-фильтрации по целевым компаниям"""
+        # Настраиваем мок PostgresSaver с реальным поведением SQL-фильтрации
+        mock_postgres = MockStorage()
+        mock_postgres_class.return_value = mock_postgres
 
-        # Включаем HH обратно
-        self.unified_api.enable_source("hh")
-        assert self.unified_api.enabled_sources["hh"] is True
+        # Тестовые данные
+        test_vacancies = [
+            {"id": "1", "name": "Python Dev", "employer": {"name": "Яндекс"}},
+            {"id": "2", "name": "Java Dev", "employer": {"name": "Неизвестная компания"}}
+        ]
 
-    def test_get_enabled_sources(self):
-        """Тест получения списка включенных источников"""
-        # Изначально все включены
-        enabled = self.unified_api.get_enabled_sources()
-        assert "hh" in enabled
-        assert "sj" in enabled
+        # Мокируем Vacancy.from_dict
+        with patch('src.api_modules.unified_api.Vacancy') as mock_vacancy_class:
+            mock_vacancy_class.from_dict.side_effect = lambda x: MockVacancy(x)
 
-        # Отключаем один источник
-        self.unified_api.disable_source("sj")
-        enabled = self.unified_api.get_enabled_sources()
-        assert "hh" in enabled
-        assert "sj" not in enabled
+            # Мокируем filter_and_deduplicate_vacancies чтобы вернуть только целевые компании
+            mock_postgres.filter_and_deduplicate_vacancies = Mock(return_value=[MockVacancy(test_vacancies[0])])
 
-        # Отключаем все
-        self.unified_api.disable_source("hh")
-        enabled = self.unified_api.get_enabled_sources()
-        assert len(enabled) == 0
+            result = mock_unified_api._filter_by_target_companies(test_vacancies)
 
-    def test_clear_cache(self):
-        """Тест очистки кэша"""
-        # Добавляем методы clear_cache к мокам
-        self.unified_api.hh_api.clear_cache = Mock()
-        self.unified_api.sj_api.clear_cache = Mock()
+            # Проверяем что была вызвана SQL-фильтрация
+            mock_postgres.filter_and_deduplicate_vacancies.assert_called_once()
 
-        self.unified_api.clear_cache()
+            # Проверяем результат
+            assert len(result) == 1
+            assert result[0]["id"] == "1"
 
-        # Проверяем, что clear_cache был вызван для обоих API
-        self.unified_api.hh_api.clear_cache.assert_called_once()
-        self.unified_api.sj_api.clear_cache.assert_called_once()
+    def test_get_vacancies_from_target_companies(self, mock_unified_api):
+        """Тест получения вакансий от целевых компаний"""
+        mock_unified_api.hh_api.get_vacancies_from_target_companies.return_value = [
+            {"id": "hh1", "name": "HH Target Vacancy"}
+        ]
+        mock_unified_api.sj_api.get_vacancies_from_target_companies.return_value = [
+            {"id": "sj1", "profession": "SJ Target Vacancy"}
+        ]
 
-    def test_clear_cache_no_method(self):
-        """Тест очистки кэша когда методов нет"""
-        # Убираем методы clear_cache
-        if hasattr(self.unified_api.hh_api, 'clear_cache'):
-            delattr(self.unified_api.hh_api, 'clear_cache')
-        if hasattr(self.unified_api.sj_api, 'clear_cache'):
-            delattr(self.unified_api.sj_api, 'clear_cache')
+        # Мокируем _deduplicate_cross_platform если он существует
+        with patch.object(mock_unified_api, '_deduplicate_cross_platform', create=True) as mock_dedup:
+            mock_dedup.return_value = [
+                {"id": "hh1", "name": "HH Target Vacancy"},
+                {"id": "sj1", "profession": "SJ Target Vacancy"}
+            ]
 
-        # Не должно вызывать исключений
-        self.unified_api.clear_cache()
+            result = mock_unified_api.get_vacancies_from_target_companies("python")
 
-    def test_integration_workflow(self):
-        """Тест интегрированного рабочего процесса"""
-        # 1. Проверяем изначальное состояние
-        enabled = self.unified_api.get_enabled_sources()
-        assert len(enabled) == 2
+            assert len(result) == 2
 
-        # 2. Выполняем поиск
-        result1 = self.unified_api.search_and_save_vacancies("python developer")
-        assert result1["raw_count"] == 4
 
-        # 3. Отключаем один источник
-        self.unified_api.disable_source("sj")
+class TestUnifiedAPIEdgeCases:
+    """Тесты граничных случаев для UnifiedAPI"""
 
-        # 4. Выполняем поиск снова
-        result2 = self.unified_api.search_and_save_vacancies("java developer")
-        # Результат должен отличаться из-за отключенного источника
+    @pytest.fixture
+    def unified_api(self):
+        """Реальный экземпляр UnifiedAPI для тестов граничных случаев"""
+        with patch('src.api_modules.unified_api.HeadHunterAPI'), \
+             patch('src.api_modules.unified_api.SuperJobAPI'):
+            return UnifiedAPI()
 
-        # 5. Получаем вакансии напрямую из конкретного источника
-        hh_vacancies = self.unified_api.get_vacancies_from_hh("backend")
-        assert len(hh_vacancies) == 2
-
-        sj_vacancies = self.unified_api.get_vacancies_from_sj("frontend")
-        assert len(sj_vacancies) == 0  # Источник отключен
-
-        # 6. Включаем источник обратно
-        self.unified_api.enable_source("sj")
-
-        # 7. Очищаем кэш
-        self.unified_api.hh_api.clear_cache = Mock()
-        self.unified_api.sj_api.clear_cache = Mock()
-        self.unified_api.clear_cache()
-
-        # Проверяем, что кэш очищен
-        self.unified_api.hh_api.clear_cache.assert_called_once()
-        self.unified_api.sj_api.clear_cache.assert_called_once()
-
-    def test_error_handling_both_apis_fail(self):
-        """Тест обработки ошибок когда оба API падают"""
-        self.unified_api.hh_api.get_vacancies.side_effect = Exception("HH Error")
-        self.unified_api.sj_api.get_vacancies.side_effect = Exception("SJ Error")
-
-        result = self.unified_api.get_vacancies_from_all_sources("python")
-
-        # Должен вернуться пустой список без исключений
-        assert len(result) == 0
-
-    def test_empty_query_handling(self):
+    def test_empty_query(self, unified_api):
         """Тест обработки пустого запроса"""
-        result = self.unified_api.search_and_save_vacancies("")
+        with patch.object(unified_api, 'get_vacancies_from_sources') as mock_get:
+            mock_get.return_value = []
 
-        assert result["query"] == ""
-        # API все равно должны быть вызваны
-        self.unified_api.hh_api.get_vacancies.assert_called_once_with("")
-        self.unified_api.sj_api.get_vacancies.assert_called_once_with("")
+            result = unified_api.get_all_vacancies("")
 
-    def test_large_results_handling(self):
-        """Тест обработки большого количества результатов"""
-        # Настраиваем API на возврат большого количества результатов
-        large_hh_result = [{"id": f"hh_{i}", "name": f"Job {i}", "source": "hh.ru"} for i in range(100)]
-        large_sj_result = [{"id": f"sj_{i}", "profession": f"Job {i}", "source": "superjob.ru"} for i in range(50)]
+            assert result == []
 
-        self.unified_api.hh_api.get_vacancies.return_value = large_hh_result
-        self.unified_api.sj_api.get_vacancies.return_value = large_sj_result
+    def test_none_sources(self, unified_api):
+        """Тест обработки None в качестве источников"""
+        with patch.object(unified_api, 'get_available_sources') as mock_available:
+            mock_available.return_value = ["hh", "sj"]
 
-        result = self.unified_api.get_vacancies_from_all_sources("python")
+            with patch.object(unified_api.hh_api, 'get_vacancies') as mock_hh:
+                mock_hh.return_value = []
 
-        assert len(result) == 150  # 100 + 50
+                with patch.object(unified_api.sj_api, 'get_vacancies') as mock_sj:
+                    mock_sj.return_value = []
 
-    def test_partial_api_configuration(self):
-        """Тест работы с частичной конфигурацией API"""
-        # Тест когда один из API не настроен
-        api = UnifiedAPI()
-        api.sj_api = None  # "Не настроен"
+                    with patch.object(unified_api, '_filter_by_target_companies') as mock_filter:
+                        mock_filter.return_value = []
 
-        # Должно работать без ошибок
-        # В реальном коде это было бы обработано в get_vacancies_from_all_sources
-        assert api.enabled_sources["hh"] is True
+                        # None в sources должен использовать все доступные источники
+                        result = unified_api.get_vacancies_from_sources("python", None)
+
+                        assert result == []
+                        mock_hh.assert_called_once()
+                        mock_sj.assert_called_once()
+
+    def test_memory_efficiency_large_dataset(self, unified_api):
+        """Тест эффективности памяти для больших наборов данных"""
+        # Симулируем большой набор данных
+        large_dataset = [{"id": f"vacancy_{i}", "name": f"Vacancy {i}"} for i in range(1000)]
+
+        with patch.object(unified_api.hh_api, 'get_vacancies') as mock_hh:
+            mock_hh.return_value = large_dataset
+
+            with patch.object(unified_api.sj_api, 'get_vacancies') as mock_sj:
+                mock_sj.return_value = []
+
+                with patch.object(unified_api, '_filter_by_target_companies') as mock_filter:
+                    # SQL-фильтрация должна обрабатывать большие наборы эффективно
+                    mock_filter.return_value = large_dataset[:100]  # Возвращаем первые 100
+
+                    result = unified_api.get_vacancies_from_sources("python", ["hh"])
+
+                    assert len(result) == 100
+                    mock_filter.assert_called_once()

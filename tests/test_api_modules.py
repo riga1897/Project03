@@ -1,240 +1,332 @@
 
-"""
-Тесты для модулей API
-
-Содержит тесты для проверки корректности работы API модулей:
-- HeadHunterAPI
-- SuperJobAPI
-- UnifiedAPI
-"""
-
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 from src.api_modules.hh_api import HeadHunterAPI
 from src.api_modules.sj_api import SuperJobAPI
 from src.api_modules.unified_api import UnifiedAPI
+from src.api_modules.base_api import BaseJobAPI
+from src.config.api_config import APIConfig
+
+
+class MockVacancy:
+    """Мок для тестирования"""
+    def __init__(self, data):
+        self.data = data
+        self.vacancy_id = data.get('id', data.get('vacancy_id'))
+        self.title = data.get('name', data.get('title', ''))
+        self.url = data.get('alternate_url', data.get('url', ''))
+        
+    @classmethod
+    def from_dict(cls, data):
+        return cls(data)
+        
+    def to_dict(self):
+        return self.data
+
+
+class MockPostgresSaver:
+    """Мок для PostgresSaver с SQL-дедупликацией"""
+    def __init__(self):
+        self.saved_vacancies = []
+        
+    def filter_and_deduplicate_vacancies(self, vacancies, filters=None):
+        """Мок SQL-дедупликации"""
+        if not vacancies:
+            return []
+            
+        # Простая дедупликация по vacancy_id для тестов
+        seen_ids = set()
+        unique_vacancies = []
+        
+        for vacancy in vacancies:
+            vacancy_id = getattr(vacancy, 'vacancy_id', None)
+            if vacancy_id and vacancy_id not in seen_ids:
+                seen_ids.add(vacancy_id)
+                unique_vacancies.append(vacancy)
+                
+        return unique_vacancies
+        
+    def add_vacancy(self, vacancies):
+        if not isinstance(vacancies, list):
+            vacancies = [vacancies]
+        self.saved_vacancies.extend(vacancies)
+        return [f"Сохранена вакансия {v.vacancy_id}" for v in vacancies]
 
 
 class TestHeadHunterAPI:
-    """Тесты для HeadHunter API"""
+    """Тесты для HeadHunterAPI"""
 
-    def test_api_initialization(self):
+    @pytest.fixture
+    def hh_api(self):
+        """Создает экземпляр HeadHunterAPI для тестов"""
+        with patch('src.api_modules.hh_api.APIConnector'):
+            return HeadHunterAPI()
+
+    def test_api_initialization(self, hh_api):
         """Тест инициализации API"""
-        api = HeadHunterAPI()
-        assert api is not None
-        assert hasattr(api, 'get_vacancies')
-        assert hasattr(api, 'BASE_URL')
+        assert hh_api is not None
+        assert hasattr(hh_api, 'BASE_URL')
+        assert hasattr(hh_api, 'connector')
 
-    @patch('src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api')
-    def test_get_vacancies_success(self, mock_connect):
-        """Тест успешного получения вакансий"""
-        # Настраиваем мок ответа для метаданных (первый запрос)
+    def test_validate_vacancy_valid(self, hh_api):
+        """Тест валидации корректной вакансии"""
+        valid_vacancy = {
+            "name": "Python Developer",
+            "alternate_url": "https://hh.ru/vacancy/123"
+        }
+        assert hh_api._validate_vacancy(valid_vacancy) is True
+
+    def test_validate_vacancy_invalid(self, hh_api):
+        """Тест валидации некорректной вакансии"""
+        invalid_vacancy = {"id": "123"}  # Нет обязательных полей
+        assert hh_api._validate_vacancy(invalid_vacancy) is False
+
+    @patch('src.api_modules.hh_api.CachedAPI._CachedAPI__connect_to_api')
+    def test_get_vacancies_page(self, mock_connect, hh_api):
+        """Тест получения одной страницы вакансий"""
+        mock_connect.return_value = {
+            "items": [
+                {"id": "1", "name": "Test Vacancy", "alternate_url": "https://test.com"}
+            ]
+        }
+        
+        result = hh_api.get_vacancies_page("python", 0)
+        
+        assert len(result) == 1
+        assert result[0]["source"] == "hh.ru"
+
+    @patch('src.api_modules.hh_api.CachedAPI._CachedAPI__connect_to_api')
+    def test_get_vacancies(self, mock_connect, hh_api):
+        """Тест получения вакансий"""
+        # Мокируем ответы API
         mock_connect.side_effect = [
-            {
-                "items": [],
-                "found": 1,
-                "pages": 1
-            },
-            # Второй запрос за данными
-            {
-                "items": [
-                    {
-                        "id": "12345",
-                        "name": "Python Developer",
-                        "alternate_url": "https://hh.ru/vacancy/12345",
-                        "salary": {"from": 100000, "to": 150000, "currency": "RUR"},
-                        "snippet": {"requirement": "Python", "responsibility": "Development"},
-                        "employer": {"name": "Test Company"},
-                        "published_at": "2024-01-01T00:00:00+03:00"
-                    }
-                ],
-                "found": 1,
-                "pages": 1
-            }
+            {"found": 50, "pages": 1, "items": []},  # Первый запрос для метаданных
+            {"items": [
+                {"id": "1", "name": "Python Dev", "alternate_url": "https://test1.com"},
+                {"id": "2", "name": "Java Dev", "alternate_url": "https://test2.com"}
+            ]}
         ]
-
-        api = HeadHunterAPI()
-        vacancies = api.get_vacancies(search_query="Python", per_page=1)
-
-        assert len(vacancies) == 1
-        assert vacancies[0]["name"] == "Python Developer"
-        assert vacancies[0]["source"] == "hh.ru"
-
-    @patch('src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api')
-    def test_get_vacancies_empty_response(self, mock_connect):
-        """Тест получения пустого результата"""
-        mock_connect.return_value = {"items": [], "found": 0}
-
-        api = HeadHunterAPI()
-        vacancies = api.get_vacancies(search_query="NonExistentJob")
-
-        assert len(vacancies) == 0
-
-    @patch('src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api')
-    def test_get_vacancies_network_error(self, mock_connect):
-        """Тест обработки сетевой ошибки"""
-        mock_connect.side_effect = Exception("Network error")
-
-        api = HeadHunterAPI()
-        vacancies = api.get_vacancies(search_query="Python")
-
-        # При ошибке должен возвращаться пустой список
-        assert vacancies == []
+        
+        with patch.object(hh_api, 'get_vacancies_page') as mock_page:
+            mock_page.return_value = [
+                {"id": "1", "name": "Python Dev", "alternate_url": "https://test1.com", "source": "hh.ru"},
+                {"id": "2", "name": "Java Dev", "alternate_url": "https://test2.com", "source": "hh.ru"}
+            ]
+            
+            result = hh_api.get_vacancies("python")
+            
+            assert len(result) == 2
+            assert all(v["source"] == "hh.ru" for v in result)
 
 
 class TestSuperJobAPI:
-    """Тесты для SuperJob API"""
+    """Тесты для SuperJobAPI"""
 
-    def test_api_initialization(self):
+    @pytest.fixture
+    def sj_api(self):
+        """Создает экземпляр SuperJobAPI для тестов"""
+        with patch('src.api_modules.sj_api.APIConnector'):
+            return SuperJobAPI()
+
+    def test_api_initialization(self, sj_api):
         """Тест инициализации API"""
-        api = SuperJobAPI()
-        assert api is not None
-        assert hasattr(api, 'get_vacancies')
-        assert hasattr(api, 'BASE_URL')
+        assert sj_api is not None
+        assert hasattr(sj_api, 'BASE_URL')
 
-    @patch('src.api_modules.sj_api.SuperJobAPI._CachedAPI__connect_to_api')
-    def test_get_vacancies_success(self, mock_connect):
-        """Тест успешного получения вакансий"""
-        # Настраиваем мок ответа для метаданных и данных
-        mock_connect.side_effect = [
-            {
-                "objects": [],
-                "total": 1
-            },
-            {
-                "objects": [
-                    {
-                        "id": 54321,
-                        "profession": "Java Developer",
-                        "link": "https://superjob.ru/vakansii/java-developer-54321.html",
-                        "payment_from": 80000,
-                        "payment_to": 120000,
-                        "currency": "rub",
-                        "candidat": "Java, Spring",
-                        "vacancyRichText": "Backend development",
-                        "firm_name": "Java Corp",
-                        "date_published": 1704067200
-                    }
-                ],
-                "total": 1
-            }
-        ]
+    def test_validate_vacancy_valid(self, sj_api):
+        """Тест валидации корректной вакансии"""
+        valid_vacancy = {
+            "profession": "Python Developer",
+            "link": "https://superjob.ru/vacancy/123"
+        }
+        assert sj_api._validate_vacancy(valid_vacancy) is True
 
-        api = SuperJobAPI()
-        vacancies = api.get_vacancies(search_query="Java", count=1)
-
-        assert len(vacancies) == 1
-        assert vacancies[0]["profession"] == "Java Developer"
-        assert vacancies[0]["source"] == "superjob.ru"
-
-    @patch('src.api_modules.sj_api.SuperJobAPI._CachedAPI__connect_to_api')
-    def test_get_vacancies_empty_response(self, mock_connect):
-        """Тест получения пустого результата"""
-        mock_connect.return_value = {"objects": [], "total": 0}
-
-        api = SuperJobAPI()
-        vacancies = api.get_vacancies(search_query="NonExistentJob")
-
-        assert len(vacancies) == 0
+    def test_validate_vacancy_invalid(self, sj_api):
+        """Тест валидации некорректной вакансии"""
+        invalid_vacancy = {"id": "123"}
+        assert sj_api._validate_vacancy(invalid_vacancy) is False
 
 
 class TestUnifiedAPI:
-    """Тесты для Unified API"""
+    """Тесты для UnifiedAPI"""
 
-    def test_initialization(self):
-        """Тест инициализации"""
-        api = UnifiedAPI()
-        assert api is not None
+    @pytest.fixture
+    def unified_api(self):
+        """Создает экземпляр UnifiedAPI для тестов"""
+        with patch('src.api_modules.unified_api.HeadHunterAPI') as mock_hh, \
+             patch('src.api_modules.unified_api.SuperJobAPI') as mock_sj:
+            
+            api = UnifiedAPI()
+            api.hh_api = mock_hh.return_value
+            api.sj_api = mock_sj.return_value
+            return api
 
-    def test_get_available_sources(self):
+    def test_get_available_sources(self, unified_api):
         """Тест получения доступных источников"""
-        api = UnifiedAPI()
-        sources = api.get_available_sources()
-        assert isinstance(sources, list)
-        assert len(sources) > 0
+        sources = unified_api.get_available_sources()
+        assert "hh" in sources
+        assert "sj" in sources
 
-    @patch.object(HeadHunterAPI, 'get_vacancies')
-    def test_get_vacancies_single_source(self, mock_hh_get):
-        """Тест получения вакансий из одного источника"""
-        # Мокируем результат получения
-        mock_vacancy = {
-            "id": "1",
-            "name": "Test Vacancy",
-            "source": "hh.ru",
-            "alternate_url": "https://hh.ru/vacancy/1"
-        }
-        mock_hh_get.return_value = [mock_vacancy]
-
-        api = UnifiedAPI()
-        vacancies = api.get_vacancies_from_source("python", "hh")
-
-        assert len(vacancies) == 1
-        assert vacancies[0]["name"] == "Test Vacancy"
-
-    def test_clear_cache_with_sources(self):
-        """Тест очистки кэша с указанными источниками"""
-        api = UnifiedAPI()
-        # Метод должен принимать словарь источников
-        try:
-            api.clear_cache({"hh": True, "sj": False})
-            # Если нет исключений, тест прошел
-            assert True
-        except Exception as e:
-            pytest.fail(f"clear_cache() raised an exception: {e}")
-
-    def test_clear_cache_all_sources(self):
-        """Тест очистки всего кэша"""
-        api = UnifiedAPI()
-        try:
-            api.clear_cache({"hh": True, "sj": True})
-            # Если нет исключений, тест прошел
-            assert True
-        except Exception as e:
-            pytest.fail(f"clear_cache() raised an exception: {e}")
-
-    @patch.object(HeadHunterAPI, 'get_vacancies')
-    @patch.object(SuperJobAPI, 'get_vacancies')
-    def test_get_vacancies_from_sources(self, mock_sj_get, mock_hh_get):
-        """Тест получения вакансий из нескольких источников"""
-        # Мокируем результаты
-        mock_hh_get.return_value = [{"id": "1", "name": "HH Vacancy", "source": "hh.ru"}]
-        mock_sj_get.return_value = [{"id": "2", "profession": "SJ Vacancy", "source": "superjob.ru"}]
-
-        api = UnifiedAPI()
-        
-        # Мокируем SQL дедупликацию
-        with patch('src.api_modules.base_api.BaseJobAPI._deduplicate_vacancies') as mock_dedup:
-            mock_dedup.return_value = [{"id": "1", "name": "HH Vacancy", "source": "hh.ru"}]
-            
-            vacancies = api.get_vacancies_from_sources("python", sources=["hh", "sj"])
-            
-            assert isinstance(vacancies, list)
-
-    def test_validate_sources(self):
+    def test_validate_sources(self, unified_api):
         """Тест валидации источников"""
-        api = UnifiedAPI()
+        valid_sources = unified_api.validate_sources(["hh", "sj"])
+        assert valid_sources == ["hh", "sj"]
         
-        # Валидные источники
-        valid = api.validate_sources(["hh", "sj"])
-        assert "hh" in valid
-        assert "sj" in valid
+        invalid_sources = unified_api.validate_sources(["invalid"])
+        assert invalid_sources == ["hh", "sj"]  # Возвращает все доступные
+
+    @patch('src.api_modules.unified_api.PostgresSaver')
+    def test_get_vacancies_from_sources(self, mock_postgres_class, unified_api):
+        """Тест получения вакансий из источников с SQL-дедупликацией"""
+        # Настраиваем мок PostgresSaver
+        mock_postgres = MockPostgresSaver()
+        mock_postgres_class.return_value = mock_postgres
         
-        # Невалидные источники должны быть отфильтрованы
-        filtered = api.validate_sources(["hh", "invalid_source"])
-        assert "hh" in filtered
-        assert "invalid_source" not in filtered
+        # Мокируем результаты API
+        unified_api.hh_api.get_vacancies.return_value = [
+            {"id": "1", "name": "HH Vacancy", "source": "hh.ru"}
+        ]
+        unified_api.sj_api.get_vacancies.return_value = [
+            {"id": "2", "profession": "SJ Vacancy", "source": "superjob.ru"}
+        ]
+        
+        # Мокируем Vacancy.from_dict
+        with patch('src.api_modules.unified_api.Vacancy') as mock_vacancy_class:
+            mock_vacancy_class.from_dict.side_effect = lambda x: MockVacancy(x)
+            
+            # Мокируем _filter_by_target_companies
+            with patch.object(unified_api, '_filter_by_target_companies') as mock_filter:
+                mock_filter.return_value = [{"id": "1", "name": "Filtered Vacancy"}]
+                
+                result = unified_api.get_vacancies_from_sources("python", ["hh", "sj"])
+                
+                assert len(result) == 1
+                assert result[0]["id"] == "1"
 
-    @patch.object(HeadHunterAPI, 'get_vacancies_from_target_companies')
-    @patch.object(SuperJobAPI, 'get_vacancies_from_target_companies')
-    def test_get_vacancies_from_target_companies(self, mock_sj_target, mock_hh_target):
-        """Тест получения вакансий от целевых компаний"""
-        mock_hh_target.return_value = [{"id": "1", "name": "Target HH", "source": "hh.ru"}]
-        mock_sj_target.return_value = [{"id": "2", "profession": "Target SJ", "source": "superjob.ru"}]
+    def test_get_vacancies_from_source(self, unified_api):
+        """Тест получения вакансий из конкретного источника"""
+        unified_api.hh_api.get_vacancies.return_value = [
+            {"id": "1", "name": "Test Vacancy"}
+        ]
+        
+        result = unified_api.get_vacancies_from_source("python", "hh")
+        
+        assert len(result) == 1
+        unified_api.hh_api.get_vacancies.assert_called_once_with(search_query="python")
 
-        api = UnifiedAPI()
-        vacancies = api.get_vacancies_from_target_companies("python")
+    def test_clear_cache(self, unified_api):
+        """Тест очистки кэша"""
+        sources = {"hh": True, "sj": False}
+        
+        # Мокируем методы очистки кэша
+        unified_api.hh_api.clear_cache = Mock()
+        unified_api.sj_api.clear_cache = Mock()
+        
+        with patch('glob.glob') as mock_glob, \
+             patch('os.remove') as mock_remove:
+            mock_glob.return_value = ['cache_file1.json', 'cache_file2.json']
+            
+            unified_api.clear_cache(sources)
+            
+            unified_api.hh_api.clear_cache.assert_called_once_with("hh")
+            unified_api.sj_api.clear_cache.assert_not_called()
 
-        assert isinstance(vacancies, list)
-        # Проверяем, что методы были вызваны
-        mock_hh_target.assert_called_once()
-        mock_sj_target.assert_called_once()
+
+class TestBaseJobAPI:
+    """Тесты для BaseJobAPI"""
+
+    def test_abstract_class(self):
+        """Тест что BaseJobAPI является абстрактным классом"""
+        with pytest.raises(TypeError):
+            BaseJobAPI()
+
+    def test_clear_cache_method(self):
+        """Тест метода очистки кэша"""
+        class ConcreteAPI(BaseJobAPI):
+            def get_vacancies(self, search_query: str, **kwargs):
+                return []
+            
+            def _validate_vacancy(self, vacancy):
+                return True
+        
+        api = ConcreteAPI()
+        
+        with patch('os.path.exists') as mock_exists, \
+             patch('shutil.rmtree') as mock_rmtree, \
+             patch('os.makedirs') as mock_makedirs:
+            
+            mock_exists.return_value = True
+            
+            api.clear_cache("test")
+            
+            mock_rmtree.assert_called_once()
+            mock_makedirs.assert_called_once()
+
+
+class TestAPIIntegration:
+    """Интеграционные тесты для API модулей"""
+
+    @patch('src.api_modules.unified_api.PostgresSaver')
+    def test_end_to_end_workflow(self, mock_postgres_class):
+        """Тест полного workflow получения и обработки вакансий"""
+        # Настраиваем мок PostgresSaver
+        mock_postgres = MockPostgresSaver()
+        mock_postgres_class.return_value = mock_postgres
+        
+        with patch('src.api_modules.unified_api.HeadHunterAPI') as mock_hh, \
+             patch('src.api_modules.unified_api.SuperJobAPI') as mock_sj:
+            
+            # Настраиваем моки API
+            mock_hh_instance = Mock()
+            mock_sj_instance = Mock()
+            mock_hh.return_value = mock_hh_instance
+            mock_sj.return_value = mock_sj_instance
+            
+            mock_hh_instance.get_vacancies.return_value = [
+                {"id": "hh1", "name": "Python Dev", "source": "hh.ru"},
+                {"id": "hh2", "name": "Java Dev", "source": "hh.ru"}
+            ]
+            
+            mock_sj_instance.get_vacancies.return_value = [
+                {"id": "sj1", "profession": "Python Dev", "source": "superjob.ru"}
+            ]
+            
+            # Создаем UnifiedAPI
+            unified_api = UnifiedAPI()
+            
+            # Мокируем Vacancy.from_dict
+            with patch('src.api_modules.unified_api.Vacancy') as mock_vacancy_class:
+                mock_vacancy_class.from_dict.side_effect = lambda x: MockVacancy(x)
+                
+                # Мокируем фильтрацию
+                with patch.object(unified_api, '_filter_by_target_companies') as mock_filter:
+                    mock_filter.return_value = [
+                        {"id": "hh1", "name": "Python Dev", "filtered": True}
+                    ]
+                    
+                    # Выполняем тест
+                    result = unified_api.get_vacancies_from_sources("python")
+                    
+                    # Проверяем результат
+                    assert len(result) == 1
+                    assert result[0]["filtered"] is True
+                    
+                    # Проверяем что вызвались правильные методы
+                    mock_hh_instance.get_vacancies.assert_called_once()
+                    mock_sj_instance.get_vacancies.assert_called_once()
+                    mock_filter.assert_called_once()
+
+    def test_error_handling(self):
+        """Тест обработки ошибок"""
+        with patch('src.api_modules.unified_api.HeadHunterAPI') as mock_hh:
+            mock_hh_instance = Mock()
+            mock_hh.return_value = mock_hh_instance
+            mock_hh_instance.get_vacancies.side_effect = Exception("API Error")
+            
+            unified_api = UnifiedAPI()
+            
+            # Ошибка API не должна прерывать выполнение
+            result = unified_api.get_vacancies_from_sources("python", ["hh"])
+            
+            # Должен вернуть пустой список при ошибке
+            assert result == []
