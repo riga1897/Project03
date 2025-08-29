@@ -303,8 +303,9 @@ class ConcreteFormatter(BaseFormatter):
     
     def format_company_name(self, company):
         if isinstance(company, dict):
-            return company.get('name', 'Unknown company')
-        return str(company) if company else 'Unknown company'
+            name = company.get('name', '')
+            return name if name and name.strip() else 'Unknown company'
+        return str(company) if company and str(company).strip() else 'Unknown company'
     
     def clean_html_tags(self, text):
         import re
