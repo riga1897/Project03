@@ -1,4 +1,3 @@
-
 """
 Основные функциональные тесты
 
@@ -53,7 +52,7 @@ class TestMainFunctionality:
     def test_vacancy_formatter(self, sample_vacancy):
         """Тест форматирования вакансий"""
         formatter = VacancyFormatter()
-        
+
         # Тест полного форматирования
         formatted = formatter.format_vacancy_info(sample_vacancy, 1)
         assert isinstance(formatted, str)
@@ -70,7 +69,7 @@ class TestMainFunctionality:
     def test_user_input_simulation(self, mock_input):
         """Тест симуляции пользовательского ввода"""
         mock_input.return_value = "test_query"
-        
+
         # Симулируем получение пользовательского ввода
         user_query = input("Введите запрос: ")
         assert user_query == "test_query"
@@ -78,34 +77,34 @@ class TestMainFunctionality:
     def test_vacancy_comparison(self, sample_vacancies):
         """Тест сравнения вакансий"""
         operations = VacancyOperations()
-        
+
         # Сортировка по зарплате
         sorted_vacancies = operations.sort_vacancies_by_salary(sample_vacancies)
         assert len(sorted_vacancies) == 2
-        
+
         # Первая должна быть с большей зарплатой
         first_salary = sorted_vacancies[0].salary
         second_salary = sorted_vacancies[1].salary
-        
+
         assert first_salary is not None
         assert second_salary is not None
 
     def test_error_handling(self):
         """Тест обработки ошибок"""
         formatter = VacancyFormatter()
-        
+
         # Тест с None значениями
         result = formatter.format_salary(None)
         assert result == "Не указана"
-        
+
         # Тест с пустой строкой
         result = formatter.format_text("")
         assert result == "Не указано"
-        
+
         # Тест статических методов
         brief_result = VacancyFormatter.format_vacancy_brief(None, 1)
         assert isinstance(brief_result, str)
-        
+
         # Тест форматирования без номера
         minimal_vacancy = Vacancy(
             title="Test Job",
@@ -125,7 +124,7 @@ class TestMainFunctionality:
             vacancy_id="min001",
             source="test"
         )
-        
+
         assert minimal_vacancy.title == "Minimal Job"
         assert minimal_vacancy.salary is None
         assert minimal_vacancy.description is None
@@ -133,11 +132,11 @@ class TestMainFunctionality:
     def test_search_functionality(self, sample_vacancies):
         """Тест функциональности поиска"""
         operations = VacancyOperations()
-        
+
         # Тест поиска по нескольким ключевым словам
         keywords = ["Python", "Developer"]
         results = operations.filter_vacancies_by_multiple_keywords(sample_vacancies, keywords)
-        
+
         assert isinstance(results, list)
         # Должны найти хотя бы одну вакансию с любым из ключевых слов
         assert len(results) >= 1
@@ -152,7 +151,7 @@ class TestMainFunctionality:
 
         # Создаем экземпляр через мокированный класс
         storage = mock_storage_class()
-        
+
         # Тест операций
         assert storage.add_vacancy(None) is True
         assert storage.get_vacancies() == []
@@ -162,7 +161,7 @@ class TestMainFunctionality:
         # Тест, что базовые классы могут быть инстанцированы
         formatter = VacancyFormatter()
         operations = VacancyOperations()
-        
+
         assert formatter is not None
         assert operations is not None
         assert hasattr(formatter, 'format_vacancy_info')
