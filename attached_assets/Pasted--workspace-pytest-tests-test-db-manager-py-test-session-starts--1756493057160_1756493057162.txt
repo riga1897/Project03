@@ -1,0 +1,329 @@
+~/workspace$ pytest tests/test_db_manager.py
+============================ test session starts =============================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace/tests
+configfile: pytest.ini
+plugins: mock-3.14.1, cov-6.2.1
+collected 10 items                                                           
+
+tests/test_db_manager.py .F.FFFFFFF                                    [100%]
+
+================================== FAILURES ==================================
+____________________ TestDBManager.test_check_connection _____________________
+
+self = <tests.test_db_manager.TestDBManager object at 0x7f64ce9218d0>
+mock_connect = <MagicMock name='connect' id='140070931238608'>
+
+    @patch('psycopg2.connect')
+    def test_check_connection(self, mock_connect):
+        """Тест проверки подключения к базе данных"""
+        mock_conn = Mock()
+        mock_connect.return_value = mock_conn
+    
+        db_manager = DBManager()
+        result = db_manager.check_connection()
+    
+>       assert result is True
+E       assert False is True
+
+tests/test_db_manager.py:34: AssertionError
+---------------------------- Captured stderr call ----------------------------
+ERROR:src.storage.db_manager:Неожиданная ошибка при проверке подключения: 'Mock' object does not support the context manager protocol
+----------------------------- Captured log call ------------------------------
+ERROR    src.storage.db_manager:db_manager.py:809 Неожиданная ошибка при проверке подключения: 'Mock' object does not support the context manager protocol
+____________ TestDBManager.test_get_companies_and_vacancies_count ____________
+
+self = <tests.test_db_manager.TestDBManager object at 0x7f64ce922110>
+mock_connect = <MagicMock name='connect' id='140070926566096'>
+sample_companies_data = [{'name': 'СБЕР', 'vacancies_count': 10}, {'name': 'Яндекс', 'vacancies_count': 15}]
+
+    @patch('psycopg2.connect')
+    def test_get_companies_and_vacancies_count(self, mock_connect, sample_companies_data):
+        """Тест получения списка компаний и количества вакансий"""
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_cursor.fetchall.return_value = sample_companies_data
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+        db_manager = DBManager()
+        companies = db_manager.get_companies_and_vacancies_count()
+    
+>       assert len(companies) == 2
+E       AssertionError: assert 12 == 2
+E        +  where 12 = len([('Яндекс', 0), ('Тинькофф', 0), ('СБЕР', 0), ('Wildberries', 0), ('OZON', 0), ('VK', 0), ...])
+
+tests/test_db_manager.py:66: AssertionError
+---------------------------- Captured stderr call ----------------------------
+ERROR:src.storage.db_manager:Неожиданная ошибка при проверке подключения: 'Mock' object does not support the context manager protocol
+----------------------------- Captured log call ------------------------------
+ERROR    src.storage.db_manager:db_manager.py:809 Неожиданная ошибка при проверке подключения: 'Mock' object does not support the context manager protocol
+____________________ TestDBManager.test_get_all_vacancies ____________________
+
+self = <tests.test_db_manager.TestDBManager object at 0x7f64ce922e50>
+mock_connect = <MagicMock name='connect' id='140070926579984'>
+
+    @patch('psycopg2.connect')
+    def test_get_all_vacancies(self, mock_connect):
+        """Тест получения всех вакансий"""
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_cursor.fetchall.return_value = [
+            ("Python Developer", "СБЕР", 100000, 150000, "https://hh.ru/vacancy/12345")
+        ]
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+        db_manager = DBManager()
+        vacancies = db_manager.get_all_vacancies()
+    
+>       assert len(vacancies) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+tests/test_db_manager.py:84: AssertionError
+---------------------------- Captured stderr call ----------------------------
+ERROR:src.storage.db_manager:Ошибка при создании таблиц: 'Mock' object does not support the context manager protocol
+----------------------------- Captured log call ------------------------------
+ERROR    src.storage.db_manager:db_manager.py:196 Ошибка при создании таблиц: 'Mock' object does not support the context manager protocol
+_____________________ TestDBManager.test_get_avg_salary ______________________
+
+self = <tests.test_db_manager.TestDBManager object at 0x7f64ce923390>
+mock_connect = <MagicMock name='connect' id='140070926632080'>
+
+    @patch('psycopg2.connect')
+    def test_get_avg_salary(self, mock_connect):
+        """Тест получения средней зарплаты"""
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_cursor.fetchone.return_value = (125000.0,)
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+        db_manager = DBManager()
+        avg_salary = db_manager.get_avg_salary()
+    
+>       assert avg_salary == 125000.0
+E       assert None == 125000.0
+
+tests/test_db_manager.py:99: AssertionError
+---------------------------- Captured stderr call ----------------------------
+ERROR:src.storage.db_manager:Ошибка при создании таблиц: 'Mock' object does not support the context manager protocol
+----------------------------- Captured log call ------------------------------
+ERROR    src.storage.db_manager:db_manager.py:196 Ошибка при создании таблиц: 'Mock' object does not support the context manager protocol
+____________ TestDBManager.test_get_vacancies_with_higher_salary _____________
+
+self = <tests.test_db_manager.TestDBManager object at 0x7f64ce923750>
+mock_connect = <MagicMock name='connect' id='140070926561808'>
+
+    @patch('psycopg2.connect')
+    def test_get_vacancies_with_higher_salary(self, mock_connect):
+        """Тест получения вакансий с зарплатой выше средней"""
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_cursor.fetchall.return_value = [
+            ("Senior Python Developer", "СБЕР", 150000, 200000, "https://hh.ru/vacancy/67890")
+        ]
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+        db_manager = DBManager()
+        vacancies = db_manager.get_vacancies_with_higher_salary()
+    
+>       assert len(vacancies) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+tests/test_db_manager.py:116: AssertionError
+---------------------------- Captured stderr call ----------------------------
+ERROR:src.storage.db_manager:Ошибка при создании таблиц: 'Mock' object does not support the context manager protocol
+----------------------------- Captured log call ------------------------------
+ERROR    src.storage.db_manager:db_manager.py:196 Ошибка при создании таблиц: 'Mock' object does not support the context manager protocol
+_______________ TestDBManager.test_get_vacancies_with_keyword ________________
+
+self = <tests.test_db_manager.TestDBManager object at 0x7f64ce92ff10>
+mock_connect = <MagicMock name='connect' id='140070926881552'>
+
+    @patch('psycopg2.connect')
+    def test_get_vacancies_with_keyword(self, mock_connect):
+        """Тест поиска вакансий по ключевому слову"""
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_cursor.fetchall.return_value = [
+            ("Python Developer", "СБЕР", 100000, 150000, "https://hh.ru/vacancy/12345")
+        ]
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+        db_manager = DBManager()
+        vacancies = db_manager.get_vacancies_with_keyword("python")
+    
+>       assert len(vacancies) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+tests/test_db_manager.py:133: AssertionError
+---------------------------- Captured stderr call ----------------------------
+ERROR:src.storage.db_manager:Ошибка при создании таблиц: 'Mock' object does not support the context manager protocol
+----------------------------- Captured log call ------------------------------
+ERROR    src.storage.db_manager:db_manager.py:196 Ошибка при создании таблиц: 'Mock' object does not support the context manager protocol
+______________________ TestDBManager.test_create_tables ______________________
+
+self = <tests.test_db_manager.TestDBManager object at 0x7f64ce92f610>
+mock_connect = <MagicMock name='connect' id='140070926880080'>
+
+    @patch('psycopg2.connect')
+    def test_create_tables(self, mock_connect):
+        """Тест создания таблиц"""
+        mock_conn = Mock()
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
+        mock_cursor = Mock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+        db_manager = DBManager()
+>       db_manager.create_tables()
+
+tests/test_db_manager.py:152: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.storage.db_manager.DBManager object at 0x7f64cdd97710>
+
+    def create_tables(self):
+        """
+        Создает таблицы компаний и вакансий в базе данных, если они не существуют
+        Автоматически добавляет недостающие поля в существующие таблицы
+        """
+        try:
+            with self._get_connection() as conn:
+                with conn.cursor() as cursor:
+                    # Устанавливаем кодировку сессии
+                    cursor.execute("SET client_encoding TO 'UTF8'")
+    
+                    # Создаем упрощенную таблицу компаний для целевых компаний
+                    cursor.execute(
+                        """
+                        CREATE TABLE IF NOT EXISTS companies (
+                            id SERIAL PRIMARY KEY,
+                            name VARCHAR(255) NOT NULL UNIQUE,
+                            hh_id VARCHAR(50),
+                            sj_id VARCHAR(50)
+                        );
+                    """
+                    )
+                    logger.info("✓ Таблица companies создана/проверена")
+    
+                    # Создаем полную таблицу вакансий сразу с правильными типами
+                    cursor.execute(
+                        """
+                        CREATE TABLE IF NOT EXISTS vacancies (
+                            id SERIAL PRIMARY KEY,
+                            vacancy_id VARCHAR(255) UNIQUE NOT NULL,
+                            title TEXT NOT NULL,
+                            url TEXT,
+                            salary_from INTEGER,
+                            salary_to INTEGER,
+                            salary_currency VARCHAR(10),
+                            description TEXT,
+                            requirements TEXT,
+                            responsibilities TEXT,
+                            experience VARCHAR(100),
+                            employment VARCHAR(100),
+                            schedule VARCHAR(100),
+                            area TEXT,
+                            source VARCHAR(50),
+                            published_at TIMESTAMP,
+                            company_id INTEGER,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        );
+                    """
+                    )
+    
+                    # Проверяем и исправляем тип company_id если нужно
+                    cursor.execute(
+                        """
+                        SELECT data_type
+                        FROM information_schema.columns
+                        WHERE table_name = 'vacancies' AND column_name = 'company_id'
+                    """
+                    )
+    
+                    result = cursor.fetchone()
+>                   if result and result[0] not in ("integer", "bigint"):
+                                  ^^^^^^^^^
+E                   TypeError: 'Mock' object is not subscriptable
+
+src/storage/db_manager.py:123: TypeError
+---------------------------- Captured stderr call ----------------------------
+ERROR:src.storage.db_manager:Ошибка при создании таблиц: 'Mock' object is not subscriptable
+----------------------------- Captured log call ------------------------------
+ERROR    src.storage.db_manager:db_manager.py:196 Ошибка при создании таблиц: 'Mock' object is not subscriptable
+________________ TestDBManager.test_populate_companies_table _________________
+
+self = <tests.test_db_manager.TestDBManager object at 0x7f64ce92e6d0>
+mock_connect = <MagicMock name='connect' id='140070926692496'>
+
+    @patch('psycopg2.connect')
+    def test_populate_companies_table(self, mock_connect):
+        """Тест заполнения таблицы компаний"""
+        mock_conn = Mock()
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
+        mock_cursor = Mock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+        db_manager = DBManager()
+>       db_manager.populate_companies_table()
+
+tests/test_db_manager.py:171: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.storage.db_manager.DBManager object at 0x7f64cdd22a90>
+
+    def populate_companies_table(self):
+        """Заполняет таблицу companies целевыми компаниями"""
+        try:
+            # Используем контекстный менеджер для безопасной работы с подключением
+            with self._get_connection() as connection:
+                with connection.cursor() as cursor:
+                    # Устанавливаем кодировку сессии
+                    cursor.execute("SET client_encoding TO 'UTF8'")
+    
+                    # Проверяем, существует ли таблица companies
+                    cursor.execute(
+                        """
+                        SELECT EXISTS (
+                            SELECT FROM information_schema.tables
+                            WHERE table_schema = 'public'
+                            AND table_name = 'companies'
+                        );
+                    """
+                    )
+    
+>                   table_exists = cursor.fetchone()[0]
+                                   ^^^^^^^^^^^^^^^^^^^^
+E                   TypeError: 'Mock' object is not subscriptable
+
+src/storage/db_manager.py:219: TypeError
+---------------------------- Captured stderr call ----------------------------
+ERROR:src.storage.db_manager:Ошибка при заполнении таблицы companies: 'Mock' object is not subscriptable
+----------------------------- Captured log call ------------------------------
+ERROR    src.storage.db_manager:db_manager.py:252 Ошибка при заполнении таблицы companies: 'Mock' object is not subscriptable
+========================== short test summary info ===========================
+FAILED tests/test_db_manager.py::TestDBManager::test_check_connection - assert False is True
+FAILED tests/test_db_manager.py::TestDBManager::test_get_companies_and_vacancies_count - AssertionError: assert 12 == 2
+FAILED tests/test_db_manager.py::TestDBManager::test_get_all_vacancies - assert 0 == 1
+FAILED tests/test_db_manager.py::TestDBManager::test_get_avg_salary - assert None == 125000.0
+FAILED tests/test_db_manager.py::TestDBManager::test_get_vacancies_with_higher_salary - assert 0 == 1
+FAILED tests/test_db_manager.py::TestDBManager::test_get_vacancies_with_keyword - assert 0 == 1
+FAILED tests/test_db_manager.py::TestDBManager::test_create_tables - TypeError: 'Mock' object is not subscriptable
+FAILED tests/test_db_manager.py::TestDBManager::test_populate_companies_table - TypeError: 'Mock' object is not subscriptable
+======================== 8 failed, 2 passed in 0.23s =========================
+~/workspace$ 
