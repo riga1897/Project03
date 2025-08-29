@@ -1866,6 +1866,33 @@ class PostgresSaver(AbstractVacancyStorage):
 
         return {"conditions": conditions, "params": params}
 
+    def _normalize_text(self, text: str) -> str:
+        """
+        Нормализует текст для дедупликации: приводит к нижнему регистру,
+        удаляет лишние пробелы и специальные символы.
+        
+        Args:
+            text: Исходный текст для нормализации
+            
+        Returns:
+            str: Нормализованный текст
+        """
+        if not text:
+            return ""
+        
+        import re
+        
+        # Приводим к нижнему регистру
+        normalized = text.lower().strip()
+        
+        # Убираем лишние пробелы
+        normalized = re.sub(r'\s+', ' ', normalized)
+        
+        # Убираем специальные символы, оставляем только буквы, цифры и пробелы
+        normalized = re.sub(r'[^\w\s]', '', normalized, flags=re.UNICODE)
+        
+        return normalized.strip()
+
     def _normalize_published_date(self, published_at: Any) -> Optional[datetime]:
         """
         Нормализует дату published_at, пытаясь преобразовать ее в объект datetime.
