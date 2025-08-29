@@ -1,127 +1,114 @@
+
 """
 Тесты для модулей хранения данных
+
+Содержит тесты для проверки корректности работы с различными
+типами хранилищ данных (PostgreSQL).
 """
 
 import pytest
 from unittest.mock import Mock, patch, MagicMock
-import tempfile
-import os
 from src.storage.postgres_saver import PostgresSaver
 from src.storage.storage_factory import StorageFactory
 from src.vacancies.models import Vacancy
 
 
 class TestPostgresSaver:
-    """Тесты для PostgresSaver"""
+    """Тесты для PostgreSQL хранилища"""
 
-    @pytest.fixture
-    def mock_db_config(self):
-        """Фикстура для мок-конфигурации БД"""
-        return {
-            'host': 'localhost',
-            'port': '5432',
-            'database': 'test_db',
-            'username': 'test_user',
-            'password': 'test_pass'
-        }
+    @patch('psycopg2.connect')
+    def test_initialization(self, mock_connect):
+        """Тест инициализации хранилища"""
+        mock_conn = Mock()
+        mock_connect.return_value = mock_conn
 
-    @pytest.fixture
-    def postgres_saver(self, mock_db_config):
-        """Фикстура для PostgresSaver с мок-конфигурацией"""
-        with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'), \
-             patch.object(PostgresSaver, '_ensure_companies_table_exists'):
-            return PostgresSaver(mock_db_config)
+        storage = PostgresSaver()
+        assert storage is not None
 
-    def test_postgres_saver_initialization(self, postgres_saver):
-        """Тест инициализации PostgresSaver"""
-        assert postgres_saver is not None
-        assert postgres_saver.host == 'localhost'
-        assert postgres_saver.port == '5432'
-        assert postgres_saver.database == 'test_db'
-
-    @patch('src.storage.postgres_saver.psycopg2.connect')
-    def test_get_connection(self, mock_connect, postgres_saver):
-        """Тест получения соединения с БД"""
-        mock_connection = Mock()
-        mock_connect.return_value = mock_connection
-
-        connection = postgres_saver._get_connection()
-
-        assert connection == mock_connection
-        mock_connect.assert_called_once()
-
-    def test_add_vacancy_with_sample_data(self, postgres_saver, sample_vacancy):
-        """Тест добавления вакансии с примерными данными"""
-        with patch.object(postgres_saver, '_get_connection') as mock_get_conn, \
-             patch('psycopg2.extras.execute_values') as mock_execute_values:
-            mock_connection = Mock()
-            mock_cursor = Mock()
-            mock_get_conn.return_value = mock_connection
-            mock_connection.cursor.return_value = mock_cursor
-            mock_connection.encoding = 'UTF8'
-            mock_cursor.fetchall.return_value = []
-
-            result = postgres_saver.add_vacancy([sample_vacancy])
-
-            assert isinstance(result, list)
-            assert mock_execute_values.called
-
-    @patch('src.storage.postgres_saver.psycopg2.connect')
-    def test_ensure_database_exists(self, mock_connect, mock_db_config):
-        """Тест создания базы данных если она не существует"""
-        mock_connection = Mock()
+    @patch('psycopg2.connect')
+    def test_add_vacancy(self, mock_connect, sample_vacancy):
+        """Тест добавления вакансии"""
+        mock_conn = Mock()
         mock_cursor = Mock()
-        mock_connect.return_value = mock_connection
-        mock_connection.cursor.return_value = mock_cursor
-        mock_cursor.fetchone.return_value = [False]  # БД не существует
+        mock_cursor.rowcount = 1
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
 
-        with patch.object(PostgresSaver, '_ensure_tables_exist'), \
-             patch.object(PostgresSaver, '_ensure_companies_table_exists'):
-            saver = PostgresSaver(mock_db_config)
+        storage = PostgresSaver()
+        result = storage.add_vacancy(sample_vacancy)
 
-        # Проверяем, что была попытка создать БД
+        assert result is True
         mock_cursor.execute.assert_called()
+        mock_conn.commit.assert_called()
 
-    def test_format_vacancy_data(self, postgres_saver, sample_vacancy):
-        """Тест форматирования данных вакансии"""
-        # Метод _format_vacancy_data был удален, тестируем через add_vacancy
-        with patch.object(postgres_saver, '_get_connection') as mock_get_conn, \
-             patch('psycopg2.extras.execute_values') as mock_execute_values:
-            mock_connection = Mock()
-            mock_cursor = Mock()
-            mock_get_conn.return_value = mock_connection
-            mock_connection.cursor.return_value = mock_cursor
-            mock_connection.encoding = 'UTF8'
-            mock_cursor.fetchall.return_value = []
+    @patch('psycopg2.connect')
+    def test_get_vacancies(self, mock_connect):
+        """Тест получения вакансий"""
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_cursor.fetchall.return_value = [
+            (
+                "12345", "Python Developer", "Test Company", "https://hh.ru/vacancy/12345",
+                "100000", "150000", "RUR", "Test description", "Python, Django",
+                "Development", "От 1 года до 3 лет", "Полная занятость",
+                "Полный день", "2024-01-01T00:00:00", "hh.ru"
+            )
+        ]
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
 
-            # Проверяем, что метод add_vacancy работает
-            result = postgres_saver.add_vacancy([sample_vacancy])
-            assert isinstance(result, list)
+        storage = PostgresSaver()
+        vacancies = storage.get_vacancies()
+
+        assert len(vacancies) == 1
+        assert vacancies[0].title == "Python Developer"
+        assert vacancies[0].vacancy_id == "12345"
+
+    @patch('psycopg2.connect')
+    def test_delete_vacancy_by_id(self, mock_connect):
+        """Тест удаления вакансии по ID"""
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_cursor.rowcount = 1
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+
+        storage = PostgresSaver()
+        result = storage.delete_vacancy_by_id("12345")
+
+        assert result is True
+        mock_cursor.execute.assert_called()
+        mock_conn.commit.assert_called()
+
+    @patch('psycopg2.connect')
+    def test_get_vacancies_count(self, mock_connect):
+        """Тест получения количества вакансий"""
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_cursor.fetchone.return_value = (10,)
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+
+        storage = PostgresSaver()
+        count = storage.get_vacancies_count()
+
+        assert count == 10
 
 
 class TestStorageFactory:
-    """Тесты для StorageFactory"""
+    """Тесты для фабрики хранилищ"""
 
-    def test_get_storage_postgres(self):
-        """Тест получения PostgreSQL хранилища"""
-        storage_type = 'postgres'
-
-        with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'), \
-             patch.object(PostgresSaver, '_ensure_companies_table_exists'):
-            storage = StorageFactory.create_storage(storage_type)
-
+    def test_create_postgres_storage(self):
+        """Тест создания PostgreSQL хранилища"""
+        storage = StorageFactory.create_storage("postgres")
         assert isinstance(storage, PostgresSaver)
 
-    def test_get_storage_invalid_type(self):
-        """Тест получения хранилища с неверным типом"""
-        config = {'type': 'invalid_type'}
+    def test_get_default_storage(self):
+        """Тест получения хранилища по умолчанию"""
+        storage = StorageFactory.get_default_storage()
+        assert isinstance(storage, PostgresSaver)
 
-        with pytest.raises(ValueError):
-            StorageFactory.create_storage(config)
-
-    def test_get_storage_missing_config(self):
-        """Тест получения хранилища без конфигурации"""
-        with pytest.raises((ValueError, TypeError)):
-            StorageFactory.create_storage(None)
+    def test_invalid_storage_type(self):
+        """Тест обработки неверного типа хранилища"""
+        with pytest.raises((ValueError, KeyError)):
+            StorageFactory.create_storage("invalid_type")

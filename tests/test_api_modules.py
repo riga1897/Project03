@@ -7,150 +7,161 @@
 """
 
 import pytest
-from unittest.mock import Mock, patch
-
-# Мокаем все внешние API запросы
-@pytest.fixture(autouse=True)
-def mock_api_requests():
-    """Мокает все API запросы для тестов"""
-    with patch('requests.get') as mock_get:
-        mock_response = Mock()
-        mock_response.json.return_value = {"items": [], "found": 0}
-        mock_response.status_code = 200
-        mock_get.return_value = mock_response
-        yield mock_get
-
+from unittest.mock import Mock, patch, MagicMock
 from src.api_modules.hh_api import HeadHunterAPI
 from src.api_modules.sj_api import SuperJobAPI
-from src.config.api_config import APIConfig
+from src.api_modules.unified_api import UnifiedAPI
 
 
 class TestHeadHunterAPI:
-    """Набор тестов для API клиента HeadHunter"""
+    """Тесты для HeadHunter API"""
 
     def test_api_initialization(self):
-        """Тестирование корректной инициализации API клиента"""
+        """Тест инициализации API"""
         api = HeadHunterAPI()
-        
-        assert api.BASE_URL == "https://api.hh.ru/vacancies"
-        assert api._config is not None
+        assert api is not None
+        assert hasattr(api, 'search_vacancies')
 
-    def test_validate_vacancy_valid(self):
-        """Тестирование валидации корректной структуры вакансии"""
-        api = HeadHunterAPI()
-        valid_vacancy = {
-            "name": "Python Developer",
-            "alternate_url": "https://hh.ru/vacancy/12345",
-            "salary": {"from": 100000}
-        }
-        
-        result = api._validate_vacancy(valid_vacancy)
-        assert result is True
-
-    def test_validate_vacancy_invalid(self):
-        """Тестирование валидации некорректной структуры вакансии"""
-        api = HeadHunterAPI()
-        invalid_vacancy = {
-            "name": "",  # Пустое название должно провалить валидацию
-            "alternate_url": "https://hh.ru/vacancy/12345"
-        }
-        
-        result = api._validate_vacancy(invalid_vacancy)
-        assert result is False
-
-    @patch('src.api_modules.cached_api.CachedAPI._CachedAPI__connect_to_api')
-    def test_get_vacancies_page_success(self, mock_connect):
-        """Тестирование успешного получения страницы вакансий от API"""
-        mock_connect.return_value = {
+    @patch('requests.get')
+    def test_search_vacancies_success(self, mock_get):
+        """Тест успешного поиска вакансий"""
+        # Настраиваем мок ответа
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
             "items": [
                 {
+                    "id": "12345",
                     "name": "Python Developer",
-                    "alternate_url": "https://hh.ru/vacancy/12345"
+                    "alternate_url": "https://hh.ru/vacancy/12345",
+                    "salary": {"from": 100000, "to": 150000, "currency": "RUR"},
+                    "snippet": {"requirement": "Python", "responsibility": "Development"},
+                    "employer": {"name": "Test Company"},
+                    "published_at": "2024-01-01T00:00:00+03:00"
                 }
-            ]
+            ],
+            "found": 1
         }
-        
-        api = HeadHunterAPI()
-        result = api.get_vacancies_page("python", page=0)
-        
-        assert len(result) == 1
-        assert result[0]["name"] == "Python Developer"
+        mock_get.return_value = mock_response
 
-    @patch('src.api_modules.cached_api.CachedAPI._CachedAPI__connect_to_api')
-    def test_get_vacancies_empty_response(self, mock_connect):
-        """Тестирование обработки пустого ответа от API"""
-        mock_connect.return_value = {"items": []}
-        
         api = HeadHunterAPI()
-        result = api.get_vacancies_page("nonexistent", page=0)
-        
-        assert result == []
+        vacancies = api.search_vacancies(query="Python", per_page=1)
 
-    def test_empty_response_structure(self):
-        """Тестирование корректной структуры пустого ответа API"""
+        assert len(vacancies) == 1
+        assert vacancies[0].title == "Python Developer"
+        assert vacancies[0].vacancy_id == "12345"
+
+    @patch('requests.get')
+    def test_search_vacancies_empty_response(self, mock_get):
+        """Тест поиска без результатов"""
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"items": [], "found": 0}
+        mock_get.return_value = mock_response
+
         api = HeadHunterAPI()
-        empty_response = api._get_empty_response()
-        
-        assert "items" in empty_response
-        assert empty_response["items"] == []
+        vacancies = api.search_vacancies(query="NonExistentJob")
+
+        assert len(vacancies) == 0
+
+    @patch('requests.get')
+    def test_search_vacancies_network_error(self, mock_get):
+        """Тест обработки сетевой ошибки"""
+        mock_get.side_effect = Exception("Network error")
+
+        api = HeadHunterAPI()
+        vacancies = api.search_vacancies(query="Python")
+
+        assert len(vacancies) == 0
 
 
 class TestSuperJobAPI:
-    """Набор тестов для API клиента SuperJob"""
+    """Тесты для SuperJob API"""
 
-    @patch.dict('os.environ', {'SUPERJOB_API_KEY': 'test_key'})
-    def test_api_initialization_with_custom_key(self):
-        """Тестирование инициализации с пользовательским API ключом"""
+    def test_api_initialization(self):
+        """Тест инициализации API"""
         api = SuperJobAPI()
-        
-        assert api.BASE_URL == "https://api.superjob.ru/2.0/vacancies"
-        assert api.connector.headers["X-Api-App-Id"] == "test_key"
+        assert api is not None
+        assert hasattr(api, 'search_vacancies')
 
-    def test_validate_vacancy_valid(self):
-        """Тестирование валидации корректной вакансии SuperJob"""
-        api = SuperJobAPI()
-        valid_vacancy = {
-            "profession": "Python Developer",
-            "link": "https://superjob.ru/vacancy/12345"
-        }
-        
-        result = api._validate_vacancy(valid_vacancy)
-        assert result is True
-
-    def test_validate_vacancy_invalid(self):
-        """Тестирование валидации некорректной вакансии SuperJob"""
-        api = SuperJobAPI()
-        invalid_vacancy = {
-            "profession": "",  # Пустое название должно провалить валидацию
-            "link": "https://superjob.ru/vacancy/12345"
-        }
-        
-        result = api._validate_vacancy(invalid_vacancy)
-        assert result is False
-
-    @patch('src.api_modules.cached_api.CachedAPI._CachedAPI__connect_to_api')
-    def test_get_vacancies_page_with_source(self, mock_connect):
-        """Тестирование получения страницы с автоматическим добавлением источника"""
-        mock_connect.return_value = {
+    @patch('requests.get')
+    def test_search_vacancies_success(self, mock_get):
+        """Тест успешного поиска вакансий"""
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
             "objects": [
                 {
+                    "id": 54321,
                     "profession": "Java Developer",
-                    "link": "https://superjob.ru/vacancy/67890"
+                    "link": "https://superjob.ru/vakansii/java-developer-54321.html",
+                    "payment_from": 80000,
+                    "payment_to": 120000,
+                    "currency": "rub",
+                    "candidat": "Java, Spring",
+                    "vacancyRichText": "Backend development",
+                    "firm_name": "Java Corp",
+                    "date_published": 1704067200
                 }
-            ]
+            ],
+            "total": 1
         }
-        
-        api = SuperJobAPI()
-        result = api.get_vacancies_page("java", page=0)
-        
-        assert len(result) == 1
-        assert result[0]["profession"] == "Java Developer"
-        assert result[0]["source"] == "superjob.ru"
+        mock_get.return_value = mock_response
 
-    def test_empty_response_structure(self):
-        """Тестирование корректной структуры пустого ответа SuperJob API"""
         api = SuperJobAPI()
-        empty_response = api._get_empty_response()
-        
-        assert "objects" in empty_response
-        assert empty_response["objects"] == []
+        vacancies = api.search_vacancies(query="Java", count=1)
+
+        assert len(vacancies) == 1
+        assert vacancies[0].title == "Java Developer"
+        assert vacancies[0].vacancy_id == "54321"
+
+    @patch('requests.get')
+    def test_search_vacancies_empty_response(self, mock_get):
+        """Тест поиска без результатов"""
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"objects": [], "total": 0}
+        mock_get.return_value = mock_response
+
+        api = SuperJobAPI()
+        vacancies = api.search_vacancies(query="NonExistentJob")
+
+        assert len(vacancies) == 0
+
+
+class TestUnifiedAPI:
+    """Тесты для Unified API"""
+
+    def test_initialization(self):
+        """Тест инициализации"""
+        api = UnifiedAPI()
+        assert api is not None
+
+    def test_get_available_sources(self):
+        """Тест получения доступных источников"""
+        api = UnifiedAPI()
+        sources = api.get_available_sources()
+        assert isinstance(sources, list)
+        assert len(sources) > 0
+
+    @patch.object(HeadHunterAPI, 'search_vacancies')
+    def test_search_vacancies_single_source(self, mock_hh_search):
+        """Тест поиска через один источник"""
+        # Мокируем результат поиска
+        mock_vacancy = Mock()
+        mock_vacancy.title = "Test Vacancy"
+        mock_vacancy.source = "hh.ru"
+        mock_hh_search.return_value = [mock_vacancy]
+
+        api = UnifiedAPI()
+        vacancies = api.search_vacancies(query="Python", sources=["hh.ru"])
+
+        assert len(vacancies) == 1
+        assert vacancies[0].title == "Test Vacancy"
+        mock_hh_search.assert_called_once()
+
+    def test_clear_cache(self):
+        """Тест очистки кэша"""
+        api = UnifiedAPI()
+        # Метод не должен вызывать исключений
+        api.clear_cache()

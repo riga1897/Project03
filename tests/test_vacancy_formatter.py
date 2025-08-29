@@ -1,303 +1,206 @@
-
 """
-Тесты для модуля форматирования вакансий
+Тесты для форматировщика вакансий
+
+Содержит тесты для проверки корректности форматирования
+информации о вакансиях для отображения.
 """
 
 import pytest
 from unittest.mock import Mock
 from src.utils.vacancy_formatter import VacancyFormatter
 from src.vacancies.models import Vacancy
-from src.utils.salary import Salary
 
 
 class TestVacancyFormatter:
     """Тесты для класса VacancyFormatter"""
 
     @pytest.fixture
-    def sample_salary(self):
-        """Фикстура для тестовой зарплаты"""
-        return Salary({
-            'from': 100000,
-            'to': 150000,
-            'currency': 'RUR'
-        })
-
-    @pytest.fixture
-    def sample_vacancy(self, sample_salary):
+    def sample_vacancy(self):
         """Фикстура для тестовой вакансии"""
-        return Vacancy(
-            title="Python Developer",
-            url="https://test.com/vacancy/1",
-            salary={'from': 100000, 'to': 150000, 'currency': 'RUR'},
-            description="Разработка на Python",
-            requirements="Знание Python, Django",
-            responsibilities="Разработка веб-приложений",
-            experience="От 3 лет",
-            employment="Полная занятость",
-            schedule="Полный день",
-            employer={'name': 'Test Company'},
-            vacancy_id="test_1",
-            published_at="2024-01-15T10:00:00",
-            source="hh.ru"
-        )
+        # Создаем Mock объект для Vacancy, так как оригинальная модель может быть сложной
+        # и не все поля могут быть необходимы для этих тестов.
+        # Если Vacancy является простой dataclass или Pydantic моделью,
+        # можно создать экземпляр напрямую.
+        mock_vacancy = Mock(spec=Vacancy)
+        mock_vacancy.title = "Python Developer"
+        mock_vacancy.url = "https://test.com/vacancy/12345"
+        mock_vacancy.employer = {"name": "Test Company"}
+        mock_vacancy.salary = {
+            "from": 100000,
+            "to": 150000,
+            "currency": "RUR"
+        }
+        mock_vacancy.experience = "От 1 года до 3 лет"
+        mock_vacancy.employment = "Полная занятость"
+        mock_vacancy.schedule = "Полный день"
+        mock_vacancy.source = "hh.ru"
+        mock_vacancy.vacancy_id = "12345"
+        mock_vacancy.description = "Разработка на Python с использованием Django."
+        mock_vacancy.responsibilities = "Разработка веб-приложений."
+        mock_vacancy.requirements = "Знание Python, Django."
+        mock_vacancy.published_at = "2024-01-15T10:00:00"
+        return mock_vacancy
+
+    def test_initialization(self):
+        """Тест инициализации форматировщика"""
+        formatter = VacancyFormatter()
+        assert formatter is not None
+
+    def test_format_vacancy_info(self, sample_vacancy):
+        """Тест форматирования полной информации о вакансии"""
+        formatter = VacancyFormatter()
+        result = formatter.format_vacancy_info(sample_vacancy, 1)
+
+        assert isinstance(result, str)
+        assert "Python Developer" in result
+        assert "12345" in result
+        assert "Test Company" in result
+        assert "100 000 - 150 000 руб." in result # Проверяем формат зарплаты
+        assert "От 1 года до 3 лет" in result # Проверяем опыт
+
+    def test_format_vacancy_info_without_number(self, sample_vacancy):
+        """Тест форматирования без номера"""
+        formatter = VacancyFormatter()
+        result = formatter.format_vacancy_info(sample_vacancy)
+
+        assert isinstance(result, str)
+        assert "Python Developer" in result
+        assert "1." not in result  # Номер не должен быть включен
+
+    def test_format_salary_dict(self):
+        """Тест форматирования зарплаты из словаря"""
+        formatter = VacancyFormatter()
+
+        salary_dict = {
+            "from": 100000,
+            "to": 150000,
+            "currency": "RUR"
+        }
+
+        result = formatter.format_salary(salary_dict)
+        assert "от 100 000 до 150 000 руб." in result
+
+    def test_format_salary_from_only(self):
+        """Тест форматирования зарплаты только с минимумом"""
+        formatter = VacancyFormatter()
+
+        salary_dict = {
+            "from": 100000,
+            "currency": "RUR"
+        }
+
+        result = formatter.format_salary(salary_dict)
+        assert "от 100 000 руб." in result
+
+    def test_format_salary_to_only(self):
+        """Тест форматирования зарплаты только с максимумом"""
+        formatter = VacancyFormatter()
+
+        salary_dict = {
+            "to": 150000,
+            "currency": "RUR"
+        }
+
+        result = formatter.format_salary(salary_dict)
+        assert "до 150 000 руб." in result
+
+    def test_format_salary_none(self):
+        """Тест форматирования отсутствующей зарплаты"""
+        formatter = VacancyFormatter()
+        result = formatter.format_salary(None)
+        assert result == "Не указана"
+
+    def test_format_currency(self):
+        """Тест форматирования валют"""
+        formatter = VacancyFormatter()
+
+        assert formatter.format_currency("RUR") == "руб."
+        assert formatter.format_currency("USD") == "долл."
+        assert formatter.format_currency("EUR") == "евро"
+        assert formatter.format_currency("UNKNOWN") == "UNKNOWN"
+
+    def test_format_text_normal(self):
+        """Тест форматирования обычного текста"""
+        formatter = VacancyFormatter()
+        text = "Это обычный текст"
+        result = formatter.format_text(text, 50)
+        assert result == text
+
+    def test_format_text_long(self):
+        """Тест форматирования длинного текста"""
+        formatter = VacancyFormatter()
+        long_text = "Это очень длинный текст " * 10
+        result = formatter.format_text(long_text, 50)
+        assert len(result) <= 53  # 50 + "..."
+        assert result.endswith("...")
+
+    def test_format_text_with_html(self):
+        """Тест форматирования текста с HTML тегами"""
+        formatter = VacancyFormatter()
+        html_text = "<p>Текст с <strong>HTML</strong> тегами</p>"
+        result = formatter.format_text(html_text)
+        assert "<p>" not in result
+        assert "<strong>" not in result
+        assert "Текст с HTML тегами" in result
+
+    def test_clean_html_tags(self):
+        """Тест очистки HTML тегов"""
+        formatter = VacancyFormatter()
+        html_text = "<div><p>Текст</p><br/><span>еще текст</span></div>"
+        result = formatter.clean_html_tags(html_text)
+        assert "<" not in result
+        assert ">" not in result
+        assert "Текст еще текст" in result
+
+    def test_format_number(self):
+        """Тест форматирования чисел"""
+        formatter = VacancyFormatter()
+
+        assert formatter.format_number(1000) == "1 000"
+        assert formatter.format_number(123456) == "123 456"
+        assert formatter.format_number(1000000) == "1 000 000"
+
+    def test_format_experience(self):
+        """Тест форматирования опыта работы"""
+        formatter = VacancyFormatter()
+
+        assert formatter.format_experience("От 1 года до 3 лет") == "От 1 года до 3 лет"
+        assert formatter.format_experience("") == "Не указан"
+        assert formatter.format_experience(None) == "Не указан"
+
+    def test_format_company_name_dict(self):
+        """Тест форматирования названия компании из словаря"""
+        formatter = VacancyFormatter()
+        company = {"name": "Test Company"}
+        result = formatter.format_company_name(company)
+        assert result == "Test Company"
+
+    def test_format_company_name_string(self):
+        """Тест форматирования названия компании из строки"""
+        formatter = VacancyFormatter()
+        result = formatter.format_company_name("String Company")
+        assert result == "String Company"
+
+    def test_format_company_name_none(self):
+        """Тест форматирования отсутствующего названия компании"""
+        formatter = VacancyFormatter()
+        result = formatter.format_company_name(None)
+        assert result == "Не указана"
 
     def test_format_vacancy_brief(self, sample_vacancy):
         """Тест краткого форматирования вакансии"""
         result = VacancyFormatter.format_vacancy_brief(sample_vacancy, 1)
-        
-        assert "1. Python Developer" in result
-        assert "Test Company" in result
-        assert "100,000 - 150,000 ₽" in result
-        assert "https://test.com/vacancy/1" in result
 
-    def test_format_vacancy_brief_no_number(self, sample_vacancy):
-        """Тест краткого форматирования без номера"""
-        result = VacancyFormatter.format_vacancy_brief(sample_vacancy)
-        
+        assert isinstance(result, str)
         assert "Python Developer" in result
-        assert not result.startswith("1.")
-
-    def test_format_vacancy_brief_no_salary(self, sample_vacancy):
-        """Тест краткого форматирования без зарплаты"""
-        sample_vacancy.salary = None
-        result = VacancyFormatter.format_vacancy_brief(sample_vacancy, 1)
-        
-        assert "Зарплата не указана" in result
-
-    def test_format_vacancy_brief_partial_salary(self, sample_vacancy):
-        """Тест краткого форматирования с частичной зарплатой"""
-        # Только минимальная зарплата
-        sample_vacancy.salary = Salary({"from": 100000, "currency": "RUR"})
-        result = VacancyFormatter.format_vacancy_brief(sample_vacancy, 1)
-        assert "от 100,000 ₽" in result
-
-        # Только максимальная зарплата
-        sample_vacancy.salary = Salary({"to": 150000, "currency": "RUR"})
-        result = VacancyFormatter.format_vacancy_brief(sample_vacancy, 1)
-        assert "до 150,000 ₽" in result
-
-    def test_format_vacancy_info_with_dict(self):
-        """Тест форматирования информации о вакансии из словаря"""
-        vacancy_dict = {
-            'vacancy_id': 'test_1',
-            'title': 'Python Developer',
-            'url': 'https://test.com/vacancy/1',
-            'employer': {'name': 'Test Company'},
-            'salary': {'from': 100000, 'to': 150000, 'currency': 'RUR'},
-            'experience': 'От 3 лет',
-            'employment': 'Полная занятость',
-            'source': 'hh.ru',
-            'description': 'Разработка на Python'
-        }
-
-        result = VacancyFormatter.format_vacancy_info(vacancy_dict, 1)
-
-        assert "1." in result
-        assert "ID: test_1" in result
-        assert "Название: Python Developer" in result
-        assert "Компания: Test Company" in result
-        assert "Зарплата: от 100000 до 150000 RUR" in result
-
-    def test_format_vacancy_info_with_object(self, sample_vacancy):
-        """Тест форматирования информации о вакансии из объекта"""
-        result = VacancyFormatter.format_vacancy_info(sample_vacancy, 1)
-
-        assert "1." in result
-        assert "ID: test_1" in result
-        assert "Название: Python Developer" in result
-        assert "Компания: Test Company" in result
+        assert "|" in result  # Разделители должны быть
 
     def test_display_vacancy_info(self, sample_vacancy, capsys):
-        """Тест отображения информации о вакансии"""
+        """Тест статического метода отображения"""
+        # Этот тест проверяет, что метод не вызывает исключений
         VacancyFormatter.display_vacancy_info(sample_vacancy, 1)
-        captured = capsys.readouterr()
+        captured = capsys.readouterr() # Читаем вывод, чтобы убедиться, что он не пустой или соответствует ожиданиям
 
-        assert "1." in captured.out
-        assert "Python Developer" in captured.out
+        assert "1. Python Developer" in captured.out
         assert "Test Company" in captured.out
-
-    def test_format_salary_dict(self):
-        """Тест форматирования зарплаты из словаря"""
-        salary_dict = {'from': 100000, 'to': 150000, 'currency': 'RUR'}
-        result = VacancyFormatter._format_salary_dict(salary_dict)
-        assert result == "от 100000 до 150000 RUR"
-
-        # Только минимальная
-        salary_dict = {'from': 100000, 'currency': 'RUR'}
-        result = VacancyFormatter._format_salary_dict(salary_dict)
-        assert result == "от 100000 RUR"
-
-        # Только максимальная
-        salary_dict = {'to': 150000, 'currency': 'RUR'}
-        result = VacancyFormatter._format_salary_dict(salary_dict)
-        assert result == "до 150000 RUR"
-
-        # Пустой словарь
-        result = VacancyFormatter._format_salary_dict({})
-        assert result == "Зарплата не указана"
-
-    def test_format_company_info(self):
-        """Тест форматирования информации о компании"""
-        # Словарь с названием
-        employer = {'name': 'Test Company'}
-        result = VacancyFormatter.format_company_info(employer)
-        assert result == "Test Company"
-
-        # Строка
-        result = VacancyFormatter.format_company_info("Test Company")
-        assert result == "Test Company"
-
-        # Пустое значение
-        result = VacancyFormatter.format_company_info(None)
-        assert result == "Не указана"
-
-        # Пустой словарь
-        result = VacancyFormatter.format_company_info({})
-        assert result == "Не указана"
-
-    def test_extract_company_name(self):
-        """Тест извлечения названия компании"""
-        # Из атрибута employer (словарь)
-        vacancy = Mock()
-        vacancy.employer = {'name': 'Test Company'}
-        result = VacancyFormatter._extract_company_name(vacancy)
-        assert result == "Test Company"
-
-        # Из атрибута employer (строка)
-        vacancy.employer = "Test Company"
-        result = VacancyFormatter._extract_company_name(vacancy)
-        assert result == "Test Company"
-
-        # Из атрибута company (fallback)
-        vacancy.employer = None
-        vacancy.company = "Test Company"
-        result = VacancyFormatter._extract_company_name(vacancy)
-        assert result == "Test Company"
-
-        # Неизвестная компания
-        vacancy.employer = None
-        vacancy.company = None
-        result = VacancyFormatter._extract_company_name(vacancy)
-        assert result == "Не указана"
-
-    def test_extract_salary_info(self):
-        """Тест извлечения информации о зарплате"""
-        # Объект Salary
-        vacancy = Mock()
-        vacancy.salary = Mock()
-        vacancy.salary.salary_from = 100000
-        vacancy.salary.salary_to = 150000
-        vacancy.salary.currency = 'RUR'
-        
-        result = VacancyFormatter._extract_salary_info(vacancy)
-        assert "от 100,000" in result and "до 150,000" in result
-
-        # Словарь
-        vacancy.salary = {'from': 100000, 'to': 150000, 'currency': 'RUR'}
-        result = VacancyFormatter._extract_salary_info(vacancy)
-        assert "от 100000 до 150000 RUR" in result
-
-        # Отсутствует
-        vacancy.salary = None
-        result = VacancyFormatter._extract_salary_info(vacancy)
-        assert result == "Не указана"
-
-    def test_extract_description(self):
-        """Тест извлечения описания"""
-        vacancy = Mock()
-        
-        # Обычное описание
-        vacancy.description = "Разработка на Python с использованием Django"
-        result = VacancyFormatter._extract_description(vacancy)
-        assert "Разработка на Python" in result
-
-        # HTML-теги
-        vacancy.description = "<p>Разработка на <strong>Python</strong></p>"
-        result = VacancyFormatter._extract_description(vacancy)
-        assert "<p>" not in result and "<strong>" not in result
-        assert "Разработка на Python" in result
-
-        # Длинное описание (должно обрезаться)
-        long_text = "А" * 200
-        vacancy.description = long_text
-        result = VacancyFormatter._extract_description(vacancy)
-        assert len(result) <= 153  # 150 символов + "..."
-        assert result.endswith("...")
-
-        # Пустое описание
-        vacancy.description = ""
-        result = VacancyFormatter._extract_description(vacancy)
-        assert result == "Описание отсутствует"
-
-        # Fallback на detailed_description
-        vacancy.description = None
-        vacancy.detailed_description = "Детальное описание"
-        result = VacancyFormatter._extract_description(vacancy)
-        assert "Детальное описание" in result
-
-    def test_extract_responsibilities(self, sample_vacancy):
-        """Тест извлечения обязанностей"""
-        sample_vacancy.responsibilities = "Разработка веб-приложений"
-        result = VacancyFormatter._extract_responsibilities(sample_vacancy)
-        assert result == "Разработка веб-приложений"
-
-        sample_vacancy.responsibilities = None
-        result = VacancyFormatter._extract_responsibilities(sample_vacancy)
-        assert result is None
-
-    def test_extract_requirements(self, sample_vacancy):
-        """Тест извлечения требований"""
-        sample_vacancy.requirements = "Знание Python, Django"
-        result = VacancyFormatter._extract_requirements(sample_vacancy)
-        assert result == "Знание Python, Django"
-
-        sample_vacancy.requirements = None
-        result = VacancyFormatter._extract_requirements(sample_vacancy)
-        assert result is None
-
-    def test_extract_conditions(self, sample_vacancy):
-        """Тест извлечения условий"""
-        sample_vacancy.schedule = "Полный день"
-        result = VacancyFormatter._extract_conditions(sample_vacancy)
-        assert "График: Полный день" in result
-
-        sample_vacancy.schedule = None
-        result = VacancyFormatter._extract_conditions(sample_vacancy)
-        assert result is None
-
-    def test_build_vacancy_lines(self, sample_vacancy):
-        """Тест построения строк информации о вакансии"""
-        lines = VacancyFormatter._build_vacancy_lines(sample_vacancy, 1)
-
-        # Проверяем наличие основных разделов
-        line_text = "\n".join(lines)
-        assert "1." in line_text
-        assert "ID: test_1" in line_text
-        assert "Название: Python Developer" in line_text
-        assert "Компания: Test Company" in line_text
-        assert "Источник: hh.ru" in line_text
-        assert "Ссылка:" in line_text
-
-    def test_build_vacancy_lines_with_api_url(self, sample_vacancy):
-        """Тест построения строк с API URL (должен преобразоваться в веб-URL)"""
-        sample_vacancy.url = "https://api.hh.ru/vacancies/12345"
-        lines = VacancyFormatter._build_vacancy_lines(sample_vacancy, 1)
-        
-        line_text = "\n".join(lines)
-        assert "https://hh.ru/vacancy/12345" in line_text
-
-    def test_format_salary_with_object(self, sample_salary):
-        """Тест форматирования зарплаты с объектом Salary"""
-        result = VacancyFormatter.format_salary(sample_salary)
-        assert result == str(sample_salary)
-
-    def test_format_salary_with_dict(self):
-        """Тест форматирования зарплаты со словарем"""
-        salary_dict = {'from': 100000, 'to': 150000, 'currency': 'RUR'}
-        result = VacancyFormatter.format_salary(salary_dict)
-        assert "от 100000 до 150000 RUR" in result
-
-    def test_format_salary_none(self):
-        """Тест форматирования пустой зарплаты"""
-        result = VacancyFormatter.format_salary(None)
-        assert result == "Зарплата не указана"
+        assert "100 000 - 150 000 руб." in captured.out
