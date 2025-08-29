@@ -91,8 +91,8 @@ class BaseJobAPI(ABC):
 
     def _deduplicate_vacancies(self, vacancies: List[Dict], source: str = None) -> List[Dict]:
         """
-        Удаление дублирующихся вакансий БЕЗ фильтрации по целевым компаниям.
-        Фильтрация должна происходить на более раннем этапе.
+        УСТАРЕВШИЙ МЕТОД: Дедупликация теперь выполняется в PostgresSaver.
+        Этот метод оставлен для совместимости и выполняет простую дедупликацию по ID.
 
         Args:
             vacancies: Список вакансий для дедупликации
@@ -104,126 +104,19 @@ class BaseJobAPI(ABC):
         if not vacancies:
             return []
 
-        print("Выполняется дедупликация вакансий...")
-        logger.info(f"Начинаем дедупликацию для {len(vacancies)} вакансий из источника {source}")
-
-        try:
-            # Используем PostgresSaver для SQL-операций
-            from src.storage.postgres_saver import PostgresSaver
-
-            postgres_saver = PostgresSaver()
-
-            with postgres_saver._get_connection() as conn:
-                with conn.cursor() as cursor:
-                    # Создаем временную таблицу для анализа
-                    cursor.execute(
-                        """
-                        CREATE TEMP TABLE temp_dedup_analysis (
-                            original_index INTEGER,
-                            vacancy_id VARCHAR(50),
-                            title_normalized VARCHAR(500),
-                            company_normalized VARCHAR(500),
-                            salary_key VARCHAR(50),
-                            area_normalized VARCHAR(200),
-                            dedup_key VARCHAR(1000),
-                            source VARCHAR(20)
-                        ) ON COMMIT DROP
-                    """
-                    )
-
-                    # Подготавливаем данные для анализа
-                    analysis_data = []
-                    for idx, vacancy in enumerate(vacancies):
-                        # Нормализуем данные для сравнения
-                        title = self._normalize_text(vacancy.get("name", vacancy.get("profession", "")))
-
-                        # Извлекаем название компании
-                        company = ""
-                        if "employer" in vacancy and vacancy["employer"]:
-                            company = self._normalize_text(vacancy["employer"].get("name", ""))
-                        elif "firm_name" in vacancy:
-                            company = self._normalize_text(vacancy.get("firm_name", ""))
-
-                        # Нормализуем зарплату
-                        salary_key = self._get_salary_key(vacancy)
-
-                        # Нормализуем регион
-                        area = ""
-                        if "area" in vacancy and vacancy["area"]:
-                            area = self._normalize_text(vacancy["area"].get("name", ""))
-                        elif "town" in vacancy:
-                            area = self._normalize_text(vacancy.get("town", {}).get("title", ""))
-
-                        # Создаем ключ дедупликации
-                        dedup_key = f"{title}|{company}|{salary_key}|{area}"
-
-                        analysis_data.append(
-                            (
-                                idx,
-                                str(vacancy.get("id", "")),
-                                title,
-                                company,
-                                salary_key,
-                                area,
-                                dedup_key,
-                                source or "unknown",
-                            )
-                        )
-
-                    # Вставляем данные
-                    insert_query = """
-                        INSERT INTO temp_dedup_analysis (
-                            original_index, vacancy_id, title_normalized, company_normalized,
-                            salary_key, area_normalized, dedup_key, source
-                        ) VALUES %s
-                    """
-
-                    from psycopg2.extras import execute_values
-
-                    execute_values(cursor, insert_query, analysis_data, template=None, page_size=1000)
-
-                    # Получаем только уникальные записи
-                    cursor.execute(
-                        """
-                        SELECT original_index
-                        FROM (
-                            SELECT
-                                original_index,
-                                ROW_NUMBER() OVER (
-                                    PARTITION BY dedup_key
-                                    ORDER BY original_index
-                                ) as row_num
-                            FROM temp_dedup_analysis
-                        ) ranked
-                        WHERE row_num = 1
-                        ORDER BY original_index
-                    """
-                    )
-
-                    unique_indices = [row[0] for row in cursor.fetchall()]
-
-                    # Формируем результат из уникальных вакансий
-                    unique_vacancies = [vacancies[idx] for idx in unique_indices]
-
-                    duplicates_removed = len(vacancies) - len(unique_vacancies)
-                    logger.info(f"Дедупликация завершена: {len(vacancies)} -> {len(unique_vacancies)} вакансий (удалено {duplicates_removed} дублей)")
-
-                    return unique_vacancies
-
-        except Exception as e:
-            logger.error(f"Ошибка при дедупликации: {e}")
-            logger.warning("Используем простую дедупликацию как fallback")
-            
-            # Простая дедупликация по ID
-            seen = set()
-            unique_vacancies = []
-            for vacancy in vacancies:
-                vacancy_id = vacancy.get("id") or vacancy.get("vacancy_id")
-                if vacancy_id and vacancy_id not in seen:
-                    seen.add(vacancy_id)
-                    unique_vacancies.append(vacancy)
-            
-            return unique_vacancies
+        logger.warning("Использован устаревший метод _deduplicate_vacancies. Рекомендуется использовать PostgresSaver.filter_and_deduplicate_vacancies")
+        
+        # Простая дедупликация по ID как fallback
+        seen = set()
+        unique_vacancies = []
+        for vacancy in vacancies:
+            vacancy_id = vacancy.get("id") or vacancy.get("vacancy_id")
+            if vacancy_id and vacancy_id not in seen:
+                seen.add(vacancy_id)
+                unique_vacancies.append(vacancy)
+        
+        logger.info(f"Простая дедупликация: {len(vacancies)} -> {len(unique_vacancies)} вакансий")
+        return unique_vacancies
 
     def _normalize_text(self, text: str) -> str:
         """

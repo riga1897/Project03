@@ -1316,6 +1316,233 @@ class PostgresSaver(AbstractVacancyStorage):
                 cursor.close()
             connection.close()
 
+    def filter_and_deduplicate_vacancies(self, vacancies: List[Vacancy], filters: Dict[str, Any] = None) -> List[Vacancy]:
+        """
+        Единственная точка фильтрации и дедупликации вакансий через SQL временные таблицы.
+        
+        Выполняет:
+        1. Фильтрацию по целевым компаниям
+        2. Дедупликацию
+        3. Дополнительные фильтры (если указаны)
+        
+        Args:
+            vacancies: Список вакансий из API для обработки
+            filters: Дополнительные фильтры (опционально)
+
+        Returns:
+            List[Vacancy]: Отфильтрованный и дедуплицированный список вакансий
+        """
+        if not vacancies:
+            return []
+
+        if filters is None:
+            filters = {}
+
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+            
+            logger.info(f"Начинаем SQL-фильтрацию и дедупликацию для {len(vacancies)} вакансий")
+
+            # Создаем временную таблицу для всех операций
+            cursor.execute(
+                """
+                CREATE TEMP TABLE temp_processing_vacancies (
+                    original_index INTEGER,
+                    vacancy_id VARCHAR(50),
+                    title VARCHAR(500),
+                    url TEXT,
+                    salary_from INTEGER,
+                    salary_to INTEGER,
+                    salary_currency VARCHAR(10),
+                    description TEXT,
+                    requirements TEXT,
+                    responsibilities TEXT,
+                    experience VARCHAR(200),
+                    employment VARCHAR(200),
+                    schedule VARCHAR(200),
+                    area VARCHAR(200),
+                    source VARCHAR(50),
+                    published_at TIMESTAMP,
+                    company_id INTEGER,
+                    employer_name VARCHAR(500),
+                    employer_id VARCHAR(50),
+                    dedup_key VARCHAR(1000)
+                ) ON COMMIT DROP
+            """
+            )
+
+            # Получаем сопоставление компаний для фильтрации
+            cursor.execute(
+                """
+                SELECT id, name, hh_id, sj_id, LOWER(name) as normalized_name
+                FROM companies
+            """
+            )
+
+            company_mapping = {}
+            company_id_mapping = {}  # hh_id/sj_id -> company_id
+            
+            for row in cursor.fetchall():
+                comp_id, name, hh_id, sj_id, normalized_name = row
+                company_mapping[normalized_name] = comp_id
+                if hh_id:
+                    company_id_mapping[hh_id] = comp_id
+                if sj_id:
+                    company_id_mapping[sj_id] = comp_id
+
+            # Подготавливаем данные для вставки с фильтрацией по целевым компаниям
+            insert_data = []
+            filtered_count = 0
+            
+            for idx, vacancy in enumerate(vacancies):
+                # Извлекаем данные работодателя
+                employer_name = None
+                employer_id = None
+                
+                if vacancy.employer:
+                    if isinstance(vacancy.employer, dict):
+                        employer_name = vacancy.employer.get("name", "").strip()
+                        employer_id = vacancy.employer.get("id", "").strip()
+                    else:
+                        employer_name = str(vacancy.employer).strip()
+
+                # Определяем company_id - ФИЛЬТРАЦИЯ ПО ЦЕЛЕВЫМ КОМПАНИЯМ
+                mapped_company_id = None
+                
+                # Поиск по ID (приоритет)
+                if employer_id:
+                    mapped_company_id = company_id_mapping.get(employer_id)
+                
+                # Поиск по названию
+                if not mapped_company_id and employer_name:
+                    employer_lower = employer_name.lower()
+                    mapped_company_id = company_mapping.get(employer_lower)
+                    
+                    # Частичное совпадение
+                    if not mapped_company_id:
+                        for alt_name, comp_id in company_mapping.items():
+                            if (len(alt_name) > 2 and 
+                                (alt_name in employer_lower or employer_lower in alt_name)):
+                                mapped_company_id = comp_id
+                                break
+
+                # ФИЛЬТРУЕМ: пропускаем вакансии НЕ от целевых компаний
+                if not mapped_company_id:
+                    filtered_count += 1
+                    continue
+
+                # Создаем ключ дедупликации
+                title_norm = self._normalize_text(vacancy.title or "")
+                company_norm = self._normalize_text(employer_name or "")
+                salary_key = f"{vacancy.salary.salary_from or 0}-{vacancy.salary.salary_to or 0}" if vacancy.salary else "0-0"
+                area_norm = self._normalize_text(str(vacancy.area) if vacancy.area else "")
+                dedup_key = f"{title_norm}|{company_norm}|{salary_key}|{area_norm}"
+
+                # Подготавливаем данные для вставки
+                salary_from = vacancy.salary.salary_from if vacancy.salary else None
+                salary_to = vacancy.salary.salary_to if vacancy.salary else None
+                salary_currency = vacancy.salary.currency if vacancy.salary else None
+                
+                area_str = str(vacancy.area) if vacancy.area else None
+                published_date = self._normalize_published_date(vacancy.published_at)
+
+                insert_data.append((
+                    idx, vacancy.vacancy_id, vacancy.title, vacancy.url,
+                    salary_from, salary_to, salary_currency,
+                    vacancy.description, vacancy.requirements, vacancy.responsibilities,
+                    vacancy.experience, vacancy.employment, vacancy.schedule,
+                    area_str, vacancy.source, published_date, mapped_company_id,
+                    employer_name, employer_id, dedup_key
+                ))
+
+            logger.info(f"После фильтрации по целевым компаниям: {len(insert_data)} из {len(vacancies)} вакансий (отфильтровано: {filtered_count})")
+
+            if not insert_data:
+                return []
+
+            # Bulk insert отфильтрованных данных
+            from psycopg2.extras import execute_values
+            
+            execute_values(
+                cursor,
+                """INSERT INTO temp_processing_vacancies (
+                    original_index, vacancy_id, title, url, salary_from, salary_to, salary_currency,
+                    description, requirements, responsibilities, experience, employment, schedule,
+                    area, source, published_at, company_id, employer_name, employer_id, dedup_key
+                ) VALUES %s""",
+                insert_data,
+                template=None,
+                page_size=1000
+            )
+
+            # ДЕДУПЛИКАЦИЯ через SQL
+            cursor.execute(
+                """
+                SELECT original_index
+                FROM (
+                    SELECT original_index,
+                           ROW_NUMBER() OVER (
+                               PARTITION BY dedup_key
+                               ORDER BY original_index
+                           ) as row_num
+                    FROM temp_processing_vacancies
+                ) ranked
+                WHERE row_num = 1
+                ORDER BY original_index
+            """
+            )
+
+            unique_indices = [row[0] for row in cursor.fetchall()]
+            
+            # Применяем дополнительные фильтры если нужно
+            where_conditions = []
+            params = []
+            
+            if filters.get("salary_from"):
+                where_conditions.append("(salary_from >= %s OR salary_to >= %s)")
+                params.extend([filters["salary_from"], filters["salary_from"]])
+            
+            if filters.get("keywords"):
+                keywords = filters["keywords"] if isinstance(filters["keywords"], list) else [filters["keywords"]]
+                for keyword in keywords:
+                    where_conditions.append("(LOWER(title) LIKE LOWER(%s) OR LOWER(description) LIKE LOWER(%s))")
+                    keyword_param = f"%{keyword}%"
+                    params.extend([keyword_param, keyword_param])
+
+            if where_conditions:
+                # Применяем дополнительные фильтры
+                where_clause = " AND ".join(where_conditions)
+                placeholders = ",".join(["%s"] * len(unique_indices))
+                
+                cursor.execute(f"""
+                    SELECT original_index
+                    FROM temp_processing_vacancies
+                    WHERE original_index IN ({placeholders}) AND {where_clause}
+                    ORDER BY original_index
+                """, unique_indices + params)
+                
+                unique_indices = [row[0] for row in cursor.fetchall()]
+
+            # Формируем результат из исходных объектов
+            result_vacancies = [vacancies[idx] for idx in unique_indices]
+            
+            duplicates_removed = len(insert_data) - len(result_vacancies)
+            logger.info(f"SQL-обработка завершена: {len(vacancies)} -> {len(result_vacancies)} вакансий")
+            logger.info(f"Отфильтровано по компаниям: {filtered_count}, дедуплицировано: {duplicates_removed}")
+            
+            connection.commit()
+            return result_vacancies
+
+        except Exception as e:
+            logger.error(f"Ошибка SQL-фильтрации и дедупликации: {e}")
+            connection.rollback()
+            return vacancies  # Возвращаем исходный список при ошибке
+        finally:
+            if "cursor" in locals():
+                cursor.close()
+            connection.close()
+
     def filter_api_vacancies_via_temp_table(self, vacancies: List[Vacancy], filters: Dict[str, Any]) -> List[Vacancy]:
         """
         Фильтрация вакансий из API через временную таблицу средствами SQL

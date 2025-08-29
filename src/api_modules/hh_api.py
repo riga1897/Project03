@@ -181,31 +181,19 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             logger.error(f"Ошибка получения вакансий: {e}")
             return []
 
-    def _deduplicate_vacancies(self, vacancies: List[Dict], source: str = None) -> List[Dict]:
-        """
-        Удаление дублирующихся вакансий HH с фильтрацией по целевым компаниям
-
-        Args:
-            vacancies: Список вакансий с HH.ru
-
-        Returns:
-            List[Dict]: Список уникальных вакансий от целевых компаний
-        """
-        return super()._deduplicate_vacancies(vacancies, "hh")
-
     def get_vacancies_with_deduplication(self, search_query: str, **kwargs) -> List[Dict]:
         """
-        Получение вакансий с HH.ru
+        Получение вакансий с HH.ru БЕЗ дедупликации.
+        Дедупликация выполняется централизованно в PostgresSaver.
 
         Args:
             search_query: Поисковый запрос
             **kwargs: Дополнительные параметры
 
         Returns:
-            List[Dict]: Список уникальных вакансий
+            List[Dict]: Список вакансий (дедупликация будет выполнена позже)
         """
-        vacancies = self.get_vacancies(search_query, **kwargs)
-        return self._deduplicate_vacancies(vacancies)
+        return self.get_vacancies(search_query, **kwargs)
 
     def get_vacancies_from_target_companies(self, search_query: str = "", **kwargs) -> List[Dict]:
         """
