@@ -249,8 +249,21 @@ class VacancyOperationsCoordinator:
 
             if vacancies:
                 # Сохраняем найденные вакансии
-                saved_count = self.storage.save_vacancies(vacancies)
-                print(f"Сохранено {saved_count} новых вакансий в базу данных")
+                update_messages = self.storage.add_vacancy(vacancies)
+                
+                # Получаем реальное количество вакансий в БД после сохранения
+                total_in_db = len(self.storage.get_vacancies())
+                
+                if update_messages:
+                    # Показываем детали операций
+                    for message in update_messages[:10]:  # Показываем первые 10
+                        print(f"  • {message}")
+                    
+                    if len(update_messages) > 10:
+                        remaining = len(update_messages) - 10
+                        print(f"  • ... и еще {remaining} операций")
+                
+                print(f"Общее количество вакансий в базе данных: {total_in_db}")
 
             return vacancies
 
@@ -283,8 +296,21 @@ class VacancyOperationsCoordinator:
 
             if vacancies:
                 # Сохраняем найденные вакансии
-                saved_count = self.storage.save_vacancies(vacancies)
-                print(f"Сохранено {saved_count} новых вакансий от целевых компаний в базу данных")
+                update_messages = self.storage.add_vacancy(vacancies)
+                
+                # Получаем реальное количество вакансий в БД после сохранения
+                total_in_db = len(self.storage.get_vacancies())
+                
+                if update_messages:
+                    # Показываем детали операций
+                    for message in update_messages[:10]:  # Показываем первые 10
+                        print(f"  • {message}")
+                    
+                    if len(update_messages) > 10:
+                        remaining = len(update_messages) - 10
+                        print(f"  • ... и еще {remaining} операций")
+                
+                print(f"Общее количество вакансий в базе данных: {total_in_db}")
 
             return vacancies
 

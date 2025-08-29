@@ -684,6 +684,22 @@ class PostgresSaver(AbstractVacancyStorage):
         # Всегда используем оптимизированный batch метод
         return self.add_vacancy_batch_optimized(vacancies)
 
+    def save_vacancies(self, vacancies: Union[Vacancy, List[Vacancy]]) -> int:
+        """
+        Сохраняет вакансии в БД и возвращает количество операций
+        
+        Args:
+            vacancies: Вакансия или список вакансий
+            
+        Returns:
+            int: Количество операций (для совместимости)
+        """
+        if not isinstance(vacancies, list):
+            vacancies = [vacancies]
+            
+        update_messages = self.add_vacancy_batch_optimized(vacancies)
+        return len(update_messages)
+
     def _find_company_by_employer_info(
         self, employer_name: str, employer_id: str = None, company_mapping: Dict[str, int] = None
     ) -> Optional[int]:
