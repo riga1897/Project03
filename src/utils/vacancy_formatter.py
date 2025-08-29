@@ -294,3 +294,7 @@ class VacancyFormatter(BaseFormatter):
             lines.append(f"Ссылка: {url}")
 
         return ' | '.join(lines)
+
+
+# Создаем экземпляр для использования в других модулях
+vacancy_formatter = VacancyFormatter()
