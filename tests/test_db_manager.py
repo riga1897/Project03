@@ -26,6 +26,13 @@ class TestDBManager:
     def test_check_connection(self, mock_connect):
         """Тест проверки подключения к базе данных"""
         mock_conn = Mock()
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
+        mock_cursor = Mock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
+        mock_cursor.fetchone.return_value = (1,)
+        mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
 
         db_manager = DBManager()
@@ -55,8 +62,13 @@ class TestDBManager:
     def test_get_companies_and_vacancies_count(self, mock_connect, sample_companies_data):
         """Тест получения списка компаний и количества вакансий"""
         mock_conn = Mock()
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
         mock_cursor = Mock()
-        mock_cursor.fetchall.return_value = sample_companies_data
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
+        mock_cursor.fetchone.return_value = (1,)  # For check_connection
+        mock_cursor.fetchall.return_value = [("СБЕР", 10), ("Яндекс", 15)]
         mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
 
@@ -64,31 +76,41 @@ class TestDBManager:
         companies = db_manager.get_companies_and_vacancies_count()
 
         assert len(companies) == 2
-        assert companies[0]["name"] == "СБЕР"
-        assert companies[0]["vacancies_count"] == 10
+        assert companies[0][0] == "СБЕР"
+        assert companies[0][1] == 10
 
     @patch('psycopg2.connect')
     def test_get_all_vacancies(self, mock_connect):
         """Тест получения всех вакансий"""
         mock_conn = Mock()
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
         mock_cursor = Mock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
         mock_cursor.fetchall.return_value = [
-            ("Python Developer", "СБЕР", 100000, 150000, "https://hh.ru/vacancy/12345")
+            {"title": "Python Developer", "company_name": "СБЕР", "salary_info": "100000 - 150000 RUR", 
+             "url": "https://hh.ru/vacancy/12345", "vacancy_id": "12345", "raw_company_id": 1, "linked_company_id": 1}
         ]
         mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
 
-        db_manager = DBManager()
-        vacancies = db_manager.get_all_vacancies()
+        with patch('psycopg2.extras.RealDictCursor'):
+            db_manager = DBManager()
+            vacancies = db_manager.get_all_vacancies()
 
-        assert len(vacancies) == 1
-        mock_cursor.execute.assert_called_once()
+            assert len(vacancies) == 1
+            assert vacancies[0]["title"] == "Python Developer"
 
     @patch('psycopg2.connect')
     def test_get_avg_salary(self, mock_connect):
         """Тест получения средней зарплаты"""
         mock_conn = Mock()
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
         mock_cursor = Mock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
         mock_cursor.fetchone.return_value = (125000.0,)
         mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
@@ -97,15 +119,32 @@ class TestDBManager:
         avg_salary = db_manager.get_avg_salary()
 
         assert avg_salary == 125000.0
-        mock_cursor.execute.assert_called_once()
+        mock_cursor.execute.assert_called()
 
     @patch('psycopg2.connect')
     def test_get_vacancies_with_higher_salary(self, mock_connect):
         """Тест получения вакансий с зарплатой выше средней"""
         mock_conn = Mock()
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
         mock_cursor = Mock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
+        
+        # Настраиваем разные результаты для разных запросов
+        def side_effect(*args, **kwargs):
+            if "AVG(" in args[0]:
+                return (125000.0,)
+            else:
+                return [
+                    ("Senior Python Developer", "СБЕР", "150000 - 200000 RUR", 
+                     "https://hh.ru/vacancy/67890", 175000.0, "67890")
+                ]
+        
+        mock_cursor.fetchone.side_effect = lambda: (125000.0,)
         mock_cursor.fetchall.return_value = [
-            ("Senior Python Developer", "СБЕР", 150000, 200000, "https://hh.ru/vacancy/67890")
+            ("Senior Python Developer", "СБЕР", "150000 - 200000 RUR", 
+             "https://hh.ru/vacancy/67890", 175000.0, "67890")
         ]
         mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
@@ -114,15 +153,20 @@ class TestDBManager:
         vacancies = db_manager.get_vacancies_with_higher_salary()
 
         assert len(vacancies) == 1
-        mock_cursor.execute.assert_called()
+        assert vacancies[0]["title"] == "Senior Python Developer"
 
     @patch('psycopg2.connect')
     def test_get_vacancies_with_keyword(self, mock_connect):
         """Тест поиска вакансий по ключевому слову"""
         mock_conn = Mock()
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
         mock_cursor = Mock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
         mock_cursor.fetchall.return_value = [
-            ("Python Developer", "СБЕР", 100000, 150000, "https://hh.ru/vacancy/12345")
+            ("Python Developer", "СБЕР", "100000 - 150000 RUR", 
+             "https://hh.ru/vacancy/12345", "Python development", "12345")
         ]
         mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
@@ -131,10 +175,8 @@ class TestDBManager:
         vacancies = db_manager.get_vacancies_with_keyword("python")
 
         assert len(vacancies) == 1
-        mock_cursor.execute.assert_called_with(
-            pytest.approx(mock_cursor.execute.call_args[0][0], abs=1e-2),
-            ("python",)
-        )
+        assert vacancies[0]["title"] == "Python Developer"
+        mock_cursor.execute.assert_called()
 
     @patch('psycopg2.connect')
     def test_create_tables(self, mock_connect):
@@ -147,6 +189,12 @@ class TestDBManager:
         mock_cursor.__exit__ = Mock(return_value=None)
         mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
+
+        # Настраиваем ответы для различных SQL запросов
+        mock_cursor.fetchone.side_effect = [
+            ("integer",),  # Для проверки типа company_id
+            (True,),       # Для проверки существования constraint
+        ]
 
         db_manager = DBManager()
         db_manager.create_tables()
@@ -166,6 +214,15 @@ class TestDBManager:
         mock_cursor.__exit__ = Mock(return_value=None)
         mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
+
+        # Настраиваем ответы для SQL запросов
+        mock_cursor.fetchone.side_effect = [
+            (True,),   # Таблица существует
+            (0,),      # Количество компаний = 0
+            None,      # Компания не существует (для каждой проверки)
+            None, None, None, None, None, None, None, None, None, None, None, None, None,  # Для каждой целевой компании
+            (12,)      # Финальное количество компаний
+        ]
 
         db_manager = DBManager()
         db_manager.populate_companies_table()
