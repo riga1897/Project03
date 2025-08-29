@@ -175,13 +175,8 @@ class TestUnifiedAPI:
         invalid_sources = unified_api.validate_sources(["invalid"])
         assert invalid_sources == ["hh", "sj"]  # Возвращает все доступные
 
-    @patch('src.api_modules.unified_api.PostgresSaver')
-    def test_get_vacancies_from_sources(self, mock_postgres_class, unified_api):
-        """Тест получения вакансий из источников с SQL-дедупликацией"""
-        # Настраиваем мок PostgresSaver
-        mock_postgres = MockPostgresSaver()
-        mock_postgres_class.return_value = mock_postgres
-        
+    def test_get_vacancies_from_sources(self, unified_api):
+        """Тест получения вакансий из источников с мокированием методов API"""
         # Мокируем результаты API
         unified_api.hh_api.get_vacancies.return_value = [
             {"id": "1", "name": "HH Vacancy", "source": "hh.ru"}
@@ -190,18 +185,21 @@ class TestUnifiedAPI:
             {"id": "2", "profession": "SJ Vacancy", "source": "superjob.ru"}
         ]
         
-        # Мокируем Vacancy.from_dict
-        with patch('src.api_modules.unified_api.Vacancy') as mock_vacancy_class:
-            mock_vacancy_class.from_dict.side_effect = lambda x: MockVacancy(x)
+        # Мокируем _filter_by_target_companies для возврата отфильтрованных данных
+        with patch.object(unified_api, '_filter_by_target_companies') as mock_filter:
+            mock_filter.return_value = [{"id": "1", "name": "Filtered Vacancy"}]
             
-            # Мокируем _filter_by_target_companies
-            with patch.object(unified_api, '_filter_by_target_companies') as mock_filter:
-                mock_filter.return_value = [{"id": "1", "name": "Filtered Vacancy"}]
-                
-                result = unified_api.get_vacancies_from_sources("python", ["hh", "sj"])
-                
-                assert len(result) == 1
-                assert result[0]["id"] == "1"
+            result = unified_api.get_vacancies_from_sources("python", ["hh", "sj"])
+            
+            assert len(result) == 1
+            assert result[0]["id"] == "1"
+            
+            # Проверяем вызовы API
+            unified_api.hh_api.get_vacancies.assert_called_once()
+            unified_api.sj_api.get_vacancies.assert_called_once()
+            
+            # Проверяем что была вызвана фильтрация
+            mock_filter.assert_called_once()
 
     def test_get_vacancies_from_source(self, unified_api):
         """Тест получения вакансий из конкретного источника"""
@@ -266,13 +264,8 @@ class TestBaseJobAPI:
 class TestAPIIntegration:
     """Интеграционные тесты для API модулей"""
 
-    @patch('src.api_modules.unified_api.PostgresSaver')
-    def test_end_to_end_workflow(self, mock_postgres_class):
+    def test_end_to_end_workflow(self):
         """Тест полного workflow получения и обработки вакансий"""
-        # Настраиваем мок PostgresSaver
-        mock_postgres = MockPostgresSaver()
-        mock_postgres_class.return_value = mock_postgres
-        
         with patch('src.api_modules.unified_api.HeadHunterAPI') as mock_hh, \
              patch('src.api_modules.unified_api.SuperJobAPI') as mock_sj:
             
@@ -294,27 +287,23 @@ class TestAPIIntegration:
             # Создаем UnifiedAPI
             unified_api = UnifiedAPI()
             
-            # Мокируем Vacancy.from_dict
-            with patch('src.api_modules.unified_api.Vacancy') as mock_vacancy_class:
-                mock_vacancy_class.from_dict.side_effect = lambda x: MockVacancy(x)
+            # Мокируем фильтрацию
+            with patch.object(unified_api, '_filter_by_target_companies') as mock_filter:
+                mock_filter.return_value = [
+                    {"id": "hh1", "name": "Python Dev", "filtered": True}
+                ]
                 
-                # Мокируем фильтрацию
-                with patch.object(unified_api, '_filter_by_target_companies') as mock_filter:
-                    mock_filter.return_value = [
-                        {"id": "hh1", "name": "Python Dev", "filtered": True}
-                    ]
-                    
-                    # Выполняем тест
-                    result = unified_api.get_vacancies_from_sources("python")
-                    
-                    # Проверяем результат
-                    assert len(result) == 1
-                    assert result[0]["filtered"] is True
-                    
-                    # Проверяем что вызвались правильные методы
-                    mock_hh_instance.get_vacancies.assert_called_once()
-                    mock_sj_instance.get_vacancies.assert_called_once()
-                    mock_filter.assert_called_once()
+                # Выполняем тест
+                result = unified_api.get_vacancies_from_sources("python")
+                
+                # Проверяем результат
+                assert len(result) == 1
+                assert result[0]["filtered"] is True
+                
+                # Проверяем что вызвались правильные методы
+                mock_hh_instance.get_vacancies.assert_called_once()
+                mock_sj_instance.get_vacancies.assert_called_once()
+                mock_filter.assert_called_once()
 
     def test_error_handling(self):
         """Тест обработки ошибок"""
