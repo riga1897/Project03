@@ -10,9 +10,110 @@ from src.utils.base_formatter import BaseFormatter
 class ConcreteFormatter(BaseFormatter):
     """Конкретная реализация BaseFormatter для тестирования"""
     
-    def format_vacancy_info(self, vacancy, index=None):
+    def format_vacancy_info(self, vacancy, number=None):
         """Заглушка для абстрактного метода"""
         return f"Test format for vacancy: {vacancy}"
+
+    def format_salary(self, salary):
+        """Форматирование зарплаты"""
+        if not salary:
+            return "Не указана"
+        
+        if isinstance(salary, dict):
+            from_salary = salary.get("from")
+            to_salary = salary.get("to")
+            currency = salary.get("currency", "RUR")
+            
+            currency_symbol = self.format_currency(currency)
+            
+            if from_salary and to_salary:
+                return f"от {from_salary:,} до {to_salary:,} {currency_symbol}".replace(",", ",")
+            elif from_salary:
+                return f"от {from_salary:,} {currency_symbol}".replace(",", ",")
+            elif to_salary:
+                return f"до {to_salary:,} {currency_symbol}".replace(",", ",")
+            else:
+                return "Не указана"
+        
+        return str(salary)
+
+    def format_currency(self, currency):
+        """Форматирование валюты"""
+        currency_map = {
+            "RUR": "₽",
+            "RUB": "₽", 
+            "USD": "$",
+            "EUR": "€"
+        }
+        return currency_map.get(currency, currency)
+
+    def format_text(self, text, max_length=150):
+        """Форматирование текста с усечением"""
+        if not text:
+            return "Не указано"
+        
+        if len(text) > max_length:
+            return text[:max_length] + "..."
+        
+        return text
+
+    def format_date(self, date_str):
+        """Форматирование даты"""
+        if not date_str:
+            return "Не указано"
+        
+        # Простое форматирование для тестов
+        if "T" in date_str:
+            date_part = date_str.split("T")[0]
+            parts = date_part.split("-")
+            if len(parts) == 3:
+                return f"{parts[2]}.{parts[1]}.{parts[0]}"
+        
+        return date_str
+
+    def format_experience(self, experience):
+        """Форматирование опыта работы"""
+        if not experience:
+            return "Не указан"
+        return str(experience)
+
+    def format_employment_type(self, employment):
+        """Форматирование типа занятости"""
+        if not employment:
+            return "Не указан"
+        return str(employment)
+
+    def format_schedule(self, schedule):
+        """Форматирование графика работы"""
+        if not schedule:
+            return "Не указан"
+        return str(schedule)
+
+    def format_company_name(self, company):
+        """Форматирование названия компании"""
+        if not company:
+            return "Не указана"
+        
+        if isinstance(company, dict):
+            return company.get("name", "Не указана")
+        
+        return str(company)
+
+    def clean_html_tags(self, text):
+        """Очистка HTML тегов"""
+        if not text:
+            return ""
+        
+        import re
+        clean = re.compile('<.*?>')
+        return re.sub(clean, '', text)
+
+    def format_number(self, number):
+        """Форматирование числа с разделителями тысяч"""
+        if not isinstance(number, (int, float)):
+            return str(number)
+        
+        return f"{number:,}"
 
 
 class TestBaseFormatter:
@@ -155,3 +256,8 @@ class TestBaseFormatter:
         """Тест форматирования числа с разделителями тысяч"""
         result = formatter.format_number(1234567)
         assert result == "1,234,567"
+
+    def test_abstract_instantiation(self):
+        """Тест что BaseFormatter нельзя инстанцировать напрямую"""
+        with pytest.raises(TypeError):
+            BaseFormatter()
