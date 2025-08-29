@@ -261,3 +261,206 @@ class TestBaseFormatter:
         """Тест что BaseFormatter нельзя инстанцировать напрямую"""
         with pytest.raises(TypeError):
             BaseFormatter()
+"""
+Тесты для базового форматтера вакансий
+"""
+
+import pytest
+from abc import ABC
+from src.utils.base_formatter import BaseFormatter
+
+
+class ConcreteFormatter(BaseFormatter):
+    """Конкретная реализация BaseFormatter для тестирования"""
+    
+    def format_vacancy_info(self, vacancy, number=None):
+        return f"Vacancy {number}: {vacancy.get('title', 'No title')}"
+    
+    def format_salary(self, salary):
+        if not salary:
+            return "No salary"
+        return f"${salary}"
+    
+    def format_currency(self, currency):
+        return currency.upper()
+    
+    def format_text(self, text, max_length=150):
+        if not text:
+            return ""
+        return text[:max_length] + "..." if len(text) > max_length else text
+    
+    def format_date(self, date_str):
+        return date_str or "No date"
+    
+    def format_experience(self, experience):
+        return experience or "No experience"
+    
+    def format_employment_type(self, employment):
+        return employment or "No employment type"
+    
+    def format_schedule(self, schedule):
+        return schedule or "No schedule"
+    
+    def format_company_name(self, company):
+        if isinstance(company, dict):
+            return company.get('name', 'Unknown company')
+        return str(company) if company else 'Unknown company'
+    
+    def clean_html_tags(self, text):
+        import re
+        clean = re.compile('<.*?>')
+        return re.sub(clean, '', str(text))
+    
+    def format_number(self, number):
+        return f"{number:,}" if isinstance(number, (int, float)) else str(number)
+
+
+class TestBaseFormatter:
+    """Тесты для BaseFormatter"""
+    
+    def test_base_formatter_is_abstract(self):
+        """Тест что BaseFormatter является абстрактным классом"""
+        assert issubclass(BaseFormatter, ABC)
+        
+        # Проверяем, что нельзя создать экземпляр BaseFormatter
+        with pytest.raises(TypeError):
+            BaseFormatter()
+    
+    def test_concrete_formatter_implementation(self):
+        """Тест конкретной реализации форматтера"""
+        formatter = ConcreteFormatter()
+        assert isinstance(formatter, BaseFormatter)
+    
+    def test_format_vacancy_info(self):
+        """Тест форматирования информации о вакансии"""
+        formatter = ConcreteFormatter()
+        vacancy = {"title": "Python Developer"}
+        
+        result = formatter.format_vacancy_info(vacancy, 1)
+        assert "Vacancy 1: Python Developer" == result
+    
+    def test_format_vacancy_info_no_number(self):
+        """Тест форматирования без номера"""
+        formatter = ConcreteFormatter()
+        vacancy = {"title": "Java Developer"}
+        
+        result = formatter.format_vacancy_info(vacancy)
+        assert "Vacancy None: Java Developer" == result
+    
+    def test_format_salary(self):
+        """Тест форматирования зарплаты"""
+        formatter = ConcreteFormatter()
+        
+        assert formatter.format_salary(100000) == "$100000"
+        assert formatter.format_salary(None) == "No salary"
+        assert formatter.format_salary("") == "No salary"
+    
+    def test_format_currency(self):
+        """Тест форматирования валюты"""
+        formatter = ConcreteFormatter()
+        
+        assert formatter.format_currency("usd") == "USD"
+        assert formatter.format_currency("eur") == "EUR"
+        assert formatter.format_currency("rub") == "RUB"
+    
+    def test_format_text(self):
+        """Тест форматирования текста"""
+        formatter = ConcreteFormatter()
+        
+        short_text = "Short text"
+        long_text = "A" * 200
+        
+        assert formatter.format_text(short_text) == short_text
+        assert formatter.format_text(long_text, 50) == "A" * 50 + "..."
+        assert formatter.format_text("") == ""
+        assert formatter.format_text(None) == ""
+    
+    def test_format_date(self):
+        """Тест форматирования даты"""
+        formatter = ConcreteFormatter()
+        
+        assert formatter.format_date("2024-01-01") == "2024-01-01"
+        assert formatter.format_date("") == "No date"
+        assert formatter.format_date(None) == "No date"
+    
+    def test_format_experience(self):
+        """Тест форматирования опыта"""
+        formatter = ConcreteFormatter()
+        
+        assert formatter.format_experience("3-6 лет") == "3-6 лет"
+        assert formatter.format_experience("") == "No experience"
+        assert formatter.format_experience(None) == "No experience"
+    
+    def test_format_employment_type(self):
+        """Тест форматирования типа занятости"""
+        formatter = ConcreteFormatter()
+        
+        assert formatter.format_employment_type("Полная занятость") == "Полная занятость"
+        assert formatter.format_employment_type("") == "No employment type"
+        assert formatter.format_employment_type(None) == "No employment type"
+    
+    def test_format_schedule(self):
+        """Тест форматирования графика"""
+        formatter = ConcreteFormatter()
+        
+        assert formatter.format_schedule("Полный день") == "Полный день"
+        assert formatter.format_schedule("") == "No schedule"
+        assert formatter.format_schedule(None) == "No schedule"
+    
+    def test_format_company_name(self):
+        """Тест форматирования названия компании"""
+        formatter = ConcreteFormatter()
+        
+        # Тест с dict
+        company_dict = {"name": "Test Company"}
+        assert formatter.format_company_name(company_dict) == "Test Company"
+        
+        # Тест с пустым dict
+        empty_dict = {"name": ""}
+        assert formatter.format_company_name(empty_dict) == "Unknown company"
+        
+        # Тест со строкой
+        assert formatter.format_company_name("String Company") == "String Company"
+        
+        # Тест с None
+        assert formatter.format_company_name(None) == "Unknown company"
+        
+        # Тест с пустой строкой
+        assert formatter.format_company_name("") == "Unknown company"
+    
+    def test_clean_html_tags(self):
+        """Тест очистки HTML тегов"""
+        formatter = ConcreteFormatter()
+        
+        html_text = "<p>Hello <b>world</b>!</p>"
+        clean_text = formatter.clean_html_tags(html_text)
+        assert clean_text == "Hello world!"
+        
+        # Тест без HTML
+        plain_text = "Plain text"
+        assert formatter.clean_html_tags(plain_text) == plain_text
+    
+    def test_format_number(self):
+        """Тест форматирования числа"""
+        formatter = ConcreteFormatter()
+        
+        assert formatter.format_number(1000) == "1,000"
+        assert formatter.format_number(1000000) == "1,000,000"
+        assert formatter.format_number(123.45) == "123.45"
+        assert formatter.format_number("not a number") == "not a number"
+    
+    def test_all_abstract_methods_implemented(self):
+        """Тест что все абстрактные методы реализованы"""
+        formatter = ConcreteFormatter()
+        
+        # Проверяем, что все методы BaseFormatter реализованы
+        base_methods = [
+            'format_vacancy_info', 'format_salary', 'format_currency',
+            'format_text', 'format_date', 'format_experience',
+            'format_employment_type', 'format_schedule', 'format_company_name',
+            'clean_html_tags', 'format_number'
+        ]
+        
+        for method_name in base_methods:
+            assert hasattr(formatter, method_name)
+            assert callable(getattr(formatter, method_name))
