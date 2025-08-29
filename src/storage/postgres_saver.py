@@ -663,6 +663,30 @@ class PostgresSaver(AbstractVacancyStorage):
             logger.info(f"  Добавлено в БД: {new_count}")
             logger.info(f"  Обновлено в БД: {updated_count}")
 
+            # Дополнительная проверка количества записей в БД
+            cursor.execute("SELECT COUNT(*) FROM vacancies")
+            total_in_db = cursor.fetchone()[0]
+            logger.info(f"  Итого записей в БД после операции: {total_in_db}")
+
+            # Показываем сводку результатов
+            logger.info(f"Результат: сохранено {new_count + updated_count} из {total_input} вакансий (новых: {new_count}, обновлено: {updated_count}, отфильтровано: {filtered_out})")
+
+            if filtered_out > 0:
+                logger.debug("Отфильтрованные вакансии (примеры):")
+                non_target_count = 0
+                for vacancy in vacancies:
+                    if vacancy not in filtered_vacancies:
+                        employer_name = "Неизвестно"
+                        if vacancy.employer:
+                            if isinstance(vacancy.employer, dict):
+                                employer_name = vacancy.employer.get("name", "Неизвестно")
+                            else:
+                                employer_name = str(vacancy.employer)
+                        logger.debug(f"    - ID {vacancy.vacancy_id}: '{vacancy.title}' от '{employer_name}'")
+                        non_target_count += 1
+                        if non_target_count >= 3:  # Показываем только первые 3 примера
+                            break
+
         except psycopg2.Error as e:
             logger.error(f"Ошибка при batch операции через временные таблицы: {e}")
             connection.rollback()
@@ -687,16 +711,16 @@ class PostgresSaver(AbstractVacancyStorage):
     def save_vacancies(self, vacancies: Union[Vacancy, List[Vacancy]]) -> int:
         """
         Сохраняет вакансии в БД и возвращает количество операций
-        
+
         Args:
             vacancies: Вакансия или список вакансий
-            
+
         Returns:
             int: Количество операций (для совместимости)
         """
         if not isinstance(vacancies, list):
             vacancies = [vacancies]
-            
+
         update_messages = self.add_vacancy_batch_optimized(vacancies)
         return len(update_messages)
 
@@ -926,6 +950,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
                     rows = cursor.fetchall()
                     vacancies = []
+                    skipped_count = 0
 
                     for row in rows:
                         try:
@@ -965,11 +990,15 @@ class PostgresSaver(AbstractVacancyStorage):
                             vacancies.append(vacancy)
 
                         except Exception as e:
+                            skipped_count += 1
                             logger.error(f"Ошибка создания объекта Vacancy из БД: {e}")
                             logger.error(f"Данные строки: {dict(row)}")
                             continue
 
-                    logger.info(f"Загружено {len(vacancies)} вакансий из БД")
+                    if skipped_count > 0:
+                        logger.warning(f"Пропущено {skipped_count} записей из БД при создании объектов Vacancy")
+
+                    logger.info(f"Загружено {len(vacancies)} вакансий из БД ({len(rows)} записей в БД, пропущено {skipped_count})")
                     return vacancies
 
         except Exception as e:

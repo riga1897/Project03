@@ -32,6 +32,16 @@ class VacancyDisplayHandler:
         try:
             vacancies = self.storage.get_vacancies()
 
+            # Получаем точное количество записей в БД для диагностики
+            try:
+                if hasattr(self.storage, 'get_vacancies_count'):
+                    total_count = self.storage.get_vacancies_count()
+                    print(f"Статус БД: {total_count} записей в таблице, загружено {len(vacancies)} объектов вакансий")
+                else:
+                    print(f"Загружено {len(vacancies)} вакансий из базы данных")
+            except Exception as e:
+                print(f"Ошибка получения статистики БД: {e}")
+
             if not vacancies:
                 print("\nНет сохраненных вакансий.")
                 return
