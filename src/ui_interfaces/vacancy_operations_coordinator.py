@@ -192,7 +192,8 @@ class VacancyOperationsCoordinator:
     def _show_vacancy_for_confirmation(self, vacancy: Vacancy) -> None:
         """Показать информацию о вакансии для подтверждения удаления"""
         print("\nВакансия для удаления:")
-        print(VacancyFormatter.format_vacancy_info(vacancy))
+        formatter = VacancyFormatter()
+        print(formatter.format_vacancy_info(vacancy))
 
     @staticmethod
     def handle_superjob_setup() -> None:
