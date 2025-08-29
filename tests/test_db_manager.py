@@ -95,9 +95,8 @@ class TestDBManager:
             (True,),       # Для проверки constraint в create_tables
         ]
         
-        # Настраиваем fetchall для основного запроса
-        test_row = Mock()
-        test_row.get.side_effect = lambda key, default=None: {
+        # Создаем правильный mock для RealDictCursor результата
+        test_row_data = {
             "title": "Python Developer", 
             "company_name": "СБЕР", 
             "salary_info": "100000 - 150000 RUR",
@@ -105,14 +104,25 @@ class TestDBManager:
             "vacancy_id": "12345", 
             "raw_company_id": 1, 
             "linked_company_id": 1
-        }.get(key, default)
+        }
+        
+        # Создаем mock объект который ведет себя как dict
+        test_row = Mock()
+        test_row.get = lambda key, default=None: test_row_data.get(key, default)
+        # Добавляем методы для работы как словарь
+        test_row.keys = Mock(return_value=test_row_data.keys())
+        test_row.values = Mock(return_value=test_row_data.values())
+        test_row.items = Mock(return_value=test_row_data.items())
+        test_row.__getitem__ = lambda self, key: test_row_data[key]
+        test_row.__iter__ = Mock(return_value=iter(test_row_data))
         
         mock_cursor.fetchall.return_value = [test_row]
         mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
 
-        with patch('psycopg2.extras.RealDictCursor'):
-            db_manager = DBManager()
+        # Патчим _ensure_tables_exist чтобы избежать реального выполнения create_tables
+        db_manager = DBManager()
+        with patch.object(db_manager, '_ensure_tables_exist', return_value=True):
             vacancies = db_manager.get_all_vacancies()
 
             assert len(vacancies) == 1
@@ -242,7 +252,9 @@ class TestDBManager:
         mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
 
-        # Настраиваем ответы для SQL запросов - добавляем больше ответов
+        # Настраиваем ответы для SQL запросов
+        # Нужно больше ответов: проверка существования таблицы, количество компаний,
+        # проверка существования каждой компании (15 раз), финальный подсчет
         fetchone_responses = [
             (True,),   # Таблица существует
             (0,),      # Количество компаний = 0
@@ -252,8 +264,11 @@ class TestDBManager:
         for _ in range(15):
             fetchone_responses.append(None)
             
-        # Финальное количество компаний
+        # Финальное количество компаний - должно быть последним
         fetchone_responses.append((15,))
+        
+        # Добавляем еще несколько ответов на случай дополнительных запросов
+        fetchone_responses.extend([(15,), (15,), (15,)])
         
         mock_cursor.fetchone.side_effect = fetchone_responses
 
