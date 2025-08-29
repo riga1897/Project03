@@ -846,6 +846,8 @@ class PostgresSaver(AbstractVacancyStorage):
     def _convert_rows_to_vacancies(self, rows: List) -> List[Vacancy]:
         """Конвертирует строки БД в объекты Vacancy"""
         vacancies = []
+        skipped_count = 0  # Инициализируем счетчик пропущенных записей
+        
         for row in rows:
             try:
                 # Порядок полей из SQL запроса: "SELECT v.*, c.name as company_name FROM vacancies v LEFT JOIN companies c ON v.company_id = c.id"
@@ -929,22 +931,32 @@ class PostgresSaver(AbstractVacancyStorage):
             except Exception as e:
                 skipped_count += 1
                 logger.error(f"Ошибка создания объекта Vacancy из БД (строка {skipped_count}): {e}")
-                logger.error(f"Данные проблемной строки: vacancy_id={row.get('vacancy_id', 'N/A')}, title={row.get('title', 'N/A')}")
-                logger.debug(f"Полные данные проблемной строки: {dict(row)}")
-
-                # Дополнительная диагностика для выявления конкретных проблем
+                
+                # Безопасное извлечение данных из кортежа для диагностики
                 try:
-                    if not row.get('vacancy_id'):
+                    row_vacancy_id = row[1] if len(row) > 1 else 'N/A'
+                    row_title = row[2] if len(row) > 2 else 'N/A'
+                    row_url = row[5] if len(row) > 5 else 'N/A'
+                    
+                    logger.error(f"Данные проблемной строки: vacancy_id={row_vacancy_id}, title={row_title}")
+                    logger.debug(f"Полная строка: {row}")
+                    
+                    # Дополнительная диагностика для выявления конкретных проблем
+                    if not row_vacancy_id or row_vacancy_id == 'N/A':
                         logger.error("  -> Проблема: отсутствует vacancy_id")
-                    if not row.get('title'):
-                        logger.error("  -> Проблема: отсутствует title")
-                    if not row.get('url') and not row.get('alternate_url'):
+                    if not row_title or row_title == 'N/A':
+                        logger.error("  -> Проблема: отсутствует title")  
+                    if not row_url or row_url == 'N/A':
                         logger.error("  -> Проблема: отсутствует URL")
+                        
                 except Exception as diag_error:
                     logger.error(f"  -> Ошибка диагностики: {diag_error}")
 
                 continue
 
+        if skipped_count > 0:
+            logger.warning(f"Пропущено {skipped_count} записей при конвертации из БД в объекты Vacancy")
+            
         return vacancies
 
     def get_vacancies(self) -> List[Vacancy]:
