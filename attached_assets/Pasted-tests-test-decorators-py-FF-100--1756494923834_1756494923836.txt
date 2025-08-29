@@ -1,0 +1,92 @@
+tests/test_decorators.py ........FF                                   [100%]
+
+================================= FAILURES ==================================
+_____________ TestDecoratorBehavior.test_cache_result_decorator _____________
+
+self = <tests.test_decorators.TestDecoratorBehavior object at 0x7f7ed612a110>
+
+    def test_cache_result_decorator(self):
+        """Тест декоратора cache_result"""
+        mock_func = Mock(return_value="cached_value")
+    
+        @cache_result(ttl=1)
+        def cached_function():
+            return mock_func()
+    
+        result1 = cached_function()
+        assert result1 == "cached_value"
+        mock_func.assert_called_once()
+    
+        result2 = cached_function()  # Должен быть взят из кэша
+        assert result2 == "cached_value"
+        mock_func.assert_called_once() # Вызов не должен повториться
+    
+        time.sleep(1.1) # Ждем, чтобы TTL истек
+        result3 = cached_function() # TTL истек, должен быть новый вызов
+        assert result3 == "cached_value"
+>       assert mock_func.call_count == 2 # Ожидаем второй вызов
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert 1 == 2
+E        +  where 1 = <Mock id='140182726311440'>.call_count
+
+tests/test_decorators.py:210: AssertionError
+___ TestDecoratorBehavior.test_cache_result_decorator_with_different_args ___
+
+self = <Mock id='140182730454160'>, args = (3,), kwargs = {}
+msg = "Expected 'mock' to be called once. Called 2 times.\nCalls: [call(), call()]."
+
+    def assert_called_once_with(self, /, *args, **kwargs):
+        """assert that the mock was called exactly once and that that call was
+        with the specified arguments."""
+        if not self.call_count == 1:
+            msg = ("Expected '%s' to be called once. Called %s times.%s"
+                   % (self._mock_name or 'mock',
+                      self.call_count,
+                      self._calls_repr()))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'mock' to be called once. Called 2 times.
+E           Calls: [call(), call()].
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:950: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_decorators.TestDecoratorBehavior object at 0x7f7ed612a7d0>
+
+    def test_cache_result_decorator_with_different_args(self):
+        """Тест cache_result с разными аргументами"""
+        mock_func = Mock()
+        mock_func.side_effect = [1, 2]
+    
+        @cache_result(ttl=1)
+        def cached_function_with_args(arg1, arg2=None):
+            return mock_func()
+    
+        result1 = cached_function_with_args(1, arg2=2)
+        assert result1 == 1
+        mock_func.assert_called_once_with()
+    
+        result2 = cached_function_with_args(1, arg2=2) # Должен быть из кэша
+        assert result2 == 1
+        mock_func.assert_called_once()
+    
+        result3 = cached_function_with_args(3) # Другие аргументы, новый вызов
+        assert result3 == 2
+>       mock_func.assert_called_once_with(3)
+E       AssertionError: Expected 'mock' to be called once. Called 2 times.
+E       Calls: [call(), call()].
+E       
+E       pytest introspection follows:
+E       
+E       Args:
+E       assert () == (3,)
+E         
+E         Right contains one more item: 3
+E         Use -v to get more diff
+
+tests/test_decorators.py:231: AssertionError
+========================== short test summary info ==========================
+FAILED tests/test_decorators.py::TestDecoratorBehavior::test_cache_result_decorator - AssertionError: assert 1 == 2
+FAILED tests/test_decorators.py::TestDecoratorBehavior::test_cache_result_decorator_with_different_args - AssertionError: Expected 'mock' to be called once. Called 2 times.
+======================== 2 failed, 8 passed in 1.39s ========================
+~/workspace$ 
