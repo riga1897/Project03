@@ -19,6 +19,12 @@ class UnifiedAPI:
         self.hh_api = HeadHunterAPI()
         self.sj_api = SuperJobAPI()
         self.parser = SuperJobParser()
+        # Добавляем словарь для хранения API по источникам
+        self.apis = {
+            "hh": self.hh_api,
+            "sj": self.sj_api,
+        }
+
 
     @staticmethod
     def _deduplicate_cross_platform(all_vacancies: List[Dict]) -> List[Dict]:
@@ -374,14 +380,41 @@ class UnifiedAPI:
         """Получение вакансий из всех источников"""
         return self.get_all_vacancies(query, sources=["hh", "sj"], **kwargs)
 
-    def get_vacancies_from_source(self, query: str, source: str, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:
-        """Получение вакансий из определенного источника"""
-        if source.lower() == "hh":
-            return self.get_hh_vacancies(query, **kwargs)
-        elif source.lower() in ["sj", "superjob"]:
-            return self.get_sj_vacancies(query, **kwargs)
-        else:
+    def get_vacancies_from_source(self, search_query: str, source: str, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Получает вакансии из указанного источника
+
+        Args:
+            search_query: Поисковый запрос
+            source: Источник данных ('hh', 'sj')
+            **kwargs: Дополнительные параметры
+
+        Returns:
+            List[Dict[str, Any]]: Список вакансий
+        """
+        # Нормализуем название источника
+        source_mapping = {
+            'hh.ru': 'hh',
+            'superjob.ru': 'sj',
+            'hh': 'hh',
+            'sj': 'sj'
+        }
+
+        normalized_source = source_mapping.get(source, source)
+
+        if normalized_source not in self.get_available_sources():
             logger.warning(f"Неизвестный источник: {source}")
+            return []
+
+        api = self.apis.get(normalized_source)
+        if not api:
+            logger.error(f"API для источника {normalized_source} не найден")
+            return []
+
+        try:
+            return api.get_vacancies(search_query=search_query, **kwargs)
+        except Exception as e:
+            logger.error(f"Ошибка получения вакансий из {normalized_source}: {e}")
             return []
 
     def get_companies_from_all_sources(self, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:

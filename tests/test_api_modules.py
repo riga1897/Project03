@@ -166,7 +166,7 @@ class TestUnifiedAPI:
         mock_hh_get.return_value = [mock_vacancy]
 
         api = UnifiedAPI()
-        vacancies = api.get_vacancies_from_source("python", "hh.ru")
+        vacancies = api.get_vacancies_from_source("python", "hh")
 
         assert len(vacancies) == 1
         assert vacancies[0]["name"] == "Test Vacancy"
