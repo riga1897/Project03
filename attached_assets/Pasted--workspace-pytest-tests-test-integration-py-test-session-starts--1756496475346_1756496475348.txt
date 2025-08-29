@@ -1,0 +1,300 @@
+~/workspace$ pytest tests/test_integration.py
+============================ test session starts ============================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace/tests
+configfile: pytest.ini
+plugins: mock-3.14.1, cov-6.2.1
+collected 11 items                                                          
+
+tests/test_integration.py F..FF....EE                                 [100%]
+
+================================== ERRORS ===================================
+_ ERROR at setup of TestVacancyOperationsIntegration.test_vacancy_operations_filters _
+
+self = <tests.test_integration.TestVacancyOperationsIntegration object at 0x7f02da9decd0>
+
+    @pytest.fixture
+    def test_vacancies(self):
+        """Фикстура с тестовыми вакансиями"""
+        from src.utils.salary import Salary
+    
+        return [
+            Vacancy(
+                title="Python Developer",
+                url="https://test.com/1",
+                vacancy_id="1",
+                source="hh.ru",
+>               salary=Salary(100000, 150000, "RUR"),
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                description="Python Django PostgreSQL",
+                requirements="Python, Django, PostgreSQL",
+            ),
+            Vacancy(
+                title="Java Developer",
+                url="https://test.com/2",
+                vacancy_id="2",
+                source="superjob.ru",
+                salary=Salary(120000, 180000, "RUR"),
+                description="Java Spring Boot",
+                requirements="Java, Spring Boot",
+            ),
+            Vacancy(
+                title="Frontend Developer",
+                url="https://test.com/3",
+                vacancy_id="3",
+                source="hh.ru",
+                description="JavaScript React Vue",
+                requirements="JavaScript, React, Vue",
+            ),
+        ]
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 4 were given
+
+tests/test_integration.py:348: TypeError
+_ ERROR at setup of TestVacancyOperationsIntegration.test_vacancy_operations_search _
+
+self = <tests.test_integration.TestVacancyOperationsIntegration object at 0x7f02da9df310>
+
+    @pytest.fixture
+    def test_vacancies(self):
+        """Фикстура с тестовыми вакансиями"""
+        from src.utils.salary import Salary
+    
+        return [
+            Vacancy(
+                title="Python Developer",
+                url="https://test.com/1",
+                vacancy_id="1",
+                source="hh.ru",
+>               salary=Salary(100000, 150000, "RUR"),
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                description="Python Django PostgreSQL",
+                requirements="Python, Django, PostgreSQL",
+            ),
+            Vacancy(
+                title="Java Developer",
+                url="https://test.com/2",
+                vacancy_id="2",
+                source="superjob.ru",
+                salary=Salary(120000, 180000, "RUR"),
+                description="Java Spring Boot",
+                requirements="Java, Spring Boot",
+            ),
+            Vacancy(
+                title="Frontend Developer",
+                url="https://test.com/3",
+                vacancy_id="3",
+                source="hh.ru",
+                description="JavaScript React Vue",
+                requirements="JavaScript, React, Vue",
+            ),
+        ]
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 4 were given
+
+tests/test_integration.py:348: TypeError
+================================= FAILURES ==================================
+__________ TestStorageIntegration.test_postgres_saver_integration ___________
+
+self = <tests.test_integration.TestStorageIntegration object at 0x7f02dd4c3890>
+mock_connect = <MagicMock name='connect' id='139650237753296'>
+sample_vacancy = <src.vacancies.models.Vacancy object at 0x7f02dc066820>
+
+    @patch("psycopg2.connect")
+    def test_postgres_saver_integration(self, mock_connect, sample_vacancy):
+        """Тест интеграции с PostgreSQL"""
+        # Настраиваем мок подключения
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_cursor.rowcount = 1
+        mock_cursor.fetchall.return_value = []
+        # Исправляем мок для field_info - возвращаем правильную структуру
+        mock_cursor.fetchone.side_effect = [
+            (0,),  # для check database exists
+            ("column_name", "integer"),  # для каждого поля в required_fields
+            ("column_name", "text"),
+            ("column_name", "integer"),
+            ("column_name", "integer"),
+            ("column_name", "varchar"),
+            ("column_name", "text"),
+            ("column_name", "text"),
+            ("column_name", "text"),
+            ("column_name", "varchar"),
+            ("column_name", "varchar"),
+            ("column_name", "varchar"),
+            ("column_name", "varchar"),
+            ("column_name", "varchar"),
+            ("column_name", "timestamp"),
+            ("column_name", "integer"),
+        ]
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+        # Создаем хранилище и тестируем операции
+>       storage = PostgresSaver()
+                  ^^^^^^^^^^^^^^^
+
+tests/test_integration.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/storage/postgres_saver.py:80: in __init__
+    self._ensure_tables_exist()
+src/storage/postgres_saver.py:315: in _ensure_tables_exist
+    field_info = cursor.fetchone()
+                 ^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1124: in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1128: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Mock name='connect().cursor().fetchone' id='139650229359824'>
+args = (), kwargs = {}, effect = <list_iterator object at 0x7f02da9ae410>
+
+    def _execute_mock_call(self, /, *args, **kwargs):
+        # separate from _increment_mock_call so that awaited functions are
+        # executed separately from their call, also AsyncMock overrides this method
+    
+        effect = self.side_effect
+        if effect is not None:
+            if _is_exception(effect):
+                raise effect
+            elif not _callable(effect):
+>               result = next(effect)
+                         ^^^^^^^^^^^^
+E               StopIteration
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1185: StopIteration
+_________ TestFullWorkflowIntegration.test_search_and_save_workflow _________
+
+self = <tests.test_integration.TestFullWorkflowIntegration object at 0x7f02da9dc810>
+mock_connect_api = <MagicMock name='_CachedAPI__connect_to_api' id='139650242744080'>
+mock_connect_db = <MagicMock name='connect' id='139650242027792'>
+sample_vacancy = <src.vacancies.models.Vacancy object at 0x7f02da149160>
+
+    @patch("psycopg2.connect")
+    @patch("src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api")
+    def test_search_and_save_workflow(self, mock_connect_api, mock_connect_db, sample_vacancy):
+        """Тест полного процесса поиска и сохранения"""
+        # Настраиваем мок для API
+        mock_connect_api.return_value = {
+            "items": [
+                {
+                    "id": "789",
+                    "name": "Integration Test Job",
+                    "alternate_url": "https://hh.ru/vacancy/789",
+                    "employer": {"name": "Integration Company"},
+                    "published_at": "2024-01-01T00:00:00+03:00",
+                    "source": "hh.ru",
+                }
+            ],
+            "found": 1,
+            "pages": 1,
+        }
+    
+        # Настраиваем мок для базы данных
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_cursor.rowcount = 1
+        mock_cursor.fetchall.return_value = []
+        # Настраиваем правильные ответы для всех запросов
+        mock_cursor.fetchone.side_effect = [
+            (0,),  # для check database exists
+            ("column_name", "integer"),  # для каждого поля в required_fields
+            ("column_name", "text"),
+            ("column_name", "integer"),
+            ("column_name", "integer"),
+            ("column_name", "varchar"),
+            ("column_name", "text"),
+            ("column_name", "text"),
+            ("column_name", "text"),
+            ("column_name", "varchar"),
+            ("column_name", "varchar"),
+            ("column_name", "varchar"),
+            ("column_name", "varchar"),
+            ("column_name", "varchar"),
+            ("column_name", "timestamp"),
+            ("column_name", "integer"),
+        ]
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect_db.return_value = mock_conn
+    
+        # Выполняем поиск
+        api = HeadHunterAPI()
+        vacancies_data = api.get_vacancies(search_query="python")
+    
+        # Конвертируем в объекты Vacancy
+        vacancies = [Vacancy.from_dict(item) for item in vacancies_data]
+    
+        # Сохраняем результаты
+>       storage = PostgresSaver()
+                  ^^^^^^^^^^^^^^^
+
+tests/test_integration.py:218: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/storage/postgres_saver.py:80: in __init__
+    self._ensure_tables_exist()
+src/storage/postgres_saver.py:315: in _ensure_tables_exist
+    field_info = cursor.fetchone()
+                 ^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1124: in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1128: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Mock name='connect().cursor().fetchone' id='139650230041488'>
+args = (), kwargs = {}, effect = <list_iterator object at 0x7f02da9af940>
+
+    def _execute_mock_call(self, /, *args, **kwargs):
+        # separate from _increment_mock_call so that awaited functions are
+        # executed separately from their call, also AsyncMock overrides this method
+    
+        effect = self.side_effect
+        if effect is not None:
+            if _is_exception(effect):
+                raise effect
+            elif not _callable(effect):
+>               result = next(effect)
+                         ^^^^^^^^^^^^
+E               StopIteration
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1185: StopIteration
+--------------------------- Captured stderr call ----------------------------
+Fetching pages: 100%|██████████| 1/1 [00:00<00:00, 5729.92page/s, vacancies=1]
+________________ TestCacheIntegration.test_cache_integration ________________
+
+self = <tests.test_integration.TestCacheIntegration object at 0x7f02da9dd0d0>
+mock_cache_dir = '/tmp/pytest-of-runner/pytest-4/test_cache_integration0/cache'
+
+    def test_cache_integration(self, mock_cache_dir):
+        """Тест интеграции кэширования"""
+        cache = FileCache(cache_dir=mock_cache_dir)
+    
+        # Тест сохранения в кэш
+        test_data = {"test": "data"}
+        test_params = {"query": "python"}
+        cache.save_response("test", test_params, test_data)
+    
+        # Тест загрузки из кэша
+        loaded_data = cache.load_response("test", test_params)
+    
+        # Проверяем, что данные загрузились
+        assert loaded_data is not None
+        assert loaded_data["data"]["test"] == "data"
+    
+        # Тест очистки кэша
+>       cache.clear_cache()
+        ^^^^^^^^^^^^^^^^^
+E       AttributeError: 'FileCache' object has no attribute 'clear_cache'
+
+tests/test_integration.py:255: AttributeError
+========================== short test summary info ==========================
+FAILED tests/test_integration.py::TestStorageIntegration::test_postgres_saver_integration - StopIteration
+FAILED tests/test_integration.py::TestFullWorkflowIntegration::test_search_and_save_workflow - StopIteration
+FAILED tests/test_integration.py::TestCacheIntegration::test_cache_integration - AttributeError: 'FileCache' object has no attribute 'clear_cache'
+ERROR tests/test_integration.py::TestVacancyOperationsIntegration::test_vacancy_operations_filters - TypeError: Salary.__init__() takes from 1 to 2 positional arguments but ...
+ERROR tests/test_integration.py::TestVacancyOperationsIntegration::test_vacancy_operations_search - TypeError: Salary.__init__() takes from 1 to 2 positional arguments but ...
+=================== 3 failed, 6 passed, 2 errors in 0.41s ===================
+~/workspace$ 
