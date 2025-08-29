@@ -77,8 +77,8 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         if params is None:
             params = {}
         try:
-            # Делаем запрос к HH API
-            data = self.__connect(url, params)
+            # Делаем запрос к HH API через CachedAPI
+            data = self._CachedAPI__connect_to_api(url, params, "hh")
             return data
         except Exception as e:
             logger.error(f"Ошибка при подключении к API: {e}")
@@ -133,7 +133,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         """
         try:
             # Получаем базовые параметры от конфигурации
-            params = self.config.get_params(
+            params = self._config.hh_config.get_params(
                 text=search_query, 
                 **kwargs
             )
