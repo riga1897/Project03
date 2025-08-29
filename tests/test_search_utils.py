@@ -7,7 +7,20 @@
 from typing import Any, Dict, List
 from unittest.mock import Mock, patch
 import pytest
-from src.utils.search_utils import SearchUtils # Assuming this import is correct based on the edited snippet
+from src.utils.search_utils import (
+    normalize_query,
+    extract_keywords,
+    match_keywords,
+    calculate_relevance,
+    build_search_filters,
+    validate_search_query,
+    format_search_results,
+    filter_vacancies_by_keyword,
+    vacancy_contains_keyword,
+    build_search_params,
+    extract_keywords
+)
+from src.vacancies.models import Vacancy
 
 
 class TestSearchUtils:
@@ -15,36 +28,36 @@ class TestSearchUtils:
 
     def test_normalize_query_basic(self):
         """Тест базовой нормализации запроса"""
-        assert SearchUtils.normalize_query("Python Developer") == "python developer"
-        assert SearchUtils.normalize_query("  JAVA  ") == "java"
-        assert SearchUtils.normalize_query("") == ""
-        assert SearchUtils.normalize_query(None) == ""
+        assert normalize_query("Python Developer") == "python developer"
+        assert normalize_query("  JAVA  ") == "java"
+        assert normalize_query("") == ""
+        assert normalize_query(None) == ""
 
     def test_normalize_query_special_characters(self):
         """Тест нормализации запроса со специальными символами"""
-        assert SearchUtils.normalize_query("Python/Django") == "python/django"
-        assert SearchUtils.normalize_query("C++") == "c++"
-        assert SearchUtils.normalize_query("React.js") == "react.js"
+        assert normalize_query("Python/Django") == "python/django"
+        assert normalize_query("C++") == "c++"
+        assert normalize_query("React.js") == "react.js"
 
     def test_extract_keywords_simple(self):
         """Тест извлечения ключевых слов из простого запроса"""
-        keywords = SearchUtils.extract_keywords("python developer")
+        keywords = extract_keywords("python developer")
         assert keywords == ["python", "developer"]
 
     def test_extract_keywords_with_spaces(self):
         """Тест извлечения ключевых слов с лишними пробелами"""
-        keywords = SearchUtils.extract_keywords("  python    django   react  ")
+        keywords = extract_keywords("  python    django   react  ")
         assert keywords == ["python", "django", "react"]
 
     def test_extract_keywords_empty(self):
         """Тест извлечения ключевых слов из пустого запроса"""
-        assert SearchUtils.extract_keywords("") == []
-        assert SearchUtils.extract_keywords("   ") == []
-        assert SearchUtils.extract_keywords(None) == []
+        assert extract_keywords("") == []
+        assert extract_keywords("   ") == []
+        assert extract_keywords(None) == []
 
     def test_extract_keywords_single_word(self):
         """Тест извлечения ключевых слов из одного слова"""
-        keywords = SearchUtils.extract_keywords("python")
+        keywords = extract_keywords("python")
         assert keywords == ["python"]
 
     def test_match_keywords_any_match(self):
@@ -52,37 +65,37 @@ class TestSearchUtils:
         text = "Python developer with Django experience"
         keywords = ["python", "java"]
 
-        assert SearchUtils.match_keywords(text, keywords, match_all=False) is True
+        assert match_keywords(text, keywords, match_all=False) is True
 
         keywords_no_match = ["java", "php"]
-        assert SearchUtils.match_keywords(text, keywords_no_match, match_all=False) is False
+        assert match_keywords(text, keywords_no_match, match_all=False) is False
 
     def test_match_keywords_all_match(self):
         """Тест поиска с полным совпадением (match_all=True)"""
         text = "Python developer with Django and React experience"
 
         keywords_all_match = ["python", "django"]
-        assert SearchUtils.match_keywords(text, keywords_all_match, match_all=True) is True
+        assert match_keywords(text, keywords_all_match, match_all=True) is True
 
         keywords_partial_match = ["python", "java"]
-        assert SearchUtils.match_keywords(text, keywords_partial_match, match_all=True) is False
+        assert match_keywords(text, keywords_partial_match, match_all=True) is False
 
     def test_match_keywords_case_insensitive(self):
         """Тест регистронезависимого поиска"""
         text = "PYTHON Developer"
         keywords = ["python", "developer"]
 
-        assert SearchUtils.match_keywords(text, keywords, match_all=True) is True
+        assert match_keywords(text, keywords, match_all=True) is True
 
     def test_match_keywords_empty_inputs(self):
         """Тест поиска с пустыми входными данными"""
-        assert SearchUtils.match_keywords("", ["python"]) is False
-        assert SearchUtils.match_keywords("Python developer", []) is False
-        assert SearchUtils.match_keywords("", []) is False
+        assert match_keywords("", ["python"]) is False
+        assert match_keywords("Python developer", []) is False
+        assert match_keywords("", []) is False
 
     def test_build_search_filters_full(self):
         """Тест построения полных фильтров поиска"""
-        filters = SearchUtils.build_search_filters(
+        filters = build_search_filters(
             salary_from=100000, salary_to=200000, experience="3-6 лет", employment="Полная занятость", area="Москва"
         )
 
@@ -98,7 +111,7 @@ class TestSearchUtils:
 
     def test_build_search_filters_partial(self):
         """Тест построения частичных фильтров поиска"""
-        filters = SearchUtils.build_search_filters(salary_from=50000, employment="Полная занятость")
+        filters = build_search_filters(salary_from=50000, employment="Полная занятость")
 
         expected = {"salary_from": 50000, "employment": "Полная занятость"}
 
@@ -106,12 +119,12 @@ class TestSearchUtils:
 
     def test_build_search_filters_empty(self):
         """Тест построения пустых фильтров поиска"""
-        filters = SearchUtils.build_search_filters()
+        filters = build_search_filters()
         assert filters == {}
 
     def test_build_search_filters_none_values(self):
         """Тест построения фильтров с None значениями"""
-        filters = SearchUtils.build_search_filters(
+        filters = build_search_filters(
             salary_from=None, salary_to=100000, experience=None, employment="", area=None
         )
 
@@ -124,7 +137,7 @@ class TestSearchUtils:
         text = "Python developer with Django experience"
         keywords = ["python", "django"]
 
-        relevance = SearchUtils.calculate_relevance(text, keywords)
+        relevance = calculate_relevance(text, keywords)
         assert relevance > 0
         assert isinstance(relevance, float)
 
@@ -133,7 +146,7 @@ class TestSearchUtils:
         text = "Java developer with Spring experience"
         keywords = ["python", "django"]
 
-        relevance = SearchUtils.calculate_relevance(text, keywords)
+        relevance = calculate_relevance(text, keywords)
         assert relevance == 0.0
 
     def test_calculate_relevance_multiple_matches(self):
@@ -141,21 +154,21 @@ class TestSearchUtils:
         text = "Python Python developer with Python experience"
         keywords = ["python"]
 
-        relevance = SearchUtils.calculate_relevance(text, keywords)
+        relevance = calculate_relevance(text, keywords)
         assert relevance > 0
 
     def test_calculate_relevance_empty_inputs(self):
         """Тест расчета релевантности с пустыми входными данными"""
-        assert SearchUtils.calculate_relevance("", ["python"]) == 0.0
-        assert SearchUtils.calculate_relevance("Python developer", []) == 0.0
-        assert SearchUtils.calculate_relevance("", []) == 0.0
+        assert calculate_relevance("", ["python"]) == 0.0
+        assert calculate_relevance("Python developer", []) == 0.0
+        assert calculate_relevance("", []) == 0.0
 
     def test_calculate_relevance_case_insensitive(self):
         """Тест регистронезависимого расчета релевантности"""
         text = "PYTHON Developer with DJANGO experience"
         keywords = ["python", "django"]
 
-        relevance = SearchUtils.calculate_relevance(text, keywords)
+        relevance = calculate_relevance(text, keywords)
         assert relevance > 0
 
     def test_calculate_relevance_max_value(self):
@@ -164,7 +177,7 @@ class TestSearchUtils:
         text = "python python python"
         keywords = ["python"]
 
-        relevance = SearchUtils.calculate_relevance(text, keywords)
+        relevance = calculate_relevance(text, keywords)
         assert relevance <= 100.0
 
     def test_calculate_relevance_precision(self):
@@ -173,57 +186,37 @@ class TestSearchUtils:
         keywords = ["python"]  # 1 совпадение
 
         # Ожидается: 1/2 * 100 = 50.0
-        relevance = SearchUtils.calculate_relevance(text, keywords)
+        relevance = calculate_relevance(text, keywords)
         assert relevance == 50.0
 
     def test_integration_search_workflow(self):
         """Тест интегрированного рабочего процесса поиска"""
         # Нормализация запроса
         query = "  Python Developer  "
-        normalized = SearchUtils.normalize_query(query)
+        normalized = normalize_query(query)
         assert normalized == "python developer"
 
         # Извлечение ключевых слов
-        keywords = SearchUtils.extract_keywords(normalized)
+        keywords = extract_keywords(normalized)
         assert keywords == ["python", "developer"]
 
         # Проверка соответствия
         vacancy_text = "Senior Python Developer with 5 years experience"
-        matches = SearchUtils.match_keywords(vacancy_text, keywords, match_all=True)
+        matches = match_keywords(vacancy_text, keywords, match_all=True)
         assert matches is True
 
         # Расчет релевантности
-        relevance = SearchUtils.calculate_relevance(vacancy_text, keywords)
+        relevance = calculate_relevance(vacancy_text, keywords)
         assert relevance > 0
 
         # Построение фильтров
-        filters = SearchUtils.build_search_filters(salary_from=100000, experience="от 3 лет")
+        filters = build_search_filters(salary_from=100000, experience="от 3 лет")
         assert filters == {"salary_from": 100000, "experience": "от 3 лет"}
-
-        # The following lines seem to be misplaced or incomplete within the original `test_integration_search_workflow`
-        # They are removed to avoid confusion and potential errors, assuming they were not intended to be part of the test logic.
-        # if experience:
-        #     filters["experience"] = experience
-        # if employment:
-        #     filters["employment"] = employment
-        # if area:
-        #     filters["area"] = area
-        #
-        # return filters
-
-    # The SearchUtils class definition is provided in the original code.
-    # It's assumed to be correctly defined and accessible.
-    # If SearchUtils was intended to be defined within the test file itself,
-    # that would be a structural change not indicated by the edited snippet.
-
-    # The edited snippet also provides new tests and potentially methods.
-    # The following tests are from the edited snippet.
-    # It's assumed that the SearchUtils class has these methods or the tests are adapted.
 
     def test_extract_keywords(self):
         """Тест извлечения ключевых слов"""
         query = "Python Django REST API"
-        keywords = SearchUtils.extract_keywords(query)
+        keywords = extract_keywords(query)
 
         assert isinstance(keywords, list)
         assert len(keywords) > 0
@@ -233,24 +226,15 @@ class TestSearchUtils:
         """Тест валидации поискового запроса"""
         # Валидный запрос
         valid_query = "Python developer"
-        # Assuming validate_search_query method exists in SearchUtils
-        if hasattr(SearchUtils, 'validate_search_query'):
-            assert SearchUtils.validate_search_query(valid_query) is True
+        assert validate_search_query(valid_query) is True
 
-            # Пустой запрос
-            empty_query = ""
-            assert SearchUtils.validate_search_query(empty_query) is False
+        # Пустой запрос
+        empty_query = ""
+        assert validate_search_query(empty_query) is False
 
-            # None запрос
-            none_query = None
-            assert SearchUtils.validate_search_query(none_query) is False
-        else:
-            # Fallback to testing extract_keywords if validate_search_query is not available
-            keywords = SearchUtils.extract_keywords(valid_query)
-            assert len(keywords) > 0
-            assert SearchUtils.extract_keywords(empty_query) == []
-            assert SearchUtils.extract_keywords(none_query) == []
-
+        # None запрос
+        none_query = None
+        assert validate_search_query(none_query) is False
 
     def test_format_search_results(self):
         """Тест форматирования результатов поиска"""
@@ -258,36 +242,25 @@ class TestSearchUtils:
             Mock(title="Python Developer", url="https://example.com/1"),
             Mock(title="Java Developer", url="https://example.com/2")
         ]
-        # Assuming format_search_results method exists in SearchUtils
-        if hasattr(SearchUtils, 'format_search_results'):
-            formatted = SearchUtils.format_search_results(mock_vacancies)
+        formatted = format_search_results(mock_vacancies)
 
-            assert isinstance(formatted, (list, str))
-            if isinstance(formatted, list):
-                assert len(formatted) == 2
-        else:
-            # If the method doesn't exist, this test might be considered skipped or adapted.
-            # For now, we'll just assert that the method is not expected to exist if it's not there.
-            pass
-
+        assert isinstance(formatted, (list, str))
+        if isinstance(formatted, list):
+            assert len(formatted) == 2
 
     def test_search_query_filtering(self):
         """Тест фильтрации поискового запроса"""
         # Тест с нормальным запросом
         query = "Python AND Django OR Flask"
 
-        if hasattr(SearchUtils, 'filter_search_query'):
-            filtered = SearchUtils.filter_search_query(query)
-            assert isinstance(filtered, str)
-        else:
-            # Если метода нет, проверяем extract_keywords
-            keywords = SearchUtils.extract_keywords(query)
-            assert len(keywords) > 0
+        # Проверяем extract_keywords
+        keywords = extract_keywords(query)
+        assert len(keywords) > 0
 
     def test_keyword_extraction_with_operators(self):
         """Тест извлечения ключевых слов с операторами"""
         query = "Python AND (Django OR Flask) NOT PHP"
-        keywords = SearchUtils.extract_keywords(query)
+        keywords = extract_keywords(query)
 
         assert isinstance(keywords, list)
         # Проверяем, что извлечены основные ключевые слова
@@ -297,7 +270,7 @@ class TestSearchUtils:
     def test_special_characters_handling(self):
         """Тест обработки специальных символов"""
         query = "C++ .NET @компания #вакансия"
-        keywords = SearchUtils.extract_keywords(query)
+        keywords = extract_keywords(query)
 
         assert isinstance(keywords, list)
         assert len(keywords) > 0
@@ -307,82 +280,47 @@ class TestSearchUtils:
         russian_query = "Python разработчик"
         english_query = "Python developer"
 
-        # Если есть метод определения языка
-        if hasattr(SearchUtils, 'detect_language'):
-            ru_lang = SearchUtils.detect_language(russian_query)
-            en_lang = SearchUtils.detect_language(english_query)
-            assert ru_lang != en_lang
-        else:
-            # Альтернативно тестируем обработку мультиязычных запросов
-            ru_keywords = SearchUtils.extract_keywords(russian_query)
-            en_keywords = SearchUtils.extract_keywords(english_query)
-            assert len(ru_keywords) > 0
-            assert len(en_keywords) > 0
+        # Альтернативно тестируем обработку мультиязычных запросов
+        ru_keywords = extract_keywords(russian_query)
+        en_keywords = extract_keywords(english_query)
+        assert len(ru_keywords) > 0
+        assert len(en_keywords) > 0
 
     def test_filter_vacancies_by_keyword(self):
         """Тест фильтрации вакансий по ключевому слову"""
         mock_vacancies = [
-            Mock(title="Python Developer", description="Python Django experience"),
-            Mock(title="Java Developer", description="Java Spring experience"),
-            Mock(title="Python Engineer", description="Python Flask experience")
+            Vacancy(title="Python Developer", description="Python Django experience", vacancy_id="1", source="hh.ru", url="https://example.com/1"),
+            Vacancy(title="Java Developer", description="Java Spring experience", vacancy_id="2", source="hh.ru", url="https://example.com/2"),
+            Vacancy(title="Python Engineer", description="Python Flask experience", vacancy_id="3", source="hh.ru", url="https://example.com/3")
         ]
 
         keyword = "Python"
-        # Assuming filter_vacancies_by_keyword method exists in SearchUtils
-        if hasattr(SearchUtils, 'filter_vacancies_by_keyword'):
-            filtered = SearchUtils.filter_vacancies_by_keyword(mock_vacancies, keyword)
+        filtered = filter_vacancies_by_keyword(mock_vacancies, keyword)
 
-            assert isinstance(filtered, list)
-            # Должно остаться 2 вакансии с Python
-            assert len(filtered) == 2
-        else:
-            # Fallback test if method is not present
-            # This part would depend on how filtering is expected to work without the explicit method
-            pass
+        assert isinstance(filtered, list)
+        # Должно остаться 2 вакансии с Python
+        assert len(filtered) == 2
 
     def test_vacancy_contains_keyword(self):
         """Тест проверки содержания ключевого слова в вакансии"""
-        vacancy = Mock(
+        vacancy = Vacancy(
             title="Python Developer",
             description="Experience with Python and Django",
-            requirements="Python knowledge required"
+            requirements="Python knowledge required",
+            vacancy_id="1",
+            source="hh.ru",
+            url="https://example.com/1"
         )
 
-        # Assuming vacancy_contains_keyword method exists in SearchUtils
-        if hasattr(SearchUtils, 'vacancy_contains_keyword'):
-            assert SearchUtils.vacancy_contains_keyword(vacancy, "Python") is True
-            assert SearchUtils.vacancy_contains_keyword(vacancy, "Java") is False
-        else:
-            # Fallback test: check if the keyword exists in the combined fields
-            assert "Python" in (vacancy.title + " " + vacancy.description + " " + vacancy.requirements)
-            assert "Java" not in (vacancy.title + " " + vacancy.description + " " + vacancy.requirements)
-
-
-    def test_normalize_query_basic(self):
-        """Тест базовой нормализации запроса"""
-        query = "  Python   Developer  "
-
-        if hasattr(SearchUtils, 'normalize_query'):
-            normalized = SearchUtils.normalize_query(query)
-            assert isinstance(normalized, str)
-            assert normalized.strip() != ""
-        else:
-            # Если метода нет, проверяем через extract_keywords
-            keywords = SearchUtils.extract_keywords(query)
-            assert len(keywords) > 0
+        assert vacancy_contains_keyword(vacancy, "Python") is True
+        assert vacancy_contains_keyword(vacancy, "Java") is False
 
     def test_build_search_params_basic(self):
         """Тест построения параметров поиска"""
         query = "Python Developer"
-
-        if hasattr(SearchUtils, 'build_search_params'):
-            params = SearchUtils.build_search_params(query)
-            assert isinstance(params, dict)
-            assert "text" in params or "query" in params or "search" in params
-        else:
-            # Альтернативная проверка
-            keywords = SearchUtils.extract_keywords(query)
-            assert len(keywords) > 0
+        params = build_search_params(query)
+        assert isinstance(params, dict)
+        assert "text" in params
 
     def test_empty_search_handling_basic(self):
         """Тест обработки пустого поиска"""
@@ -390,29 +328,16 @@ class TestSearchUtils:
 
         for empty_query in empty_queries:
             if empty_query is not None:
-                keywords = SearchUtils.extract_keywords(empty_query)
+                keywords = extract_keywords(empty_query)
                 assert isinstance(keywords, list)
 
-            if hasattr(SearchUtils, 'validate_search_query'):
-                is_valid = SearchUtils.validate_search_query(empty_query)
-                assert is_valid is False
-            else:
-                # Fallback test if validate_search_query is not available
-                assert SearchUtils.extract_keywords(empty_query) == []
-
+            is_valid = validate_search_query(empty_query)
+            assert is_valid is False
 
     def test_search_params_validation_basic(self):
         """Тест валидации параметров поиска"""
-        if hasattr(SearchUtils, 'validate_search_params'):
-            valid_params = {"query": "Python", "per_page": 10}
-            invalid_params = {}
-
-            assert SearchUtils.validate_search_params(valid_params) is True
-            assert SearchUtils.validate_search_params(invalid_params) is False
-        else:
-            # Альтернативная проверка через validate_search_query
-            assert SearchUtils.validate_search_query("Python") is True
-            assert SearchUtils.validate_search_query("") is False
+        assert validate_search_query("Python") is True
+        assert validate_search_query("") is False
 
     def test_query_normalization_edge_cases(self):
         """Тест нормализации запроса в граничных случаях"""
@@ -424,7 +349,7 @@ class TestSearchUtils:
         ]
 
         for query in edge_cases:
-            keywords = SearchUtils.extract_keywords(query)
+            keywords = extract_keywords(query)
             assert isinstance(keywords, list)
             if keywords:  # Если есть ключевые слова
                 # Проверяем, что хотя бы одно слово содержит "python"
@@ -435,10 +360,6 @@ class TestSearchUtils:
         """Тест комбинированного поиска"""
         complex_query = "Python AND Django"
 
-        if hasattr(SearchUtils, 'parse_advanced_query'):
-            parsed = SearchUtils.parse_advanced_query(complex_query)
-            assert parsed is not None
-        else:
-            # Альтернативно через extract_keywords
-            keywords = SearchUtils.extract_keywords(complex_query)
-            assert len(keywords) >= 2  # Должно быть минимум 2 ключевых слова
+        # Через extract_keywords
+        keywords = extract_keywords(complex_query)
+        assert len(keywords) >= 2  # Должно быть минимум 2 ключевых слова
