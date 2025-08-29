@@ -1,0 +1,1964 @@
+<src.vacancies.models.Vacancy object at 0x7f5f50711570>]
+
+    def test_vacancy_operations(self, sample_vacancies):
+        """Тест операций с вакансиями"""
+        operations = VacancyOperations()
+    
+        # Тест фильтрации по зарплате
+        filtered = operations.filter_vacancies_by_min_salary(sample_vacancies, 90000)
+        assert len(filtered) == 1  # Только одна вакансия с зарплатой >= 90000
+    
+        # Тест поиска по ключевому слову
+>       python_vacancies = operations.filter_vacancies_by_keyword(sample_vacancies, "Python")
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'VacancyOperations' object has no attribute 'filter_vacancies_by_keyword'
+
+tests/test_main_functionality.py:49: AttributeError
+_______________ TestMainFunctionality.test_vacancy_formatter ________________
+
+self = <tests.test_main_functionality.TestMainFunctionality object at 0x7f5f59b9a1d0>
+sample_vacancy = <src.vacancies.models.Vacancy object at 0x7f5f50783380>
+
+    def test_vacancy_formatter(self, sample_vacancy):
+        """Тест форматирования вакансий"""
+        formatter = VacancyFormatter()
+    
+        # Тест полного форматирования
+        formatted = formatter.format_vacancy_info(sample_vacancy, 1)
+        assert isinstance(formatted, str)
+        assert "Python Developer" in formatted
+        assert "12345" in formatted
+    
+        # Тест форматирования зарплаты
+        salary_formatted = formatter.format_salary(sample_vacancy.salary)
+>       assert "100 000" in salary_formatted
+E       AssertionError: assert '100 000' in 'от 100,000 до 150,000 руб. в месяц'
+
+tests/test_main_functionality.py:65: AssertionError
+________________ TestMainFunctionality.test_data_validation _________________
+
+self = <tests.test_main_functionality.TestMainFunctionality object at 0x7f5f59b9a5d0>
+
+    def test_data_validation(self):
+        """Тест валидации данных"""
+        # Тест создания вакансии с минимальными данными
+        minimal_vacancy = Vacancy(
+            title="Minimal Job",
+            url="https://example.com/job",
+            vacancy_id="min001",
+            source="test"
+        )
+    
+        assert minimal_vacancy.title == "Minimal Job"
+>       assert minimal_vacancy.salary is None
+E       assert <src.utils.salary.Salary object at 0x7f5f50578820> is None
+E        +  where <src.utils.salary.Salary object at 0x7f5f50578820> = <src.vacancies.models.Vacancy object at 0x7f5f50048e20>.salary
+
+tests/test_main_functionality.py:116: AssertionError
+_____________ TestMainFunctionality.test_configuration_defaults _____________
+
+self = <tests.test_main_functionality.TestMainFunctionality object at 0x7f5f59b9b010>
+
+    def test_configuration_defaults(self):
+        """Тест конфигурации по умолчанию"""
+        # Тест, что базовые классы могут быть инстанцированы
+        formatter = VacancyFormatter()
+        operations = VacancyOperations()
+    
+        assert formatter is not None
+        assert operations is not None
+        assert hasattr(formatter, 'format_vacancy_info')
+>       assert hasattr(operations, 'filter_vacancies_by_keyword')
+E       AssertionError: assert False
+E        +  where False = hasattr(<src.utils.vacancy_operations.VacancyOperations object at 0x7f5f505e90d0>, 'filter_vacancies_by_keyword')
+
+tests/test_main_functionality.py:155: AssertionError
+________________ TestMenuManager.test_get_user_choice_valid _________________
+
+self = <tests.test_menu_manager.TestMenuManager object at 0x7f5f59ba0f90>
+mock_input = <MagicMock name='input' id='140047346455888'>
+menu_manager = <src.utils.menu_manager.MenuManager object at 0x7f5f50567010>
+
+    @patch('builtins.input', return_value='1')
+    def test_get_user_choice_valid(self, mock_input, menu_manager):
+        """Тест получения корректного выбора пользователя"""
+        menu_items = ['Item 1', 'Item 2', 'Exit']
+>       choice = menu_manager.get_user_choice(menu_items)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'MenuManager' object has no attribute 'get_user_choice'
+
+tests/test_menu_manager.py:28: AttributeError
+__________ TestMenuManager.test_get_user_choice_invalid_then_valid __________
+
+self = <tests.test_menu_manager.TestMenuManager object at 0x7f5f59ba1510>
+mock_print = <MagicMock name='print' id='140047346818704'>
+mock_input = <MagicMock name='input' id='140047346811728'>
+menu_manager = <src.utils.menu_manager.MenuManager object at 0x7f5f505be050>
+
+    @patch('builtins.input', side_effect=['invalid', '2'])
+    @patch('builtins.print')
+    def test_get_user_choice_invalid_then_valid(self, mock_print, mock_input, menu_manager):
+        """Тест обработки некорректного, а затем корректного выбора"""
+        menu_items = ['Item 1', 'Item 2']
+>       choice = menu_manager.get_user_choice(menu_items)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'MenuManager' object has no attribute 'get_user_choice'
+
+tests/test_menu_manager.py:36: AttributeError
+__________________ TestMenuManager.test_display_menu_items __________________
+
+self = <tests.test_menu_manager.TestMenuManager object at 0x7f5f59ba1b90>
+menu_manager = <src.utils.menu_manager.MenuManager object at 0x7f5f505f8c10>
+
+    def test_display_menu_items(self, menu_manager):
+        """Тест отображения элементов меню"""
+        menu_items = ['Search', 'View', 'Exit']
+        with patch('builtins.print') as mock_print:
+>           menu_manager.display_menu(menu_items)
+E           TypeError: MenuManager.display_menu() takes 1 positional argument but 2 were given
+
+tests/test_menu_manager.py:43: TypeError
+_________________ TestMenuManager.test_get_user_choice_exit _________________
+
+self = <tests.test_menu_manager.TestMenuManager object at 0x7f5f59ba2150>
+mock_input = <MagicMock name='input' id='140047348510992'>
+menu_manager = <src.utils.menu_manager.MenuManager object at 0x7f5f5075ac10>
+
+    @patch('builtins.input', return_value='0')
+    def test_get_user_choice_exit(self, mock_input, menu_manager):
+        """Тест выбора выхода из меню"""
+        menu_items = ['Item 1', 'Exit']
+>       choice = menu_manager.get_user_choice(menu_items)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'MenuManager' object has no attribute 'get_user_choice'
+
+tests/test_menu_manager.py:51: AttributeError
+________________ TestPaginator.test_paginator_initialization ________________
+
+self = <tests.test_paginator.TestPaginator object at 0x7f5f59ba3550>
+sample_data = [1, 2, 3, 4, 5, 6, ...]
+
+    def test_paginator_initialization(self, sample_data):
+        """Тест инициализации пагинатора"""
+>       paginator = Paginator(sample_data, page_size=10)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Paginator() takes no arguments
+
+tests/test_paginator.py:20: TypeError
+_________________ TestPaginator.test_get_current_page_data __________________
+
+self = <tests.test_paginator.TestPaginator object at 0x7f5f59ba3b90>
+sample_data = [1, 2, 3, 4, 5, 6, ...]
+
+    def test_get_current_page_data(self, sample_data):
+        """Тест получения данных текущей страницы"""
+>       paginator = Paginator(sample_data, page_size=10)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Paginator() takes no arguments
+
+tests/test_paginator.py:28: TypeError
+_______________________ TestPaginator.test_next_page ________________________
+
+self = <tests.test_paginator.TestPaginator object at 0x7f5f59bb4210>
+sample_data = [1, 2, 3, 4, 5, 6, ...]
+
+    def test_next_page(self, sample_data):
+        """Тест перехода к следующей странице"""
+>       paginator = Paginator(sample_data, page_size=10)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Paginator() takes no arguments
+
+tests/test_paginator.py:35: TypeError
+____________________ TestPaginator.test_next_page_at_end ____________________
+
+self = <tests.test_paginator.TestPaginator object at 0x7f5f59bb4890>
+sample_data = [1, 2, 3, 4, 5, 6, ...]
+
+    def test_next_page_at_end(self, sample_data):
+        """Тест перехода к следующей странице на последней странице"""
+>       paginator = Paginator(sample_data, page_size=10)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Paginator() takes no arguments
+
+tests/test_paginator.py:43: TypeError
+_____________________ TestPaginator.test_previous_page ______________________
+
+self = <tests.test_paginator.TestPaginator object at 0x7f5f59bb4ed0>
+sample_data = [1, 2, 3, 4, 5, 6, ...]
+
+    def test_previous_page(self, sample_data):
+        """Тест перехода к предыдущей странице"""
+>       paginator = Paginator(sample_data, page_size=10)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Paginator() takes no arguments
+
+tests/test_paginator.py:50: TypeError
+_________________ TestPaginator.test_previous_page_at_start _________________
+
+self = <tests.test_paginator.TestPaginator object at 0x7f5f59ba1950>
+sample_data = [1, 2, 3, 4, 5, 6, ...]
+
+    def test_previous_page_at_start(self, sample_data):
+        """Тест перехода к предыдущей странице на первой странице"""
+>       paginator = Paginator(sample_data, page_size=10)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Paginator() takes no arguments
+
+tests/test_paginator.py:57: TypeError
+____________________ TestPaginator.test_go_to_page_valid ____________________
+
+self = <tests.test_paginator.TestPaginator object at 0x7f5f59b99690>
+sample_data = [1, 2, 3, 4, 5, 6, ...]
+
+    def test_go_to_page_valid(self, sample_data):
+        """Тест перехода к корректной странице"""
+>       paginator = Paginator(sample_data, page_size=10)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Paginator() takes no arguments
+
+tests/test_paginator.py:63: TypeError
+___________________ TestPaginator.test_go_to_page_invalid ___________________
+
+self = <tests.test_paginator.TestPaginator object at 0x7f5f59bb5190>
+sample_data = [1, 2, 3, 4, 5, 6, ...]
+
+    def test_go_to_page_invalid(self, sample_data):
+        """Тест перехода к некорректной странице"""
+>       paginator = Paginator(sample_data, page_size=10)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Paginator() takes no arguments
+
+tests/test_paginator.py:69: TypeError
+_______________________ TestPaginator.test_empty_data _______________________
+
+self = <tests.test_paginator.TestPaginator object at 0x7f5f59bb54d0>
+
+    def test_empty_data(self):
+        """Тест пагинации с пустыми данными"""
+>       paginator = Paginator([], page_size=10)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Paginator() takes no arguments
+
+tests/test_paginator.py:75: TypeError
+____________________ TestPaginator.test_single_page_data ____________________
+
+self = <tests.test_paginator.TestPaginator object at 0x7f5f59bb57d0>
+
+    def test_single_page_data(self):
+        """Тест пагинации с данными на одну страницу"""
+        data = [1, 2, 3]
+>       paginator = Paginator(data, page_size=10)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Paginator() takes no arguments
+
+tests/test_paginator.py:83: TypeError
+_______________________ TestPaginator.test_page_info ________________________
+
+self = <tests.test_paginator.TestPaginator object at 0x7f5f59bb5b50>
+sample_data = [1, 2, 3, 4, 5, 6, ...]
+
+    def test_page_info(self, sample_data):
+        """Тест получения информации о странице"""
+>       paginator = Paginator(sample_data, page_size=10)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Paginator() takes no arguments
+
+tests/test_paginator.py:89: TypeError
+___________________ TestHHParser.test_parse_company_data ____________________
+
+self = <tests.test_parsers.TestHHParser object at 0x7f5f59bc0f10>
+hh_parser = <src.vacancies.parsers.hh_parser.HHParser object at 0x7f5f5050c250>
+
+    def test_parse_company_data(self, hh_parser):
+        """Тест парсинга данных компании"""
+        company_data = {
+            'id': '123',
+            'name': 'TestCompany',
+            'description': 'Test Description',
+            'alternate_url': 'https://hh.ru/employer/123'
+        }
+    
+>       result = hh_parser.parse_company(company_data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'HHParser' object has no attribute 'parse_company'
+
+tests/test_parsers.py:104: AttributeError
+__________________ TestHHParser.test_parse_companies_list ___________________
+
+self = <tests.test_parsers.TestHHParser object at 0x7f5f59bc1550>
+hh_parser = <src.vacancies.parsers.hh_parser.HHParser object at 0x7f5f5050f610>
+
+    def test_parse_companies_list(self, hh_parser):
+        """Тест парсинга списка компаний"""
+        companies_data = {
+            'items': [
+                {'id': '1', 'name': 'Company1'},
+                {'id': '2', 'name': 'Company2'}
+            ]
+        }
+    
+>       result = hh_parser.parse_companies(companies_data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'HHParser' object has no attribute 'parse_companies'
+
+tests/test_parsers.py:119: AttributeError
+_______________ TestSuperJobParser.test_parse_companies_list ________________
+
+self = <tests.test_parsers.TestSuperJobParser object at 0x7f5f59bc2bd0>
+sj_parser = <src.vacancies.parsers.sj_parser.SuperJobParser object at 0x7f5f507cc3d0>
+
+    def test_parse_companies_list(self, sj_parser):
+        """Тест парсинга списка компаний SJ"""
+        companies_data = {
+            'objects': [
+                {'id': 101, 'title': 'SJ Company1'},
+                {'id': 102, 'title': 'SJ Company2'}
+            ]
+        }
+    
+>       result = sj_parser.parse_companies(companies_data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SuperJobParser' object has no attribute 'parse_companies'
+
+tests/test_parsers.py:190: AttributeError
+_______________ TestPostgresSaver.test_save_vacancies_success _______________
+
+self = <tests.test_postgres_saver.TestPostgresSaver object at 0x7f5f59bd45d0>
+mock_connect = <MagicMock name='connect' id='140047345494096'>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f504d0a10>
+
+    @patch('src.storage.postgres_saver.psycopg2.connect')
+    def test_save_vacancies_success(self, mock_connect, postgres_saver):
+        """Тест успешного сохранения вакансий"""
+        # Мокаем подключение
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        mock_connect.return_value = mock_connection
+        mock_connection.__enter__ = Mock(return_value=mock_connection)
+        mock_connection.__exit__ = Mock(return_value=None)
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
+    
+        # Создаем тестовые вакансии
+        vacancies = [
+>           Vacancy(
+                vacancy_id="1",
+                title="Python Developer",
+                url="https://test.com/1",
+                salary_from=100000,
+                salary_to=150000,
+                salary_currency="RUR",
+                description="Test description",
+                requirements="Python",
+                responsibilities="Development",
+                experience="1-3 года",
+                employment="Полная занятость",
+                schedule="Полный день",
+                employer="TechCorp",
+                area="Москва",
+                source="hh.ru",
+                published_at="2024-01-15T10:30:00+0300",
+                company_id="123"
+            )
+        ]
+E       TypeError: Vacancy.__init__() got an unexpected keyword argument 'salary_from'
+
+tests/test_postgres_saver.py:49: TypeError
+_____________ TestPostgresSaver.test_save_vacancies_empty_list ______________
+
+self = <tests.test_postgres_saver.TestPostgresSaver object at 0x7f5f59bd49d0>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f505bc190>
+
+    def test_save_vacancies_empty_list(self, postgres_saver):
+        """Тест сохранения пустого списка"""
+        result = postgres_saver.save_vacancies([])
+>       assert result is True
+E       assert 0 is True
+
+tests/test_postgres_saver.py:82: AssertionError
+___________ TestPostgresSaver.test_save_vacancies_database_error ____________
+
+self = <tests.test_postgres_saver.TestPostgresSaver object at 0x7f5f59bd4e10>
+mock_connect = <MagicMock name='connect' id='140047346922896'>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f5076aad0>
+
+    @patch('src.storage.postgres_saver.psycopg2.connect')
+    def test_save_vacancies_database_error(self, mock_connect, postgres_saver):
+        """Тест ошибки базы данных при сохранении"""
+        mock_connect.side_effect = psycopg2.Error("Database error")
+        postgres_saver.db_manager._get_connection = Mock(side_effect=psycopg2.Error("Database error"))
+    
+        vacancies = [Mock(spec=Vacancy)]
+>       result = postgres_saver.save_vacancies(vacancies)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_postgres_saver.py:91: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/storage/postgres_saver.py:693: in save_vacancies
+    update_messages = self.add_vacancy_batch_optimized(vacancies)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/storage/postgres_saver.py:395: in add_vacancy_batch_optimized
+    connection = self._get_connection()
+                 ^^^^^^^^^^^^^^^^^^^^^^
+src/storage/postgres_saver.py:86: in _get_connection
+    connection = psycopg2.connect(
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1124: in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1128: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <MagicMock name='connect' id='140047346922896'>, args = ()
+kwargs = {'client_encoding': 'utf8', 'database': 'neondb', 'host': 'ep-spring-art-adtv9zhn.c-2.us-east-1.aws.neon.tech', 'password': 'npg_pGNMaSd2ukl9', ...}
+effect = Error('Database error')
+
+    def _execute_mock_call(self, /, *args, **kwargs):
+        # separate from _increment_mock_call so that awaited functions are
+        # executed separately from their call, also AsyncMock overrides this method
+    
+        effect = self.side_effect
+        if effect is not None:
+            if _is_exception(effect):
+>               raise effect
+E               psycopg2.Error: Database error
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1183: Error
+--------------------------- Captured stderr call ----------------------------
+ERROR:src.storage.postgres_saver:Ошибка подключения к БД neondb: Database error
+----------------------------- Captured log call -----------------------------
+ERROR    src.storage.postgres_saver:postgres_saver.py:98 Ошибка подключения к БД neondb: Database error
+_________________ TestPostgresSaver.test_get_all_vacancies __________________
+
+self = <tests.test_postgres_saver.TestPostgresSaver object at 0x7f5f59bd5210>
+mock_connect = <MagicMock name='connect' id='140047347003536'>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f505ca690>
+
+    @patch('src.storage.postgres_saver.psycopg2.connect')
+    def test_get_all_vacancies(self, mock_connect, postgres_saver):
+        """Тест получения всех вакансий"""
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        mock_connect.return_value = mock_connection
+        mock_connection.__enter__ = Mock(return_value=mock_connection)
+        mock_connection.__exit__ = Mock(return_value=None)
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
+    
+        # Мокаем результат запроса
+        mock_cursor.fetchall.return_value = [
+            ("1", "Python Developer", "https://test.com/1", 100000, 150000, "RUR",
+             "Test description", "Python", "Development", "1-3 года", "Полная занятость",
+             "Полный день", "TechCorp", "Москва", "hh.ru", "2024-01-15T10:30:00+0300", "123")
+        ]
+    
+        postgres_saver.db_manager._get_connection = Mock(return_value=mock_connection)
+    
+>       result = postgres_saver.get_all_vacancies()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'PostgresSaver' object has no attribute 'get_all_vacancies'
+
+tests/test_postgres_saver.py:117: AttributeError
+________________ TestPostgresSaver.test_get_vacancies_count _________________
+
+self = <tests.test_postgres_saver.TestPostgresSaver object at 0x7f5f59bd5690>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f50569550>
+
+    def test_get_vacancies_count(self, postgres_saver):
+        """Тест подсчета вакансий через DBManager"""
+        postgres_saver.db_manager.get_companies_and_vacancies_count.return_value = [
+            ("Company1", 5),
+            ("Company2", 3)
+        ]
+    
+>       result = postgres_saver.get_vacancies_count()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_postgres_saver.py:130: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f50569550>
+filters = None
+
+    def get_vacancies_count(self, filters: Optional[Dict[str, Any]] = None) -> int:
+        """
+        Возвращает количество вакансий с учетом фильтров
+    
+        Args:
+            filters: Словарь с фильтрами
+    
+        Returns:
+            int: Количество вакансий
+        """
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+    
+            query = "SELECT COUNT(*) FROM vacancies v LEFT JOIN companies c ON v.company_id = c.id"
+            params = []
+            where_conditions = []
+    
+            # Добавляем фильтры
+            if filters:
+                if filters.get("title"):
+                    where_conditions.append("LOWER(title) LIKE LOWER(%s)")
+                    params.append(f"%{filters['title']}%")
+    
+                if filters.get("salary_from"):
+                    where_conditions.append("salary_from >= %s")
+                    params.append(filters["salary_from"])
+    
+                if filters.get("salary_to"):
+                    where_conditions.append("salary_to <= %s")
+                    params.append(filters["salary_to"])
+    
+                if filters.get("employer"):  # Filter by company name from joined table
+                    standardized_employer = self._standardize_employer_name(filters["employer"])
+                    if standardized_employer:
+                        where_conditions.append("LOWER(c.name) LIKE LOWER(%s)")
+                        params.append(f"%{standardized_employer}%")
+    
+                # Filter by company name directly
+                if filters.get("company_name"):
+                    where_conditions.append("LOWER(company_name) LIKE LOWER(%s)")
+                    params.append(f"%{filters['company_name']}%")
+    
+            if where_conditions:
+                query += " WHERE " + " AND ".join(where_conditions)
+    
+            cursor.execute(query, params)
+>           return cursor.fetchone()[0]
+                   ^^^^^^^^^^^^^^^^^^^^
+E           TypeError: 'NoneType' object is not subscriptable
+
+src/storage/postgres_saver.py:1257: TypeError
+____________ TestPostgresSaver.test_delete_vacancy_by_id_success ____________
+
+self = <tests.test_postgres_saver.TestPostgresSaver object at 0x7f5f59bd5c90>
+mock_connect = <MagicMock name='connect' id='140047345702736'>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f508b6f50>
+
+    @patch('src.storage.postgres_saver.psycopg2.connect')
+    def test_delete_vacancy_by_id_success(self, mock_connect, postgres_saver):
+        """Тест успешного удаления вакансии"""
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        mock_connect.return_value = mock_connection
+        mock_connection.__enter__ = Mock(return_value=mock_connection)
+        mock_connection.__exit__ = Mock(return_value=None)
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
+    
+        mock_cursor.rowcount = 1  # Удалена 1 строка
+    
+        postgres_saver.db_manager._get_connection = Mock(return_value=mock_connection)
+    
+>       result = postgres_saver.delete_vacancy_by_id("123")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_postgres_saver.py:152: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f508b6f50>
+vacancy_id = '123'
+
+    def delete_vacancy_by_id(self, vacancy_id: str) -> bool:
+        """Удаляет вакансию по ID"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+            cursor.execute("DELETE FROM vacancies WHERE vacancy_id = %s", (vacancy_id,))
+    
+>           if cursor.rowcount > 0:
+               ^^^^^^^^^^^^^^^^^^^
+E           TypeError: '>' not supported between instances of 'Mock' and 'int'
+
+src/storage/postgres_saver.py:1029: TypeError
+___________ TestPostgresSaver.test_delete_vacancy_by_id_not_found ___________
+
+self = <tests.test_postgres_saver.TestPostgresSaver object at 0x7f5f59bd62d0>
+mock_connect = <MagicMock name='connect' id='140047349911248'>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f508df5d0>
+
+    @patch('src.storage.postgres_saver.psycopg2.connect')
+    def test_delete_vacancy_by_id_not_found(self, mock_connect, postgres_saver):
+        """Тест удаления несуществующей вакансии"""
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        mock_connect.return_value = mock_connection
+        mock_connection.__enter__ = Mock(return_value=mock_connection)
+        mock_connection.__exit__ = Mock(return_value=None)
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
+    
+        mock_cursor.rowcount = 0  # Не удалено ни одной строки
+    
+        postgres_saver.db_manager._get_connection = Mock(return_value=mock_connection)
+    
+>       result = postgres_saver.delete_vacancy_by_id("nonexistent")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_postgres_saver.py:174: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f508df5d0>
+vacancy_id = 'nonexistent'
+
+    def delete_vacancy_by_id(self, vacancy_id: str) -> bool:
+        """Удаляет вакансию по ID"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+            cursor.execute("DELETE FROM vacancies WHERE vacancy_id = %s", (vacancy_id,))
+    
+>           if cursor.rowcount > 0:
+               ^^^^^^^^^^^^^^^^^^^
+E           TypeError: '>' not supported between instances of 'Mock' and 'int'
+
+src/storage/postgres_saver.py:1029: TypeError
+_____________ TestPostgresSaver.test_filter_vacancies_by_salary _____________
+
+self = <tests.test_postgres_saver.TestPostgresSaver object at 0x7f5f59bd6a10>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f5077d7d0>
+
+    def test_filter_vacancies_by_salary(self, postgres_saver):
+        """Тест фильтрации вакансий по зарплате через DBManager"""
+        mock_vacancies = [
+            Mock(spec=Vacancy, salary_from=100000),
+            Mock(spec=Vacancy, salary_from=200000)
+        ]
+    
+        postgres_saver.db_manager.get_vacancies_with_higher_salary.return_value = mock_vacancies
+    
+>       result = postgres_saver.filter_vacancies_by_salary(150000)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'PostgresSaver' object has no attribute 'filter_vacancies_by_salary'
+
+tests/test_postgres_saver.py:187: AttributeError
+____________ TestPostgresSaver.test_search_vacancies_by_keyword _____________
+
+self = <tests.test_postgres_saver.TestPostgresSaver object at 0x7f5f59bd7090>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f509b46d0>
+
+    def test_search_vacancies_by_keyword(self, postgres_saver):
+        """Тест поиска вакансий по ключевому слову через DBManager"""
+        mock_vacancies = [Mock(spec=Vacancy, title="Python Developer")]
+    
+        postgres_saver.db_manager.get_vacancies_with_keyword.return_value = mock_vacancies
+    
+>       result = postgres_saver.search_vacancies_by_keyword("Python")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'PostgresSaver' object has no attribute 'search_vacancies_by_keyword'
+
+tests/test_postgres_saver.py:198: AttributeError
+_____________ TestSalary.test_salary_initialization_with_range ______________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59bdca50>
+
+    def test_salary_initialization_with_range(self):
+        """Тест инициализации зарплаты с диапазоном"""
+>       salary = Salary(100000, 150000, "RUR")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 4 were given
+
+tests/test_salary.py:15: TypeError
+______________ TestSalary.test_salary_initialization_from_only ______________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59bdd050>
+
+    def test_salary_initialization_from_only(self):
+        """Тест инициализации зарплаты только с минимумом"""
+>       salary = Salary(80000, currency="RUR")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() got an unexpected keyword argument 'currency'
+
+tests/test_salary.py:22: TypeError
+_______________ TestSalary.test_salary_initialization_to_only _______________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59bdd650>
+
+    def test_salary_initialization_to_only(self):
+        """Тест инициализации зарплаты только с максимумом"""
+>       salary = Salary(salary_to=200000, currency="USD")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() got an unexpected keyword argument 'salary_to'
+
+tests/test_salary.py:29: TypeError
+_____________ TestSalary.test_salary_initialization_none_values _____________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59bddc90>
+
+    def test_salary_initialization_none_values(self):
+        """Тест инициализации зарплаты с None значениями"""
+>       salary = Salary(None, None, None)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 4 were given
+
+tests/test_salary.py:36: TypeError
+_________________ TestSalary.test_salary_from_dict_complete _________________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59bde290>
+
+    def test_salary_from_dict_complete(self):
+        """Тест создания зарплаты из полного словаря"""
+        salary_dict = {"from": 100000, "to": 150000, "currency": "RUR"}
+>       salary = Salary.from_dict(salary_dict)
+                 ^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'Salary' has no attribute 'from_dict'
+
+tests/test_salary.py:44: AttributeError
+_________________ TestSalary.test_salary_from_dict_partial __________________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59bde890>
+
+    def test_salary_from_dict_partial(self):
+        """Тест создания зарплаты из частичного словаря"""
+        salary_dict = {"from": 80000, "currency": "USD"}
+>       salary = Salary.from_dict(salary_dict)
+                 ^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'Salary' has no attribute 'from_dict'
+
+tests/test_salary.py:52: AttributeError
+___________________ TestSalary.test_salary_from_dict_none ___________________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59bdee90>
+
+    def test_salary_from_dict_none(self):
+        """Тест создания зарплаты из None"""
+>       salary = Salary.from_dict(None)
+                 ^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'Salary' has no attribute 'from_dict'
+
+tests/test_salary.py:59: AttributeError
+__________________ TestSalary.test_salary_from_dict_empty ___________________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59bd57d0>
+
+    def test_salary_from_dict_empty(self):
+        """Тест создания зарплаты из пустого словаря"""
+>       salary = Salary.from_dict({})
+                 ^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'Salary' has no attribute 'from_dict'
+
+tests/test_salary.py:66: AttributeError
+______________________ TestSalary.test_salary_to_dict _______________________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59bdecd0>
+
+    def test_salary_to_dict(self):
+        """Тест преобразования зарплаты в словарь"""
+>       salary = Salary(100000, 150000, "RUR")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 4 were given
+
+tests/test_salary.py:73: TypeError
+__________________ TestSalary.test_salary_to_dict_partial ___________________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59bde690>
+
+    def test_salary_to_dict_partial(self):
+        """Тест преобразования частичной зарплаты в словарь"""
+>       salary = Salary(80000, currency="USD")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() got an unexpected keyword argument 'currency'
+
+tests/test_salary.py:81: TypeError
+______________ TestSalary.test_salary_average_with_both_values ______________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59bdc590>
+
+    def test_salary_average_with_both_values(self):
+        """Тест расчета средней зарплаты при наличии обоих значений"""
+>       salary = Salary(100000, 150000, "RUR")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 4 were given
+
+tests/test_salary.py:89: TypeError
+_________________ TestSalary.test_salary_average_from_only __________________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59bdf510>
+
+    def test_salary_average_from_only(self):
+        """Тест расчета средней зарплаты при наличии только минимума"""
+>       salary = Salary(100000, currency="RUR")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() got an unexpected keyword argument 'currency'
+
+tests/test_salary.py:94: TypeError
+__________________ TestSalary.test_salary_average_to_only ___________________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59bdf850>
+
+    def test_salary_average_to_only(self):
+        """Тест расчета средней зарплаты при наличии только максимума"""
+>       salary = Salary(salary_to=150000, currency="RUR")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() got an unexpected keyword argument 'salary_to'
+
+tests/test_salary.py:99: TypeError
+________________ TestSalary.test_salary_average_none_values _________________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59bdfb90>
+
+    def test_salary_average_none_values(self):
+        """Тест расчета средней зарплаты при отсутствии значений"""
+>       salary = Salary(None, None, "RUR")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 4 were given
+
+tests/test_salary.py:104: TypeError
+_________________ TestSalary.test_salary_comparison_greater _________________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59be40d0>
+
+    def test_salary_comparison_greater(self):
+        """Тест сравнения зарплат - больше"""
+>       salary1 = Salary(150000, 200000, "RUR")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 4 were given
+
+tests/test_salary.py:109: TypeError
+__________________ TestSalary.test_salary_comparison_less ___________________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59be46d0>
+
+    def test_salary_comparison_less(self):
+        """Тест сравнения зарплат - меньше"""
+>       salary1 = Salary(100000, 150000, "RUR")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 4 were given
+
+tests/test_salary.py:115: TypeError
+__________________ TestSalary.test_salary_comparison_equal __________________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59be4cd0>
+
+    def test_salary_comparison_equal(self):
+        """Тест сравнения зарплат - равно"""
+>       salary1 = Salary(100000, 150000, "RUR")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 4 were given
+
+tests/test_salary.py:121: TypeError
+________________ TestSalary.test_salary_comparison_with_none ________________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59be52d0>
+
+    def test_salary_comparison_with_none(self):
+        """Тест сравнения зарплат с None значениями"""
+>       salary1 = Salary(100000, 150000, "RUR")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 4 were given
+
+tests/test_salary.py:127: TypeError
+_____________ TestSalary.test_salary_string_representation_full _____________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59be58d0>
+
+    def test_salary_string_representation_full(self):
+        """Тест строкового представления полной зарплаты"""
+>       salary = Salary(100000, 150000, "RUR")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 4 were given
+
+tests/test_salary.py:135: TypeError
+__________ TestSalary.test_salary_string_representation_from_only ___________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59be5ed0>
+
+    def test_salary_string_representation_from_only(self):
+        """Тест строкового представления зарплаты только с минимумом"""
+>       salary = Salary(100000, currency="RUR")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() got an unexpected keyword argument 'currency'
+
+tests/test_salary.py:143: TypeError
+_____________ TestSalary.test_salary_string_representation_none _____________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59be64d0>
+
+    def test_salary_string_representation_none(self):
+        """Тест строкового представления зарплаты с None значениями"""
+>       salary = Salary(None, None, None)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 4 were given
+
+tests/test_salary.py:150: TypeError
+____________________ TestSalary.test_salary_is_specified ____________________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59be6ad0>
+
+    def test_salary_is_specified(self):
+        """Тест проверки указана ли зарплата"""
+>       salary1 = Salary(100000, 150000, "RUR")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 4 were given
+
+tests/test_salary.py:156: TypeError
+________________ TestSalary.test_salary_currency_conversion _________________
+
+self = <tests.test_salary.TestSalary object at 0x7f5f59be70d0>
+
+    def test_salary_currency_conversion(self):
+        """Тест конвертации валют (если поддерживается)"""
+>       salary = Salary(1000, 2000, "USD")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 4 were given
+
+tests/test_salary.py:166: TypeError
+___________________ TestSearchUtils.test_normalize_query ____________________
+
+self = <tests.test_search_utils.TestSearchUtils object at 0x7f5f59be7850>
+
+    def test_normalize_query(self):
+        """Тест нормализации поискового запроса"""
+        # Обычный запрос
+        assert SearchUtils.normalize_query("Python Developer") == "python developer"
+    
+        # Запрос с лишними пробелами
+>       assert SearchUtils.normalize_query("  Python   Developer  ") == "python developer"
+E       AssertionError: assert 'python   developer' == 'python developer'
+E         
+E         - python developer
+E         + python   developer
+E         ?       ++
+
+tests/test_search_utils.py:319: AssertionError
+_________________ TestSearchUtils.test_build_search_params __________________
+
+self = <tests.test_search_utils.TestSearchUtils object at 0x7f5f59bdf5d0>
+
+    def test_build_search_params(self):
+        """Тест построения параметров поиска"""
+        # Базовые параметры
+        params = SearchUtils.build_search_filters(salary_from=100000, area=1)
+>       assert params["salary_from"] == 100000
+               ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+tests/test_search_utils.py:344: TypeError
+________________ TestSearchUtils.test_empty_search_handling _________________
+
+self = <tests.test_search_utils.TestSearchUtils object at 0x7f5f59bf1e90>
+
+    def test_empty_search_handling(self):
+        """Тест обработки пустых поисковых запросов"""
+        assert SearchUtils.normalize_query("") == ""
+        assert SearchUtils.extract_keywords("") == []
+        assert SearchUtils.match_keywords("", ["Python"]) is False
+>       assert SearchUtils.build_search_filters() == {} # Проверка для build_search_filters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       assert None == {}
+E        +  where None = <function SearchUtils.build_search_filters at 0x7f5f59bd9120>()
+E        +    where <function SearchUtils.build_search_filters at 0x7f5f59bd9120> = SearchUtils.build_search_filters
+
+tests/test_search_utils.py:418: AssertionError
+_______________ TestSearchUtils.test_search_params_validation _______________
+
+self = <tests.test_search_utils.TestSearchUtils object at 0x7f5f59bf3050>
+
+    def test_search_params_validation(self):
+        """Тест валидации параметров поиска"""
+        # Валидные параметры
+        params = SearchUtils.build_search_filters(experience="between1And3", employment="full_time")
+>       assert params["experience"] == "between1And3"
+               ^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+tests/test_search_utils.py:448: TypeError
+_____________ TestSearchUtils.test_advanced_search_combinations _____________
+
+self = <tests.test_search_utils.TestSearchUtils object at 0x7f5f59bf3c50>
+
+    def test_advanced_search_combinations(self):
+        """Тест сложных поисковых комбинаций"""
+        # Комбинированный запрос
+        keywords = ["python", "django"]
+        vacancy_text = "We are looking for a Python Django developer with experience from 1 to 3 years."
+        assert SearchUtils.match_keywords(vacancy_text, keywords, match_all=True) is True
+    
+        # Тест calculate_relevance
+>       relevance = SearchUtils.calculate_relevance(vacancy_text, keywords)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'SearchUtils' has no attribute 'calculate_relevance'
+
+tests/test_search_utils.py:478: AttributeError
+____________ TestSourceManager.test_register_and_activate_source ____________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7f5f597036d0>
+
+    def test_register_and_activate_source(self):
+        """Тест регистрации и активации источника"""
+        manager = SourceManager()
+        mock_api = MockHHAPI()
+        manager.register_source("hh.ru", mock_api)
+        manager.activate_source("hh.ru")
+        assert "hh.ru" in manager.get_all_sources()
+        assert "hh.ru" in manager.get_active_sources()
+>       assert manager.is_source_active("hh.ru") is True
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'is_source_active'
+
+tests/test_source_manager.py:362: AttributeError
+_________________ TestSourceManager.test_deactivate_source __________________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7f5f59bf2250>
+
+    def test_deactivate_source(self):
+        """Тест деактивации источника"""
+        manager = SourceManager()
+        mock_api = MockHHAPI()
+        manager.register_source("hh.ru", mock_api)
+        manager.activate_source("hh.ru")
+        manager.deactivate_source("hh.ru")
+        assert "hh.ru" not in manager.get_active_sources()
+>       assert manager.is_source_active("hh.ru") is False
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'is_source_active'
+
+tests/test_source_manager.py:372: AttributeError
+_____________ TestSourceManager.test_get_vacancies_from_source ______________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7f5f59702e90>
+
+    def test_get_vacancies_from_source(self):
+        """Тест получения вакансий из конкретного источника"""
+        manager = SourceManager()
+        mock_hh_api = MockHHAPI()
+        mock_sj_api = MockSJAPI()
+    
+        manager.register_source("hh.ru", mock_hh_api)
+        manager.register_source("superjob.ru", mock_sj_api)
+    
+>       hh_vacancies = manager.get_vacancies_from_source("hh.ru", "python developer")
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'get_vacancies_from_source'
+
+tests/test_source_manager.py:403: AttributeError
+__________________ TestSourceManager.test_get_source_stats __________________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7f5f59701710>
+
+    def test_get_source_stats(self):
+        """Тест получения статистики по источникам"""
+        manager = SourceManager()
+        mock_hh_api = MockHHAPI()
+        mock_sj_api = MockSJAPI()
+    
+        manager.register_source("hh.ru", mock_hh_api)
+        manager.register_source("superjob.ru", mock_sj_api)
+        manager.activate_source("hh.ru")
+    
+>       stats = manager.get_source_stats()
+                ^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'get_source_stats'
+
+tests/test_source_manager.py:429: AttributeError
+________________ TestSourceManager.test_clear_active_sources ________________
+
+self = <tests.test_source_manager.TestSourceManager object at 0x7f5f59703ad0>
+
+    def test_clear_active_sources(self):
+        """Тест очистки списка активных источников"""
+        manager = SourceManager()
+        mock_api = MockHHAPI()
+        manager.register_source("hh.ru", mock_api)
+        manager.activate_source("hh.ru")
+>       manager.clear_active_sources()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceManager' object has no attribute 'clear_active_sources'
+
+tests/test_source_manager.py:447: AttributeError
+__________ TestSourceSelector.test_source_selector_initialization ___________
+
+self = <tests.test_source_selector.TestSourceSelector object at 0x7f5f59709cd0>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f5f509df610>
+
+    def test_source_selector_initialization(self, source_selector):
+        """Тест инициализации SourceSelector"""
+        assert source_selector is not None
+>       assert hasattr(source_selector, 'available_sources')
+E       AssertionError: assert False
+E        +  where False = hasattr(<src.ui_interfaces.source_selector.SourceSelector object at 0x7f5f509df610>, 'available_sources')
+
+tests/test_source_selector.py:22: AssertionError
+___________ TestSourceSelector.test_get_user_source_choice_single ___________
+
+self = <tests.test_source_selector.TestSourceSelector object at 0x7f5f5970a290>
+mock_input = <MagicMock name='input' id='140047351099472'>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f5f509d33d0>
+
+    @patch('builtins.input', return_value='1')
+    def test_get_user_source_choice_single(self, mock_input, source_selector):
+        """Тест выбора одного источника"""
+        with patch('builtins.print'):
+            sources = source_selector.get_user_source_choice()
+>           assert isinstance(sources, list)
+E           AssertionError: assert False
+E            +  where False = isinstance({'hh.ru'}, list)
+
+tests/test_source_selector.py:29: AssertionError
+____________ TestSourceSelector.test_get_user_source_choice_all _____________
+
+self = <tests.test_source_selector.TestSourceSelector object at 0x7f5f5970a850>
+mock_input = <MagicMock name='input' id='140047348597392'>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f5f50770050>
+
+    @patch('builtins.input', return_value='3')
+    def test_get_user_source_choice_all(self, mock_input, source_selector):
+        """Тест выбора всех источников"""
+        with patch('builtins.print'):
+            sources = source_selector.get_user_source_choice()
+>           assert isinstance(sources, list)
+E           AssertionError: assert False
+E            +  where False = isinstance({'hh.ru', 'superjob.ru'}, list)
+
+tests/test_source_selector.py:37: AssertionError
+_____ TestSourceSelector.test_get_user_source_choice_invalid_then_valid _____
+
+self = <tests.test_source_selector.TestSourceSelector object at 0x7f5f5970b3d0>
+mock_print = <MagicMock name='print' id='140047347048272'>
+mock_input = <MagicMock name='input' id='140047347054864'>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f5f509c13d0>
+
+    @patch('builtins.input', side_effect=['invalid', '1'])
+    @patch('builtins.print')
+    def test_get_user_source_choice_invalid_then_valid(self, mock_print, mock_input, source_selector):
+        """Тест некорректного, затем корректного выбора"""
+        sources = source_selector.get_user_source_choice()
+>       assert isinstance(sources, list)
+E       AssertionError: assert False
+E        +  where False = isinstance({'hh.ru'}, list)
+
+tests/test_source_selector.py:51: AssertionError
+_______________ TestSourceSelector.test_get_available_sources _______________
+
+self = <tests.test_source_selector.TestSourceSelector object at 0x7f5f59714090>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f5f509b0110>
+
+    def test_get_available_sources(self, source_selector):
+        """Тест получения доступных источников"""
+>       sources = source_selector.get_available_sources()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceSelector' object has no attribute 'get_available_sources'
+
+tests/test_source_selector.py:63: AttributeError
+______________ TestSourceSelector.test_validate_source_choice _______________
+
+self = <tests.test_source_selector.TestSourceSelector object at 0x7f5f597146d0>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f5f504dc790>
+
+    def test_validate_source_choice(self, source_selector):
+        """Тест валидации выбора источника"""
+>       assert source_selector.validate_source_choice("1") is True
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceSelector' object has no attribute 'validate_source_choice'
+
+tests/test_source_selector.py:70: AttributeError
+_____________ TestSourceSelector.test_get_source_name_by_choice _____________
+
+self = <tests.test_source_selector.TestSourceSelector object at 0x7f5f59714d10>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f5f508f8e10>
+
+    def test_get_source_name_by_choice(self, source_selector):
+        """Тест получения имени источника по выбору"""
+        # Предполагаем стандартную нумерацию
+>       source_name = source_selector.get_source_name_by_choice("1")
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceSelector' object has no attribute 'get_source_name_by_choice'
+
+tests/test_source_selector.py:80: AttributeError
+________________ TestSourceSelector.test_is_source_available ________________
+
+self = <tests.test_source_selector.TestSourceSelector object at 0x7f5f59715310>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f5f504d1310>
+
+    def test_is_source_available(self, source_selector):
+        """Тест проверки доступности источника"""
+>       assert source_selector.is_source_available("hh.ru") is True
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceSelector' object has no attribute 'is_source_available'
+
+tests/test_source_selector.py:85: AttributeError
+________________ TestSourceSelector.test_display_source_menu ________________
+
+self = <tests.test_source_selector.TestSourceSelector object at 0x7f5f597158d0>
+mock_print = <MagicMock name='print' id='140047346627792'>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f5f5058c550>
+
+    @patch('builtins.print')
+    def test_display_source_menu(self, mock_print, source_selector):
+        """Тест отображения меню источников"""
+>       source_selector.display_source_menu()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceSelector' object has no attribute 'display_source_menu'
+
+tests/test_source_selector.py:92: AttributeError
+___________________ TestPostgresSaver.test_initialization ___________________
+
+self = <tests.test_storage.TestPostgresSaver object at 0x7f5f59714850>
+mock_connect = <MagicMock name='connect' id='140047349447440'>
+
+    @patch('psycopg2.connect')
+    def test_initialization(self, mock_connect):
+        """Тест инициализации хранилища"""
+        mock_conn = Mock()
+        mock_connect.return_value = mock_conn
+    
+>       storage = PostgresSaver()
+                  ^^^^^^^^^^^^^^^
+
+tests/test_storage.py:25: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/storage/postgres_saver.py:80: in __init__
+    self._ensure_tables_exist()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f509b28d0>
+
+    def _ensure_tables_exist(self):
+        """Создает таблицы если они не существуют"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+    
+            # Устанавливаем кодировку сессии
+            cursor.execute("SET client_encoding TO 'UTF8'")
+    
+            # Сначала создаем таблицу companies если её нет
+            self._ensure_companies_table_exists()
+    
+            # Создаем таблицу для вакансий с базовой структурой
+            create_table_query = """
+            CREATE TABLE IF NOT EXISTS vacancies (
+                id SERIAL PRIMARY KEY,
+                vacancy_id VARCHAR(50) UNIQUE NOT NULL,
+                title VARCHAR(500) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """
+    
+            cursor.execute(create_table_query)
+            logger.info("✓ Базовая структура таблицы vacancies проверена")
+    
+            # Список всех полей, которые должны быть в таблице vacancies
+            required_fields = [
+                ("url", "TEXT"),
+                ("salary_from", "INTEGER"),
+                ("salary_to", "INTEGER"),
+                ("salary_currency", "VARCHAR(10)"),
+                ("description", "TEXT"),
+                ("requirements", "TEXT"),
+                ("responsibilities", "TEXT"),
+                ("experience", "VARCHAR(200)"),
+                ("employment", "VARCHAR(200)"),
+                ("schedule", "VARCHAR(200)"),
+                ("area", "VARCHAR(200)"),
+                ("source", "VARCHAR(50) DEFAULT 'unknown'"),
+                ("published_at", "TIMESTAMP"),
+                ("company_id", "INTEGER"),
+            ]
+    
+            # Проверяем и добавляем недостающие поля
+            for field_name, field_type in required_fields:
+                cursor.execute(
+                    """
+                    SELECT column_name, data_type
+                    FROM information_schema.columns
+                    WHERE table_name = 'vacancies' AND column_name = %s;
+                """,
+                    (field_name,),
+                )
+    
+                field_info = cursor.fetchone()
+                if not field_info:
+                    logger.info(f"Добавляем поле {field_name} в таблицу vacancies...")
+                    cursor.execute(f"ALTER TABLE vacancies ADD COLUMN {field_name} {field_type};")
+                    logger.info(f"✓ Поле {field_name} добавлено")
+>               elif field_name == "company_id" and field_info[1] not in ("integer", "bigint"):
+                                                    ^^^^^^^^^^^^^
+E               TypeError: 'Mock' object is not subscriptable
+
+src/storage/postgres_saver.py:320: TypeError
+____________________ TestPostgresSaver.test_add_vacancy _____________________
+
+self = <tests.test_storage.TestPostgresSaver object at 0x7f5f59716a90>
+mock_connect = <MagicMock name='connect' id='140047499178448'>
+sample_vacancy = <src.vacancies.models.Vacancy object at 0x7f5f593bcae0>
+
+    @patch('psycopg2.connect')
+    def test_add_vacancy(self, mock_connect, sample_vacancy):
+        """Тест добавления вакансии"""
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_cursor.rowcount = 1
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+>       storage = PostgresSaver()
+                  ^^^^^^^^^^^^^^^
+
+tests/test_storage.py:37: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/storage/postgres_saver.py:80: in __init__
+    self._ensure_tables_exist()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f5042a050>
+
+    def _ensure_tables_exist(self):
+        """Создает таблицы если они не существуют"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+    
+            # Устанавливаем кодировку сессии
+            cursor.execute("SET client_encoding TO 'UTF8'")
+    
+            # Сначала создаем таблицу companies если её нет
+            self._ensure_companies_table_exists()
+    
+            # Создаем таблицу для вакансий с базовой структурой
+            create_table_query = """
+            CREATE TABLE IF NOT EXISTS vacancies (
+                id SERIAL PRIMARY KEY,
+                vacancy_id VARCHAR(50) UNIQUE NOT NULL,
+                title VARCHAR(500) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """
+    
+            cursor.execute(create_table_query)
+            logger.info("✓ Базовая структура таблицы vacancies проверена")
+    
+            # Список всех полей, которые должны быть в таблице vacancies
+            required_fields = [
+                ("url", "TEXT"),
+                ("salary_from", "INTEGER"),
+                ("salary_to", "INTEGER"),
+                ("salary_currency", "VARCHAR(10)"),
+                ("description", "TEXT"),
+                ("requirements", "TEXT"),
+                ("responsibilities", "TEXT"),
+                ("experience", "VARCHAR(200)"),
+                ("employment", "VARCHAR(200)"),
+                ("schedule", "VARCHAR(200)"),
+                ("area", "VARCHAR(200)"),
+                ("source", "VARCHAR(50) DEFAULT 'unknown'"),
+                ("published_at", "TIMESTAMP"),
+                ("company_id", "INTEGER"),
+            ]
+    
+            # Проверяем и добавляем недостающие поля
+            for field_name, field_type in required_fields:
+                cursor.execute(
+                    """
+                    SELECT column_name, data_type
+                    FROM information_schema.columns
+                    WHERE table_name = 'vacancies' AND column_name = %s;
+                """,
+                    (field_name,),
+                )
+    
+                field_info = cursor.fetchone()
+                if not field_info:
+                    logger.info(f"Добавляем поле {field_name} в таблицу vacancies...")
+                    cursor.execute(f"ALTER TABLE vacancies ADD COLUMN {field_name} {field_type};")
+                    logger.info(f"✓ Поле {field_name} добавлено")
+>               elif field_name == "company_id" and field_info[1] not in ("integer", "bigint"):
+                                                    ^^^^^^^^^^^^^
+E               TypeError: 'Mock' object is not subscriptable
+
+src/storage/postgres_saver.py:320: TypeError
+___________________ TestPostgresSaver.test_get_vacancies ____________________
+
+self = <tests.test_storage.TestPostgresSaver object at 0x7f5f59716e10>
+mock_connect = <MagicMock name='connect' id='140047349485840'>
+
+    @patch('psycopg2.connect')
+    def test_get_vacancies(self, mock_connect):
+        """Тест получения вакансий"""
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_cursor.fetchall.return_value = [
+            (
+                "12345", "Python Developer", "Test Company", "https://hh.ru/vacancy/12345",
+                "100000", "150000", "RUR", "Test description", "Python, Django",
+                "Development", "От 1 года до 3 лет", "Полная занятость",
+                "Полный день", "2024-01-01T00:00:00", "hh.ru"
+            )
+        ]
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+>       storage = PostgresSaver()
+                  ^^^^^^^^^^^^^^^
+
+tests/test_storage.py:60: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/storage/postgres_saver.py:80: in __init__
+    self._ensure_tables_exist()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f50849990>
+
+    def _ensure_tables_exist(self):
+        """Создает таблицы если они не существуют"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+    
+            # Устанавливаем кодировку сессии
+            cursor.execute("SET client_encoding TO 'UTF8'")
+    
+            # Сначала создаем таблицу companies если её нет
+            self._ensure_companies_table_exists()
+    
+            # Создаем таблицу для вакансий с базовой структурой
+            create_table_query = """
+            CREATE TABLE IF NOT EXISTS vacancies (
+                id SERIAL PRIMARY KEY,
+                vacancy_id VARCHAR(50) UNIQUE NOT NULL,
+                title VARCHAR(500) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """
+    
+            cursor.execute(create_table_query)
+            logger.info("✓ Базовая структура таблицы vacancies проверена")
+    
+            # Список всех полей, которые должны быть в таблице vacancies
+            required_fields = [
+                ("url", "TEXT"),
+                ("salary_from", "INTEGER"),
+                ("salary_to", "INTEGER"),
+                ("salary_currency", "VARCHAR(10)"),
+                ("description", "TEXT"),
+                ("requirements", "TEXT"),
+                ("responsibilities", "TEXT"),
+                ("experience", "VARCHAR(200)"),
+                ("employment", "VARCHAR(200)"),
+                ("schedule", "VARCHAR(200)"),
+                ("area", "VARCHAR(200)"),
+                ("source", "VARCHAR(50) DEFAULT 'unknown'"),
+                ("published_at", "TIMESTAMP"),
+                ("company_id", "INTEGER"),
+            ]
+    
+            # Проверяем и добавляем недостающие поля
+            for field_name, field_type in required_fields:
+                cursor.execute(
+                    """
+                    SELECT column_name, data_type
+                    FROM information_schema.columns
+                    WHERE table_name = 'vacancies' AND column_name = %s;
+                """,
+                    (field_name,),
+                )
+    
+                field_info = cursor.fetchone()
+                if not field_info:
+                    logger.info(f"Добавляем поле {field_name} в таблицу vacancies...")
+                    cursor.execute(f"ALTER TABLE vacancies ADD COLUMN {field_name} {field_type};")
+                    logger.info(f"✓ Поле {field_name} добавлено")
+>               elif field_name == "company_id" and field_info[1] not in ("integer", "bigint"):
+                                                    ^^^^^^^^^^^^^
+E               TypeError: 'Mock' object is not subscriptable
+
+src/storage/postgres_saver.py:320: TypeError
+________________ TestPostgresSaver.test_delete_vacancy_by_id ________________
+
+self = <tests.test_storage.TestPostgresSaver object at 0x7f5f597171d0>
+mock_connect = <MagicMock name='connect' id='140047345522640'>
+
+    @patch('psycopg2.connect')
+    def test_delete_vacancy_by_id(self, mock_connect):
+        """Тест удаления вакансии по ID"""
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_cursor.rowcount = 1
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+>       storage = PostgresSaver()
+                  ^^^^^^^^^^^^^^^
+
+tests/test_storage.py:76: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/storage/postgres_saver.py:80: in __init__
+    self._ensure_tables_exist()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f504f7050>
+
+    def _ensure_tables_exist(self):
+        """Создает таблицы если они не существуют"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+    
+            # Устанавливаем кодировку сессии
+            cursor.execute("SET client_encoding TO 'UTF8'")
+    
+            # Сначала создаем таблицу companies если её нет
+            self._ensure_companies_table_exists()
+    
+            # Создаем таблицу для вакансий с базовой структурой
+            create_table_query = """
+            CREATE TABLE IF NOT EXISTS vacancies (
+                id SERIAL PRIMARY KEY,
+                vacancy_id VARCHAR(50) UNIQUE NOT NULL,
+                title VARCHAR(500) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """
+    
+            cursor.execute(create_table_query)
+            logger.info("✓ Базовая структура таблицы vacancies проверена")
+    
+            # Список всех полей, которые должны быть в таблице vacancies
+            required_fields = [
+                ("url", "TEXT"),
+                ("salary_from", "INTEGER"),
+                ("salary_to", "INTEGER"),
+                ("salary_currency", "VARCHAR(10)"),
+                ("description", "TEXT"),
+                ("requirements", "TEXT"),
+                ("responsibilities", "TEXT"),
+                ("experience", "VARCHAR(200)"),
+                ("employment", "VARCHAR(200)"),
+                ("schedule", "VARCHAR(200)"),
+                ("area", "VARCHAR(200)"),
+                ("source", "VARCHAR(50) DEFAULT 'unknown'"),
+                ("published_at", "TIMESTAMP"),
+                ("company_id", "INTEGER"),
+            ]
+    
+            # Проверяем и добавляем недостающие поля
+            for field_name, field_type in required_fields:
+                cursor.execute(
+                    """
+                    SELECT column_name, data_type
+                    FROM information_schema.columns
+                    WHERE table_name = 'vacancies' AND column_name = %s;
+                """,
+                    (field_name,),
+                )
+    
+                field_info = cursor.fetchone()
+                if not field_info:
+                    logger.info(f"Добавляем поле {field_name} в таблицу vacancies...")
+                    cursor.execute(f"ALTER TABLE vacancies ADD COLUMN {field_name} {field_type};")
+                    logger.info(f"✓ Поле {field_name} добавлено")
+>               elif field_name == "company_id" and field_info[1] not in ("integer", "bigint"):
+                                                    ^^^^^^^^^^^^^
+E               TypeError: 'Mock' object is not subscriptable
+
+src/storage/postgres_saver.py:320: TypeError
+________________ TestPostgresSaver.test_get_vacancies_count _________________
+
+self = <tests.test_storage.TestPostgresSaver object at 0x7f5f59717550>
+mock_connect = <MagicMock name='connect' id='140047350774288'>
+
+    @patch('psycopg2.connect')
+    def test_get_vacancies_count(self, mock_connect):
+        """Тест получения количества вакансий"""
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_cursor.fetchone.return_value = (10,)
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+>       storage = PostgresSaver()
+                  ^^^^^^^^^^^^^^^
+
+tests/test_storage.py:92: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/storage/postgres_saver.py:80: in __init__
+    self._ensure_tables_exist()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7f5f509a9650>
+
+    def _ensure_tables_exist(self):
+        """Создает таблицы если они не существуют"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+    
+            # Устанавливаем кодировку сессии
+            cursor.execute("SET client_encoding TO 'UTF8'")
+    
+            # Сначала создаем таблицу companies если её нет
+            self._ensure_companies_table_exists()
+    
+            # Создаем таблицу для вакансий с базовой структурой
+            create_table_query = """
+            CREATE TABLE IF NOT EXISTS vacancies (
+                id SERIAL PRIMARY KEY,
+                vacancy_id VARCHAR(50) UNIQUE NOT NULL,
+                title VARCHAR(500) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """
+    
+            cursor.execute(create_table_query)
+            logger.info("✓ Базовая структура таблицы vacancies проверена")
+    
+            # Список всех полей, которые должны быть в таблице vacancies
+            required_fields = [
+                ("url", "TEXT"),
+                ("salary_from", "INTEGER"),
+                ("salary_to", "INTEGER"),
+                ("salary_currency", "VARCHAR(10)"),
+                ("description", "TEXT"),
+                ("requirements", "TEXT"),
+                ("responsibilities", "TEXT"),
+                ("experience", "VARCHAR(200)"),
+                ("employment", "VARCHAR(200)"),
+                ("schedule", "VARCHAR(200)"),
+                ("area", "VARCHAR(200)"),
+                ("source", "VARCHAR(50) DEFAULT 'unknown'"),
+                ("published_at", "TIMESTAMP"),
+                ("company_id", "INTEGER"),
+            ]
+    
+            # Проверяем и добавляем недостающие поля
+            for field_name, field_type in required_fields:
+                cursor.execute(
+                    """
+                    SELECT column_name, data_type
+                    FROM information_schema.columns
+                    WHERE table_name = 'vacancies' AND column_name = %s;
+                """,
+                    (field_name,),
+                )
+    
+                field_info = cursor.fetchone()
+                if not field_info:
+                    logger.info(f"Добавляем поле {field_name} в таблицу vacancies...")
+                    cursor.execute(f"ALTER TABLE vacancies ADD COLUMN {field_name} {field_type};")
+                    logger.info(f"✓ Поле {field_name} добавлено")
+>               elif field_name == "company_id" and field_info[1] not in ("integer", "bigint"):
+                                                    ^^^^^^^^^^^^^
+E               IndexError: tuple index out of range
+
+src/storage/postgres_saver.py:320: IndexError
+========================== short test summary info ==========================
+FAILED tests/test_env_loader.py::TestEnvLoader::test_validate_required_env_vars_success - AttributeError: type object 'EnvLoader' has no attribute 'validate_requi...
+FAILED tests/test_env_loader.py::TestEnvLoader::test_validate_required_env_vars_missing - AttributeError: type object 'EnvLoader' has no attribute 'validate_requi...
+FAILED tests/test_env_loader.py::TestEnvLoader::test_load_environment_variables - AttributeError: type object 'EnvLoader' has no attribute 'load_environme...
+FAILED tests/test_env_loader.py::TestEnvLoader::test_reset_environment_variables - AttributeError: type object 'EnvLoader' has no attribute 'reset_environm...
+FAILED tests/test_env_loader.py::TestEnvLoaderIntegration::test_load_multiple_times - AssertionError: assert '2' == '1'
+FAILED tests/test_integration.py::TestStorageIntegration::test_postgres_saver_integration - IndexError: tuple index out of range
+FAILED tests/test_integration.py::TestFullWorkflowIntegration::test_search_and_save_workflow - IndexError: tuple index out of range
+FAILED tests/test_integration.py::TestCacheIntegration::test_cache_integration - assert None is not None
+FAILED tests/test_integration.py::TestErrorHandlingIntegration::test_database_error_handling - Exception: Database connection error
+FAILED tests/test_main_functionality.py::TestMainFunctionality::test_vacancy_operations - AttributeError: 'VacancyOperations' object has no attribute 'filter_vaca...
+FAILED tests/test_main_functionality.py::TestMainFunctionality::test_vacancy_formatter - AssertionError: assert '100 000' in 'от 100,000 до 150,000 руб. в месяц'
+FAILED tests/test_main_functionality.py::TestMainFunctionality::test_data_validation - assert <src.utils.salary.Salary object at 0x7f5f50578820> is None
+FAILED tests/test_main_functionality.py::TestMainFunctionality::test_configuration_defaults - AssertionError: assert False
+FAILED tests/test_menu_manager.py::TestMenuManager::test_get_user_choice_valid - AttributeError: 'MenuManager' object has no attribute 'get_user_choice'
+FAILED tests/test_menu_manager.py::TestMenuManager::test_get_user_choice_invalid_then_valid - AttributeError: 'MenuManager' object has no attribute 'get_user_choice'
+FAILED tests/test_menu_manager.py::TestMenuManager::test_display_menu_items - TypeError: MenuManager.display_menu() takes 1 positional argument but 2 ...
+FAILED tests/test_menu_manager.py::TestMenuManager::test_get_user_choice_exit - AttributeError: 'MenuManager' object has no attribute 'get_user_choice'
+FAILED tests/test_paginator.py::TestPaginator::test_paginator_initialization - TypeError: Paginator() takes no arguments
+FAILED tests/test_paginator.py::TestPaginator::test_get_current_page_data - TypeError: Paginator() takes no arguments
+FAILED tests/test_paginator.py::TestPaginator::test_next_page - TypeError: Paginator() takes no arguments
+FAILED tests/test_paginator.py::TestPaginator::test_next_page_at_end - TypeError: Paginator() takes no arguments
+FAILED tests/test_paginator.py::TestPaginator::test_previous_page - TypeError: Paginator() takes no arguments
+FAILED tests/test_paginator.py::TestPaginator::test_previous_page_at_start - TypeError: Paginator() takes no arguments
+FAILED tests/test_paginator.py::TestPaginator::test_go_to_page_valid - TypeError: Paginator() takes no arguments
+FAILED tests/test_paginator.py::TestPaginator::test_go_to_page_invalid - TypeError: Paginator() takes no arguments
+FAILED tests/test_paginator.py::TestPaginator::test_empty_data - TypeError: Paginator() takes no arguments
+FAILED tests/test_paginator.py::TestPaginator::test_single_page_data - TypeError: Paginator() takes no arguments
+FAILED tests/test_paginator.py::TestPaginator::test_page_info - TypeError: Paginator() takes no arguments
+FAILED tests/test_parsers.py::TestHHParser::test_parse_company_data - AttributeError: 'HHParser' object has no attribute 'parse_company'
+FAILED tests/test_parsers.py::TestHHParser::test_parse_companies_list - AttributeError: 'HHParser' object has no attribute 'parse_companies'
+FAILED tests/test_parsers.py::TestSuperJobParser::test_parse_companies_list - AttributeError: 'SuperJobParser' object has no attribute 'parse_companies'
+FAILED tests/test_postgres_saver.py::TestPostgresSaver::test_save_vacancies_success - TypeError: Vacancy.__init__() got an unexpected keyword argument 'salary...
+FAILED tests/test_postgres_saver.py::TestPostgresSaver::test_save_vacancies_empty_list - assert 0 is True
+FAILED tests/test_postgres_saver.py::TestPostgresSaver::test_save_vacancies_database_error - psycopg2.Error: Database error
+FAILED tests/test_postgres_saver.py::TestPostgresSaver::test_get_all_vacancies - AttributeError: 'PostgresSaver' object has no attribute 'get_all_vacancies'
+FAILED tests/test_postgres_saver.py::TestPostgresSaver::test_get_vacancies_count - TypeError: 'NoneType' object is not subscriptable
+FAILED tests/test_postgres_saver.py::TestPostgresSaver::test_delete_vacancy_by_id_success - TypeError: '>' not supported between instances of 'Mock' and 'int'
+FAILED tests/test_postgres_saver.py::TestPostgresSaver::test_delete_vacancy_by_id_not_found - TypeError: '>' not supported between instances of 'Mock' and 'int'
+FAILED tests/test_postgres_saver.py::TestPostgresSaver::test_filter_vacancies_by_salary - AttributeError: 'PostgresSaver' object has no attribute 'filter_vacancie...
+FAILED tests/test_postgres_saver.py::TestPostgresSaver::test_search_vacancies_by_keyword - AttributeError: 'PostgresSaver' object has no attribute 'search_vacancie...
+FAILED tests/test_salary.py::TestSalary::test_salary_initialization_with_range - TypeError: Salary.__init__() takes from 1 to 2 positional arguments but ...
+FAILED tests/test_salary.py::TestSalary::test_salary_initialization_from_only - TypeError: Salary.__init__() got an unexpected keyword argument 'currency'
+FAILED tests/test_salary.py::TestSalary::test_salary_initialization_to_only - TypeError: Salary.__init__() got an unexpected keyword argument 'salary_to'
+FAILED tests/test_salary.py::TestSalary::test_salary_initialization_none_values - TypeError: Salary.__init__() takes from 1 to 2 positional arguments but ...
+FAILED tests/test_salary.py::TestSalary::test_salary_from_dict_complete - AttributeError: type object 'Salary' has no attribute 'from_dict'
+FAILED tests/test_salary.py::TestSalary::test_salary_from_dict_partial - AttributeError: type object 'Salary' has no attribute 'from_dict'
+FAILED tests/test_salary.py::TestSalary::test_salary_from_dict_none - AttributeError: type object 'Salary' has no attribute 'from_dict'
+FAILED tests/test_salary.py::TestSalary::test_salary_from_dict_empty - AttributeError: type object 'Salary' has no attribute 'from_dict'
+FAILED tests/test_salary.py::TestSalary::test_salary_to_dict - TypeError: Salary.__init__() takes from 1 to 2 positional arguments but ...
+FAILED tests/test_salary.py::TestSalary::test_salary_to_dict_partial - TypeError: Salary.__init__() got an unexpected keyword argument 'currency'
+FAILED tests/test_salary.py::TestSalary::test_salary_average_with_both_values - TypeError: Salary.__init__() takes from 1 to 2 positional arguments but ...
+FAILED tests/test_salary.py::TestSalary::test_salary_average_from_only - TypeError: Salary.__init__() got an unexpected keyword argument 'currency'
+FAILED tests/test_salary.py::TestSalary::test_salary_average_to_only - TypeError: Salary.__init__() got an unexpected keyword argument 'salary_to'
+FAILED tests/test_salary.py::TestSalary::test_salary_average_none_values - TypeError: Salary.__init__() takes from 1 to 2 positional arguments but ...
+FAILED tests/test_salary.py::TestSalary::test_salary_comparison_greater - TypeError: Salary.__init__() takes from 1 to 2 positional arguments but ...
+FAILED tests/test_salary.py::TestSalary::test_salary_comparison_less - TypeError: Salary.__init__() takes from 1 to 2 positional arguments but ...
+FAILED tests/test_salary.py::TestSalary::test_salary_comparison_equal - TypeError: Salary.__init__() takes from 1 to 2 positional arguments but ...
+FAILED tests/test_salary.py::TestSalary::test_salary_comparison_with_none - TypeError: Salary.__init__() takes from 1 to 2 positional arguments but ...
+FAILED tests/test_salary.py::TestSalary::test_salary_string_representation_full - TypeError: Salary.__init__() takes from 1 to 2 positional arguments but ...
+FAILED tests/test_salary.py::TestSalary::test_salary_string_representation_from_only - TypeError: Salary.__init__() got an unexpected keyword argument 'currency'
+FAILED tests/test_salary.py::TestSalary::test_salary_string_representation_none - TypeError: Salary.__init__() takes from 1 to 2 positional arguments but ...
+FAILED tests/test_salary.py::TestSalary::test_salary_is_specified - TypeError: Salary.__init__() takes from 1 to 2 positional arguments but ...
+FAILED tests/test_salary.py::TestSalary::test_salary_currency_conversion - TypeError: Salary.__init__() takes from 1 to 2 positional arguments but ...
+FAILED tests/test_search_utils.py::TestSearchUtils::test_normalize_query - AssertionError: assert 'python   developer' == 'python developer'
+FAILED tests/test_search_utils.py::TestSearchUtils::test_build_search_params - TypeError: 'NoneType' object is not subscriptable
+FAILED tests/test_search_utils.py::TestSearchUtils::test_empty_search_handling - assert None == {}
+FAILED tests/test_search_utils.py::TestSearchUtils::test_search_params_validation - TypeError: 'NoneType' object is not subscriptable
+FAILED tests/test_search_utils.py::TestSearchUtils::test_advanced_search_combinations - AttributeError: type object 'SearchUtils' has no attribute 'calculate_re...
+FAILED tests/test_source_manager.py::TestSourceManager::test_register_and_activate_source - AttributeError: 'SourceManager' object has no attribute 'is_source_active'
+FAILED tests/test_source_manager.py::TestSourceManager::test_deactivate_source - AttributeError: 'SourceManager' object has no attribute 'is_source_active'
+FAILED tests/test_source_manager.py::TestSourceManager::test_get_vacancies_from_source - AttributeError: 'SourceManager' object has no attribute 'get_vacancies_f...
+FAILED tests/test_source_manager.py::TestSourceManager::test_get_source_stats - AttributeError: 'SourceManager' object has no attribute 'get_source_stats'
+FAILED tests/test_source_manager.py::TestSourceManager::test_clear_active_sources - AttributeError: 'SourceManager' object has no attribute 'clear_active_so...
+FAILED tests/test_source_selector.py::TestSourceSelector::test_source_selector_initialization - AssertionError: assert False
+FAILED tests/test_source_selector.py::TestSourceSelector::test_get_user_source_choice_single - AssertionError: assert False
+FAILED tests/test_source_selector.py::TestSourceSelector::test_get_user_source_choice_all - AssertionError: assert False
+FAILED tests/test_source_selector.py::TestSourceSelector::test_get_user_source_choice_invalid_then_valid - AssertionError: assert False
+FAILED tests/test_source_selector.py::TestSourceSelector::test_get_available_sources - AttributeError: 'SourceSelector' object has no attribute 'get_available_...
+FAILED tests/test_source_selector.py::TestSourceSelector::test_validate_source_choice - AttributeError: 'SourceSelector' object has no attribute 'validate_sourc...
+FAILED tests/test_source_selector.py::TestSourceSelector::test_get_source_name_by_choice - AttributeError: 'SourceSelector' object has no attribute 'get_source_nam...
+FAILED tests/test_source_selector.py::TestSourceSelector::test_is_source_available - AttributeError: 'SourceSelector' object has no attribute 'is_source_avai...
+FAILED tests/test_source_selector.py::TestSourceSelector::test_display_source_menu - AttributeError: 'SourceSelector' object has no attribute 'display_source...
+FAILED tests/test_storage.py::TestPostgresSaver::test_initialization - TypeError: 'Mock' object is not subscriptable
+FAILED tests/test_storage.py::TestPostgresSaver::test_add_vacancy - TypeError: 'Mock' object is not subscriptable
+FAILED tests/test_storage.py::TestPostgresSaver::test_get_vacancies - TypeError: 'Mock' object is not subscriptable
+FAILED tests/test_storage.py::TestPostgresSaver::test_delete_vacancy_by_id - TypeError: 'Mock' object is not subscriptable
+FAILED tests/test_storage.py::TestPostgresSaver::test_get_vacancies_count - IndexError: tuple index out of range
+====================== 87 failed, 259 passed in 5.82s =======================
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/main.py", line 289, in wrap_session
+    session.exitstatus = doit(config, session) or 0
+                         ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/main.py", line 343, in _main
+    config.hook.pytest_runtestloop(session=session)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 167, in _multicall
+    raise exception
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/logging.py", line 801, in pytest_runtestloop
+    return (yield)  # Run all the tests.
+            ^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/terminal.py", line 688, in pytest_runtestloop
+    result = yield
+             ^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/main.py", line 367, in pytest_runtestloop
+    item.config.hook.pytest_runtest_protocol(item=item, nextitem=nextitem)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 167, in _multicall
+    raise exception
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/warnings.py", line 90, in pytest_runtest_protocol
+    return (yield)
+            ^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/assertion/__init__.py", line 192, in pytest_runtest_protocol
+    return (yield)
+            ^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/unittest.py", line 475, in pytest_runtest_protocol
+    return (yield)
+            ^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/faulthandler.py", line 88, in pytest_runtest_protocol
+    return (yield)
+            ^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/runner.py", line 117, in pytest_runtest_protocol
+    runtestprotocol(item, nextitem=nextitem)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/runner.py", line 130, in runtestprotocol
+    rep = call_and_report(item, "setup", log)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/runner.py", line 245, in call_and_report
+    call = CallInfo.from_call(
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/runner.py", line 344, in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/runner.py", line 246, in <lambda>
+    lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 167, in _multicall
+    raise exception
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/logging.py", line 843, in pytest_runtest_setup
+    yield
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/capture.py", line 895, in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/runner.py", line 164, in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/runner.py", line 514, in setup
+    col.setup()
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/python.py", line 1674, in setup
+    self._request._fillfixtures()
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/fixtures.py", line 719, in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/fixtures.py", line 548, in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/fixtures.py", line 639, in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/fixtures.py", line 1127, in execute
+    result = ihook.pytest_fixture_setup(fixturedef=self, request=request)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 167, in _multicall
+    raise exception
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/setuponly.py", line 36, in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/fixtures.py", line 1195, in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/fixtures.py", line 922, in call_fixture_func
+    fixture_result = next(generator)
+                     ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/tests/conftest.py", line 177, in mock_all_external_resources
+    with patch('requests.get') as mock_requests, \
+  File "/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py", line 1500, in __enter__
+    new = Klass(**_kwargs)
+          ^^^^^^^^^^^^^^^^
+  File "/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py", line 427, in __new__
+    bound_args = _MOCK_SIG.bind_partial(cls, *args, **kw).arguments
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/inspect.py", line 3202, in bind_partial
+    return self._bind(args, kwargs, partial=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/inspect.py", line -1, in _bind
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/bin/pytest", line 8, in <module>
+    sys.exit(console_main())
+             ^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/config/__init__.py", line 201, in console_main
+    code = main()
+           ^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/config/__init__.py", line 175, in main
+    ret: ExitCode | int = config.hook.pytest_cmdline_main(config=config)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 167, in _multicall
+    raise exception
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/main.py", line 336, in pytest_cmdline_main
+    return wrap_session(config, _main)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/main.py", line 303, in wrap_session
+    config.hook.pytest_keyboard_interrupt(excinfo=excinfo)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 167, in _multicall
+    raise exception
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/terminal.py", line 973, in pytest_keyboard_interrupt
+    self._keyboardinterrupt_memo = excinfo.getrepr(funcargs=True)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/_code/code.py", line 766, in getrepr
+    return fmt.repr_excinfo(self)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/_code/code.py", line 1202, in repr_excinfo
+    reprtraceback = self.repr_traceback(excinfo_)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/_code/code.py", line 1134, in repr_traceback
+    entries = [
+              ^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/_code/code.py", line 1135, in <listcomp>
+    self.repr_traceback_entry(entry, excinfo if last == entry else None)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/_code/code.py", line 1065, in repr_traceback_entry
+    source = self._getentrysource(entry)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/_code/code.py", line 903, in _getentrysource
+    source = entry.getsource(self.astcache)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/_code/code.py", line 301, in getsource
+    self.lineno, source, astnode=astnode
+    ^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/_pytest/_code/code.py", line 212, in lineno
+    return self._rawentry.tb_lineno - 1
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
+~/workspace$ ^C
+~/workspace$ 
