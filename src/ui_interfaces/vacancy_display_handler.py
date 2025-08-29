@@ -3,7 +3,7 @@ import logging
 from src.config.ui_config import ui_pagination_config
 from src.utils.ui_helpers import filter_vacancies_by_keyword, get_positive_integer
 from src.utils.ui_navigation import quick_paginate
-from src.utils.vacancy_formatter import VacancyFormatter
+from src.utils.vacancy_formatter import vacancy_formatter
 from src.utils.vacancy_operations import VacancyOperations
 
 logger = logging.getLogger(__name__)
@@ -40,7 +40,7 @@ class VacancyDisplayHandler:
 
             quick_paginate(
                 vacancies,
-                formatter=VacancyFormatter.format_vacancy_info,
+                formatter=vacancy_formatter.format_vacancy_info,
                 header="Сохраненные вакансии",
                 items_per_page=ui_pagination_config.get_items_per_page("saved"),
             )
@@ -77,7 +77,7 @@ class VacancyDisplayHandler:
 
             quick_paginate(
                 top_vacancies,
-                formatter=VacancyFormatter.format_vacancy_info,
+                formatter=vacancy_formatter.format_vacancy_info,
                 header=f"Топ {len(top_vacancies)} вакансий по зарплате",
                 items_per_page=ui_pagination_config.get_items_per_page("top"),
             )
@@ -111,7 +111,7 @@ class VacancyDisplayHandler:
 
             quick_paginate(
                 filtered_vacancies,
-                formatter=VacancyFormatter.format_vacancy_info,
+                formatter=vacancy_formatter.format_vacancy_info,
                 header=f"Вакансии с ключевым словом '{keyword}'",
                 items_per_page=ui_pagination_config.get_items_per_page("search"),
             )
