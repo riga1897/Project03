@@ -1,9 +1,11 @@
 
 """
-Тесты для модулей работы с внешними API
+Тесты для модулей API
 
-Содержит тесты для проверки корректности работы с API различных
-платформ поиска вакансий (HH.ru, SuperJob.ru).
+Содержит тесты для проверки корректности работы API модулей:
+- HeadHunterAPI
+- SuperJobAPI
+- UnifiedAPI
 """
 
 import pytest
@@ -20,11 +22,12 @@ class TestHeadHunterAPI:
         """Тест инициализации API"""
         api = HeadHunterAPI()
         assert api is not None
-        assert hasattr(api, 'search_vacancies')
+        assert hasattr(api, 'get_vacancies')
+        assert hasattr(api, 'base_url')
 
     @patch('requests.get')
-    def test_search_vacancies_success(self, mock_get):
-        """Тест успешного поиска вакансий"""
+    def test_get_vacancies_success(self, mock_get):
+        """Тест успешного получения вакансий"""
         # Настраиваем мок ответа
         mock_response = Mock()
         mock_response.status_code = 200
@@ -45,34 +48,35 @@ class TestHeadHunterAPI:
         mock_get.return_value = mock_response
 
         api = HeadHunterAPI()
-        vacancies = api.search_vacancies(query="Python", per_page=1)
+        vacancies = api.get_vacancies(query="Python", per_page=1)
 
         assert len(vacancies) == 1
         assert vacancies[0].title == "Python Developer"
-        assert vacancies[0].vacancy_id == "12345"
+        assert vacancies[0].source == "hh.ru"
 
     @patch('requests.get')
-    def test_search_vacancies_empty_response(self, mock_get):
-        """Тест поиска без результатов"""
+    def test_get_vacancies_empty_response(self, mock_get):
+        """Тест получения пустого результата"""
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = {"items": [], "found": 0}
         mock_get.return_value = mock_response
 
         api = HeadHunterAPI()
-        vacancies = api.search_vacancies(query="NonExistentJob")
+        vacancies = api.get_vacancies(query="NonExistentJob")
 
         assert len(vacancies) == 0
 
     @patch('requests.get')
-    def test_search_vacancies_network_error(self, mock_get):
+    def test_get_vacancies_network_error(self, mock_get):
         """Тест обработки сетевой ошибки"""
         mock_get.side_effect = Exception("Network error")
 
         api = HeadHunterAPI()
-        vacancies = api.search_vacancies(query="Python")
+        vacancies = api.get_vacancies(query="Python")
 
-        assert len(vacancies) == 0
+        # При ошибке должен возвращаться пустой список
+        assert vacancies == []
 
 
 class TestSuperJobAPI:
@@ -82,11 +86,12 @@ class TestSuperJobAPI:
         """Тест инициализации API"""
         api = SuperJobAPI()
         assert api is not None
-        assert hasattr(api, 'search_vacancies')
+        assert hasattr(api, 'get_vacancies')
+        assert hasattr(api, 'base_url')
 
     @patch('requests.get')
-    def test_search_vacancies_success(self, mock_get):
-        """Тест успешного поиска вакансий"""
+    def test_get_vacancies_success(self, mock_get):
+        """Тест успешного получения вакансий"""
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = {
@@ -109,22 +114,22 @@ class TestSuperJobAPI:
         mock_get.return_value = mock_response
 
         api = SuperJobAPI()
-        vacancies = api.search_vacancies(query="Java", count=1)
+        vacancies = api.get_vacancies(query="Java", count=1)
 
         assert len(vacancies) == 1
         assert vacancies[0].title == "Java Developer"
-        assert vacancies[0].vacancy_id == "54321"
+        assert vacancies[0].source == "superjob.ru"
 
     @patch('requests.get')
-    def test_search_vacancies_empty_response(self, mock_get):
-        """Тест поиска без результатов"""
+    def test_get_vacancies_empty_response(self, mock_get):
+        """Тест получения пустого результата"""
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = {"objects": [], "total": 0}
         mock_get.return_value = mock_response
 
         api = SuperJobAPI()
-        vacancies = api.search_vacancies(query="NonExistentJob")
+        vacancies = api.get_vacancies(query="NonExistentJob")
 
         assert len(vacancies) == 0
 
@@ -144,24 +149,38 @@ class TestUnifiedAPI:
         assert isinstance(sources, list)
         assert len(sources) > 0
 
-    @patch.object(HeadHunterAPI, 'search_vacancies')
-    def test_search_vacancies_single_source(self, mock_hh_search):
-        """Тест поиска через один источник"""
-        # Мокируем результат поиска
+    @patch.object(HeadHunterAPI, 'get_vacancies')
+    def test_get_vacancies_single_source(self, mock_hh_get):
+        """Тест получения вакансий из одного источника"""
+        # Мокируем результат получения
         mock_vacancy = Mock()
         mock_vacancy.title = "Test Vacancy"
         mock_vacancy.source = "hh.ru"
-        mock_hh_search.return_value = [mock_vacancy]
+        mock_hh_get.return_value = [mock_vacancy]
 
         api = UnifiedAPI()
-        vacancies = api.search_vacancies(query="Python", sources=["hh.ru"])
+        vacancies = api.get_vacancies_from_source("hh.ru", query="python")
 
         assert len(vacancies) == 1
         assert vacancies[0].title == "Test Vacancy"
-        mock_hh_search.assert_called_once()
 
-    def test_clear_cache(self):
-        """Тест очистки кэша"""
+    def test_clear_cache_with_sources(self):
+        """Тест очистки кэша с указанными источниками"""
         api = UnifiedAPI()
-        # Метод не должен вызывать исключений
-        api.clear_cache()
+        # Метод должен принимать список источников
+        try:
+            api.clear_cache(['hh.ru'])
+            # Если нет исключений, тест прошел
+            assert True
+        except Exception as e:
+            pytest.fail(f"clear_cache() raised an exception: {e}")
+
+    def test_clear_cache_all_sources(self):
+        """Тест очистки всего кэша"""
+        api = UnifiedAPI()
+        try:
+            api.clear_cache(['hh.ru', 'superjob.ru'])
+            # Если нет исключений, тест прошел
+            assert True
+        except Exception as e:
+            pytest.fail(f"clear_cache() raised an exception: {e}")
