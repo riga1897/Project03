@@ -91,7 +91,7 @@ class UserInterface:
                 elif choice == "6":
                     self._filter_saved_vacancies_by_salary()
                 elif choice == "7":
-                    self.operations_coordinator.handle_delete_vacancies()  # Изменено: используется operations_coordinator
+                    self._delete_saved_vacancies()  # Изменено: используется operations_coordinator
 
                 elif choice == "8":
                     self._clear_api_cache()
@@ -205,12 +205,12 @@ class UserInterface:
             print(f"Найдено {len(filtered_vacancies)} вакансий:")
 
             # Постраничный просмотр
-            def format_vacancy(vacancy, number=None) -> str:
-                return VacancyFormatter.format_vacancy_info(vacancy, number)
+            # Создаем экземпляр VacancyFormatter
+            vacancy_formatter = VacancyFormatter()
 
             quick_paginate(
                 filtered_vacancies,
-                formatter=format_vacancy,
+                formatter=vacancy_formatter.format_vacancy_info,
                 header="Результаты расширенного поиска",
                 items_per_page=ui_pagination_config.get_items_per_page("search"),
             )
@@ -282,12 +282,12 @@ class UserInterface:
             print(f"Найдено {len(sorted_vacancies)} вакансий:")
 
             # Постраничный просмотр
-            def format_vacancy(vacancy, number=None) -> str:
-                return VacancyFormatter.format_vacancy_info(vacancy, number)
+            # Создаем экземпляр VacancyFormatter
+            vacancy_formatter = VacancyFormatter()
 
             quick_paginate(
                 sorted_vacancies,
-                formatter=format_vacancy,
+                formatter=vacancy_formatter.format_vacancy_info,
                 header="Вакансии по зарплате",
                 items_per_page=ui_pagination_config.get_items_per_page("search"),
             )

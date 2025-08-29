@@ -6,7 +6,7 @@ from src.storage.postgres_saver import PostgresSaver
 from src.ui_interfaces.source_selector import SourceSelector
 from src.utils.ui_helpers import confirm_action, get_user_input
 from src.utils.ui_navigation import quick_paginate
-from src.utils.vacancy_formatter import VacancyFormatter
+from src.utils.vacancy_formatter import vacancy_formatter
 from src.vacancies.models import Vacancy
 
 logger = logging.getLogger(__name__)
@@ -148,7 +148,7 @@ class VacancySearchHandler:
                 def format_vacancy(vacancy: Vacancy, number: Optional[int] = None) -> str:
                     if vacancy is None:
                         raise ValueError("Received a vacancy object of None type.")
-                    return VacancyFormatter.format_vacancy_info(vacancy, number)
+                    return vacancy_formatter.format_vacancy_info(vacancy, number)
 
                 quick_paginate(
                     duplicate_info["new_vacancies"],
