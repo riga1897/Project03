@@ -667,15 +667,52 @@ class PostgresSaver(AbstractVacancyStorage):
 
         return update_messages
 
-    def add_vacancy(self, vacancies: Union[Vacancy, List[Vacancy]]) -> List[str]:
+    def add_vacancy(self, vacancy: Vacancy) -> bool:
         """
-        Добавляет вакансии в БД. Всегда использует batch операции.
-        """
-        if not isinstance(vacancies, list):
-            vacancies = [vacancies]
+        Добавляет одну вакансию в базу данных
 
-        # Всегда используем оптимизированный batch метод
-        return self.add_vacancy_batch_optimized(vacancies)
+        Args:
+            vacancy: Объект вакансии для добавления
+
+        Returns:
+            bool: True если добавлено успешно, False иначе
+        """
+        try:
+            result = self.add_vacancies([vacancy])
+            # add_vacancies возвращает список добавленных вакансий
+            # Если список не пустой, значит вакансия добавлена
+            return len(result) > 0 if isinstance(result, list) else bool(result)
+        except Exception as e:
+            logger.error(f"Ошибка добавления вакансии: {e}")
+            return False
+
+    def add_vacancies(self, vacancies: List[Vacancy]) -> List[str]:
+        """
+        Добавляет список вакансий в базу данных.
+        Всегда использует batch операции для эффективности.
+
+        Args:
+            vacancies: Список объектов вакансий для добавления.
+
+        Returns:
+            List[str]: Список сообщений о результатах добавления.
+        """
+        if not vacancies:
+            return []
+
+        try:
+            # Используем оптимизированный batch метод
+            processed_vacancies = self.add_vacancy_batch_optimized(vacancies)
+            successfully_added = []
+
+            # Добавляем успешно обработанные вакансии в результат
+            successfully_added.extend(processed_vacancies)
+
+            logger.info(f"Успешно добавлено {len(processed_vacancies)} вакансий")
+            return successfully_added
+        except Exception as e:
+            logger.error(f"Ошибка при пакетном добавлении вакансий: {e}")
+            return []
 
     def save_vacancies(self, vacancies: Union[Vacancy, List[Vacancy]]) -> int:
         """
@@ -816,7 +853,7 @@ class PostgresSaver(AbstractVacancyStorage):
         """Конвертирует строки БД в объекты Vacancy"""
         vacancies = []
         skipped_count = 0  # Инициализируем счетчик пропущенных записей
-        
+
         for row in rows:
             try:
                 # Порядок полей из SQL запроса: "SELECT v.*, c.name as company_name FROM vacancies v LEFT JOIN companies c ON v.company_id = c.id"
@@ -900,24 +937,24 @@ class PostgresSaver(AbstractVacancyStorage):
             except Exception as e:
                 skipped_count += 1
                 logger.error(f"Ошибка создания объекта Vacancy из БД (строка {skipped_count}): {e}")
-                
+
                 # Безопасное извлечение данных из кортежа для диагностики
                 try:
                     row_vacancy_id = row[1] if len(row) > 1 else 'N/A'
                     row_title = row[2] if len(row) > 2 else 'N/A'
                     row_url = row[5] if len(row) > 5 else 'N/A'
-                    
+
                     logger.error(f"Данные проблемной строки: vacancy_id={row_vacancy_id}, title={row_title}")
                     logger.debug(f"Полная строка: {row}")
-                    
+
                     # Дополнительная диагностика для выявления конкретных проблем
                     if not row_vacancy_id or row_vacancy_id == 'N/A':
                         logger.error("  -> Проблема: отсутствует vacancy_id")
                     if not row_title or row_title == 'N/A':
-                        logger.error("  -> Проблема: отсутствует title")  
+                        logger.error("  -> Проблема: отсутствует title")
                     if not row_url or row_url == 'N/A':
                         logger.error("  -> Проблема: отсутствует URL")
-                        
+
                 except Exception as diag_error:
                     logger.error(f"  -> Ошибка диагностики: {diag_error}")
 
@@ -925,7 +962,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
         if skipped_count > 0:
             logger.warning(f"Пропущено {skipped_count} записей при конвертации из БД в объекты Vacancy")
-            
+
         return vacancies
 
     def get_vacancies(self) -> List[Vacancy]:
@@ -1319,12 +1356,12 @@ class PostgresSaver(AbstractVacancyStorage):
     def filter_and_deduplicate_vacancies(self, vacancies: List[Vacancy], filters: Dict[str, Any] = None) -> List[Vacancy]:
         """
         Единственная точка фильтрации и дедупликации вакансий через SQL временные таблицы.
-        
+
         Выполняет:
         1. Фильтрацию по целевым компаниям
         2. Дедупликацию
         3. Дополнительные фильтры (если указаны)
-        
+
         Args:
             vacancies: Список вакансий из API для обработки
             filters: Дополнительные фильтры (опционально)
@@ -1341,7 +1378,7 @@ class PostgresSaver(AbstractVacancyStorage):
         connection = self._get_connection()
         try:
             cursor = connection.cursor()
-            
+
             logger.info(f"Начинаем SQL-фильтрацию и дедупликацию для {len(vacancies)} вакансий")
 
             # Создаем временную таблицу для всех операций
@@ -1382,7 +1419,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
             company_mapping = {}
             company_id_mapping = {}  # hh_id/sj_id -> company_id
-            
+
             for row in cursor.fetchall():
                 comp_id, name, hh_id, sj_id, normalized_name = row
                 company_mapping[normalized_name] = comp_id
@@ -1394,12 +1431,12 @@ class PostgresSaver(AbstractVacancyStorage):
             # Подготавливаем данные для вставки с фильтрацией по целевым компаниям
             insert_data = []
             filtered_count = 0
-            
+
             for idx, vacancy in enumerate(vacancies):
                 # Извлекаем данные работодателя
                 employer_name = None
                 employer_id = None
-                
+
                 if vacancy.employer:
                     if isinstance(vacancy.employer, dict):
                         employer_name = vacancy.employer.get("name", "").strip()
@@ -1409,20 +1446,20 @@ class PostgresSaver(AbstractVacancyStorage):
 
                 # Определяем company_id - ФИЛЬТРАЦИЯ ПО ЦЕЛЕВЫМ КОМПАНИЯМ
                 mapped_company_id = None
-                
+
                 # Поиск по ID (приоритет)
                 if employer_id:
                     mapped_company_id = company_id_mapping.get(employer_id)
-                
+
                 # Поиск по названию
                 if not mapped_company_id and employer_name:
                     employer_lower = employer_name.lower()
                     mapped_company_id = company_mapping.get(employer_lower)
-                    
+
                     # Частичное совпадение
                     if not mapped_company_id:
                         for alt_name, comp_id in company_mapping.items():
-                            if (len(alt_name) > 2 and 
+                            if (len(alt_name) > 2 and
                                 (alt_name in employer_lower or employer_lower in alt_name)):
                                 mapped_company_id = comp_id
                                 break
@@ -1443,7 +1480,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 salary_from = vacancy.salary.salary_from if vacancy.salary else None
                 salary_to = vacancy.salary.salary_to if vacancy.salary else None
                 salary_currency = vacancy.salary.currency if vacancy.salary else None
-                
+
                 area_str = str(vacancy.area) if vacancy.area else None
                 published_date = self._normalize_published_date(vacancy.published_at)
 
@@ -1463,7 +1500,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
             # Bulk insert отфильтрованных данных
             from psycopg2.extras import execute_values
-            
+
             execute_values(
                 cursor,
                 """INSERT INTO temp_processing_vacancies (
@@ -1494,15 +1531,15 @@ class PostgresSaver(AbstractVacancyStorage):
             )
 
             unique_indices = [row[0] for row in cursor.fetchall()]
-            
+
             # Применяем дополнительные фильтры если нужно
             where_conditions = []
             params = []
-            
+
             if filters.get("salary_from"):
                 where_conditions.append("(salary_from >= %s OR salary_to >= %s)")
                 params.extend([filters["salary_from"], filters["salary_from"]])
-            
+
             if filters.get("keywords"):
                 keywords = filters["keywords"] if isinstance(filters["keywords"], list) else [filters["keywords"]]
                 for keyword in keywords:
@@ -1514,23 +1551,23 @@ class PostgresSaver(AbstractVacancyStorage):
                 # Применяем дополнительные фильтры
                 where_clause = " AND ".join(where_conditions)
                 placeholders = ",".join(["%s"] * len(unique_indices))
-                
+
                 cursor.execute(f"""
                     SELECT original_index
                     FROM temp_processing_vacancies
                     WHERE original_index IN ({placeholders}) AND {where_clause}
                     ORDER BY original_index
                 """, unique_indices + params)
-                
+
                 unique_indices = [row[0] for row in cursor.fetchall()]
 
             # Формируем результат из исходных объектов
             result_vacancies = [vacancies[idx] for idx in unique_indices]
-            
+
             duplicates_removed = len(insert_data) - len(result_vacancies)
             logger.info(f"SQL-обработка завершена: {len(vacancies)} -> {len(result_vacancies)} вакансий")
             logger.info(f"Отфильтровано по компаниям: {filtered_count}, дедуплицировано: {duplicates_removed}")
-            
+
             connection.commit()
             return result_vacancies
 
@@ -1870,27 +1907,27 @@ class PostgresSaver(AbstractVacancyStorage):
         """
         Нормализует текст для дедупликации: приводит к нижнему регистру,
         удаляет лишние пробелы и специальные символы.
-        
+
         Args:
             text: Исходный текст для нормализации
-            
+
         Returns:
             str: Нормализованный текст
         """
         if not text:
             return ""
-        
+
         import re
-        
+
         # Приводим к нижнему регистру
         normalized = text.lower().strip()
-        
+
         # Убираем лишние пробелы
         normalized = re.sub(r'\s+', ' ', normalized)
-        
+
         # Убираем специальные символы, оставляем только буквы, цифры и пробелы
         normalized = re.sub(r'[^\w\s]', '', normalized, flags=re.UNICODE)
-        
+
         return normalized.strip()
 
     def _normalize_published_date(self, published_at: Any) -> Optional[datetime]:

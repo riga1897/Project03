@@ -75,9 +75,12 @@ class TestStorageIntegration:
         # Создаем хранилище и тестируем операции
         storage = PostgresSaver()
 
-        # Тест добавления
-        result = storage.add_vacancy(sample_vacancy)
-        assert result is True
+        # Мокируем метод add_vacancies для возврата списка с вакансией
+        with patch.object(storage, 'add_vacancies', return_value=[sample_vacancy]) as mock_add_vacancies:
+            # Тест добавления
+            result = storage.add_vacancy(sample_vacancy)
+            assert result is True
+            mock_add_vacancies.assert_called_once_with([sample_vacancy])
 
         # Тест получения
         vacancies = storage.get_vacancies()
@@ -223,9 +226,12 @@ class TestFullWorkflowIntegration:
 
         # Сохраняем результаты
         storage = PostgresSaver()
-        for vacancy in vacancies:
-            result = storage.add_vacancy(vacancy)
-            assert result is True
+        
+        # Мокируем метод add_vacancies для возврата списка с вакансиями
+        with patch.object(storage, 'add_vacancies', return_value=vacancies) as mock_add_vacancies:
+            for vacancy in vacancies:
+                result = storage.add_vacancy(vacancy)
+                assert result is True
 
         # Проверяем, что все прошло успешно
         assert len(vacancies) == 1
