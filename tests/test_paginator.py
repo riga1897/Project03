@@ -1,9 +1,9 @@
-
 """
 Тесты для модуля Paginator
 """
 
 import pytest
+
 from src.utils.paginator import Paginator
 
 
@@ -88,9 +88,9 @@ class TestPaginator:
         """Тест получения информации о странице"""
         paginator = Paginator(sample_data, page_size=10)
         info = paginator.get_page_info()
-        assert 'current_page' in info
-        assert 'total_pages' in info
-        assert 'total_items' in info
-        assert info['current_page'] == 1
-        assert info['total_pages'] == 5
-        assert info['total_items'] == 50
+        assert "current_page" in info
+        assert "total_pages" in info
+        assert "total_items" in info
+        assert info["current_page"] == 1
+        assert info["total_pages"] == 5
+        assert info["total_items"] == 50

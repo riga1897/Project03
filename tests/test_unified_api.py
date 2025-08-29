@@ -2,21 +2,23 @@
 Тесты для унифицированного API
 """
 
+from typing import Any, Dict, List
+from unittest.mock import MagicMock, Mock, patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-from typing import List, Dict, Any
 
 from src.api_modules.unified_api import UnifiedAPI
 
 
 class MockVacancy:
     """Мок вакансии для тестов"""
+
     def __init__(self, data):
         self.data = data
-        self.vacancy_id = data.get('id', data.get('vacancy_id', ''))
-        self.title = data.get('name', data.get('title', ''))
-        self.url = data.get('alternate_url', data.get('url', ''))
-        self.source = data.get('source', '')
+        self.vacancy_id = data.get("id", data.get("vacancy_id", ""))
+        self.title = data.get("name", data.get("title", ""))
+        self.url = data.get("alternate_url", data.get("url", ""))
+        self.source = data.get("source", "")
 
     @classmethod
     def from_dict(cls, data):
@@ -28,12 +30,14 @@ class MockVacancy:
 
 class MockAPIConfig:
     """Мок конфигурации API"""
+
     def get_pagination_params(self, **kwargs):
         return {"max_pages": 5}
 
 
 class MockStorage:
     """Мок хранилища с SQL-дедупликацией"""
+
     def __init__(self):
         self.saved_vacancies = []
 
@@ -47,7 +51,7 @@ class MockStorage:
         unique_vacancies = []
 
         for vacancy in vacancies:
-            vacancy_id = getattr(vacancy, 'vacancy_id', None)
+            vacancy_id = getattr(vacancy, "vacancy_id", None)
             if vacancy_id and vacancy_id not in seen_ids:
                 seen_ids.add(vacancy_id)
                 unique_vacancies.append(vacancy)
@@ -68,8 +72,9 @@ class TestUnifiedAPI:
     @pytest.fixture
     def mock_unified_api(self):
         """Создает мок UnifiedAPI для тестов"""
-        with patch('src.api_modules.unified_api.HeadHunterAPI') as mock_hh, \
-             patch('src.api_modules.unified_api.SuperJobAPI') as mock_sj:
+        with patch("src.api_modules.unified_api.HeadHunterAPI") as mock_hh, patch(
+            "src.api_modules.unified_api.SuperJobAPI"
+        ) as mock_sj:
 
             api = UnifiedAPI()
             api.hh_api = mock_hh.return_value
@@ -80,9 +85,9 @@ class TestUnifiedAPI:
         """Тест инициализации UnifiedAPI"""
         assert mock_unified_api.hh_api is not None
         assert mock_unified_api.sj_api is not None
-        assert hasattr(mock_unified_api, 'apis')
-        assert 'hh' in mock_unified_api.apis
-        assert 'sj' in mock_unified_api.apis
+        assert hasattr(mock_unified_api, "apis")
+        assert "hh" in mock_unified_api.apis
+        assert "sj" in mock_unified_api.apis
 
     def test_get_available_sources(self, mock_unified_api):
         """Тест получения доступных источников"""
@@ -132,7 +137,7 @@ class TestUnifiedAPI:
 
         assert result == []
 
-    @patch('src.api_modules.unified_api.PostgresSaver')
+    @patch("src.api_modules.unified_api.PostgresSaver")
     def test_get_vacancies_from_sources_with_sql_deduplication(self, mock_postgres_class, mock_unified_api):
         """Тест получения вакансий из источников с SQL-дедупликацией"""
         # Настраиваем мок PostgresSaver
@@ -140,19 +145,17 @@ class TestUnifiedAPI:
         mock_postgres_class.return_value = mock_postgres
 
         # Настраиваем возвращаемые данные
-        mock_unified_api.hh_api.get_vacancies.return_value = [
-            {"id": "1", "name": "HH Vacancy", "source": "hh.ru"}
-        ]
+        mock_unified_api.hh_api.get_vacancies.return_value = [{"id": "1", "name": "HH Vacancy", "source": "hh.ru"}]
         mock_unified_api.sj_api.get_vacancies.return_value = [
             {"id": "2", "profession": "SJ Vacancy", "source": "superjob.ru"}
         ]
 
         # Мокируем Vacancy.from_dict
-        with patch('src.api_modules.unified_api.Vacancy') as mock_vacancy_class:
+        with patch("src.api_modules.unified_api.Vacancy") as mock_vacancy_class:
             mock_vacancy_class.from_dict.side_effect = lambda x: MockVacancy(x)
 
             # Мокируем _filter_by_target_companies для возврата отфильтрованных данных
-            with patch.object(mock_unified_api, '_filter_by_target_companies') as mock_filter:
+            with patch.object(mock_unified_api, "_filter_by_target_companies") as mock_filter:
                 mock_filter.return_value = [{"id": "1", "name": "Filtered Vacancy"}]
 
                 result = mock_unified_api.get_vacancies_from_sources("python", ["hh", "sj"])
@@ -184,14 +187,14 @@ class TestUnifiedAPI:
             {"id": "2", "profession": "SJ Vacancy", "source": "superjob.ru"}
         ]
 
-        with patch('src.api_modules.unified_api.PostgresSaver') as mock_postgres_class:
+        with patch("src.api_modules.unified_api.PostgresSaver") as mock_postgres_class:
             mock_postgres = MockStorage()
             mock_postgres_class.return_value = mock_postgres
 
-            with patch('src.api_modules.unified_api.Vacancy') as mock_vacancy_class:
+            with patch("src.api_modules.unified_api.Vacancy") as mock_vacancy_class:
                 mock_vacancy_class.from_dict.side_effect = lambda x: MockVacancy(x)
 
-                with patch.object(mock_unified_api, '_filter_by_target_companies') as mock_filter:
+                with patch.object(mock_unified_api, "_filter_by_target_companies") as mock_filter:
                     mock_filter.return_value = [{"id": "2", "profession": "SJ Vacancy"}]
 
                     # Ошибка в HH API не должна прерывать получение данных с SJ
@@ -207,9 +210,8 @@ class TestUnifiedAPI:
 
         sources = {"hh": True, "sj": False}
 
-        with patch('glob.glob') as mock_glob, \
-             patch('os.remove') as mock_remove:
-            mock_glob.return_value = ['cache_file.json']
+        with patch("glob.glob") as mock_glob, patch("os.remove") as mock_remove:
+            mock_glob.return_value = ["cache_file.json"]
 
             mock_unified_api.clear_cache(sources)
 
@@ -231,14 +233,14 @@ class TestUnifiedAPI:
         """Тест поиска с множественными ключевыми словами"""
         mock_unified_api.hh_api.get_vacancies.return_value = [
             {"id": "1", "name": "Python Developer", "source": "hh.ru"},
-            {"id": "2", "name": "Java Developer", "source": "hh.ru"}
+            {"id": "2", "name": "Java Developer", "source": "hh.ru"},
         ]
         mock_unified_api.sj_api.get_vacancies.return_value = []
 
-        with patch.object(mock_unified_api, 'get_all_vacancies') as mock_get_all:
+        with patch.object(mock_unified_api, "get_all_vacancies") as mock_get_all:
             mock_get_all.side_effect = [
                 [{"id": "1", "name": "Python Developer"}],  # Для "python"
-                [{"id": "2", "name": "Java Developer"}]     # Для "java"
+                [{"id": "2", "name": "Java Developer"}],  # Для "java"
             ]
 
             result = mock_unified_api.search_with_multiple_keywords(["python", "java"])
@@ -251,7 +253,7 @@ class TestUnifiedAPI:
 
     def test_get_all_vacancies(self, mock_unified_api):
         """Тест получения всех вакансий"""
-        with patch.object(mock_unified_api, 'get_vacancies_from_sources') as mock_get_from_sources:
+        with patch.object(mock_unified_api, "get_vacancies_from_sources") as mock_get_from_sources:
             mock_get_from_sources.return_value = [{"id": "1", "name": "Test Vacancy"}]
 
             result = mock_unified_api.get_all_vacancies("python")
@@ -259,7 +261,7 @@ class TestUnifiedAPI:
             assert len(result) == 1
             mock_get_from_sources.assert_called_once_with("python", sources=["hh", "sj"])
 
-    @patch('src.api_modules.unified_api.PostgresSaver')
+    @patch("src.api_modules.unified_api.PostgresSaver")
     def test_filter_by_target_companies_sql(self, mock_postgres_class, mock_unified_api):
         """Тест SQL-фильтрации по целевым компаниям"""
         # Настраиваем мок PostgresSaver с реальным поведением SQL-фильтрации
@@ -269,11 +271,11 @@ class TestUnifiedAPI:
         # Тестовые данные
         test_vacancies = [
             {"id": "1", "name": "Python Dev", "employer": {"name": "Яндекс"}},
-            {"id": "2", "name": "Java Dev", "employer": {"name": "Неизвестная компания"}}
+            {"id": "2", "name": "Java Dev", "employer": {"name": "Неизвестная компания"}},
         ]
 
         # Мокируем Vacancy.from_dict
-        with patch('src.api_modules.unified_api.Vacancy') as mock_vacancy_class:
+        with patch("src.api_modules.unified_api.Vacancy") as mock_vacancy_class:
             mock_vacancy_class.from_dict.side_effect = lambda x: MockVacancy(x)
 
             # Мокируем filter_and_deduplicate_vacancies чтобы вернуть только целевые компании
@@ -298,10 +300,10 @@ class TestUnifiedAPI:
         ]
 
         # Мокируем _deduplicate_cross_platform если он существует
-        with patch.object(mock_unified_api, '_deduplicate_cross_platform', create=True) as mock_dedup:
+        with patch.object(mock_unified_api, "_deduplicate_cross_platform", create=True) as mock_dedup:
             mock_dedup.return_value = [
                 {"id": "hh1", "name": "HH Target Vacancy"},
-                {"id": "sj1", "profession": "SJ Target Vacancy"}
+                {"id": "sj1", "profession": "SJ Target Vacancy"},
             ]
 
             result = mock_unified_api.get_vacancies_from_target_companies("python")
@@ -315,13 +317,12 @@ class TestUnifiedAPIEdgeCases:
     @pytest.fixture
     def unified_api(self):
         """Реальный экземпляр UnifiedAPI для тестов граничных случаев"""
-        with patch('src.api_modules.unified_api.HeadHunterAPI'), \
-             patch('src.api_modules.unified_api.SuperJobAPI'):
+        with patch("src.api_modules.unified_api.HeadHunterAPI"), patch("src.api_modules.unified_api.SuperJobAPI"):
             return UnifiedAPI()
 
     def test_empty_query(self, unified_api):
         """Тест обработки пустого запроса"""
-        with patch.object(unified_api, 'get_vacancies_from_sources') as mock_get:
+        with patch.object(unified_api, "get_vacancies_from_sources") as mock_get:
             mock_get.return_value = []
 
             result = unified_api.get_all_vacancies("")
@@ -330,16 +331,16 @@ class TestUnifiedAPIEdgeCases:
 
     def test_none_sources(self, unified_api):
         """Тест обработки None в качестве источников"""
-        with patch.object(unified_api, 'get_available_sources') as mock_available:
+        with patch.object(unified_api, "get_available_sources") as mock_available:
             mock_available.return_value = ["hh", "sj"]
 
-            with patch.object(unified_api.hh_api, 'get_vacancies') as mock_hh:
+            with patch.object(unified_api.hh_api, "get_vacancies") as mock_hh:
                 mock_hh.return_value = []
 
-                with patch.object(unified_api.sj_api, 'get_vacancies') as mock_sj:
+                with patch.object(unified_api.sj_api, "get_vacancies") as mock_sj:
                     mock_sj.return_value = []
 
-                    with patch.object(unified_api, '_filter_by_target_companies') as mock_filter:
+                    with patch.object(unified_api, "_filter_by_target_companies") as mock_filter:
                         mock_filter.return_value = []
 
                         # None в sources должен использовать все доступные источники
@@ -354,13 +355,13 @@ class TestUnifiedAPIEdgeCases:
         # Симулируем большой набор данных
         large_dataset = [{"id": f"vacancy_{i}", "name": f"Vacancy {i}"} for i in range(1000)]
 
-        with patch.object(unified_api.hh_api, 'get_vacancies') as mock_hh:
+        with patch.object(unified_api.hh_api, "get_vacancies") as mock_hh:
             mock_hh.return_value = large_dataset
 
-            with patch.object(unified_api.sj_api, 'get_vacancies') as mock_sj:
+            with patch.object(unified_api.sj_api, "get_vacancies") as mock_sj:
                 mock_sj.return_value = []
 
-                with patch.object(unified_api, '_filter_by_target_companies') as mock_filter:
+                with patch.object(unified_api, "_filter_by_target_companies") as mock_filter:
                     # SQL-фильтрация должна обрабатывать большие наборы эффективно
                     mock_filter.return_value = large_dataset[:100]  # Возвращаем первые 100
 

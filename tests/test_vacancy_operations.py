@@ -3,6 +3,7 @@
 """
 
 import pytest
+
 from src.utils.vacancy_operations import VacancyOperations
 from src.vacancies.models import Vacancy
 
@@ -25,7 +26,7 @@ class TestVacancyOperations:
                 vacancy_id="1",
                 salary={"from": 100000, "to": 150000, "currency": "RUR"},
                 requirements="Python, Django",
-                source="hh.ru"
+                source="hh.ru",
             ),
             Vacancy(
                 title="Java Developer",
@@ -33,15 +34,15 @@ class TestVacancyOperations:
                 vacancy_id="2",
                 salary={"from": 120000, "to": 180000, "currency": "RUR"},
                 requirements="Java, Spring",
-                source="superjob.ru"
+                source="superjob.ru",
             ),
             Vacancy(
                 title="Frontend Developer",
                 url="https://hh.ru/vacancy/3",
                 vacancy_id="3",
                 requirements="JavaScript, React",
-                source="hh.ru"
-            )
+                source="hh.ru",
+            ),
         ]
 
     def test_search_vacancies_advanced(self, vacancy_ops, sample_vacancies):
@@ -64,7 +65,6 @@ class TestVacancyOperations:
         assert result[0].title == "Java Developer"
         assert result[1].title == "Python Developer"
 
-
     def test_get_vacancies_with_salary(self):
         """Тест получения вакансий с зарплатой"""
         vacancy_with_salary = Vacancy(
@@ -72,14 +72,11 @@ class TestVacancyOperations:
             url="https://example.com/1",
             vacancy_id="1",
             source="hh.ru",
-            salary={"from": 100000, "to": 150000, "currency": "RUR"}
+            salary={"from": 100000, "to": 150000, "currency": "RUR"},
         )
 
         vacancy_without_salary = Vacancy(
-            title="Java Developer",
-            url="https://example.com/2",
-            vacancy_id="2",
-            source="hh.ru"
+            title="Java Developer", url="https://example.com/2", vacancy_id="2", source="hh.ru"
         )
         all_vacancies = [vacancy_with_salary, vacancy_without_salary]
 
@@ -106,7 +103,7 @@ class TestVacancyOperations:
             Vacancy(title="Python Django Developer", url="https://example.com/1", vacancy_id="1", source="hh.ru"),
             Vacancy(title="Java Spring Developer", url="https://example.com/2", vacancy_id="2", source="hh.ru"),
             Vacancy(title="Python Flask Developer", url="https://example.com/3", vacancy_id="3", source="hh.ru"),
-            Vacancy(title="Frontend React Developer", url="https://example.com/4", vacancy_id="4", source="hh.ru")
+            Vacancy(title="Frontend React Developer", url="https://example.com/4", vacancy_id="4", source="hh.ru"),
         ]
 
         ops = VacancyOperations()
@@ -123,9 +120,27 @@ class TestVacancyOperations:
     def test_search_vacancies_advanced_and_operator(self):
         """Тест расширенного поиска с оператором AND"""
         vacancies = [
-            Vacancy(title="Senior Python Developer", url="https://example.com/1", description="Django REST API", vacancy_id="1", source="hh.ru"),
-            Vacancy(title="Python Developer", url="https://example.com/2", description="Flask API", vacancy_id="2", source="hh.ru"),
-            Vacancy(title="Java Developer", url="https://example.com/3", description="Spring Boot", vacancy_id="3", source="hh.ru")
+            Vacancy(
+                title="Senior Python Developer",
+                url="https://example.com/1",
+                description="Django REST API",
+                vacancy_id="1",
+                source="hh.ru",
+            ),
+            Vacancy(
+                title="Python Developer",
+                url="https://example.com/2",
+                description="Flask API",
+                vacancy_id="2",
+                source="hh.ru",
+            ),
+            Vacancy(
+                title="Java Developer",
+                url="https://example.com/3",
+                description="Spring Boot",
+                vacancy_id="3",
+                source="hh.ru",
+            ),
         ]
 
         ops = VacancyOperations()
@@ -139,7 +154,7 @@ class TestVacancyOperations:
         vacancies = [
             Vacancy(title="Python Developer", url="https://example.com/1", vacancy_id="1", source="hh.ru"),
             Vacancy(title="Java Developer", url="https://example.com/2", vacancy_id="2", source="hh.ru"),
-            Vacancy(title="C++ Developer", url="https://example.com/3", vacancy_id="3", source="hh.ru")
+            Vacancy(title="C++ Developer", url="https://example.com/3", vacancy_id="3", source="hh.ru"),
         ]
 
         ops = VacancyOperations()
@@ -154,7 +169,7 @@ class TestVacancyOperations:
         """Тест расширенного поиска с простым запросом"""
         vacancies = [
             Vacancy(title="Python Developer", url="https://example.com/1", vacancy_id="1", source="hh.ru"),
-            Vacancy(title="Java Developer", url="https://example.com/2", vacancy_id="2", source="hh.ru")
+            Vacancy(title="Java Developer", url="https://example.com/2", vacancy_id="2", source="hh.ru"),
         ]
 
         ops = VacancyOperations()
@@ -171,7 +186,7 @@ class TestVacancyOperations:
             description="Django, PostgreSQL, Redis",
             vacancy_id="1",
             source="hh.ru",
-            salary={"from": 100000, "to": 150000, "currency": "RUR"}
+            salary={"from": 100000, "to": 150000, "currency": "RUR"},
         )
 
         vacancy_without_salary = Vacancy(
@@ -179,27 +194,31 @@ class TestVacancyOperations:
             url="https://example.com/2",
             description="Spring Boot",
             vacancy_id="2",
-            source="hh.ru"
+            source="hh.ru",
         )
 
         vacancies = [vacancy_with_salary, vacancy_without_salary]
         ops = VacancyOperations()
-        
+
         # Тест поиска
         python_vacancies = ops.search_vacancies_advanced(vacancies, "Python")
         assert len(python_vacancies) == 1
         assert python_vacancies[0].vacancy_id == "1"
-        
+
         # Тест фильтрации по зарплате
         with_salary = ops.get_vacancies_with_salary(vacancies)
         assert len(with_salary) == 1
         assert with_salary[0].vacancy_id == "1"
+
+
 """
 Тесты для операций с вакансиями
 """
 
-import pytest
 from unittest.mock import Mock, patch
+
+import pytest
+
 from src.utils.vacancy_operations import VacancyOperations
 from src.vacancies.models import Vacancy
 
@@ -213,17 +232,17 @@ class TestVacancyOperations:
         return Vacancy(
             title="Test Vacancy",
             url="https://test.com/vacancy/1",
-            salary={'from': 100000, 'to': 150000, 'currency': 'RUR'},
+            salary={"from": 100000, "to": 150000, "currency": "RUR"},
             description="Test description",
             requirements="Test requirements",
             responsibilities="Test responsibilities",
             experience="Test experience",
             employment="Test employment",
             schedule="Test schedule",
-            employer={'name': 'Test Company'},
+            employer={"name": "Test Company"},
             vacancy_id="test_1",
             published_at="2024-01-15T10:00:00",
-            source="hh.ru"
+            source="hh.ru",
         )
 
     def test_initialization(self):
@@ -231,42 +250,42 @@ class TestVacancyOperations:
         ops = VacancyOperations()
         assert ops is not None
 
-    @patch('src.utils.vacancy_operations.PostgresSaver')
+    @patch("src.utils.vacancy_operations.PostgresSaver")
     def test_save_vacancies(self, mock_saver, sample_vacancy):
         """Тест сохранения вакансий"""
         mock_instance = Mock()
         mock_instance.add_vacancy.return_value = True
         mock_saver.return_value = mock_instance
-        
+
         ops = VacancyOperations()
         result = ops.save_vacancies([sample_vacancy])
-        
+
         assert result is True
         mock_instance.add_vacancy.assert_called_once()
 
-    @patch('src.utils.vacancy_operations.PostgresSaver')
+    @patch("src.utils.vacancy_operations.PostgresSaver")
     def test_get_saved_vacancies(self, mock_saver):
         """Тест получения сохраненных вакансий"""
         mock_instance = Mock()
         mock_instance.get_vacancies.return_value = []
         mock_saver.return_value = mock_instance
-        
+
         ops = VacancyOperations()
         result = ops.get_saved_vacancies()
-        
+
         assert result == []
         mock_instance.get_vacancies.assert_called_once()
 
-    @patch('src.utils.vacancy_operations.PostgresSaver')
+    @patch("src.utils.vacancy_operations.PostgresSaver")
     def test_filter_by_salary(self, mock_saver):
         """Тест фильтрации по зарплате"""
         mock_instance = Mock()
         mock_instance.filter_by_salary.return_value = []
         mock_saver.return_value = mock_instance
-        
+
         ops = VacancyOperations()
         result = ops.filter_by_salary(50000, 100000)
-        
+
         assert result == []
         mock_instance.filter_by_salary.assert_called_once_with(50000, 100000)
 
@@ -276,22 +295,22 @@ class TestVacancyOperations:
         vacancy2 = Vacancy(
             title="Test Vacancy 2",
             url="https://test.com/vacancy/2",
-            salary={'from': 200000, 'to': 250000, 'currency': 'RUR'},
+            salary={"from": 200000, "to": 250000, "currency": "RUR"},
             description="Test description 2",
             requirements="Test requirements 2",
             responsibilities="Test responsibilities 2",
             experience="Test experience 2",
             employment="Test employment 2",
             schedule="Test schedule 2",
-            employer={'name': 'Test Company 2'},
+            employer={"name": "Test Company 2"},
             vacancy_id="test_2",
             published_at="2024-01-15T10:00:00",
-            source="hh.ru"
+            source="hh.ru",
         )
-        
+
         ops = VacancyOperations()
         sorted_vacancies = ops.sort_by_salary([vacancy1, vacancy2], reverse=True)
-        
+
         # Вакансия с большей зарплатой должна быть первой
         assert sorted_vacancies[0].vacancy_id == "test_2"
         assert sorted_vacancies[1].vacancy_id == "test_1"

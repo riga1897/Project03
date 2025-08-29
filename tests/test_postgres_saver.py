@@ -2,9 +2,11 @@
 Тесты для PostgresSaver
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import MagicMock, Mock, patch
+
 import psycopg2
+import pytest
+
 from src.storage.postgres_saver import PostgresSaver
 from src.vacancies.models import Vacancy
 
@@ -30,7 +32,7 @@ class TestPostgresSaver:
         """Тест инициализации"""
         assert postgres_saver.db_manager == mock_db_manager
 
-    @patch('src.storage.postgres_saver.psycopg2.connect')
+    @patch("src.storage.postgres_saver.psycopg2.connect")
     def test_save_vacancies_success(self, mock_connect, postgres_saver):
         """Тест успешного сохранения вакансий"""
         # Мокаем подключение
@@ -63,7 +65,7 @@ class TestPostgresSaver:
                 area="Москва",
                 source="hh.ru",
                 published_at="2024-01-15T10:30:00+0300",
-                company_id="123"
+                company_id="123",
             )
         ]
 
@@ -81,7 +83,7 @@ class TestPostgresSaver:
         result = postgres_saver.save_vacancies([])
         assert result is True
 
-    @patch('src.storage.postgres_saver.psycopg2.connect')
+    @patch("src.storage.postgres_saver.psycopg2.connect")
     def test_save_vacancies_database_error(self, mock_connect, postgres_saver):
         """Тест ошибки базы данных при сохранении"""
         mock_connect.side_effect = psycopg2.Error("Database error")
@@ -92,7 +94,7 @@ class TestPostgresSaver:
 
         assert result is False
 
-    @patch('src.storage.postgres_saver.psycopg2.connect')
+    @patch("src.storage.postgres_saver.psycopg2.connect")
     def test_get_all_vacancies(self, mock_connect, postgres_saver):
         """Тест получения всех вакансий"""
         mock_connection = Mock()
@@ -107,9 +109,25 @@ class TestPostgresSaver:
 
         # Мокаем результат запроса
         mock_cursor.fetchall.return_value = [
-            ("1", "Python Developer", "https://test.com/1", 100000, 150000, "RUR", 
-             "Test description", "Python", "Development", "1-3 года", "Полная занятость",
-             "Полный день", "TechCorp", "Москва", "hh.ru", "2024-01-15T10:30:00+0300", "123")
+            (
+                "1",
+                "Python Developer",
+                "https://test.com/1",
+                100000,
+                150000,
+                "RUR",
+                "Test description",
+                "Python",
+                "Development",
+                "1-3 года",
+                "Полная занятость",
+                "Полный день",
+                "TechCorp",
+                "Москва",
+                "hh.ru",
+                "2024-01-15T10:30:00+0300",
+                "123",
+            )
         ]
 
         postgres_saver.db_manager._get_connection = Mock(return_value=mock_connection)
@@ -122,17 +140,14 @@ class TestPostgresSaver:
 
     def test_get_vacancies_count(self, postgres_saver):
         """Тест подсчета вакансий через DBManager"""
-        postgres_saver.db_manager.get_companies_and_vacancies_count.return_value = [
-            ("Company1", 5),
-            ("Company2", 3)
-        ]
+        postgres_saver.db_manager.get_companies_and_vacancies_count.return_value = [("Company1", 5), ("Company2", 3)]
 
         result = postgres_saver.get_vacancies_count()
 
         assert len(result) == 2
         assert result[0] == ("Company1", 5)
 
-    @patch('src.storage.postgres_saver.psycopg2.connect')
+    @patch("src.storage.postgres_saver.psycopg2.connect")
     def test_delete_vacancy_by_id_success(self, mock_connect, postgres_saver):
         """Тест успешного удаления вакансии"""
         mock_connection = Mock()
@@ -154,7 +169,7 @@ class TestPostgresSaver:
         assert result is True
         mock_cursor.execute.assert_called()
 
-    @patch('src.storage.postgres_saver.psycopg2.connect')
+    @patch("src.storage.postgres_saver.psycopg2.connect")
     def test_delete_vacancy_by_id_not_found(self, mock_connect, postgres_saver):
         """Тест удаления несуществующей вакансии"""
         mock_connection = Mock()
@@ -177,10 +192,7 @@ class TestPostgresSaver:
 
     def test_filter_vacancies_by_salary(self, postgres_saver):
         """Тест фильтрации вакансий по зарплате через DBManager"""
-        mock_vacancies = [
-            Mock(spec=Vacancy, salary_from=100000),
-            Mock(spec=Vacancy, salary_from=200000)
-        ]
+        mock_vacancies = [Mock(spec=Vacancy, salary_from=100000), Mock(spec=Vacancy, salary_from=200000)]
 
         postgres_saver.db_manager.get_vacancies_with_higher_salary.return_value = mock_vacancies
 

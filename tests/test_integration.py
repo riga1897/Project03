@@ -2,15 +2,17 @@
 Интеграционные тесты для проверки взаимодействия компонентов
 """
 
+from unittest.mock import MagicMock, Mock, patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+
 from src.api_modules.hh_api import HeadHunterAPI
 from src.api_modules.sj_api import SuperJobAPI
+from src.operations.vacancy_operations import VacancyOperations
 from src.storage.postgres_saver import PostgresSaver
-from src.vacancies.models import Vacancy
 from src.utils.cache import FileCache
 from src.utils.vacancy_formatter import VacancyFormatter
-from src.operations.vacancy_operations import VacancyOperations
+from src.vacancies.models import Vacancy
 
 
 class TestStorageIntegration:
@@ -22,20 +24,20 @@ class TestStorageIntegration:
         return Vacancy(
             title="Test Vacancy",
             url="https://test.com/vacancy/1",
-            salary={'from': 100000, 'to': 150000, 'currency': 'RUR'},
+            salary={"from": 100000, "to": 150000, "currency": "RUR"},
             description="Test description",
             requirements="Test requirements",
             responsibilities="Test responsibilities",
             experience="Test experience",
             employment="Test employment",
             schedule="Test schedule",
-            employer={'name': 'Test Company'},
+            employer={"name": "Test Company"},
             vacancy_id="test_1",
             published_at="2024-01-15T10:00:00",
-            source="hh.ru"
+            source="hh.ru",
         )
 
-    @patch('psycopg2.connect')
+    @patch("psycopg2.connect")
     def test_postgres_saver_integration(self, mock_connect, sample_vacancy):
         """Тест интеграции с PostgreSQL"""
         # Настраиваем мок подключения
@@ -66,7 +68,7 @@ class TestStorageIntegration:
 class TestAPIIntegration:
     """Интеграционные тесты для API"""
 
-    @patch('src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api')
+    @patch("src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api")
     def test_hh_api_integration(self, mock_connect):
         """Тест интеграции с HeadHunter API"""
         # Настраиваем мок ответа
@@ -78,11 +80,11 @@ class TestAPIIntegration:
                     "alternate_url": "https://hh.ru/vacancy/123",
                     "employer": {"name": "Test Company"},
                     "published_at": "2024-01-01T00:00:00+03:00",
-                    "source": "hh.ru"
+                    "source": "hh.ru",
                 }
             ],
             "found": 1,
-            "pages": 1
+            "pages": 1,
         }
 
         api = HeadHunterAPI()
@@ -92,7 +94,7 @@ class TestAPIIntegration:
         assert vacancies[0]["name"] == "Test Vacancy"
         assert vacancies[0]["source"] == "hh.ru"
 
-    @patch('src.api_modules.sj_api.SuperJobAPI._CachedAPI__connect_to_api')
+    @patch("src.api_modules.sj_api.SuperJobAPI._CachedAPI__connect_to_api")
     def test_superjob_api_integration(self, mock_connect):
         """Тест интеграции с SuperJob API"""
         mock_connect.return_value = {
@@ -103,10 +105,10 @@ class TestAPIIntegration:
                     "link": "https://superjob.ru/vakansii/test-456.html",
                     "firm_name": "SJ Company",
                     "date_published": 1704067200,
-                    "source": "superjob.ru"
+                    "source": "superjob.ru",
                 }
             ],
-            "total": 1
+            "total": 1,
         }
 
         api = SuperJobAPI()
@@ -133,14 +135,14 @@ class TestFullWorkflowIntegration:
             experience="Integration test experience",
             employment="Integration test employment",
             schedule="Integration test schedule",
-            employer={'name': 'Integration Company'},
+            employer={"name": "Integration Company"},
             vacancy_id="789",
             published_at="2024-01-01T00:00:00+03:00",
-            source="hh.ru"
+            source="hh.ru",
         )
 
-    @patch('psycopg2.connect')
-    @patch('src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api')
+    @patch("psycopg2.connect")
+    @patch("src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api")
     def test_search_and_save_workflow(self, mock_connect_api, mock_connect_db, sample_vacancy):
         """Тест полного процесса поиска и сохранения"""
         # Настраиваем мок для API
@@ -152,11 +154,11 @@ class TestFullWorkflowIntegration:
                     "alternate_url": "https://hh.ru/vacancy/789",
                     "employer": {"name": "Integration Company"},
                     "published_at": "2024-01-01T00:00:00+03:00",
-                    "source": "hh.ru"
+                    "source": "hh.ru",
                 }
             ],
             "found": 1,
-            "pages": 1
+            "pages": 1,
         }
 
         # Настраиваем мок для базы данных
@@ -196,18 +198,20 @@ class TestCacheIntegration:
         cache_dir.mkdir()
         return str(cache_dir)
 
-    @patch('pathlib.Path.mkdir')
-    @patch('pathlib.Path.exists')
-    @patch('builtins.open')
-    @patch('json.dump')
-    @patch('json.load')
-    def test_cache_integration(self, mock_json_load, mock_json_dump, mock_open, mock_exists, mock_mkdir, mock_cache_dir):
+    @patch("pathlib.Path.mkdir")
+    @patch("pathlib.Path.exists")
+    @patch("builtins.open")
+    @patch("json.dump")
+    @patch("json.load")
+    def test_cache_integration(
+        self, mock_json_load, mock_json_dump, mock_open, mock_exists, mock_mkdir, mock_cache_dir
+    ):
         """Тест интеграции кэширования"""
         mock_exists.return_value = True
         mock_json_load.return_value = {
             "data": {"test": "data"},
             "meta": {"params": "test_params"},
-            "timestamp": 1234567890
+            "timestamp": 1234567890,
         }
 
         cache = FileCache(cache_dir=mock_cache_dir)
@@ -230,7 +234,7 @@ class TestCacheIntegration:
 class TestErrorHandlingIntegration:
     """Интеграционные тесты обработки ошибок"""
 
-    @patch('src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api')
+    @patch("src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api")
     def test_api_error_handling(self, mock_connect):
         """Тест обработки ошибок API"""
         mock_connect.side_effect = Exception("Network error")
@@ -241,7 +245,7 @@ class TestErrorHandlingIntegration:
         # При ошибке должен возвращаться пустой список
         assert vacancies == []
 
-    @patch('psycopg2.connect')
+    @patch("psycopg2.connect")
     def test_database_error_handling(self, mock_connect):
         """Тест обработки ошибок базы данных"""
         mock_connect.side_effect = Exception("Database connection error")
@@ -262,23 +266,23 @@ class TestFormatterIntegration:
         return Vacancy(
             title="Test Formatter Vacancy",
             url="https://test.com/vacancy/123",
-            salary={'from': 50000, 'to': 100000, 'currency': 'RUR'},
+            salary={"from": 50000, "to": 100000, "currency": "RUR"},
             description="Test description",
             requirements="Test requirements",
             responsibilities="Test responsibilities",
             experience="Test experience",
             employment="Test employment",
             schedule="Test schedule",
-            employer={'name': 'Test Formatter Company'},
+            employer={"name": "Test Formatter Company"},
             vacancy_id="formatter_123",
             published_at="2024-01-01T00:00:00+03:00",
-            source="hh.ru"
+            source="hh.ru",
         )
 
     def test_vacancy_formatter_integration(self, sample_vacancy):
         """Тест интеграции форматирования вакансий"""
         formatter = VacancyFormatter()
-        operations = VacancyOperations(storage=None, api=None) # Имитация инициализации operations
+        operations = VacancyOperations(storage=None, api=None)  # Имитация инициализации operations
 
         formatted_text = formatter.format_vacancy_info(sample_vacancy, number=1)
 
@@ -287,8 +291,8 @@ class TestFormatterIntegration:
         assert "Test Formatter Company" in formatted_text
         assert "от 50" in formatted_text or "до 100" in formatted_text
         assert "formatter_123" in formatted_text
-        assert hasattr(formatter, 'format_vacancy_info')
-        assert hasattr(operations, 'filter_vacancies_by_multiple_keywords')
+        assert hasattr(formatter, "format_vacancy_info")
+        assert hasattr(operations, "filter_vacancies_by_multiple_keywords")
 
     def test_brief_formatter_integration(self, sample_vacancy):
         """Тест краткого форматирования"""
@@ -297,15 +301,19 @@ class TestFormatterIntegration:
         # Проверяем краткое форматирование
         assert isinstance(brief_text, str)
         assert "Test Formatter Vacancy" in brief_text
-```import pytest
-from unittest.mock import Mock, patch, MagicMock
+
+
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
+
 from src.api_modules.hh_api import HeadHunterAPI
 from src.api_modules.sj_api import SuperJobAPI
+from src.operations.vacancy_operations import VacancyOperations
 from src.storage.postgres_saver import PostgresSaver
-from src.vacancies.models import Vacancy
 from src.utils.cache import FileCache
 from src.utils.vacancy_formatter import VacancyFormatter
-from src.operations.vacancy_operations import VacancyOperations
+from src.vacancies.models import Vacancy
 
 
 class TestStorageIntegration:
@@ -317,20 +325,20 @@ class TestStorageIntegration:
         return Vacancy(
             title="Test Vacancy",
             url="https://test.com/vacancy/1",
-            salary={'from': 100000, 'to': 150000, 'currency': 'RUR'},
+            salary={"from": 100000, "to": 150000, "currency": "RUR"},
             description="Test description",
             requirements="Test requirements",
             responsibilities="Test responsibilities",
             experience="Test experience",
             employment="Test employment",
             schedule="Test schedule",
-            employer={'name': 'Test Company'},
+            employer={"name": "Test Company"},
             vacancy_id="test_1",
             published_at="2024-01-15T10:00:00",
-            source="hh.ru"
+            source="hh.ru",
         )
 
-    @patch('psycopg2.connect')
+    @patch("psycopg2.connect")
     def test_postgres_saver_integration(self, mock_connect, sample_vacancy):
         """Тест интеграции с PostgreSQL"""
         # Настраиваем мок подключения
@@ -361,7 +369,7 @@ class TestStorageIntegration:
 class TestAPIIntegration:
     """Интеграционные тесты для API"""
 
-    @patch('src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api')
+    @patch("src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api")
     def test_hh_api_integration(self, mock_connect):
         """Тест интеграции с HeadHunter API"""
         # Настраиваем мок ответа
@@ -373,11 +381,11 @@ class TestAPIIntegration:
                     "alternate_url": "https://hh.ru/vacancy/123",
                     "employer": {"name": "Test Company"},
                     "published_at": "2024-01-01T00:00:00+03:00",
-                    "source": "hh.ru"
+                    "source": "hh.ru",
                 }
             ],
             "found": 1,
-            "pages": 1
+            "pages": 1,
         }
 
         api = HeadHunterAPI()
@@ -387,7 +395,7 @@ class TestAPIIntegration:
         assert vacancies[0]["name"] == "Test Vacancy"
         assert vacancies[0]["source"] == "hh.ru"
 
-    @patch('src.api_modules.sj_api.SuperJobAPI._CachedAPI__connect_to_api')
+    @patch("src.api_modules.sj_api.SuperJobAPI._CachedAPI__connect_to_api")
     def test_superjob_api_integration(self, mock_connect):
         """Тест интеграции с SuperJob API"""
         mock_connect.return_value = {
@@ -398,10 +406,10 @@ class TestAPIIntegration:
                     "link": "https://superjob.ru/vakansii/test-456.html",
                     "firm_name": "SJ Company",
                     "date_published": 1704067200,
-                    "source": "superjob.ru"
+                    "source": "superjob.ru",
                 }
             ],
-            "total": 1
+            "total": 1,
         }
 
         api = SuperJobAPI()
@@ -428,14 +436,14 @@ class TestFullWorkflowIntegration:
             experience="Integration test experience",
             employment="Integration test employment",
             schedule="Integration test schedule",
-            employer={'name': 'Integration Company'},
+            employer={"name": "Integration Company"},
             vacancy_id="789",
             published_at="2024-01-01T00:00:00+03:00",
-            source="hh.ru"
+            source="hh.ru",
         )
 
-    @patch('psycopg2.connect')
-    @patch('src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api')
+    @patch("psycopg2.connect")
+    @patch("src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api")
     def test_search_and_save_workflow(self, mock_connect_api, mock_connect_db, sample_vacancy):
         """Тест полного процесса поиска и сохранения"""
         # Настраиваем мок для API
@@ -447,11 +455,11 @@ class TestFullWorkflowIntegration:
                     "alternate_url": "https://hh.ru/vacancy/789",
                     "employer": {"name": "Integration Company"},
                     "published_at": "2024-01-01T00:00:00+03:00",
-                    "source": "hh.ru"
+                    "source": "hh.ru",
                 }
             ],
             "found": 1,
-            "pages": 1
+            "pages": 1,
         }
 
         # Настраиваем мок для базы данных
@@ -491,18 +499,20 @@ class TestCacheIntegration:
         cache_dir.mkdir()
         return str(cache_dir)
 
-    @patch('pathlib.Path.mkdir')
-    @patch('pathlib.Path.exists')
-    @patch('builtins.open')
-    @patch('json.dump')
-    @patch('json.load')
-    def test_cache_integration(self, mock_json_load, mock_json_dump, mock_open, mock_exists, mock_mkdir, mock_cache_dir):
+    @patch("pathlib.Path.mkdir")
+    @patch("pathlib.Path.exists")
+    @patch("builtins.open")
+    @patch("json.dump")
+    @patch("json.load")
+    def test_cache_integration(
+        self, mock_json_load, mock_json_dump, mock_open, mock_exists, mock_mkdir, mock_cache_dir
+    ):
         """Тест интеграции кэширования"""
         mock_exists.return_value = True
         mock_json_load.return_value = {
             "data": {"test": "data"},
             "meta": {"params": "test_params"},
-            "timestamp": 1234567890
+            "timestamp": 1234567890,
         }
 
         cache = FileCache(cache_dir=mock_cache_dir)
@@ -525,7 +535,7 @@ class TestCacheIntegration:
 class TestErrorHandlingIntegration:
     """Интеграционные тесты обработки ошибок"""
 
-    @patch('src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api')
+    @patch("src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api")
     def test_api_error_handling(self, mock_connect):
         """Тест обработки ошибок API"""
         mock_connect.side_effect = Exception("Network error")
@@ -536,7 +546,7 @@ class TestErrorHandlingIntegration:
         # При ошибке должен возвращаться пустой список
         assert vacancies == []
 
-    @patch('psycopg2.connect')
+    @patch("psycopg2.connect")
     def test_database_error_handling(self, mock_connect):
         """Тест обработки ошибок базы данных"""
         mock_connect.side_effect = Exception("Database connection error")
@@ -557,17 +567,17 @@ class TestFormatterIntegration:
         return Vacancy(
             title="Test Formatter Vacancy",
             url="https://test.com/vacancy/123",
-            salary={'from': 50000, 'to': 100000, 'currency': 'RUR'},
+            salary={"from": 50000, "to": 100000, "currency": "RUR"},
             description="Test description",
             requirements="Test requirements",
             responsibilities="Test responsibilities",
             experience="Test experience",
             employment="Test employment",
             schedule="Test schedule",
-            employer={'name': 'Test Formatter Company'},
+            employer={"name": "Test Formatter Company"},
             vacancy_id="formatter_123",
             published_at="2024-01-01T00:00:00+03:00",
-            source="hh.ru"
+            source="hh.ru",
         )
 
     def test_vacancy_formatter_integration(self, sample_vacancy):
@@ -584,8 +594,8 @@ class TestFormatterIntegration:
         assert "Test Formatter Vacancy" in formatted_text
         assert "Test Formatter Company" in formatted_text
         # Проверка зарплаты с учетом возможных форматов
-        salary_from = sample_vacancy.salary.get('from')
-        salary_to = sample_vacancy.salary.get('to')
+        salary_from = sample_vacancy.salary.get("from")
+        salary_to = sample_vacancy.salary.get("to")
         salary_str = ""
         if salary_from is not None and salary_to is not None:
             salary_str = f"от {salary_from:,} до {salary_to:,} RUR".replace(",", " ")
@@ -593,11 +603,11 @@ class TestFormatterIntegration:
             salary_str = f"от {salary_from:,} RUR".replace(",", " ")
         elif salary_to is not None:
             salary_str = f"до {salary_to:,} RUR".replace(",", " ")
-        
+
         assert salary_str in formatted_text
         assert "formatter_123" in formatted_text
-        assert hasattr(formatter, 'format_vacancy_info')
-        assert hasattr(operations, 'filter_vacancies_by_multiple_keywords')
+        assert hasattr(formatter, "format_vacancy_info")
+        assert hasattr(operations, "filter_vacancies_by_multiple_keywords")
 
     def test_brief_formatter_integration(self, sample_vacancy):
         """Тест краткого форматирования"""

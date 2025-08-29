@@ -1,9 +1,9 @@
-
 """
 Полные тесты для VacancyOperations
 """
 
 import pytest
+
 from src.utils.vacancy_operations import VacancyOperations
 from src.vacancies.models import Vacancy
 
@@ -26,7 +26,7 @@ class TestVacancyOperationsComplete:
                 salary={"from": 150000, "to": 200000, "currency": "RUR"},
                 description="Python, Django, PostgreSQL",
                 vacancy_id="1",
-                source="hh.ru"
+                source="hh.ru",
             ),
             Vacancy(
                 title="Java Developer",
@@ -34,7 +34,7 @@ class TestVacancyOperationsComplete:
                 salary={"from": 80000, "to": 120000, "currency": "RUR"},
                 description="Java, Spring Boot",
                 vacancy_id="2",
-                source="hh.ru"
+                source="hh.ru",
             ),
             Vacancy(
                 title="Python Data Scientist",
@@ -42,15 +42,15 @@ class TestVacancyOperationsComplete:
                 salary={"from": 120000, "to": 180000, "currency": "RUR"},
                 description="Python, pandas, scikit-learn",
                 vacancy_id="3",
-                source="superjob.ru"
+                source="superjob.ru",
             ),
             Vacancy(
                 title="Frontend Developer",
                 url="https://example.com/4",
                 description="React, JavaScript",
                 vacancy_id="4",
-                source="hh.ru"
-            )
+                source="hh.ru",
+            ),
         ]
 
     def test_filter_vacancies_by_min_salary(self, operations, test_vacancies):
@@ -95,21 +95,21 @@ class TestVacancyOperationsComplete:
     def test_sort_vacancies_by_salary(self, operations, test_vacancies):
         """Тест сортировки по зарплате"""
         result = operations.sort_vacancies_by_salary(test_vacancies)
-        
+
         # Проверяем, что вакансии отсортированы по убыванию зарплаты
         salaries = []
         for vacancy in result:
-            if vacancy.salary and vacancy.salary.get('from'):
-                salaries.append(vacancy.salary['from'])
-        
+            if vacancy.salary and vacancy.salary.get("from"):
+                salaries.append(vacancy.salary["from"])
+
         # Проверяем, что зарплаты идут в убывающем порядке
         for i in range(1, len(salaries)):
-            assert salaries[i-1] >= salaries[i]
+            assert salaries[i - 1] >= salaries[i]
 
     def test_empty_list_handling(self, operations):
         """Тест обработки пустых списков"""
         empty_list = []
-        
+
         assert operations.filter_vacancies_by_min_salary(empty_list, 100000) == []
         assert operations.filter_vacancies_by_multiple_keywords(empty_list, ["Python"]) == []
         assert operations.search_vacancies_advanced(empty_list, "Python") == []
@@ -118,18 +118,15 @@ class TestVacancyOperationsComplete:
     def test_none_salary_handling(self, operations):
         """Тест обработки вакансий без зарплаты"""
         vacancy_no_salary = Vacancy(
-            title="No Salary Job",
-            url="https://example.com/no-salary",
-            vacancy_id="no_salary",
-            source="test"
+            title="No Salary Job", url="https://example.com/no-salary", vacancy_id="no_salary", source="test"
         )
-        
+
         vacancies = [vacancy_no_salary]
-        
+
         # Вакансии без зарплаты должны фильтроваться корректно
         result = operations.filter_vacancies_by_min_salary(vacancies, 50000)
         assert len(result) == 0
-        
+
         # Но должны оставаться при сортировке
         sorted_result = operations.sort_vacancies_by_salary(vacancies)
         assert len(sorted_result) == 1

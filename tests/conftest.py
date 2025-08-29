@@ -5,14 +5,16 @@
 Обеспечивает единообразное тестовое окружение и тестовые данные.
 """
 
-import pytest
-import tempfile
 import os
-from unittest.mock import Mock, patch, MagicMock
+import tempfile
 from pathlib import Path
-from src.vacancies.models import Vacancy
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
+
 from src.storage.postgres_saver import PostgresSaver
 from src.utils.salary import Salary
+from src.vacancies.models import Vacancy
 
 
 @pytest.fixture
@@ -31,7 +33,7 @@ def sample_vacancy():
         employer={"name": "Test Company"},
         vacancy_id="12345",
         published_at="2024-01-15T10:00:00",
-        source="hh.ru"
+        source="hh.ru",
     )
 
 
@@ -41,11 +43,7 @@ def sample_vacancies(sample_vacancy):
     vacancy2 = Vacancy(
         title="Java Developer",
         url="https://hh.ru/vacancy/67890",
-        salary={
-            "from": 80000,
-            "to": 120000,
-            "currency": "RUR"
-        },
+        salary={"from": 80000, "to": 120000, "currency": "RUR"},
         description="Java development",
         requirements="Java, Spring",
         responsibilities="Backend development",
@@ -55,7 +53,7 @@ def sample_vacancies(sample_vacancy):
         employer={"name": "Java Corp"},
         vacancy_id="67890",
         published_at="2024-01-02T00:00:00",
-        source="hh.ru"
+        source="hh.ru",
     )
     return [sample_vacancy, vacancy2]
 
@@ -63,7 +61,7 @@ def sample_vacancies(sample_vacancy):
 @pytest.fixture
 def temp_json_file():
     """Фикстура для создания временного JSON файла для тестирования файловых операций"""
-    with tempfile.NamedTemporaryFile(mode='w+', delete=False, suffix='.json') as f:
+    with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".json") as f:
         yield f.name
     os.unlink(f.name)
 
@@ -79,11 +77,11 @@ def temp_directory():
 def mock_db_config():
     """Фикстура с имитацией конфигурации базы данных для тестирования"""
     return {
-        'host': 'localhost',
-        'port': '5432',
-        'database': 'test_db',
-        'username': 'test_user',
-        'password': 'test_pass'
+        "host": "localhost",
+        "port": "5432",
+        "database": "test_db",
+        "username": "test_user",
+        "password": "test_pass",
     }
 
 
@@ -96,23 +94,16 @@ def mock_api_response():
                 "id": "12345",
                 "name": "Python Developer",
                 "alternate_url": "https://hh.ru/vacancy/12345",
-                "salary": {
-                    "from": 100000,
-                    "to": 150000,
-                    "currency": "RUR"
-                },
-                "snippet": {
-                    "requirement": "Python, Django",
-                    "responsibility": "Development"
-                },
+                "salary": {"from": 100000, "to": 150000, "currency": "RUR"},
+                "snippet": {"requirement": "Python, Django", "responsibility": "Development"},
                 "employer": {"name": "Test Company"},
-                "published_at": "2024-01-01T00:00:00+03:00"
+                "published_at": "2024-01-01T00:00:00+03:00",
             }
         ],
         "found": 1,
         "pages": 1,
         "page": 0,
-        "per_page": 20
+        "per_page": 20,
     }
 
 
@@ -131,10 +122,10 @@ def mock_superjob_response():
                 "candidat": "Java, Spring",
                 "vacancyRichText": "Backend development",
                 "firm_name": "Java Corp",
-                "date_published": 1704067200
+                "date_published": 1704067200,
             }
         ],
-        "total": 1
+        "total": 1,
     }
 
 
@@ -169,13 +160,15 @@ def mock_db_manager():
 @pytest.fixture(autouse=True)
 def mock_all_external_resources():
     """Глобально мокает все внешние ресурсы для всех тестов"""
-    with patch('requests.get') as mock_requests, \
-         patch('requests.post') as mock_post, \
-         patch('psycopg2.connect') as mock_db, \
-         patch('builtins.input') as mock_input, \
-         patch('src.utils.env_loader.EnvLoader.load_env_file') as mock_env, \
-         patch('os.path.exists') as mock_exists, \
-         patch('os.makedirs') as mock_makedirs:
+    with patch("requests.get") as mock_requests, patch("requests.post") as mock_post, patch(
+        "psycopg2.connect"
+    ) as mock_db, patch("builtins.input") as mock_input, patch(
+        "src.utils.env_loader.EnvLoader.load_env_file"
+    ) as mock_env, patch(
+        "os.path.exists"
+    ) as mock_exists, patch(
+        "os.makedirs"
+    ) as mock_makedirs:
 
         # Настраиваем моки для HTTP запросов
         mock_response = Mock()
@@ -219,7 +212,4 @@ def mock_unified_api():
 @pytest.fixture
 def sample_companies_data():
     """Тестовые данные компаний"""
-    return [
-        {"id": 1, "name": "СБЕР", "vacancies_count": 10},
-        {"id": 2, "name": "Яндекс", "vacancies_count": 5}
-    ]
+    return [{"id": 1, "name": "СБЕР", "vacancies_count": 10}, {"id": 2, "name": "Яндекс", "vacancies_count": 5}]

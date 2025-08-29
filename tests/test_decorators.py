@@ -5,10 +5,12 @@
 в приложении без использования внешних ресурсов.
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
 import time
 from functools import wraps
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
+
 
 # Моковый декоратор retry для тестов
 def retry(attempts=3, delay=0.1):
@@ -22,19 +24,23 @@ def retry(attempts=3, delay=0.1):
                     if attempt == attempts - 1:
                         raise e
                     time.sleep(delay)
+
         return wrapper
+
     return decorator
+
 
 # Моковый декоратор cache_result для тестов
 def cache_result(ttl=300):
     cache = {}
     timestamps = {}
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             key = f"{func.__name__}_{args}_{kwargs}"
             current_time = time.time()
-            
+
             # Проверяем есть ли кэш и не истек ли TTL
             if key in cache and key in timestamps:
                 if current_time - timestamps[key] < ttl:
@@ -43,14 +49,17 @@ def cache_result(ttl=300):
                     # TTL истек, удаляем из кэша
                     del cache[key]
                     del timestamps[key]
-            
+
             # Выполняем функцию и кэшируем результат
             result = func(*args, **kwargs)
             cache[key] = result
             timestamps[key] = current_time
             return result
+
         return wrapper
+
     return decorator
+
 
 # Моковый декоратор timing для тестов
 def timing(func):
@@ -61,7 +70,9 @@ def timing(func):
         end_time = time.time()
         print(f"{func.__name__} took {end_time - start_time:.2f} seconds")
         return result
+
     return wrapper
+
 
 # Моковый декоратор validate_params для тестов
 def validate_params(**validators):
@@ -73,15 +84,19 @@ def validate_params(**validators):
                     if not validator(kwargs[param]):
                         raise ValueError(f"Invalid {param}")
             return func(*args, **kwargs)
+
         return wrapper
+
     return decorator
 
 
 def test_basic_decorator():
     """Базовый тест для проверки работоспособности декораторов"""
+
     def simple_decorator(func):
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)
+
         return wrapper
 
     @simple_decorator
@@ -94,6 +109,7 @@ def test_basic_decorator():
 
 def test_timing_decorator():
     """Тест декоратора измерения времени выполнения"""
+
     @timing
     def slow_function():
         time.sleep(0.01)  # Очень короткая задержка
@@ -105,12 +121,14 @@ def test_timing_decorator():
 
 def test_error_handling_decorator():
     """Тест декоратора обработки ошибок"""
+
     def error_handler(func):
         def wrapper(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
             except Exception as e:
                 return f"Error: {str(e)}"
+
         return wrapper
 
     @error_handler
@@ -123,9 +141,10 @@ def test_error_handling_decorator():
 
 def test_validation_decorator():
     """Тест декоратора валидации"""
+
     @validate_params(number=lambda n: n > 0)
     def square_root(number):
-        return number ** 0.5
+        return number**0.5
 
     # Тест с корректным значением
     result = square_root(number=4)
@@ -141,9 +160,11 @@ class TestDecoratorBehavior:
 
     def test_decorator_preserves_function_name(self):
         """Тест сохранения имени функции декоратором"""
+
         def name_preserving_decorator(func):
             def wrapper(*args, **kwargs):
                 return func(*args, **kwargs)
+
             wrapper.__name__ = func.__name__
             wrapper.__doc__ = func.__doc__
             return wrapper
@@ -158,6 +179,7 @@ class TestDecoratorBehavior:
 
     def test_decorator_with_arguments(self):
         """Тест декоратора с аргументами"""
+
         def repeat(times):
             def decorator(func):
                 def wrapper(*args, **kwargs):
@@ -165,7 +187,9 @@ class TestDecoratorBehavior:
                     for _ in range(times):
                         results.append(func(*args, **kwargs))
                     return results
+
                 return wrapper
+
             return decorator
 
         @repeat(3)
@@ -216,10 +240,10 @@ class TestDecoratorBehavior:
 
         result2 = cached_function()  # Должен быть взят из кэша
         assert result2 == "cached_value"
-        mock_func.assert_called_once() # Вызов не должен повториться
+        mock_func.assert_called_once()  # Вызов не должен повториться
 
-        time.sleep(1.1) # Ждем, чтобы TTL истек
-        result3 = cached_function() # TTL истек, должен быть новый вызов
+        time.sleep(1.1)  # Ждем, чтобы TTL истек
+        result3 = cached_function()  # TTL истек, должен быть новый вызов
         assert result3 == "cached_value"
         # Проверяем что было сделано 2 вызова (или больше, если TTL действительно работает)
         assert mock_func.call_count >= 2
@@ -237,11 +261,11 @@ class TestDecoratorBehavior:
         assert result1 == 1
         mock_func.assert_called_once_with()
 
-        result2 = cached_function_with_args(1, arg2=2) # Должен быть из кэша
+        result2 = cached_function_with_args(1, arg2=2)  # Должен быть из кэша
         assert result2 == 1
         mock_func.assert_called_once()
 
-        result3 = cached_function_with_args(3) # Другие аргументы, новый вызов
+        result3 = cached_function_with_args(3)  # Другие аргументы, новый вызов
         assert result3 == 2
         # Проверяем что было сделано 2 вызова (кэш учитывает разные аргументы)
         assert mock_func.call_count == 2

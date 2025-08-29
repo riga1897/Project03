@@ -1,9 +1,9 @@
-
 """
 Тесты для модуля salary
 """
 
 import pytest
+
 from src.utils.salary import Salary
 
 
@@ -156,7 +156,7 @@ class TestSalary:
         salary1 = Salary(100000, 150000, "RUR")
         salary2 = Salary(100000, currency="RUR")
         salary3 = Salary(None, None, None)
-        
+
         assert salary1.is_specified() is True
         assert salary2.is_specified() is True
         assert salary3.is_specified() is False
@@ -165,7 +165,7 @@ class TestSalary:
         """Тест конвертации валют (если поддерживается)"""
         salary = Salary(1000, 2000, "USD")
         # Если есть метод конвертации
-        if hasattr(salary, 'convert_to_rub'):
+        if hasattr(salary, "convert_to_rub"):
             converted = salary.convert_to_rub()
             assert converted.currency == "RUR"
             assert converted.salary_from > salary.salary_from

@@ -2,9 +2,11 @@
 Тесты для конфигурационных модулей
 """
 
-import pytest
 import os
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
+
+import pytest
+
 from src.config.app_config import AppConfig
 from src.config.db_config import DatabaseConfig
 from src.config.hh_api_config import HHAPIConfig
@@ -45,41 +47,47 @@ class TestAppConfig:
         db_config = config.get_db_config()
 
         assert isinstance(db_config, dict)
-        assert 'host' in db_config
-        assert 'port' in db_config
-        assert 'database' in db_config
-        assert 'username' in db_config
-        assert 'password' in db_config
+        assert "host" in db_config
+        assert "port" in db_config
+        assert "database" in db_config
+        assert "username" in db_config
+        assert "password" in db_config
 
-    @patch.dict(os.environ, {
-        'PGHOST': 'test_host',
-        'PGPORT': '5433',
-        'PGDATABASE': 'test_db',
-        'PGUSER': 'test_user',
-        'PGPASSWORD': 'test_pass'
-    })
+    @patch.dict(
+        os.environ,
+        {
+            "PGHOST": "test_host",
+            "PGPORT": "5433",
+            "PGDATABASE": "test_db",
+            "PGUSER": "test_user",
+            "PGPASSWORD": "test_pass",
+        },
+    )
     def test_db_config_from_env(self):
         """Тест получения конфигурации БД из переменных окружения"""
         config = AppConfig()
         db_config = config.get_db_config()
 
-        assert db_config['host'] == 'test_host'
-        assert db_config['port'] == '5433'
-        assert db_config['database'] == 'test_db'
-        assert db_config['username'] == 'test_user'
-        assert db_config['password'] == 'test_pass'
+        assert db_config["host"] == "test_host"
+        assert db_config["port"] == "5433"
+        assert db_config["database"] == "test_db"
+        assert db_config["username"] == "test_user"
+        assert db_config["password"] == "test_pass"
 
 
 class TestDatabaseConfig:
     """Тесты конфигурации базы данных"""
 
-    @patch.dict(os.environ, {
-        'PGHOST': 'custom_host',
-        'PGPORT': '5433',
-        'PGDATABASE': 'custom_db',
-        'PGUSER': 'custom_user',
-        'PGPASSWORD': 'custom_pass'
-    })
+    @patch.dict(
+        os.environ,
+        {
+            "PGHOST": "custom_host",
+            "PGPORT": "5433",
+            "PGDATABASE": "custom_db",
+            "PGUSER": "custom_user",
+            "PGPASSWORD": "custom_pass",
+        },
+    )
     def test_initialization_with_env(self):
         """Тест инициализации с переменными окружения"""
         config = DatabaseConfig()
@@ -148,7 +156,7 @@ class TestSJAPIConfig:
         config = SJAPIConfig()
         assert config is not None
 
-    @patch.dict(os.environ, {'SJ_SECRET_KEY': 'test_secret_key'})
+    @patch.dict(os.environ, {"SJ_SECRET_KEY": "test_secret_key"})
     def test_initialization_with_secret_key(self):
         """Тест инициализации с секретным ключом из окружения"""
         config = SJAPIConfig()

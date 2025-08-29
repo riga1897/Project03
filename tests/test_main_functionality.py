@@ -4,11 +4,13 @@
 Тесты основной функциональности приложения без внешних зависимостей.
 """
 
+from unittest.mock import MagicMock, Mock, patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-from src.vacancies.models import Vacancy
-from src.utils.vacancy_operations import VacancyOperations
+
 from src.utils.vacancy_formatter import VacancyFormatter
+from src.utils.vacancy_operations import VacancyOperations
+from src.vacancies.models import Vacancy
 
 
 class TestMainFunctionality:
@@ -29,7 +31,7 @@ class TestMainFunctionality:
             employer={"name": "Test Company"},
             vacancy_id="123",
             published_at="2024-01-01T00:00:00",
-            source="test.ru"
+            source="test.ru",
         )
 
         assert vacancy.title == "Test Developer"
@@ -65,7 +67,7 @@ class TestMainFunctionality:
         assert "150,000" in salary_formatted or "150 000" in salary_formatted
         assert "руб." in salary_formatted
 
-    @patch('builtins.input')
+    @patch("builtins.input")
     def test_user_input_simulation(self, mock_input):
         """Тест симуляции пользовательского ввода"""
         mock_input.return_value = "test_query"
@@ -107,10 +109,7 @@ class TestMainFunctionality:
 
         # Тест форматирования без номера
         minimal_vacancy = Vacancy(
-            title="Test Job",
-            url="https://example.com/test",
-            vacancy_id="test001",
-            source="test"
+            title="Test Job", url="https://example.com/test", vacancy_id="test001", source="test"
         )
         formatted = formatter.format_vacancy_info(minimal_vacancy)
         assert "Test Job" in formatted
@@ -119,10 +118,7 @@ class TestMainFunctionality:
         """Тест валидации данных"""
         # Тест создания вакансии с минимальными данными
         minimal_vacancy = Vacancy(
-            title="Minimal Job",
-            url="https://example.com/job",
-            vacancy_id="min001",
-            source="test"
+            title="Minimal Job", url="https://example.com/job", vacancy_id="min001", source="test"
         )
 
         assert minimal_vacancy.title == "Minimal Job"
@@ -141,7 +137,7 @@ class TestMainFunctionality:
         # Должны найти хотя бы одну вакансию с любым из ключевых слов
         assert len(results) >= 1
 
-    @patch('src.storage.postgres_saver.PostgresSaver')
+    @patch("src.storage.postgres_saver.PostgresSaver")
     def test_storage_mocking(self, mock_storage_class):
         """Тест мокирования хранилища"""
         mock_storage = Mock()
@@ -164,10 +160,10 @@ class TestMainFunctionality:
 
         assert formatter is not None
         assert operations is not None
-        assert hasattr(formatter, 'format_vacancy_info')
-        assert hasattr(operations, 'filter_vacancies_by_multiple_keywords')
-        assert hasattr(operations, 'search_vacancies_advanced')
-        assert hasattr(operations, 'filter_vacancies_by_salary_range')
-        assert hasattr(operations, 'sort_vacancies_by_salary')
-        assert hasattr(operations, 'filter_vacancies_by_min_salary')
-        assert hasattr(operations, 'filter_vacancies_by_max_salary')
+        assert hasattr(formatter, "format_vacancy_info")
+        assert hasattr(operations, "filter_vacancies_by_multiple_keywords")
+        assert hasattr(operations, "search_vacancies_advanced")
+        assert hasattr(operations, "filter_vacancies_by_salary_range")
+        assert hasattr(operations, "sort_vacancies_by_salary")
+        assert hasattr(operations, "filter_vacancies_by_min_salary")
+        assert hasattr(operations, "filter_vacancies_by_max_salary")

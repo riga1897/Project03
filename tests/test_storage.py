@@ -1,4 +1,3 @@
-
 """
 Тесты для модулей хранения данных
 
@@ -6,8 +5,10 @@
 типами хранилищ данных (PostgreSQL).
 """
 
+from unittest.mock import MagicMock, Mock, patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+
 from src.storage.postgres_saver import PostgresSaver
 from src.storage.storage_factory import StorageFactory
 from src.vacancies.models import Vacancy
@@ -16,7 +17,7 @@ from src.vacancies.models import Vacancy
 class TestPostgresSaver:
     """Тесты для PostgreSQL хранилища"""
 
-    @patch('psycopg2.connect')
+    @patch("psycopg2.connect")
     def test_initialization(self, mock_connect):
         """Тест инициализации хранилища"""
         mock_conn = Mock()
@@ -25,7 +26,7 @@ class TestPostgresSaver:
         storage = PostgresSaver()
         assert storage is not None
 
-    @patch('psycopg2.connect')
+    @patch("psycopg2.connect")
     def test_add_vacancy(self, mock_connect, sample_vacancy):
         """Тест добавления вакансии"""
         mock_conn = Mock()
@@ -41,17 +42,28 @@ class TestPostgresSaver:
         mock_cursor.execute.assert_called()
         mock_conn.commit.assert_called()
 
-    @patch('psycopg2.connect')
+    @patch("psycopg2.connect")
     def test_get_vacancies(self, mock_connect):
         """Тест получения вакансий"""
         mock_conn = Mock()
         mock_cursor = Mock()
         mock_cursor.fetchall.return_value = [
             (
-                "12345", "Python Developer", "Test Company", "https://hh.ru/vacancy/12345",
-                "100000", "150000", "RUR", "Test description", "Python, Django",
-                "Development", "От 1 года до 3 лет", "Полная занятость",
-                "Полный день", "2024-01-01T00:00:00", "hh.ru"
+                "12345",
+                "Python Developer",
+                "Test Company",
+                "https://hh.ru/vacancy/12345",
+                "100000",
+                "150000",
+                "RUR",
+                "Test description",
+                "Python, Django",
+                "Development",
+                "От 1 года до 3 лет",
+                "Полная занятость",
+                "Полный день",
+                "2024-01-01T00:00:00",
+                "hh.ru",
             )
         ]
         mock_conn.cursor.return_value = mock_cursor
@@ -64,7 +76,7 @@ class TestPostgresSaver:
         assert vacancies[0].title == "Python Developer"
         assert vacancies[0].vacancy_id == "12345"
 
-    @patch('psycopg2.connect')
+    @patch("psycopg2.connect")
     def test_delete_vacancy_by_id(self, mock_connect):
         """Тест удаления вакансии по ID"""
         mock_conn = Mock()
@@ -80,7 +92,7 @@ class TestPostgresSaver:
         mock_cursor.execute.assert_called()
         mock_conn.commit.assert_called()
 
-    @patch('psycopg2.connect')
+    @patch("psycopg2.connect")
     def test_get_vacancies_count(self, mock_connect):
         """Тест получения количества вакансий"""
         mock_conn = Mock()

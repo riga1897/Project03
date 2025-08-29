@@ -2,12 +2,13 @@
 Тесты для модуля обработки файлов
 """
 
-import pytest
-import tempfile
-import os
 import json
+import os
+import tempfile
 from pathlib import Path
-from unittest.mock import patch, mock_open
+from unittest.mock import mock_open, patch
+
+import pytest
 
 from src.utils.file_handlers import JSONFileHandler, json_handler
 
@@ -20,13 +21,13 @@ class TestJSONFileHandler:
         """Фикстура с тестовыми данными"""
         return [
             {"id": "1", "title": "Python Developer", "salary": 100000},
-            {"id": "2", "title": "Java Developer", "salary": 120000}
+            {"id": "2", "title": "Java Developer", "salary": 120000},
         ]
 
     @pytest.fixture
     def temp_json_file(self):
         """Фикстура для создания временного JSON файла"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as temp_file:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as temp_file:
             temp_path = Path(temp_file.name)
         yield temp_path
         if temp_path.exists():
@@ -38,14 +39,14 @@ class TestJSONFileHandler:
         handler.write_json(temp_json_file, sample_data)
 
         # Проверяем, что файл создан и содержит правильные данные
-        with temp_json_file.open('r', encoding='utf-8') as f:
+        with temp_json_file.open("r", encoding="utf-8") as f:
             saved_data = json.load(f)
 
         assert saved_data == sample_data
 
     def test_read_json_data(self, sample_data, temp_json_file):
         """Тест чтения JSON данных"""
-        with temp_json_file.open('w', encoding='utf-8') as f:
+        with temp_json_file.open("w", encoding="utf-8") as f:
             json.dump(sample_data, f, ensure_ascii=False, indent=2)
 
         handler = JSONFileHandler()
@@ -73,7 +74,7 @@ class TestJSONFileHandler:
 
     def test_read_invalid_json_file(self, temp_json_file):
         """Тест чтения некорректного JSON файла"""
-        with temp_json_file.open('w', encoding='utf-8') as f:
+        with temp_json_file.open("w", encoding="utf-8") as f:
             f.write("invalid json content")
 
         handler = JSONFileHandler()
@@ -99,7 +100,7 @@ class TestJSONFileHandler:
         handler = JSONFileHandler()
 
         # Мокаем json.dump чтобы вызвать ошибку
-        with patch('json.dump', side_effect=Exception("Mocked error")):
+        with patch("json.dump", side_effect=Exception("Mocked error")):
             with pytest.raises(Exception):
                 handler.write_json(temp_json_file, sample_data)
 
@@ -129,7 +130,7 @@ class TestJSONFileHandler:
     def test_caching_behavior(self, sample_data, temp_json_file):
         """Тест поведения кэширования"""
         # Записываем данные в файл
-        with temp_json_file.open('w', encoding='utf-8') as f:
+        with temp_json_file.open("w", encoding="utf-8") as f:
             json.dump(sample_data, f)
 
         handler = JSONFileHandler()
@@ -139,7 +140,7 @@ class TestJSONFileHandler:
 
         # Изменяем файл напрямую
         modified_data = [{"id": "999", "title": "Modified"}]
-        with temp_json_file.open('w', encoding='utf-8') as f:
+        with temp_json_file.open("w", encoding="utf-8") as f:
             json.dump(modified_data, f)
 
         # Второе чтение (в течение TTL должен вернуть кэшированные данные)

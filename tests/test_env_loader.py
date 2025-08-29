@@ -2,10 +2,12 @@
 Тесты для загрузчика переменных окружения
 """
 
-import pytest
-from unittest.mock import Mock, patch, mock_open
 import os
 from pathlib import Path
+from unittest.mock import Mock, mock_open, patch
+
+import pytest
+
 
 # Моковый класс EnvLoader для тестов
 class EnvLoader:
@@ -25,11 +27,11 @@ class EnvLoader:
         """Загрузить переменные из файла"""
         try:
             if os.path.exists(file_path):
-                with open(file_path, 'r') as f:
+                with open(file_path, "r") as f:
                     for line in f:
                         line = line.strip()
-                        if line and not line.startswith('#') and '=' in line:
-                            key, value = line.split('=', 1)
+                        if line and not line.startswith("#") and "=" in line:
+                            key, value = line.split("=", 1)
                             cls._env_cache[key.strip()] = value.strip()
                 return True
         except Exception:
@@ -89,20 +91,20 @@ class TestEnvLoader:
 
     def test_get_env_var_from_os_environ(self):
         """Тест получения переменной из os.environ"""
-        with patch.dict(os.environ, {'TEST_VAR': 'test_value'}):
-            result = EnvLoader.get_env_var('TEST_VAR')
-            assert result == 'test_value'
+        with patch.dict(os.environ, {"TEST_VAR": "test_value"}):
+            result = EnvLoader.get_env_var("TEST_VAR")
+            assert result == "test_value"
 
     def test_get_env_var_with_default(self):
         """Тест получения переменной с дефолтным значением"""
-        result = EnvLoader.get_env_var('NONEXISTENT_VAR', 'default_value')
-        assert result == 'default_value'
+        result = EnvLoader.get_env_var("NONEXISTENT_VAR", "default_value")
+        assert result == "default_value"
 
     def test_get_env_var_from_cache(self):
         """Тест получения переменной из кэша"""
-        EnvLoader.set_env_var('CACHED_VAR', 'cached_value')
-        result = EnvLoader.get_env_var('CACHED_VAR')
-        assert result == 'cached_value'
+        EnvLoader.set_env_var("CACHED_VAR", "cached_value")
+        result = EnvLoader.get_env_var("CACHED_VAR")
+        assert result == "cached_value"
 
     def test_load_from_file_success(self):
         """Тест успешной загрузки из файла"""
@@ -114,26 +116,26 @@ EMPTY_LINE=
 
 SPACED_VALUE = value with spaces
 """
-        with patch('os.path.exists', return_value=True):
-            with patch('builtins.open', mock_open(read_data=env_content)):
-                result = EnvLoader.load_from_file('.env')
+        with patch("os.path.exists", return_value=True):
+            with patch("builtins.open", mock_open(read_data=env_content)):
+                result = EnvLoader.load_from_file(".env")
                 assert result is True
 
-                assert EnvLoader.get_env_var('DATABASE_URL') == 'postgresql://localhost/test'
-                assert EnvLoader.get_env_var('API_KEY') == 'secret_key'
-                assert EnvLoader.get_env_var('SPACED_VALUE') == 'value with spaces'
+                assert EnvLoader.get_env_var("DATABASE_URL") == "postgresql://localhost/test"
+                assert EnvLoader.get_env_var("API_KEY") == "secret_key"
+                assert EnvLoader.get_env_var("SPACED_VALUE") == "value with spaces"
 
     def test_load_from_file_not_exists(self):
         """Тест загрузки из несуществующего файла"""
-        with patch('os.path.exists', return_value=False):
-            result = EnvLoader.load_from_file('nonexistent.env')
+        with patch("os.path.exists", return_value=False):
+            result = EnvLoader.load_from_file("nonexistent.env")
             assert result is False
 
     def test_load_from_file_exception(self):
         """Тест обработки исключений при загрузке файла"""
-        with patch('os.path.exists', return_value=True):
-            with patch('builtins.open', side_effect=IOError("Permission denied")):
-                result = EnvLoader.load_from_file('.env')
+        with patch("os.path.exists", return_value=True):
+            with patch("builtins.open", side_effect=IOError("Permission denied")):
+                result = EnvLoader.load_from_file(".env")
                 assert result is False
 
     def test_load_from_file_ignore_comments(self):
@@ -144,12 +146,12 @@ VAR1=value1
 # Another comment
 VAR2=value2
 """
-        with patch('os.path.exists', return_value=True):
-            with patch('builtins.open', mock_open(read_data=env_content)):
-                EnvLoader.load_from_file('.env')
+        with patch("os.path.exists", return_value=True):
+            with patch("builtins.open", mock_open(read_data=env_content)):
+                EnvLoader.load_from_file(".env")
 
-                assert EnvLoader.get_env_var('VAR1') == 'value1'
-                assert EnvLoader.get_env_var('VAR2') == 'value2'
+                assert EnvLoader.get_env_var("VAR1") == "value1"
+                assert EnvLoader.get_env_var("VAR2") == "value2"
 
     def test_load_from_file_ignore_empty_lines(self):
         """Тест игнорирования пустых строк"""
@@ -159,12 +161,12 @@ VAR1=value1
 VAR2=value2
 
 """
-        with patch('os.path.exists', return_value=True):
-            with patch('builtins.open', mock_open(read_data=env_content)):
-                EnvLoader.load_from_file('.env')
+        with patch("os.path.exists", return_value=True):
+            with patch("builtins.open", mock_open(read_data=env_content)):
+                EnvLoader.load_from_file(".env")
 
-                assert EnvLoader.get_env_var('VAR1') == 'value1'
-                assert EnvLoader.get_env_var('VAR2') == 'value2'
+                assert EnvLoader.get_env_var("VAR1") == "value1"
+                assert EnvLoader.get_env_var("VAR2") == "value2"
 
     def test_load_from_file_ignore_malformed_lines(self):
         """Тест игнорирования неправильно сформированных строк"""
@@ -175,56 +177,56 @@ VAR2=value2
 ANOTHER_INVALID
 VAR3=value3
 """
-        with patch('os.path.exists', return_value=True):
-            with patch('builtins.open', mock_open(read_data=env_content)):
-                EnvLoader.load_from_file('.env')
+        with patch("os.path.exists", return_value=True):
+            with patch("builtins.open", mock_open(read_data=env_content)):
+                EnvLoader.load_from_file(".env")
 
-                assert EnvLoader.get_env_var('VAR1') == 'value1'
-                assert EnvLoader.get_env_var('VAR2') == 'value2'
-                assert EnvLoader.get_env_var('VAR3') == 'value3'
-                assert EnvLoader.get_env_var('INVALID_LINE_NO_EQUALS') is None
+                assert EnvLoader.get_env_var("VAR1") == "value1"
+                assert EnvLoader.get_env_var("VAR2") == "value2"
+                assert EnvLoader.get_env_var("VAR3") == "value3"
+                assert EnvLoader.get_env_var("INVALID_LINE_NO_EQUALS") is None
 
     def test_set_env_var(self):
         """Тест установки переменной окружения"""
-        EnvLoader.set_env_var('TEST_SET', 'set_value')
-        result = EnvLoader.get_env_var('TEST_SET')
-        assert result == 'set_value'
+        EnvLoader.set_env_var("TEST_SET", "set_value")
+        result = EnvLoader.get_env_var("TEST_SET")
+        assert result == "set_value"
 
     def test_clear_cache(self):
         """Тест очистки кэша"""
-        EnvLoader.set_env_var('TEST_CLEAR', 'clear_value')
-        assert EnvLoader.get_env_var('TEST_CLEAR') == 'clear_value'
+        EnvLoader.set_env_var("TEST_CLEAR", "clear_value")
+        assert EnvLoader.get_env_var("TEST_CLEAR") == "clear_value"
 
         EnvLoader.clear_cache()
 
         # После очистки кэша должен использовать os.environ
-        with patch.dict(os.environ, {'TEST_CLEAR': 'os_value'}):
-            result = EnvLoader.get_env_var('TEST_CLEAR')
-            assert result == 'os_value'
+        with patch.dict(os.environ, {"TEST_CLEAR": "os_value"}):
+            result = EnvLoader.get_env_var("TEST_CLEAR")
+            assert result == "os_value"
 
     def test_cache_priority_over_os_environ(self):
         """Тест приоритета кэша над os.environ"""
-        with patch.dict(os.environ, {'PRIORITY_TEST': 'os_value'}):
+        with patch.dict(os.environ, {"PRIORITY_TEST": "os_value"}):
             # Сначала получим из os.environ
-            result1 = EnvLoader.get_env_var('PRIORITY_TEST')
-            assert result1 == 'os_value'
+            result1 = EnvLoader.get_env_var("PRIORITY_TEST")
+            assert result1 == "os_value"
 
             # Установим в кэш
-            EnvLoader.set_env_var('PRIORITY_TEST', 'cache_value')
+            EnvLoader.set_env_var("PRIORITY_TEST", "cache_value")
 
             # Теперь должно вернуться значение из кэша
-            result2 = EnvLoader.get_env_var('PRIORITY_TEST')
-            assert result2 == 'cache_value'
+            result2 = EnvLoader.get_env_var("PRIORITY_TEST")
+            assert result2 == "cache_value"
 
     def test_load_from_custom_file_path(self):
         """Тест загрузки из кастомного пути к файлу"""
         env_content = "CUSTOM_VAR=custom_value"
 
-        with patch('os.path.exists', return_value=True):
-            with patch('builtins.open', mock_open(read_data=env_content)):
-                result = EnvLoader.load_from_file('custom.env')
+        with patch("os.path.exists", return_value=True):
+            with patch("builtins.open", mock_open(read_data=env_content)):
+                result = EnvLoader.load_from_file("custom.env")
                 assert result is True
-                assert EnvLoader.get_env_var('CUSTOM_VAR') == 'custom_value'
+                assert EnvLoader.get_env_var("CUSTOM_VAR") == "custom_value"
 
     def test_set_environment_variable(self):
         """Тест установки переменной окружения"""
@@ -232,9 +234,9 @@ VAR3=value3
         assert EnvLoader.get_env_var("TEST_VAR") == "test_value"
 
         # Очищаем после теста
-        EnvLoader.clear_cache() # Очищаем кэш
+        EnvLoader.clear_cache()  # Очищаем кэш
         if "TEST_VAR" in os.environ:
-            del os.environ["TEST_VAR"] # Удаляем из os.environ, если оно там оказалось
+            del os.environ["TEST_VAR"]  # Удаляем из os.environ, если оно там оказалось
 
     def test_get_environment_variable(self):
         """Тест получения переменной окружения"""
@@ -243,7 +245,7 @@ VAR3=value3
         value = EnvLoader.get_env_var("TEST_GET_VAR")
         assert value == "test_get_value"
 
-        EnvLoader.clear_cache() # Очищаем кэш
+        EnvLoader.clear_cache()  # Очищаем кэш
         if "TEST_GET_VAR" in os.environ:
             del os.environ["TEST_GET_VAR"]
 
@@ -251,7 +253,6 @@ VAR3=value3
         """Тест получения переменной окружения с значением по умолчанию"""
         value = EnvLoader.get_env_var("NON_EXISTENT_VAR", "default_value")
         assert value == "default_value"
-
 
     def test_validate_required_env_vars_success(self):
         """Тест валидации обязательных переменных - успешный случай"""
@@ -274,11 +275,7 @@ VAR3=value3
 
     def test_load_environment_variables(self):
         """Тест загрузки переменных окружения через set_env_var"""
-        variables = {
-            "VAR1": "value1",
-            "VAR2": "value2",
-            "VAR3": "value3"
-        }
+        variables = {"VAR1": "value1", "VAR2": "value2", "VAR3": "value3"}
 
         # Устанавливаем переменные через EnvLoader
         for key, value in variables.items():
@@ -287,8 +284,9 @@ VAR3=value3
         # Проверяем, что переменные были установлены
         for key, expected_value in variables.items():
             actual_value = EnvLoader.get_env_var(key)
-            assert actual_value == expected_value, f"Переменная {key} должна иметь значение {expected_value}, но имеет {actual_value}"
-
+            assert (
+                actual_value == expected_value
+            ), f"Переменная {key} должна иметь значение {expected_value}, но имеет {actual_value}"
 
     @patch.dict(os.environ, {}, clear=True)
     def test_reset_environment_variables(self):
@@ -312,7 +310,7 @@ VAR3=value3
         assert EnvLoader.get_env_var("ANOTHER_VAR") is None
 
 
-class TestEnvLoaderIntegration: # Переименовал класс для ясности
+class TestEnvLoaderIntegration:  # Переименовал класс для ясности
     """Интеграционные тесты для EnvLoader"""
 
     def setup_method(self):
@@ -365,7 +363,7 @@ INTEGRATION_TEST_API_KEY=supersecretkey123
             # Перезагружаем - в текущей реализации значение обновляется
             # потому что load_from_file перезаписывает переменные
             EnvLoader.load_from_file(file_path)
-            assert EnvLoader.get_env_var("COUNTER") == "2" # Ожидаем новое значение
+            assert EnvLoader.get_env_var("COUNTER") == "2"  # Ожидаем новое значение
 
         finally:
             if os.path.exists(file_path):
@@ -379,7 +377,7 @@ INTEGRATION_TEST_API_KEY=supersecretkey123
         assert EnvLoader.get_env_var("OVERRIDE_TEST_VAR") == "cached_value"
 
         EnvLoader.clear_cache()
-        assert EnvLoader.get_env_var("OVERRIDE_TEST_VAR") == "original_os_value" # Теперь снова из os.environ
+        assert EnvLoader.get_env_var("OVERRIDE_TEST_VAR") == "original_os_value"  # Теперь снова из os.environ
 
     def test_load_from_file_with_spaces_in_keys_and_values(self):
         """Тест загрузки из файла с пробелами в ключах и значениях"""

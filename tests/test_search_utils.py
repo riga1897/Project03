@@ -2,9 +2,11 @@
 Тесты для утилит поиска
 """
 
-import pytest
+from typing import Any, Dict, List
 from unittest.mock import Mock, patch
-from typing import List, Dict, Any
+
+import pytest
+
 
 # Моковый класс SearchUtils для тестов
 class SearchUtils:
@@ -48,235 +50,213 @@ class SearchUtils:
         salary_to: int = None,
         experience: str = None,
         employment: str = None,
-        area: str = None
+        area: str = None,
     ) -> Dict[str, Any]:
         """Построение фильтров для поиска"""
         filters = {}
 
         if salary_from is not None:
-            filters['salary_from'] = salary_from
+            filters["salary_from"] = salary_from
         if salary_to is not None:
-            filters['salary_to'] = salary_to
+            filters["salary_to"] = salary_to
+
 
 class TestSearchUtils:
     """Тесты для SearchUtils"""
-    
+
     def test_normalize_query_basic(self):
         """Тест базовой нормализации запроса"""
         assert SearchUtils.normalize_query("Python Developer") == "python developer"
         assert SearchUtils.normalize_query("  JAVA  ") == "java"
         assert SearchUtils.normalize_query("") == ""
         assert SearchUtils.normalize_query(None) == ""
-    
+
     def test_normalize_query_special_characters(self):
         """Тест нормализации запроса со специальными символами"""
         assert SearchUtils.normalize_query("Python/Django") == "python/django"
         assert SearchUtils.normalize_query("C++") == "c++"
         assert SearchUtils.normalize_query("React.js") == "react.js"
-    
+
     def test_extract_keywords_simple(self):
         """Тест извлечения ключевых слов из простого запроса"""
         keywords = SearchUtils.extract_keywords("python developer")
         assert keywords == ["python", "developer"]
-    
+
     def test_extract_keywords_with_spaces(self):
         """Тест извлечения ключевых слов с лишними пробелами"""
         keywords = SearchUtils.extract_keywords("  python    django   react  ")
         assert keywords == ["python", "django", "react"]
-    
+
     def test_extract_keywords_empty(self):
         """Тест извлечения ключевых слов из пустого запроса"""
         assert SearchUtils.extract_keywords("") == []
         assert SearchUtils.extract_keywords("   ") == []
         assert SearchUtils.extract_keywords(None) == []
-    
+
     def test_extract_keywords_single_word(self):
         """Тест извлечения ключевых слов из одного слова"""
         keywords = SearchUtils.extract_keywords("python")
         assert keywords == ["python"]
-    
+
     def test_match_keywords_any_match(self):
         """Тест поиска с любым совпадением (match_all=False)"""
         text = "Python developer with Django experience"
         keywords = ["python", "java"]
-        
+
         assert SearchUtils.match_keywords(text, keywords, match_all=False) is True
-        
+
         keywords_no_match = ["java", "php"]
         assert SearchUtils.match_keywords(text, keywords_no_match, match_all=False) is False
-    
+
     def test_match_keywords_all_match(self):
         """Тест поиска с полным совпадением (match_all=True)"""
         text = "Python developer with Django and React experience"
-        
+
         keywords_all_match = ["python", "django"]
         assert SearchUtils.match_keywords(text, keywords_all_match, match_all=True) is True
-        
+
         keywords_partial_match = ["python", "java"]
         assert SearchUtils.match_keywords(text, keywords_partial_match, match_all=True) is False
-    
+
     def test_match_keywords_case_insensitive(self):
         """Тест регистронезависимого поиска"""
         text = "PYTHON Developer"
         keywords = ["python", "developer"]
-        
+
         assert SearchUtils.match_keywords(text, keywords, match_all=True) is True
-    
+
     def test_match_keywords_empty_inputs(self):
         """Тест поиска с пустыми входными данными"""
         assert SearchUtils.match_keywords("", ["python"]) is False
         assert SearchUtils.match_keywords("Python developer", []) is False
         assert SearchUtils.match_keywords("", []) is False
-    
+
     def test_build_search_filters_full(self):
         """Тест построения полных фильтров поиска"""
         filters = SearchUtils.build_search_filters(
-            salary_from=100000,
-            salary_to=200000,
-            experience="3-6 лет",
-            employment="Полная занятость",
-            area="Москва"
+            salary_from=100000, salary_to=200000, experience="3-6 лет", employment="Полная занятость", area="Москва"
         )
-        
+
         expected = {
-            'salary_from': 100000,
-            'salary_to': 200000,
-            'experience': "3-6 лет",
-            'employment': "Полная занятость",
-            'area': "Москва"
+            "salary_from": 100000,
+            "salary_to": 200000,
+            "experience": "3-6 лет",
+            "employment": "Полная занятость",
+            "area": "Москва",
         }
-        
+
         assert filters == expected
-    
+
     def test_build_search_filters_partial(self):
         """Тест построения частичных фильтров поиска"""
-        filters = SearchUtils.build_search_filters(
-            salary_from=50000,
-            employment="Полная занятость"
-        )
-        
-        expected = {
-            'salary_from': 50000,
-            'employment': "Полная занятость"
-        }
-        
+        filters = SearchUtils.build_search_filters(salary_from=50000, employment="Полная занятость")
+
+        expected = {"salary_from": 50000, "employment": "Полная занятость"}
+
         assert filters == expected
-    
+
     def test_build_search_filters_empty(self):
         """Тест построения пустых фильтров поиска"""
         filters = SearchUtils.build_search_filters()
         assert filters == {}
-    
+
     def test_build_search_filters_none_values(self):
         """Тест построения фильтров с None значениями"""
         filters = SearchUtils.build_search_filters(
-            salary_from=None,
-            salary_to=100000,
-            experience=None,
-            employment="",
-            area=None
+            salary_from=None, salary_to=100000, experience=None, employment="", area=None
         )
-        
-        expected = {
-            'salary_to': 100000,
-            'employment': ""
-        }
-        
+
+        expected = {"salary_to": 100000, "employment": ""}
+
         assert filters == expected
-    
+
     def test_calculate_relevance_basic(self):
         """Тест базового расчета релевантности"""
         text = "Python developer with Django experience"
         keywords = ["python", "django"]
-        
+
         relevance = SearchUtils.calculate_relevance(text, keywords)
         assert relevance > 0
         assert isinstance(relevance, float)
-    
+
     def test_calculate_relevance_no_matches(self):
         """Тест расчета релевантности без совпадений"""
         text = "Java developer with Spring experience"
         keywords = ["python", "django"]
-        
+
         relevance = SearchUtils.calculate_relevance(text, keywords)
         assert relevance == 0.0
-    
+
     def test_calculate_relevance_multiple_matches(self):
         """Тест расчета релевантности с множественными совпадениями"""
         text = "Python Python developer with Python experience"
         keywords = ["python"]
-        
+
         relevance = SearchUtils.calculate_relevance(text, keywords)
         assert relevance > 0
-    
+
     def test_calculate_relevance_empty_inputs(self):
         """Тест расчета релевантности с пустыми входными данными"""
         assert SearchUtils.calculate_relevance("", ["python"]) == 0.0
         assert SearchUtils.calculate_relevance("Python developer", []) == 0.0
         assert SearchUtils.calculate_relevance("", []) == 0.0
-    
+
     def test_calculate_relevance_case_insensitive(self):
         """Тест регистронезависимого расчета релевантности"""
         text = "PYTHON Developer with DJANGO experience"
         keywords = ["python", "django"]
-        
+
         relevance = SearchUtils.calculate_relevance(text, keywords)
         assert relevance > 0
-    
+
     def test_calculate_relevance_max_value(self):
         """Тест максимального значения релевантности"""
         # Короткий текст с множественными совпадениями
         text = "python python python"
         keywords = ["python"]
-        
+
         relevance = SearchUtils.calculate_relevance(text, keywords)
         assert relevance <= 100.0
-    
+
     def test_calculate_relevance_precision(self):
         """Тест точности расчета релевантности"""
         text = "python developer"  # 2 слова
         keywords = ["python"]  # 1 совпадение
-        
+
         # Ожидается: 1/2 * 100 = 50.0
         relevance = SearchUtils.calculate_relevance(text, keywords)
         assert relevance == 50.0
-    
+
     def test_integration_search_workflow(self):
         """Тест интегрированного рабочего процесса поиска"""
         # Нормализация запроса
         query = "  Python Developer  "
         normalized = SearchUtils.normalize_query(query)
         assert normalized == "python developer"
-        
+
         # Извлечение ключевых слов
         keywords = SearchUtils.extract_keywords(normalized)
         assert keywords == ["python", "developer"]
-        
+
         # Проверка соответствия
         vacancy_text = "Senior Python Developer with 5 years experience"
         matches = SearchUtils.match_keywords(vacancy_text, keywords, match_all=True)
         assert matches is True
-        
+
         # Расчет релевантности
         relevance = SearchUtils.calculate_relevance(vacancy_text, keywords)
         assert relevance > 0
-        
+
         # Построение фильтров
-        filters = SearchUtils.build_search_filters(
-            salary_from=100000,
-            experience="от 3 лет"
-        )
-        assert filters == {
-            'salary_from': 100000,
-            'experience': "от 3 лет"
-        }
+        filters = SearchUtils.build_search_filters(salary_from=100000, experience="от 3 лет")
+        assert filters == {"salary_from": 100000, "experience": "от 3 лет"}
 
         if experience:
-            filters['experience'] = experience
+            filters["experience"] = experience
         if employment:
-            filters['employment'] = employment
+            filters["employment"] = employment
         if area:
-            filters['area'] = area
+            filters["area"] = area
 
         return filters
 
@@ -361,7 +341,6 @@ class TestSearchUtils:
         assert SearchUtils.match_keywords("   ", ["Python"]) is False
         assert SearchUtils.match_keywords("Python", []) is False
 
-
     def test_format_search_results(self):
         """Тест форматирования результатов поиска"""
         # В данном случае, так как SearchUtils не имеет метода format_search_results,
@@ -373,14 +352,14 @@ class TestSearchUtils:
             url="https://test.com/1",
             vacancy_id="1",
             requirements="Python, Django",
-            source="test"
+            source="test",
         )
         vacancy2 = Vacancy(
             title="Java Developer",
             url="https://test.com/2",
             vacancy_id="2",
             requirements="Java, Spring",
-            source="test"
+            source="test",
         )
         vacancies = [vacancy1, vacancy2]
 
@@ -388,7 +367,6 @@ class TestSearchUtils:
         assert SearchUtils.match_keywords(vacancy1.title, ["Python"]) is True
         assert SearchUtils.match_keywords(vacancy2.title, ["Python"]) is False
         assert SearchUtils.match_keywords(vacancy1.requirements, ["Django"]) is True
-
 
     def test_search_query_filtering(self):
         """Тест фильтрации поисковых запросов"""
@@ -401,13 +379,13 @@ class TestSearchUtils:
         # AND оператор (в текущей реализации extract_keywords просто разбивает по пробелам)
         keywords = SearchUtils.extract_keywords("Python AND Django")
         assert "python" in keywords
-        assert "and" in keywords # 'AND' будет нормализовано в 'and'
+        assert "and" in keywords  # 'AND' будет нормализовано в 'and'
         assert "django" in keywords
 
         # OR оператор
         keywords = SearchUtils.extract_keywords("Python OR Java")
         assert "python" in keywords
-        assert "or" in keywords # 'OR' будет нормализовано в 'or'
+        assert "or" in keywords  # 'OR' будет нормализовано в 'or'
         assert "java" in keywords
 
     def test_empty_search_handling(self):
@@ -415,15 +393,14 @@ class TestSearchUtils:
         assert SearchUtils.normalize_query("") == ""
         assert SearchUtils.extract_keywords("") == []
         assert SearchUtils.match_keywords("", ["Python"]) is False
-        assert SearchUtils.build_search_filters() == {} # Проверка для build_search_filters
-
+        assert SearchUtils.build_search_filters() == {}  # Проверка для build_search_filters
 
     def test_special_characters_handling(self):
         """Тест обработки специальных символов"""
         # Символы, которые должны быть удалены (в normalize_query нет удаления, только strip и lower)
         # Если требуется удаление, normalize_query должна быть доработана.
         normalized = SearchUtils.normalize_query("C++ / C# Developer")
-        assert "c++ / c# developer" in normalized # Ожидаемое поведение normalize_query
+        assert "c++ / c# developer" in normalized  # Ожидаемое поведение normalize_query
 
         # Сохранение важных символов
         keywords = SearchUtils.extract_keywords("React.js Vue.js")
@@ -486,7 +463,7 @@ class TestSearchUtils:
             url="https://test.com/1",
             vacancy_id="1",
             requirements="Python, Django",
-            source="test"
+            source="test",
         )
 
         vacancy2 = Vacancy(
@@ -494,7 +471,7 @@ class TestSearchUtils:
             url="https://test.com/2",
             vacancy_id="2",
             requirements="Java, Spring",
-            source="test"
+            source="test",
         )
 
         vacancies = [vacancy1, vacancy2]
@@ -506,7 +483,9 @@ class TestSearchUtils:
         assert filtered[0].title == "Python Developer"
 
         # Фильтруем по несуществующему ключевому слову
-        filtered = [v for v in vacancies if SearchUtils.match_keywords(v.title + " " + v.requirements, ["NonExistent"])]
+        filtered = [
+            v for v in vacancies if SearchUtils.match_keywords(v.title + " " + v.requirements, ["NonExistent"])
+        ]
         assert len(filtered) == 0
 
     def test_vacancy_contains_keyword(self):
@@ -516,7 +495,7 @@ class TestSearchUtils:
             url="https://test.com/1",
             vacancy_id="1",
             requirements="Experience with Python and Django",
-            source="test"
+            source="test",
         )
 
         # Ключевое слово в заголовке
