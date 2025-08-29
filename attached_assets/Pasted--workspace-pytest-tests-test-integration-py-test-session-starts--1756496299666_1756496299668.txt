@@ -1,0 +1,369 @@
+~/workspace$ pytest tests/test_integration.py
+============================ test session starts ============================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace/tests
+configfile: pytest.ini
+plugins: mock-3.14.1, cov-6.2.1
+collected 11 items                                                          
+
+tests/test_integration.py F..FF.F..FF                                 [100%]
+
+================================= FAILURES ==================================
+__________ TestStorageIntegration.test_postgres_saver_integration ___________
+
+self = <tests.test_integration.TestStorageIntegration object at 0x7f14c6bb3dd0>
+mock_connect = <MagicMock name='connect' id='139727202079568'>
+sample_vacancy = <src.vacancies.models.Vacancy object at 0x7f14c7aea820>
+
+    @patch("psycopg2.connect")
+    def test_postgres_saver_integration(self, mock_connect, sample_vacancy):
+        """Тест интеграции с PostgreSQL"""
+        # Настраиваем мок подключения
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_cursor.rowcount = 1
+        mock_cursor.fetchall.return_value = []
+        mock_cursor.fetchone.return_value = (0,)
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_conn
+    
+        # Создаем хранилище и тестируем операции
+>       storage = PostgresSaver()
+                  ^^^^^^^^^^^^^^^
+
+tests/test_integration.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/storage/postgres_saver.py:80: in __init__
+    self._ensure_tables_exist()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7f14c6fa81d0>
+
+    def _ensure_tables_exist(self):
+        """Создает таблицы если они не существуют"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+    
+            # Устанавливаем кодировку сессии
+            cursor.execute("SET client_encoding TO 'UTF8'")
+    
+            # Сначала создаем таблицу companies если её нет
+            self._ensure_companies_table_exists()
+    
+            # Создаем таблицу для вакансий с базовой структурой
+            create_table_query = """
+            CREATE TABLE IF NOT EXISTS vacancies (
+                id SERIAL PRIMARY KEY,
+                vacancy_id VARCHAR(50) UNIQUE NOT NULL,
+                title VARCHAR(500) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """
+    
+            cursor.execute(create_table_query)
+            logger.info("✓ Базовая структура таблицы vacancies проверена")
+    
+            # Список всех полей, которые должны быть в таблице vacancies
+            required_fields = [
+                ("url", "TEXT"),
+                ("salary_from", "INTEGER"),
+                ("salary_to", "INTEGER"),
+                ("salary_currency", "VARCHAR(10)"),
+                ("description", "TEXT"),
+                ("requirements", "TEXT"),
+                ("responsibilities", "TEXT"),
+                ("experience", "VARCHAR(200)"),
+                ("employment", "VARCHAR(200)"),
+                ("schedule", "VARCHAR(200)"),
+                ("area", "VARCHAR(200)"),
+                ("source", "VARCHAR(50) DEFAULT 'unknown'"),
+                ("published_at", "TIMESTAMP"),
+                ("company_id", "INTEGER"),
+            ]
+    
+            # Проверяем и добавляем недостающие поля
+            for field_name, field_type in required_fields:
+                cursor.execute(
+                    """
+                    SELECT column_name, data_type
+                    FROM information_schema.columns
+                    WHERE table_name = 'vacancies' AND column_name = %s;
+                """,
+                    (field_name,),
+                )
+    
+                field_info = cursor.fetchone()
+                if not field_info:
+                    logger.info(f"Добавляем поле {field_name} в таблицу vacancies...")
+                    cursor.execute(f"ALTER TABLE vacancies ADD COLUMN {field_name} {field_type};")
+                    logger.info(f"✓ Поле {field_name} добавлено")
+>               elif field_name == "company_id" and field_info[1] not in ("integer", "bigint"):
+                                                    ^^^^^^^^^^^^^
+E               IndexError: tuple index out of range
+
+src/storage/postgres_saver.py:320: IndexError
+_________ TestFullWorkflowIntegration.test_search_and_save_workflow _________
+
+self = <tests.test_integration.TestFullWorkflowIntegration object at 0x7f14c63dc1d0>
+mock_connect_api = <MagicMock name='_CachedAPI__connect_to_api' id='139727197921936'>
+mock_connect_db = <MagicMock name='connect' id='139727197927696'>
+sample_vacancy = <src.vacancies.models.Vacancy object at 0x7f14c8b0b860>
+
+    @patch("psycopg2.connect")
+    @patch("src.api_modules.hh_api.HeadHunterAPI._CachedAPI__connect_to_api")
+    def test_search_and_save_workflow(self, mock_connect_api, mock_connect_db, sample_vacancy):
+        """Тест полного процесса поиска и сохранения"""
+        # Настраиваем мок для API
+        mock_connect_api.return_value = {
+            "items": [
+                {
+                    "id": "789",
+                    "name": "Integration Test Job",
+                    "alternate_url": "https://hh.ru/vacancy/789",
+                    "employer": {"name": "Integration Company"},
+                    "published_at": "2024-01-01T00:00:00+03:00",
+                    "source": "hh.ru",
+                }
+            ],
+            "found": 1,
+            "pages": 1,
+        }
+    
+        # Настраиваем мок для базы данных
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_cursor.rowcount = 1
+        mock_cursor.fetchall.return_value = []
+        mock_cursor.fetchone.return_value = (0,)
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect_db.return_value = mock_conn
+    
+        # Выполняем поиск
+        api = HeadHunterAPI()
+        vacancies_data = api.get_vacancies(search_query="python")
+    
+        # Конвертируем в объекты Vacancy
+        vacancies = [Vacancy.from_dict(item) for item in vacancies_data]
+    
+        # Сохраняем результаты
+>       storage = PostgresSaver()
+                  ^^^^^^^^^^^^^^^
+
+tests/test_integration.py:182: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/storage/postgres_saver.py:80: in __init__
+    self._ensure_tables_exist()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7f14c5ff9f50>
+
+    def _ensure_tables_exist(self):
+        """Создает таблицы если они не существуют"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+    
+            # Устанавливаем кодировку сессии
+            cursor.execute("SET client_encoding TO 'UTF8'")
+    
+            # Сначала создаем таблицу companies если её нет
+            self._ensure_companies_table_exists()
+    
+            # Создаем таблицу для вакансий с базовой структурой
+            create_table_query = """
+            CREATE TABLE IF NOT EXISTS vacancies (
+                id SERIAL PRIMARY KEY,
+                vacancy_id VARCHAR(50) UNIQUE NOT NULL,
+                title VARCHAR(500) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """
+    
+            cursor.execute(create_table_query)
+            logger.info("✓ Базовая структура таблицы vacancies проверена")
+    
+            # Список всех полей, которые должны быть в таблице vacancies
+            required_fields = [
+                ("url", "TEXT"),
+                ("salary_from", "INTEGER"),
+                ("salary_to", "INTEGER"),
+                ("salary_currency", "VARCHAR(10)"),
+                ("description", "TEXT"),
+                ("requirements", "TEXT"),
+                ("responsibilities", "TEXT"),
+                ("experience", "VARCHAR(200)"),
+                ("employment", "VARCHAR(200)"),
+                ("schedule", "VARCHAR(200)"),
+                ("area", "VARCHAR(200)"),
+                ("source", "VARCHAR(50) DEFAULT 'unknown'"),
+                ("published_at", "TIMESTAMP"),
+                ("company_id", "INTEGER"),
+            ]
+    
+            # Проверяем и добавляем недостающие поля
+            for field_name, field_type in required_fields:
+                cursor.execute(
+                    """
+                    SELECT column_name, data_type
+                    FROM information_schema.columns
+                    WHERE table_name = 'vacancies' AND column_name = %s;
+                """,
+                    (field_name,),
+                )
+    
+                field_info = cursor.fetchone()
+                if not field_info:
+                    logger.info(f"Добавляем поле {field_name} в таблицу vacancies...")
+                    cursor.execute(f"ALTER TABLE vacancies ADD COLUMN {field_name} {field_type};")
+                    logger.info(f"✓ Поле {field_name} добавлено")
+>               elif field_name == "company_id" and field_info[1] not in ("integer", "bigint"):
+                                                    ^^^^^^^^^^^^^
+E               IndexError: tuple index out of range
+
+src/storage/postgres_saver.py:320: IndexError
+--------------------------- Captured stderr call ----------------------------
+Fetching pages: 100%|██████████| 1/1 [00:00<00:00, 6000.43page/s, vacancies=1]
+________________ TestCacheIntegration.test_cache_integration ________________
+
+self = <tests.test_integration.TestCacheIntegration object at 0x7f14c63dc9d0>
+mock_json_load = <MagicMock name='load' id='139727193595792'>
+mock_json_dump = <MagicMock name='dump' id='139727192825232'>
+mock_open = <MagicMock name='open' id='139727197516176'>
+mock_exists = <MagicMock name='exists' id='139727197624016'>
+mock_mkdir = <MagicMock name='mkdir' id='139727197957136'>
+mock_cache_dir = '/tmp/pytest-of-runner/pytest-3/test_cache_integration0/cache'
+
+    @patch("pathlib.Path.mkdir")
+    @patch("pathlib.Path.exists")
+    @patch("builtins.open")
+    @patch("json.dump")
+    @patch("json.load")
+    def test_cache_integration(
+        self, mock_json_load, mock_json_dump, mock_open, mock_exists, mock_mkdir, mock_cache_dir
+    ):
+        """Тест интеграции кэширования"""
+        mock_exists.return_value = True
+        mock_json_load.return_value = {
+            "data": {"test": "data"},
+            "meta": {"params": "test_params"},
+            "timestamp": 1234567890,
+        }
+    
+        cache = FileCache(cache_dir=mock_cache_dir)
+    
+        # Тест сохранения в кэш
+        test_data = {"test": "data"}
+        test_params = {"query": "python"}
+        cache.save_response("test", test_params, test_data)
+    
+        # Проверяем, что методы были вызваны
+        mock_open.assert_called()
+        mock_json_dump.assert_called()
+    
+        # Тест загрузки из кэша
+        loaded_data = cache.load_response("test", test_params)
+>       assert loaded_data is not None
+E       assert None is not None
+
+tests/test_integration.py:231: AssertionError
+--------------------------- Captured stderr call ----------------------------
+ERROR:src.utils.cache:Ошибка удаления некорректного файла кэша /tmp/pytest-of-runner/pytest-3/test_cache_integration0/cache/test_86b1300355ead1640ed35bb055aee270.json: [Errno 2] No such file or directory: '/tmp/pytest-of-runner/pytest-3/test_cache_integration0/cache/test_86b1300355ead1640ed35bb055aee270.json'
+----------------------------- Captured log call -----------------------------
+ERROR    src.utils.cache:cache.py:135 Ошибка удаления некорректного файла кэша /tmp/pytest-of-runner/pytest-3/test_cache_integration0/cache/test_86b1300355ead1640ed35bb055aee270.json: [Errno 2] No such file or directory: '/tmp/pytest-of-runner/pytest-3/test_cache_integration0/cache/test_86b1300355ead1640ed35bb055aee270.json'
+_________ TestErrorHandlingIntegration.test_database_error_handling _________
+
+self = <tests.test_integration.TestErrorHandlingIntegration object at 0x7f14c63dd7d0>
+mock_connect = <MagicMock name='connect' id='139727193110416'>
+
+    @patch("psycopg2.connect")
+    def test_database_error_handling(self, mock_connect):
+        """Тест обработки ошибок базы данных"""
+        mock_connect.side_effect = Exception("Database connection error")
+    
+>       storage = PostgresSaver()
+                  ^^^^^^^^^^^^^^^
+
+tests/test_integration.py:254: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/storage/postgres_saver.py:79: in __init__
+    self._ensure_database_exists()
+src/storage/postgres_saver.py:105: in _ensure_database_exists
+    connection = self._get_connection("postgres")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/storage/postgres_saver.py:86: in _get_connection
+    connection = psycopg2.connect(
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1124: in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1128: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <MagicMock name='connect' id='139727193110416'>, args = ()
+kwargs = {'client_encoding': 'utf8', 'database': 'postgres', 'host': 'ep-spring-art-adtv9zhn.c-2.us-east-1.aws.neon.tech', 'password': 'npg_pGNMaSd2ukl9', ...}
+effect = Exception('Database connection error')
+
+    def _execute_mock_call(self, /, *args, **kwargs):
+        # separate from _increment_mock_call so that awaited functions are
+        # executed separately from their call, also AsyncMock overrides this method
+    
+        effect = self.side_effect
+        if effect is not None:
+            if _is_exception(effect):
+>               raise effect
+E               Exception: Database connection error
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1183: Exception
+_____ TestVacancyOperationsIntegration.test_vacancy_operations_filters ______
+
+self = <tests.test_integration.TestVacancyOperationsIntegration object at 0x7f14c63df0d0>
+test_vacancies = [<src.vacancies.models.Vacancy object at 0x7f14c6353d40>, <src.vacancies.models.Vacancy object at 0x7f14c6350c80>, <src.vacancies.models.Vacancy object at 0x7f14c6353ee0>]
+
+    def test_vacancy_operations_filters(self, test_vacancies):
+        """Тест фильтрации вакансий"""
+        ops = VacancyOperations()
+    
+        # Тест фильтрации по зарплате
+        with_salary = ops.get_vacancies_with_salary(test_vacancies)
+        assert len(with_salary) == 2
+    
+        # Тест фильтрации по минимальной зарплате
+        high_salary = ops.filter_vacancies_by_min_salary(test_vacancies, 110000)
+>       assert len(high_salary) == 2
+E       assert 1 == 2
+E        +  where 1 = len([<src.vacancies.models.Vacancy object at 0x7f14c6350c80>])
+
+tests/test_integration.py:352: AssertionError
+______ TestVacancyOperationsIntegration.test_vacancy_operations_search ______
+
+self = <tests.test_integration.TestVacancyOperationsIntegration object at 0x7f14c63dee90>
+test_vacancies = [<src.vacancies.models.Vacancy object at 0x7f14c5b9d090>, <src.vacancies.models.Vacancy object at 0x7f14c5b9cef0>, <src.vacancies.models.Vacancy object at 0x7f14c5b9c6d0>]
+
+    def test_vacancy_operations_search(self, test_vacancies):
+        """Тест поиска вакансий"""
+        ops = VacancyOperations()
+    
+        # Тест поиска по ключевым словам
+        python_vacancies = ops.filter_vacancies_by_multiple_keywords(test_vacancies, ["Python"])
+        assert len(python_vacancies) == 1
+        assert python_vacancies[0].vacancy_id == "1"
+    
+        # Тест расширенного поиска
+        advanced_search = ops.search_vacancies_advanced(test_vacancies, "Python OR Java")
+>       assert len(advanced_search) == 2
+E       assert 3 == 2
+E        +  where 3 = len([<src.vacancies.models.Vacancy object at 0x7f14c5b9d090>, <src.vacancies.models.Vacancy object at 0x7f14c5b9cef0>, <src.vacancies.models.Vacancy object at 0x7f14c5b9c6d0>])
+
+tests/test_integration.py:369: AssertionError
+========================== short test summary info ==========================
+FAILED tests/test_integration.py::TestStorageIntegration::test_postgres_saver_integration - IndexError: tuple index out of range
+FAILED tests/test_integration.py::TestFullWorkflowIntegration::test_search_and_save_workflow - IndexError: tuple index out of range
+FAILED tests/test_integration.py::TestCacheIntegration::test_cache_integration - assert None is not None
+FAILED tests/test_integration.py::TestErrorHandlingIntegration::test_database_error_handling - Exception: Database connection error
+FAILED tests/test_integration.py::TestVacancyOperationsIntegration::test_vacancy_operations_filters - assert 1 == 2
+FAILED tests/test_integration.py::TestVacancyOperationsIntegration::test_vacancy_operations_search - assert 3 == 2
+======================== 6 failed, 5 passed in 0.44s ========================
