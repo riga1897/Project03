@@ -539,10 +539,12 @@ class TestDBManager:
         assert db_manager._is_target_company_match("СБЕР", "СБЕР") is True
         assert db_manager._is_target_company_match("Яндекс", "яндекс") is True
         
-        # Тестируем сопоставления из словаря
+        # Тестируем сопоставления из словаря (используем реальные названия из кода)
         assert db_manager._is_target_company_match("СБЕР", "Сбербанк") is True
         assert db_manager._is_target_company_match("Тинькофф", "Т-Банк") is True
-        assert db_manager._is_target_company_match("VK", "ВКонтакте") is True
+        # VK в методе сопоставляется как "VK (ВКонтакте)" согласно словарю mappings
+        assert db_manager._is_target_company_match("VK (ВКонтакте)", "ВКонтакте") is True
+        assert db_manager._is_target_company_match("VK (ВКонтакте)", "vk") is True
         
         # Тестируем несовпадения
         assert db_manager._is_target_company_match("СБЕР", "Random Company") is False
