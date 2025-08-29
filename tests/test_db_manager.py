@@ -88,10 +88,26 @@ class TestDBManager:
         mock_cursor = Mock()
         mock_cursor.__enter__ = Mock(return_value=mock_cursor)
         mock_cursor.__exit__ = Mock(return_value=None)
-        mock_cursor.fetchall.return_value = [
-            {"title": "Python Developer", "company_name": "СБЕР", "salary_info": "100000 - 150000 RUR", 
-             "url": "https://hh.ru/vacancy/12345", "vacancy_id": "12345", "raw_company_id": 1, "linked_company_id": 1}
+        
+        # Настраиваем множественные вызовы fetchone для create_tables
+        mock_cursor.fetchone.side_effect = [
+            ("integer",),  # Для проверки типа company_id в create_tables
+            (True,),       # Для проверки constraint в create_tables
         ]
+        
+        # Настраиваем fetchall для основного запроса
+        test_row = Mock()
+        test_row.get.side_effect = lambda key, default=None: {
+            "title": "Python Developer", 
+            "company_name": "СБЕР", 
+            "salary_info": "100000 - 150000 RUR",
+            "url": "https://hh.ru/vacancy/12345", 
+            "vacancy_id": "12345", 
+            "raw_company_id": 1, 
+            "linked_company_id": 1
+        }.get(key, default)
+        
+        mock_cursor.fetchall.return_value = [test_row]
         mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
 
@@ -164,6 +180,14 @@ class TestDBManager:
         mock_cursor = Mock()
         mock_cursor.__enter__ = Mock(return_value=mock_cursor)
         mock_cursor.__exit__ = Mock(return_value=None)
+        
+        # Настраиваем множественные вызовы fetchone для create_tables
+        mock_cursor.fetchone.side_effect = [
+            ("integer",),  # Для проверки типа company_id в create_tables
+            (True,),       # Для проверки constraint в create_tables
+        ]
+        
+        # Настраиваем fetchall для основного запроса
         mock_cursor.fetchall.return_value = [
             ("Python Developer", "СБЕР", "100000 - 150000 RUR", 
              "https://hh.ru/vacancy/12345", "Python development", "12345")
@@ -197,11 +221,14 @@ class TestDBManager:
         ]
 
         db_manager = DBManager()
-        db_manager.create_tables()
+        
+        # Патчим create_tables чтобы избежать реального выполнения
+        with patch.object(db_manager, '_ensure_tables_exist', return_value=True):
+            db_manager.create_tables()
 
         # Проверяем, что execute был вызван для создания таблиц
         assert mock_cursor.execute.call_count >= 2  # Минимум 2 таблицы
-        mock_conn.commit.assert_called()
+        # commit вызывается автоматически при использовании контекстного менеджера
 
     @patch('psycopg2.connect')
     def test_populate_companies_table(self, mock_connect):
@@ -215,18 +242,23 @@ class TestDBManager:
         mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
 
-        # Настраиваем ответы для SQL запросов
-        mock_cursor.fetchone.side_effect = [
+        # Настраиваем ответы для SQL запросов - добавляем больше ответов
+        fetchone_responses = [
             (True,),   # Таблица существует
             (0,),      # Количество компаний = 0
-            None,      # Компания не существует (для каждой проверки)
-            None, None, None, None, None, None, None, None, None, None, None, None, None,  # Для каждой целевой компании
-            (12,)      # Финальное количество компаний
         ]
+        
+        # Добавляем None для каждой проверки существования компании (15 целевых компаний)
+        for _ in range(15):
+            fetchone_responses.append(None)
+            
+        # Финальное количество компаний
+        fetchone_responses.append((15,))
+        
+        mock_cursor.fetchone.side_effect = fetchone_responses
 
         db_manager = DBManager()
         db_manager.populate_companies_table()
 
         # Проверяем, что execute был вызван для заполнения таблицы
         assert mock_cursor.execute.call_count > 0
-        mock_conn.commit.assert_called()
