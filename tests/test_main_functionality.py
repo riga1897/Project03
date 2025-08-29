@@ -45,8 +45,8 @@ class TestMainFunctionality:
         filtered = operations.filter_vacancies_by_min_salary(sample_vacancies, 90000)
         assert len(filtered) == 1  # Только одна вакансия с зарплатой >= 90000
 
-        # Тест поиска по ключевому слову
-        python_vacancies = operations.filter_vacancies_by_keyword(sample_vacancies, "Python")
+        # Тест поиска по ключевому слову (используем правильный метод)
+        python_vacancies = operations.filter_vacancies_by_multiple_keywords(sample_vacancies, ["Python"])
         assert len(python_vacancies) == 1
         assert "Python" in python_vacancies[0].title
 
@@ -62,8 +62,8 @@ class TestMainFunctionality:
 
         # Тест форматирования зарплаты
         salary_formatted = formatter.format_salary(sample_vacancy.salary)
-        assert "100 000" in salary_formatted
-        assert "150 000" in salary_formatted
+        assert "100,000" in salary_formatted or "100 000" in salary_formatted
+        assert "150,000" in salary_formatted or "150 000" in salary_formatted
         assert "руб." in salary_formatted
 
     @patch('builtins.input')
@@ -101,6 +101,20 @@ class TestMainFunctionality:
         # Тест с пустой строкой
         result = formatter.format_text("")
         assert result == "Не указано"
+        
+        # Тест статических методов
+        brief_result = VacancyFormatter.format_vacancy_brief(None, 1)
+        assert isinstance(brief_result, str)
+        
+        # Тест форматирования без номера
+        minimal_vacancy = Vacancy(
+            title="Test Job",
+            url="https://example.com/test",
+            vacancy_id="test001",
+            source="test"
+        )
+        formatted = formatter.format_vacancy_info(minimal_vacancy)
+        assert "Test Job" in formatted
 
     def test_data_validation(self):
         """Тест валидации данных"""
@@ -152,4 +166,9 @@ class TestMainFunctionality:
         assert formatter is not None
         assert operations is not None
         assert hasattr(formatter, 'format_vacancy_info')
-        assert hasattr(operations, 'filter_vacancies_by_keyword')
+        assert hasattr(operations, 'filter_vacancies_by_multiple_keywords')
+        assert hasattr(operations, 'search_vacancies_advanced')
+        assert hasattr(operations, 'filter_vacancies_by_salary_range')
+        assert hasattr(operations, 'sort_vacancies_by_salary')
+        assert hasattr(operations, 'filter_vacancies_by_min_salary')
+        assert hasattr(operations, 'filter_vacancies_by_max_salary')

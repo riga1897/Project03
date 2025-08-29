@@ -1,4 +1,3 @@
-
 """
 Конфигурация pytest и фикстуры для тестов
 
@@ -18,24 +17,20 @@ from src.utils.salary import Salary
 
 @pytest.fixture
 def sample_vacancy():
-    """Фикстура с образцом тестовой вакансии для использования в тестах"""
+    """Фикстура с тестовой вакансией"""
     return Vacancy(
         title="Python Developer",
-        url="https://hh.ru/vacancy/12345",
-        salary={
-            "from": 100000,
-            "to": 150000,
-            "currency": "RUR"
-        },
-        description="Test description",
-        requirements="Python, Django",
-        responsibilities="Development",
-        experience="От 1 года до 3 лет",
+        url="https://example.com/vacancy/12345",
+        salary={"from": 100000, "to": 150000, "currency": "RUR"},
+        description="Разработка веб-приложений на Python",
+        requirements="Знание Python, Django, PostgreSQL",
+        responsibilities="Разработка и поддержка веб-сервисов",
+        experience="От 3 до 6 лет",
         employment="Полная занятость",
         schedule="Полный день",
         employer={"name": "Test Company"},
         vacancy_id="12345",
-        published_at="2024-01-01T00:00:00",
+        published_at="2024-01-15T10:00:00",
         source="hh.ru"
     )
 
