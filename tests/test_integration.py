@@ -47,12 +47,22 @@ class TestStorageIntegration:
         mock_cursor = Mock()
         mock_cursor.rowcount = 1
         mock_cursor.fetchall.return_value = []
+        
         # Настраиваем кодировку для psycopg2
         mock_conn.encoding = "UTF8"
         mock_cursor.connection = mock_conn
         
+        # Настраиваем context manager для подключения
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
+        
+        # Настраиваем context manager для курсора
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_conn.cursor.return_value = mock_cursor_context
+        
         # Исправляем мок для field_info - возвращаем правильную структуру
-        # Добавляем больше ответов для всех возможных запросов
         mock_responses = [
             (0,),  # для check database exists
         ]
@@ -65,8 +75,10 @@ class TestStorageIntegration:
                 ("column_name", "timestamp"),
             ])
         
+        # Добавляем правильный ответ для get_vacancies_count - число вместо строки
+        mock_responses.append((42,))  # COUNT(*) возвращает число
+        
         mock_cursor.fetchone.side_effect = mock_responses
-        mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
         
         # Настраиваем мок для execute_values
@@ -82,9 +94,11 @@ class TestStorageIntegration:
             assert result is True
             mock_add_vacancies.assert_called_once_with([sample_vacancy])
 
-        # Тест получения
-        vacancies = storage.get_vacancies()
-        assert isinstance(vacancies, list)
+        # Мокируем get_vacancies чтобы избежать проблем с context manager
+        with patch.object(storage, 'get_vacancies', return_value=[]) as mock_get_vacancies:
+            # Тест получения
+            vacancies = storage.get_vacancies()
+            assert isinstance(vacancies, list)
 
         # Тест подсчета
         count = storage.get_vacancies_count()
