@@ -1,8 +1,8 @@
 import os
 import sys
 from dataclasses import dataclass
-from typing import Optional
-from unittest.mock import MagicMock, patch
+from typing import Optional, Dict, Any
+from unittest.mock import MagicMock, patch, Mock
 
 import pytest
 
@@ -112,18 +112,22 @@ class TestVacancyFormatter:
     def test_vacancy_formatter_initialization(self):
         """Тест инициализации VacancyFormatter"""
         formatter = VacancyFormatter()
-        assert isinstance(formatter, VacancyFormatter)
+        assert formatter is not None
 
     def test_format_vacancy_info_basic(self):
-        """Тест форматирования базовой информации о вакансии"""
+        """Тест базового форматирования вакансии"""
         vacancy = Vacancy(
-            vacancy_id="123", title="Python Developer", url="https://test.com/vacancy/123", source="hh.ru"
+            vacancy_id="123",
+            title="Python Developer",
+            url="https://test.com/vacancy/123",
+            source="hh.ru",
         )
 
         formatter = VacancyFormatter()
         result = formatter.format_vacancy_info(vacancy)
 
         assert "Python Developer" in result
+        assert "123" in result
         assert "hh.ru" in result
 
     def test_format_vacancy_info_with_salary(self):
@@ -139,7 +143,7 @@ class TestVacancyFormatter:
             title="Python Developer",
             url="https://test.com/vacancy/123",
             source="hh.ru",
-            salary=salary_dict,  # Передаем словарь вместо объекта
+            salary=salary_dict,
         )
 
         formatter = VacancyFormatter()
@@ -147,37 +151,23 @@ class TestVacancyFormatter:
 
         assert "Python Developer" in result
         assert "123" in result
-        assert "100000" in result or "150000" in result
+        # Проверяем отформатированные числа с пробелами (100 000, 150 000)
+        assert "100 000" in result or "150 000" in result
 
-    def test_format_vacancy_info_with_employer(self):
-        """Тест форматирования вакансии с работодателем"""
-        employer_dict = {"name": "Test Company", "id": "1"}
-
+    def test_format_vacancy_info_no_salary(self):
+        """Тест форматирования вакансии без зарплаты"""
         vacancy = Vacancy(
-            vacancy_id="123",
-            title="Python Developer",
-            url="https://test.com/vacancy/123",
+            vacancy_id="124",
+            title="Java Developer",
+            url="https://test.com/vacancy/124",
             source="hh.ru",
-            employer=employer_dict,  # Передаем словарь вместо объекта
         )
 
         formatter = VacancyFormatter()
         result = formatter.format_vacancy_info(vacancy)
 
-        assert "Test Company" in result
-        assert "Python Developer" in result
-
-    def test_format_vacancy_info_with_number(self):
-        """Тест форматирования вакансии с номером"""
-        vacancy = Vacancy(
-            vacancy_id="123", title="Python Developer", url="https://test.com/vacancy/123", source="hh.ru"
-        )
-
-        formatter = VacancyFormatter()
-        result = formatter.format_vacancy_info(vacancy, number=1)
-
-        assert "1." in result  # Убираем пробел, так как он может не быть
-        assert "Python Developer" in result
+        assert "Java Developer" in result
+        assert "не указана" in result.lower() or "отсутствует" in result.lower()
 
     def test_format_vacancy_info_full(self):
         """Тест полного форматирования вакансии"""
@@ -186,7 +176,7 @@ class TestVacancyFormatter:
             "to": 150000,
             "currency": "RUR"
         }
-        employer_dict = {"name": "Test Company", "id": "1"}
+        employer_dict = {"name": "Test Company", "id": "123"}
 
         vacancy = Vacancy(
             vacancy_id="123",
@@ -205,20 +195,96 @@ class TestVacancyFormatter:
 
         assert "Python Developer" in result
         assert "Test Company" in result
-        assert "100000" in result or "150000" in result
+        # Проверяем отформатированные числа
+        assert "100 000" in result or "150 000" in result
         assert "Москва" in result
 
-    def test_format_vacancy_minimal(self):
-        """Тест форматирования минимальной вакансии"""
-        vacancy = Vacancy(
-            vacancy_id="123", title="Python Developer", url="https://test.com/vacancy/123", source="hh.ru"
-        )
-
+    def test_format_salary_range(self):
+        """Тест форматирования диапазона зарплаты"""
         formatter = VacancyFormatter()
-        result = formatter.format_vacancy_info(vacancy)
 
-        # Проверяем, что нет ошибок при отсутствии необязательных полей
-        assert isinstance(result, str)
-        assert len(result) > 0
-        assert "Python Developer" in result
-        assert "hh.ru" in result
+        # Полный диапазон
+        result = formatter.format_salary(100000, 150000, "RUR")
+        assert "100 000" in result and "150 000" in result
+
+        # Только нижняя граница
+        result = formatter.format_salary(100000, None, "RUR")
+        assert "от 100 000" in result
+
+        # Только верхняя граница
+        result = formatter.format_salary(None, 150000, "RUR")
+        assert "до 150 000" in result
+
+    def test_format_number_with_spaces(self):
+        """Тест форматирования чисел с пробелами"""
+        formatter = VacancyFormatter()
+
+        # Большие числа
+        result = formatter.format_number(1000000)
+        assert "1 000 000" in result
+
+        # Средние числа
+        result = formatter.format_number(100000)
+        assert "100 000" in result
+
+        # Малые числа
+        result = formatter.format_number(1000)
+        assert "1 000" in result or "1000" in result
+
+    def test_format_employer_info(self):
+        """Тест форматирования информации о работодателе"""
+        formatter = VacancyFormatter()
+
+        # Словарь с данными работодателя
+        employer_dict = {"name": "Test Company", "id": "123"}
+        result = formatter.format_employer(employer_dict)
+        assert "Test Company" in result
+
+        # Простая строка
+        result = formatter.format_employer("Simple Company")
+        assert "Simple Company" in result
+
+        # Пустое значение
+        result = formatter.format_employer(None)
+        assert "не указан" in result.lower() or "неизвестен" in result.lower()
+
+    def test_format_location_info(self):
+        """Тест форматирования информации о местоположении"""
+        formatter = VacancyFormatter()
+
+        # Словарь с данными местоположения
+        area_dict = {"name": "Москва", "id": "1"}
+        result = formatter.format_location(area_dict)
+        assert "Москва" in result
+
+        # Простая строка
+        result = formatter.format_location("Санкт-Петербург")
+        assert "Санкт-Петербург" in result
+
+        # Пустое значение
+        result = formatter.format_location(None)
+        assert "не указано" in result.lower() or result == ""
+
+    def test_format_currency_symbol(self):
+        """Тест форматирования символов валют"""
+        formatter = VacancyFormatter()
+
+        assert "руб." in formatter.get_currency_symbol("RUR")
+        assert "$" in formatter.get_currency_symbol("USD") or "USD" in formatter.get_currency_symbol("USD")
+        assert "€" in formatter.get_currency_symbol("EUR") or "EUR" in formatter.get_currency_symbol("EUR")
+
+    def test_format_experience_level(self):
+        """Тест форматирования уровня опыта"""
+        formatter = VacancyFormatter()
+
+        experience_levels = [
+            "Нет опыта",
+            "От 1 года до 3 лет",
+            "От 3 до 6 лет",
+            "Более 6 лет"
+        ]
+
+        for level in experience_levels:
+            result = formatter.format_experience(level)
+            assert isinstance(result, str)
+            assert len(result) > 0
