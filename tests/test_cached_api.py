@@ -42,7 +42,7 @@ class TestCachedAPI:
         mock_cache_instance = Mock()
         mock_file_cache.return_value = mock_cache_instance
 
-        api = TestCachedAPIImplementation()
+        api = CachedAPIImplementation()
         assert hasattr(api, "cache")
 
     @patch("src.utils.cache.FileCache")
@@ -51,15 +51,15 @@ class TestCachedAPI:
         mock_cache_instance = Mock()
         mock_file_cache.return_value = mock_cache_instance
 
-        api = TestCachedAPIImplementation()
+        api = CachedAPIImplementation()
         assert api.cache is not None
 
     @patch("src.utils.cache.FileCache")
     def test_cached_api_abstract_methods(self, mock_file_cache):
         """Тест абстрактных методов CachedAPI"""
-        api = TestCachedAPIImplementation()
+        api = CachedAPIImplementation()
 
-        # Тестируем что абстрактные методы реализованы
+        # Проверяем что абстрактные методы реализованы
         empty_response = api._get_empty_response()
         assert isinstance(empty_response, dict)
 
@@ -74,7 +74,7 @@ class TestCachedAPI:
         mock_cache_instance.set.return_value = None
         mock_file_cache.return_value = mock_cache_instance
 
-        api = TestCachedAPIImplementation()
+        api = CachedAPIImplementation()
 
         # Проверяем что кэш используется
         assert api.cache is not None
@@ -86,7 +86,7 @@ class TestCachedAPI:
         mock_cache_instance.clear.return_value = None
         mock_file_cache.return_value = mock_cache_instance
 
-        api = TestCachedAPIImplementation()
+        api = CachedAPIImplementation()
 
         # Мокаем cache атрибут
         api.cache = mock_cache_instance

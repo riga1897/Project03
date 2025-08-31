@@ -7,7 +7,16 @@ import pytest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
-from src.vacancies.models import Vacancy, VacancySalary
+from src.vacancies.models import Vacancy
+
+# Создаем тестовый класс VacancySalary
+class VacancySalary:
+    """Тестовый класс зарплаты вакансии"""
+    
+    def __init__(self, from_amount=None, to_amount=None, currency="RUR"):
+        self.from_amount = from_amount
+        self.to_amount = to_amount
+        self.currency = currency
 
 
 class TestVacancyOperationsCoordinator:

@@ -66,9 +66,6 @@ class TestSuperJobAPI:
         # Этот метод не существует в реальном API, пропускаем тест
         pass
 
-            assert result is not None
-            mock_get.assert_called()
-
     def test_api_key_validation(self):
         """Тест валидации API ключа"""
         with patch.dict(os.environ, {'SUPERJOB_API_KEY': 'test_key'}):

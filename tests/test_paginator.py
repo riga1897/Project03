@@ -111,8 +111,7 @@ class TestPaginator:
         paginator = Paginator(items, per_page=2)
         assert paginator is not None
         assert paginator.total_items == 3
-            assert paginator.pages == 2
-
+        assert paginator.pages == 2
 
     @patch('builtins.input', side_effect=['n', 'q'])
     @patch('builtins.print')
@@ -128,4 +127,4 @@ class TestPaginator:
         paginator = Paginator(items, per_page=5)
         assert paginator is not None
         assert paginator.total_items == 20
-            assert paginator.pages == 4
+        assert paginator.pages == 4
