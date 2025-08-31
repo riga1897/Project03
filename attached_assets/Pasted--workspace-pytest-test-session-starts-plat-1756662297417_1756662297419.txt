@@ -1,0 +1,86 @@
+~/workspace$ pytest
+========================== test session starts ==========================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: mock-3.14.1, cov-6.2.1
+collected 271 items / 3 errors                                          
+
+================================ ERRORS =================================
+_______________ ERROR collecting tests/test_paginator.py ________________
+.pythonlibs/lib/python3.11/site-packages/_pytest/python.py:498: in importtestmodule
+    mod = import_path(
+.pythonlibs/lib/python3.11/site-packages/_pytest/pathlib.py:587: in import_path
+    importlib.import_module(module_name)
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1204: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1176: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1147: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+.pythonlibs/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:177: in exec_module
+    source_stat, co = _rewrite_test(fn, self.config)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.pythonlibs/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:357: in _rewrite_test
+    tree = ast.parse(source, filename=strfn)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/ast.py:50: in parse
+    return compile(source, filename, mode, flags,
+E     File "/home/runner/workspace/tests/test_paginator.py", line 114
+E       assert paginator.pages == 2
+E   IndentationError: unexpected indent
+_________________ ERROR collecting tests/test_sj_api.py _________________
+.pythonlibs/lib/python3.11/site-packages/_pytest/python.py:498: in importtestmodule
+    mod = import_path(
+.pythonlibs/lib/python3.11/site-packages/_pytest/pathlib.py:587: in import_path
+    importlib.import_module(module_name)
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1204: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1176: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1147: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+.pythonlibs/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:177: in exec_module
+    source_stat, co = _rewrite_test(fn, self.config)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.pythonlibs/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:357: in _rewrite_test
+    tree = ast.parse(source, filename=strfn)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/ast.py:50: in parse
+    return compile(source, filename, mode, flags,
+E     File "/home/runner/workspace/tests/test_sj_api.py", line 69
+E       assert result is not None
+E   IndentationError: unexpected indent
+_____ ERROR collecting tests/test_vacancy_operations_coordinator.py _____
+ImportError while importing test module '/home/runner/workspace/tests/test_vacancy_operations_coordinator.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_vacancy_operations_coordinator.py:10: in <module>
+    from src.vacancies.models import Vacancy, VacancySalary
+E   ImportError: cannot import name 'VacancySalary' from 'src.vacancies.models' (/home/runner/workspace/tests/../src/vacancies/models.py)
+=========================== warnings summary ============================
+tests/test_cached_api.py:15
+  /home/runner/workspace/tests/test_cached_api.py:15: PytestCollectionWarning: cannot collect test class 'TestCachedAPIImplementation' because it has a __init__ constructor (from: tests/test_cached_api.py)
+    class TestCachedAPIImplementation(CachedAPI):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== short test summary info ========================
+ERROR tests/test_paginator.py
+ERROR tests/test_sj_api.py
+ERROR tests/test_vacancy_operations_coordinator.py
+!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!
+===================== 1 warning, 3 errors in 0.96s ======================
+~/workspace$ 

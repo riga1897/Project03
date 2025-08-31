@@ -1,9 +1,11 @@
-import pytest
-import sys
 import os
-from unittest.mock import Mock, patch
+import sys
 from typing import Any, Optional
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from unittest.mock import Mock, patch
+
+import pytest
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 # Импортируем реальные классы
 try:
@@ -26,8 +28,10 @@ except ImportError:
             """Получение хранилища по умолчанию"""
             return MockPostgresStorage()
 
+
 class MockPostgresStorage:
     """Мок Postgres хранилища"""
+
     def __init__(self):
         self.data = []
         self.connected = True
@@ -49,21 +53,21 @@ class TestStorageFactory:
     def test_storage_factory_initialization(self):
         """Тест инициализации фабрики хранилищ"""
         factory = StorageFactory()
-        assert hasattr(factory, 'create_storage')
+        assert hasattr(factory, "create_storage")
 
-    @patch('src.storage.postgres_saver.PostgresSaver')
+    @patch("src.storage.postgres_saver.PostgresSaver")
     def test_create_postgres_storage(self, mock_postgres_saver):
         """Тест создания PostgreSQL хранилища с моками"""
         mock_storage_instance = Mock()
         mock_postgres_saver.return_value = mock_storage_instance
 
-        with patch('src.config.app_config.AppConfig') as mock_app_config:
+        with patch("src.config.app_config.AppConfig") as mock_app_config:
             mock_config_instance = Mock()
-            mock_config_instance.get_db_config.return_value = {'host': 'localhost'}
+            mock_config_instance.get_db_config.return_value = {"host": "localhost"}
             mock_app_config.return_value = mock_config_instance
 
             factory = StorageFactory()
-            storage = factory.create_storage('postgres')
+            storage = factory.create_storage("postgres")
 
         assert storage == mock_storage_instance
         mock_app_config.assert_called_once()
@@ -73,9 +77,9 @@ class TestStorageFactory:
         """Тест создания неизвестного типа хранилища"""
         factory = StorageFactory()
         with pytest.raises(ValueError, match="Поддерживается только PostgreSQL"):
-            factory.create_storage('unknown_type')
+            factory.create_storage("unknown_type")
 
-    @patch('src.storage.storage_factory.StorageFactory.create_storage')
+    @patch("src.storage.storage_factory.StorageFactory.create_storage")
     def test_get_default_storage(self, mock_create_storage):
         """Тест получения хранилища по умолчанию"""
         mock_storage = Mock()
@@ -94,29 +98,29 @@ class TestStorageFactory:
         # Фабрика не синглтон, но создается корректно
         assert factory1 is not None
         assert factory2 is not None
-        assert hasattr(factory1, 'create_storage')
-        assert hasattr(factory2, 'create_storage')
+        assert hasattr(factory1, "create_storage")
+        assert hasattr(factory2, "create_storage")
 
-    @patch('src.storage.postgres_saver.PostgresSaver')
+    @patch("src.storage.postgres_saver.PostgresSaver")
     def test_create_storage_with_db_config(self, mock_postgres_saver):
         """Тест создания хранилища с конфигурацией БД"""
         mock_storage_instance = Mock()
         mock_postgres_saver.return_value = mock_storage_instance
 
-        with patch('src.config.app_config.AppConfig') as mock_app_config:
+        with patch("src.config.app_config.AppConfig") as mock_app_config:
             mock_config_instance = Mock()
             test_db_config = {
-                'host': 'test_host',
-                'port': '5432',
-                'database': 'test_db',
-                'username': 'test_user',
-                'password': 'test_pass'
+                "host": "test_host",
+                "port": "5432",
+                "database": "test_db",
+                "username": "test_user",
+                "password": "test_pass",
             }
             mock_config_instance.get_db_config.return_value = test_db_config
             mock_app_config.return_value = mock_config_instance
 
             factory = StorageFactory()
-            storage = factory.create_storage('postgres')
+            storage = factory.create_storage("postgres")
 
         assert storage == mock_storage_instance
         mock_config_instance.get_db_config.assert_called_once()
@@ -131,7 +135,7 @@ class TestStorageFactory:
         assert storage.connected is True
 
         # Тест добавления данных
-        test_vacancy = {'id': 1, 'title': 'Test Job'}
+        test_vacancy = {"id": 1, "title": "Test Job"}
         storage.save_vacancy(test_vacancy)
 
         assert storage.get_vacancies_count() == 1
@@ -141,11 +145,11 @@ class TestStorageFactory:
         storage.close()
         assert storage.connected is False
 
-    @patch('src.storage.storage_factory.StorageFactory.create_storage')
+    @patch("src.storage.storage_factory.StorageFactory.create_storage")
     def test_error_handling_in_factory(self, mock_create_storage):
         """Тест обработки ошибок в фабрике"""
         mock_create_storage.side_effect = Exception("Database connection failed")
 
         factory = StorageFactory()
         with pytest.raises(Exception, match="Database connection failed"):
-            factory.create_storage('postgres')
+            factory.create_storage("postgres")

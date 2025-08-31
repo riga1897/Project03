@@ -1,14 +1,15 @@
-
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Добавляем корневую директорию проекта в sys.path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
+
 
 @pytest.fixture
 def mock_db_config():
@@ -18,8 +19,9 @@ def mock_db_config():
         "port": "5432",
         "database": "test_db",
         "username": "test_user",
-        "password": "test_password"
+        "password": "test_password",
     }
+
 
 @pytest.fixture
 def mock_vacancy_data():
@@ -36,5 +38,5 @@ def mock_vacancy_data():
         "description": "Test description with Python",
         "url": "https://test.com/vacancy/123456",
         "alternate_url": "https://test.com/vacancy/123456",
-        "published_at": "2025-01-01T00:00:00+0300"
+        "published_at": "2025-01-01T00:00:00+0300",
     }

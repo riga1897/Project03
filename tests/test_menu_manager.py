@@ -1,8 +1,10 @@
-import pytest
-from unittest.mock import Mock, patch
-import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+import sys
+from unittest.mock import Mock, patch
+
+import pytest
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from src.utils.menu_manager import MenuManager, create_main_menu
 
@@ -13,15 +15,15 @@ class TestMenuManager:
     def test_menu_manager_initialization(self):
         """Тест инициализации MenuManager"""
         manager = MenuManager()
-        assert hasattr(manager, 'show_main_menu') or hasattr(manager, 'display_menu')
+        assert hasattr(manager, "show_main_menu") or hasattr(manager, "display_menu")
 
-    @patch('builtins.print')
+    @patch("builtins.print")
     def test_display_menu(self, mock_print):
         """Тест отображения меню"""
         manager = MenuManager()
 
-        if hasattr(manager, 'show_main_menu'):
-            with patch('builtins.input', return_value='0'):
+        if hasattr(manager, "show_main_menu"):
+            with patch("builtins.input", return_value="0"):
                 manager.show_main_menu()
 
         # Проверяем что менеджер инициализирован
@@ -32,7 +34,7 @@ class TestMenuManager:
         manager = MenuManager()
 
         # Проверяем базовую функциональность
-        assert hasattr(manager, 'show_main_menu') or hasattr(manager, 'display_menu')
+        assert hasattr(manager, "show_main_menu") or hasattr(manager, "display_menu")
 
     def test_get_menu_item_invalid(self):
         """Тест получения невалидного пункта меню"""
@@ -54,16 +56,16 @@ class TestMenuManager:
 
         # Проверяем что менеджер создан и имеет основные атрибуты
         assert manager is not None
-        assert hasattr(manager, '__dict__')
+        assert hasattr(manager, "__dict__")
 
-    @patch('builtins.input', return_value='1')
+    @patch("builtins.input", return_value="1")
     def test_get_user_choice(self, mock_input):
         """Тест получения выбора пользователя"""
         manager = MenuManager()
 
-        if hasattr(manager, 'show_main_menu'):
+        if hasattr(manager, "show_main_menu"):
             choice = manager.show_main_menu()
-            assert choice is not None or choice == '1'
+            assert choice is not None or choice == "1"
 
     def test_add_menu_item(self):
         """Тест добавления пункта меню"""

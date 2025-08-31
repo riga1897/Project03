@@ -1,7 +1,9 @@
-import pytest
-from unittest.mock import Mock, patch
-import sys
 import os
+import sys
+from unittest.mock import Mock, patch
+
+import pytest
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from src.api_modules.sj_api import SuperJobAPI

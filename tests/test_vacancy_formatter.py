@@ -1,14 +1,17 @@
-import pytest
-from unittest.mock import MagicMock, patch
-import sys
 import os
+import sys
 from dataclasses import dataclass
 from typing import Optional
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 try:
     from src.utils.vacancy_formatter import VacancyFormatter
 except ImportError:
+
     class VacancyFormatter:
         def format_vacancy_info(self, vacancy, number=None):
             result = ""
@@ -41,17 +44,19 @@ except ImportError:
 try:
     from src.vacancies.models import Vacancy
 except ImportError:
+
     @dataclass
     class Vacancy:
         vacancy_id: str
         title: str
         url: str
         source: str
-        salary: Optional['VacancySalary'] = None
-        employer: Optional['VacancyEmployer'] = None
+        salary: Optional["VacancySalary"] = None
+        employer: Optional["VacancyEmployer"] = None
         area: Optional[str] = None
         experience: Optional[str] = None
         employment: Optional[str] = None
+
 
 # Создаем тестовые классы для мокирования
 class VacancySalary:
@@ -64,6 +69,7 @@ class VacancySalary:
         if self.from_amount and self.to_amount:
             return f"{self.from_amount} - {self.to_amount} {self.currency}"
         return "Зарплата не указана"
+
 
 class VacancyEmployer:
     def __init__(self, id=None, name=None):
@@ -82,10 +88,7 @@ class TestVacancyFormatter:
     def test_format_vacancy_info_basic(self):
         """Тест форматирования базовой информации о вакансии"""
         vacancy = Vacancy(
-            vacancy_id="123",
-            title="Python Developer",
-            url="https://test.com/vacancy/123",
-            source="hh.ru"
+            vacancy_id="123", title="Python Developer", url="https://test.com/vacancy/123", source="hh.ru"
         )
 
         formatter = VacancyFormatter()
@@ -102,7 +105,7 @@ class TestVacancyFormatter:
             title="Python Developer",
             url="https://test.com/vacancy/123",
             source="hh.ru",
-            salary=salary
+            salary=salary,
         )
 
         formatter = VacancyFormatter()
@@ -118,7 +121,7 @@ class TestVacancyFormatter:
             title="Python Developer",
             url="https://test.com/vacancy/123",
             source="hh.ru",
-            employer=employer
+            employer=employer,
         )
 
         formatter = VacancyFormatter()
@@ -129,10 +132,7 @@ class TestVacancyFormatter:
     def test_format_vacancy_info_with_number(self):
         """Тест форматирования вакансии с номером"""
         vacancy = Vacancy(
-            vacancy_id="123",
-            title="Python Developer",
-            url="https://test.com/vacancy/123",
-            source="hh.ru"
+            vacancy_id="123", title="Python Developer", url="https://test.com/vacancy/123", source="hh.ru"
         )
 
         formatter = VacancyFormatter()
@@ -154,7 +154,7 @@ class TestVacancyFormatter:
             employer=employer,
             area="Москва",
             experience="От 1 года до 3 лет",
-            employment="Полная занятость"
+            employment="Полная занятость",
         )
 
         formatter = VacancyFormatter()
@@ -172,10 +172,7 @@ class TestVacancyFormatter:
     def test_format_vacancy_minimal(self):
         """Тест форматирования минимальной вакансии"""
         vacancy = Vacancy(
-            vacancy_id="123",
-            title="Python Developer",
-            url="https://test.com/vacancy/123",
-            source="hh.ru"
+            vacancy_id="123", title="Python Developer", url="https://test.com/vacancy/123", source="hh.ru"
         )
 
         formatter = VacancyFormatter()

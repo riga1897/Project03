@@ -1,12 +1,16 @@
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+import sys
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
 
 # Создаем тестовые классы для изолированного тестирования
 class MockHeadHunterAPI:
     """Мок HH API"""
+
     def __init__(self):
         pass
 
@@ -16,8 +20,10 @@ class MockHeadHunterAPI:
     def clear_cache(self, source):
         pass
 
+
 class MockSuperJobAPI:
     """Мок SJ API"""
+
     def __init__(self):
         pass
 
@@ -27,13 +33,17 @@ class MockSuperJobAPI:
     def clear_cache(self, source):
         pass
 
+
 class MockSuperJobParser:
     """Мок SJ Parser"""
+
     def __init__(self):
         pass
 
+
 class MockVacancy:
     """Мок Vacancy"""
+
     def __init__(self, data):
         self.data = data
 
@@ -44,13 +54,16 @@ class MockVacancy:
     def to_dict(self):
         return self.data
 
+
 class MockPostgresSaver:
     """Мок PostgresSaver"""
+
     def __init__(self):
         pass
 
     def filter_and_deduplicate_vacancies(self, vacancies, filters):
         return vacancies
+
 
 # Создаем тестовый UnifiedAPI без реальных зависимостей
 class UnifiedAPIForTesting:

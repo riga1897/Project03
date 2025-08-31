@@ -1,12 +1,13 @@
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-import sys
-import os
 import json
-from pathlib import Path
+import os
+import sys
 from abc import ABC
+from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+import pytest
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from src.api_modules.cached_api import CachedAPI
 
@@ -35,16 +36,16 @@ class TestCachedAPIImplementation(CachedAPI):
 class TestCachedAPI:
     """Тесты для CachedAPI с консолидированными моками"""
 
-    @patch('src.utils.cache.FileCache')
+    @patch("src.utils.cache.FileCache")
     def test_cached_api_initialization(self, mock_file_cache):
         """Тест инициализации CachedAPI"""
         mock_cache_instance = Mock()
         mock_file_cache.return_value = mock_cache_instance
 
         api = TestCachedAPIImplementation()
-        assert hasattr(api, 'cache')
+        assert hasattr(api, "cache")
 
-    @patch('src.utils.cache.FileCache')
+    @patch("src.utils.cache.FileCache")
     def test_cached_api_with_cache_manager(self, mock_file_cache):
         """Тест CachedAPI с кэш менеджером"""
         mock_cache_instance = Mock()
@@ -53,7 +54,7 @@ class TestCachedAPI:
         api = TestCachedAPIImplementation()
         assert api.cache is not None
 
-    @patch('src.utils.cache.FileCache')
+    @patch("src.utils.cache.FileCache")
     def test_cached_api_abstract_methods(self, mock_file_cache):
         """Тест абстрактных методов CachedAPI"""
         api = TestCachedAPIImplementation()
@@ -65,7 +66,7 @@ class TestCachedAPI:
         is_valid = api._validate_vacancy({"test": "data"})
         assert isinstance(is_valid, bool)
 
-    @patch('src.utils.cache.FileCache')
+    @patch("src.utils.cache.FileCache")
     def test_cache_integration(self, mock_file_cache):
         """Тест интеграции с кэшем"""
         mock_cache_instance = Mock()
@@ -78,7 +79,7 @@ class TestCachedAPI:
         # Проверяем что кэш используется
         assert api.cache is not None
 
-    @patch('src.utils.cache.FileCache')
+    @patch("src.utils.cache.FileCache")
     def test_clear_cache_method(self, mock_file_cache):
         """Тест метода очистки кэша"""
         mock_cache_instance = Mock()

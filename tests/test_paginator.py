@@ -1,8 +1,10 @@
-import pytest
-from unittest.mock import MagicMock, patch, Mock
-import sys
 import os
-from typing import List, Any, Tuple
+import sys
+from typing import Any, List, Tuple
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 # Создаем тестовые функции и классы для пагинации

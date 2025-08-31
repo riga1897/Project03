@@ -1,5 +1,7 @@
-import pytest
 from unittest.mock import patch
+
+import pytest
+
 from src.config.sj_api_config import SJAPIConfig
 
 
@@ -9,13 +11,13 @@ class TestSJAPIConfig:
     def test_sj_config_initialization(self):
         """Тест инициализации SuperJob API конфигурации"""
         config = SJAPIConfig()
-        assert hasattr(config, 'count') or hasattr(config, 'published')
+        assert hasattr(config, "count") or hasattr(config, "published")
 
     def test_sj_config_urls(self):
         """Тест URL конфигурации"""
         config = SJAPIConfig()
         # Проверяем что есть методы для работы с URL
-        assert hasattr(config, 'get_params') or hasattr(config, 'count')
+        assert hasattr(config, "get_params") or hasattr(config, "count")
 
     def test_sj_config_headers(self):
         """Тест заголовков"""
@@ -32,4 +34,4 @@ class TestSJAPIConfig:
     def test_sj_config_parameters(self):
         """Тест параметров конфигурации"""
         config = SJAPIConfig()
-        assert hasattr(config, 'count') and config.count > 0
+        assert hasattr(config, "count") and config.count > 0

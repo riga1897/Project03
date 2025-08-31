@@ -356,21 +356,18 @@ class Vacancy(AbstractVacancy):
             "experience": self.experience,
             "employment": self.employment,
             "description": self.description,
-            "published_at": self.published_at
+            "published_at": self.published_at,
         }
 
         if self.salary:
             result["salary"] = {
                 "from_amount": self.salary.from_amount,
                 "to_amount": self.salary.to_amount,
-                "currency": self.salary.currency
+                "currency": self.salary.currency,
             }
 
         if self.employer:
-            result["employer"] = {
-                "name": self.employer.name,
-                "url": self.employer.url
-            }
+            result["employer"] = {"name": self.employer.name, "url": self.employer.url}
 
         return result
 

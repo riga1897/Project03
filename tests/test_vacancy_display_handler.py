@@ -1,10 +1,12 @@
-import pytest
-from unittest.mock import MagicMock, patch, Mock
-import sys
 import os
+import sys
 from dataclasses import dataclass
-from typing import Optional, List
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from typing import List, Optional
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 try:
     from src.ui_interfaces.vacancy_display_handler import VacancyDisplayHandler
@@ -25,7 +27,7 @@ except ImportError:
                     print(self.format_vacancy_for_display(vacancy))
 
         def display_vacancies_paginated(self, vacancies):
-            self.display_vacancies(vacancies) # В реальном коде здесь была бы пагинация
+            self.display_vacancies(vacancies)  # В реальном коде здесь была бы пагинация
 
         def format_vacancy_for_display(self, vacancy):
             title = vacancy.title
@@ -67,8 +69,9 @@ except ImportError:
         title: str
         url: str
         source: str
-        salary: Optional['VacancySalary'] = None
-        employer: Optional['VacancyEmployer'] = None
+        salary: Optional["VacancySalary"] = None
+        employer: Optional["VacancyEmployer"] = None
+
 
 # @dataclass
 # class VacancySalary:
@@ -92,7 +95,7 @@ class TestVacancyDisplayHandler:
 
         assert handler.storage == mock_storage
 
-    @patch('builtins.print')
+    @patch("builtins.print")
     def test_display_vacancies_empty_list(self, mock_print):
         """Тест отображения пустого списка вакансий"""
         mock_storage = Mock()
@@ -109,7 +112,7 @@ class TestVacancyDisplayHandler:
         # Проверяем что сообщение о пустом списке было выведено
         mock_print.assert_called()
 
-    @patch('builtins.print')
+    @patch("builtins.print")
     def test_display_vacancies_with_data(self, mock_print):
         """Тест отображения списка вакансий"""
         mock_storage = Mock()
@@ -117,7 +120,7 @@ class TestVacancyDisplayHandler:
 
         vacancies = [
             Vacancy("123", "Python Developer", "https://test.com", "hh.ru"),
-            Vacancy("124", "Java Developer", "https://test2.com", "hh.ru")
+            Vacancy("124", "Java Developer", "https://test2.com", "hh.ru"),
         ]
 
         handler.display_vacancies(vacancies)
@@ -127,7 +130,7 @@ class TestVacancyDisplayHandler:
         mock_print.assert_any_call(handler.format_vacancy_for_display(vacancies[0]))
         mock_print.assert_any_call(handler.format_vacancy_for_display(vacancies[1]))
 
-    @patch('src.ui_interfaces.vacancy_display_handler.quick_paginate')
+    @patch("src.ui_interfaces.vacancy_display_handler.quick_paginate")
     def test_display_vacancies_with_pagination(self, mock_paginate):
         """Тест отображения вакансий с пагинацией"""
         mock_storage = Mock()
@@ -141,7 +144,7 @@ class TestVacancyDisplayHandler:
         # В реальном сценарии mock_paginate должен был бы быть вызван, если бы метод display_vacancies_paginated был реализован с пагинацией.
         # Поскольку мы используем наш тестовый класс, который просто вызывает display_vacancies, мы не можем проверить mock_paginate напрямую.
         # Однако, если бы мы тестировали оригинальный код, эта проверка была бы актуальна.
-        pass # В данном случае, так как мы создаем заглушку, прямого вызова mock_paginate не будет.
+        pass  # В данном случае, так как мы создаем заглушку, прямого вызова mock_paginate не будет.
 
     def test_format_vacancy_for_display(self):
         """Тест форматирования вакансии для отображения"""
@@ -157,7 +160,7 @@ class TestVacancyDisplayHandler:
             url="https://test.com/vacancy/123",
             source="hh.ru",
             salary=salary,
-            employer=employer
+            employer=employer,
         )
 
         result = handler.format_vacancy_for_display(vacancy)
@@ -174,11 +177,7 @@ class TestVacancyDisplayHandler:
 
         employer = VacancyEmployer(id="1", name="Test Company")
         vacancy = Vacancy(
-            id="124",
-            title="Junior Developer",
-            url="https://test.com/vacancy/124",
-            source="hh.ru",
-            employer=employer
+            id="124", title="Junior Developer", url="https://test.com/vacancy/124", source="hh.ru", employer=employer
         )
 
         result = handler.format_vacancy_for_display(vacancy)
@@ -194,13 +193,7 @@ class TestVacancyDisplayHandler:
         handler = VacancyDisplayHandler(mock_storage)
 
         salary = VacancySalary(from_amount=50000, currency="RUR")
-        vacancy = Vacancy(
-            id="125",
-            title="Intern",
-            url="https://test.com/vacancy/125",
-            source="hh.ru",
-            salary=salary
-        )
+        vacancy = Vacancy(id="125", title="Intern", url="https://test.com/vacancy/125", source="hh.ru", salary=salary)
 
         result = handler.format_vacancy_for_display(vacancy)
 

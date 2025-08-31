@@ -10,11 +10,11 @@ logger = logging.getLogger(__name__)
 
 class JSONFileHandler:
     """Класс для работы с JSON файлами"""
-    
+
     def __init__(self):
         """Инициализация обработчика JSON"""
         pass
-    
+
     def load_json(self, file_path):
         """Загрузка данных из JSON файла"""
         try:
@@ -22,7 +22,7 @@ class JSONFileHandler:
                 return json.load(f)
         except (FileNotFoundError, json.JSONDecodeError):
             return None
-    
+
     def save_json(self, file_path, data):
         """Сохранение данных в JSON файл"""
         try:
@@ -35,38 +35,43 @@ class JSONFileHandler:
 
 class FileOperations:
     """Класс для файловых операций"""
-    
+
     def __init__(self):
         """Инициализация файловых операций"""
         pass
-    
+
     def file_exists(self, file_path):
         """Проверка существования файла"""
         from pathlib import Path
+
         return Path(file_path).exists()
-    
+
     def create_directory(self, dir_path):
         """Создание директории"""
         from pathlib import Path
+
         Path(dir_path).mkdir(parents=True, exist_ok=True)
-    
+
     def delete_file(self, file_path):
         """Удаление файла"""
         from pathlib import Path
+
         path = Path(file_path)
         if path.exists():
             path.unlink()
             return True
         return False
-    
+
     def copy_file(self, source_path, dest_path):
         """Копирование файла"""
         import shutil
         from pathlib import Path
+
         if Path(source_path).exists():
             shutil.copy2(source_path, dest_path)
             return True
         return False
+
     """
     Обработчик JSON-файлов с улучшенной обработкой ошибок
 

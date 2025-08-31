@@ -1,10 +1,13 @@
-import pytest
-from unittest.mock import Mock, patch
-import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+import sys
+from unittest.mock import Mock, patch
+
+import pytest
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from src.vacancies.models import Vacancy
+
 
 # Создаем тестовые классы для мокирования
 class VacancySalary:
@@ -12,20 +15,23 @@ class VacancySalary:
         self.from_amount = from_amount
         self.to_amount = to_amount
         self.currency = currency
-    
+
     def __str__(self):
         if self.from_amount and self.to_amount:
             return f"{self.from_amount} - {self.to_amount} {self.currency}"
         return "Зарплата не указана"
+
 
 class VacancyEmployer:
     def __init__(self, id=None, name=None):
         self.id = id
         self.name = name
 
+
 # Создаем тестовые классы для изолированного тестирования
 class VacancySalary:
     """Тестовый класс зарплаты вакансии"""
+
     def __init__(self, from_amount=None, to_amount=None, currency="RUR"):
         self.from_amount = from_amount
         self.to_amount = to_amount
@@ -43,6 +49,7 @@ class VacancySalary:
 
 class VacancyEmployer:
     """Тестовый класс работодателя"""
+
     def __init__(self, id=None, name=None, url=None, trusted=False):
         self.id = id
         self.name = name
@@ -97,7 +104,7 @@ class TestVacancy:
             url="https://test.com/vacancy/123",
             vacancy_id="123",
             source="hh.ru",
-            description="Test description"
+            description="Test description",
         )
 
         assert vacancy.vacancy_id == "123"
@@ -114,7 +121,7 @@ class TestVacancy:
             title="Python Developer",
             url="https://test.com/vacancy/123",
             salary=salary_dict,
-            source="hh.ru"
+            source="hh.ru",
         )
 
         assert vacancy.vacancy_id == "123"
@@ -130,20 +137,16 @@ class TestVacancy:
             url="https://test.com/vacancy/123",
             employer=employer_dict,
             description="Test description",
-            source="hh.ru"
+            source="hh.ru",
         )
 
         assert vacancy.vacancy_id == "123"
         assert vacancy.title == "Python Developer"
 
-
     def test_vacancy_str_representation(self):
         """Тест строкового представления Vacancy"""
         vacancy = Vacancy(
-            vacancy_id="123",
-            title="Python Developer",
-            url="https://test.com/vacancy/123",
-            source="hh.ru"
+            vacancy_id="123", title="Python Developer", url="https://test.com/vacancy/123", source="hh.ru"
         )
         # Устанавливаем работодателя после создания
         vacancy.employer = {"name": "Test Company"}
@@ -160,19 +163,9 @@ class TestVacancy:
             "id": "123456",
             "name": "Python Developer",
             "alternate_url": "https://hh.ru/vacancy/123456",
-            "salary": {
-                "from": 100000,
-                "to": 150000,
-                "currency": "RUR",
-                "gross": False
-            },
-            "employer": {
-                "id": "1",
-                "name": "Test Company HH",
-                "url": "https://hh.ru/employer/1",
-                "trusted": True
-            },
-            "snippet": {"requirement": "Experience with Python"}
+            "salary": {"from": 100000, "to": 150000, "currency": "RUR", "gross": False},
+            "employer": {"id": "1", "name": "Test Company HH", "url": "https://hh.ru/employer/1", "trusted": True},
+            "snippet": {"requirement": "Experience with Python"},
         }
 
     # Mock data for SuperJob
@@ -187,9 +180,8 @@ class TestVacancy:
             "currency": "rub",
             "town": {"title": "Санкт-Петербург"},
             "link": "https://superjob.ru/vacancy/789012",
-            "description": "<p>Java developer position</p>"
+            "description": "<p>Java developer position</p>",
         }
-
 
     def test_vacancy_from_dict_hh(self, mock_vacancy_data_hh):
         """Тест создания вакансии из словаря HH"""
@@ -201,7 +193,7 @@ class TestVacancy:
             company=mock_vacancy_data_hh["employer"]["name"],
             url=mock_vacancy_data_hh["alternate_url"],
             description=mock_vacancy_data_hh["snippet"]["requirement"],
-            source="hh.ru"
+            source="hh.ru",
             # Salary and employer are complex and might need specific handling
             # For the placeholder, we'll skip direct salary/employer assignment as attributes
         )
@@ -212,7 +204,6 @@ class TestVacancy:
         assert vacancy.description == "Experience with Python"
         assert vacancy.source == "hh.ru"
 
-
     def test_vacancy_from_dict_sj(self, mock_vacancy_data_sj):
         """Тест создания вакансии из словаря SuperJob"""
         vacancy = Vacancy(
@@ -222,7 +213,7 @@ class TestVacancy:
             salary=f"{mock_vacancy_data_sj['payment_from']} - {mock_vacancy_data_sj['payment_to']} {mock_vacancy_data_sj['currency']}",
             url=mock_vacancy_data_sj["link"],
             description=mock_vacancy_data_sj["description"],
-            source="superjob.ru"
+            source="superjob.ru",
         )
         assert vacancy.vacancy_id == "789012"
         assert vacancy.title == "Java Developer"
@@ -239,14 +230,14 @@ class TestVacancy:
             title="Python Developer",
             company="Test Company",
             url="https://test.com/vacancy/123",
-            source="hh.ru"
+            source="hh.ru",
         )
         vacancy2 = Vacancy(
             vacancy_id="123",
             title="Python Developer",
             company="Test Company",
             url="https://test.com/vacancy/123",
-            source="hh.ru"
+            source="hh.ru",
         )
 
         # Вакансии с одинаковыми ID должны считаться равными
@@ -263,7 +254,7 @@ class TestVacancy:
             company=employer.name,
             url="https://test.com/vacancy/123",
             salary=str(salary),
-            source="hh.ru"
+            source="hh.ru",
         )
 
         # Since to_dict is not implemented for the placeholder Vacancy,

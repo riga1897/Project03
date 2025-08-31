@@ -1,30 +1,33 @@
-import pytest
-from unittest.mock import MagicMock, patch
-import sys
 import os
 import re
-from typing import Tuple, Optional, Union, Dict, Any
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+import sys
+from typing import Any, Dict, Optional, Tuple, Union
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
 
 # Создаем тестовые функции для работы с зарплатой
 def parse_salary_range(salary_str: str) -> Tuple[Optional[int], Optional[int]]:
     """Парсинг диапазона зарплаты из строки"""
-    if not salary_str or salary_str.lower() in ['зарплата не указана', 'не указана']:
+    if not salary_str or salary_str.lower() in ["зарплата не указана", "не указана"]:
         return None, None
 
     # Удаляем валюту и лишние символы
-    clean_str = re.sub(r'[^\d\s\-отдо]', '', salary_str.lower())
+    clean_str = re.sub(r"[^\d\s\-отдо]", "", salary_str.lower())
 
     # Ищем числа
-    numbers = re.findall(r'\d+', clean_str)
+    numbers = re.findall(r"\d+", clean_str)
 
     if len(numbers) == 0:
         return None, None
     elif len(numbers) == 1:
         amount = int(numbers[0])
-        if 'от' in clean_str:
+        if "от" in clean_str:
             return amount, None
-        elif 'до' in clean_str:
+        elif "до" in clean_str:
             return None, amount
         else:
             return amount, amount
@@ -33,19 +36,21 @@ def parse_salary_range(salary_str: str) -> Tuple[Optional[int], Optional[int]]:
 
     return None, None
 
+
 def format_salary(from_amount: Optional[int], to_amount: Optional[int], currency: str = "RUR") -> str:
     """Форматирование зарплаты"""
     if from_amount and to_amount:
         if from_amount == to_amount:
-            return f"{from_amount:,} {currency}".replace(',', ' ')
+            return f"{from_amount:,} {currency}".replace(",", " ")
         else:
-            return f"{from_amount:,} - {to_amount:,} {currency}".replace(',', ' ')
+            return f"{from_amount:,} - {to_amount:,} {currency}".replace(",", " ")
     elif from_amount:
-        return f"от {from_amount:,} {currency}".replace(',', ' ')
+        return f"от {from_amount:,} {currency}".replace(",", " ")
     elif to_amount:
-        return f"до {to_amount:,} {currency}".replace(',', ' ')
+        return f"до {to_amount:,} {currency}".replace(",", " ")
     else:
         return "Зарплата не указана"
+
 
 def normalize_salary(salary_data: Union[Dict[str, Any], str, None]) -> Tuple[Optional[int], Optional[int], str]:
     """Нормализация данных о зарплате"""
@@ -57,9 +62,9 @@ def normalize_salary(salary_data: Union[Dict[str, Any], str, None]) -> Tuple[Opt
         return from_amount, to_amount, "RUR"
 
     if isinstance(salary_data, dict):
-        from_amount = salary_data.get('from')
-        to_amount = salary_data.get('to')
-        currency = salary_data.get('currency', 'RUR')
+        from_amount = salary_data.get("from")
+        to_amount = salary_data.get("to")
+        currency = salary_data.get("currency", "RUR")
         return from_amount, to_amount, currency
 
     return None, None, "RUR"
@@ -96,6 +101,7 @@ class TestSalaryUtils:
 
     def test_format_salary_with_range(self):
         """Тест форматирования зарплаты с диапазоном"""
+
         # Mock VacancySalary for testing format_salary
         class MockVacancySalary:
             def __init__(self, from_amount, to_amount, currency):
@@ -112,6 +118,7 @@ class TestSalaryUtils:
 
     def test_format_salary_from_only(self):
         """Тест форматирования зарплаты только с минимальным значением"""
+
         class MockVacancySalary:
             def __init__(self, from_amount, currency):
                 self.from_amount = from_amount
@@ -125,6 +132,7 @@ class TestSalaryUtils:
 
     def test_format_salary_to_only(self):
         """Тест форматирования зарплаты только с максимальным значением"""
+
         class MockVacancySalary:
             def __init__(self, to_amount, currency):
                 self.to_amount = to_amount
@@ -143,6 +151,7 @@ class TestSalaryUtils:
 
     def test_normalize_salary_with_range(self):
         """Тест нормализации зарплаты с диапазоном"""
+
         class MockVacancySalary:
             def __init__(self, from_amount, to_amount, currency):
                 self.from_amount = from_amount
@@ -150,13 +159,16 @@ class TestSalaryUtils:
                 self.currency = currency
 
         salary = MockVacancySalary(from_amount=100000, to_amount=150000, currency="RUR")
-        from_amount, to_amount, currency = normalize_salary({"from": salary.from_amount, "to": salary.to_amount, "currency": salary.currency})
+        from_amount, to_amount, currency = normalize_salary(
+            {"from": salary.from_amount, "to": salary.to_amount, "currency": salary.currency}
+        )
 
         # Должно вернуть среднее значение
         assert (from_amount + to_amount) / 2 == 125000
 
     def test_normalize_salary_from_only(self):
         """Тест нормализации зарплаты только с минимальным значением"""
+
         class MockVacancySalary:
             def __init__(self, from_amount, currency):
                 self.from_amount = from_amount
@@ -169,6 +181,7 @@ class TestSalaryUtils:
 
     def test_normalize_salary_to_only(self):
         """Тест нормализации зарплаты только с максимальным значением"""
+
         class MockVacancySalary:
             def __init__(self, to_amount, currency):
                 self.to_amount = to_amount

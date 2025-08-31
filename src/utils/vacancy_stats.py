@@ -11,11 +11,11 @@ logger = logging.getLogger(__name__)
 
 class VacancyStats:
     """Класс для подсчета статистики по вакансиям"""
-    
+
     def __init__(self):
         """Инициализация статистики"""
         pass
-    
+
     def calculate_salary_statistics(self, vacancies):
         """Подсчет статистики по зарплатам"""
         salaries = []
@@ -25,17 +25,17 @@ class VacancyStats:
                     salaries.append(vacancy.salary.from_amount)
                 elif vacancy.salary.to_amount:
                     salaries.append(vacancy.salary.to_amount)
-        
+
         if not salaries:
             return {"average": 0, "min": 0, "max": 0, "count": 0}
-        
+
         return {
             "average": sum(salaries) // len(salaries),
             "min": min(salaries),
             "max": max(salaries),
-            "count": len(salaries)
+            "count": len(salaries),
         }
-    
+
     def get_top_employers(self, vacancies, top_n=10):
         """Получение топ работодателей"""
         employer_counts = {}
@@ -43,30 +43,30 @@ class VacancyStats:
             if vacancy.employer and vacancy.employer.name:
                 name = vacancy.employer.name
                 employer_counts[name] = employer_counts.get(name, 0) + 1
-        
+
         # Сортируем по количеству вакансий
         sorted_employers = sorted(employer_counts.items(), key=lambda x: x[1], reverse=True)
         return sorted_employers[:top_n]
-    
+
     def get_source_distribution(self, vacancies):
         """Получение распределения по источникам"""
         source_counts = {}
         for vacancy in vacancies:
             source = vacancy.source
             source_counts[source] = source_counts.get(source, 0) + 1
-        
+
         return source_counts
 
 
 def calculate_statistics(vacancies):
     """Функция для подсчета общей статистики"""
     stats = VacancyStats()
-    
+
     return {
         "salary_stats": stats.calculate_salary_statistics(vacancies),
         "top_employers": stats.get_top_employers(vacancies),
         "source_distribution": stats.get_source_distribution(vacancies),
-        "total_count": len(vacancies)
+        "total_count": len(vacancies),
     }
     """Класс для сбора и отображения статистики по вакансиям"""
 

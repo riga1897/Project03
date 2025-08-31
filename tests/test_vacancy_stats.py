@@ -1,16 +1,20 @@
-import pytest
-from unittest.mock import MagicMock, patch
-import sys
 import os
+import sys
 from dataclasses import dataclass
-from typing import Optional, List
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from typing import List, Optional
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 try:
     from src.utils.vacancy_stats import VacancyStats
 except ImportError:
+
     class VacancyStats:
         """Placeholder for VacancyStats if not found in src"""
+
         def calculate_salary_statistics(self, vacancies: List):
             """Placeholder method for salary statistics calculation."""
             if not vacancies:
@@ -36,34 +40,35 @@ except ImportError:
                 source_counts[v.source] = source_counts.get(v.source, 0) + 1
             return source_counts
 
+
 def calculate_statistics(vacancies: List):
     """Placeholder function for overall statistics calculation."""
     stats_calculator = VacancyStats()
     salary_stats = stats_calculator.calculate_salary_statistics(vacancies)
     top_employers = stats_calculator.get_top_employers(vacancies)
     source_distribution = stats_calculator.get_source_distribution(vacancies)
-    return {
-        "salary_stats": salary_stats,
-        "top_employers": top_employers,
-        "source_distribution": source_distribution
-    }
+    return {"salary_stats": salary_stats, "top_employers": top_employers, "source_distribution": source_distribution}
+
 
 try:
-    from src.vacancies.models import Vacancy, VacancySalary, VacancyEmployer
+    from src.vacancies.models import Vacancy, VacancyEmployer, VacancySalary
 except ImportError:
+
     @dataclass
     class Vacancy:
         """Placeholder for Vacancy model."""
+
         id: str
         title: str
         url: str
         source: str
-        salary: Optional['VacancySalary'] = None
-        employer: Optional['VacancyEmployer'] = None
+        salary: Optional["VacancySalary"] = None
+        employer: Optional["VacancyEmployer"] = None
 
     @dataclass
     class VacancySalary:
         """Placeholder for VacancySalary model."""
+
         from_amount: Optional[int] = None
         to_amount: Optional[int] = None
         currency: str = "RUR"
@@ -71,6 +76,7 @@ except ImportError:
     @dataclass
     class VacancyEmployer:
         """Placeholder for VacancyEmployer model."""
+
         name: str
 
 
@@ -87,7 +93,7 @@ class TestVacancyStats:
         vacancies = [
             Vacancy("123", "Dev1", "url1", "hh.ru", salary=VacancySalary(from_amount=100000, currency="RUR")),
             Vacancy("124", "Dev2", "url2", "hh.ru", salary=VacancySalary(from_amount=150000, currency="RUR")),
-            Vacancy("125", "Dev3", "url3", "hh.ru", salary=VacancySalary(from_amount=200000, currency="RUR"))
+            Vacancy("125", "Dev3", "url3", "hh.ru", salary=VacancySalary(from_amount=200000, currency="RUR")),
         ]
 
         stats = VacancyStats()
@@ -112,10 +118,7 @@ class TestVacancyStats:
 
     def test_calculate_salary_statistics_no_salary(self):
         """Тест подсчета статистики для вакансий без зарплаты"""
-        vacancies = [
-            Vacancy("123", "Dev1", "url1", "hh.ru"),
-            Vacancy("124", "Dev2", "url2", "hh.ru")
-        ]
+        vacancies = [Vacancy("123", "Dev1", "url1", "hh.ru"), Vacancy("124", "Dev2", "url2", "hh.ru")]
 
         stats = VacancyStats()
         result = stats.calculate_salary_statistics(vacancies)
@@ -127,7 +130,7 @@ class TestVacancyStats:
         vacancies = [
             Vacancy("123", "Dev1", "url1", "hh.ru", employer=VacancyEmployer("Company A")),
             Vacancy("124", "Dev2", "url2", "hh.ru", employer=VacancyEmployer("Company A")),
-            Vacancy("125", "Dev3", "url3", "hh.ru", employer=VacancyEmployer("Company B"))
+            Vacancy("125", "Dev3", "url3", "hh.ru", employer=VacancyEmployer("Company B")),
         ]
 
         stats = VacancyStats()
@@ -144,7 +147,7 @@ class TestVacancyStats:
         vacancies = [
             Vacancy("123", "Dev1", "url1", "hh.ru"),
             Vacancy("124", "Dev2", "url2", "hh.ru"),
-            Vacancy("125", "Dev3", "url3", "superjob.ru")
+            Vacancy("125", "Dev3", "url3", "superjob.ru"),
         ]
 
         stats = VacancyStats()
@@ -156,9 +159,7 @@ class TestVacancyStats:
 
     def test_calculate_statistics_function(self):
         """Тест функции calculate_statistics"""
-        vacancies = [
-            Vacancy("123", "Dev1", "url1", "hh.ru", salary=VacancySalary(from_amount=100000, currency="RUR"))
-        ]
+        vacancies = [Vacancy("123", "Dev1", "url1", "hh.ru", salary=VacancySalary(from_amount=100000, currency="RUR"))]
 
         result = calculate_statistics(vacancies)
 
