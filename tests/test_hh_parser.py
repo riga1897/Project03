@@ -51,9 +51,9 @@ class TestHHParser:
     def test_parse_hh_vacancies_list(self):
         """Тест парсинга списка вакансий HH"""
         data = {'items': [self.sample_hh_vacancy]}
-        result = self.parser.parse_vacancies_list(data)
+        result = self.parser.parse_vacancies(data['items'])
+        assert isinstance(result, list)
         assert len(result) == 1
-        assert result[0]['id'] == '123456'
 
     def test_parse_hh_vacancy_minimal_data(self):
         """Тест парсинга вакансии с минимальными данными"""

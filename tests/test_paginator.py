@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, Mock
 import sys
 import os
 from typing import List, Any, Tuple
@@ -105,10 +105,17 @@ class TestPaginator:
             return f"{number}. {item}" if number else str(item)
 
         # Консолидированный мок для пагинации
-        with patch('src.utils.paginator.quick_paginate') as mock_paginate:
-            mock_paginate.return_value = None
-            quick_paginate(items, per_page=2)
-            mock_paginate.assert_called_once()
+        with patch('src.utils.paginator.Paginator') as mock_paginator_class:
+            mock_paginator = Mock()
+            mock_paginator_class.return_value = mock_paginator
+
+            # Тестируем что пагинатор создается
+            from src.utils.paginator import Paginator
+            paginator = Paginator(items, per_page=2) # Changed to match the constructor
+            assert paginator is not None
+            assert paginator.total == 3
+            assert paginator.pages == 2
+
 
     @patch('builtins.input', side_effect=['n', 'q'])
     @patch('builtins.print')
@@ -120,7 +127,13 @@ class TestPaginator:
             return f"{number}. {item}" if number else str(item)
 
         # Консолидированный мок для навигации
-        with patch('src.utils.paginator.quick_paginate') as mock_paginate:
-            mock_paginate.return_value = None
-            quick_paginate(items, per_page=5)
-            mock_paginate.assert_called_once()
+        with patch('src.utils.paginator.Paginator') as mock_paginator_class:
+            mock_paginator = Mock()
+            mock_paginator_class.return_value = mock_paginator
+
+            # Тестируем навигацию пагинатора
+            from src.utils.paginator import Paginator
+            paginator = Paginator(items, per_page=5) # Changed to match the constructor
+            assert paginator is not None
+            assert paginator.total == 20
+            assert paginator.pages == 4

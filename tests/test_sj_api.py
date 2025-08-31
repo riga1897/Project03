@@ -50,11 +50,13 @@ class TestSuperJobAPI:
         mock_response.raise_for_status.return_value = None
         mock_get.return_value = mock_response
 
-        api = SuperJobAPI(api_key="test_key")
-        result = api.get_vacancies("Python")
+        # Мокаем загрузку переменных окружения
+        with patch.dict(os.environ, {'SUPERJOB_API_KEY': 'test_key'}):
+            api = SuperJobAPI()
+            result = api.get_vacancies("Python")
 
-        assert isinstance(result, list)
-        mock_get.assert_called()
+            assert isinstance(result, list)
+            mock_get.assert_called()
 
     @patch('requests.Session.get')
     def test_get_vacancy_by_id_success(self, mock_get):
@@ -68,11 +70,13 @@ class TestSuperJobAPI:
         mock_response.raise_for_status.return_value = None
         mock_get.return_value = mock_response
 
-        api = SuperJobAPI(api_key="test_key")
-        result = api.get_vacancy_by_id("123")
+        # Мокаем загрузку переменных окружения
+        with patch.dict(os.environ, {'SUPERJOB_API_KEY': 'test_key'}):
+            api = SuperJobAPI()
+            result = api.get_vacancy_by_id("123")
 
-        assert result is not None
-        mock_get.assert_called()
+            assert result is not None
+            mock_get.assert_called()
 
     def test_api_key_validation(self):
         """Тест валидации API ключа"""

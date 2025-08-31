@@ -138,17 +138,19 @@ class TestDBManager:
         mock_cursor = Mock()
         mock_cursor.fetchone.return_value = (125000.0,)
 
-        # Консолидированный мок для контекстного менеджера курсора
-        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+        # Правильный мок для курсора как контекстного менеджера
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
+
         mock_connect.return_value = mock_connection
 
         db_manager = DBManager()
 
-        # Мокаем все необходимые методы
-        with patch.object(db_manager, '_ensure_tables_exist', return_value=True):
-            with patch.object(db_manager, '_get_connection', return_value=mock_connection):
-                result = db_manager.get_avg_salary()
+        # Мокаем соединение
+        with patch.object(db_manager, '_get_connection', return_value=mock_connection):
+            result = db_manager.get_avg_salary()
 
         assert result == 125000.0
 
@@ -161,18 +163,19 @@ class TestDBManager:
             ("124", "Senior Python Developer", "Test Company", 200000, "Москва", "https://test.com")
         ]
 
-        # Консолидированный мок для курсора
-        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
+        # Правильный мок для курсора как контекстного менеджера
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
+
         mock_connect.return_value = mock_connection
 
         db_manager = DBManager()
 
-        # Мокаем все зависимости включая get_avg_salary
-        with patch.object(db_manager, '_ensure_tables_exist', return_value=True):
-            with patch.object(db_manager, '_get_connection', return_value=mock_connection):
-                with patch.object(db_manager, 'get_avg_salary', return_value=150000.0):
-                    result = db_manager.get_vacancies_with_higher_salary()
+        # Мокаем соединение
+        with patch.object(db_manager, '_get_connection', return_value=mock_connection):
+            result = db_manager.get_vacancies_with_higher_salary()
 
         assert len(result) == 1
         assert result[0][0] == "124"
@@ -211,8 +214,9 @@ class TestDBManager:
         ]
 
         with patch.object(db_manager, '_get_connection', return_value=mock_connection):
-            # Мокаем метод вместо несуществующей функции
-            with patch.object(db_manager, '_get_target_companies_data', return_value=test_companies):
-                result = db_manager.populate_companies_table()
-                # Проверяем что операция может быть выполнена
-                assert result is None or result is True
+            # Мокаем функцию получения целевых компаний
+            with patch('src.config.target_companies.get_target_companies_data', return_value=test_companies):
+                db_manager.populate_companies_table()
+
+        # Проверяем что соединение было установлено
+        mock_connect.assert_called()

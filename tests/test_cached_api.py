@@ -87,10 +87,8 @@ class TestCachedAPI:
 
         api = TestCachedAPIImplementation()
         
-        # Мокаем все методы кэширования для полной изоляции
-        with patch.object(api, '_get_cache_key', return_value='test_key'):
-            with patch.object(api, '_cache', mock_cache_instance):
-                api.clear_cache("test")
+        # Тестируем метод очистки кэша
+        api.clear_cache("test")
 
         # Проверяем что метод clear был вызван
         mock_cache_instance.clear.assert_called_once()
