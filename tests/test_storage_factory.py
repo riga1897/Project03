@@ -52,9 +52,9 @@ class TestStorageFactory:
         factory = StorageFactory()
         assert hasattr(factory, 'create_storage')
 
-    @patch('src.storage.storage_factory.PostgresSaver')
-    @patch('src.storage.storage_factory.AppConfig')
-    def test_create_postgres_storage(self, mock_app_config, mock_postgres_saver):
+    @patch('src.config.app_config.AppConfig')
+    @patch('src.storage.postgres_saver.PostgresSaver')
+    def test_create_postgres_storage(self, mock_postgres_saver, mock_app_config):
         """Тест создания PostgreSQL хранилища с моками"""
         # Настраиваем моки
         mock_config_instance = Mock()
@@ -99,9 +99,9 @@ class TestStorageFactory:
         assert hasattr(factory1, 'create_storage')
         assert hasattr(factory2, 'create_storage')
 
-    @patch('src.storage.storage_factory.PostgresSaver')
-    @patch('src.storage.storage_factory.AppConfig')
-    def test_create_storage_with_db_config(self, mock_app_config, mock_postgres_saver):
+    @patch('src.config.app_config.AppConfig')
+    @patch('src.storage.postgres_saver.PostgresSaver')
+    def test_create_storage_with_db_config(self, mock_postgres_saver, mock_app_config):
         """Тест создания хранилища с конфигурацией БД"""
         # Настраиваем моки
         mock_config_instance = Mock()

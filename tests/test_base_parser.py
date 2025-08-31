@@ -1,17 +1,22 @@
-
 import pytest
 from unittest.mock import MagicMock
 from src.vacancies.parsers.base_parser import BaseParser
 
 
 class ConcreteParser(BaseParser):
-    """Конкретная реализация для тестирования"""
-    
-    def parse_vacancy(self, data):
-        return {'id': data.get('id'), 'title': data.get('name')}
-    
-    def parse_vacancies_list(self, data):
-        return [self.parse_vacancy(item) for item in data.get('items', [])]
+    """Конкретная реализация BaseParser для тестирования"""
+
+    def parse_vacancy(self, vacancy_data):
+        """Парсинг одной вакансии"""
+        return {
+            'id': vacancy_data.get('id'),
+            'title': vacancy_data.get('name', 'Unknown'),
+            'company': vacancy_data.get('company', 'Unknown Company')
+        }
+
+    def parse_vacancies(self, vacancies_data):
+        """Парсинг списка вакансий"""
+        return [self.parse_vacancy(v) for v in vacancies_data]
 
 
 class TestBaseParser:
@@ -28,29 +33,32 @@ class TestBaseParser:
     def test_concrete_parser_parse_vacancy(self):
         """Тест парсинга одной вакансии"""
         parser = ConcreteParser()
-        data = {'id': '123', 'name': 'Python Developer'}
+        data = {'id': '123', 'name': 'Python Developer', 'company': 'Tech Corp'}
         result = parser.parse_vacancy(data)
         assert result['id'] == '123'
         assert result['title'] == 'Python Developer'
+        assert result['company'] == 'Tech Corp'
 
     def test_concrete_parser_parse_vacancies_list(self):
         """Тест парсинга списка вакансий"""
         parser = ConcreteParser()
         data = {
             'items': [
-                {'id': '123', 'name': 'Python Developer'},
-                {'id': '124', 'name': 'Java Developer'}
+                {'id': '123', 'name': 'Python Developer', 'company': 'Tech Corp'},
+                {'id': '124', 'name': 'Java Developer', 'company': 'Code Inc'}
             ]
         }
-        result = parser.parse_vacancies_list(data)
+        result = parser.parse_vacancies(data.get('items', []))
         assert len(result) == 2
         assert result[0]['id'] == '123'
         assert result[1]['id'] == '124'
+        assert result[0]['company'] == 'Tech Corp'
+        assert result[1]['company'] == 'Code Inc'
 
     def test_parser_empty_data(self):
         """Тест парсинга пустых данных"""
         parser = ConcreteParser()
-        result = parser.parse_vacancies_list({})
+        result = parser.parse_vacancies([])
         assert result == []
 
     def test_parser_invalid_data(self):
@@ -58,4 +66,5 @@ class TestBaseParser:
         parser = ConcreteParser()
         result = parser.parse_vacancy({})
         assert result['id'] is None
-        assert result['title'] is None
+        assert result['title'] == 'Unknown'
+        assert result['company'] == 'Unknown Company'

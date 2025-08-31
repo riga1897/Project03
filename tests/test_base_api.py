@@ -27,23 +27,21 @@ class BaseAPI(ABC):
 class ConcreteBaseAPI(BaseAPI):
     """Конкретная реализация BaseAPI для тестов"""
 
-    def get_vacancies(self, **kwargs):
-        """Получить вакансии (реализация для тестов)"""
-        if self.session:
-            response = self.session.get(f"{self.base_url}/vacancies", **kwargs)
-            response.raise_for_status()
-            return response.json()
-        else:
-            raise ConnectionError("Session not initialized")
+    def get_vacancies(self, search_query, **kwargs):
+        """Базовая реализация получения вакансий"""
+        raise ConnectionError("Connection failed")
 
-    def get_vacancy_details(self, vacancy_id: str):
-        """Получить детали вакансии (реализация для тестов)"""
-        if self.session:
-            response = self.session.get(f"{self.base_url}/vacancies/{vacancy_id}")
-            response.raise_for_status()
-            return response.json()
-        else:
-            raise ConnectionError("Session not initialized")
+    def get_vacancy_by_id(self, vacancy_id):
+        """Базовая реализация получения вакансии по ID"""
+        return {"id": vacancy_id, "title": "Test Vacancy"}
+
+    def _make_request(self, url, headers=None):
+        """Базовая реализация запроса"""
+        return {"status": "success"}
+
+    def clear_cache(self, source_name):
+        """Базовая реализация очистки кэша"""
+        pass
 
 
 class TestBaseAPI:
@@ -88,8 +86,8 @@ class TestBaseAPI:
         assert api.session is not None
 
         # Тест получения вакансий
-        api.get_vacancies()
-        mock_session.get.assert_called_once_with(f"{api.base_url}/vacancies")
+        api.get_vacancies(search_query="Python developer")
+        mock_session.get.assert_called_once_with(f"{api.base_url}/vacancies", search_query="Python developer")
 
         # Тест получения деталей вакансии
         api.get_vacancy_details("123")

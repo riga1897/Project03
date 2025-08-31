@@ -1,4 +1,3 @@
-
 import pytest
 from unittest.mock import Mock, patch
 import sys
@@ -26,11 +25,11 @@ class TestSuperJobAPI:
     def test_sj_api_inheritance(self):
         """Тест наследования от CachedAPI"""
         from src.api_modules.cached_api import CachedAPI
-        
+
         api = SuperJobAPI()
         assert isinstance(api, CachedAPI)
 
-    @patch('src.api_modules.sj_api.requests.Session.get')
+    @patch('requests.Session.get')
     def test_get_vacancies_success(self, mock_get):
         """Тест успешного получения вакансий"""
         mock_response = Mock()
@@ -52,11 +51,11 @@ class TestSuperJobAPI:
 
         api = SuperJobAPI(api_key="test_key")
         result = api.get_vacancies("Python")
-        
+
         assert isinstance(result, list)
         mock_get.assert_called()
 
-    @patch('src.api_modules.sj_api.requests.Session.get')
+    @patch('requests.Session.get')
     def test_get_vacancy_by_id_success(self, mock_get):
         """Тест успешного получения вакансии по ID"""
         mock_response = Mock()
@@ -70,14 +69,14 @@ class TestSuperJobAPI:
 
         api = SuperJobAPI(api_key="test_key")
         result = api.get_vacancy_by_id("123")
-        
+
         assert result is not None
         mock_get.assert_called()
 
     def test_api_key_validation(self):
         """Тест валидации API ключа"""
         api = SuperJobAPI()
-        
+
         # Проверяем обработку отсутствующего API ключа
         assert hasattr(api, 'api_key')
 
