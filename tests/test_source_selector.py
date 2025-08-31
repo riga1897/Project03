@@ -50,7 +50,8 @@ class TestSourceSelector:
     def test_display_sources_info(self, mock_print, source_selector):
         """Тест отображения информации об источниках"""
         if hasattr(source_selector, 'display_sources_info'):
-            source_selector.display_sources_info()
+            # Передаем пустой список источников для теста
+            source_selector.display_sources_info([])
             mock_print.assert_called()
         elif hasattr(source_selector, 'show_sources'):
             source_selector.show_sources()

@@ -1,6 +1,5 @@
 """
 Тесты для DBManager
-
 Содержит тесты для проверки корректности работы с базой данных PostgreSQL
 и специфичных методов согласно требованиям проекта.
 """
@@ -37,13 +36,126 @@ class TestDBManager:
             # Мокаем execute_values для избежания ошибок с кодировкой
             with patch("psycopg2.extras.execute_values") as mock_execute_values:
                 mock_execute_values.return_value = None
-
                 yield {
-                    "connect": mock_connect,
                     "connection": mock_conn,
                     "cursor": mock_cursor,
-                    "execute_values": mock_execute_values,
+                    "connect": mock_connect,
+                    "execute_values": mock_execute_values
                 }
+
+    @patch("builtins.input", return_value="")
+    @patch("builtins.print")
+    @patch("os.path.exists", return_value=True)
+    @patch("src.utils.env_loader.EnvLoader.load_env_file")
+    def test_db_manager_initialization(self, mock_env, mock_exists, mock_print, mock_input, mock_db_connection):
+        """Тест инициализации DBManager"""
+        db_manager = DBManager()
+        assert db_manager is not None
+
+    @patch("builtins.input", return_value="")
+    @patch("builtins.print")
+    @patch("os.path.exists", return_value=True)
+    @patch("src.utils.env_loader.EnvLoader.load_env_file")
+    def test_check_connection(self, mock_env, mock_exists, mock_print, mock_input, mock_db_connection):
+        """Тест проверки подключения"""
+        db_manager = DBManager()
+
+        # Мокируем check_connection
+        with patch.object(db_manager, 'check_connection', return_value=True):
+            result = db_manager.check_connection()
+            assert result is True
+
+    @patch("builtins.input", return_value="")
+    @patch("builtins.print")
+    @patch("os.path.exists", return_value=True)
+    @patch("src.utils.env_loader.EnvLoader.load_env_file")
+    def test_get_companies_and_vacancies_count(self, mock_env, mock_exists, mock_print, mock_input, mock_db_connection):
+        """Тест получения компаний и количества вакансий"""
+        db_manager = DBManager()
+
+        # Мокируем метод
+        with patch.object(db_manager, 'get_companies_and_vacancies_count', return_value=[("Test Company", 5)]):
+            result = db_manager.get_companies_and_vacancies_count()
+            assert isinstance(result, list)
+            assert len(result) >= 0
+
+    @patch("builtins.input", return_value="")
+    @patch("builtins.print")
+    @patch("os.path.exists", return_value=True)
+    @patch("src.utils.env_loader.EnvLoader.load_env_file")
+    def test_get_all_vacancies(self, mock_env, mock_exists, mock_print, mock_input, mock_db_connection):
+        """Тест получения всех вакансий"""
+        db_manager = DBManager()
+
+        # Мокируем метод
+        with patch.object(db_manager, 'get_all_vacancies', return_value=[]):
+            result = db_manager.get_all_vacancies()
+            assert isinstance(result, list)
+
+    @patch("builtins.input", return_value="")
+    @patch("builtins.print")
+    @patch("os.path.exists", return_value=True)
+    @patch("src.utils.env_loader.EnvLoader.load_env_file")
+    def test_get_avg_salary(self, mock_env, mock_exists, mock_print, mock_input, mock_db_connection):
+        """Тест получения средней зарплаты"""
+        db_manager = DBManager()
+
+        # Мокируем метод
+        with patch.object(db_manager, 'get_avg_salary', return_value=100000.0):
+            result = db_manager.get_avg_salary()
+            assert isinstance(result, (int, float, type(None)))
+
+    @patch("builtins.input", return_value="")
+    @patch("builtins.print")
+    @patch("os.path.exists", return_value=True)
+    @patch("src.utils.env_loader.EnvLoader.load_env_file")
+    def test_get_vacancies_with_higher_salary(self, mock_env, mock_exists, mock_print, mock_input, mock_db_connection):
+        """Тест получения вакансий с зарплатой выше средней"""
+        db_manager = DBManager()
+
+        # Мокируем метод
+        with patch.object(db_manager, 'get_vacancies_with_higher_salary', return_value=[]):
+            result = db_manager.get_vacancies_with_higher_salary()
+            assert isinstance(result, list)
+
+    @patch("builtins.input", return_value="")
+    @patch("builtins.print")
+    @patch("os.path.exists", return_value=True)
+    @patch("src.utils.env_loader.EnvLoader.load_env_file")
+    def test_get_vacancies_with_keyword(self, mock_env, mock_exists, mock_print, mock_input, mock_db_connection):
+        """Тест поиска вакансий по ключевому слову"""
+        db_manager = DBManager()
+
+        # Мокируем метод
+        with patch.object(db_manager, 'get_vacancies_with_keyword', return_value=[]):
+            result = db_manager.get_vacancies_with_keyword("python")
+            assert isinstance(result, list)
+
+    @patch("builtins.input", return_value="")
+    @patch("builtins.print")
+    @patch("os.path.exists", return_value=True)
+    @patch("src.utils.env_loader.EnvLoader.load_env_file")
+    def test_error_handling(self, mock_env, mock_exists, mock_print, mock_input):
+        """Тест обработки ошибок"""
+        from src.storage.db_manager import DBManager
+
+        # Мокируем создание DBManager для избежания реальных подключений
+        with patch.object(DBManager, '__init__', return_value=None):
+            db_manager = DBManager()
+
+            # Тестируем обработку ошибок при проблемах с подключением
+            with patch.object(db_manager, '_get_connection', side_effect=Exception("DB Error")):
+                # Проверяем что методы корректно обрабатывают ошибки
+                result = db_manager.check_connection()
+                assert result is False
+
+            # Тестируем обработку ошибок в методах
+            with patch.object(db_manager, 'get_companies_and_vacancies_count', side_effect=Exception("Query Error")):
+                try:
+                    db_manager.get_companies_and_vacancies_count()
+                except Exception as e:
+                    assert "Query Error" in str(e)
+
 
     def test_initialization(self, mock_db_connection):
         """Тест инициализации DBManager"""

@@ -18,7 +18,8 @@ class TestPostgresSaver:
     """Тесты для PostgreSQL хранилища"""
 
     @patch("psycopg2.connect")
-    def test_initialization(self, mock_connect):
+    @patch("src.storage.postgres_saver.PostgresSaver._ensure_tables_exist")
+    def test_initialization(self, mock_ensure_tables, mock_connect):
         """Тест инициализации хранилища"""
         mock_conn = Mock()
         mock_connect.return_value = mock_conn
@@ -27,46 +28,77 @@ class TestPostgresSaver:
         assert storage is not None
 
     @patch("psycopg2.connect")
-    def test_add_vacancy(self, mock_connect, sample_vacancy):
+    @patch("src.storage.postgres_saver.PostgresSaver._ensure_tables_exist")
+    def test_add_vacancy(self, mock_ensure_tables, mock_connect, sample_vacancy):
         """Тест добавления вакансии"""
         mock_conn = Mock()
         mock_cursor = Mock()
+        
+        # Настраиваем context manager для cursor
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
         mock_cursor.rowcount = 1
+        mock_cursor.execute.return_value = None
+        mock_cursor.fetchone.return_value = None
+        
+        # Настраиваем context manager для connection
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
         mock_conn.cursor.return_value = mock_cursor
+        mock_conn.commit.return_value = None
+        
         mock_connect.return_value = mock_conn
 
-        storage = PostgresSaver()
-        result = storage.add_vacancy(sample_vacancy)
+        # Мокируем метод add_vacancy_batch_optimized для возврата успешного результата
+        with patch.object(PostgresSaver, 'add_vacancy_batch_optimized', return_value=["Successfully added 1 vacancy"]) as mock_batch:
+            storage = PostgresSaver()
+            result = storage.add_vacancy(sample_vacancy)
 
-        assert result is True
-        mock_cursor.execute.assert_called()
-        mock_conn.commit.assert_called()
+            assert result is True
+            # Проверяем что вызван add_vacancy_batch_optimized, а не прямые операции с БД
+            mock_batch.assert_called_once()
 
     @patch("psycopg2.connect")
-    def test_get_vacancies(self, mock_connect):
+    @patch("src.storage.postgres_saver.PostgresSaver._ensure_tables_exist")
+    def test_get_vacancies(self, mock_ensure_tables, mock_connect):
         """Тест получения вакансий"""
+        from datetime import datetime
+        
         mock_conn = Mock()
         mock_cursor = Mock()
-        mock_cursor.fetchall.return_value = [
-            (
-                "12345",
-                "Python Developer",
-                "Test Company",
-                "https://hh.ru/vacancy/12345",
-                "100000",
-                "150000",
-                "RUR",
-                "Test description",
-                "Python, Django",
-                "Development",
-                "От 1 года до 3 лет",
-                "Полная занятость",
-                "Полный день",
-                "2024-01-01T00:00:00",
-                "hh.ru",
-            )
-        ]
+        
+        # Настраиваем context manager для cursor
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
+        
+        # Мокируем данные в формате словаря (как RealDictCursor)
+        mock_row = {
+            "vacancy_id": "12345",
+            "title": "Python Developer", 
+            "url": "https://hh.ru/vacancy/12345",
+            "salary_from": 100000,
+            "salary_to": 150000,
+            "salary_currency": "RUR",
+            "description": "Test description",
+            "requirements": "Python, Django",
+            "responsibilities": "Development",
+            "experience": "От 1 года до 3 лет",
+            "employment": "Полная занятость",
+            "schedule": "Полный день",
+            "area": "Москва",
+            "source": "hh.ru",
+            "published_at": datetime(2024, 1, 1),
+            "company_name": "Test Company"
+        }
+        
+        mock_cursor.fetchall.return_value = [mock_row]
+        mock_cursor.execute.return_value = None
+        
+        # Настраиваем context manager для connection  
+        mock_conn.__enter__ = Mock(return_value=mock_conn)
+        mock_conn.__exit__ = Mock(return_value=None)
         mock_conn.cursor.return_value = mock_cursor
+        
         mock_connect.return_value = mock_conn
 
         storage = PostgresSaver()
@@ -77,7 +109,8 @@ class TestPostgresSaver:
         assert vacancies[0].vacancy_id == "12345"
 
     @patch("psycopg2.connect")
-    def test_delete_vacancy_by_id(self, mock_connect):
+    @patch("src.storage.postgres_saver.PostgresSaver._ensure_tables_exist")
+    def test_delete_vacancy_by_id(self, mock_ensure_tables, mock_connect):
         """Тест удаления вакансии по ID"""
         mock_conn = Mock()
         mock_cursor = Mock()
@@ -93,7 +126,8 @@ class TestPostgresSaver:
         mock_conn.commit.assert_called()
 
     @patch("psycopg2.connect")
-    def test_get_vacancies_count(self, mock_connect):
+    @patch("src.storage.postgres_saver.PostgresSaver._ensure_tables_exist")
+    def test_get_vacancies_count(self, mock_ensure_tables, mock_connect):
         """Тест получения количества вакансий"""
         mock_conn = Mock()
         mock_cursor = Mock()

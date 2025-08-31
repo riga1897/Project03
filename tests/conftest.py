@@ -1,222 +1,165 @@
-"""
-Конфигурация pytest и фикстуры для тестов
 
-Содержит общие фикстуры и настройки для всех тестов проекта.
-Обеспечивает единообразное тестовое окружение и тестовые данные.
 """
-
-import os
-import tempfile
-from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+Консолидированные фикстуры для оптимизированного тестирования
+"""
 
 import pytest
+from unittest.mock import Mock, patch, MagicMock
 
-from src.storage.postgres_saver import PostgresSaver
-from src.utils.salary import Salary
-from src.vacancies.models import Vacancy
+
+@pytest.fixture(scope="session")
+def unified_db_connection():
+    """Единое подключение к БД для всех тестов в сессии"""
+    mock_connection = Mock()
+    mock_connection.__enter__ = Mock(return_value=mock_connection)
+    mock_connection.__exit__ = Mock(return_value=None)
+    mock_connection.commit = Mock()
+    mock_connection.rollback = Mock()
+    mock_connection.close = Mock()
+    mock_connection.set_client_encoding = Mock()
+    mock_connection.autocommit = True
+    mock_connection.encoding = "UTF8"
+
+    mock_cursor = Mock()
+    mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+    mock_cursor.__exit__ = Mock(return_value=None)
+    mock_cursor.execute = Mock()
+    mock_cursor.fetchone = Mock(return_value=(1,))
+    mock_cursor.fetchall = Mock(return_value=[])
+    mock_cursor.rowcount = 1
+    mock_cursor.connection = mock_connection
+    mock_connection.cursor = Mock(return_value=mock_cursor)
+
+    return mock_connection
+
+
+@pytest.fixture(scope="session")
+def consolidated_external_mocks():
+    """Консолидированные моки для всех внешних ресурсов"""
+    # HTTP моки
+    mock_response = Mock()
+    mock_response.json.return_value = {"items": [], "found": 0, "pages": 0}
+    mock_response.status_code = 200
+    mock_response.raise_for_status.return_value = None
+    mock_response.text = '{"items": []}'
+
+    # Файловые моки
+    mock_file_content = '{"test": "data"}'
+    
+    return {
+        "http_response": mock_response,
+        "file_content": mock_file_content,
+        "env_vars": {
+            "PGHOST": "localhost",
+            "PGPORT": "5432",
+            "PGDATABASE": "test_db",
+            "PGUSER": "test_user",
+            "PGPASSWORD": "test_pass",
+            "HH_API_URL": "https://api.hh.ru",
+            "SJ_API_URL": "https://api.superjob.ru",
+            "SJ_SECRET_KEY": "test_secret_key"
+        }
+    }
+
+
+@pytest.fixture(autouse=True)
+def global_external_resource_isolation(unified_db_connection, consolidated_external_mocks):
+    """Глобальная изоляция от всех внешних ресурсов"""
+    with patch("requests.get", return_value=consolidated_external_mocks["http_response"]) as mock_get, \
+         patch("requests.post", return_value=consolidated_external_mocks["http_response"]) as mock_post, \
+         patch("psycopg2.connect", return_value=unified_db_connection) as mock_db_connect, \
+         patch("psycopg2.extras.execute_values") as mock_execute_values, \
+         patch("builtins.input", return_value="0") as mock_input, \
+         patch("builtins.print") as mock_print, \
+         patch("os.path.exists", return_value=True) as mock_exists, \
+         patch("os.makedirs") as mock_makedirs, \
+         patch("src.utils.env_loader.EnvLoader.load_env_file") as mock_env_load, \
+         patch.dict("os.environ", consolidated_external_mocks["env_vars"], clear=False):
+
+        # Возвращаем все моки для использования в тестах
+        yield {
+            "http_get": mock_get,
+            "http_post": mock_post,
+            "db_connect": mock_db_connect,
+            "execute_values": mock_execute_values,
+            "input": mock_input,
+            "print": mock_print,
+            "path_exists": mock_exists,
+            "makedirs": mock_makedirs,
+            "env_load": mock_env_load,
+            "db_connection": unified_db_connection,
+            "external_mocks": consolidated_external_mocks
+        }
 
 
 @pytest.fixture
 def sample_vacancy():
-    """Фикстура с тестовой вакансией"""
+    """Стандартная тестовая вакансия"""
+    from src.vacancies.models import Vacancy
+    
     return Vacancy(
-        title="Python Developer",
-        url="https://example.com/vacancy/12345",
+        title="Test Vacancy",
+        url="https://test.com/vacancy/1",
         salary={"from": 100000, "to": 150000, "currency": "RUR"},
-        description="Разработка веб-приложений на Python",
-        requirements="Знание Python, Django, PostgreSQL",
-        responsibilities="Разработка и поддержка веб-сервисов",
-        experience="От 3 до 6 лет",
-        employment="Полная занятость",
-        schedule="Полный день",
+        description="Test description",
+        requirements="Test requirements",
+        responsibilities="Test responsibilities",
+        experience="Test experience",
+        employment="Test employment",
+        schedule="Test schedule",
         employer={"name": "Test Company"},
-        vacancy_id="12345",
+        vacancy_id="test_1",
         published_at="2024-01-15T10:00:00",
-        source="hh.ru",
+        source="test_api"
     )
-
-
-@pytest.fixture
-def sample_vacancies(sample_vacancy):
-    """Фикстура с коллекцией тестовых вакансий для массовых операций"""
-    vacancy2 = Vacancy(
-        title="Java Developer",
-        url="https://hh.ru/vacancy/67890",
-        salary={"from": 80000, "to": 120000, "currency": "RUR"},
-        description="Java development",
-        requirements="Java, Spring",
-        responsibilities="Backend development",
-        experience="От 3 до 6 лет",
-        employment="Полная занятость",
-        schedule="Полный день",
-        employer={"name": "Java Corp"},
-        vacancy_id="67890",
-        published_at="2024-01-02T00:00:00",
-        source="hh.ru",
-    )
-    return [sample_vacancy, vacancy2]
-
-
-@pytest.fixture
-def temp_json_file():
-    """Фикстура для создания временного JSON файла для тестирования файловых операций"""
-    with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".json") as f:
-        yield f.name
-    os.unlink(f.name)
-
-
-@pytest.fixture
-def temp_directory():
-    """Фикстура для создания временной директории"""
-    with tempfile.TemporaryDirectory() as temp_dir:
-        yield Path(temp_dir)
-
-
-@pytest.fixture
-def mock_db_config():
-    """Фикстура с имитацией конфигурации базы данных для тестирования"""
-    return {
-        "host": "localhost",
-        "port": "5432",
-        "database": "test_db",
-        "username": "test_user",
-        "password": "test_pass",
-    }
-
-
-@pytest.fixture
-def mock_api_response():
-    """Фикстура с имитацией ответа API для тестирования без реальных запросов"""
-    return {
-        "items": [
-            {
-                "id": "12345",
-                "name": "Python Developer",
-                "alternate_url": "https://hh.ru/vacancy/12345",
-                "salary": {"from": 100000, "to": 150000, "currency": "RUR"},
-                "snippet": {"requirement": "Python, Django", "responsibility": "Development"},
-                "employer": {"name": "Test Company"},
-                "published_at": "2024-01-01T00:00:00+03:00",
-            }
-        ],
-        "found": 1,
-        "pages": 1,
-        "page": 0,
-        "per_page": 20,
-    }
-
-
-@pytest.fixture
-def mock_superjob_response():
-    """Фикстура с имитацией ответа SuperJob API"""
-    return {
-        "objects": [
-            {
-                "id": 54321,
-                "profession": "Java Developer",
-                "link": "https://superjob.ru/vakansii/java-developer-54321.html",
-                "payment_from": 80000,
-                "payment_to": 120000,
-                "currency": "rub",
-                "candidat": "Java, Spring",
-                "vacancyRichText": "Backend development",
-                "firm_name": "Java Corp",
-                "date_published": 1704067200,
-            }
-        ],
-        "total": 1,
-    }
-
-
-@pytest.fixture
-def mock_storage():
-    """Мок для хранилища данных"""
-    storage = Mock()
-    storage.get_vacancies.return_value = []
-    storage.add_vacancy.return_value = True
-    storage.delete_vacancy_by_id.return_value = True
-    storage.delete_vacancies_by_keyword.return_value = 0
-    storage.get_vacancies_count.return_value = 0
-    storage.clear_vacancies.return_value = True
-    return storage
 
 
 @pytest.fixture
 def mock_db_manager():
-    """Мок для DBManager"""
-    db_manager = Mock()
-    db_manager.check_connection.return_value = True
-    db_manager.create_tables.return_value = None
-    db_manager.populate_companies_table.return_value = None
-    db_manager.get_companies_and_vacancies_count.return_value = []
-    db_manager.get_all_vacancies.return_value = []
-    db_manager.get_avg_salary.return_value = 100000
-    db_manager.get_vacancies_with_higher_salary.return_value = []
-    db_manager.get_vacancies_with_keyword.return_value = []
-    return db_manager
-
-
-@pytest.fixture(autouse=True)
-def mock_all_external_resources():
-    """Глобально мокает все внешние ресурсы для всех тестов"""
-    with patch("requests.get") as mock_requests, patch("requests.post") as mock_post, patch(
-        "psycopg2.connect"
-    ) as mock_db, patch("builtins.input") as mock_input, patch(
-        "src.utils.env_loader.EnvLoader.load_env_file"
-    ) as mock_env, patch(
-        "os.path.exists"
-    ) as mock_exists, patch(
-        "os.makedirs"
-    ) as mock_makedirs, patch(
-        "psycopg2.extras.execute_values"
-    ) as mock_execute_values:
-
-        # Настраиваем моки для HTTP запросов
-        mock_response = Mock()
-        mock_response.json.return_value = {"items": [], "found": 0}
-        mock_response.status_code = 200
-        mock_response.raise_for_status.return_value = None
-        mock_requests.return_value = mock_response
-        mock_post.return_value = mock_response
-
-        # Настраиваем мок для базы данных
-        mock_connection = Mock()
-        mock_cursor = Mock()
-        mock_cursor.fetchone.return_value = None
-        mock_cursor.fetchall.return_value = []
-        mock_cursor.rowcount = 0
-        # Настраиваем кодировку для psycopg2
-        mock_connection.encoding = "UTF8"
-        mock_cursor.connection = mock_connection
-        mock_connection.cursor.return_value = mock_cursor
-        mock_db.return_value = mock_connection
-
-        # Настраиваем мок для execute_values
-        mock_execute_values.return_value = None
-
-        # Настраиваем мок для ввода пользователя
-        mock_input.return_value = "test_input"
-
-        # Настраиваем остальные моки
-        mock_env.return_value = {}
-        mock_exists.return_value = True
-        mock_makedirs.return_value = None
-
-        yield
+    """Мокированный DBManager с едиными методами"""
+    mock_manager = Mock()
+    mock_manager.check_connection.return_value = True
+    mock_manager.get_companies_and_vacancies_count.return_value = [("Test Company", 5)]
+    mock_manager.get_all_vacancies.return_value = []
+    mock_manager.get_avg_salary.return_value = 100000.0
+    mock_manager.get_vacancies_with_higher_salary.return_value = []
+    mock_manager.get_vacancies_with_keyword.return_value = []
+    mock_manager.get_database_stats.return_value = {}
+    mock_manager.get_target_companies_analysis.return_value = []
+    return mock_manager
 
 
 @pytest.fixture
-def mock_unified_api():
-    """Мок для UnifiedAPI"""
-    api = Mock()
-    api.search_vacancies.return_value = []
-    api.get_available_sources.return_value = ["hh.ru"]
-    api.clear_cache.return_value = None
-    return api
+def mock_postgres_saver():
+    """Мокированный PostgresSaver с едиными методами"""
+    mock_saver = Mock()
+    mock_saver.add_vacancy.return_value = True
+    mock_saver.add_vacancies.return_value = ["Success"]
+    mock_saver.add_vacancy_batch_optimized.return_value = ["Success"]
+    mock_saver.get_vacancies.return_value = []
+    mock_saver.get_vacancies_count.return_value = 0
+    mock_saver.delete_vacancy_by_id.return_value = True
+    mock_saver.save_vacancies.return_value = 1
+    mock_saver.is_vacancy_exists.return_value = False
+    return mock_saver
 
 
 @pytest.fixture
-def sample_companies_data():
-    """Тестовые данные компаний"""
-    return [{"id": 1, "name": "СБЕР", "vacancies_count": 10}, {"id": 2, "name": "Яндекс", "vacancies_count": 5}]
+def consolidated_api_mocks():
+    """Консолидированные моки для всех API"""
+    mock_hh_api = Mock()
+    mock_hh_api.get_vacancies.return_value = [{"name": "HH Test Vacancy"}]
+    mock_hh_api.get_vacancies_page.return_value = [{"name": "HH Test Vacancy"}]
+    
+    mock_sj_api = Mock()
+    mock_sj_api.get_vacancies.return_value = [{"profession": "SJ Test Job"}]
+    mock_sj_api.get_vacancies_page.return_value = [{"profession": "SJ Test Job"}]
+    
+    mock_unified_api = Mock()
+    mock_unified_api.get_vacancies_from_sources.return_value = [{"name": "Unified Test Vacancy"}]
+    
+    return {
+        "hh_api": mock_hh_api,
+        "sj_api": mock_sj_api,
+        "unified_api": mock_unified_api
+    }

@@ -158,7 +158,7 @@ class TestVacancyStats:
         assert "without_employer" in analysis
         assert "employer_coverage" in analysis
         assert "unique_employers" in analysis
-        assert "employer_names" in analysis
+        assert "employers_list" in analysis
 
         assert analysis["total_vacancies"] == 3
         assert analysis["unique_employers"] == 2  # TechCorp и JavaCorp

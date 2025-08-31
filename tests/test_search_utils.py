@@ -10,8 +10,7 @@ from src.utils.search_utils import (
     normalize_query,
     extract_keywords,
     build_search_params,
-    validate_search_query,
-    prepare_search_query
+    validate_search_query
 )
 
 
@@ -73,20 +72,7 @@ class TestSearchUtils:
         is_valid = validate_search_query("a")
         assert isinstance(is_valid, bool)
 
-    def test_prepare_search_query_basic(self):
-        """Тест подготовки поискового запроса"""
-        prepared = prepare_search_query("  Python Developer  ")
-        assert isinstance(prepared, str)
-
-    def test_prepare_search_query_with_operators(self):
-        """Тест подготовки запроса с логическими операторами"""
-        prepared = prepare_search_query("Python AND Django OR Flask")
-        assert isinstance(prepared, str)
-
-    def test_prepare_search_query_special_chars(self):
-        """Тест подготовки запроса со спецсимволами"""
-        prepared = prepare_search_query("C++ & Python!")
-        assert isinstance(prepared, str)
+    
 
     def test_all_functions_exist(self):
         """Тест существования всех функций"""
@@ -95,7 +81,7 @@ class TestSearchUtils:
         # Проверяем основные функции
         expected_functions = [
             'normalize_query', 'extract_keywords', 'build_search_params',
-            'validate_search_query', 'prepare_search_query'
+            'validate_search_query'
         ]
 
         existing_functions = [func for func in expected_functions

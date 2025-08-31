@@ -1,422 +1,510 @@
+
 """
-Тесты для навигации пользовательского интерфейса
+Тесты для UINavigation
+
+Содержит тесты для проверки корректности работы навигации по меню
+согласно реальной реализации класса UINavigation.
 """
 
-from typing import Any, Callable, Dict, List
-from unittest.mock import Mock, call, patch
-
+from unittest.mock import Mock, patch
 import pytest
-
-
-# Моковый UINavigation для тестов
-class UINavigation:
-    """Навигация по интерфейсу пользователя"""
-
-    def __init__(self):
-        self.menu_stack = []
-        self.current_menu = None
-        self.menu_items = {}
-        self.exit_requested = False
-
-    def create_menu(self, menu_id: str, title: str, items: List[Dict[str, Any]]):
-        """Создание меню"""
-        menu = {"id": menu_id, "title": title, "items": items}
-        self.menu_items[menu_id] = menu
-
-    def show_menu(self, menu_id: str) -> str:
-        """Отображение меню"""
-        if menu_id not in self.menu_items:
-            return "Menu not found"
-
-        menu = self.menu_items[menu_id]
-        self.current_menu = menu_id
-
-        output = []
-        output.append("=" * 50)
-        output.append(menu["title"])
-        output.append("=" * 50)
-
-        for i, item in enumerate(menu["items"], 1):
-            if item.get("separator"):
-                output.append("-" * 30)
-            else:
-                output.append(f"{i}. {item['text']}")
-
-        output.append("0. Выход" if not self.menu_stack else "0. Назад")
-        output.append("=" * 50)
-
-        return "\n".join(output)
-
-    def handle_menu_choice(self, menu_id: str, choice: str) -> Dict[str, Any]:
-        """Обработка выбора пункта меню"""
-        if menu_id not in self.menu_items:
-            return {"error": "Menu not found"}
-
-        menu = self.menu_items[menu_id]
-
-        if choice == "0":
-            if self.menu_stack:
-                return {"action": "back"}
-            else:
-                return {"action": "exit"}
-
-        try:
-            choice_index = int(choice) - 1
-            if 0 <= choice_index < len(menu["items"]):
-                item = menu["items"][choice_index]
-
-                if item.get("separator"):
-                    return {"error": "Invalid choice"}
-
-                return {
-                    "action": "execute",
-                    "item": item,
-                    "function": item.get("function"),
-                    "submenu": item.get("submenu"),
-                }
-        except ValueError:
-            pass
+from src.utils.ui_navigation import UINavigation
 
 
 class TestUINavigation:
-    """Тесты для UINavigation"""
+    """Тесты для класса UINavigation"""
 
-    def setup_method(self):
-        """Подготовка к каждому тесту"""
-        self.nav = UINavigation()
+    @pytest.fixture
+    def nav(self):
+        """Фикстура с экземпляром UINavigation"""
+        return UINavigation()
 
-    def test_create_menu(self):
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_initialization(self, mock_input, mock_print, nav):
+        """Тест инициализации UINavigation"""
+        assert nav is not None
+        assert hasattr(nav, 'menus')
+        assert isinstance(nav.menus, dict)
+
+    @patch("builtins.print") 
+    @patch("builtins.input", return_value="")
+    def test_create_menu(self, mock_input, mock_print, nav):
         """Тест создания меню"""
-        items = [{"text": "Пункт 1", "function": lambda: "result1"}, {"text": "Пункт 2", "submenu": "submenu1"}]
+        items = [{"text": "Пункт 1"}, {"text": "Пункт 2"}]
+        
+        nav.create_menu("test_menu", "Тестовое меню", items)
+        
+        assert "test_menu" in nav.menus
+        menu_data = nav.menus["test_menu"]
+        assert menu_data["title"] == "Тестовое меню"
+        assert menu_data["items"] == items
 
-        self.nav.create_menu("main", "Главное меню", items)
-
-        assert "main" in self.nav.menu_items
-        menu = self.nav.menu_items["main"]
-        assert menu["id"] == "main"
-        assert menu["title"] == "Главное меню"
-        assert len(menu["items"]) == 2
-        assert menu["items"][0]["text"] == "Пункт 1"
-
-    def test_show_menu(self):
-        """Тест отображения меню"""
-        items = [{"text": "Поиск вакансий"}, {"text": "Настройки"}, {"separator": True}, {"text": "О программе"}]
-
-        self.nav.create_menu("main", "Главное меню", items)
-        output = self.nav.show_menu("main")
-
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_show_menu_basic(self, mock_input, mock_print, nav):
+        """Тест базового отображения меню"""
+        items = [{"text": "Поиск вакансий"}, {"text": "Настройки"}]
+        
+        nav.create_menu("main", "Главное меню", items)
+        output = nav.show_menu("main")
+        
         assert "Главное меню" in output
         assert "1. Поиск вакансий" in output
         assert "2. Настройки" in output
-        assert "3. О программе" in output
         assert "0. Выход" in output
-        assert "=" * 50 in output
 
-    def test_show_menu_not_found(self):
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_show_menu_with_separator(self, mock_input, mock_print, nav):
+        """Тест отображения меню с разделителем"""
+        items = [
+            {"text": "Поиск вакансий"}, 
+            {"text": "Настройки"}, 
+            {"separator": True}, 
+            {"text": "О программе"}
+        ]
+        
+        nav.create_menu("main", "Главное меню", items)
+        output = nav.show_menu("main")
+        
+        assert "Главное меню" in output
+        assert "1. Поиск вакансий" in output
+        assert "2. Настройки" in output
+        # Согласно реальной логике - разделитель не влияет на нумерацию
+        assert "3. О программе" in output
+        assert "------------------------------" in output
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_show_menu_nonexistent(self, mock_input, mock_print, nav):
         """Тест отображения несуществующего меню"""
-        result = self.nav.show_menu("nonexistent")
-        assert result == "Menu not found"
+        output = nav.show_menu("nonexistent")
+        
+        # Реальная реализация возвращает сообщение об ошибке
+        assert "Меню с ID 'nonexistent' не найдено" in output
 
-    def test_show_menu_with_stack(self):
-        """Тест отображения меню с навигационным стеком"""
-        items = [{"text": "Пункт 1"}]
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_handle_menu_choice_valid(self, mock_input, mock_print, nav):
+        """Тест обработки валидного выбора меню"""
+        items = [
+            {"text": "Пункт 1", "action": lambda: "action1"},
+            {"text": "Пункт 2", "action": lambda: "action2"}
+        ]
+        
+        nav.create_menu("test", "Тест", items)
+        
+        result = nav.handle_menu_choice("test", "1")
+        
+        # Реальная реализация возвращает словарь с информацией о выборе
+        assert isinstance(result, dict)
+        assert result.get("action") == "select"
+        assert "item" in result
 
-        self.nav.create_menu("main", "Главное меню", items)
-        self.nav.create_menu("sub", "Подменю", items)
-
-        # Навигируем к подменю
-        self.nav.navigate_to_menu("sub")
-        output = self.nav.show_menu("sub")
-
-        assert "0. Назад" in output
-        assert "0. Выход" not in output
-
-    def test_handle_menu_choice_valid(self):
-        """Тест обработки валидного выбора"""
-        items = [{"text": "Пункт 1", "function": lambda: "test_result"}, {"text": "Пункт 2", "submenu": "submenu"}]
-
-        self.nav.create_menu("main", "Главное меню", items)
-
-        result = self.nav.handle_menu_choice("main", "1")
-
-        assert result["action"] == "execute"
-        assert result["function"] is not None
-        assert callable(result["function"])
-
-    def test_handle_menu_choice_invalid_number(self):
-        """Тест обработки невалидного числового выбора"""
-        items = [{"text": "Пункт 1"}]
-
-        self.nav.create_menu("main", "Главное меню", items)
-
-        result = self.nav.handle_menu_choice("main", "999")
-        assert "error" in result
-
-    def test_handle_menu_choice_non_numeric(self):
-        """Тест обработки нечислового выбора"""
-        items = [{"text": "Пункт 1"}]
-
-        self.nav.create_menu("main", "Главное меню", items)
-
-        result = self.nav.handle_menu_choice("main", "abc")
-        assert "error" in result
-
-    def test_handle_menu_choice_exit(self):
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_handle_menu_choice_exit(self, mock_input, mock_print, nav):
         """Тест обработки выбора выхода"""
         items = [{"text": "Пункт 1"}]
+        
+        nav.create_menu("test", "Тест", items)
+        
+        result = nav.handle_menu_choice("test", "0")
+        
+        # Реальная реализация возвращает словарь с action: exit
+        assert isinstance(result, dict)
+        assert result.get("action") == "exit"
 
-        self.nav.create_menu("main", "Главное меню", items)
-
-        result = self.nav.handle_menu_choice("main", "0")
-        assert result["action"] == "exit"
-
-    def test_handle_menu_choice_back(self):
-        """Тест обработки выбора назад"""
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_handle_menu_choice_invalid_number(self, mock_input, mock_print, nav):
+        """Тест обработки невалидного числового выбора"""
         items = [{"text": "Пункт 1"}]
-
-        self.nav.create_menu("main", "Главное меню", items)
-        self.nav.menu_stack = ["previous_menu"]
-
-        result = self.nav.handle_menu_choice("main", "0")
-        assert result["action"] == "back"
-
-    def test_handle_menu_choice_separator(self):
-        """Тест обработки выбора разделителя"""
-        items = [{"text": "Пункт 1"}, {"separator": True}]
-
-        self.nav.create_menu("main", "Главное меню", items)
-
-        result = self.nav.handle_menu_choice("main", "2")
+        
+        nav.create_menu("main", "Главное меню", items)
+        
+        # Тестируем невалидный номер (больше количества пунктов)
+        result = nav.handle_menu_choice("main", "99")
+        
+        # Реальная реализация возвращает словарь с ошибкой
+        assert isinstance(result, dict)
         assert "error" in result
+        assert "Выбор должен быть от 1 до 1" in result["error"]
 
-    def test_navigate_to_menu(self):
-        """Тест навигации к меню"""
-        self.nav.current_menu = "main"
-        self.nav.navigate_to_menu("submenu")
-
-        assert self.nav.current_menu == "submenu"
-        assert "main" in self.nav.menu_stack
-
-    def test_navigate_to_menu_no_current(self):
-        """Тест навигации к меню без текущего меню"""
-        self.nav.navigate_to_menu("submenu")
-
-        assert self.nav.current_menu == "submenu"
-        assert len(self.nav.menu_stack) == 0
-
-    def test_go_back(self):
-        """Тест возврата к предыдущему меню"""
-        self.nav.menu_stack = ["main", "submenu1"]
-        self.nav.current_menu = "submenu2"
-
-        result = self.nav.go_back()
-
-        assert result is True
-        assert self.nav.current_menu == "submenu1"
-        assert self.nav.menu_stack == ["main"]
-
-    def test_go_back_empty_stack(self):
-        """Тест возврата при пустом стеке"""
-        self.nav.menu_stack = []
-        self.nav.current_menu = "main"
-
-        result = self.nav.go_back()
-
-        assert result is False
-        assert self.nav.current_menu == "main"
-
-    def test_get_current_menu(self):
-        """Тест получения текущего меню"""
-        self.nav.current_menu = "test_menu"
-
-        assert self.nav.get_current_menu() == "test_menu"
-
-    def test_get_menu_breadcrumb(self):
-        """Тест получения хлебных крошек"""
-        self.nav.menu_stack = ["main", "submenu1"]
-        self.nav.current_menu = "submenu2"
-
-        breadcrumb = self.nav.get_menu_breadcrumb()
-
-        assert breadcrumb == ["main", "submenu1", "submenu2"]
-
-    def test_get_menu_breadcrumb_empty(self):
-        """Тест получения хлебных крошек при пустой навигации"""
-        breadcrumb = self.nav.get_menu_breadcrumb()
-        assert breadcrumb == []
-
-    def test_clear_navigation_stack(self):
-        """Тест очистки навигационного стека"""
-        self.nav.menu_stack = ["main", "submenu1"]
-        self.nav.current_menu = "submenu2"
-
-        self.nav.clear_navigation_stack()
-
-        assert len(self.nav.menu_stack) == 0
-        assert self.nav.current_menu is None
-
-    def test_request_exit(self):
-        """Тест запроса выхода"""
-        assert self.nav.is_exit_requested() is False
-
-        self.nav.request_exit()
-
-        assert self.nav.is_exit_requested() is True
-
-    def test_get_menu_depth(self):
-        """Тест получения глубины навигации"""
-        assert self.nav.get_menu_depth() == 0
-
-        self.nav.menu_stack = ["main", "submenu1"]
-
-        assert self.nav.get_menu_depth() == 2
-
-    def test_execute_menu_item_with_function(self):
-        """Тест выполнения пункта меню с функцией"""
-        test_function = Mock(return_value="test_result")
-        item = {"text": "Test Item", "function": test_function}
-
-        result = self.nav.execute_menu_item(item)
-
-        assert result == "test_result"
-        test_function.assert_called_once()
-
-    def test_execute_menu_item_with_submenu(self):
-        """Тест выполнения пункта меню с подменю"""
-        item = {"text": "Test Item", "submenu": "test_submenu"}
-
-        result = self.nav.execute_menu_item(item)
-
-        assert result["action"] == "navigate"
-        assert result["menu"] == "test_submenu"
-        assert self.nav.current_menu == "test_submenu"
-
-    def test_execute_menu_item_function_exception(self):
-        """Тест выполнения пункта меню с исключением в функции"""
-
-        def error_function():
-            raise ValueError("Test error")
-
-        item = {"text": "Test Item", "function": error_function}
-
-        result = self.nav.execute_menu_item(item)
-
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_handle_menu_choice_invalid_format(self, mock_input, mock_print, nav):
+        """Тест обработки невалидного формата выбора"""
+        items = [{"text": "Пункт 1"}]
+        
+        nav.create_menu("test", "Тест", items)
+        
+        # Тестируем нечисловой ввод
+        result = nav.handle_menu_choice("test", "abc")
+        
+        # Реальная реализация возвращает словарь с ошибкой
+        assert isinstance(result, dict)
         assert "error" in result
-        assert "Test error" in result["error"]
+        assert "Выбор должен быть числом" in result["error"]
 
-    def test_execute_menu_item_no_action(self):
-        """Тест выполнения пункта меню без действия"""
-        item = {"text": "Test Item"}
-
-        result = self.nav.execute_menu_item(item)
-
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_handle_menu_choice_nonexistent_menu(self, mock_input, mock_print, nav):
+        """Тест обработки выбора в несуществующем меню"""
+        result = nav.handle_menu_choice("nonexistent", "1")
+        
+        # Реальная реализация возвращает словарь с ошибкой
+        assert isinstance(result, dict)
         assert "error" in result
-        assert "No action defined" in result["error"]
+        assert "Меню с ID 'nonexistent' не найдено" in result["error"]
 
-    def test_integration_navigation_flow(self):
-        """Тест интегрированного потока навигации"""
-        # Создаем главное меню
-        main_items = [
-            {"text": "Поиск", "submenu": "search"},
-            {"text": "Настройки", "function": lambda: "settings_opened"},
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_display_formatting(self, mock_input, mock_print, nav):
+        """Тест форматирования отображения меню"""
+        items = [{"text": "Тестовый пункт"}]
+        nav.create_menu("format", "Тест форматирования", items)
+        
+        output = nav.show_menu("format")
+        
+        # Проверяем наличие границ меню
+        assert "==================================================" in output
+        assert "1. Тестовый пункт" in output
+        assert "0. Выход" in output
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_item_with_action(self, mock_input, mock_print, nav):
+        """Тест пункта меню с действием"""
+        mock_action = Mock(return_value="test_result")
+        items = [{"text": "Действие", "action": mock_action}]
+        
+        nav.create_menu("action_menu", "Меню с действием", items)
+        
+        result = nav.handle_menu_choice("action_menu", "1")
+        
+        # Реальная реализация возвращает информацию о выборе, но не вызывает действие напрямую
+        assert isinstance(result, dict)
+        assert result.get("action") == "select"
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_item_without_action(self, mock_input, mock_print, nav):
+        """Тест пункта меню без действия"""
+        items = [{"text": "Пункт без действия"}]
+        
+        nav.create_menu("no_action", "Меню без действий", items)
+        
+        result = nav.handle_menu_choice("no_action", "1")
+        
+        # Реальная реализация возвращает информацию о выборе
+        assert isinstance(result, dict)
+        assert result.get("action") == "select"
+        assert "item" in result
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_complex_menu_structure(self, mock_input, mock_print, nav):
+        """Тест сложной структуры меню с различными типами элементов"""
+        items = [
+            {"text": "Обычный пункт"},
+            {"text": "Пункт с действием", "action": lambda: "executed"},
+            {"separator": True},
+            {"text": "Последний пункт"}
         ]
-        self.nav.create_menu("main", "Главное меню", main_items)
+        
+        nav.create_menu("complex", "Сложное меню", items)
+        output = nav.show_menu("complex")
+        
+        assert "Сложное меню" in output
+        assert "1. Обычный пункт" in output
+        assert "2. Пункт с действием" in output
+        assert "------------------------------" in output
+        # Согласно реальной логике нумерации
+        assert "3. Последний пункт" in output
+        assert "0. Выход" in output
 
-        # Создаем подменю поиска
-        search_items = [
-            {"text": "По ключевому слову", "function": lambda: "keyword_search"},
-            {"text": "Расширенный поиск", "function": lambda: "advanced_search"},
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_choice_edge_cases(self, mock_input, mock_print, nav):
+        """Тест граничных случаев выбора меню"""
+        items = [{"text": "Единственный пункт"}]
+        nav.create_menu("edge", "Граничный тест", items)
+        
+        # Тест пустого ввода
+        result = nav.handle_menu_choice("edge", "")
+        assert isinstance(result, dict)
+        assert "error" in result
+        
+        # Тест отрицательного числа
+        result = nav.handle_menu_choice("edge", "-1")
+        assert isinstance(result, dict)
+        assert "error" in result
+        
+        # Тест нуля (выход)
+        result = nav.handle_menu_choice("edge", "0")
+        assert isinstance(result, dict)
+        assert result.get("action") == "exit"
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_empty_menu(self, mock_input, mock_print, nav):
+        """Тест пустого меню"""
+        nav.create_menu("empty", "Пустое меню", [])
+        output = nav.show_menu("empty")
+        
+        assert "Пустое меню" in output
+        assert "0. Выход" in output
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_overwrite(self, mock_input, mock_print, nav):
+        """Тест перезаписи существующего меню"""
+        items1 = [{"text": "Старый пункт"}]
+        items2 = [{"text": "Новый пункт"}]
+        
+        nav.create_menu("test", "Первое меню", items1)
+        nav.create_menu("test", "Второе меню", items2)
+        
+        output = nav.show_menu("test")
+        
+        assert "Второе меню" in output
+        assert "Новый пункт" in output
+        assert "Старый пункт" not in output
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_action_exception_handling(self, mock_input, mock_print, nav):
+        """Тест обработки исключений в действиях"""
+        def failing_action():
+            raise Exception("Test exception")
+        
+        items = [{"text": "Падающее действие", "action": failing_action}]
+        nav.create_menu("error_test", "Тест ошибок", items)
+        
+        # Действие должно обрабатываться без падения тестов
+        result = nav.handle_menu_choice("error_test", "1")
+        
+        # Результат должен быть словарем с информацией о выборе
+        assert isinstance(result, dict)
+        assert result.get("action") == "select"
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_multiple_separators(self, mock_input, mock_print, nav):
+        """Тест меню с несколькими разделителями"""
+        items = [
+            {"text": "Пункт 1"},
+            {"separator": True},
+            {"text": "Пункт 2"},
+            {"separator": True},
+            {"text": "Пункт 3"}
         ]
-        self.nav.create_menu("search", "Меню поиска", search_items)
+        
+        nav.create_menu("multi_sep", "Меню с разделителями", items)
+        output = nav.show_menu("multi_sep")
+        
+        assert "1. Пункт 1" in output
+        # Согласно реальной логике нумерации
+        assert "2. Пункт 2" in output
+        assert "3. Пункт 3" in output
 
-        # Начинаем с главного меню
-        assert self.nav.get_menu_depth() == 0
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_choice_validation(self, mock_input, mock_print, nav):
+        """Тест валидации выбора пользователя"""
+        items = [{"text": "Пункт 1"}, {"text": "Пункт 2"}]
+        nav.create_menu("validation", "Валидация", items)
+        
+        # Тестируем различные варианты ввода
+        test_cases = [
+            ("1", "valid"),      # Валидный выбор
+            ("2", "valid"),      # Валидный выбор  
+            ("0", "exit"),       # Выход
+            ("3", "invalid"),    # Превышает количество пунктов
+            ("-1", "invalid"),   # Отрицательное число
+            ("abc", "invalid"),  # Не число
+            ("", "invalid"),     # Пустой ввод
+            ("1.5", "invalid"),  # Дробное число
+        ]
+        
+        for choice, expected_type in test_cases:
+            result = nav.handle_menu_choice("validation", choice)
+            
+            if expected_type == "exit":
+                assert isinstance(result, dict)
+                assert result.get("action") == "exit"
+            elif expected_type == "invalid":
+                assert isinstance(result, dict)
+                assert "error" in result
+            elif expected_type == "valid":
+                assert isinstance(result, dict)
+                assert result.get("action") == "select"
 
-        # Навигируем к подменю поиска (выбор "1")
-        choice_result = self.nav.handle_menu_choice("main", "1")
-        assert choice_result["action"] == "execute"
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_with_long_text(self, mock_input, mock_print, nav):
+        """Тест меню с длинными текстами"""
+        long_text = "Очень длинный текст пункта меню который может не поместиться в одну строку"
+        items = [{"text": long_text}]
+        
+        nav.create_menu("long", "Длинный текст", items)
+        output = nav.show_menu("long")
+        
+        assert f"1. {long_text}" in output
 
-        execution_result = self.nav.execute_menu_item(choice_result["item"])
-        assert execution_result["action"] == "navigate"
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_item_numbering_with_complex_structure(self, mock_input, mock_print, nav):
+        """Тест нумерации в сложной структуре меню"""
+        items = [
+            {"text": "Первый"},           # 1
+            {"text": "Второй"},           # 2  
+            {"separator": True},          # Не нумеруется
+            {"text": "Третий"},           # 3 (согласно реальной логике)
+            {"text": "Четвертый"},        # 4
+            {"separator": True},          # Не нумеруется
+            {"text": "Пятый"}             # 5
+        ]
+        
+        nav.create_menu("complex_num", "Сложная нумерация", items)
+        output = nav.show_menu("complex_num")
+        
+        # Проверяем правильную нумерацию согласно реальной логике
+        assert "1. Первый" in output
+        assert "2. Второй" in output
+        assert "3. Третий" in output
+        assert "4. Четвертый" in output
+        assert "5. Пятый" in output
 
-        # Проверяем состояние навигации
-        assert self.nav.get_current_menu() == "search"
-        assert self.nav.get_menu_depth() == 1
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_actions_with_parameters(self, mock_input, mock_print, nav):
+        """Тест действий меню с параметрами"""
+        def action_with_params():
+            return "action_executed"
+        
+        items = [{"text": "Действие с параметрами", "action": action_with_params}]
+        nav.create_menu("params", "Параметры", items)
+        
+        result = nav.handle_menu_choice("params", "1")
+        
+        # Проверяем, что возвращается информация о выборе
+        assert isinstance(result, dict)
+        assert result.get("action") == "select"
 
-        breadcrumb = self.nav.get_menu_breadcrumb()
-        assert breadcrumb == ["main", "search"]
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_concurrent_menu_operations(self, mock_input, mock_print, nav):
+        """Тест одновременных операций с меню"""
+        # Создаем несколько меню
+        for i in range(5):
+            items = [{"text": f"Пункт {j}"} for j in range(3)]
+            nav.create_menu(f"menu_{i}", f"Меню {i}", items)
+        
+        # Проверяем, что все меню созданы
+        assert len(nav.menus) == 5
+        
+        # Проверяем отображение каждого меню
+        for i in range(5):
+            output = nav.show_menu(f"menu_{i}")
+            assert f"Меню {i}" in output
 
-        # Выполняем функцию из подменю (выбор "1")
-        choice_result = self.nav.handle_menu_choice("search", "1")
-        execution_result = self.nav.execute_menu_item(choice_result["item"])
-        assert execution_result == "keyword_search"
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")  
+    def test_menu_state_isolation(self, mock_input, mock_print, nav):
+        """Тест изоляции состояния между меню"""
+        items1 = [{"text": "Пункт 1"}]
+        items2 = [{"text": "Пункт A"}]
+        
+        nav.create_menu("menu1", "Первое меню", items1)
+        nav.create_menu("menu2", "Второе меню", items2)
+        
+        output1 = nav.show_menu("menu1")
+        output2 = nav.show_menu("menu2")
+        
+        # Проверяем, что меню не влияют друг на друга
+        assert "Первое меню" in output1 and "Первое меню" not in output2
+        assert "Второе меню" in output2 and "Второе меню" not in output1
+        assert "Пункт 1" in output1 and "Пункт 1" not in output2
+        assert "Пункт A" in output2 and "Пункт A" not in output1
 
-        # Возвращаемся назад (выбор "0")
-        choice_result = self.nav.handle_menu_choice("search", "0")
-        assert choice_result["action"] == "back"
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_memory_efficiency(self, mock_input, mock_print, nav):
+        """Тест эффективности памяти при работе с меню"""
+        # Создаем большое количество меню для проверки утечек памяти
+        for i in range(100):
+            items = [{"text": f"Пункт {j}"} for j in range(10)]
+            nav.create_menu(f"big_menu_{i}", f"Большое меню {i}", items)
+        
+        # Очищаем некоторые меню
+        for i in range(0, 100, 2):
+            if f"big_menu_{i}" in nav.menus:
+                del nav.menus[f"big_menu_{i}"]
+        
+        # Проверяем, что остались только нечетные меню
+        remaining_menus = [key for key in nav.menus.keys() if key.startswith("big_menu_")]
+        assert len(remaining_menus) == 50
 
-        back_result = self.nav.go_back()
-        assert back_result is True
-        assert self.nav.get_current_menu() == "main"
-        assert self.nav.get_menu_depth() == 0
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_unicode_support(self, mock_input, mock_print, nav):
+        """Тест поддержки Unicode символов"""
+        items = [
+            {"text": "🔍 Поиск"},
+            {"text": "⚙️ Настройки"}, 
+            {"text": "📊 Статистика"}
+        ]
+        
+        nav.create_menu("unicode", "Unicode меню", items)
+        output = nav.show_menu("unicode")
+        
+        assert "🔍 Поиск" in output
+        assert "⚙️ Настройки" in output
+        assert "📊 Статистика" in output
 
-        # Выходим (выбор "0" в главном меню)
-        choice_result = self.nav.handle_menu_choice("main", "0")
-        assert choice_result["action"] == "exit"
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_consistency(self, mock_input, mock_print, nav):
+        """Тест консистентности меню при множественных операциях"""
+        items = [{"text": "Консистентный пункт"}]
+        
+        # Многократно создаем и отображаем меню
+        for i in range(10):
+            nav.create_menu("consistent", f"Консистентное меню {i}", items)
+            output = nav.show_menu("consistent")
+            
+            assert f"Консистентное меню {i}" in output
+            assert "1. Консистентный пункт" in output
 
-        return {"error": "Invalid choice"}
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_error_recovery(self, mock_input, mock_print, nav):
+        """Тест восстановления после ошибок"""
+        # Создаем меню с корректными данными
+        good_items = [{"text": "Хороший пункт"}]
+        nav.create_menu("recovery", "Тест восстановления", good_items)
+        
+        # Проверяем, что меню работает после потенциальных ошибок
+        output = nav.show_menu("recovery")
+        assert "Тест восстановления" in output
+        assert "1. Хороший пункт" in output
 
-    def navigate_to_menu(self, menu_id: str):
-        """Навигация к меню"""
-        if self.current_menu:
-            self.menu_stack.append(self.current_menu)
-        self.current_menu = menu_id
-
-    def go_back(self):
-        """Возврат к предыдущему меню"""
-        if self.menu_stack:
-            self.current_menu = self.menu_stack.pop()
-            return True
-        return False
-
-    def get_current_menu(self) -> str:
-        """Получение текущего меню"""
-        return self.current_menu
-
-    def get_menu_breadcrumb(self) -> List[str]:
-        """Получение пути навигации (хлебные крошки)"""
-        breadcrumb = self.menu_stack.copy()
-        if self.current_menu:
-            breadcrumb.append(self.current_menu)
-        return breadcrumb
-
-    def clear_navigation_stack(self):
-        """Очистка стека навигации"""
-        self.menu_stack.clear()
-        self.current_menu = None
-
-    def request_exit(self):
-        """Запрос на выход"""
-        self.exit_requested = True
-
-    def is_exit_requested(self) -> bool:
-        """Проверка запроса на выход"""
-        return self.exit_requested
-
-    def get_menu_depth(self) -> int:
-        """Получение глубины навигации"""
-        return len(self.menu_stack)
-
-    def execute_menu_item(self, item: Dict[str, Any]) -> Any:
-        """Выполнение пункта меню"""
-        if "function" in item and callable(item["function"]):
-            try:
-                return item["function"]()
-            except Exception as e:
-                return {"error": str(e)}
-
-        if "submenu" in item:
-            self.navigate_to_menu(item["submenu"])
-            return {"action": "navigate", "menu": item["submenu"]}
-
-        return {"error": "No action defined for menu item"}
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_special_characters_in_menu(self, mock_input, mock_print, nav):
+        """Тест специальных символов в меню"""
+        items = [
+            {"text": "Пункт с &*#@!"},
+            {"text": "Пункт с 'кавычками'"},
+            {"text": 'Пункт с "двойными кавычками"'}
+        ]
+        
+        nav.create_menu("special", "Спецсимволы", items)
+        output = nav.show_menu("special")
+        
+        assert "Пункт с &*#@!" in output
+        assert "Пункт с 'кавычками'" in output
+        assert 'Пункт с "двойными кавычками"' in output

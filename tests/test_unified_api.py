@@ -137,7 +137,7 @@ class TestUnifiedAPI:
 
         assert result == []
 
-    @patch("src.api_modules.unified_api.PostgresSaver")
+    @patch("src.storage.postgres_saver.PostgresSaver")
     def test_get_vacancies_from_sources_with_sql_deduplication(self, mock_postgres_class, mock_unified_api):
         """Тест получения вакансий из источников с SQL-дедупликацией"""
         # Настраиваем мок PostgresSaver
@@ -187,7 +187,7 @@ class TestUnifiedAPI:
             {"id": "2", "profession": "SJ Vacancy", "source": "superjob.ru"}
         ]
 
-        with patch("src.api_modules.unified_api.PostgresSaver") as mock_postgres_class:
+        with patch("src.storage.postgres_saver.PostgresSaver") as mock_postgres_class:
             mock_postgres = MockStorage()
             mock_postgres_class.return_value = mock_postgres
 
@@ -261,7 +261,7 @@ class TestUnifiedAPI:
             assert len(result) == 1
             mock_get_from_sources.assert_called_once_with("python", sources=["hh", "sj"])
 
-    @patch("src.api_modules.unified_api.PostgresSaver")
+    @patch("src.storage.postgres_saver.PostgresSaver")
     def test_filter_by_target_companies_sql(self, mock_postgres_class, mock_unified_api):
         """Тест SQL-фильтрации по целевым компаниям"""
         # Настраиваем мок PostgresSaver с реальным поведением SQL-фильтрации
