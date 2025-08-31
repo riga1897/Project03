@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
 
 from src.vacancies.models import Vacancy
 
@@ -10,117 +10,113 @@ logger = logging.getLogger(__name__)
 def normalize_query(query: str) -> str:
     """
     Нормализация поискового запроса
-    
+
     Args:
         query: Исходный поисковый запрос
-        
+
     Returns:
         Нормализованный запрос в нижнем регистре
     """
     if not query:
         return ""
-    
+
     # Приводим к нижнему регистру и убираем лишние пробелы
     normalized = str(query).lower().strip()
-    
+
     # Убираем множественные пробелы
-    normalized = re.sub(r'\s+', ' ', normalized)
-    
+    normalized = re.sub(r"\s+", " ", normalized)
+
     # Ограничиваем длину запроса
     if len(normalized) > 500:
         normalized = normalized[:500]
-    
+
     return normalized
 
 
 def extract_keywords(query: str) -> List[str]:
     """
     Извлечение ключевых слов из поискового запроса
-    
+
     Args:
         query: Поисковый запрос
-        
+
     Returns:
         Список ключевых слов
     """
     if not query:
         return []
-    
+
     # Нормализуем запрос
     normalized = normalize_query(query)
-    
+
     # Удаляем операторы AND, OR и знаки препинания
-    cleaned = re.sub(r'\b(and|or)\b', ' ', normalized)
-    cleaned = re.sub(r'[^\w\s\.\+\#]', ' ', cleaned)
-    
+    cleaned = re.sub(r"\b(and|or)\b", " ", normalized)
+    cleaned = re.sub(r"[^\w\s\.\+\#]", " ", cleaned)
+
     # Разбиваем на слова
     words = cleaned.split()
-    
+
     # Фильтруем короткие слова и стоп-слова
-    stop_words = {'и', 'в', 'на', 'с', 'по', 'для', 'от', 'до', 'работа', 'вакансия'}
+    stop_words = {"и", "в", "на", "с", "по", "для", "от", "до", "работа", "вакансия"}
     keywords = [word for word in words if len(word) > 1 and word not in stop_words]
-    
+
     return keywords
 
 
 def build_search_params(query: str, per_page: int = 50, page: int = 0, **kwargs) -> Dict[str, Any]:
     """
     Построение параметров поиска
-    
+
     Args:
         query: Поисковый запрос
         per_page: Количество вакансий на странице
         page: Номер страницы
         **kwargs: Дополнительные параметры
-        
+
     Returns:
         Словарь параметров поиска
     """
     # Ограничиваем per_page
     if per_page > 100:
         per_page = 100
-    
-    params = {
-        "text": query,
-        "per_page": per_page,
-        "page": page
-    }
-    
+
+    params = {"text": query, "per_page": per_page, "page": page}
+
     # Добавляем дополнительные параметры
     if "salary_from" in kwargs:
         params["salary"] = kwargs["salary_from"]
-    
+
     if "salary_to" in kwargs:
         params["salary_to"] = kwargs["salary_to"]
-    
+
     if "area" in kwargs:
         params["area"] = kwargs["area"]
-    
+
     if "experience" in kwargs:
         params["experience"] = kwargs["experience"]
-    
+
     if "schedule" in kwargs:
         params["schedule"] = kwargs["schedule"]
-    
+
     return params
 
 
 def validate_search_query(query: str) -> bool:
     """
     Валидация поискового запроса
-    
+
     Args:
         query: Поисковый запрос для проверки
-        
+
     Returns:
         True если запрос валиден, False иначе
     """
     if not query:
         return False
-    
+
     if not isinstance(query, str):
         return False
-    
+
     # Проверяем что после очистки остался хотя бы один символ
     cleaned = query.strip()
     return len(cleaned) > 0
@@ -129,31 +125,31 @@ def validate_search_query(query: str) -> bool:
 def format_search_results(results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """
     Форматирование результатов поиска
-    
+
     Args:
         results: Список результатов поиска
-        
+
     Returns:
         Отформатированный список результатов
     """
     if not results:
         return []
-    
+
     formatted_results = []
-    
+
     for result in results:
         if not isinstance(result, dict):
             continue
-            
+
         formatted_result = {
             "id": result.get("id") or result.get("vacancy_id", ""),
             "title": result.get("name") or result.get("profession") or result.get("title", ""),
             "source": result.get("source", "unknown"),
-            "url": result.get("alternate_url") or result.get("link") or result.get("url", "")
+            "url": result.get("alternate_url") or result.get("link") or result.get("url", ""),
         }
-        
+
         formatted_results.append(formatted_result)
-    
+
     return formatted_results
 
 

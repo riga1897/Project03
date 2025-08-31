@@ -25,7 +25,6 @@ class UnifiedAPI:
             "sj": self.sj_api,
         }
 
-
     def get_vacancies_from_sources(
         self, search_query: str, sources: List[str] = None, **kwargs: dict[str, Any]
     ) -> List[Dict]:
@@ -86,10 +85,11 @@ class UnifiedAPI:
             print("Не найдено вакансий от целевых компаний")
             return []
 
-        print(f"После SQL-фильтрации и дедупликации: {len(filtered_vacancies)} уникальных вакансий от целевых компаний")
+        print(
+            f"После SQL-фильтрации и дедупликации: {len(filtered_vacancies)} уникальных вакансий от целевых компаний"
+        )
 
         return filtered_vacancies
-
 
     def _filter_by_target_companies(self, all_vacancies: List[Dict]) -> List[Dict]:
         """
@@ -123,8 +123,7 @@ class UnifiedAPI:
 
         # Применяем фильтрацию через временные таблицы
         filtered_vacancies = postgres_saver.filter_and_deduplicate_vacancies(
-            vacancy_objects, 
-            {"target_companies_only": True}
+            vacancy_objects, {"target_companies_only": True}
         )
 
         # Преобразуем обратно в словари для совместимости
@@ -138,7 +137,6 @@ class UnifiedAPI:
                 continue
 
         return filtered_dicts
-
 
     def get_hh_vacancies(self, query: str, **kwargs) -> List[Vacancy]:
         """Получение вакансий только с HH.ru с дедупликацией"""
@@ -360,7 +358,9 @@ class UnifiedAPI:
         """Получение вакансий из всех источников"""
         return self.get_all_vacancies(query, sources=["hh", "sj"], **kwargs)
 
-    def get_vacancies_from_source(self, search_query: str, source: str, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:
+    def get_vacancies_from_source(
+        self, search_query: str, source: str, **kwargs: dict[str, Any]
+    ) -> List[Dict[str, Any]]:
         """
         Получает вакансии из указанного источника
 
@@ -373,12 +373,7 @@ class UnifiedAPI:
             List[Dict[str, Any]]: Список вакансий
         """
         # Нормализуем название источника
-        source_mapping = {
-            'hh.ru': 'hh',
-            'superjob.ru': 'sj',
-            'hh': 'hh',
-            'sj': 'sj'
-        }
+        source_mapping = {"hh.ru": "hh", "superjob.ru": "sj", "hh": "hh", "sj": "sj"}
 
         normalized_source = source_mapping.get(source, source)
 

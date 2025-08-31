@@ -5,7 +5,9 @@
 """
 
 from unittest.mock import Mock, patch
+
 import pytest
+
 from src.utils.paginator import Paginator
 
 
@@ -27,7 +29,7 @@ class TestPaginator:
         paginator = Paginator()
 
         # Проверяем наличие методов пагинации
-        expected_methods = ['paginate_data', 'get_page_info']
+        expected_methods = ["paginate_data", "get_page_info"]
         for method_name in expected_methods:
             if hasattr(paginator, method_name):
                 assert callable(getattr(paginator, method_name))
@@ -37,7 +39,7 @@ class TestPaginator:
         paginator = Paginator()
 
         # Если есть метод paginate_data, тестируем его
-        if hasattr(paginator, 'paginate_data'):
+        if hasattr(paginator, "paginate_data"):
             result = paginator.paginate_data([], page_size=10, current_page=1)
             assert isinstance(result, (list, tuple, dict))
         else:
@@ -49,11 +51,11 @@ class TestPaginator:
         paginator = Paginator()
 
         # Тестируем основные методы, если они есть
-        if hasattr(paginator, 'paginate_data'):
+        if hasattr(paginator, "paginate_data"):
             result = paginator.paginate_data(sample_data, page_size=10, current_page=1)
             assert result is not None
 
-        if hasattr(paginator, 'get_page_info'):
+        if hasattr(paginator, "get_page_info"):
             info = paginator.get_page_info(len(sample_data), page_size=10, current_page=1)
             assert info is not None
 

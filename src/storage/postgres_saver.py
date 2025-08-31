@@ -654,7 +654,9 @@ class PostgresSaver(AbstractVacancyStorage):
             logger.info(f"  Итого записей в БД после операции: {total_in_db}")
 
             # Показываем сводку результатов
-            logger.info(f"Результат: сохранено {new_count + updated_count} из {total_input} вакансий (новых: {new_count}, обновлено: {updated_count})")
+            logger.info(
+                f"Результат: сохранено {new_count + updated_count} из {total_input} вакансий (новых: {new_count}, обновлено: {updated_count})"
+            )
 
         except psycopg2.Error as e:
             logger.error(f"Ошибка при batch операции через временные таблицы: {e}")
@@ -940,19 +942,19 @@ class PostgresSaver(AbstractVacancyStorage):
 
                 # Безопасное извлечение данных из кортежа для диагностики
                 try:
-                    row_vacancy_id = row[1] if len(row) > 1 else 'N/A'
-                    row_title = row[2] if len(row) > 2 else 'N/A'
-                    row_url = row[5] if len(row) > 5 else 'N/A'
+                    row_vacancy_id = row[1] if len(row) > 1 else "N/A"
+                    row_title = row[2] if len(row) > 2 else "N/A"
+                    row_url = row[5] if len(row) > 5 else "N/A"
 
                     logger.error(f"Данные проблемной строки: vacancy_id={row_vacancy_id}, title={row_title}")
                     logger.debug(f"Полная строка: {row}")
 
                     # Дополнительная диагностика для выявления конкретных проблем
-                    if not row_vacancy_id or row_vacancy_id == 'N/A':
+                    if not row_vacancy_id or row_vacancy_id == "N/A":
                         logger.error("  -> Проблема: отсутствует vacancy_id")
-                    if not row_title or row_title == 'N/A':
+                    if not row_title or row_title == "N/A":
                         logger.error("  -> Проблема: отсутствует title")
-                    if not row_url or row_url == 'N/A':
+                    if not row_url or row_url == "N/A":
                         logger.error("  -> Проблема: отсутствует URL")
 
                 except Exception as diag_error:
@@ -1031,7 +1033,9 @@ class PostgresSaver(AbstractVacancyStorage):
                     if skipped_count > 0:
                         logger.warning(f"Пропущено {skipped_count} записей из БД при создании объектов Vacancy")
 
-                    logger.info(f"Загружено {len(vacancies)} вакансий из БД ({len(rows)} записей в БД, пропущено {skipped_count})")
+                    logger.info(
+                        f"Загружено {len(vacancies)} вакансий из БД ({len(rows)} записей в БД, пропущено {skipped_count})"
+                    )
                     return vacancies
 
         except Exception as e:
@@ -1353,7 +1357,9 @@ class PostgresSaver(AbstractVacancyStorage):
                 cursor.close()
             connection.close()
 
-    def filter_and_deduplicate_vacancies(self, vacancies: List[Vacancy], filters: Dict[str, Any] = None) -> List[Vacancy]:
+    def filter_and_deduplicate_vacancies(
+        self, vacancies: List[Vacancy], filters: Dict[str, Any] = None
+    ) -> List[Vacancy]:
         """
         Единственная точка фильтрации и дедупликации вакансий через SQL временные таблицы.
 
@@ -1459,8 +1465,7 @@ class PostgresSaver(AbstractVacancyStorage):
                     # Частичное совпадение
                     if not mapped_company_id:
                         for alt_name, comp_id in company_mapping.items():
-                            if (len(alt_name) > 2 and
-                                (alt_name in employer_lower or employer_lower in alt_name)):
+                            if len(alt_name) > 2 and (alt_name in employer_lower or employer_lower in alt_name):
                                 mapped_company_id = comp_id
                                 break
 
@@ -1472,7 +1477,9 @@ class PostgresSaver(AbstractVacancyStorage):
                 # Создаем ключ дедупликации
                 title_norm = self._normalize_text(vacancy.title or "")
                 company_norm = self._normalize_text(employer_name or "")
-                salary_key = f"{vacancy.salary.salary_from or 0}-{vacancy.salary.salary_to or 0}" if vacancy.salary else "0-0"
+                salary_key = (
+                    f"{vacancy.salary.salary_from or 0}-{vacancy.salary.salary_to or 0}" if vacancy.salary else "0-0"
+                )
                 area_norm = self._normalize_text(str(vacancy.area) if vacancy.area else "")
                 dedup_key = f"{title_norm}|{company_norm}|{salary_key}|{area_norm}"
 
@@ -1484,16 +1491,34 @@ class PostgresSaver(AbstractVacancyStorage):
                 area_str = str(vacancy.area) if vacancy.area else None
                 published_date = self._normalize_published_date(vacancy.published_at)
 
-                insert_data.append((
-                    idx, vacancy.vacancy_id, vacancy.title, vacancy.url,
-                    salary_from, salary_to, salary_currency,
-                    vacancy.description, vacancy.requirements, vacancy.responsibilities,
-                    vacancy.experience, vacancy.employment, vacancy.schedule,
-                    area_str, vacancy.source, published_date, mapped_company_id,
-                    employer_name, employer_id, dedup_key
-                ))
+                insert_data.append(
+                    (
+                        idx,
+                        vacancy.vacancy_id,
+                        vacancy.title,
+                        vacancy.url,
+                        salary_from,
+                        salary_to,
+                        salary_currency,
+                        vacancy.description,
+                        vacancy.requirements,
+                        vacancy.responsibilities,
+                        vacancy.experience,
+                        vacancy.employment,
+                        vacancy.schedule,
+                        area_str,
+                        vacancy.source,
+                        published_date,
+                        mapped_company_id,
+                        employer_name,
+                        employer_id,
+                        dedup_key,
+                    )
+                )
 
-            logger.info(f"После фильтрации по целевым компаниям: {len(insert_data)} из {len(vacancies)} вакансий (отфильтровано: {filtered_count})")
+            logger.info(
+                f"После фильтрации по целевым компаниям: {len(insert_data)} из {len(vacancies)} вакансий (отфильтровано: {filtered_count})"
+            )
 
             if not insert_data:
                 return []
@@ -1510,7 +1535,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 ) VALUES %s""",
                 insert_data,
                 template=None,
-                page_size=1000
+                page_size=1000,
             )
 
             # ДЕДУПЛИКАЦИЯ через SQL
@@ -1552,12 +1577,15 @@ class PostgresSaver(AbstractVacancyStorage):
                 where_clause = " AND ".join(where_conditions)
                 placeholders = ",".join(["%s"] * len(unique_indices))
 
-                cursor.execute(f"""
+                cursor.execute(
+                    f"""
                     SELECT original_index
                     FROM temp_processing_vacancies
                     WHERE original_index IN ({placeholders}) AND {where_clause}
                     ORDER BY original_index
-                """, unique_indices + params)
+                """,
+                    unique_indices + params,
+                )
 
                 unique_indices = [row[0] for row in cursor.fetchall()]
 
@@ -1923,10 +1951,10 @@ class PostgresSaver(AbstractVacancyStorage):
         normalized = text.lower().strip()
 
         # Убираем лишние пробелы
-        normalized = re.sub(r'\s+', ' ', normalized)
+        normalized = re.sub(r"\s+", " ", normalized)
 
         # Убираем специальные символы, оставляем только буквы, цифры и пробелы
-        normalized = re.sub(r'[^\w\s]', '', normalized, flags=re.UNICODE)
+        normalized = re.sub(r"[^\w\s]", "", normalized, flags=re.UNICODE)
 
         return normalized.strip()
 

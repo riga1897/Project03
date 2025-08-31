@@ -126,7 +126,7 @@ class TestVacancyFormatterComplete:
             url="https://test.com",
             vacancy_id="test_001",
             employer={"name": "Test Company"},
-            source="test"
+            source="test",
         )
 
         result = formatter.format_vacancy_info(vacancy, 1)
@@ -134,11 +134,7 @@ class TestVacancyFormatterComplete:
 
         # Тест с отсутствующим работодателем
         vacancy_no_employer = Vacancy(
-            title="Test Job No Employer",
-            url="https://test.com",
-            vacancy_id="test_002",
-            employer=None,
-            source="test"
+            title="Test Job No Employer", url="https://test.com", vacancy_id="test_002", employer=None, source="test"
         )
 
         result = formatter.format_vacancy_info(vacancy_no_employer, 1)

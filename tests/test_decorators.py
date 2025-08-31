@@ -276,6 +276,7 @@ class TestDecorators:
 
     def test_retry_decorator_success(self):
         """Тест успешного выполнения с retry декоратором"""
+
         # Создаем тестовую реализацию retry если её нет
         def test_retry(attempts=3):
             def decorator(func):
@@ -287,7 +288,9 @@ class TestDecorators:
                         except Exception as e:
                             if i == attempts - 1:
                                 raise e
+
                 return wrapper
+
             return decorator
 
         @test_retry(attempts=3)
@@ -311,7 +314,9 @@ class TestDecorators:
                         except Exception as e:
                             if i == attempts - 1:
                                 raise e
+
                 return wrapper
+
             return decorator
 
         @test_retry(attempts=2)
@@ -339,7 +344,9 @@ class TestDecorators:
                         except Exception as e:
                             if i == attempts - 1:
                                 raise e
+
                 return wrapper
+
             return decorator
 
         @test_retry(attempts=3)
@@ -360,12 +367,14 @@ class TestDecorators:
 
         def test_cache_result(func):
             cache = {}
+
             @wraps(func)
             def wrapper(*args, **kwargs):
                 key = str(args) + str(sorted(kwargs.items()))
                 if key not in cache:
                     cache[key] = func(*args, **kwargs)
                 return cache[key]
+
             return wrapper
 
         @test_cache_result
@@ -395,12 +404,14 @@ class TestDecorators:
 
         def test_cache_result(func):
             cache = {}
+
             @wraps(func)
             def wrapper(*args, **kwargs):
                 key = str(args) + str(sorted(kwargs.items()))
                 if key not in cache:
                     cache[key] = func(*args, **kwargs)
                 return cache[key]
+
             return wrapper
 
         @test_cache_result
@@ -423,6 +434,7 @@ class TestDecorators:
 
     def test_log_execution_time_decorator(self):
         """Тест декоратора логирования времени выполнения"""
+
         def test_log_execution_time(func):
             @wraps(func)
             def wrapper(*args, **kwargs):
@@ -434,6 +446,7 @@ class TestDecorators:
                     end_time = time.time()
                     # Имитируем логирование
                     pass
+
             return wrapper
 
         @test_log_execution_time
@@ -445,6 +458,7 @@ class TestDecorators:
 
     def test_log_execution_time_with_exception(self):
         """Тест логирования времени при исключении"""
+
         def test_log_execution_time(func):
             @wraps(func)
             def wrapper(*args, **kwargs):
@@ -456,6 +470,7 @@ class TestDecorators:
                     end_time = time.time()
                     # Имитируем логирование
                     pass
+
             return wrapper
 
         @test_log_execution_time
@@ -471,18 +486,21 @@ class TestDecorators:
 
         def test_cache_result(func):
             cache = {}
+
             @wraps(func)
             def wrapper(*args, **kwargs):
                 key = str(args) + str(sorted(kwargs.items()))
                 if key not in cache:
                     cache[key] = func(*args, **kwargs)
                 return cache[key]
+
             return wrapper
 
         def test_log_execution_time(func):
             @wraps(func)
             def wrapper(*args, **kwargs):
                 return func(*args, **kwargs)
+
             return wrapper
 
         @test_log_execution_time
@@ -490,7 +508,7 @@ class TestDecorators:
         def combined_function(x):
             nonlocal call_count
             call_count += 1
-            return x ** 2
+            return x**2
 
         result1 = combined_function(4)
         assert result1 == 16
@@ -502,14 +520,17 @@ class TestDecorators:
 
     def test_decorator_with_args_and_kwargs(self):
         """Тест декораторов с позиционными и именованными аргументами"""
+
         def test_cache_result(func):
             cache = {}
+
             @wraps(func)
             def wrapper(*args, **kwargs):
                 key = str(args) + str(sorted(kwargs.items()))
                 if key not in cache:
                     cache[key] = func(*args, **kwargs)
                 return cache[key]
+
             return wrapper
 
         @test_cache_result

@@ -139,9 +139,13 @@ class DBManagerDemo:
 
         print("-" * 80)
         print("АНАЛИЗ ПО ЦЕЛЕВЫМ КОМПАНИЯМ:")
-        print(f"   • Целевых компаний с вакансиями: {companies_with_vacancies} из {len(TargetCompanies.get_all_companies())}")
+        print(
+            f"   • Целевых компаний с вакансиями: {companies_with_vacancies} из {len(TargetCompanies.get_all_companies())}"
+        )
         print(f"   • Всего вакансий от целевых компаний: {total_vacancies}")
-        print(f"   • Покрытие целевых компаний: {(companies_with_vacancies/len(TargetCompanies.get_all_companies())*100):.1f}%")
+        print(
+            f"   • Покрытие целевых компаний: {(companies_with_vacancies/len(TargetCompanies.get_all_companies())*100):.1f}%"
+        )
 
         if total_vacancies == 0:
             print("СОВЕТ: Для получения данных выполните поиск вакансий через пункт меню 1")

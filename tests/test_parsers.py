@@ -5,11 +5,13 @@
 из различных источников (HH.ru, SuperJob) без внешних зависимостей.
 """
 
-import pytest
 from unittest.mock import Mock, patch
+
+import pytest
+
+from src.vacancies.parsers.base_parser import BaseParser
 from src.vacancies.parsers.hh_parser import HHParser
 from src.vacancies.parsers.sj_parser import SuperJobParser
-from src.vacancies.parsers.base_parser import BaseParser
 
 
 class TestBaseParser:
@@ -19,11 +21,11 @@ class TestBaseParser:
         """Тест что базовый парсер является абстрактным"""
         with pytest.raises(TypeError):
             BaseParser()
-            
+
     def test_base_parser_methods_exist(self):
         """Тест что у базового парсера есть абстрактные методы"""
-        assert hasattr(BaseParser, 'parse_vacancy')
-        assert hasattr(BaseParser, 'parse_vacancies')
+        assert hasattr(BaseParser, "parse_vacancy")
+        assert hasattr(BaseParser, "parse_vacancies")
 
 
 class TestHHParser:
@@ -47,7 +49,7 @@ class TestHHParser:
             "area": {"name": "Москва"},
             "experience": {"name": "От 3 до 6 лет"},
             "employment": {"name": "Полная занятость"},
-            "description": "Разработка на Python"
+            "description": "Разработка на Python",
         }
 
         result = parser.parse_vacancy(sample_data)
@@ -57,10 +59,7 @@ class TestHHParser:
     def test_parse_vacancy_minimal_data(self):
         """Тест парсинга минимальных данных"""
         parser = HHParser()
-        minimal_data = {
-            "id": "123",
-            "name": "Test Job"
-        }
+        minimal_data = {"id": "123", "name": "Test Job"}
 
         result = parser.parse_vacancy(minimal_data)
         assert result is not None or result is None  # Может вернуть None для невалидных данных
@@ -100,7 +99,7 @@ class TestSuperJobParser:
             "link": "https://superjob.ru/vakansii/java-developer-67890.html",
             "town": {"title": "Санкт-Петербург"},
             "candidat": "Знание Java",
-            "work": "Разработка приложений"
+            "work": "Разработка приложений",
         }
 
         result = parser.parse_vacancy(sample_data)
@@ -110,10 +109,7 @@ class TestSuperJobParser:
     def test_parse_vacancy_sj_minimal(self):
         """Тест парсинга минимальных данных SuperJob"""
         parser = SuperJobParser()
-        minimal_data = {
-            "id": 789,
-            "profession": "Test Position"
-        }
+        minimal_data = {"id": 789, "profession": "Test Position"}
 
         result = parser.parse_vacancy(minimal_data)
         assert result is not None or result is None
@@ -137,13 +133,11 @@ class TestHHParserMocked:
     @pytest.fixture(autouse=True)
     def setup_consolidated_mocks(self):
         """Консолидированная настройка всех моков для предотвращения внешних вызовов"""
-        with patch('builtins.input', return_value=''), \
-             patch('builtins.print'), \
-             patch('requests.get'), \
-             patch('requests.post'), \
-             patch('psycopg2.connect'), \
-             patch('os.path.exists', return_value=True), \
-             patch('src.utils.env_loader.EnvLoader.load_env_file'):
+        with patch("builtins.input", return_value=""), patch("builtins.print"), patch("requests.get"), patch(
+            "requests.post"
+        ), patch("psycopg2.connect"), patch("os.path.exists", return_value=True), patch(
+            "src.utils.env_loader.EnvLoader.load_env_file"
+        ):
             yield
 
     @pytest.fixture
@@ -153,29 +147,42 @@ class TestHHParserMocked:
 
         # Мокируем parse_vacancy для возврата Vacancy объекта
         def mock_parse_vacancy(data):
-            if not data or not data.get('id'):
+            if not data or not data.get("id"):
                 return None
 
             # Создаем мок объект вакансии напрямую без конструктора
             from unittest.mock import Mock
+
             vacancy_mock = Mock()
-            vacancy_mock.vacancy_id = str(data.get('id'))
-            vacancy_mock.title = data.get('name', 'Test Job')
-            vacancy_mock.url = data.get('alternate_url', 'https://test.com')
+            vacancy_mock.vacancy_id = str(data.get("id"))
+            vacancy_mock.title = data.get("name", "Test Job")
+            vacancy_mock.url = data.get("alternate_url", "https://test.com")
 
             # Правильно обрабатываем зарплату - None если отсутствует
-            salary_data = data.get('salary')
+            salary_data = data.get("salary")
             vacancy_mock.salary = None if salary_data is None else salary_data
 
-            vacancy_mock.description = 'Test description'
-            vacancy_mock.requirements = 'Test requirements'
-            vacancy_mock.responsibilities = 'Test responsibilities'
-            vacancy_mock.experience = data.get('experience', {}).get('name', 'Test experience') if isinstance(data.get('experience'), dict) else 'Test experience'
-            vacancy_mock.employment = data.get('employment', {}).get('name', 'Test employment') if isinstance(data.get('employment'), dict) else 'Test employment'
-            vacancy_mock.schedule = data.get('schedule', {}).get('name', 'Test schedule') if isinstance(data.get('schedule'), dict) else 'Test schedule'
-            vacancy_mock.employer = data.get('employer')
-            vacancy_mock.published_at = data.get('published_at', '2024-01-01T00:00:00')
-            vacancy_mock.source = 'hh.ru'
+            vacancy_mock.description = "Test description"
+            vacancy_mock.requirements = "Test requirements"
+            vacancy_mock.responsibilities = "Test responsibilities"
+            vacancy_mock.experience = (
+                data.get("experience", {}).get("name", "Test experience")
+                if isinstance(data.get("experience"), dict)
+                else "Test experience"
+            )
+            vacancy_mock.employment = (
+                data.get("employment", {}).get("name", "Test employment")
+                if isinstance(data.get("employment"), dict)
+                else "Test employment"
+            )
+            vacancy_mock.schedule = (
+                data.get("schedule", {}).get("name", "Test schedule")
+                if isinstance(data.get("schedule"), dict)
+                else "Test schedule"
+            )
+            vacancy_mock.employer = data.get("employer")
+            vacancy_mock.published_at = data.get("published_at", "2024-01-01T00:00:00")
+            vacancy_mock.source = "hh.ru"
 
             return vacancy_mock
 
@@ -183,7 +190,7 @@ class TestHHParserMocked:
 
         # Мокируем parse_vacancies если есть
         def mock_parse_vacancies(data):
-            items = data.get('items', [])
+            items = data.get("items", [])
             return [mock_parse_vacancy(item) for item in items if item]
 
         parser.parse_vacancies.side_effect = mock_parse_vacancies
@@ -197,16 +204,13 @@ class TestHHParserMocked:
             "name": "Python Developer",
             "alternate_url": "https://hh.ru/vacancy/123456",
             "salary": {"from": 100000, "to": 150000, "currency": "RUR"},
-            "snippet": {
-                "requirement": "Python, Django",
-                "responsibility": "Разработка веб-приложений"
-            },
+            "snippet": {"requirement": "Python, Django", "responsibility": "Разработка веб-приложений"},
             "employer": {"name": "TechCorp"},
             "area": {"name": "Москва"},
             "experience": {"name": "От 1 года до 3 лет"},
             "employment": {"name": "Полная занятость"},
             "schedule": {"name": "Полный день"},
-            "published_at": "2024-01-01T10:00:00+03:00"
+            "published_at": "2024-01-01T10:00:00+03:00",
         }
 
         result = hh_parser_mocked.parse_vacancy(vacancy_data)
@@ -218,11 +222,7 @@ class TestHHParserMocked:
 
     def test_parse_vacancy_minimal_data_mocked(self, hh_parser_mocked):
         """Тест парсинга минимальных данных вакансии с моками"""
-        vacancy_data = {
-            "id": "123",
-            "name": "Test Job",
-            "alternate_url": "https://hh.ru/vacancy/123"
-        }
+        vacancy_data = {"id": "123", "name": "Test Job", "alternate_url": "https://hh.ru/vacancy/123"}
 
         result = hh_parser_mocked.parse_vacancy(vacancy_data)
 
@@ -236,7 +236,7 @@ class TestHHParserMocked:
             "id": "456",
             "name": "No Salary Job",
             "alternate_url": "https://hh.ru/vacancy/456",
-            "salary": None
+            "salary": None,
         }
 
         result = hh_parser_mocked.parse_vacancy(vacancy_data)
@@ -250,7 +250,7 @@ class TestHHParserMocked:
         vacancies_data = {
             "items": [
                 {"id": "1", "name": "Job 1", "alternate_url": "https://hh.ru/vacancy/1"},
-                {"id": "2", "name": "Job 2", "alternate_url": "https://hh.ru/vacancy/2"}
+                {"id": "2", "name": "Job 2", "alternate_url": "https://hh.ru/vacancy/2"},
             ]
         }
 
@@ -276,13 +276,11 @@ class TestSuperJobParserMocked:
     @pytest.fixture(autouse=True)
     def setup_consolidated_mocks(self):
         """Консолидированная настройка всех моков для предотвращения внешних вызовов"""
-        with patch('builtins.input', return_value=''), \
-             patch('builtins.print'), \
-             patch('requests.get'), \
-             patch('requests.post'), \
-             patch('psycopg2.connect'), \
-             patch('os.path.exists', return_value=True), \
-             patch('src.utils.env_loader.EnvLoader.load_env_file'):
+        with patch("builtins.input", return_value=""), patch("builtins.print"), patch("requests.get"), patch(
+            "requests.post"
+        ), patch("psycopg2.connect"), patch("os.path.exists", return_value=True), patch(
+            "src.utils.env_loader.EnvLoader.load_env_file"
+        ):
             yield
 
     @pytest.fixture
@@ -292,38 +290,39 @@ class TestSuperJobParserMocked:
 
         # Мокируем parse_vacancy для возврата Vacancy объекта
         def mock_parse_vacancy(data):
-            if not data or not data.get('id'):
+            if not data or not data.get("id"):
                 return None
 
             # Создаем мок объект вакансии напрямую без конструктора
             from unittest.mock import Mock
+
             vacancy_mock = Mock()
-            vacancy_mock.vacancy_id = str(data.get('id'))
-            vacancy_mock.title = data.get('profession', 'Test SJ Job')
-            vacancy_mock.url = data.get('link', 'https://superjob.ru/test')
+            vacancy_mock.vacancy_id = str(data.get("id"))
+            vacancy_mock.title = data.get("profession", "Test SJ Job")
+            vacancy_mock.url = data.get("link", "https://superjob.ru/test")
 
             # Правильно обрабатываем зарплату - None если payment_from и payment_to равны 0 или отсутствуют
-            payment_from = data.get('payment_from', 0)
-            payment_to = data.get('payment_to', 0)
+            payment_from = data.get("payment_from", 0)
+            payment_to = data.get("payment_to", 0)
 
             if payment_from == 0 and payment_to == 0:
                 vacancy_mock.salary = None
             else:
-                vacancy_mock.salary = {
-                    'from': payment_from,
-                    'to': payment_to,
-                    'currency': data.get('currency', 'rub')
-                }
+                vacancy_mock.salary = {"from": payment_from, "to": payment_to, "currency": data.get("currency", "rub")}
 
-            vacancy_mock.description = data.get('work', 'Test SJ description')
-            vacancy_mock.requirements = data.get('candidat', 'Test SJ requirements')
-            vacancy_mock.responsibilities = 'Test SJ responsibilities'
-            vacancy_mock.experience = 'Test SJ experience'
-            vacancy_mock.employment = data.get('type_of_work', {}).get('title', 'Test SJ employment') if isinstance(data.get('type_of_work'), dict) else 'Test SJ employment'
-            vacancy_mock.schedule = 'Test SJ schedule'
-            vacancy_mock.employer = {'name': data.get('firm_name', 'Test SJ Company')}
-            vacancy_mock.published_at = '2024-01-01T00:00:00'
-            vacancy_mock.source = 'superjob.ru'
+            vacancy_mock.description = data.get("work", "Test SJ description")
+            vacancy_mock.requirements = data.get("candidat", "Test SJ requirements")
+            vacancy_mock.responsibilities = "Test SJ responsibilities"
+            vacancy_mock.experience = "Test SJ experience"
+            vacancy_mock.employment = (
+                data.get("type_of_work", {}).get("title", "Test SJ employment")
+                if isinstance(data.get("type_of_work"), dict)
+                else "Test SJ employment"
+            )
+            vacancy_mock.schedule = "Test SJ schedule"
+            vacancy_mock.employer = {"name": data.get("firm_name", "Test SJ Company")}
+            vacancy_mock.published_at = "2024-01-01T00:00:00"
+            vacancy_mock.source = "superjob.ru"
 
             return vacancy_mock
 
@@ -331,7 +330,7 @@ class TestSuperJobParserMocked:
 
         # Мокируем parse_vacancies если есть
         def mock_parse_vacancies(data):
-            objects = data.get('objects', [])
+            objects = data.get("objects", [])
             return [mock_parse_vacancy(obj) for obj in objects if obj]
 
         parser.parse_vacancies.side_effect = mock_parse_vacancies
@@ -352,7 +351,7 @@ class TestSuperJobParserMocked:
             "firm_name": "SuperCorp",
             "town": {"title": "Москва"},
             "type_of_work": {"title": "Полная занятость"},
-            "date_published": 1640995200
+            "date_published": 1640995200,
         }
 
         result = sj_parser_mocked.parse_vacancy(vacancy_data)
@@ -364,11 +363,7 @@ class TestSuperJobParserMocked:
 
     def test_parse_vacancy_minimal_data_mocked(self, sj_parser_mocked):
         """Тест парсинга минимальных данных вакансии SJ с моками"""
-        vacancy_data = {
-            "id": 999,
-            "profession": "Test SJ Job",
-            "link": "https://superjob.ru/vakansii/test-999.html"
-        }
+        vacancy_data = {"id": 999, "profession": "Test SJ Job", "link": "https://superjob.ru/vakansii/test-999.html"}
 
         result = sj_parser_mocked.parse_vacancy(vacancy_data)
 
@@ -381,7 +376,7 @@ class TestSuperJobParserMocked:
         vacancies_data = {
             "objects": [
                 {"id": 1, "profession": "SJ Job 1", "link": "https://superjob.ru/1"},
-                {"id": 2, "profession": "SJ Job 2", "link": "https://superjob.ru/2"}
+                {"id": 2, "profession": "SJ Job 2", "link": "https://superjob.ru/2"},
             ]
         }
 
@@ -407,7 +402,7 @@ class TestSuperJobParserMocked:
             "profession": "No Payment Job",
             "link": "https://superjob.ru/vakansii/555",
             "payment_from": 0,
-            "payment_to": 0
+            "payment_to": 0,
         }
 
         result = sj_parser_mocked.parse_vacancy(vacancy_data)
@@ -424,13 +419,11 @@ class TestParsersIntegrationMocked:
     @pytest.fixture(autouse=True)
     def setup_all_mocks(self):
         """Глобальная настройка всех моков"""
-        with patch('builtins.input', return_value=''), \
-             patch('builtins.print'), \
-             patch('requests.get'), \
-             patch('requests.post'), \
-             patch('psycopg2.connect'), \
-             patch('os.path.exists', return_value=True), \
-             patch('src.utils.env_loader.EnvLoader.load_env_file'):
+        with patch("builtins.input", return_value=""), patch("builtins.print"), patch("requests.get"), patch(
+            "requests.post"
+        ), patch("psycopg2.connect"), patch("os.path.exists", return_value=True), patch(
+            "src.utils.env_loader.EnvLoader.load_env_file"
+        ):
             yield
 
     def test_both_parsers_consolidated_mocked(self):

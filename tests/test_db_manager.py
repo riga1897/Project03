@@ -40,7 +40,7 @@ class TestDBManager:
                     "connection": mock_conn,
                     "cursor": mock_cursor,
                     "connect": mock_connect,
-                    "execute_values": mock_execute_values
+                    "execute_values": mock_execute_values,
                 }
 
     @patch("builtins.input", return_value="")
@@ -61,7 +61,7 @@ class TestDBManager:
         db_manager = DBManager()
 
         # Мокируем check_connection
-        with patch.object(db_manager, 'check_connection', return_value=True):
+        with patch.object(db_manager, "check_connection", return_value=True):
             result = db_manager.check_connection()
             assert result is True
 
@@ -69,12 +69,14 @@ class TestDBManager:
     @patch("builtins.print")
     @patch("os.path.exists", return_value=True)
     @patch("src.utils.env_loader.EnvLoader.load_env_file")
-    def test_get_companies_and_vacancies_count(self, mock_env, mock_exists, mock_print, mock_input, mock_db_connection):
+    def test_get_companies_and_vacancies_count(
+        self, mock_env, mock_exists, mock_print, mock_input, mock_db_connection
+    ):
         """Тест получения компаний и количества вакансий"""
         db_manager = DBManager()
 
         # Мокируем метод
-        with patch.object(db_manager, 'get_companies_and_vacancies_count', return_value=[("Test Company", 5)]):
+        with patch.object(db_manager, "get_companies_and_vacancies_count", return_value=[("Test Company", 5)]):
             result = db_manager.get_companies_and_vacancies_count()
             assert isinstance(result, list)
             assert len(result) >= 0
@@ -88,7 +90,7 @@ class TestDBManager:
         db_manager = DBManager()
 
         # Мокируем метод
-        with patch.object(db_manager, 'get_all_vacancies', return_value=[]):
+        with patch.object(db_manager, "get_all_vacancies", return_value=[]):
             result = db_manager.get_all_vacancies()
             assert isinstance(result, list)
 
@@ -101,7 +103,7 @@ class TestDBManager:
         db_manager = DBManager()
 
         # Мокируем метод
-        with patch.object(db_manager, 'get_avg_salary', return_value=100000.0):
+        with patch.object(db_manager, "get_avg_salary", return_value=100000.0):
             result = db_manager.get_avg_salary()
             assert isinstance(result, (int, float, type(None)))
 
@@ -114,7 +116,7 @@ class TestDBManager:
         db_manager = DBManager()
 
         # Мокируем метод
-        with patch.object(db_manager, 'get_vacancies_with_higher_salary', return_value=[]):
+        with patch.object(db_manager, "get_vacancies_with_higher_salary", return_value=[]):
             result = db_manager.get_vacancies_with_higher_salary()
             assert isinstance(result, list)
 
@@ -127,7 +129,7 @@ class TestDBManager:
         db_manager = DBManager()
 
         # Мокируем метод
-        with patch.object(db_manager, 'get_vacancies_with_keyword', return_value=[]):
+        with patch.object(db_manager, "get_vacancies_with_keyword", return_value=[]):
             result = db_manager.get_vacancies_with_keyword("python")
             assert isinstance(result, list)
 
@@ -140,22 +142,21 @@ class TestDBManager:
         from src.storage.db_manager import DBManager
 
         # Мокируем создание DBManager для избежания реальных подключений
-        with patch.object(DBManager, '__init__', return_value=None):
+        with patch.object(DBManager, "__init__", return_value=None):
             db_manager = DBManager()
 
             # Тестируем обработку ошибок при проблемах с подключением
-            with patch.object(db_manager, '_get_connection', side_effect=Exception("DB Error")):
+            with patch.object(db_manager, "_get_connection", side_effect=Exception("DB Error")):
                 # Проверяем что методы корректно обрабатывают ошибки
                 result = db_manager.check_connection()
                 assert result is False
 
             # Тестируем обработку ошибок в методах
-            with patch.object(db_manager, 'get_companies_and_vacancies_count', side_effect=Exception("Query Error")):
+            with patch.object(db_manager, "get_companies_and_vacancies_count", side_effect=Exception("Query Error")):
                 try:
                     db_manager.get_companies_and_vacancies_count()
                 except Exception as e:
                     assert "Query Error" in str(e)
-
 
     def test_initialization(self, mock_db_connection):
         """Тест инициализации DBManager"""

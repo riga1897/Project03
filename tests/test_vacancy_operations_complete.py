@@ -89,10 +89,10 @@ class TestVacancyOperationsComplete:
         """Тест фильтрации по нескольким ключевым словам"""
         result = operations.filter_vacancies_by_multiple_keywords(test_vacancies, ["Python"])
         assert len(result) >= 1  # Минимум 1 вакансия с Python
-        
+
         result = operations.filter_vacancies_by_multiple_keywords(test_vacancies, ["Java"])
         assert len(result) >= 1  # Минимум 1 вакансия с Java
-        
+
         # Проверяем что найденные вакансии содержат искомые слова
         for vacancy in result:
             title_desc = f"{vacancy.title} {vacancy.description or ''} {vacancy.requirements or ''}".lower()
@@ -122,7 +122,7 @@ class TestVacancyOperationsComplete:
         # Проверяем, что вакансии отсортированы по убыванию зарплаты
         salaries = []
         for vacancy in result:
-            if vacancy.salary and hasattr(vacancy.salary, 'salary_from') and vacancy.salary.salary_from:
+            if vacancy.salary and hasattr(vacancy.salary, "salary_from") and vacancy.salary.salary_from:
                 salaries.append(vacancy.salary.salary_from)
 
         # Проверяем, что зарплаты идут в убывающем порядке

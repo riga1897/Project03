@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 
 from src.api_modules.base_api import BaseJobAPI
 from src.api_modules.cached_api import CachedAPI
@@ -118,8 +118,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             logger.error(f"Failed to get vacancies page {page}: {e}")
             return []
 
-    def get_vacancies(self, search_query: str = None, per_page: int = 100, 
-                      **kwargs) -> List[Dict[str, Any]]:
+    def get_vacancies(self, search_query: str = None, per_page: int = 100, **kwargs) -> List[Dict[str, Any]]:
         """
         Получает вакансии с HeadHunter API
 
@@ -133,15 +132,14 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         """
         try:
             # Получаем базовые параметры от конфигурации
-            params = self._config.hh_config.get_params(
-                text=search_query, 
-                **kwargs
-            )
+            params = self._config.hh_config.get_params(text=search_query, **kwargs)
             # Устанавливаем per_page отдельно, чтобы избежать дублирования
-            params['per_page'] = per_page
+            params["per_page"] = per_page
 
             # Получаем метаданные для определения количества страниц
-            initial_params = self._config.hh_config.get_params(text=search_query.lower() if search_query else "", page=0, per_page=1, **kwargs)
+            initial_params = self._config.hh_config.get_params(
+                text=search_query.lower() if search_query else "", page=0, per_page=1, **kwargs
+            )
             initial_data = self._CachedAPI__connect_to_api(self.BASE_URL, initial_params, "hh")
 
             found_vacancies = initial_data.get("found", 0)
@@ -152,7 +150,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             # Рассчитываем количество страниц
             actual_pages = initial_data.get("pages", 1)
             max_pages = self._config.get_pagination_params(**kwargs)["max_pages"]
-            
+
             per_page_from_params = params.get("per_page", 50)
 
             if found_vacancies <= per_page_from_params:

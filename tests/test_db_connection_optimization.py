@@ -2,10 +2,12 @@
 Тесты для оптимизированного подключения к БД
 """
 
-import pytest
 from unittest.mock import MagicMock, Mock, patch
-from src.storage.postgres_saver import PostgresSaver
+
+import pytest
+
 from src.storage.db_manager import DBManager
+from src.storage.postgres_saver import PostgresSaver
 
 
 class TestDBConnectionOptimization:
@@ -61,8 +63,8 @@ class TestDBConnectionOptimization:
             
             # Проверяем результат
             assert isinstance(result, list)ck, patch
-import pytest
 import psycopg2
+import pytest
 
 
 class TestDBConnectionOptimization:
@@ -124,8 +126,8 @@ class TestDBConnectionOptimization:
         """Тест оптимизации пула подключений"""
         mock_connect.return_value = unified_db_connection
 
-        from src.storage.postgres_saver import PostgresSaver
         from src.storage.db_manager import DBManager
+        from src.storage.postgres_saver import PostgresSaver
 
         # Мокируем инициализацию для избежания реальных запросов
         with patch.object(PostgresSaver, '_ensure_database_exists'), \

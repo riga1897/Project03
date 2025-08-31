@@ -1,10 +1,10 @@
-
 """
 Консолидированные фикстуры для оптимизированного тестирования
 """
 
+from unittest.mock import MagicMock, Mock, patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
 
 
 @pytest.fixture(scope="session")
@@ -45,7 +45,7 @@ def consolidated_external_mocks():
 
     # Файловые моки
     mock_file_content = '{"test": "data"}'
-    
+
     return {
         "http_response": mock_response,
         "file_content": mock_file_content,
@@ -57,45 +57,53 @@ def consolidated_external_mocks():
             "PGPASSWORD": "test_pass",
             "HH_API_URL": "https://api.hh.ru",
             "SJ_API_URL": "https://api.superjob.ru",
-            "SJ_SECRET_KEY": "test_secret_key"
-        }
+            "SJ_SECRET_KEY": "test_secret_key",
+        },
     }
 
 
 @pytest.fixture(autouse=True)
 def global_external_resource_isolation(unified_db_connection, consolidated_external_mocks):
     """Глобальная изоляция от всех внешних ресурсов с консолидированными моками"""
-    
+
     # Консолидированный мок для всех HTTP запросов
     consolidated_http_mock = Mock()
     consolidated_http_mock.json.return_value = consolidated_external_mocks["http_response"].json.return_value
     consolidated_http_mock.status_code = 200
     consolidated_http_mock.raise_for_status.return_value = None
     consolidated_http_mock.text = consolidated_external_mocks["http_response"].text
-    
+
     # Консолидированный мок для всех файловых операций
     consolidated_file_mock = Mock()
     consolidated_file_mock.read.return_value = consolidated_external_mocks["file_content"]
     consolidated_file_mock.write.return_value = None
     consolidated_file_mock.__enter__.return_value = consolidated_file_mock
     consolidated_file_mock.__exit__.return_value = None
-    
-    with patch("requests.get", return_value=consolidated_http_mock) as mock_http, \
-         patch("requests.post", return_value=consolidated_http_mock), \
-         patch("psycopg2.connect", return_value=unified_db_connection) as mock_db_connect, \
-         patch("psycopg2.extras.execute_values") as mock_execute_values, \
-         patch("builtins.input", return_value="0") as mock_input, \
-         patch("builtins.print") as mock_print, \
-         patch("builtins.open", return_value=consolidated_file_mock) as mock_open, \
-         patch("os.path.exists", return_value=True) as mock_exists, \
-         patch("os.makedirs") as mock_makedirs, \
-         patch("src.utils.env_loader.EnvLoader.load_env_file") as mock_env_load, \
-         patch.dict("os.environ", consolidated_external_mocks["env_vars"], clear=False):
+
+    with patch("requests.get", return_value=consolidated_http_mock) as mock_http, patch(
+        "requests.post", return_value=consolidated_http_mock
+    ), patch("psycopg2.connect", return_value=unified_db_connection) as mock_db_connect, patch(
+        "psycopg2.extras.execute_values"
+    ) as mock_execute_values, patch(
+        "builtins.input", return_value="0"
+    ) as mock_input, patch(
+        "builtins.print"
+    ) as mock_print, patch(
+        "builtins.open", return_value=consolidated_file_mock
+    ) as mock_open, patch(
+        "os.path.exists", return_value=True
+    ) as mock_exists, patch(
+        "os.makedirs"
+    ) as mock_makedirs, patch(
+        "src.utils.env_loader.EnvLoader.load_env_file"
+    ) as mock_env_load, patch.dict(
+        "os.environ", consolidated_external_mocks["env_vars"], clear=False
+    ):
 
         # Возвращаем консолидированные моки
         yield {
             "http": mock_http,
-            "db_connect": mock_db_connect, 
+            "db_connect": mock_db_connect,
             "execute_values": mock_execute_values,
             "input": mock_input,
             "print": mock_print,
@@ -104,7 +112,7 @@ def global_external_resource_isolation(unified_db_connection, consolidated_exter
             "makedirs": mock_makedirs,
             "env_load": mock_env_load,
             "db_connection": unified_db_connection,
-            "external_mocks": consolidated_external_mocks
+            "external_mocks": consolidated_external_mocks,
         }
 
 
@@ -112,7 +120,7 @@ def global_external_resource_isolation(unified_db_connection, consolidated_exter
 def sample_vacancy():
     """Стандартная тестовая вакансия"""
     from src.vacancies.models import Vacancy
-    
+
     return Vacancy(
         title="Test Vacancy",
         url="https://test.com/vacancy/1",
@@ -126,7 +134,7 @@ def sample_vacancy():
         employer={"name": "Test Company"},
         vacancy_id="test_1",
         published_at="2024-01-15T10:00:00",
-        source="test_api"
+        source="test_api",
     )
 
 
@@ -169,22 +177,17 @@ def consolidated_api_mocks():
     base_api_mock.get_vacancies_page.return_value = [{"name": "Test Vacancy Page", "id": "test_page_1"}]
     base_api_mock.validate_sources.return_value = ["hh", "sj"]
     base_api_mock.get_available_sources.return_value = ["hh", "sj"]
-    
+
     # Специализированные моки наследуют от базового
     mock_hh_api = Mock(spec=base_api_mock)
     mock_hh_api.get_vacancies.return_value = [{"name": "HH Test Vacancy", "id": "hh_1"}]
     mock_hh_api.get_vacancies_page.return_value = [{"name": "HH Test Vacancy Page", "id": "hh_page_1"}]
-    
+
     mock_sj_api = Mock(spec=base_api_mock)
     mock_sj_api.get_vacancies.return_value = [{"profession": "SJ Test Job", "id": "sj_1"}]
     mock_sj_api.get_vacancies_page.return_value = [{"profession": "SJ Test Job Page", "id": "sj_page_1"}]
-    
+
     mock_unified_api = Mock(spec=base_api_mock)
     mock_unified_api.get_vacancies_from_sources.return_value = [{"name": "Unified Test Vacancy", "id": "unified_1"}]
-    
-    return {
-        "base": base_api_mock,
-        "hh_api": mock_hh_api,
-        "sj_api": mock_sj_api,
-        "unified_api": mock_unified_api
-    }
+
+    return {"base": base_api_mock, "hh_api": mock_hh_api, "sj_api": mock_sj_api, "unified_api": mock_unified_api}

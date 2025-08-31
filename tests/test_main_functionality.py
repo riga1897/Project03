@@ -1,4 +1,3 @@
-
 """
 Основные функциональные тесты
 
@@ -6,11 +5,13 @@
 """
 
 from unittest.mock import MagicMock, Mock, patch
+
 import pytest
+
+from src.utils.salary import Salary
 from src.utils.vacancy_formatter import VacancyFormatter
 from src.utils.vacancy_operations import VacancyOperations
 from src.vacancies.models import Vacancy
-from src.utils.salary import Salary
 
 
 class TestMainFunctionality:
@@ -201,15 +202,12 @@ class TestMainFunctionality:
             "employer": {"name": "Test Employer"},
             "source": "test.ru",
             "salary": {"from": 50000, "to": 100000, "currency": "RUR"},
-            "snippet": {
-                "requirement": "Test requirements",
-                "responsibility": "Test responsibilities"
-            },
-            "published_at": "2024-01-01T00:00:00+03:00"
+            "snippet": {"requirement": "Test requirements", "responsibility": "Test responsibilities"},
+            "published_at": "2024-01-01T00:00:00+03:00",
         }
-        
+
         vacancy = Vacancy.from_dict(vacancy_dict)
-        
+
         assert vacancy.vacancy_id == "test123"
         assert vacancy.title == "Test Position"
         assert vacancy.url == "https://example.com/test123"
@@ -219,7 +217,7 @@ class TestMainFunctionality:
     def test_vacancy_to_dict(self, sample_vacancy):
         """Тест преобразования вакансии в словарь"""
         vacancy_dict = sample_vacancy.to_dict()
-        
+
         assert isinstance(vacancy_dict, dict)
         assert vacancy_dict["title"] == "Python Developer"
         assert vacancy_dict["vacancy_id"] == "12345"
@@ -245,11 +243,11 @@ class TestMainFunctionality:
     def test_advanced_search_patterns(self, sample_vacancies):
         """Тест расширенных паттернов поиска"""
         operations = VacancyOperations()
-        
+
         # Тест поиска с AND оператором
         and_results = operations.search_vacancies_advanced(sample_vacancies, "Python AND Developer")
         assert isinstance(and_results, list)
-        
+
         # Тест поиска с OR оператором
         or_results = operations.search_vacancies_advanced(sample_vacancies, "Python OR Java")
         assert isinstance(or_results, list)
@@ -258,15 +256,15 @@ class TestMainFunctionality:
     def test_salary_operations(self, sample_vacancies):
         """Тест операций с зарплатой"""
         operations = VacancyOperations()
-        
+
         # Тест получения вакансий с зарплатой
         with_salary = operations.get_vacancies_with_salary(sample_vacancies)
         assert len(with_salary) == 2  # Обе вакансии имеют зарплату
-        
+
         # Тест фильтрации по максимальной зарплате
         max_salary_filter = operations.filter_vacancies_by_max_salary(sample_vacancies, 130000)
         assert len(max_salary_filter) >= 1
-        
+
         # Тест фильтрации по диапазону зарплат
         range_filter = operations.filter_vacancies_by_salary_range(sample_vacancies, 80000, 120000)
         assert isinstance(range_filter, list)

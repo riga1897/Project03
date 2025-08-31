@@ -1,8 +1,8 @@
 import logging
 from typing import Any, Dict, List
 
-from src.vacancies.models import Vacancy
 from src.utils.cache import FileCache
+from src.vacancies.models import Vacancy
 from src.vacancies.parsers.base_parser import BaseParser
 
 logger = logging.getLogger(__name__)

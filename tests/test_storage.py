@@ -50,7 +50,9 @@ class TestPostgresSaver:
         mock_connect.return_value = mock_conn
 
         # Мокируем метод add_vacancy_batch_optimized для возврата успешного результата
-        with patch.object(PostgresSaver, 'add_vacancy_batch_optimized', return_value=["Successfully added 1 vacancy"]) as mock_batch:
+        with patch.object(
+            PostgresSaver, "add_vacancy_batch_optimized", return_value=["Successfully added 1 vacancy"]
+        ) as mock_batch:
             storage = PostgresSaver()
             result = storage.add_vacancy(sample_vacancy)
 
@@ -88,7 +90,7 @@ class TestPostgresSaver:
             "area": "Москва",
             "source": "hh.ru",
             "published_at": datetime(2024, 1, 1),
-            "company_name": "Test Company"
+            "company_name": "Test Company",
         }
 
         mock_cursor.fetchall.return_value = [mock_row]

@@ -2,15 +2,17 @@
 Интеграционные тесты пользовательского интерфейса с полным мокированием
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import MagicMock, Mock, patch
+
 import psycopg2
-from src.user_interface import main, UserInterface
-from src.vacancies.parsers.hh_parser import HHParser
-from src.vacancies.parsers.sj_parser import SuperJobParser
+import pytest
+
 from src.storage.abstract import AbstractVacancyStorage
 from src.storage.postgres_saver import PostgresSaver
+from src.user_interface import UserInterface, main
 from src.utils.env_loader import EnvLoader
+from src.vacancies.parsers.hh_parser import HHParser
+from src.vacancies.parsers.sj_parser import SuperJobParser
 
 
 # Консолидированная фикстура для всех компонентов UI с единым подключением к БД
@@ -67,7 +69,7 @@ def unified_mock_environment():
         "db_manager": mock_db_manager,
         "hh_parser": Mock(spec=HHParser),
         "sj_parser": Mock(spec=SuperJobParser),
-        "env_loader": Mock(spec=EnvLoader)
+        "env_loader": Mock(spec=EnvLoader),
     }
 
 
@@ -100,9 +102,9 @@ class TestUserInterfaceIntegration:
     @patch("psycopg2.connect")
     @patch("os.path.exists", return_value=True)
     @patch("src.utils.env_loader.EnvLoader.load_env_file")
-    def test_complete_ui_workflow_integration(self, mock_env, mock_exists, mock_connect,
-                                             mock_requests, mock_print, mock_input,
-                                             unified_mock_environment):
+    def test_complete_ui_workflow_integration(
+        self, mock_env, mock_exists, mock_connect, mock_requests, mock_print, mock_input, unified_mock_environment
+    ):
         """Полный интеграционный тест workflow UI с консолидированными моками"""
         mock_connect.return_value = unified_mock_environment["connection"]
 
@@ -112,11 +114,13 @@ class TestUserInterfaceIntegration:
         mock_response.raise_for_status.return_value = None
         mock_requests.return_value = mock_response
 
-        with patch.object(UserInterface, '__init__', return_value=None), \
-             patch.object(UserInterface, 'run', return_value=None), \
-             patch.object(UserInterface, '_show_menu', return_value="0"), \
-             patch.object(UserInterface, '_search_vacancies', return_value=None), \
-             patch.object(UserInterface, '_show_saved_vacancies', return_value=None):
+        with patch.object(UserInterface, "__init__", return_value=None), patch.object(
+            UserInterface, "run", return_value=None
+        ), patch.object(UserInterface, "_show_menu", return_value="0"), patch.object(
+            UserInterface, "_search_vacancies", return_value=None
+        ), patch.object(
+            UserInterface, "_show_saved_vacancies", return_value=None
+        ):
 
             ui = UserInterface()
             ui.run()
@@ -132,9 +136,9 @@ class TestUserInterfaceIntegration:
     @patch("psycopg2.connect")
     @patch("os.path.exists", return_value=True)
     @patch("src.utils.env_loader.EnvLoader.load_env_file")
-    def test_search_integration_optimized(self, mock_env, mock_exists, mock_connect,
-                                         mock_requests, mock_print, mock_input,
-                                         unified_mock_environment):
+    def test_search_integration_optimized(
+        self, mock_env, mock_exists, mock_connect, mock_requests, mock_print, mock_input, unified_mock_environment
+    ):
         """Тест интеграции поиска с оптимизацией"""
         mock_connect.return_value = unified_mock_environment["connection"]
 
@@ -143,9 +147,9 @@ class TestUserInterfaceIntegration:
         mock_response.status_code = 200
         mock_requests.return_value = mock_response
 
-        with patch.object(UserInterface, '__init__', return_value=None), \
-             patch.object(UserInterface, '_search_vacancies', return_value=None), \
-             patch.object(UserInterface, '_advanced_search_vacancies', return_value=None):
+        with patch.object(UserInterface, "__init__", return_value=None), patch.object(
+            UserInterface, "_search_vacancies", return_value=None
+        ), patch.object(UserInterface, "_advanced_search_vacancies", return_value=None):
 
             ui = UserInterface()
             ui._search_vacancies()
@@ -159,9 +163,9 @@ class TestUserInterfaceIntegration:
     @patch("psycopg2.connect")
     @patch("os.path.exists", return_value=True)
     @patch("src.utils.env_loader.EnvLoader.load_env_file")
-    def test_data_operations_integration(self, mock_env, mock_exists, mock_connect,
-                                        mock_requests, mock_print, mock_input,
-                                         unified_mock_environment):
+    def test_data_operations_integration(
+        self, mock_env, mock_exists, mock_connect, mock_requests, mock_print, mock_input, unified_mock_environment
+    ):
         """Тест интеграции операций с данными"""
         mock_connect.return_value = unified_mock_environment["connection"]
 
@@ -170,9 +174,9 @@ class TestUserInterfaceIntegration:
         mock_response.status_code = 200
         mock_requests.return_value = mock_response
 
-        with patch.object(UserInterface, '__init__', return_value=None), \
-             patch.object(UserInterface, '_show_saved_vacancies', return_value=None), \
-             patch.object(UserInterface, '_delete_saved_vacancies', return_value=None):
+        with patch.object(UserInterface, "__init__", return_value=None), patch.object(
+            UserInterface, "_show_saved_vacancies", return_value=None
+        ), patch.object(UserInterface, "_delete_saved_vacancies", return_value=None):
 
             ui = UserInterface()
             ui._show_saved_vacancies()
@@ -186,13 +190,14 @@ class TestUserInterfaceIntegration:
     @patch("psycopg2.connect")
     @patch("os.path.exists", return_value=True)
     @patch("src.utils.env_loader.EnvLoader.load_env_file")
-    def test_error_handling_ui_integration(self, mock_env, mock_exists, mock_connect,
-                                          mock_requests, mock_print, mock_input):
+    def test_error_handling_ui_integration(
+        self, mock_env, mock_exists, mock_connect, mock_requests, mock_print, mock_input
+    ):
         """Тест обработки ошибок в UI интеграции"""
         mock_connect.side_effect = Exception("DB Connection error")
         mock_requests.side_effect = Exception("API error")
 
-        with patch.object(UserInterface, '__init__', side_effect=Exception("UI Init error")):
+        with patch.object(UserInterface, "__init__", side_effect=Exception("UI Init error")):
             with pytest.raises(Exception):
                 UserInterface()
 
@@ -202,9 +207,9 @@ class TestUserInterfaceIntegration:
     @patch("psycopg2.connect")
     @patch("os.path.exists", return_value=True)
     @patch("src.utils.env_loader.EnvLoader.load_env_file")
-    def test_pagination_integration_optimized(self, mock_env, mock_exists, mock_connect,
-                                             mock_requests, mock_print, mock_input,
-                                             unified_mock_environment):
+    def test_pagination_integration_optimized(
+        self, mock_env, mock_exists, mock_connect, mock_requests, mock_print, mock_input, unified_mock_environment
+    ):
         """Тест интеграции пагинации с оптимизацией"""
         mock_connect.return_value = unified_mock_environment["connection"]
 
@@ -213,22 +218,21 @@ class TestUserInterfaceIntegration:
         mock_response.status_code = 200
         mock_requests.return_value = mock_response
 
-        with patch.object(UserInterface, '__init__', return_value=None), \
-             patch.object(UserInterface, '_display_vacancies_with_pagination', return_value=None):
+        with patch.object(UserInterface, "__init__", return_value=None), patch.object(
+            UserInterface, "_display_vacancies_with_pagination", return_value=None
+        ):
 
             ui = UserInterface()
             ui._display_vacancies_with_pagination([])
 
             assert ui is not None
 
-
-    @patch('requests.get')
-    @patch('psycopg2.connect')
-    @patch('builtins.input', side_effect=['q'])
-    @patch('builtins.print')
-    @patch('src.utils.env_loader.EnvLoader.load_env_file')
-    def test_main_function_execution(self, mock_env, mock_print, mock_input,
-                                   mock_connect, mock_requests):
+    @patch("requests.get")
+    @patch("psycopg2.connect")
+    @patch("builtins.input", side_effect=["q"])
+    @patch("builtins.print")
+    @patch("src.utils.env_loader.EnvLoader.load_env_file")
+    def test_main_function_execution(self, mock_env, mock_print, mock_input, mock_connect, mock_requests):
         """Тест выполнения главной функции"""
         # Мокируем соединение с БД с поддержкой context manager
         mock_connection = Mock()
@@ -236,7 +240,7 @@ class TestUserInterfaceIntegration:
         mock_connection.__exit__ = Mock(return_value=None)
         mock_connection.commit = Mock()
         mock_connection.close = Mock()
-        
+
         mock_cursor = Mock()
         mock_cursor.__enter__ = Mock(return_value=mock_cursor)
         mock_cursor.__exit__ = Mock(return_value=None)
@@ -244,7 +248,7 @@ class TestUserInterfaceIntegration:
         mock_cursor.fetchone = Mock(return_value=(1,))
         mock_cursor.fetchall = Mock(return_value=[])
         mock_connection.cursor = Mock(return_value=mock_cursor)
-        
+
         mock_connect.return_value = mock_connection
 
         # Мокируем HTTP запросы
@@ -263,23 +267,21 @@ class TestUserInterfaceIntegration:
         assert mock_input.called
         assert mock_print.called
 
-    @patch('psycopg2.connect')
+    @patch("psycopg2.connect")
     def test_user_interface_initialization(self, mock_connect):
         """Тест инициализации пользовательского интерфейса"""
         mock_connect.return_value = Mock()  # Мокируем соединение с БД
 
-        with patch.object(UserInterface, '__init__', return_value=None):
+        with patch.object(UserInterface, "__init__", return_value=None):
             ui = UserInterface()
             assert ui is not None
 
-
-    @patch('requests.get')
-    @patch('psycopg2.connect')
-    @patch('builtins.input', side_effect=['1', 'python', 'q'])
-    @patch('builtins.print')
-    @patch('src.utils.env_loader.EnvLoader.load_env_file')
-    def test_search_workflow_integration(self, mock_env, mock_print, mock_input,
-                                       mock_connect, mock_requests):
+    @patch("requests.get")
+    @patch("psycopg2.connect")
+    @patch("builtins.input", side_effect=["1", "python", "q"])
+    @patch("builtins.print")
+    @patch("src.utils.env_loader.EnvLoader.load_env_file")
+    def test_search_workflow_integration(self, mock_env, mock_print, mock_input, mock_connect, mock_requests):
         """Тест интеграции поискового workflow"""
         # Мокируем соединение с БД с поддержкой context manager
         mock_connection = Mock()
@@ -287,7 +289,7 @@ class TestUserInterfaceIntegration:
         mock_connection.__exit__ = Mock(return_value=None)
         mock_connection.commit = Mock()
         mock_connection.close = Mock()
-        
+
         mock_cursor = Mock()
         mock_cursor.__enter__ = Mock(return_value=mock_cursor)
         mock_cursor.__exit__ = Mock(return_value=None)
@@ -295,18 +297,20 @@ class TestUserInterfaceIntegration:
         mock_cursor.fetchone = Mock(return_value=(1,))
         mock_cursor.fetchall = Mock(return_value=[])
         mock_connection.cursor = Mock(return_value=mock_cursor)
-        
+
         mock_connect.return_value = mock_connection
 
         # Мокируем успешный ответ API
         mock_response = Mock()
         mock_response.json.return_value = {
-            "items": [{
-                "id": "123",
-                "name": "Python Developer",
-                "employer": {"name": "Test Company"},
-                "salary": {"from": 100000, "to": 150000, "currency": "RUR"}
-            }]
+            "items": [
+                {
+                    "id": "123",
+                    "name": "Python Developer",
+                    "employer": {"name": "Test Company"},
+                    "salary": {"from": 100000, "to": 150000, "currency": "RUR"},
+                }
+            ]
         }
         mock_response.status_code = 200
         mock_requests.return_value = mock_response
@@ -319,15 +323,14 @@ class TestUserInterfaceIntegration:
         assert mock_input.called
         assert mock_requests.called
 
-
-    @patch('src.storage.postgres_saver.PostgresSaver.add_vacancy_batch_optimized')
-    @patch('psycopg2.connect')
+    @patch("src.storage.postgres_saver.PostgresSaver.add_vacancy_batch_optimized")
+    @patch("psycopg2.connect")
     def test_database_operations_integration(self, mock_connect, mock_add_batch):
         """Тест интеграции операций с базой данных"""
         mock_connect.return_value = Mock()  # Мокируем соединение с БД
         mock_add_batch.return_value = ["Successfully added 1 vacancy"]
 
-        with patch.object(UserInterface, '__init__', return_value=None):
+        with patch.object(UserInterface, "__init__", return_value=None):
             ui = UserInterface()
             assert ui is not None
 

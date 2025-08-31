@@ -1,18 +1,13 @@
-
 """
 Тесты для UI помощников
 """
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 # Импортируем функции напрямую из ui_helpers
-from src.utils.ui_helpers import (
-    get_user_input,
-    get_positive_integer, 
-    parse_salary_range,
-    confirm_action
-)
+from src.utils.ui_helpers import confirm_action, get_positive_integer, get_user_input, parse_salary_range
 
 
 class TestUIHelpers:
@@ -21,9 +16,8 @@ class TestUIHelpers:
     @pytest.fixture(autouse=True)
     def setup_consolidated_mocks(self):
         """Консолидированная настройка всех моков"""
-        with patch('builtins.input') as mock_input, \
-             patch('builtins.print') as mock_print:
-            
+        with patch("builtins.input") as mock_input, patch("builtins.print") as mock_print:
+
             self.mock_input = mock_input
             self.mock_print = mock_print
             yield
@@ -92,7 +86,7 @@ class TestUIHelpers:
         result = get_positive_integer("Введите число:")
         # Функция возвращает None при первом неверном вводе, затем нужен повторный вызов
         assert result is None  # Первый вызов с "invalid"
-        
+
         # Второй вызов
         self.mock_input.return_value = "42"
         result = get_positive_integer("Введите число:")
@@ -138,12 +132,9 @@ class TestUIHelpers:
     def test_ui_helpers_module_structure(self):
         """Тест структуры модуля ui_helpers"""
         import src.utils.ui_helpers as ui_helpers
-        
-        expected_functions = [
-            'confirm_action', 'get_user_input', 'get_positive_integer',
-            'parse_salary_range'
-        ]
-        
+
+        expected_functions = ["confirm_action", "get_user_input", "get_positive_integer", "parse_salary_range"]
+
         for func_name in expected_functions:
             assert hasattr(ui_helpers, func_name), f"Функция {func_name} не найдена"
             assert callable(getattr(ui_helpers, func_name)), f"{func_name} не является функцией"
@@ -153,15 +144,15 @@ class TestUIHelpers:
         # Тест confirm_action
         self.mock_input.return_value = "y"
         assert confirm_action("Test?") is True
-        
+
         # Тест get_user_input
         self.mock_input.return_value = "test"
         assert get_user_input("Test prompt:") == "test"
-        
+
         # Тест get_positive_integer
         self.mock_input.return_value = "42"
         assert get_positive_integer("Number:") == 42
-        
+
         # Тест parse_salary_range (не требует input)
         assert parse_salary_range("100-200") == (100, 200)
 
@@ -169,19 +160,19 @@ class TestUIHelpers:
         """Консолидированный тест граничных случаев"""
         # Пустые строки
         self.mock_input.return_value = ""
-        
+
         # get_user_input с required=False
         result = get_user_input("Test:", required=False)
         assert result is None
-        
+
         # get_positive_integer с default
         result = get_positive_integer("Test:", default=5)
         assert result == 5
-        
+
         # confirm_action с русскими символами
         self.mock_input.return_value = "да"
         assert confirm_action("Тест?") is True
-        
+
         self.mock_input.return_value = "нет"
         assert confirm_action("Тест?") is False
 
@@ -195,7 +186,7 @@ class TestUIHelpers:
             "abc-def",  # не числа
             "100--200",  # двойное тире
         ]
-        
+
         for case in error_cases:
             result = parse_salary_range(case)
             assert result is None, f"parse_salary_range должен вернуть None для '{case}'"
@@ -206,17 +197,17 @@ class TestUIHelpers:
         self.mock_input.return_value = "y"
         result = confirm_action("Test?")
         assert isinstance(result, bool)
-        
+
         # get_user_input должен возвращать str или None
         self.mock_input.return_value = "test"
         result = get_user_input("Test:")
         assert isinstance(result, str)
-        
+
         # get_positive_integer должен возвращать int или None
         self.mock_input.return_value = "42"
         result = get_positive_integer("Test:")
         assert isinstance(result, int)
-        
+
         # parse_salary_range должен возвращать tuple или None
         result = parse_salary_range("100-200")
         assert isinstance(result, tuple)
@@ -228,7 +219,7 @@ class TestUIHelpers:
         self.mock_input.return_value = "  test  "
         result = get_user_input("Test:")
         assert result == "test"  # Пробелы должны быть обрезаны
-        
+
         # Тест регистронезависимости для confirm_action
         test_cases = ["Y", "y", "YES", "yes", "Да", "ДА"]
         for case in test_cases:

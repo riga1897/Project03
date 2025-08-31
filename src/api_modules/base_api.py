@@ -49,8 +49,6 @@ class BaseJobAPI(ABC):
             bool: True если структура валидна, False иначе
         """
 
-    
-
     def clear_cache(self, source: str) -> None:
         """
         Очистка кэша для конкретного источника

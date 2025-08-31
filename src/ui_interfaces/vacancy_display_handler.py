@@ -34,15 +34,19 @@ class VacancyDisplayHandler:
 
             # Получаем точное количество записей в БД для диагностики
             try:
-                if hasattr(self.storage, 'get_vacancies_count'):
+                if hasattr(self.storage, "get_vacancies_count"):
                     total_count = self.storage.get_vacancies_count()
                     discrepancy = total_count - len(vacancies)
-                    
+
                     if discrepancy > 0:
-                        print(f"⚠️  РАСХОЖДЕНИЕ: {total_count} записей в БД → {len(vacancies)} объектов загружено (потеряно {discrepancy} записей)")
+                        print(
+                            f"⚠️  РАСХОЖДЕНИЕ: {total_count} записей в БД → {len(vacancies)} объектов загружено (потеряно {discrepancy} записей)"
+                        )
                         print(f"Проверьте логи на предмет ошибок конвертации записей БД в объекты Vacancy")
                     else:
-                        print(f"Статус БД: {total_count} записей в таблице, загружено {len(vacancies)} объектов вакансий")
+                        print(
+                            f"Статус БД: {total_count} записей в таблице, загружено {len(vacancies)} объектов вакансий"
+                        )
                 else:
                     print(f"Загружено {len(vacancies)} вакансий из базы данных")
             except Exception as e:

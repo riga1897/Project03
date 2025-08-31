@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import List, Optional, Any
+from typing import Any, List, Optional
 
 from ..vacancies.models import Vacancy
 from .base_formatter import BaseFormatter
@@ -23,7 +23,7 @@ class VacancyFormatter(BaseFormatter):
             Отформатированная строка с информацией о вакансии
         """
         lines = self._build_vacancy_lines(vacancy, number)
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
     def _build_vacancy_lines(self, vacancy: Any, number: Optional[int] = None) -> List[str]:
         """
@@ -163,7 +163,9 @@ class VacancyFormatter(BaseFormatter):
         currency_display = self.format_currency(currency)
 
         if from_salary and to_salary:
-            return f"от {self.format_number(from_salary)} до {self.format_number(to_salary)} {currency_display} в месяц"
+            return (
+                f"от {self.format_number(from_salary)} до {self.format_number(to_salary)} {currency_display} в месяц"
+            )
         elif from_salary:
             return f"от {self.format_number(from_salary)} {currency_display} в месяц"
         elif to_salary:
@@ -240,11 +242,11 @@ class VacancyFormatter(BaseFormatter):
             return ""
 
         # Удаляем HTML теги
-        clean = re.compile('<.*?>')
-        result = re.sub(clean, '', str(text))
+        clean = re.compile("<.*?>")
+        result = re.sub(clean, "", str(text))
 
         # Заменяем множественные пробелы на одинарные
-        result = re.sub(r'\s+', ' ', result)
+        result = re.sub(r"\s+", " ", result)
 
         return result.strip()
 
@@ -293,7 +295,7 @@ class VacancyFormatter(BaseFormatter):
         if url:
             lines.append(f"Ссылка: {url}")
 
-        return ' | '.join(lines)
+        return " | ".join(lines)
 
 
 # Создаем экземпляр для использования в других модулях

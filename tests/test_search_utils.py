@@ -2,16 +2,12 @@
 Тесты для утилит поиска
 """
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 # Импортируем функции напрямую из search_utils
-from src.utils.search_utils import (
-    normalize_query,
-    extract_keywords,
-    build_search_params,
-    validate_search_query
-)
+from src.utils.search_utils import build_search_params, extract_keywords, normalize_query, validate_search_query
 
 
 class TestSearchUtils:
@@ -72,24 +68,18 @@ class TestSearchUtils:
         is_valid = validate_search_query("a")
         assert isinstance(is_valid, bool)
 
-    
-
     def test_all_functions_exist(self):
         """Тест существования всех функций"""
         import src.utils.search_utils as search_utils
 
         # Проверяем основные функции
-        expected_functions = [
-            'normalize_query', 'extract_keywords', 'build_search_params',
-            'validate_search_query'
-        ]
+        expected_functions = ["normalize_query", "extract_keywords", "build_search_params", "validate_search_query"]
 
-        existing_functions = [func for func in expected_functions
-                            if hasattr(search_utils, func)]
+        existing_functions = [func for func in expected_functions if hasattr(search_utils, func)]
 
         # Должны быть хотя бы базовые функции
         assert len(existing_functions) > 0
-        assert 'normalize_query' in existing_functions or 'extract_keywords' in existing_functions
+        assert "normalize_query" in existing_functions or "extract_keywords" in existing_functions
 
     def test_search_utils_integration(self):
         """Интеграционный тест утилит поиска"""

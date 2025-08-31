@@ -3,8 +3,10 @@
 """
 
 from unittest.mock import MagicMock, Mock, patch
-import pytest
+
 import psycopg2  # Импорт добавлен
+import pytest
+
 from src.storage.postgres_saver import PostgresSaver
 from src.vacancies.models import Vacancy
 
@@ -60,20 +62,29 @@ class TestPostgresSaverOptimized:
     @patch("psycopg2.extras.execute_values")
     @patch("os.path.exists", return_value=True)
     @patch("src.utils.env_loader.EnvLoader.load_env_file")
-    def test_optimized_batch_operations_unified(self, mock_env, mock_exists, mock_execute_values,
-                                               mock_connect, mock_print, mock_input,
-                                               unified_db_connection, sample_vacancy):
+    def test_optimized_batch_operations_unified(
+        self,
+        mock_env,
+        mock_exists,
+        mock_execute_values,
+        mock_connect,
+        mock_print,
+        mock_input,
+        unified_db_connection,
+        sample_vacancy,
+    ):
         """Оптимизированный тест batch операций с единым подключением"""
         mock_connect.return_value = unified_db_connection
 
         # Мокируем инициализацию для избежания реальных запросов
-        with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'):
+        with patch.object(PostgresSaver, "_ensure_database_exists"), patch.object(
+            PostgresSaver, "_ensure_tables_exist"
+        ):
 
             storage = PostgresSaver()
 
             # Мокируем _get_connection для переиспользования единого подключения
-            with patch.object(storage, '_get_connection', return_value=unified_db_connection):
+            with patch.object(storage, "_get_connection", return_value=unified_db_connection):
                 # Тестируем batch операции
                 vacancies = [sample_vacancy] * 3
                 result = storage.add_vacancy_batch_optimized(vacancies)
@@ -87,19 +98,22 @@ class TestPostgresSaverOptimized:
     @patch("builtins.input", return_value="")
     @patch("builtins.print")
     @patch("psycopg2.connect")
-    def test_optimized_search_operations(self, mock_connect, mock_print, mock_input,
-                                        unified_db_connection, sample_vacancy):
+    def test_optimized_search_operations(
+        self, mock_connect, mock_print, mock_input, unified_db_connection, sample_vacancy
+    ):
         """Тест оптимизированных операций поиска"""
         mock_connect.return_value = unified_db_connection
 
-        with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'):
+        with patch.object(PostgresSaver, "_ensure_database_exists"), patch.object(
+            PostgresSaver, "_ensure_tables_exist"
+        ):
 
             storage = PostgresSaver()
 
             # Мокируем методы поиска
-            with patch.object(storage, '_get_connection', return_value=unified_db_connection), \
-                 patch.object(storage, 'search_vacancies_batch', return_value=[sample_vacancy]):
+            with patch.object(storage, "_get_connection", return_value=unified_db_connection), patch.object(
+                storage, "search_vacancies_batch", return_value=[sample_vacancy]
+            ):
 
                 # Тестируем поиск
                 result = storage.search_vacancies_batch(["Python"], limit=10)
@@ -111,19 +125,22 @@ class TestPostgresSaverOptimized:
     @patch("builtins.input", return_value="")
     @patch("builtins.print")
     @patch("psycopg2.connect")
-    def test_optimized_filtering_operations(self, mock_connect, mock_print, mock_input,
-                                           unified_db_connection, sample_vacancy):
+    def test_optimized_filtering_operations(
+        self, mock_connect, mock_print, mock_input, unified_db_connection, sample_vacancy
+    ):
         """Тест оптимизированных операций фильтрации"""
         mock_connect.return_value = unified_db_connection
 
-        with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'):
+        with patch.object(PostgresSaver, "_ensure_database_exists"), patch.object(
+            PostgresSaver, "_ensure_tables_exist"
+        ):
 
             storage = PostgresSaver()
 
             # Мокируем методы фильтрации
-            with patch.object(storage, '_get_connection', return_value=unified_db_connection), \
-                 patch.object(storage, 'filter_and_deduplicate_vacancies', return_value=[sample_vacancy]):
+            with patch.object(storage, "_get_connection", return_value=unified_db_connection), patch.object(
+                storage, "filter_and_deduplicate_vacancies", return_value=[sample_vacancy]
+            ):
 
                 # Тестируем фильтрацию
                 filters = {"salary_from": 50000, "keywords": ["Python"]}
@@ -136,13 +153,13 @@ class TestPostgresSaverOptimized:
     @patch("builtins.input", return_value="")
     @patch("builtins.print")
     @patch("psycopg2.connect")
-    def test_optimized_company_mapping(self, mock_connect, mock_print, mock_input,
-                                      unified_db_connection):
+    def test_optimized_company_mapping(self, mock_connect, mock_print, mock_input, unified_db_connection):
         """Тест оптимизированного маппинга компаний"""
         mock_connect.return_value = unified_db_connection
 
-        with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'):
+        with patch.object(PostgresSaver, "_ensure_database_exists"), patch.object(
+            PostgresSaver, "_ensure_tables_exist"
+        ):
 
             storage = PostgresSaver()
 
@@ -152,14 +169,15 @@ class TestPostgresSaverOptimized:
                 ("сбер", "Сбер"),
                 ("тинькофф", "Тинькофф"),
                 ("VK", "VK"),
-                ("Unknown Company", "Unknown Company")
+                ("Unknown Company", "Unknown Company"),
             ]
 
             # Добавляем метод _standardize_employer_name, если он отсутствует
-            if not hasattr(storage, '_standardize_employer_name'):
-                storage._standardize_employer_name = MagicMock(side_effect=lambda name: storage.COMPANY_NAME_STANDARDIZATION.get(name.lower(), name))
+            if not hasattr(storage, "_standardize_employer_name"):
+                storage._standardize_employer_name = MagicMock(
+                    side_effect=lambda name: storage.COMPANY_NAME_STANDARDIZATION.get(name.lower(), name)
+                )
                 storage.COMPANY_NAME_STANDARDIZATION = {"яндекс": "Яндекс", "сбер": "Сбер", "тинькофф": "Тинькофф"}
-
 
             for input_name, expected in test_cases:
                 result = storage._standardize_employer_name(input_name)
@@ -172,13 +190,13 @@ class TestPostgresSaverOptimized:
     @patch("builtins.input", return_value="")
     @patch("builtins.print")
     @patch("psycopg2.connect")
-    def test_optimized_date_normalization(self, mock_connect, mock_print, mock_input,
-                                         unified_db_connection):
+    def test_optimized_date_normalization(self, mock_connect, mock_print, mock_input, unified_db_connection):
         """Тест оптимизированной нормализации дат"""
         mock_connect.return_value = unified_db_connection
 
-        with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'):
+        with patch.object(PostgresSaver, "_ensure_database_exists"), patch.object(
+            PostgresSaver, "_ensure_tables_exist"
+        ):
 
             storage = PostgresSaver()
 
@@ -189,18 +207,20 @@ class TestPostgresSaverOptimized:
                 "2024-01-15 10:00:00",
                 "2024-01-15",
                 None,
-                ""
+                "",
             ]
 
             # Добавляем метод _normalize_published_date, если он отсутствует
-            if not hasattr(storage, '_normalize_published_date'):
-                storage._normalize_published_date = MagicMock(side_effect=lambda date_str: date_str if date_str else None)
+            if not hasattr(storage, "_normalize_published_date"):
+                storage._normalize_published_date = MagicMock(
+                    side_effect=lambda date_str: date_str if date_str else None
+                )
 
             for date_str in test_dates:
                 result = storage._normalize_published_date(date_str)
                 if date_str:
                     # Должен возвращать datetime объект или None
-                    assert result is None or hasattr(result, 'year')
+                    assert result is None or hasattr(result, "year")
                 else:
                     assert result is None
 
@@ -208,13 +228,13 @@ class TestPostgresSaverOptimized:
     @patch("builtins.input", return_value="")
     @patch("builtins.print")
     @patch("psycopg2.connect")
-    def test_optimized_text_normalization(self, mock_connect, mock_print, mock_input,
-                                         unified_db_connection):
+    def test_optimized_text_normalization(self, mock_connect, mock_print, mock_input, unified_db_connection):
         """Тест оптимизированной нормализации текста"""
         mock_connect.return_value = unified_db_connection
 
-        with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'):
+        with patch.object(PostgresSaver, "_ensure_database_exists"), patch.object(
+            PostgresSaver, "_ensure_tables_exist"
+        ):
 
             storage = PostgresSaver()
 
@@ -223,12 +243,14 @@ class TestPostgresSaverOptimized:
                 ("  Python Developer  ", "python developer"),
                 ("Java/Spring!!!", "javaspring"),
                 ("", ""),
-                (None, "")
+                (None, ""),
             ]
 
             # Добавляем метод _normalize_text, если он отсутствует
-            if not hasattr(storage, '_normalize_text'):
-                storage._normalize_text = MagicMock(side_effect=lambda text: "".join(filter(str.isalnum, text if text else "")).lower())
+            if not hasattr(storage, "_normalize_text"):
+                storage._normalize_text = MagicMock(
+                    side_effect=lambda text: "".join(filter(str.isalnum, text if text else "")).lower()
+                )
 
             for input_text, expected_pattern in test_cases:
                 result = storage._normalize_text(input_text)
@@ -255,19 +277,22 @@ class TestPostgresSaverOptimized:
     @patch("builtins.input", return_value="")
     @patch("builtins.print")
     @patch("psycopg2.connect")
-    def test_optimized_batch_check_exists(self, mock_connect, mock_print, mock_input,
-                                         unified_db_connection, sample_vacancy):
+    def test_optimized_batch_check_exists(
+        self, mock_connect, mock_print, mock_input, unified_db_connection, sample_vacancy
+    ):
         """Тест оптимизированной batch проверки существования"""
         mock_connect.return_value = unified_db_connection
 
-        with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'):
+        with patch.object(PostgresSaver, "_ensure_database_exists"), patch.object(
+            PostgresSaver, "_ensure_tables_exist"
+        ):
 
             storage = PostgresSaver()
 
             # Мокируем проверку существования
-            with patch.object(storage, '_get_connection', return_value=unified_db_connection), \
-                 patch.object(storage, 'check_vacancies_exist_batch', return_value={"test_1": True}):
+            with patch.object(storage, "_get_connection", return_value=unified_db_connection), patch.object(
+                storage, "check_vacancies_exist_batch", return_value={"test_1": True}
+            ):
 
                 result = storage.check_vacancies_exist_batch([sample_vacancy])
                 assert isinstance(result, dict)
@@ -280,10 +305,11 @@ class TestPostgresSaverOptimized:
     def test_add_vacancy_optimized_no_data(self, mock_connect, mock_print, mock_input, unified_db_connection):
         """Тест add_vacancy_optimized с пустым списком вакансий"""
         mock_connect.return_value = unified_db_connection
-        with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'):
+        with patch.object(PostgresSaver, "_ensure_database_exists"), patch.object(
+            PostgresSaver, "_ensure_tables_exist"
+        ):
             storage = PostgresSaver()
-            with patch.object(storage, '_get_connection', return_value=unified_db_connection):
+            with patch.object(storage, "_get_connection", return_value=unified_db_connection):
                 result = storage.add_vacancy_batch_optimized([])
                 assert result == []
                 mock_connect.return_value.cursor.return_value.execute.assert_not_called()
@@ -294,24 +320,29 @@ class TestPostgresSaverOptimized:
     def test_search_vacancies_batch_no_results(self, mock_connect, mock_print, mock_input, unified_db_connection):
         """Тест search_vacancies_batch без результатов"""
         mock_connect.return_value = unified_db_connection
-        with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'):
+        with patch.object(PostgresSaver, "_ensure_database_exists"), patch.object(
+            PostgresSaver, "_ensure_tables_exist"
+        ):
             storage = PostgresSaver()
-            with patch.object(storage, '_get_connection', return_value=unified_db_connection), \
-                 patch.object(storage, 'search_vacancies_batch', return_value=[]): # Явно возвращаем пустой список
+            with patch.object(storage, "_get_connection", return_value=unified_db_connection), patch.object(
+                storage, "search_vacancies_batch", return_value=[]
+            ):  # Явно возвращаем пустой список
                 result = storage.search_vacancies_batch(["Python"], limit=10)
                 assert result == []
 
     @patch("builtins.input", return_value="")
     @patch("builtins.print")
     @patch("psycopg2.connect")
-    def test_filter_and_deduplicate_vacancies_empty_input(self, mock_connect, mock_print, mock_input, unified_db_connection):
+    def test_filter_and_deduplicate_vacancies_empty_input(
+        self, mock_connect, mock_print, mock_input, unified_db_connection
+    ):
         """Тест filter_and_deduplicate_vacancies с пустым списком"""
         mock_connect.return_value = unified_db_connection
-        with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'):
+        with patch.object(PostgresSaver, "_ensure_database_exists"), patch.object(
+            PostgresSaver, "_ensure_tables_exist"
+        ):
             storage = PostgresSaver()
-            with patch.object(storage, '_get_connection', return_value=unified_db_connection):
+            with patch.object(storage, "_get_connection", return_value=unified_db_connection):
                 result = storage.filter_and_deduplicate_vacancies([], {"salary_from": 50000})
                 assert result == []
                 mock_connect.return_value.cursor.return_value.execute.assert_not_called()
@@ -319,13 +350,16 @@ class TestPostgresSaverOptimized:
     @patch("builtins.input", return_value="")
     @patch("builtins.print")
     @patch("psycopg2.connect")
-    def test_check_vacancies_exist_batch_empty_input(self, mock_connect, mock_print, mock_input, unified_db_connection):
+    def test_check_vacancies_exist_batch_empty_input(
+        self, mock_connect, mock_print, mock_input, unified_db_connection
+    ):
         """Тест check_vacancies_exist_batch с пустым списком"""
         mock_connect.return_value = unified_db_connection
-        with patch.object(PostgresSaver, '_ensure_database_exists'), \
-             patch.object(PostgresSaver, '_ensure_tables_exist'):
+        with patch.object(PostgresSaver, "_ensure_database_exists"), patch.object(
+            PostgresSaver, "_ensure_tables_exist"
+        ):
             storage = PostgresSaver()
-            with patch.object(storage, '_get_connection', return_value=unified_db_connection):
+            with patch.object(storage, "_get_connection", return_value=unified_db_connection):
                 result = storage.check_vacancies_exist_batch([])
                 assert result == {}
                 mock_connect.return_value.cursor.return_value.execute.assert_not_called()

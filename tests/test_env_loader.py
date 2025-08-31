@@ -90,10 +90,31 @@ class TestEnvLoader:
         EnvLoader.clear_cache()
         # Очищаем os.environ от переменных, которые могли быть установлены предыдущими тестами
         # Используем известные переменные из тестов или более общую очистку, если применимо
-        for key in ["TEST_VAR", "ANOTHER_VAR", "PRIORITY_TEST", "TEST_SET", "TEST_CLEAR", "CACHED_VAR", "CUSTOM_VAR", "OVERRIDE_TEST_VAR", "INTEGRATION_TEST_DB_URL", "INTEGRATION_TEST_API_KEY", "COUNTER", "KEY WITH SPACES", "ANOTHER_KEY", "TEST_REQUIRED_VAR", "NON_EXISTENT_VAR1", "NON_EXISTENT_VAR2", "VAR1", "VAR2", "VAR3", "TEST_GET_VAR", "PATH"]:
+        for key in [
+            "TEST_VAR",
+            "ANOTHER_VAR",
+            "PRIORITY_TEST",
+            "TEST_SET",
+            "TEST_CLEAR",
+            "CACHED_VAR",
+            "CUSTOM_VAR",
+            "OVERRIDE_TEST_VAR",
+            "INTEGRATION_TEST_DB_URL",
+            "INTEGRATION_TEST_API_KEY",
+            "COUNTER",
+            "KEY WITH SPACES",
+            "ANOTHER_KEY",
+            "TEST_REQUIRED_VAR",
+            "NON_EXISTENT_VAR1",
+            "NON_EXISTENT_VAR2",
+            "VAR1",
+            "VAR2",
+            "VAR3",
+            "TEST_GET_VAR",
+            "PATH",
+        ]:
             if key in os.environ:
                 del os.environ[key]
-
 
     def test_get_env_var_from_os_environ(self):
         """Тест получения переменной из os.environ"""
