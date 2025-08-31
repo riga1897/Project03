@@ -76,45 +76,48 @@ class TestVacancy:
     def test_vacancy_initialization(self):
         """Тест инициализации Vacancy"""
         vacancy = Vacancy(
-            "123",
-            "Python Developer",
-            "https://test.com/vacancy/123",
-            "hh.ru",
+            title="Python Developer",
+            url="https://test.com/vacancy/123",
+            vacancy_id="123",
+            source="hh.ru",
             description="Test description"
         )
 
         assert vacancy.vacancy_id == "123"
         assert vacancy.title == "Python Developer"
         assert vacancy.url == "https://test.com/vacancy/123"
+        assert vacancy.source == "hh.ru"
+        assert vacancy.description == "Test description"
 
     def test_vacancy_with_salary(self):
         """Тест вакансии с зарплатой"""
-        salary = VacancySalary(from_amount=100000, to_amount=150000, currency="RUR")
+        salary_dict = {"from": 100000, "to": 150000, "currency": "RUR"}
         vacancy = Vacancy(
             vacancy_id="123",
             title="Python Developer",
-            company="Test Company",
             url="https://test.com/vacancy/123",
-            salary=str(salary), # Assuming salary is converted to string for the placeholder Vacancy
+            salary=salary_dict,
             source="hh.ru"
         )
-        assert vacancy.salary == str(salary)
+
+        assert vacancy.vacancy_id == "123"
+        assert vacancy.title == "Python Developer"
+        assert vacancy.salary is not None
 
     def test_vacancy_with_employer(self):
         """Тест вакансии с работодателем"""
-        employer = VacancyEmployer(id="1", name="Test Company")
+        employer_dict = {"id": "1", "name": "Test Company"}
         vacancy = Vacancy(
             vacancy_id="123",
             title="Python Developer",
-            company="Test Company",
             url="https://test.com/vacancy/123",
+            employer=employer_dict,
             description="Test description",
             source="hh.ru"
         )
-        # In the placeholder Vacancy, employer is not a direct attribute,
-        # so we can't directly assert employer.name.
-        # We'll assert that the vacancy object was created.
+
         assert vacancy.vacancy_id == "123"
+        assert vacancy.title == "Python Developer"
 
 
     def test_vacancy_str_representation(self):

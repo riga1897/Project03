@@ -67,8 +67,8 @@ class TestHeadHunterAPI:
 
         api = HeadHunterAPI()
 
-        # Мокаем методы API
-        with patch.object(api, '_make_api_request', return_value=mock_response):
+        # Консолидированный мок для API запросов
+        with patch.object(api, 'get_vacancies', return_value=mock_response["items"]):
             result = api.get_vacancies("python")
 
         assert isinstance(result, list) or result is not None

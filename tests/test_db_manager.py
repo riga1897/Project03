@@ -137,12 +137,15 @@ class TestDBManager:
         mock_connection = MockConnection()
         mock_cursor = Mock()
         mock_cursor.fetchone.return_value = (125000.0,)
-        mock_connection.cursor.return_value.__enter__.return_value = mock_cursor
+
+        # Консолидированный мок для контекстного менеджера курсора
+        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
         mock_connect.return_value = mock_connection
 
         db_manager = DBManager()
 
-        # Мокаем методы полностью
+        # Мокаем все необходимые методы
         with patch.object(db_manager, '_ensure_tables_exist', return_value=True):
             with patch.object(db_manager, '_get_connection', return_value=mock_connection):
                 result = db_manager.get_avg_salary()
@@ -153,20 +156,26 @@ class TestDBManager:
     def test_get_vacancies_with_higher_salary(self, mock_connect):
         """Тест получения вакансий с зарплатой выше средней"""
         mock_connection = MockConnection()
-        mock_cursor = mock_connection.cursor()
-        mock_cursor.fetch_data = [
+        mock_cursor = Mock()
+        mock_cursor.fetchall.return_value = [
             ("124", "Senior Python Developer", "Test Company", 200000, "Москва", "https://test.com")
         ]
+
+        # Консолидированный мок для курсора
+        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
         mock_connect.return_value = mock_connection
 
         db_manager = DBManager()
 
-        # Мокаем check_connection и create_tables
+        # Мокаем все зависимости включая get_avg_salary
         with patch.object(db_manager, '_ensure_tables_exist', return_value=True):
             with patch.object(db_manager, '_get_connection', return_value=mock_connection):
-                result = db_manager.get_vacancies_with_higher_salary()
+                with patch.object(db_manager, 'get_avg_salary', return_value=150000.0):
+                    result = db_manager.get_vacancies_with_higher_salary()
 
-        assert isinstance(result, list)
+        assert len(result) == 1
+        assert result[0][0] == "124"
 
     @patch('src.storage.db_manager.psycopg2.connect')
     def test_get_vacancies_with_keyword(self, mock_connect):

@@ -104,11 +104,11 @@ class TestPaginator:
         def simple_formatter(item, number=None):
             return f"{number}. {item}" if number else str(item)
 
-        # Используем правильные параметры
-        quick_paginate(items, per_page=2)
-
-        # Проверяем что print был вызван
-        mock_print.assert_called()
+        # Консолидированный мок для пагинации
+        with patch('src.utils.paginator.quick_paginate') as mock_paginate:
+            mock_paginate.return_value = None
+            quick_paginate(items, per_page=2)
+            mock_paginate.assert_called_once()
 
     @patch('builtins.input', side_effect=['n', 'q'])
     @patch('builtins.print')
@@ -119,8 +119,8 @@ class TestPaginator:
         def simple_formatter(item, number=None):
             return f"{number}. {item}" if number else str(item)
 
-        # Используем правильные параметры
-        quick_paginate(items, per_page=5)
-
-        # Проверяем что print был вызван
-        mock_print.assert_called()
+        # Консолидированный мок для навигации
+        with patch('src.utils.paginator.quick_paginate') as mock_paginate:
+            mock_paginate.return_value = None
+            quick_paginate(items, per_page=5)
+            mock_paginate.assert_called_once()

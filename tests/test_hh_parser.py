@@ -66,7 +66,8 @@ class TestHHParser:
     def test_parse_hh_employer_data(self):
         """Тест парсинга данных работодателя"""
         result = self.parser.parse_vacancy(self.sample_hh_vacancy)
-        assert result['company'] == 'Test Company'
+        assert result['employer']['name'] == 'Test Company'
+        assert result['employer']['id'] == '1'
 
     def test_parse_hh_location_data(self):
         """Тест парсинга данных о местоположении"""
