@@ -1,0 +1,2354 @@
+~/workspace$ pytest
+================ test session starts ================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: mock-3.14.1, cov-6.2.1
+collected 559 items                                 
+
+tests/test_api_data_filter.py ...........     [  1%]
+tests/test_api_modules.py .................   [  5%]
+tests/test_base_api.py .............          [  7%]
+tests/test_base_formatter.py ...............  [ 10%]
+tests/test_cache.py ............              [ 12%]
+tests/test_cached_api.py ............         [ 14%]
+tests/test_config.py ........................ [ 18%]
+                                              [ 18%]
+tests/test_console_interface.py F......FFFFF. [ 20%]
+..F.FF....F.F                                 [ 23%]
+tests/test_coverage_enhancement.py F..F..FFF. [ 25%]
+..F.F..F.                                     [ 26%]
+tests/test_db_connection_optimization.py .... [ 27%]
+                                              [ 27%]
+tests/test_db_manager.py .................... [ 30%]
+.........................                     [ 35%]
+tests/test_db_manager_demo.py ....            [ 36%]
+tests/test_decorators.py ..............F....  [ 39%]
+tests/test_env_loader.py .................... [ 43%]
+....                                          [ 43%]
+tests/test_file_handlers.py ..........        [ 45%]
+tests/test_integration.py ....F....           [ 47%]
+tests/test_main_functionality.py ............ [ 49%]
+.                                             [ 49%]
+tests/test_menu_manager.py ....               [ 50%]
+tests/test_paginator.py .....                 [ 51%]
+tests/test_parsers.py ......F....F........... [ 55%]
+                                              [ 55%]
+tests/test_postgres_saver.py ......F..        [ 56%]
+tests/test_postgres_saver_optimized.py ...... [ 57%]
+......                                        [ 59%]
+tests/test_salary.py ..............           [ 61%]
+tests/test_search_utils.py .............      [ 63%]
+tests/test_source_manager.py ..........       [ 65%]
+tests/test_source_selector.py ............    [ 67%]
+tests/test_sql_filtering_once.py EFFEF        [ 68%]
+tests/test_storage.py .....FF.                [ 70%]
+tests/test_ui_helpers.py .................... [ 73%]
+...                                           [ 74%]
+tests/test_ui_navigation.py FFFFFFFFFFFFFFFFF [ 77%]
+FFFFFFFFFFFFF                                 [ 79%]
+tests/test_unified_api.py ................... [ 83%]
+                                              [ 83%]
+tests/test_user_interface_integration.py .... [ 83%]
+.F.F.                                         [ 84%]
+tests/test_vacancy_display_handler.py ....... [ 85%]
+..........                                    [ 87%]
+tests/test_vacancy_formatter.py .........F... [ 89%]
+.....                                         [ 90%]
+tests/test_vacancy_formatter_complete.py .... [ 91%]
+...                                           [ 92%]
+tests/test_vacancy_models.py ..F.........     [ 94%]
+tests/test_vacancy_operations.py ..........   [ 96%]
+tests/test_vacancy_operations_complete.py ... [ 96%]
+......                                        [ 97%]
+tests/test_vacancy_stats.py ..........F..     [100%]
+
+====================== ERRORS =======================
+_ ERROR at setup of TestSingleSQLFiltering.test_single_sql_filtering_execution _
+
+self = <tests.test_sql_filtering_once.TestSingleSQLFiltering object at 0x7ff3a0b95a10>
+
+    @pytest.fixture
+    def sample_vacancies(self) -> List[Vacancy]:
+        """Примеры вакансий для тестирования"""
+        return [
+>           Vacancy(
+                vacancy_id="1",
+                title="Python Developer",
+                employer={"id": "1740", "name": "Яндекс"},  # Целевая компания
+                source="hh"
+            ),
+            Vacancy(
+                vacancy_id="2",
+                title="Java Developer",
+                employer={"id": "9999", "name": "Неизвестная компания"},  # НЕ целевая
+                source="hh"
+            ),
+            Vacancy(
+                vacancy_id="3",
+                title="Go Developer",
+                employer={"id": "78638", "name": "Тинькофф"},  # Целевая компания
+                source="hh"
+            )
+        ]
+E       TypeError: Vacancy.__init__() missing 1 required positional argument: 'url'
+
+tests/test_sql_filtering_once.py:38: TypeError
+_ ERROR at setup of TestSingleSQLFiltering.test_no_fallback_methods _
+
+self = <tests.test_sql_filtering_once.TestSingleSQLFiltering object at 0x7ff3a0b96750>
+
+    @pytest.fixture
+    def sample_vacancies(self) -> List[Vacancy]:
+        """Примеры вакансий для тестирования"""
+        return [
+>           Vacancy(
+                vacancy_id="1",
+                title="Python Developer",
+                employer={"id": "1740", "name": "Яндекс"},  # Целевая компания
+                source="hh"
+            ),
+            Vacancy(
+                vacancy_id="2",
+                title="Java Developer",
+                employer={"id": "9999", "name": "Неизвестная компания"},  # НЕ целевая
+                source="hh"
+            ),
+            Vacancy(
+                vacancy_id="3",
+                title="Go Developer",
+                employer={"id": "78638", "name": "Тинькофф"},  # Целевая компания
+                source="hh"
+            )
+        ]
+E       TypeError: Vacancy.__init__() missing 1 required positional argument: 'url'
+
+tests/test_sql_filtering_once.py:38: TypeError
+===================== FAILURES ======================
+_ TestUserInterface.test_user_interface_initialization _
+
+self = <tests.test_console_interface.TestUserInterface object at 0x7ff3a0f19690>
+unified_mock_environment = {'connection': <Mock id='140684341666512'>, 'cursor': <Mock id='140684341663120'>, 'db_manager': <Mock id='140684342024400'>, 'demo': <Mock id='140684342019536'>, ...}
+
+    def test_user_interface_initialization(self, unified_mock_environment):
+        """Тест инициализации пользовательского интерфейса"""
+        mocks = unified_mock_environment
+    
+        interface = UserInterface()
+    
+        assert interface is not None
+        assert interface.storage == mocks['storage']
+>       assert interface.unified_api == mocks['unified_api']
+E       AssertionError: assert <src.api_modules.unified_api.UnifiedAPI object at 0x7ff3a037a150> == <Mock id='140684342022672'>
+E        +  where <src.api_modules.unified_api.UnifiedAPI object at 0x7ff3a037a150> = <src.ui_interfaces.console_interface.UserInterface object at 0x7ff3a037a210>.unified_api
+
+tests/test_console_interface.py:107: AssertionError
+_ TestUserInterface.test_advanced_search_vacancies_with_keywords _
+
+self = <Mock name='mock.filter_vacancies_by_multiple_keywords' id='140684333214224'>
+
+    def assert_called_once(self):
+        """assert that the mock was called only once.
+        """
+        if not self.call_count == 1:
+            msg = ("Expected '%s' to have been called once. Called %s times.%s"
+                   % (self._mock_name or 'mock',
+                      self.call_count,
+                      self._calls_repr()))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'filter_vacancies_by_multiple_keywords' to have been called once. Called 0 times.
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:918: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_console_interface.TestUserInterface object at 0x7ff3a0f1ca50>
+unified_mock_environment = {'connection': <Mock id='140684333014544'>, 'cursor': <Mock id='140684333014928'>, 'db_manager': <Mock id='140684333018256'>, 'demo': <Mock id='140684333018512'>, ...}
+sample_vacancy = <src.vacancies.models.Vacancy object at 0x7ff39ff90050>
+
+    def test_advanced_search_vacancies_with_keywords(self, unified_mock_environment, sample_vacancy):
+        """Тест расширенного поиска с ключевыми словами"""
+        mocks = unified_mock_environment
+        mocks['storage'].get_vacancies.return_value = [sample_vacancy]
+        mocks['vacancy_ops'].filter_vacancies_by_multiple_keywords.return_value = [sample_vacancy]
+    
+        interface = UserInterface()
+    
+        with patch('src.utils.ui_helpers.get_user_input', return_value='python, django'), \
+             patch('src.utils.ui_navigation.quick_paginate') as mock_paginate:
+    
+            interface._advanced_search_vacancies()
+    
+            mocks['storage'].get_vacancies.assert_called_once()
+>           mocks['vacancy_ops'].filter_vacancies_by_multiple_keywords.assert_called_once()
+E           AssertionError: Expected 'filter_vacancies_by_multiple_keywords' to have been called once. Called 0 times.
+
+tests/test_console_interface.py:176: AssertionError
+_ TestUserInterface.test_advanced_search_vacancies_with_operators _
+
+self = <Mock name='mock.search_vacancies_advanced' id='140684337621328'>
+
+    def assert_called_once(self):
+        """assert that the mock was called only once.
+        """
+        if not self.call_count == 1:
+            msg = ("Expected '%s' to have been called once. Called %s times.%s"
+                   % (self._mock_name or 'mock',
+                      self.call_count,
+                      self._calls_repr()))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'search_vacancies_advanced' to have been called once. Called 0 times.
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:918: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_console_interface.TestUserInterface object at 0x7ff3a0f1d1d0>
+unified_mock_environment = {'connection': <Mock id='140684333217104'>, 'cursor': <Mock id='140684337768016'>, 'db_manager': <Mock id='140684337769296'>, 'demo': <Mock id='140684337769744'>, ...}
+sample_vacancy = <src.vacancies.models.Vacancy object at 0x7ff39ff914a0>
+
+    def test_advanced_search_vacancies_with_operators(self, unified_mock_environment, sample_vacancy):
+        """Тест расширенного поиска с операторами AND/OR"""
+        mocks = unified_mock_environment
+        mocks['storage'].get_vacancies.return_value = [sample_vacancy]
+        mocks['vacancy_ops'].search_vacancies_advanced.return_value = [sample_vacancy]
+    
+        interface = UserInterface()
+    
+        with patch('src.utils.ui_helpers.get_user_input', return_value='python AND django'), \
+             patch('src.utils.ui_navigation.quick_paginate') as mock_paginate:
+    
+            interface._advanced_search_vacancies()
+    
+            mocks['storage'].get_vacancies.assert_called_once()
+>           mocks['vacancy_ops'].search_vacancies_advanced.assert_called_once()
+E           AssertionError: Expected 'search_vacancies_advanced' to have been called once. Called 0 times.
+
+tests/test_console_interface.py:193: AssertionError
+____ TestUserInterface.test_filter_by_min_salary ____
+
+self = <Mock name='mock.filter_vacancies_by_min_salary' id='140684342067984'>
+args = ([<src.vacancies.models.Vacancy object at 0x7ff3a03f5e60>], 100000)
+kwargs = {}
+msg = "Expected 'filter_vacancies_by_min_salary' to be called once. Called 0 times."
+
+    def assert_called_once_with(self, /, *args, **kwargs):
+        """assert that the mock was called exactly once and that that call was
+        with the specified arguments."""
+        if not self.call_count == 1:
+            msg = ("Expected '%s' to be called once. Called %s times.%s"
+                   % (self._mock_name or 'mock',
+                      self.call_count,
+                      self._calls_repr()))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'filter_vacancies_by_min_salary' to be called once. Called 0 times.
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:950: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_console_interface.TestUserInterface object at 0x7ff3a0f1d950>
+unified_mock_environment = {'connection': <Mock id='140684341312592'>, 'cursor': <Mock id='140684341307728'>, 'db_manager': <Mock id='140684341305680'>, 'demo': <Mock id='140684341309776'>, ...}
+sample_vacancy = <src.vacancies.models.Vacancy object at 0x7ff3a03f5e60>
+
+    def test_filter_by_min_salary(self, unified_mock_environment, sample_vacancy):
+        """Тест фильтрации по минимальной зарплате"""
+        mocks = unified_mock_environment
+        mocks['storage'].get_vacancies.return_value = [sample_vacancy]
+        mocks['vacancy_ops'].filter_vacancies_by_min_salary.return_value = [sample_vacancy]
+        mocks['vacancy_ops'].sort_vacancies_by_salary.return_value = [sample_vacancy]
+    
+        interface = UserInterface()
+    
+        with patch('builtins.input', side_effect=['1', '100000']), \
+             patch('src.utils.ui_navigation.quick_paginate') as mock_paginate:
+    
+            interface._filter_saved_vacancies_by_salary()
+    
+            mocks['storage'].get_vacancies.assert_called_once()
+>           mocks['vacancy_ops'].filter_vacancies_by_min_salary.assert_called_once_with([sample_vacancy], 100000)
+E           AssertionError: Expected 'filter_vacancies_by_min_salary' to be called once. Called 0 times.
+
+tests/test_console_interface.py:211: AssertionError
+----------------- Captured log call -----------------
+ERROR    src.ui_interfaces.console_interface:console_interface.py:296 Ошибка при фильтрации по зарплате:
+____ TestUserInterface.test_filter_by_max_salary ____
+
+self = <Mock name='mock.filter_vacancies_by_max_salary' id='140684337914896'>
+args = ([<src.vacancies.models.Vacancy object at 0x7ff39fb8bad0>], 200000)
+kwargs = {}
+msg = "Expected 'filter_vacancies_by_max_salary' to be called once. Called 0 times."
+
+    def assert_called_once_with(self, /, *args, **kwargs):
+        """assert that the mock was called exactly once and that that call was
+        with the specified arguments."""
+        if not self.call_count == 1:
+            msg = ("Expected '%s' to be called once. Called %s times.%s"
+                   % (self._mock_name or 'mock',
+                      self.call_count,
+                      self._calls_repr()))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'filter_vacancies_by_max_salary' to be called once. Called 0 times.
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:950: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_console_interface.TestUserInterface object at 0x7ff3a0f1e110>
+unified_mock_environment = {'connection': <Mock id='140684342192400'>, 'cursor': <Mock id='140684342182864'>, 'db_manager': <Mock id='140684341945296'>, 'demo': <Mock id='140684341945488'>, ...}
+sample_vacancy = <src.vacancies.models.Vacancy object at 0x7ff39fb8bad0>
+
+    def test_filter_by_max_salary(self, unified_mock_environment, sample_vacancy):
+        """Тест фильтрации по максимальной зарплате"""
+        mocks = unified_mock_environment
+        mocks['storage'].get_vacancies.return_value = [sample_vacancy]
+        mocks['vacancy_ops'].filter_vacancies_by_max_salary.return_value = [sample_vacancy]
+        mocks['vacancy_ops'].sort_vacancies_by_salary.return_value = [sample_vacancy]
+    
+        interface = UserInterface()
+    
+        with patch('builtins.input', side_effect=['2', '200000']), \
+             patch('src.utils.ui_navigation.quick_paginate') as mock_paginate:
+    
+            interface._filter_saved_vacancies_by_salary()
+    
+            mocks['storage'].get_vacancies.assert_called_once()
+>           mocks['vacancy_ops'].filter_vacancies_by_max_salary.assert_called_once_with([sample_vacancy], 200000)
+E           AssertionError: Expected 'filter_vacancies_by_max_salary' to be called once. Called 0 times.
+
+tests/test_console_interface.py:230: AssertionError
+----------------- Captured log call -----------------
+ERROR    src.ui_interfaces.console_interface:console_interface.py:296 Ошибка при фильтрации по зарплате:
+___ TestUserInterface.test_filter_by_salary_range ___
+
+self = <Mock name='mock.filter_vacancies_by_salary_range' id='140684337527312'>
+args = ([<src.vacancies.models.Vacancy object at 0x7ff39ff91230>], 100000, 200000)
+kwargs = {}
+msg = "Expected 'filter_vacancies_by_salary_range' to be called once. Called 0 times."
+
+    def assert_called_once_with(self, /, *args, **kwargs):
+        """assert that the mock was called exactly once and that that call was
+        with the specified arguments."""
+        if not self.call_count == 1:
+            msg = ("Expected '%s' to be called once. Called %s times.%s"
+                   % (self._mock_name or 'mock',
+                      self.call_count,
+                      self._calls_repr()))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'filter_vacancies_by_salary_range' to be called once. Called 0 times.
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:950: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_console_interface.TestUserInterface object at 0x7ff3a0f1e8d0>
+unified_mock_environment = {'connection': <Mock id='140684341641296'>, 'cursor': <Mock id='140684341645776'>, 'db_manager': <Mock id='140684341650384'>, 'demo': <Mock id='140684341647184'>, ...}
+sample_vacancy = <src.vacancies.models.Vacancy object at 0x7ff39ff91230>
+
+    def test_filter_by_salary_range(self, unified_mock_environment, sample_vacancy):
+        """Тест фильтрации по диапазону зарплат"""
+        mocks = unified_mock_environment
+        mocks['storage'].get_vacancies.return_value = [sample_vacancy]
+        mocks['vacancy_ops'].filter_vacancies_by_salary_range.return_value = [sample_vacancy]
+        mocks['vacancy_ops'].sort_vacancies_by_salary.return_value = [sample_vacancy]
+    
+        interface = UserInterface()
+    
+        with patch('builtins.input', side_effect=['3', '100000 - 200000']), \
+             patch('src.utils.ui_helpers.parse_salary_range', return_value=(100000, 200000)), \
+             patch('src.utils.ui_navigation.quick_paginate') as mock_paginate:
+    
+            interface._filter_saved_vacancies_by_salary()
+    
+            mocks['storage'].get_vacancies.assert_called_once()
+>           mocks['vacancy_ops'].filter_vacancies_by_salary_range.assert_called_once_with([sample_vacancy], 100000, 200000)
+E           AssertionError: Expected 'filter_vacancies_by_salary_range' to be called once. Called 0 times.
+
+tests/test_console_interface.py:250: AssertionError
+----------------- Captured log call -----------------
+ERROR    src.ui_interfaces.console_interface:console_interface.py:296 Ошибка при фильтрации по зарплате:
+_ TestUserInterface.test_demonstrate_db_manager_methods _
+
+self = <tests.test_console_interface.TestUserInterface object at 0x7ff3a0f1d650>
+unified_mock_environment = {'connection': <Mock id='140684332995664'>, 'cursor': <Mock id='140684332995920'>, 'db_manager': <Mock id='140684332991760'>, 'demo': <Mock id='140684332992656'>, ...}
+
+    def test_demonstrate_db_manager_methods(self, unified_mock_environment):
+        """Тест демонстрации методов DBManager"""
+        mocks = unified_mock_environment
+        mocks['db_manager'].get_companies_and_vacancies_count.return_value = [("Test Company", 5)]
+        mocks['db_manager'].get_all_vacancies.return_value = [{"title": "Test Job", "company_name": "Test Company"}]
+        mocks['db_manager'].get_avg_salary.return_value = 150000
+        mocks['db_manager'].get_vacancies_with_higher_salary.return_value = [{"title": "High Pay Job"}]
+        mocks['db_manager'].get_vacancies_with_keyword.return_value = [{"title": "Python Developer"}]
+    
+        interface = UserInterface(db_manager=mocks['db_manager'])
+    
+>       interface._demonstrate_db_manager_methods()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'UserInterface' object has no attribute '_demonstrate_db_manager_methods'
+
+tests/test_console_interface.py:289: AttributeError
+_ TestUserInterface.test_show_vacancies_for_deletion_all _
+
+self = <tests.test_console_interface.TestUserInterface object at 0x7ff3a0f24510>
+unified_mock_environment = {'connection': <Mock id='140684346417296'>, 'cursor': <Mock id='140684346415568'>, 'db_manager': <Mock id='140684350444432'>, 'demo': <Mock id='140684350442896'>, ...}
+sample_vacancy = <src.vacancies.models.Vacancy object at 0x7ff39fba6270>
+
+    def test_show_vacancies_for_deletion_all(self, unified_mock_environment, sample_vacancy):
+        """Тест удаления всех вакансий по ключевому слову"""
+        mocks = unified_mock_environment
+        interface = UserInterface()
+    
+        with patch('builtins.input', side_effect=['a']), \
+             patch('src.utils.ui_helpers.confirm_action', return_value=True):
+    
+>           interface._show_vacancies_for_deletion([sample_vacancy], "python")
+
+tests/test_console_interface.py:317: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/ui_interfaces/console_interface.py:437: in _show_vacancies_for_deletion
+    if confirm_action(f"Удалить ВСЕ {len(vacancies)} вакансий с ключевым словом '{keyword}'?"):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/utils/ui_helpers.py:108: in confirm_action
+    answer = input(f"{prompt} (y/n): ").strip().lower()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1124: in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1128: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <MagicMock name='input' id='140684333018384'>
+args = ("Удалить ВСЕ 1 вакансий с ключевым словом 'python'? (y/n): ",)
+kwargs = {}
+effect = <list_iterator object at 0x7ff39ff0dd20>
+
+    def _execute_mock_call(self, /, *args, **kwargs):
+        # separate from _increment_mock_call so that awaited functions are
+        # executed separately from their call, also AsyncMock overrides this method
+    
+        effect = self.side_effect
+        if effect is not None:
+            if _is_exception(effect):
+                raise effect
+            elif not _callable(effect):
+>               result = next(effect)
+                         ^^^^^^^^^^^^
+E               StopIteration
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1185: StopIteration
+_ TestUserInterface.test_show_vacancies_for_deletion_range _
+
+self = <tests.test_console_interface.TestUserInterface object at 0x7ff3a0f24950>
+unified_mock_environment = {'connection': <Mock id='140684333672272'>, 'cursor': <Mock id='140684333671952'>, 'db_manager': <Mock id='140684333210576'>, 'demo': <Mock id='140684333214736'>, ...}
+
+    def test_show_vacancies_for_deletion_range(self, unified_mock_environment):
+        """Тест удаления диапазона вакансий"""
+        mocks = unified_mock_environment
+        vacancies = [
+            Vacancy(title="Job 1", url="url1", vacancy_id="1", source="hh.ru"),
+            Vacancy(title="Job 2", url="url2", vacancy_id="2", source="hh.ru"),
+            Vacancy(title="Job 3", url="url3", vacancy_id="3", source="hh.ru")
+        ]
+    
+        interface = UserInterface()
+    
+        with patch('builtins.input', side_effect=['1-2']), \
+             patch('src.utils.ui_helpers.confirm_action', return_value=True):
+    
+>           interface._show_vacancies_for_deletion(vacancies, "test")
+
+tests/test_console_interface.py:335: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/ui_interfaces/console_interface.py:474: in _show_vacancies_for_deletion
+    if confirm_action(f"Удалить {len(vacancies_to_delete)} вакансий?"):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/utils/ui_helpers.py:108: in confirm_action
+    answer = input(f"{prompt} (y/n): ").strip().lower()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1124: in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1128: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <MagicMock name='input' id='140684337966288'>
+args = ('Удалить 2 вакансий? (y/n): ',), kwargs = {}
+effect = <list_iterator object at 0x7ff3a07749d0>
+
+    def _execute_mock_call(self, /, *args, **kwargs):
+        # separate from _increment_mock_call so that awaited functions are
+        # executed separately from their call, also AsyncMock overrides this method
+    
+        effect = self.side_effect
+        if effect is not None:
+            if _is_exception(effect):
+                raise effect
+            elif not _callable(effect):
+>               result = next(effect)
+                         ^^^^^^^^^^^^
+E               StopIteration
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1185: StopIteration
+_ TestUserInterface.test_db_manager_demo_availability _
+
+self = <tests.test_console_interface.TestUserInterface object at 0x7ff3a0f260d0>
+unified_mock_environment = {'connection': <Mock id='140684337668048'>, 'cursor': <Mock id='140684337661904'>, 'db_manager': <Mock id='140684337675856'>, 'demo': <Mock id='140684337672400'>, ...}
+
+    def test_db_manager_demo_availability(self, unified_mock_environment):
+        """Тест доступности демонстрации DBManager"""
+        mocks = unified_mock_environment
+        interface = UserInterface(db_manager=mocks['db_manager'])
+    
+        # Проверяем что demo инициализирован когда db_manager доступен
+>       assert interface.demo == mocks['demo']
+E       AssertionError: assert <src.utils.db_manager_demo.DBManagerDemo object at 0x7ff39fb1b590> == <Mock id='140684337672400'>
+E        +  where <src.utils.db_manager_demo.DBManagerDemo object at 0x7ff39fb1b590> = <src.ui_interfaces.console_interface.UserInterface object at 0x7ff39fb1b210>.demo
+
+tests/test_console_interface.py:396: AssertionError
+__ TestUserInterface.test_vacancy_display_methods ___
+
+self = <MagicMock name='display_vacancy_info' id='140684312695120'>
+
+    def assert_called_once(self):
+        """assert that the mock was called only once.
+        """
+        if not self.call_count == 1:
+            msg = ("Expected '%s' to have been called once. Called %s times.%s"
+                   % (self._mock_name or 'mock',
+                      self.call_count,
+                      self._calls_repr()))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'display_vacancy_info' to have been called once. Called 0 times.
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:918: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_console_interface.TestUserInterface object at 0x7ff3a0f26e10>
+unified_mock_environment = {'connection': <Mock id='140684342264272'>, 'cursor': <Mock id='140684342264016'>, 'db_manager': <Mock id='140684342268944'>, 'demo': <Mock id='140684342277776'>, ...}
+sample_vacancy = <src.vacancies.models.Vacancy object at 0x7ff39fb9ec30>
+
+    def test_vacancy_display_methods(self, unified_mock_environment, sample_vacancy):
+        """Тест методов отображения вакансий"""
+        interface = UserInterface()
+    
+        # Тест статического метода отображения списка вакансий
+        with patch('src.utils.ui_helpers.display_vacancy_info') as mock_display:
+            interface._display_vacancies([sample_vacancy])
+>           mock_display.assert_called_once()
+E           AssertionError: Expected 'display_vacancy_info' to have been called once. Called 0 times.
+
+tests/test_console_interface.py:414: AssertionError
+_ TestEnhancedCoverage.test_postgres_saver_context_manager _
+
+self = <tests.test_coverage_enhancement.TestEnhancedCoverage object at 0x7ff3a0f35410>
+mock_unified_db_connection = {'connection': <MagicMock id='140684341702288'>, 'cursor': <MagicMock name='mock.cursor().__enter__()' id='140684341699408'>}
+
+    def test_postgres_saver_context_manager(self, mock_unified_db_connection: Dict[str, Any]) -> None:
+        """Тест контекстного менеджера PostgresSaver"""
+        with patch('src.storage.postgres_saver.PostgresSaver._ensure_database_exists'), \
+             patch('src.storage.postgres_saver.PostgresSaver._ensure_tables_exist'):
+    
+            postgres_saver = PostgresSaver()
+    
+            # Тест входа и выхода из контекстного менеджера
+>           with postgres_saver as saver:
+E           TypeError: 'PostgresSaver' object does not support the context manager protocol
+
+tests/test_coverage_enhancement.py:51: TypeError
+_ TestEnhancedCoverage.test_api_data_filter_comprehensive _
+
+self = <tests.test_coverage_enhancement.TestEnhancedCoverage object at 0x7ff3a0f36710>
+
+    def test_api_data_filter_comprehensive(self) -> None:
+        """Комплексный тест APIDataFilter"""
+        filter_obj = APIDataFilter()
+    
+        # Подготавливаем тестовые данные
+        test_data = [
+            {
+                "id": "1",
+                "name": "Python Developer",
+                "salary": {"from": 100000, "to": 150000, "currency": "RUR"},
+                "employer": {"name": "Яндекс"},
+                "area": {"name": "Москва"},
+                "experience": {"name": "От 1 года до 3 лет"},
+                "employment": {"name": "Полная занятость"},
+                "snippet": {"requirement": "Python Django", "responsibility": "Backend development"}
+            },
+            {
+                "id": "2",
+                "name": "Java Developer",
+                "salary": {"from": 80000, "to": 120000, "currency": "RUR"},
+                "employer": {"name": "Сбер"},
+                "area": {"name": "Санкт-Петербург"},
+                "experience": {"name": "От 3 до 6 лет"},
+                "employment": {"name": "Удаленная работа"}
+            }
+        ]
+    
+        # Тест фильтрации по зарплате
+        result = filter_obj.filter_by_salary_range(test_data, min_salary=90000, source="hh")
+>       assert len(result) == 1
+E       AssertionError: assert 2 == 1
+E        +  where 2 = len([{'area': {'name': 'Москва'}, 'employer': {'name': 'Яндекс'}, 'employment': {'name': 'Полная занятость'}, 'experience'...employer': {'name': 'Сбер'}, 'employment': {'name': 'Удаленная работа'}, 'experience': {'name': 'От 3 до 6 лет'}, ...}])
+
+tests/test_coverage_enhancement.py:135: AssertionError
+_ TestEnhancedCoverage.test_postgres_saver_batch_operations_typing _
+
+self = <tests.test_coverage_enhancement.TestEnhancedCoverage object at 0x7ff3a0f36d10>
+mock_unified_db_connection = {'connection': <MagicMock id='140684338026640'>, 'cursor': <MagicMock name='mock.cursor().__enter__()' id='140684338022224'>}
+
+    def test_postgres_saver_batch_operations_typing(self, mock_unified_db_connection: Dict[str, Any]) -> None:
+        """Тест строгой типизации batch операций"""
+>       with patch('src.storage.postgres_saver.PostgresSaver._ensure_database_exists'), \
+             patch('src.storage.postgres_saver.PostgresSaver._ensure_tables_exist'), \
+             patch('src.storage.postgres_saver.PostgresSaver.get_connection') as mock_get_conn:
+
+tests/test_coverage_enhancement.py:197: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7ff3a03bc250>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.storage.postgres_saver.PostgresSaver'> does not have the attribute 'get_connection'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_ TestEnhancedCoverage.test_db_connection_optimization _
+
+self = <tests.test_coverage_enhancement.TestEnhancedCoverage object at 0x7ff3a0f37110>
+mock_unified_db_connection = {'connection': <MagicMock name='connect()' id='140684341736272'>, 'cursor': <MagicMock name='connect().cursor().__enter__()' id='140684341730576'>}
+
+    def test_db_connection_optimization(self, mock_unified_db_connection: Dict[str, Any]) -> None:
+        """Тест оптимизации подключений к БД"""
+        with patch('src.storage.postgres_saver.PostgresSaver._ensure_database_exists'), \
+             patch('src.storage.postgres_saver.PostgresSaver._ensure_tables_exist'), \
+             patch('psycopg2.connect') as mock_connect:
+    
+            mock_connect.return_value = mock_unified_db_connection["connection"]
+    
+            postgres_saver = PostgresSaver()
+    
+            # Выполняем несколько операций
+>           with postgres_saver.get_connection() as conn:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'PostgresSaver' object has no attribute 'get_connection'
+
+tests/test_coverage_enhancement.py:233: AttributeError
+_ TestEnhancedCoverage.test_error_handling_without_fallback _
+
+self = <tests.test_coverage_enhancement.TestEnhancedCoverage object at 0x7ff3a0f37510>
+mock_unified_db_connection = {'connection': <MagicMock id='140684342112848'>, 'cursor': <MagicMock name='mock.cursor().__enter__()' id='140684342108304'>}
+
+    def test_error_handling_without_fallback(self, mock_unified_db_connection: Dict[str, Any]) -> None:
+        """Тест обработки ошибок БЕЗ fallback методов"""
+>       with patch('src.storage.postgres_saver.PostgresSaver._ensure_database_exists'), \
+             patch('src.storage.postgres_saver.PostgresSaver._ensure_tables_exist'), \
+             patch('src.storage.postgres_saver.PostgresSaver.get_connection') as mock_get_conn:
+
+tests/test_coverage_enhancement.py:244: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7ff39ff758d0>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.storage.postgres_saver.PostgresSaver'> does not have the attribute 'get_connection'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_ TestEnhancedCoverage.test_single_db_connection_usage _
+
+self = <tests.test_coverage_enhancement.TestEnhancedCoverage object at 0x7ff3a0f407d0>
+mock_unified_db_connection = {'connection': <MagicMock name='connect()' id='140684342060944'>, 'cursor': <MagicMock name='connect().cursor().__enter__()' id='140684342052240'>}
+
+    def test_single_db_connection_usage(self, mock_unified_db_connection: Dict[str, Any]) -> None:
+        """Тест использования единого подключения к БД"""
+        with patch('src.storage.postgres_saver.PostgresSaver._ensure_database_exists'), \
+             patch('src.storage.postgres_saver.PostgresSaver._ensure_tables_exist'), \
+             patch('psycopg2.connect') as mock_connect:
+    
+            mock_connect.return_value = mock_unified_db_connection["connection"]
+    
+            postgres_saver = PostgresSaver()
+    
+            # Выполняем операции через контекстный менеджер
+>           with postgres_saver.get_connection() as conn1:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'PostgresSaver' object has no attribute 'get_connection'
+
+tests/test_coverage_enhancement.py:344: AttributeError
+_ TestEnhancedCoverage.test_mock_consolidation_example _
+
+self = <tests.test_coverage_enhancement.TestEnhancedCoverage object at 0x7ff3a0f41490>
+mock_unified_db_connection = {'connection': <MagicMock id='140684329394384'>, 'cursor': <MagicMock name='mock.cursor().__enter__()' id='140684346414864'>}
+
+    def test_mock_consolidation_example(self, mock_unified_db_connection: Dict[str, Any]) -> None:
+        """Пример консолидированного мока вместо разбиения на операции"""
+>       with patch('src.storage.postgres_saver.PostgresSaver._ensure_database_exists'), \
+             patch('src.storage.postgres_saver.PostgresSaver._ensure_tables_exist'), \
+             patch('src.storage.postgres_saver.PostgresSaver.get_connection') as mock_get_conn:
+
+tests/test_coverage_enhancement.py:379: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7ff39fb19990>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.storage.postgres_saver.PostgresSaver'> does not have the attribute 'get_connection'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_ TestEnhancedCoverage.test_error_propagation_without_fallback _
+
+self = <tests.test_coverage_enhancement.TestEnhancedCoverage object at 0x7ff3a0f42790>
+mock_unified_db_connection = {'connection': <MagicMock id='140684333664848'>, 'cursor': <MagicMock name='mock.cursor().__enter__()' id='140684333667344'>}
+
+    def test_error_propagation_without_fallback(self, mock_unified_db_connection: Dict[str, Any]) -> None:
+        """Тест что ошибки пробрасываются без fallback логики"""
+        with patch('src.storage.postgres_saver.PostgresSaver._ensure_database_exists'), \
+             patch('src.storage.postgres_saver.PostgresSaver._ensure_tables_exist'):
+    
+            postgres_saver = PostgresSaver()
+    
+            # Мокируем критическую ошибку
+>           with patch.object(postgres_saver, 'get_connection') as mock_conn:
+
+tests/test_coverage_enhancement.py:458: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7ff39fb03190>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <src.storage.postgres_saver.PostgresSaver object at 0x7ff39f7a87d0> does not have the attribute 'get_connection'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+__ TestDecorators.test_cache_result_different_args __
+
+self = <tests.test_decorators.TestDecorators object at 0x7ff3a0fa82d0>
+
+    def test_cache_result_different_args(self):
+        """Тест кэширования с разными аргументами"""
+        call_count = 0
+    
+        def test_cache_result(func):
+            cache = {}
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                key = str(args) + str(sorted(kwargs.items()))
+                if key not in cache:
+                    cache[key] = func(*args, **kwargs)
+                return cache[key]
+            return wrapper
+    
+        @test_cache_result
+        def cached_function(x, y=1):
+            nonlocal call_count
+            call_count += 1
+            return x * y
+    
+        result1 = cached_function(5, 2)
+        assert result1 == 10
+        assert call_count == 1
+    
+        result2 = cached_function(5, y=2)
+        assert result2 == 10
+>       assert call_count == 1  # Должно использовать кэш
+        ^^^^^^^^^^^^^^^^^^^^^^
+E       assert 2 == 1
+
+tests/test_decorators.py:418: AssertionError
+_ TestConsolidatedIntegration.test_cache_workflow_optimized _
+
+self = <tests.test_integration.TestConsolidatedIntegration object at 0x7ff3a0709710>
+mock_time = <MagicMock name='time' id='140684186718416'>
+mock_json_load = <MagicMock name='load' id='140684185149008'>
+mock_json_dump = <MagicMock name='dump' id='140684185146576'>
+mock_file_open = <MagicMock name='open' id='140684185294160'>
+mock_unlink = <MagicMock name='unlink' id='140684186990352'>
+mock_is_file = <MagicMock name='is_file' id='140684185562768'>
+mock_exists = <MagicMock name='exists' id='140684185677328'>
+mock_mkdir = <MagicMock name='mkdir' id='140684185667792'>
+mock_print = <MagicMock name='print' id='140684185669456'>
+mock_input = <MagicMock name='input' id='140684185562640'>
+
+    @patch("builtins.input", return_value="")
+    @patch("builtins.print")
+    @patch("pathlib.Path.mkdir")
+    @patch("pathlib.Path.exists", return_value=True)
+    @patch("pathlib.Path.is_file", return_value=True)
+    @patch("pathlib.Path.unlink")
+    @patch("builtins.open", new_callable=mock_open, read_data='{"timestamp": 1234567890, "data": {"test": "data1"}}')
+    @patch("json.dump")
+    @patch("json.load", return_value={"timestamp": 1234567890, "data": {"test": "data1"}})
+    @patch("time.time", return_value=1234567900)
+    def test_cache_workflow_optimized(self, mock_time, mock_json_load, mock_json_dump,
+                                    mock_file_open, mock_unlink, mock_is_file, mock_exists,
+                                    mock_mkdir, mock_print, mock_input):
+        """Оптимизированный тест кэширования с полным мокированием файловых операций"""
+    
+        # Полное мокирование всех файловых операций
+        test_data = {"test": "data1"}
+    
+        # Полностью мокируем FileCache методы
+>       with patch.object(FileCache, 'save_response', return_value=None), \
+                          ^^^^^^^^^
+             patch.object(FileCache, 'load_response', return_value={"data": test_data}), \
+             patch.object(FileCache, '__init__', return_value=None):
+E            NameError: name 'FileCache' is not defined
+
+tests/test_integration.py:370: NameError
+____ TestHHParser.test_parse_vacancy_none_input _____
+
+vacancy_data = None
+
+    @staticmethod
+    def parse_vacancy(vacancy_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Парсинг одной вакансии HH в словарь
+    
+        Args:
+            vacancy_data: Данные вакансии от API HH
+    
+        Returns:
+            Dict[str, Any]: Словарь с данными вакансии
+        """
+        try:
+>           salary_info = vacancy_data.get("salary", {})
+                          ^^^^^^^^^^^^^^^^
+E           AttributeError: 'NoneType' object has no attribute 'get'
+
+src/vacancies/parsers/hh_parser.py:90: AttributeError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_parsers.TestHHParser object at 0x7ff3a0b261d0>
+
+    def test_parse_vacancy_none_input(self):
+        """Тест парсинга None"""
+        parser = HHParser()
+>       result = parser.parse_vacancy(None)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_parsers.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+vacancy_data = None
+
+    @staticmethod
+    def parse_vacancy(vacancy_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Парсинг одной вакансии HH в словарь
+    
+        Args:
+            vacancy_data: Данные вакансии от API HH
+    
+        Returns:
+            Dict[str, Any]: Словарь с данными вакансии
+        """
+        try:
+            salary_info = vacancy_data.get("salary", {})
+            snippet_info = vacancy_data.get("snippet", {})
+            employer_info = vacancy_data.get("employer", {})
+            area_info = vacancy_data.get("area", {})
+            experience_info = vacancy_data.get("experience", {})
+            employment_info = vacancy_data.get("employment", {})
+            schedule_info = vacancy_data.get("schedule", {})
+    
+            return {
+                "vacancy_id": str(vacancy_data.get("id", "")),
+                "title": vacancy_data.get("name", ""),
+                "url": vacancy_data.get("alternate_url", ""),
+                "salary_from": salary_info.get("from") if salary_info else None,
+                "salary_to": salary_info.get("to") if salary_info else None,
+                "salary_currency": salary_info.get("currency") if salary_info else None,
+                "requirements": snippet_info.get("requirement", "") if snippet_info else "",
+                "responsibilities": snippet_info.get("responsibility", "") if snippet_info else "",
+                "employer": employer_info.get("name", "") if employer_info else "",
+                "area": area_info.get("name", "") if area_info else "",
+                "experience": experience_info.get("name", "") if experience_info else "",
+                "employment": employment_info.get("name", "") if employment_info else "",
+                "schedule": schedule_info.get("name", "") if schedule_info else "",
+                "published_at": vacancy_data.get("published_at", ""),
+            }
+        except Exception as e:
+            logger.error(f"Ошибка при парсинге вакансии HH: {e}")
+            return {
+>               "vacancy_id": str(vacancy_data.get("id", "")),
+                                  ^^^^^^^^^^^^^^^^
+                "title": vacancy_data.get("name", ""),
+                "url": "",
+                "salary_from": None,
+                "salary_to": None,
+                "salary_currency": None,
+                "requirements": "",
+                "responsibilities": "",
+                "employer": "",
+                "area": "",
+                "experience": "",
+                "employment": "",
+                "schedule": "",
+                "published_at": "",
+            }
+E           AttributeError: 'NoneType' object has no attribute 'get'
+
+src/vacancies/parsers/hh_parser.py:117: AttributeError
+----------------- Captured log call -----------------
+ERROR    src.vacancies.parsers.hh_parser:hh_parser.py:115 Ошибка при парсинге вакансии HH: 'NoneType' object has no attribute 'get'
+___ TestSuperJobParser.test_parse_vacancy_sj_none ___
+
+vacancy_data = None
+
+    @staticmethod
+    def parse_vacancy(vacancy_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Парсинг одной вакансии SJ в словарь
+    
+        Args:
+            vacancy_data: Данные вакансии от API SJ
+    
+        Returns:
+            Dict[str, Any]: Словарь с данными вакансии
+        """
+        try:
+>           town_info = vacancy_data.get("town", {})
+                        ^^^^^^^^^^^^^^^^
+E           AttributeError: 'NoneType' object has no attribute 'get'
+
+src/vacancies/parsers/sj_parser.py:100: AttributeError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_parsers.TestSuperJobParser object at 0x7ff3a0bde1d0>
+
+    def test_parse_vacancy_sj_none(self):
+        """Тест парсинга None для SuperJob"""
+        parser = SuperJobParser()
+>       result = parser.parse_vacancy(None)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_parsers.py:130: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+vacancy_data = None
+
+    @staticmethod
+    def parse_vacancy(vacancy_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Парсинг одной вакансии SJ в словарь
+    
+        Args:
+            vacancy_data: Данные вакансии от API SJ
+    
+        Returns:
+            Dict[str, Any]: Словарь с данными вакансии
+        """
+        try:
+            town_info = vacancy_data.get("town", {})
+            experience_info = vacancy_data.get("experience", {})
+            type_of_work_info = vacancy_data.get("type_of_work", {})
+            place_of_work_info = vacancy_data.get("place_of_work", {})
+    
+            # Обработка описания - объединяем vacancyRichText и work
+            description_parts = []
+            if vacancy_data.get("vacancyRichText"):
+                description_parts.append(vacancy_data.get("vacancyRichText"))
+            if vacancy_data.get("work"):
+                description_parts.append(vacancy_data.get("work"))
+            description = " ".join(filter(None, description_parts))
+    
+            # Обработка зарплаты - разбираем диапазон
+            payment_from = vacancy_data.get("payment_from")
+            payment_to = vacancy_data.get("payment_to")
+    
+            # Если зарплата задана одним числом без диапазона, используем его как salary_from
+            if payment_from and not payment_to:
+                salary_from = payment_from
+                salary_to = None
+            elif payment_to and not payment_from:
+                salary_from = None
+                salary_to = payment_to
+            else:
+                salary_from = payment_from
+                salary_to = payment_to
+    
+            return {
+                "vacancy_id": str(vacancy_data.get("id", "")),
+                "title": vacancy_data.get("profession", ""),
+                "url": vacancy_data.get("link", ""),
+                "salary_from": salary_from,
+                "salary_to": salary_to,
+                "salary_currency": vacancy_data.get("currency"),
+                "description": description or "",
+                "requirements": vacancy_data.get("candidat", ""),
+                "responsibilities": vacancy_data.get("work", ""),
+                "employer": vacancy_data.get("firm_name", ""),
+                "area": town_info.get("title", "") if town_info else "",
+                "experience": experience_info.get("title", "") if experience_info else "",
+                "employment": type_of_work_info.get("title", "") if type_of_work_info else "",
+                "schedule": place_of_work_info.get("title", "") if place_of_work_info else "",
+                "published_at": vacancy_data.get("date_pub_timestamp", ""),
+                "source": "superjob.ru",
+            }
+        except Exception as e:
+            logger.error(f"Ошибка при парсинге вакансии SJ: {e}")
+            return {
+>               "vacancy_id": str(vacancy_data.get("id", "")),
+                                  ^^^^^^^^^^^^^^^^
+                "title": vacancy_data.get("profession", ""),
+                "url": "",
+                "salary_from": None,
+                "salary_to": None,
+                "salary_currency": None,
+                "description": "",
+                "requirements": "",
+                "responsibilities": "",
+                "employer": "",
+                "area": "",
+                "experience": "",
+                "employment": "",
+                "schedule": "",
+                "published_at": "",
+                "source": "superjob.ru",
+            }
+E           AttributeError: 'NoneType' object has no attribute 'get'
+
+src/vacancies/parsers/sj_parser.py:149: AttributeError
+----------------- Captured log call -----------------
+ERROR    src.vacancies.parsers.sj_parser:sj_parser.py:147 Ошибка при парсинге вакансии SJ: 'NoneType' object has no attribute 'get'
+_ TestPostgresSaverOptimized.test_batch_operations_optimization _
+
+self = <tests.test_postgres_saver.TestPostgresSaverOptimized object at 0x7ff3a0bcced0>
+global_external_resource_isolation = {'db_connect': <MagicMock name='connect' id='140684288065040'>, 'db_connection': <Mock name='mock.connection' id='1406...e='load_env_file' id='140684187085904'>, 'execute_values': <MagicMock name='execute_values' id='140684186968912'>, ...}
+sample_vacancy = <src.vacancies.models.Vacancy object at 0x7ff39ff91d90>
+
+    def test_batch_operations_optimization(self, global_external_resource_isolation, sample_vacancy):
+        """Тест оптимизированных batch операций"""
+        with patch.object(PostgresSaver, '_ensure_database_exists'), \
+             patch.object(PostgresSaver, '_ensure_tables_exist'), \
+             patch.object(PostgresSaver, '_get_connection') as mock_get_conn:
+    
+            # Настраиваем мок для batch операций
+            mock_conn = global_external_resource_isolation["db_connection"]
+            mock_conn.cursor.return_value.rowcount = 5
+            mock_get_conn.return_value = mock_conn
+    
+            storage = PostgresSaver()
+    
+            # Тестируем batch операции
+            batch_vacancies = [sample_vacancy] * 5
+>           result = storage.add_vacancy_batch_optimized(batch_vacancies)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_postgres_saver.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7ff396e07a10>
+vacancies = [<src.vacancies.models.Vacancy object at 0x7ff39ff91d90>, <src.vacancies.models.Vacancy object at 0x7ff39ff91d90>, <sr...d90>, <src.vacancies.models.Vacancy object at 0x7ff39ff91d90>, <src.vacancies.models.Vacancy object at 0x7ff39ff91d90>]
+
+    def add_vacancy_batch_optimized(self, vacancies: Union[Vacancy, List[Vacancy]]) -> List[str]:
+        """
+        Максимально оптимизированное batch-добавление вакансий через временные таблицы.
+        Использует SQL для всех операций, минимизирует количество запросов.
+        """
+        if not isinstance(vacancies, list):
+            vacancies = [vacancies]
+    
+        if not vacancies:
+            return []
+    
+        connection = self._get_connection()
+        update_messages: List[str] = []
+    
+        try:
+            cursor = connection.cursor()
+    
+            # Создаем временную таблицу с такой же структурой как основная таблица vacancies
+            cursor.execute(
+                """
+                CREATE TEMP TABLE temp_new_vacancies AS
+                SELECT * FROM vacancies WHERE 1=0
+            """
+            )
+    
+            # Получаем сопоставление компаний из БД с расширенным поиском
+            cursor.execute(
+                """
+                SELECT id, name, LOWER(name) as normalized_name
+                FROM companies
+            """
+            )
+    
+            company_mapping = {}
+            company_patterns = {}  # Для поиска по частичному совпадению
+    
+            results = cursor.fetchall()
+            for row in results:
+>               comp_id, original_name, normalized_name = row[0], row[1], row[2]
+                                                          ^^^^^^
+E               KeyError: 0
+
+src/storage/postgres_saver.py:422: KeyError
+_ TestSingleSQLFiltering.test_filtering_only_in_postgres_saver _
+
+self = <tests.test_sql_filtering_once.TestSingleSQLFiltering object at 0x7ff3a0b960d0>
+
+    def test_filtering_only_in_postgres_saver(self) -> None:
+        """Тест что фильтрация выполняется ТОЛЬКО в PostgresSaver"""
+        # PostgresSaver имеет метод фильтрации
+>       postgres_saver = PostgresSaver()
+                         ^^^^^^^^^^^^^^^
+
+tests/test_sql_filtering_once.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/storage/postgres_saver.py:80: in __init__
+    self._ensure_tables_exist()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7ff396d49bd0>
+
+    def _ensure_tables_exist(self):
+        """Создает таблицы если они не существуют"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+    
+            # Устанавливаем кодировку сессии
+            cursor.execute("SET client_encoding TO 'UTF8'")
+    
+            # Сначала создаем таблицу companies если её нет
+            self._ensure_companies_table_exists()
+    
+            # Создаем таблицу для вакансий с базовой структурой
+            create_table_query = """
+            CREATE TABLE IF NOT EXISTS vacancies (
+                id SERIAL PRIMARY KEY,
+                vacancy_id VARCHAR(50) UNIQUE NOT NULL,
+                title VARCHAR(500) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """
+    
+            cursor.execute(create_table_query)
+            logger.info("✓ Базовая структура таблицы vacancies проверена")
+    
+            # Список всех полей, которые должны быть в таблице vacancies
+            required_fields = [
+                ("url", "TEXT"),
+                ("salary_from", "INTEGER"),
+                ("salary_to", "INTEGER"),
+                ("salary_currency", "VARCHAR(10)"),
+                ("description", "TEXT"),
+                ("requirements", "TEXT"),
+                ("responsibilities", "TEXT"),
+                ("experience", "VARCHAR(200)"),
+                ("employment", "VARCHAR(200)"),
+                ("schedule", "VARCHAR(200)"),
+                ("area", "VARCHAR(200)"),
+                ("source", "VARCHAR(50) DEFAULT 'unknown'"),
+                ("published_at", "TIMESTAMP"),
+                ("company_id", "INTEGER"),
+            ]
+    
+            # Проверяем и добавляем недостающие поля
+            for field_name, field_type in required_fields:
+                cursor.execute(
+                    """
+                    SELECT column_name, data_type
+                    FROM information_schema.columns
+                    WHERE table_name = 'vacancies' AND column_name = %s;
+                """,
+                    (field_name,),
+                )
+    
+                field_info = cursor.fetchone()
+                if not field_info:
+                    logger.info(f"Добавляем поле {field_name} в таблицу vacancies...")
+                    cursor.execute(f"ALTER TABLE vacancies ADD COLUMN {field_name} {field_type};")
+                    logger.info(f"✓ Поле {field_name} добавлено")
+>               elif field_name == "company_id" and field_info[1] not in ("integer", "bigint"):
+                                                    ^^^^^^^^^^^^^
+E               IndexError: tuple index out of range
+
+src/storage/postgres_saver.py:320: IndexError
+_ TestSingleSQLFiltering.test_strict_typing_in_filtering_method _
+
+self = <tests.test_sql_filtering_once.TestSingleSQLFiltering object at 0x7ff3a0b96990>
+
+    def test_strict_typing_in_filtering_method(self) -> None:
+        """Тест строгой типизации метода фильтрации"""
+>       postgres_saver = PostgresSaver()
+                         ^^^^^^^^^^^^^^^
+
+tests/test_sql_filtering_once.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/storage/postgres_saver.py:80: in __init__
+    self._ensure_tables_exist()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7ff396fac5d0>
+
+    def _ensure_tables_exist(self):
+        """Создает таблицы если они не существуют"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+    
+            # Устанавливаем кодировку сессии
+            cursor.execute("SET client_encoding TO 'UTF8'")
+    
+            # Сначала создаем таблицу companies если её нет
+            self._ensure_companies_table_exists()
+    
+            # Создаем таблицу для вакансий с базовой структурой
+            create_table_query = """
+            CREATE TABLE IF NOT EXISTS vacancies (
+                id SERIAL PRIMARY KEY,
+                vacancy_id VARCHAR(50) UNIQUE NOT NULL,
+                title VARCHAR(500) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """
+    
+            cursor.execute(create_table_query)
+            logger.info("✓ Базовая структура таблицы vacancies проверена")
+    
+            # Список всех полей, которые должны быть в таблице vacancies
+            required_fields = [
+                ("url", "TEXT"),
+                ("salary_from", "INTEGER"),
+                ("salary_to", "INTEGER"),
+                ("salary_currency", "VARCHAR(10)"),
+                ("description", "TEXT"),
+                ("requirements", "TEXT"),
+                ("responsibilities", "TEXT"),
+                ("experience", "VARCHAR(200)"),
+                ("employment", "VARCHAR(200)"),
+                ("schedule", "VARCHAR(200)"),
+                ("area", "VARCHAR(200)"),
+                ("source", "VARCHAR(50) DEFAULT 'unknown'"),
+                ("published_at", "TIMESTAMP"),
+                ("company_id", "INTEGER"),
+            ]
+    
+            # Проверяем и добавляем недостающие поля
+            for field_name, field_type in required_fields:
+                cursor.execute(
+                    """
+                    SELECT column_name, data_type
+                    FROM information_schema.columns
+                    WHERE table_name = 'vacancies' AND column_name = %s;
+                """,
+                    (field_name,),
+                )
+    
+                field_info = cursor.fetchone()
+                if not field_info:
+                    logger.info(f"Добавляем поле {field_name} в таблицу vacancies...")
+                    cursor.execute(f"ALTER TABLE vacancies ADD COLUMN {field_name} {field_type};")
+                    logger.info(f"✓ Поле {field_name} добавлено")
+>               elif field_name == "company_id" and field_info[1] not in ("integer", "bigint"):
+                                                    ^^^^^^^^^^^^^
+E               IndexError: tuple index out of range
+
+src/storage/postgres_saver.py:320: IndexError
+_ TestSingleSQLFiltering.test_db_fields_saved_correctly _
+
+self = <tests.test_sql_filtering_once.TestSingleSQLFiltering object at 0x7ff3a0b97550>
+mock_db_connection = {'connection': <MagicMock id='140684186981392'>, 'cursor': <MagicMock name='mock.cursor().__enter__()' id='140684186979408'>}
+
+    def test_db_fields_saved_correctly(self, mock_db_connection: Dict[str, Any]) -> None:
+        """Тест что description, requirements, responsibilities сохраняются в БД"""
+>       vacancy_with_fields = Vacancy(
+            vacancy_id="test_fields",
+            title="Test Vacancy",
+            description="Test description",
+            requirements="Python, Django",
+            responsibilities="Develop applications",
+            employer={"id": "1740", "name": "Яндекс"},
+            source="hh"
+        )
+E       TypeError: Vacancy.__init__() missing 1 required positional argument: 'url'
+
+tests/test_sql_filtering_once.py:138: TypeError
+__ TestStorageFactory.test_create_postgres_storage __
+
+self = <tests.test_storage.TestStorageFactory object at 0x7ff3a0b17d50>
+
+    def test_create_postgres_storage(self):
+        """Тест создания PostgreSQL хранилища"""
+>       storage = StorageFactory.create_storage("postgres")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_storage.py:149: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/storage/storage_factory.py:25: in create_storage
+    return PostgresSaver(app_config.get_db_config())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/storage/postgres_saver.py:80: in __init__
+    self._ensure_tables_exist()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7ff396ecbbd0>
+
+    def _ensure_tables_exist(self):
+        """Создает таблицы если они не существуют"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+    
+            # Устанавливаем кодировку сессии
+            cursor.execute("SET client_encoding TO 'UTF8'")
+    
+            # Сначала создаем таблицу companies если её нет
+            self._ensure_companies_table_exists()
+    
+            # Создаем таблицу для вакансий с базовой структурой
+            create_table_query = """
+            CREATE TABLE IF NOT EXISTS vacancies (
+                id SERIAL PRIMARY KEY,
+                vacancy_id VARCHAR(50) UNIQUE NOT NULL,
+                title VARCHAR(500) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """
+    
+            cursor.execute(create_table_query)
+            logger.info("✓ Базовая структура таблицы vacancies проверена")
+    
+            # Список всех полей, которые должны быть в таблице vacancies
+            required_fields = [
+                ("url", "TEXT"),
+                ("salary_from", "INTEGER"),
+                ("salary_to", "INTEGER"),
+                ("salary_currency", "VARCHAR(10)"),
+                ("description", "TEXT"),
+                ("requirements", "TEXT"),
+                ("responsibilities", "TEXT"),
+                ("experience", "VARCHAR(200)"),
+                ("employment", "VARCHAR(200)"),
+                ("schedule", "VARCHAR(200)"),
+                ("area", "VARCHAR(200)"),
+                ("source", "VARCHAR(50) DEFAULT 'unknown'"),
+                ("published_at", "TIMESTAMP"),
+                ("company_id", "INTEGER"),
+            ]
+    
+            # Проверяем и добавляем недостающие поля
+            for field_name, field_type in required_fields:
+                cursor.execute(
+                    """
+                    SELECT column_name, data_type
+                    FROM information_schema.columns
+                    WHERE table_name = 'vacancies' AND column_name = %s;
+                """,
+                    (field_name,),
+                )
+    
+                field_info = cursor.fetchone()
+                if not field_info:
+                    logger.info(f"Добавляем поле {field_name} в таблицу vacancies...")
+                    cursor.execute(f"ALTER TABLE vacancies ADD COLUMN {field_name} {field_type};")
+                    logger.info(f"✓ Поле {field_name} добавлено")
+>               elif field_name == "company_id" and field_info[1] not in ("integer", "bigint"):
+                                                    ^^^^^^^^^^^^^
+E               IndexError: tuple index out of range
+
+src/storage/postgres_saver.py:320: IndexError
+____ TestStorageFactory.test_get_default_storage ____
+
+self = <tests.test_storage.TestStorageFactory object at 0x7ff3a0b17910>
+
+    def test_get_default_storage(self):
+        """Тест получения хранилища по умолчанию"""
+>       storage = StorageFactory.get_default_storage()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_storage.py:154: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/storage/storage_factory.py:35: in get_default_storage
+    return StorageFactory.create_storage("postgres")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/storage/storage_factory.py:25: in create_storage
+    return PostgresSaver(app_config.get_db_config())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/storage/postgres_saver.py:80: in __init__
+    self._ensure_tables_exist()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7ff396d18dd0>
+
+    def _ensure_tables_exist(self):
+        """Создает таблицы если они не существуют"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+    
+            # Устанавливаем кодировку сессии
+            cursor.execute("SET client_encoding TO 'UTF8'")
+    
+            # Сначала создаем таблицу companies если её нет
+            self._ensure_companies_table_exists()
+    
+            # Создаем таблицу для вакансий с базовой структурой
+            create_table_query = """
+            CREATE TABLE IF NOT EXISTS vacancies (
+                id SERIAL PRIMARY KEY,
+                vacancy_id VARCHAR(50) UNIQUE NOT NULL,
+                title VARCHAR(500) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """
+    
+            cursor.execute(create_table_query)
+            logger.info("✓ Базовая структура таблицы vacancies проверена")
+    
+            # Список всех полей, которые должны быть в таблице vacancies
+            required_fields = [
+                ("url", "TEXT"),
+                ("salary_from", "INTEGER"),
+                ("salary_to", "INTEGER"),
+                ("salary_currency", "VARCHAR(10)"),
+                ("description", "TEXT"),
+                ("requirements", "TEXT"),
+                ("responsibilities", "TEXT"),
+                ("experience", "VARCHAR(200)"),
+                ("employment", "VARCHAR(200)"),
+                ("schedule", "VARCHAR(200)"),
+                ("area", "VARCHAR(200)"),
+                ("source", "VARCHAR(50) DEFAULT 'unknown'"),
+                ("published_at", "TIMESTAMP"),
+                ("company_id", "INTEGER"),
+            ]
+    
+            # Проверяем и добавляем недостающие поля
+            for field_name, field_type in required_fields:
+                cursor.execute(
+                    """
+                    SELECT column_name, data_type
+                    FROM information_schema.columns
+                    WHERE table_name = 'vacancies' AND column_name = %s;
+                """,
+                    (field_name,),
+                )
+    
+                field_info = cursor.fetchone()
+                if not field_info:
+                    logger.info(f"Добавляем поле {field_name} в таблицу vacancies...")
+                    cursor.execute(f"ALTER TABLE vacancies ADD COLUMN {field_name} {field_type};")
+                    logger.info(f"✓ Поле {field_name} добавлено")
+>               elif field_name == "company_id" and field_info[1] not in ("integer", "bigint"):
+                                                    ^^^^^^^^^^^^^
+E               IndexError: tuple index out of range
+
+src/storage/postgres_saver.py:320: IndexError
+_______ TestUINavigation.test_initialization ________
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0be31d0>
+mock_input = <MagicMock name='input' id='140684185678544'>
+mock_print = <MagicMock name='print' id='140684185369616'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff396e9b3d0>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_initialization(self, mock_input, mock_print, nav):
+        """Тест инициализации UINavigation"""
+        assert nav is not None
+>       assert hasattr(nav, 'menus')
+E       AssertionError: assert False
+E        +  where False = hasattr(<src.utils.ui_navigation.UINavigation object at 0x7ff396e9b3d0>, 'menus')
+
+tests/test_ui_navigation.py:27: AssertionError
+_________ TestUINavigation.test_create_menu _________
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0be3890>
+mock_input = <MagicMock name='input' id='140684184116688'>
+mock_print = <MagicMock name='print' id='140684184111888'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff396d1fa90>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_create_menu(self, mock_input, mock_print, nav):
+        """Тест создания меню"""
+        items = [{"text": "Пункт 1"}, {"text": "Пункт 2"}]
+    
+>       nav.create_menu("test_menu", "Тестовое меню", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:36: AttributeError
+_______ TestUINavigation.test_show_menu_basic _______
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0be3f10>
+mock_input = <MagicMock name='input' id='140684184753616'>
+mock_print = <MagicMock name='print' id='140684184331664'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff396dbb550>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_show_menu_basic(self, mock_input, mock_print, nav):
+        """Тест базового отображения меню"""
+        items = [{"text": "Поиск вакансий"}, {"text": "Настройки"}]
+    
+>       nav.create_menu("main", "Главное меню", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:49: AttributeError
+__ TestUINavigation.test_show_menu_with_separator ___
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0b5c610>
+mock_input = <MagicMock name='input' id='140684184167184'>
+mock_print = <MagicMock name='print' id='140684184174160'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff396d294d0>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_show_menu_with_separator(self, mock_input, mock_print, nav):
+        """Тест отображения меню с разделителем"""
+        items = [
+            {"text": "Поиск вакансий"},
+            {"text": "Настройки"},
+            {"separator": True},
+            {"text": "О программе"}
+        ]
+    
+>       nav.create_menu("main", "Главное меню", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:68: AttributeError
+____ TestUINavigation.test_show_menu_nonexistent ____
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0b5cc90>
+mock_input = <MagicMock name='input' id='140684184562448'>
+mock_print = <MagicMock name='print' id='140684188129104'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff3970f3d10>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_show_menu_nonexistent(self, mock_input, mock_print, nav):
+        """Тест отображения несуществующего меню"""
+>       output = nav.show_menu("nonexistent")
+                 ^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'show_menu'
+
+tests/test_ui_navigation.py:82: AttributeError
+__ TestUINavigation.test_handle_menu_choice_valid ___
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0b5d310>
+mock_input = <MagicMock name='input' id='140684288053840'>
+mock_print = <MagicMock name='print' id='140684288062096'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff39d03e090>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_handle_menu_choice_valid(self, mock_input, mock_print, nav):
+        """Тест обработки валидного выбора меню"""
+        items = [
+            {"text": "Пункт 1", "action": lambda: "action1"},
+            {"text": "Пункт 2", "action": lambda: "action2"}
+        ]
+    
+>       nav.create_menu("test", "Тест", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:96: AttributeError
+___ TestUINavigation.test_handle_menu_choice_exit ___
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0b5d990>
+mock_input = <MagicMock name='input' id='140684187607184'>
+mock_print = <MagicMock name='print' id='140684187607824'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff397072490>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_handle_menu_choice_exit(self, mock_input, mock_print, nav):
+        """Тест обработки выбора выхода"""
+        items = [{"text": "Пункт 1"}]
+    
+>       nav.create_menu("test", "Тест", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:111: AttributeError
+_ TestUINavigation.test_handle_menu_choice_invalid_number _
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0b5e010>
+mock_input = <MagicMock name='input' id='140684187493712'>
+mock_print = <MagicMock name='print' id='140684187493584'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff397056450>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_handle_menu_choice_invalid_number(self, mock_input, mock_print, nav):
+        """Тест обработки невалидного числового выбора"""
+        items = [{"text": "Пункт 1"}]
+    
+>       nav.create_menu("main", "Главное меню", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:125: AttributeError
+_ TestUINavigation.test_handle_menu_choice_invalid_format _
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0b5e690>
+mock_input = <MagicMock name='input' id='140684187416336'>
+mock_print = <MagicMock name='print' id='140684187416272'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff397042750>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_handle_menu_choice_invalid_format(self, mock_input, mock_print, nav):
+        """Тест обработки невалидного формата выбора"""
+        items = [{"text": "Пункт 1"}]
+    
+>       nav.create_menu("test", "Тест", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:141: AttributeError
+_ TestUINavigation.test_handle_menu_choice_nonexistent_menu _
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0be3c10>
+mock_input = <MagicMock name='input' id='140684187304080'>
+mock_print = <MagicMock name='print' id='140684187320208'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff39702ba10>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_handle_menu_choice_nonexistent_menu(self, mock_input, mock_print, nav):
+        """Тест обработки выбора в несуществующем меню"""
+>       result = nav.handle_menu_choice("nonexistent", "1")
+                 ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'handle_menu_choice'
+
+tests/test_ui_navigation.py:155: AttributeError
+___ TestUINavigation.test_menu_display_formatting ___
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0b5c990>
+mock_input = <MagicMock name='input' id='140684186455632'>
+mock_print = <MagicMock name='print' id='140684185208336'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff396f5a050>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_display_formatting(self, mock_input, mock_print, nav):
+        """Тест форматирования отображения меню"""
+        items = [{"text": "Тестовый пункт"}]
+>       nav.create_menu("format", "Тест форматирования", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:167: AttributeError
+____ TestUINavigation.test_menu_item_with_action ____
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0b5ef50>
+mock_input = <MagicMock name='input' id='140684187165648'>
+mock_print = <MagicMock name='print' id='140684187156240'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff3970045d0>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_item_with_action(self, mock_input, mock_print, nav):
+        """Тест пункта меню с действием"""
+        mock_action = Mock(return_value="test_result")
+        items = [{"text": "Действие", "action": mock_action}]
+    
+>       nav.create_menu("action_menu", "Меню с действием", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:183: AttributeError
+__ TestUINavigation.test_menu_item_without_action ___
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0b5f2d0>
+mock_input = <MagicMock name='input' id='140684187415888'>
+mock_print = <MagicMock name='print' id='140684187407888'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff397042e90>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_item_without_action(self, mock_input, mock_print, nav):
+        """Тест пункта меню без действия"""
+        items = [{"text": "Пункт без действия"}]
+    
+>       nav.create_menu("no_action", "Меню без действий", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:197: AttributeError
+___ TestUINavigation.test_complex_menu_structure ____
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0b5f650>
+mock_input = <MagicMock name='input' id='140684187147984'>
+mock_print = <MagicMock name='print' id='140684189230480'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff3971fe550>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_complex_menu_structure(self, mock_input, mock_print, nav):
+        """Тест сложной структуры меню с различными типами элементов"""
+        items = [
+            {"text": "Обычный пункт"},
+            {"text": "Пункт с действием", "action": lambda: "executed"},
+            {"separator": True},
+            {"text": "Последний пункт"}
+        ]
+    
+>       nav.create_menu("complex", "Сложное меню", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:217: AttributeError
+___ TestUINavigation.test_menu_choice_edge_cases ____
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0b5f9d0>
+mock_input = <MagicMock name='input' id='140684186465104'>
+mock_print = <MagicMock name='print' id='140684184127504'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff396f5af50>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_choice_edge_cases(self, mock_input, mock_print, nav):
+        """Тест граничных случаев выбора меню"""
+        items = [{"text": "Единственный пункт"}]
+>       nav.create_menu("edge", "Граничный тест", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:233: AttributeError
+_________ TestUINavigation.test_empty_menu __________
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0b5ff90>
+mock_input = <MagicMock name='input' id='140684185219536'>
+mock_print = <MagicMock name='print' id='140684187783248'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff396e28410>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_empty_menu(self, mock_input, mock_print, nav):
+        """Тест пустого меню"""
+>       nav.create_menu("empty", "Пустое меню", [])
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:254: AttributeError
+_______ TestUINavigation.test_menu_overwrite ________
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0bd0590>
+mock_input = <MagicMock name='input' id='140684184748944'>
+mock_print = <MagicMock name='print' id='140684184557904'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff396dbb990>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_overwrite(self, mock_input, mock_print, nav):
+        """Тест перезаписи существующего меню"""
+        items1 = [{"text": "Старый пункт"}]
+        items2 = [{"text": "Новый пункт"}]
+    
+>       nav.create_menu("test", "Первое меню", items1)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:267: AttributeError
+__ TestUINavigation.test_action_exception_handling __
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0bd0b50>
+mock_input = <MagicMock name='input' id='140684186974608'>
+mock_print = <MagicMock name='print' id='140684186972368'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff396fd5f90>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_action_exception_handling(self, mock_input, mock_print, nav):
+        """Тест обработки исключений в действиях"""
+        def failing_action():
+            raise Exception("Test exception")
+    
+        items = [{"text": "Падающее действие", "action": failing_action}]
+>       nav.create_menu("error_test", "Тест ошибок", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:284: AttributeError
+_____ TestUINavigation.test_multiple_separators _____
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0bd1110>
+mock_input = <MagicMock name='input' id='140684186809936'>
+mock_print = <MagicMock name='print' id='140684185679248'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff396faf190>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_multiple_separators(self, mock_input, mock_print, nav):
+        """Тест меню с несколькими разделителями"""
+        items = [
+            {"text": "Пункт 1"},
+            {"separator": True},
+            {"text": "Пункт 2"},
+            {"separator": True},
+            {"text": "Пункт 3"}
+        ]
+    
+>       nav.create_menu("multi_sep", "Меню с разделителями", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:305: AttributeError
+______ TestUINavigation.test_choice_validation ______
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0bd1790>
+mock_input = <MagicMock name='input' id='140684186572816'>
+mock_print = <MagicMock name='print' id='140684186576336'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff396f75d50>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_choice_validation(self, mock_input, mock_print, nav):
+        """Тест валидации выбора пользователя"""
+        items = [{"text": "Пункт 1"}, {"text": "Пункт 2"}]
+>       nav.create_menu("validation", "Валидация", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:318: AttributeError
+_____ TestUINavigation.test_menu_with_long_text _____
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0bd1e10>
+mock_input = <MagicMock name='input' id='140684187663952'>
+mock_print = <MagicMock name='print' id='140684184325712'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff39707da10>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_with_long_text(self, mock_input, mock_print, nav):
+        """Тест меню с длинными текстами"""
+        long_text = "Очень длинный текст пункта меню который может не поместиться в одну строку"
+        items = [{"text": long_text}]
+    
+>       nav.create_menu("long", "Длинный текст", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:352: AttributeError
+_ TestUINavigation.test_menu_item_numbering_with_complex_structure _
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0bd2490>
+mock_input = <MagicMock name='input' id='140684185500880'>
+mock_print = <MagicMock name='print' id='140684185500944'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff396e6d050>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_item_numbering_with_complex_structure(self, mock_input, mock_print, nav):
+        """Тест нумерации в сложной структуре меню"""
+        items = [
+            {"text": "Первый"},           # 1
+            {"text": "Второй"},           # 2
+            {"separator": True},          # Не нумеруется
+            {"text": "Третий"},           # 3 (согласно реальной логике)
+            {"text": "Четвертый"},        # 4
+            {"separator": True},          # Не нумеруется
+            {"text": "Пятый"}             # 5
+        ]
+    
+>       nav.create_menu("complex_num", "Сложная нумерация", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:371: AttributeError
+_ TestUINavigation.test_menu_actions_with_parameters _
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0bd2b10>
+mock_input = <MagicMock name='input' id='140684187685904'>
+mock_print = <MagicMock name='print' id='140684187685968'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff397085d10>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_actions_with_parameters(self, mock_input, mock_print, nav):
+        """Тест действий меню с параметрами"""
+        def action_with_params():
+            return "action_executed"
+    
+        items = [{"text": "Действие с параметрами", "action": action_with_params}]
+>       nav.create_menu("params", "Параметры", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:389: AttributeError
+_ TestUINavigation.test_concurrent_menu_operations __
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0bd31d0>
+mock_input = <MagicMock name='input' id='140684189094032'>
+mock_print = <MagicMock name='print' id='140684186223824'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff3971dd650>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_concurrent_menu_operations(self, mock_input, mock_print, nav):
+        """Тест одновременных операций с меню"""
+        # Создаем несколько меню
+        for i in range(5):
+            items = [{"text": f"Пункт {j}"} for j in range(3)]
+>           nav.create_menu(f"menu_{i}", f"Меню {i}", items)
+            ^^^^^^^^^^^^^^^
+E           AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:404: AttributeError
+____ TestUINavigation.test_menu_state_isolation _____
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0bd3850>
+mock_input = <MagicMock name='input' id='140684189017552'>
+mock_print = <MagicMock name='print' id='140684189023056'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff3971cae90>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_state_isolation(self, mock_input, mock_print, nav):
+        """Тест изоляции состояния между меню"""
+        items1 = [{"text": "Пункт 1"}]
+        items2 = [{"text": "Пункт A"}]
+    
+>       nav.create_menu("menu1", "Первое меню", items1)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:421: AttributeError
+___ TestUINavigation.test_menu_memory_efficiency ____
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0bd3ed0>
+mock_input = <MagicMock name='input' id='140684189852560'>
+mock_print = <MagicMock name='print' id='140684189852688'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff3972965d0>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_memory_efficiency(self, mock_input, mock_print, nav):
+        """Тест эффективности памяти при работе с меню"""
+        # Создаем большое количество меню для проверки утечек памяти
+        for i in range(100):
+            items = [{"text": f"Пункт {j}"} for j in range(10)]
+>           nav.create_menu(f"big_menu_{i}", f"Большое меню {i}", items)
+            ^^^^^^^^^^^^^^^
+E           AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:440: AttributeError
+_______ TestUINavigation.test_unicode_support _______
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0b70590>
+mock_input = <MagicMock name='input' id='140684189438032'>
+mock_print = <MagicMock name='print' id='140684189438736'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff397231f50>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_unicode_support(self, mock_input, mock_print, nav):
+        """Тест поддержки Unicode символов"""
+        items = [
+            {"text": "🔍 Поиск"},
+            {"text": "⚙️ Настройки"},
+            {"text": "📊 Статистика"}
+        ]
+    
+>       nav.create_menu("unicode", "Unicode меню", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:461: AttributeError
+______ TestUINavigation.test_menu_consistency _______
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0b70c10>
+mock_input = <MagicMock name='input' id='140684190886480'>
+mock_print = <MagicMock name='print' id='140684190889872'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff397393f10>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_consistency(self, mock_input, mock_print, nav):
+        """Тест консистентности меню при множественных операциях"""
+        items = [{"text": "Консистентный пункт"}]
+    
+        # Многократно создаем и отображаем меню
+        for i in range(10):
+>           nav.create_menu("consistent", f"Консистентное меню {i}", items)
+            ^^^^^^^^^^^^^^^
+E           AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:476: AttributeError
+_____ TestUINavigation.test_menu_error_recovery _____
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0b71290>
+mock_input = <MagicMock name='input' id='140684190792656'>
+mock_print = <MagicMock name='print' id='140684190792400'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff39737add0>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_menu_error_recovery(self, mock_input, mock_print, nav):
+        """Тест восстановления после ошибок"""
+        # Создаем меню с корректными данными
+        good_items = [{"text": "Хороший пункт"}]
+>       nav.create_menu("recovery", "Тест восстановления", good_items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:488: AttributeError
+_ TestUINavigation.test_special_characters_in_menu __
+
+self = <tests.test_ui_navigation.TestUINavigation object at 0x7ff3a0b71910>
+mock_input = <MagicMock name='input' id='140684189493904'>
+mock_print = <MagicMock name='print' id='140684190835984'>
+nav = <src.utils.ui_navigation.UINavigation object at 0x7ff39723f7d0>
+
+    @patch("builtins.print")
+    @patch("builtins.input", return_value="")
+    def test_special_characters_in_menu(self, mock_input, mock_print, nav):
+        """Тест специальных символов в меню"""
+        items = [
+            {"text": "Пункт с &*#@!"},
+            {"text": "Пункт с 'кавычками'"},
+            {"text": 'Пункт с "двойными кавычками"'}
+        ]
+    
+>       nav.create_menu("special", "Спецсимволы", items)
+        ^^^^^^^^^^^^^^^
+E       AttributeError: 'UINavigation' object has no attribute 'create_menu'
+
+tests/test_ui_navigation.py:505: AttributeError
+_ TestUserInterfaceIntegration.test_main_function_execution _
+
+self = <tests.test_user_interface_integration.TestUserInterfaceIntegration object at 0x7ff3a0ba2f10>
+mock_env = <MagicMock name='load_env_file' id='140684186225680'>
+mock_print = <MagicMock name='print' id='140684186226320'>
+mock_input = <MagicMock name='input' id='140684185671504'>
+mock_connect = <MagicMock name='connect' id='140684189019856'>
+mock_requests = <MagicMock name='get' id='140684189021328'>
+
+    @patch('requests.get')
+    @patch('psycopg2.connect')
+    @patch('builtins.input', side_effect=['q'])
+    @patch('builtins.print')
+    @patch('src.utils.env_loader.EnvLoader.load_env_file')
+    def test_main_function_execution(self, mock_env, mock_print, mock_input,
+                                   mock_connect, mock_requests):
+        """Тест выполнения главной функции"""
+        # Мокируем соединение с БД с поддержкой context manager
+        mock_connection = Mock()
+        mock_connection.__enter__ = Mock(return_value=mock_connection)
+        mock_connection.__exit__ = Mock(return_value=None)
+        mock_connection.commit = Mock()
+        mock_connection.close = Mock()
+    
+        mock_cursor = Mock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
+        mock_cursor.execute = Mock()
+        mock_cursor.fetchone = Mock(return_value=(1,))
+        mock_cursor.fetchall = Mock(return_value=[])
+        mock_connection.cursor = Mock(return_value=mock_cursor)
+    
+        mock_connect.return_value = mock_connection
+    
+        # Мокируем HTTP запросы
+        mock_response = Mock()
+        mock_response.json.return_value = {"items": []}
+        mock_response.status_code = 200
+        mock_requests.return_value = mock_response
+    
+        try:
+            main()
+        except SystemExit:
+            pass  # Ожидаемое завершение
+        except Exception:
+            pass  # Игнорируем другие исключения в тестах
+    
+>       assert mock_input.called
+E       AssertionError: assert False
+E        +  where False = <MagicMock name='input' id='140684185671504'>.called
+
+tests/test_user_interface_integration.py:263: AssertionError
+----------------- Captured log call -----------------
+WARNING  src.storage.db_manager:db_manager.py:124 Поле company_id имеет неправильный тип 1, исправляем...
+ERROR    src.user_interface:user_interface.py:67 Критическая ошибка: tuple index out of range
+_ TestUserInterfaceIntegration.test_search_workflow_integration _
+
+self = <tests.test_user_interface_integration.TestUserInterfaceIntegration object at 0x7ff3a0ba3310>
+mock_env = <MagicMock name='load_env_file' id='140684187455696'>
+mock_print = <MagicMock name='print' id='140684187453264'>
+mock_input = <MagicMock name='input' id='140684189101264'>
+mock_connect = <MagicMock name='connect' id='140684189105872'>
+mock_requests = <MagicMock name='get' id='140684189095696'>
+
+    @patch('requests.get')
+    @patch('psycopg2.connect')
+    @patch('builtins.input', side_effect=['1', 'python', 'q'])
+    @patch('builtins.print')
+    @patch('src.utils.env_loader.EnvLoader.load_env_file')
+    def test_search_workflow_integration(self, mock_env, mock_print, mock_input,
+                                       mock_connect, mock_requests):
+        """Тест интеграции поискового workflow"""
+        # Мокируем соединение с БД с поддержкой context manager
+        mock_connection = Mock()
+        mock_connection.__enter__ = Mock(return_value=mock_connection)
+        mock_connection.__exit__ = Mock(return_value=None)
+        mock_connection.commit = Mock()
+        mock_connection.close = Mock()
+    
+        mock_cursor = Mock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
+        mock_cursor.execute = Mock()
+        mock_cursor.fetchone = Mock(return_value=(1,))
+        mock_cursor.fetchall = Mock(return_value=[])
+        mock_connection.cursor = Mock(return_value=mock_cursor)
+    
+        mock_connect.return_value = mock_connection
+    
+        # Мокируем успешный ответ API
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            "items": [{
+                "id": "123",
+                "name": "Python Developer",
+                "employer": {"name": "Test Company"},
+                "salary": {"from": 100000, "to": 150000, "currency": "RUR"}
+            }]
+        }
+        mock_response.status_code = 200
+        mock_requests.return_value = mock_response
+    
+        try:
+            main()
+        except (SystemExit, Exception):
+            pass
+    
+>       assert mock_input.called
+E       AssertionError: assert False
+E        +  where False = <MagicMock name='input' id='140684189101264'>.called
+
+tests/test_user_interface_integration.py:319: AssertionError
+----------------- Captured log call -----------------
+WARNING  src.storage.db_manager:db_manager.py:124 Поле company_id имеет неправильный тип 1, исправляем...
+ERROR    src.user_interface:user_interface.py:67 Критическая ошибка: tuple index out of range
+__ TestVacancyFormatter.test_display_vacancy_info ___
+
+self = <tests.test_vacancy_formatter.TestVacancyFormatter object at 0x7ff3a074ecd0>
+capsys = <_pytest.capture.CaptureFixture object at 0x7ff3972092d0>
+
+    def test_display_vacancy_info(self, capsys):
+        """Тест отображения информации о вакансии"""
+        vacancy = Mock(vacancy_id="123", title="Test Job")
+    
+        VacancyFormatter.display_vacancy_info(vacancy)
+        captured = capsys.readouterr()
+>       assert "ID: 123" in captured.out
+E       AssertionError: assert 'ID: 123' in ''
+E        +  where '' = CaptureResult(out='', err='').out
+
+tests/test_vacancy_formatter.py:689: AssertionError
+__ TestVacancy.test_vacancy_string_representation ___
+
+self = <tests.test_vacancy_models.TestVacancy object at 0x7ff3a076aa50>
+sample_vacancy = <src.vacancies.models.Vacancy object at 0x7ff396fc3930>
+
+    def test_vacancy_string_representation(self, sample_vacancy):
+        """Тест строкового представления вакансии"""
+        result = str(sample_vacancy)
+    
+>       assert "Python Developer" in result
+E       AssertionError: assert 'Python Developer' in '[TEST_API] Должность: Test Vacancy\nКомпания: Test Company\nЗарплата: от 100,000 до 150,000 руб. в месяц\nТребования: Test requirements...\nСсылка: https://test.com/vacancy/1'
+
+tests/test_vacancy_models.py:55: AssertionError
+___ TestVacancyStats.test_analyze_company_mapping ___
+
+self = <tests.test_vacancy_stats.TestVacancyStats object at 0x7ff3a079f750>
+sample_vacancies_dict = [{'employer': {'name': 'TechCorp'}, 'id': '1', 'name': 'Python Developer', 'salary': {'currency': 'RUR', 'from': 10000...payment_to': 180000, ...}, {'employer': {'name': 'TechCorp'}, 'id': '3', 'name': 'Frontend Developer', 'salary': None}]
+
+    def test_analyze_company_mapping(self, sample_vacancies_dict):
+        """Тест анализа маппинга компаний"""
+        analysis = VacancyStats.analyze_company_mapping(sample_vacancies_dict)
+    
+        assert isinstance(analysis, dict)
+        assert "total_vacancies" in analysis
+        assert "with_employer" in analysis
+        assert "without_employer" in analysis
+        assert "employer_coverage" in analysis
+        assert "unique_employers" in analysis
+>       assert "employers_list" in analysis
+E       AssertionError: assert 'employers_list' in {'employer_coverage': 100.0, 'employer_names': ['JavaCorp', 'TechCorp'], 'total_vacancies': 3, 'unique_employers': 2, ...}
+
+tests/test_vacancy_stats.py:161: AssertionError
+============== short test summary info ==============
+FAILED tests/test_console_interface.py::TestUserInterface::test_user_interface_initialization - AssertionError: assert <src.api_modules.unified_...
+FAILED tests/test_console_interface.py::TestUserInterface::test_advanced_search_vacancies_with_keywords - AssertionError: Expected 'filter_vacancies_by_mu...
+FAILED tests/test_console_interface.py::TestUserInterface::test_advanced_search_vacancies_with_operators - AssertionError: Expected 'search_vacancies_advan...
+FAILED tests/test_console_interface.py::TestUserInterface::test_filter_by_min_salary - AssertionError: Expected 'filter_vacancies_by_mi...
+FAILED tests/test_console_interface.py::TestUserInterface::test_filter_by_max_salary - AssertionError: Expected 'filter_vacancies_by_ma...
+FAILED tests/test_console_interface.py::TestUserInterface::test_filter_by_salary_range - AssertionError: Expected 'filter_vacancies_by_sa...
+FAILED tests/test_console_interface.py::TestUserInterface::test_demonstrate_db_manager_methods - AttributeError: 'UserInterface' object has no at...
+FAILED tests/test_console_interface.py::TestUserInterface::test_show_vacancies_for_deletion_all - StopIteration
+FAILED tests/test_console_interface.py::TestUserInterface::test_show_vacancies_for_deletion_range - StopIteration
+FAILED tests/test_console_interface.py::TestUserInterface::test_db_manager_demo_availability - AssertionError: assert <src.utils.db_manager_dem...
+FAILED tests/test_console_interface.py::TestUserInterface::test_vacancy_display_methods - AssertionError: Expected 'display_vacancy_info' ...
+FAILED tests/test_coverage_enhancement.py::TestEnhancedCoverage::test_postgres_saver_context_manager - TypeError: 'PostgresSaver' object does not suppo...
+FAILED tests/test_coverage_enhancement.py::TestEnhancedCoverage::test_api_data_filter_comprehensive - AssertionError: assert 2 == 1
+FAILED tests/test_coverage_enhancement.py::TestEnhancedCoverage::test_postgres_saver_batch_operations_typing - AttributeError: <class 'src.storage.postgres_sav...
+FAILED tests/test_coverage_enhancement.py::TestEnhancedCoverage::test_db_connection_optimization - AttributeError: 'PostgresSaver' object has no at...
+FAILED tests/test_coverage_enhancement.py::TestEnhancedCoverage::test_error_handling_without_fallback - AttributeError: <class 'src.storage.postgres_sav...
+FAILED tests/test_coverage_enhancement.py::TestEnhancedCoverage::test_single_db_connection_usage - AttributeError: 'PostgresSaver' object has no at...
+FAILED tests/test_coverage_enhancement.py::TestEnhancedCoverage::test_mock_consolidation_example - AttributeError: <class 'src.storage.postgres_sav...
+FAILED tests/test_coverage_enhancement.py::TestEnhancedCoverage::test_error_propagation_without_fallback - AttributeError: <src.storage.postgres_saver.Post...
+FAILED tests/test_decorators.py::TestDecorators::test_cache_result_different_args - assert 2 == 1
+FAILED tests/test_integration.py::TestConsolidatedIntegration::test_cache_workflow_optimized - NameError: name 'FileCache' is not defined
+FAILED tests/test_parsers.py::TestHHParser::test_parse_vacancy_none_input - AttributeError: 'NoneType' object has no attribu...
+FAILED tests/test_parsers.py::TestSuperJobParser::test_parse_vacancy_sj_none - AttributeError: 'NoneType' object has no attribu...
+FAILED tests/test_postgres_saver.py::TestPostgresSaverOptimized::test_batch_operations_optimization - KeyError: 0
+FAILED tests/test_sql_filtering_once.py::TestSingleSQLFiltering::test_filtering_only_in_postgres_saver - IndexError: tuple index out of range
+FAILED tests/test_sql_filtering_once.py::TestSingleSQLFiltering::test_strict_typing_in_filtering_method - IndexError: tuple index out of range
+FAILED tests/test_sql_filtering_once.py::TestSingleSQLFiltering::test_db_fields_saved_correctly - TypeError: Vacancy.__init__() missing 1 required...
+FAILED tests/test_storage.py::TestStorageFactory::test_create_postgres_storage - IndexError: tuple index out of range
+FAILED tests/test_storage.py::TestStorageFactory::test_get_default_storage - IndexError: tuple index out of range
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_initialization - AssertionError: assert False
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_create_menu - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_show_menu_basic - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_show_menu_with_separator - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_show_menu_nonexistent - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_handle_menu_choice_valid - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_handle_menu_choice_exit - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_handle_menu_choice_invalid_number - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_handle_menu_choice_invalid_format - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_handle_menu_choice_nonexistent_menu - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_menu_display_formatting - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_menu_item_with_action - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_menu_item_without_action - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_complex_menu_structure - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_menu_choice_edge_cases - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_empty_menu - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_menu_overwrite - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_action_exception_handling - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_multiple_separators - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_choice_validation - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_menu_with_long_text - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_menu_item_numbering_with_complex_structure - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_menu_actions_with_parameters - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_concurrent_menu_operations - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_menu_state_isolation - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_menu_memory_efficiency - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_unicode_support - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_menu_consistency - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_menu_error_recovery - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_special_characters_in_menu - AttributeError: 'UINavigation' object has no att...
+FAILED tests/test_user_interface_integration.py::TestUserInterfaceIntegration::test_main_function_execution - AssertionError: assert False
+FAILED tests/test_user_interface_integration.py::TestUserInterfaceIntegration::test_search_workflow_integration - AssertionError: assert False
+FAILED tests/test_vacancy_formatter.py::TestVacancyFormatter::test_display_vacancy_info - AssertionError: assert 'ID: 123' in ''
+FAILED tests/test_vacancy_models.py::TestVacancy::test_vacancy_string_representation - AssertionError: assert 'Python Developer' in '[T...
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_analyze_company_mapping - AssertionError: assert 'employers_list' in {'emp...
+ERROR tests/test_sql_filtering_once.py::TestSingleSQLFiltering::test_single_sql_filtering_execution - TypeError: Vacancy.__init__() missing 1 required...
+ERROR tests/test_sql_filtering_once.py::TestSingleSQLFiltering::test_no_fallback_methods - TypeError: Vacancy.__init__() missing 1 required...
+===== 64 fai
