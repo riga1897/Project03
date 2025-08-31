@@ -16,7 +16,7 @@ from src.utils.api_data_filter import APIDataFilter
 from src.utils.paginator import Paginator
 # Импортируем функции напрямую из search_utils
 from src.utils.search_utils import normalize_query, extract_keywords, validate_search_query
-from src.utils.vacancy_stats import VacancyStatsCollector
+from src.utils.vacancy_stats import VacancyStats
 from src.vacancies.models import Vacancy
 
 
@@ -403,30 +403,35 @@ class TestEnhancedCoverage:
 
     def test_vacancy_stats_collector(self) -> None:
         """Тест сборщика статистики вакансий"""
-        stats_collector = VacancyStatsCollector()
-
         test_vacancies = [
-            Vacancy(
-                vacancy_id="1",
-                title="Python Developer",
-                source="hh",
-                salary={"from": 100000, "to": 150000, "currency": "RUR"},
-            ),
-            Vacancy(
-                vacancy_id="2",
-                title="Java Developer",
-                source="sj",
-                salary={"from": 120000, "to": 180000, "currency": "RUR"},
-            ),
+            {
+                "id": "1",
+                "name": "Python Developer",
+                "employer": {"name": "TechCorp"},
+                "salary": {"from": 100000, "to": 150000, "currency": "RUR"},
+                "source": "hh",
+            },
+            {
+                "id": "2",
+                "name": "Java Developer",
+                "employer": {"name": "JavaCorp"},
+                "salary": {"from": 120000, "to": 180000, "currency": "RUR"},
+                "source": "sj",
+            },
         ]
 
-        # Сбор статистики
-        stats = stats_collector.collect_stats(test_vacancies)
+        # Тест получения распределения компаний
+        company_stats = VacancyStats.get_company_distribution(test_vacancies)
+        assert isinstance(company_stats, dict)
+        assert "TechCorp" in company_stats
+        assert "JavaCorp" in company_stats
+        assert company_stats["TechCorp"] == 1
+        assert company_stats["JavaCorp"] == 1
 
-        assert stats["total_vacancies"] == 2
-        assert stats["avg_salary"] > 0
-        assert "hh" in stats["sources"]
-        assert "sj" in stats["sources"]
+        # Тест анализа маппинга компаний
+        analysis = VacancyStats.analyze_company_mapping(test_vacancies)
+        assert analysis["total_vacancies"] == 2
+        assert analysis["unique_employers"] == 2
 
     def test_paginator_functionality(self) -> None:
         """Тест пагинатора"""
