@@ -2,7 +2,65 @@
 Тесты для оптимизированного подключения к БД
 """
 
+import pytest
 from unittest.mock import MagicMock, Mock, patch
+from src.storage.postgres_saver import PostgresSaver
+from src.storage.db_manager import DBManager
+
+
+class TestDBConnectionOptimization:
+    """Тесты оптимизации подключений к БД"""
+
+    @pytest.fixture
+    def single_connection_mock(self):
+        """Единое подключение для всех операций"""
+        mock_connection = Mock()
+        mock_connection.__enter__ = Mock(return_value=mock_connection)
+        mock_connection.__exit__ = Mock(return_value=None)
+        mock_connection.commit = Mock()
+        mock_connection.rollback = Mock()
+        mock_connection.close = Mock()
+        
+        mock_cursor = Mock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
+        mock_cursor.execute = Mock()
+        mock_cursor.fetchone = Mock(return_value=None)
+        mock_cursor.fetchall = Mock(return_value=[])
+        mock_cursor.rowcount = 0
+        
+        mock_connection.cursor = Mock(return_value=mock_cursor)
+        
+        return {"connection": mock_connection, "cursor": mock_cursor}
+
+    def test_postgres_saver_single_connection(self, single_connection_mock):
+        """Тест использования единого подключения в PostgresSaver"""
+        with patch('src.storage.postgres_saver.PostgresSaver._ensure_database_exists'), \
+             patch('src.storage.postgres_saver.PostgresSaver._ensure_tables_exist'), \
+             patch('psycopg2.connect', return_value=single_connection_mock["connection"]):
+            
+            postgres_saver = PostgresSaver()
+            
+            # Выполняем множественные операции
+            with postgres_saver.get_connection() as conn:
+                assert conn is not None
+                
+            # Проверяем что соединение переиспользуется
+            assert single_connection_mock["connection"].close.call_count >= 1
+
+    def test_db_manager_single_connection(self, single_connection_mock):
+        """Тест использования единого подключения в DBManager"""
+        with patch('src.storage.db_manager.DBManager._get_connection', 
+                  return_value=single_connection_mock["connection"]):
+            
+            db_manager = DBManager()
+            
+            # Выполняем операции
+            db_manager.check_connection()
+            result = db_manager.get_companies_and_vacancies_count()
+            
+            # Проверяем результат
+            assert isinstance(result, list)ck, patch
 import pytest
 import psycopg2
 

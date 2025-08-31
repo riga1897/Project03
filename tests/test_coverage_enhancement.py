@@ -5,7 +5,7 @@
 
 import pytest
 from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, Mock, mock_open
 from datetime import datetime
 
 from src.storage.postgres_saver import PostgresSaver
@@ -13,6 +13,10 @@ from src.api_modules.unified_api import UnifiedAPI
 from src.vacancies.models import Vacancy
 from src.utils.api_data_filter import APIDataFilter
 from src.config.target_companies import TargetCompanies, CompanyInfo
+from src.utils.decorators import handle_api_errors, validate_input
+from src.utils.search_utils import SearchUtils
+from src.utils.vacancy_stats import VacancyStatsCollector
+from src.utils.paginator import Paginator
 
 
 class TestEnhancedCoverage:
@@ -374,6 +378,94 @@ class TestEnhancedCoverage:
         assert len(patterns) > 0
         assert all("%" in pattern for pattern in patterns)
 
+    def test_decorators_handle_api_errors(self) -> None:
+        """Тест декоратора handle_api_errors"""
+        @handle_api_errors
+        def failing_function():
+            raise Exception("API Error")
+        
+        @handle_api_errors
+        def success_function():
+            return "success"
+        
+        # Тест обработки ошибок
+        result = failing_function()
+        assert result is None
+        
+        # Тест успешного выполнения
+        result = success_function()
+        assert result == "success"
+
+    def test_decorators_validate_input(self) -> None:
+        """Тест декоратора validate_input"""
+        @validate_input
+        def test_function(param: str) -> str:
+            return param.upper()
+        
+        # Тест с валидными данными
+        result = test_function("test")
+        assert result == "TEST"
+        
+        # Тест с невалидными данными
+        result = test_function(None)
+        assert result is None
+
+    def test_search_utils_functionality(self) -> None:
+        """Тест утилит поиска"""
+        search_utils = SearchUtils()
+        
+        # Тест нормализации запроса
+        normalized = search_utils.normalize_query("  Python Developer  ")
+        assert normalized == "python developer"
+        
+        # Тест извлечения ключевых слов
+        keywords = search_utils.extract_keywords("Python Django REST API")
+        assert "python" in keywords
+        assert "django" in keywords
+        
+        # Тест проверки релевантности
+        is_relevant = search_utils.is_relevant_vacancy("Python Developer", ["python", "developer"])
+        assert is_relevant is True
+
+    def test_vacancy_stats_collector(self) -> None:
+        """Тест сборщика статистики вакансий"""
+        stats_collector = VacancyStatsCollector()
+        
+        test_vacancies = [
+            Vacancy(vacancy_id="1", title="Python Developer", source="hh", 
+                   salary={"from": 100000, "to": 150000, "currency": "RUR"}),
+            Vacancy(vacancy_id="2", title="Java Developer", source="sj",
+                   salary={"from": 120000, "to": 180000, "currency": "RUR"})
+        ]
+        
+        # Сбор статистики
+        stats = stats_collector.collect_stats(test_vacancies)
+        
+        assert stats["total_vacancies"] == 2
+        assert stats["avg_salary"] > 0
+        assert "hh" in stats["sources"]
+        assert "sj" in stats["sources"]
+
+    def test_paginator_functionality(self) -> None:
+        """Тест пагинатора"""
+        test_data = list(range(25))  # 25 элементов
+        paginator = Paginator(test_data, page_size=10)
+        
+        # Тест получения страницы
+        page_1 = paginator.get_page(1)
+        assert len(page_1) == 10
+        assert page_1 == list(range(10))
+        
+        # Тест последней страницы
+        page_3 = paginator.get_page(3)
+        assert len(page_3) == 5
+        assert page_3 == list(range(20, 25))
+        
+        # Тест информации о пагинации
+        info = paginator.get_pagination_info()
+        assert info["total_pages"] == 3
+        assert info["total_items"] == 25
+
     def test_mock_consolidation_example(self, mock_unified_db_connection: Dict[str, Any]) -> None:
         """Пример консолидированного мока вместо разбиения на операции"""
         with patch('src.storage.postgres_saver.PostgresSaver._ensure_database_exists'), \
@@ -446,6 +538,72 @@ class TestEnhancedCoverage:
             
             # Проверяем что инициализация не делает реальных запросов
             assert mock_get.call_count == 0
+
+    def test_menu_manager_functionality(self) -> None:
+        """Тест менеджера меню"""
+        from src.utils.menu_manager import MenuManager
+        
+        menu_manager = MenuManager()
+        
+        # Тест отображения меню
+        with patch('builtins.print') as mock_print:
+            menu_manager.show_main_menu()
+            mock_print.assert_called()
+        
+        # Тест обработки выбора
+        with patch('builtins.input', return_value='1'):
+            choice = menu_manager.get_user_choice()
+            assert choice == '1'
+
+    def test_file_handlers_functionality(self) -> None:
+        """Тест обработчиков файлов"""
+        from src.utils.file_handlers import FileHandler
+        
+        file_handler = FileHandler()
+        
+        # Тест чтения файла
+        with patch('builtins.open', mock_open(read_data='{"test": "data"}')):
+            data = file_handler.read_json("test.json")
+            assert data == {"test": "data"}
+        
+        # Тест записи файла
+        with patch('builtins.open', mock_open()) as mock_file:
+            file_handler.write_json("test.json", {"test": "data"})
+            mock_file.assert_called_once_with("test.json", "w", encoding="utf-8")
+
+    def test_source_manager_functionality(self) -> None:
+        """Тест менеджера источников"""
+        from src.utils.source_manager import SourceManager
+        
+        source_manager = SourceManager()
+        
+        # Тест получения доступных источников
+        sources = source_manager.get_available_sources()
+        assert isinstance(sources, list)
+        assert len(sources) > 0
+        
+        # Тест валидации источника
+        is_valid = source_manager.is_valid_source("hh")
+        assert is_valid is True
+        
+        is_invalid = source_manager.is_valid_source("invalid_source")
+        assert is_invalid is False
+
+    def test_ui_navigation_functionality(self) -> None:
+        """Тест навигации пользовательского интерфейса"""
+        from src.utils.ui_navigation import UINavigation
+        
+        ui_navigation = UINavigation()
+        
+        # Тест навигации по меню
+        with patch('builtins.input', return_value='1'):
+            choice = ui_navigation.navigate_menu(["Option 1", "Option 2"])
+            assert choice == 1
+        
+        # Тест подтверждения действия
+        with patch('builtins.input', return_value='y'):
+            confirmed = ui_navigation.confirm_action("Continue?")
+            assert confirmed is True
 
     def test_error_propagation_without_fallback(self, mock_unified_db_connection: Dict[str, Any]) -> None:
         """Тест что ошибки пробрасываются без fallback логики"""

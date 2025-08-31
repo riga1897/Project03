@@ -33,20 +33,20 @@ class TestPostgresSaver:
         """Тест добавления вакансии"""
         mock_conn = Mock()
         mock_cursor = Mock()
-        
+
         # Настраиваем context manager для cursor
         mock_cursor.__enter__ = Mock(return_value=mock_cursor)
         mock_cursor.__exit__ = Mock(return_value=None)
         mock_cursor.rowcount = 1
         mock_cursor.execute.return_value = None
         mock_cursor.fetchone.return_value = None
-        
+
         # Настраиваем context manager для connection
         mock_conn.__enter__ = Mock(return_value=mock_conn)
         mock_conn.__exit__ = Mock(return_value=None)
         mock_conn.cursor.return_value = mock_cursor
         mock_conn.commit.return_value = None
-        
+
         mock_connect.return_value = mock_conn
 
         # Мокируем метод add_vacancy_batch_optimized для возврата успешного результата
@@ -63,18 +63,18 @@ class TestPostgresSaver:
     def test_get_vacancies(self, mock_ensure_tables, mock_connect):
         """Тест получения вакансий"""
         from datetime import datetime
-        
+
         mock_conn = Mock()
         mock_cursor = Mock()
-        
+
         # Настраиваем context manager для cursor
         mock_cursor.__enter__ = Mock(return_value=mock_cursor)
         mock_cursor.__exit__ = Mock(return_value=None)
-        
+
         # Мокируем данные в формате словаря (как RealDictCursor)
         mock_row = {
             "vacancy_id": "12345",
-            "title": "Python Developer", 
+            "title": "Python Developer",
             "url": "https://hh.ru/vacancy/12345",
             "salary_from": 100000,
             "salary_to": 150000,
@@ -90,15 +90,15 @@ class TestPostgresSaver:
             "published_at": datetime(2024, 1, 1),
             "company_name": "Test Company"
         }
-        
+
         mock_cursor.fetchall.return_value = [mock_row]
         mock_cursor.execute.return_value = None
-        
-        # Настраиваем context manager для connection  
+
+        # Настраиваем context manager для connection
         mock_conn.__enter__ = Mock(return_value=mock_conn)
         mock_conn.__exit__ = Mock(return_value=None)
         mock_conn.cursor.return_value = mock_cursor
-        
+
         mock_connect.return_value = mock_conn
 
         storage = PostgresSaver()
