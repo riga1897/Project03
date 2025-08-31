@@ -257,8 +257,6 @@ class TestVacancy:
             salary=str(salary)
         )
 
-        vacancy_dict = vacancy.to_dict() # This method is not defined in the placeholder Vacancy
-
         # Since to_dict is not implemented for the placeholder Vacancy,
         # we'll assert that the object was created and has expected attributes.
         assert isinstance(vacancy, Vacancy)

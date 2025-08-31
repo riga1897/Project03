@@ -159,7 +159,7 @@ class TestSalaryUtils:
             def __init__(self, from_amount, currency):
                 self.from_amount = from_amount
                 self.currency = currency
-        
+
         salary = MockVacancySalary(from_amount=100000, currency="RUR")
         from_amount, to_amount, currency = normalize_salary({"from": salary.from_amount, "currency": salary.currency})
 
@@ -183,7 +183,22 @@ class TestSalaryUtils:
         assert from_amount is None
         assert to_amount is None
         assert currency == "RUR"
-```def test_normalize_salary_string_range(self):
+
+    def test_normalize_salary_empty_dict(self):
+        """Тест нормализации пустой зарплаты (пустой словарь)"""
+        from_amount, to_amount, currency = normalize_salary({})
+        assert from_amount is None
+        assert to_amount is None
+        assert currency == "RUR"
+
+    def test_normalize_salary_missing_keys_in_dict(self):
+        """Тест нормализации зарплаты с отсутствующими ключами в словаре"""
+        from_amount, to_amount, currency = normalize_salary({"currency": "CAD"})
+        assert from_amount is None
+        assert to_amount is None
+        assert currency == "CAD"
+
+    def test_normalize_salary_string_range(self):
         """Тест нормализации зарплаты из строки с диапазоном"""
         from_amount, to_amount, currency = normalize_salary("100000 - 150000")
         assert from_amount == 100000
@@ -231,17 +246,3 @@ class TestSalaryUtils:
         assert from_amount is None
         assert to_amount == 150000
         assert currency == "GBP"
-
-    def test_normalize_salary_empty_dict(self):
-        """Тест нормализации пустой зарплаты (пустой словарь)"""
-        from_amount, to_amount, currency = normalize_salary({})
-        assert from_amount is None
-        assert to_amount is None
-        assert currency == "RUR"
-
-    def test_normalize_salary_missing_keys_in_dict(self):
-        """Тест нормализации зарплаты с отсутствующими ключами в словаре"""
-        from_amount, to_amount, currency = normalize_salary({"currency": "CAD"})
-        assert from_amount is None
-        assert to_amount is None
-        assert currency == "CAD"
