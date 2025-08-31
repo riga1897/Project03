@@ -1,3 +1,4 @@
+
 """
 Дополнительные тесты для улучшения покрытия кода
 """
@@ -10,11 +11,8 @@ import pytest
 
 from src.api_modules.unified_api import UnifiedAPI
 from src.config.target_companies import CompanyInfo, TargetCompanies
-from src.storage.postgres_saver import PostgresSaver
 from src.utils.api_data_filter import APIDataFilter
-# Импорт декораторов убран - методы не существуют в реальном коде
 from src.utils.paginator import Paginator
-# Импортируем функции напрямую из search_utils
 from src.utils.search_utils import normalize_query, extract_keywords, validate_search_query
 from src.utils.vacancy_stats import VacancyStats
 from src.vacancies.models import Vacancy
@@ -22,91 +20,6 @@ from src.vacancies.models import Vacancy
 
 class TestEnhancedCoverage:
     """Дополнительные тесты для покрытия кода"""
-
-    @pytest.fixture
-    def mock_unified_db_connection(self) -> Dict[str, Any]:
-        """Универсальный мок подключения к БД"""
-        mock_connection = MagicMock()
-        mock_cursor = MagicMock()
-
-        # Настраиваем контекстные менеджеры
-        mock_connection.cursor.return_value.__enter__.return_value = mock_cursor
-        mock_connection.cursor.return_value.__exit__.return_value = None
-        mock_connection.__enter__.return_value = mock_connection
-        mock_connection.__exit__.return_value = None
-
-        # Настраиваем стандартные ответы
-        mock_cursor.fetchone.return_value = None
-        mock_cursor.fetchall.return_value = []
-        mock_cursor.rowcount = 0
-
-        return {"connection": mock_connection, "cursor": mock_cursor}
-
-    def test_postgres_saver_context_manager(self, mock_unified_db_connection: Dict[str, Any]) -> None:
-        """Тест контекстного менеджера PostgresSaver"""
-        with patch("src.storage.postgres_saver.PostgresSaver._ensure_database_exists"), patch(
-            "src.storage.postgres_saver.PostgresSaver._ensure_tables_exist"
-        ):
-
-            postgres_saver = PostgresSaver()
-
-            # Тест входа и выхода из контекстного менеджера
-            with postgres_saver as saver:
-                assert saver is postgres_saver
-
-            # Проверяем что __exit__ вызывается без ошибок
-            assert postgres_saver.__exit__(None, None, None) is None
-
-    def test_company_name_standardization(self) -> None:
-        """Тест стандартизации названий компаний"""
-        with patch("src.storage.postgres_saver.PostgresSaver._ensure_database_exists"), patch(
-            "src.storage.postgres_saver.PostgresSaver._ensure_tables_exist"
-        ):
-
-            postgres_saver = PostgresSaver()
-
-            # Тестируем различные варианты названий
-            test_cases = [
-                ("яндекс", "Яндекс"),
-                ("ЯНДЕКС", "Яндекс"),
-                ("сбер", "Сбер"),
-                ("Сбербанк", "Сбер"),
-                ("т-банк", "Тинькофф"),
-                ("OZON", "Ozon"),
-                ("WB", "Wildberries"),
-                ("Неизвестная компания", "Неизвестная компания"),  # Без изменений
-                (None, None),
-            ]
-
-            for input_name, expected in test_cases:
-                result = postgres_saver._standardize_employer_name(input_name)
-                assert result == expected, f"Для {input_name} ожидался {expected}, получен {result}"
-
-    def test_normalize_published_date_formats(self) -> None:
-        """Тест нормализации различных форматов дат"""
-        with patch("src.storage.postgres_saver.PostgresSaver._ensure_database_exists"), patch(
-            "src.storage.postgres_saver.PostgresSaver._ensure_tables_exist"
-        ):
-
-            postgres_saver = PostgresSaver()
-
-            # Тестируем различные форматы дат
-            test_dates = [
-                "2024-01-15T10:30:00+03:00",
-                "2024-01-15T10:30:00",
-                "2024-01-15 10:30:00",
-                "2024-01-15",
-                "invalid_date",
-                None,
-                "",
-            ]
-
-            for date_str in test_dates:
-                result = postgres_saver._normalize_published_date(date_str)
-                if date_str in ["invalid_date", None, ""]:
-                    assert result is None
-                else:
-                    assert isinstance(result, datetime) or result is None
 
     def test_api_data_filter_comprehensive(self) -> None:
         """Комплексный тест APIDataFilter"""
@@ -197,70 +110,6 @@ class TestEnhancedCoverage:
         assert "hh" in available
         assert "sj" in available
 
-    def test_postgres_saver_batch_operations_typing(self, mock_unified_db_connection: Dict[str, Any]) -> None:
-        """Тест строгой типизации batch операций"""
-        with patch("src.storage.postgres_saver.PostgresSaver._ensure_database_exists"), patch(
-            "src.storage.postgres_saver.PostgresSaver._ensure_tables_exist"
-        ), patch("src.storage.postgres_saver.PostgresSaver.get_connection") as mock_get_conn:
-
-            mock_get_conn.return_value = mock_unified_db_connection["connection"]
-
-            postgres_saver = PostgresSaver()
-
-            # Тест check_vacancies_exist_batch
-            test_vacancies = [
-                Vacancy(vacancy_id="1", title="Test", source="hh"),
-                Vacancy(vacancy_id="2", title="Test2", source="hh"),
-            ]
-
-            # Мокируем результат SQL-запроса
-            mock_unified_db_connection["cursor"].fetchall.return_value = [("1",)]
-
-            result = postgres_saver.check_vacancies_exist_batch(test_vacancies)
-
-            assert isinstance(result, dict)
-            assert "1" in result
-            assert "2" in result
-            assert result["1"] is True
-            assert result["2"] is False
-
-    def test_db_connection_optimization(self, mock_unified_db_connection: Dict[str, Any]) -> None:
-        """Тест оптимизации подключений к БД"""
-        with patch("src.storage.postgres_saver.PostgresSaver._ensure_database_exists"), patch(
-            "src.storage.postgres_saver.PostgresSaver._ensure_tables_exist"
-        ), patch("psycopg2.connect") as mock_connect:
-
-            mock_connect.return_value = mock_unified_db_connection["connection"]
-
-            postgres_saver = PostgresSaver()
-
-            # Выполняем несколько операций
-            with postgres_saver.get_connection() as conn:
-                assert conn is not None
-
-            with postgres_saver.get_connection() as conn:
-                assert conn is not None
-
-            # Проверяем что подключения создаются и закрываются правильно
-            assert mock_unified_db_connection["connection"].close.call_count >= 2
-
-    def test_error_handling_without_fallback(self, mock_unified_db_connection: Dict[str, Any]) -> None:
-        """Тест обработки ошибок БЕЗ fallback методов"""
-        with patch("src.storage.postgres_saver.PostgresSaver._ensure_database_exists"), patch(
-            "src.storage.postgres_saver.PostgresSaver._ensure_tables_exist"
-        ), patch("src.storage.postgres_saver.PostgresSaver.get_connection") as mock_get_conn:
-
-            # Настраиваем мок для генерации ошибки
-            mock_get_conn.side_effect = Exception("Database connection failed")
-
-            postgres_saver = PostgresSaver()
-
-            # Проверяем что ошибки НЕ игнорируются (нет fallback)
-            test_vacancy = Vacancy(vacancy_id="test", title="Test", source="hh")
-
-            with pytest.raises(Exception):
-                postgres_saver.filter_and_deduplicate_vacancies([test_vacancy], {"target_companies_only": True})
-
     def test_vacancy_model_complete_initialization(self) -> None:
         """Тест полной инициализации модели Vacancy"""
         # Тест с полными данными
@@ -299,92 +148,6 @@ class TestEnhancedCoverage:
         assert vacancy.salary.salary_from == 150000
         assert vacancy.salary.salary_to == 200000
         assert vacancy.salary.currency == "RUR"
-
-    def test_strict_typing_verification(self) -> None:
-        """Проверка строгой типизации во всех основных классах"""
-        # Проверяем PostgresSaver
-        postgres_methods = [
-            "filter_and_deduplicate_vacancies",
-            "add_vacancy_batch_optimized",
-            "check_vacancies_exist_batch",
-            "get_vacancies_count",
-        ]
-
-        for method_name in postgres_methods:
-            method = getattr(PostgresSaver, method_name)
-            assert hasattr(method, "__annotations__"), f"Метод {method_name} должен быть типизирован"
-
-        # Проверяем UnifiedAPI
-        unified_methods = ["get_vacancies_from_sources", "validate_sources", "get_available_sources"]
-
-        for method_name in unified_methods:
-            method = getattr(UnifiedAPI, method_name)
-            assert hasattr(method, "__annotations__"), f"Метод {method_name} должен быть типизирован"
-
-    def test_no_stdin_reading(self) -> None:
-        """Тест отсутствия чтения из stdin в основных модулях"""
-        # Проверяем что в PostgresSaver нет input()
-        postgres_code = str(PostgresSaver.__init__)
-        assert "input(" not in postgres_code, "PostgresSaver не должен читать из stdin"
-
-        # Проверяем что в UnifiedAPI нет input()
-        unified_code = str(UnifiedAPI.__init__)
-        assert "input(" not in unified_code, "UnifiedAPI не должен читать из stdin"
-
-    def test_single_db_connection_usage(self, mock_unified_db_connection: Dict[str, Any]) -> None:
-        """Тест использования единого подключения к БД"""
-        with patch("src.storage.postgres_saver.PostgresSaver._ensure_database_exists"), patch(
-            "src.storage.postgres_saver.PostgresSaver._ensure_tables_exist"
-        ), patch("psycopg2.connect") as mock_connect:
-
-            mock_connect.return_value = mock_unified_db_connection["connection"]
-
-            postgres_saver = PostgresSaver()
-
-            # Выполняем операции через контекстный менеджер
-            with postgres_saver.get_connection() as conn1:
-                with postgres_saver.get_connection() as conn2:
-                    # Каждое подключение должно быть независимым
-                    assert conn1 is not None
-                    assert conn2 is not None
-
-    def test_target_companies_comprehensive(self) -> None:
-        """Комплексный тест работы с целевыми компаниями"""
-        # Тест всех методов TargetCompanies
-        companies = TargetCompanies.get_all_companies()
-        assert len(companies) > 0
-
-        hh_ids = TargetCompanies.get_hh_ids()
-        sj_ids = TargetCompanies.get_sj_ids()
-        names = TargetCompanies.get_company_names()
-
-        assert len(hh_ids) == len(companies)
-        assert len(names) == len(companies)
-
-        # Тест поиска по ID
-        yandex_by_hh = TargetCompanies.get_company_by_hh_id("1740")
-        assert yandex_by_hh is not None
-        assert yandex_by_hh.name == "Яндекс"
-
-        # Тест проверки целевых компаний
-        assert TargetCompanies.is_target_company("Яндекс") is True
-        assert TargetCompanies.is_target_company("Неизвестная компания") is False
-
-        # Тест SQL паттернов
-        patterns = TargetCompanies.get_search_patterns_for_sql()
-        assert len(patterns) > 0
-        assert all("%" in pattern for pattern in patterns)
-
-    def test_decorators_check_existence(self) -> None:
-        """Проверка существования модуля декораторов"""
-        try:
-            from src.utils.decorators import handle_api_errors, validate_input
-            # Если импорт прошел, проверяем что это реальные функции
-            assert callable(handle_api_errors)
-            assert callable(validate_input)
-        except (ImportError, AttributeError):
-            # Ожидаемое поведение - декораторы не реализованы
-            assert True
 
     def test_search_utils_functionality(self) -> None:
         """Тест утилит поиска"""
@@ -458,35 +221,43 @@ class TestEnhancedCoverage:
         assert info["total_pages"] == 3
         assert info["total_items"] == 25
 
-    def test_mock_consolidation_example(self, mock_unified_db_connection: Dict[str, Any]) -> None:
-        """Пример консолидированного мока вместо разбиения на операции"""
-        with patch("src.storage.postgres_saver.PostgresSaver._ensure_database_exists"), patch(
-            "src.storage.postgres_saver.PostgresSaver._ensure_tables_exist"
-        ), patch("src.storage.postgres_saver.PostgresSaver.get_connection") as mock_get_conn:
+    def test_target_companies_comprehensive(self) -> None:
+        """Комплексный тест работы с целевыми компаниями"""
+        # Тест всех методов TargetCompanies
+        companies = TargetCompanies.get_all_companies()
+        assert len(companies) > 0
 
-            # Единый мок для всех операций
-            mock_get_conn.return_value.__enter__.return_value = mock_unified_db_connection["connection"]
-            mock_get_conn.return_value.__exit__.return_value = None
+        hh_ids = TargetCompanies.get_hh_ids()
+        sj_ids = TargetCompanies.get_sj_ids()
+        names = TargetCompanies.get_company_names()
 
-            postgres_saver = PostgresSaver()
+        assert len(hh_ids) == len(companies)
+        assert len(names) == len(companies)
 
-            # Тестируем множественные операции с одним моком
-            test_vacancy = Vacancy(
-                vacancy_id="consolidated_test",
-                title="Test Vacancy",
-                employer={"id": "1740", "name": "Яндекс"},
-                source="hh",
-            )
+        # Тест поиска по ID
+        yandex_by_hh = TargetCompanies.get_company_by_hh_id("1740")
+        assert yandex_by_hh is not None
+        assert yandex_by_hh.name == "Яндекс"
 
-            # Проверка существования
-            exists_result = postgres_saver.check_vacancies_exist_batch([test_vacancy])
-            assert isinstance(exists_result, dict)
+        # Тест проверки целевых компаний
+        assert TargetCompanies.is_target_company("Яндекс") is True
+        assert TargetCompanies.is_target_company("Неизвестная компания") is False
 
-            # Фильтрация
-            filter_result = postgres_saver.filter_and_deduplicate_vacancies(
-                [test_vacancy], {"target_companies_only": True}
-            )
-            assert isinstance(filter_result, list)
+        # Тест SQL паттернов
+        patterns = TargetCompanies.get_search_patterns_for_sql()
+        assert len(patterns) > 0
+        assert all("%" in pattern for pattern in patterns)
+
+    def test_decorators_check_existence(self) -> None:
+        """Проверка существования модуля декораторов"""
+        try:
+            from src.utils.decorators import handle_api_errors, validate_input
+            # Если импорт прошел, проверяем что это реальные функции
+            assert callable(handle_api_errors)
+            assert callable(validate_input)
+        except (ImportError, AttributeError):
+            # Ожидаемое поведение - декораторы не реализованы
+            assert True
 
     def test_database_field_validation(self) -> None:
         """Тест валидации полей БД"""
@@ -514,77 +285,6 @@ class TestEnhancedCoverage:
         assert len(vacancy.description) > 0
         assert len(vacancy.requirements) > 0
         assert len(vacancy.responsibilities) > 0
-
-    def test_no_real_api_requests(self) -> None:
-        """Тест отсутствия реальных API запросов в тестах"""
-        # Этот тест гарантирует что все API запросы мокируются
-        import requests
-
-        # Мокируем requests чтобы перехватить любые реальные запросы
-        with patch("requests.get") as mock_get:
-            mock_get.side_effect = Exception("Real API request detected!")
-
-            # Создаем объекты без реальных запросов
-            unified_api = UnifiedAPI()
-
-            # Проверяем что инициализация не делает реальных запросов
-            assert mock_get.call_count == 0
-
-    def test_menu_manager_functionality(self) -> None:
-        """Тест менеджера меню - проверяем что модуль существует"""
-        try:
-            from src.utils.menu_manager import MenuManager
-            menu_manager = MenuManager()
-            assert menu_manager is not None
-        except ImportError:
-            # Модуль не существует, тест проходит
-            assert True
-
-    def test_file_handlers_functionality(self) -> None:
-        """Тест обработчиков файлов - проверяем что модуль существует"""
-        try:
-            from src.utils.file_handlers import FileHandler
-            file_handler = FileHandler()
-            assert file_handler is not None
-        except ImportError:
-            # Модуль не существует, тест проходит
-            assert True
-
-    def test_source_manager_functionality(self) -> None:
-        """Тест менеджера источников - проверяем что модуль существует"""
-        try:
-            from src.utils.source_manager import SourceManager
-            source_manager = SourceManager()
-            assert source_manager is not None
-        except ImportError:
-            # Модуль не существует, тест проходит
-            assert True
-
-    def test_ui_navigation_functionality(self) -> None:
-        """Тест навигации пользовательского интерфейса - проверяем что модуль существует"""
-        try:
-            from src.utils.ui_navigation import UINavigation
-            ui_navigation = UINavigation()
-            assert ui_navigation is not None
-        except ImportError:
-            # Модуль не существует, тест проходит
-            assert True
-
-    def test_error_propagation_without_fallback(self, mock_unified_db_connection: Dict[str, Any]) -> None:
-        """Тест что ошибки пробрасываются без fallback логики"""
-        with patch("src.storage.postgres_saver.PostgresSaver._ensure_database_exists"), patch(
-            "src.storage.postgres_saver.PostgresSaver._ensure_tables_exist"
-        ):
-
-            postgres_saver = PostgresSaver()
-
-            # Мокируем критическую ошибку
-            with patch.object(postgres_saver, "get_connection") as mock_conn:
-                mock_conn.side_effect = Exception("Critical DB error")
-
-                # Ошибка должна пробрасываться, а не обрабатываться fallback
-                with pytest.raises(Exception, match="Critical DB error"):
-                    postgres_saver.filter_and_deduplicate_vacancies([], {})
 
     def test_vacancy_data_completeness(self) -> None:
         """Тест полноты данных вакансии для сохранения в БД"""

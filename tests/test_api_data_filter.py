@@ -1,3 +1,4 @@
+
 """
 Тесты для модуля фильтрации данных API
 """
@@ -9,64 +10,6 @@ from src.utils.api_data_filter import APIDataFilter
 
 class TestAPIDataFilter:
     """Тесты для класса APIDataFilter"""
-
-    @pytest.fixture
-    def sample_hh_data(self):
-        """Фикстура с примером данных HH.ru"""
-        return {
-            "items": [
-                {
-                    "id": "12345",
-                    "name": "Python Developer",
-                    "alternate_url": "https://hh.ru/vacancy/12345",
-                    "salary": {"from": 100000, "to": 150000, "currency": "RUR"},
-                    "snippet": {"requirement": "Python, Django", "responsibility": "Разработка веб-приложений"},
-                    "employer": {"name": "Test Company"},
-                    "area": {"name": "Москва"},
-                    "experience": {"name": "От 1 года до 3 лет"},
-                    "employment": {"name": "Полная занятость"},
-                    "schedule": {"name": "Полный день"},
-                    "published_at": "2024-01-15T10:00:00+0300",
-                },
-                {
-                    "id": "67890",
-                    "name": "Java Developer",
-                    "alternate_url": "https://hh.ru/vacancy/67890",
-                    "salary": None,
-                    "snippet": {"requirement": "Java, Spring", "responsibility": "Backend разработка"},
-                    "employer": {"name": "Another Company"},
-                    "area": {"name": "СПб"},
-                    "experience": {"name": "От 3 до 6 лет"},
-                    "employment": {"name": "Полная занятость"},
-                    "schedule": {"name": "Полный день"},
-                    "published_at": "2024-01-16T10:00:00+0300",
-                },
-            ]
-        }
-
-    @pytest.fixture
-    def sample_sj_data(self):
-        """Фикстура с примером данных SuperJob"""
-        return {
-            "objects": [
-                {
-                    "id": 111,
-                    "profession": "Python Developer",
-                    "link": "https://superjob.ru/vacancy/111",
-                    "payment_from": 120000,
-                    "payment_to": 180000,
-                    "currency": "rub",
-                    "candidat": "Python, Flask",
-                    "work": "Разработка API",
-                    "firm_name": "SJ Company",
-                    "town": {"title": "Москва"},
-                    "experience": {"title": "От 1 года до 3 лет"},
-                    "type_of_work": {"title": "Полная занятость"},
-                    "place_of_work": {"title": "Полный день"},
-                    "date_pub_timestamp": 1705312800,
-                }
-            ]
-        }
 
     def test_filter_hh_data_by_salary_range(self):
         """Тест фильтрации данных HH по диапазону зарплаты"""
