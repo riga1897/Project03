@@ -32,9 +32,8 @@ class TestVacancyOperationsCoordinator:
         assert coordinator.unified_api == mock_api
         assert coordinator.storage == mock_storage
 
-    @patch("builtins.input", return_value="q")
     @patch("src.ui_interfaces.vacancy_search_handler.VacancySearchHandler")
-    def test_handle_vacancy_search(self, mock_search_handler, mock_input):
+    def test_handle_vacancy_search(self, mock_search_handler):
         """Тест обработки поиска вакансий"""
         mock_api = Mock()
         mock_storage = Mock()
@@ -43,24 +42,16 @@ class TestVacancyOperationsCoordinator:
         mock_search_handler.return_value = mock_handler_instance
 
         coordinator = VacancyOperationsCoordinator(mock_api, mock_storage)
-
-        # Мокаем все зависимости
-        with patch("src.ui_interfaces.source_selector.SourceSelector") as mock_selector:
-            mock_selector_instance = Mock()
-            mock_selector_instance.get_user_source_choice.return_value = {"hh.ru"}
-            mock_selector.return_value = mock_selector_instance
-
-            coordinator.handle_vacancy_search()
+        coordinator.handle_vacancy_search()
 
         # Проверяем, что обработчик поиска был вызван
-        mock_handler_instance.handle_search.assert_called()
+        mock_handler_instance.search_vacancies.assert_called()
 
     @patch("src.ui_interfaces.vacancy_display_handler.VacancyDisplayHandler")
     def test_handle_show_saved_vacancies(self, mock_display_handler):
         """Тест отображения сохраненных вакансий"""
         mock_api = Mock()
         mock_storage = Mock()
-        mock_storage.get_vacancies.return_value = []
 
         mock_handler_instance = Mock()
         mock_display_handler.return_value = mock_handler_instance
@@ -68,55 +59,38 @@ class TestVacancyOperationsCoordinator:
         coordinator = VacancyOperationsCoordinator(mock_api, mock_storage)
         coordinator.handle_show_saved_vacancies()
 
-        # Проверяем, что storage был вызван для получения вакансий
-        mock_storage.get_vacancies.assert_called()
+        # Проверяем, что display handler был вызван
+        mock_handler_instance.show_all_saved_vacancies.assert_called()
 
-    @patch("builtins.input", return_value="5")
-    @patch("builtins.print")
-    def test_handle_top_vacancies_by_salary(self, mock_print, mock_input):
+    @patch("src.ui_interfaces.vacancy_display_handler.VacancyDisplayHandler")
+    def test_handle_top_vacancies_by_salary(self, mock_display_handler):
         """Тест получения топ вакансий по зарплате"""
         mock_api = Mock()
         mock_storage = Mock()
 
-        test_vacancies = [
-            Vacancy(
-                "123",
-                "Python Developer",
-                "https://test.com",
-                "hh.ru",
-                salary=VacancySalary(from_amount=150000, currency="RUR"),
-            ),
-            Vacancy(
-                "124",
-                "Java Developer",
-                "https://test2.com",
-                "hh.ru",
-                salary=VacancySalary(from_amount=100000, currency="RUR"),
-            ),
-        ]
-        mock_storage.get_vacancies.return_value = test_vacancies
+        mock_handler_instance = Mock()
+        mock_display_handler.return_value = mock_handler_instance
 
         coordinator = VacancyOperationsCoordinator(mock_api, mock_storage)
         coordinator.handle_top_vacancies_by_salary()
 
-        # Проверяем, что storage был вызван
-        mock_storage.get_vacancies.assert_called()
+        # Проверяем, что display handler был вызван
+        mock_handler_instance.show_top_vacancies_by_salary.assert_called()
 
-    @patch("builtins.input", return_value="Python")
-    @patch("builtins.print")
-    def test_handle_search_saved_by_keyword(self, mock_print, mock_input):
+    @patch("src.ui_interfaces.vacancy_display_handler.VacancyDisplayHandler")
+    def test_handle_search_saved_by_keyword(self, mock_display_handler):
         """Тест поиска сохраненных вакансий по ключевому слову"""
         mock_api = Mock()
         mock_storage = Mock()
 
-        test_vacancies = [Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")]
-        mock_storage.get_vacancies.return_value = test_vacancies
+        mock_handler_instance = Mock()
+        mock_display_handler.return_value = mock_handler_instance
 
         coordinator = VacancyOperationsCoordinator(mock_api, mock_storage)
         coordinator.handle_search_saved_by_keyword()
 
-        # Проверяем, что storage был вызван
-        mock_storage.get_vacancies.assert_called()
+        # Проверяем, что display handler был вызван
+        mock_handler_instance.search_saved_vacancies_by_keyword.assert_called()
 
     @patch("builtins.input", return_value="Python")
     def test_handle_delete_vacancies(self, mock_input):
@@ -135,10 +109,17 @@ class TestVacancyOperationsCoordinator:
         # Проверяем, что storage был вызван для получения вакансий
         mock_storage.get_vacancies.assert_called()
 
-    def test_handle_cache_cleanup(self):
+    @patch("src.utils.ui_helpers.confirm_action", return_value=True)
+    @patch("src.ui_interfaces.source_selector.SourceSelector")
+    def test_handle_cache_cleanup(self, mock_selector, mock_confirm):
         """Тест очистки кэша"""
         mock_api = Mock()
         mock_storage = Mock()
+
+        mock_selector_instance = Mock()
+        mock_selector_instance.get_user_source_choice.return_value = {"hh.ru"}
+        mock_selector_instance.display_sources_info.return_value = None
+        mock_selector.return_value = mock_selector_instance
 
         coordinator = VacancyOperationsCoordinator(mock_api, mock_storage)
 
