@@ -12,25 +12,20 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from src.api_modules.cached_api import CachedAPI
 
 
-class TestCachedAPIImplementation(CachedAPI):
+class CachedAPIImplementation(CachedAPI):
     """Тестовая реализация CachedAPI для тестирования"""
 
-    def __init__(self, cache_dir="test_cache"):
-        super().__init__(cache_dir)
+    def __init__(self):
+        super().__init__()
+        self.test_data = []
 
-    def _get_empty_response(self):
-        return {"items": []}
+    def _fetch_data(self, endpoint, params=None):
+        """Тестовая реализация получения данных"""
+        return {"test": "data"}
 
-    def _validate_vacancy(self, vacancy):
-        return True
-
-    def get_vacancies(self, search_query, **kwargs):
-        """Реализация абстрактного метода get_vacancies"""
-        return [{"id": "1", "title": "Test Vacancy", "url": "https://test.com"}]
-
-    def get_vacancies_page(self, search_query, page=0, **kwargs):
-        """Реализация абстрактного метода get_vacancies_page"""
-        return {"items": [{"id": "1", "title": "Test Vacancy"}], "pages": 1}
+    def get_vacancies(self, query, **kwargs):
+        """Тестовая реализация получения вакансий"""
+        return self.test_data
 
 
 class TestCachedAPI:

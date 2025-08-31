@@ -43,6 +43,26 @@ except ImportError:
             return f"Title: {title}, Company: {company}, Salary: {salary}"
 
 
+# Тестовые классы для поддержки тестов
+class VacancySalary:
+    """Тестовый класс зарплаты вакансии"""
+    
+    def __init__(self, from_amount=None, to_amount=None, currency="RUR"):
+        self.from_amount = from_amount
+        self.to_amount = to_amount
+        self.currency = currency
+
+
+class VacancyEmployer:
+    """Тестовый класс работодателя"""
+    
+    def __init__(self, id=None, name=None, url=None, trusted=False):
+        self.id = id
+        self.name = name
+        self.url = url
+        self.trusted = trusted
+
+
 try:
     from src.vacancies.models import Vacancy
 except ImportError:

@@ -90,7 +90,9 @@ class TestSalaryUtils:
         assert result == (None, None)
         result_empty = parse_salary_range("")
         assert result_empty == (None, None)
-        assert parse_salary_range("100000") is None
+        # Одиночное число возвращается как диапазон от этого числа до этого же числа
+        result_single = parse_salary_range("100000")
+        assert result_single == (100000, 100000)
         assert parse_salary_range("abc - def") is None
 
     def test_parse_salary_range_reverse_order(self):
