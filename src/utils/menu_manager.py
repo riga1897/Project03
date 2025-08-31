@@ -5,6 +5,40 @@ logger = logging.getLogger(__name__)
 
 
 class MenuManager:
+    """Класс для управления меню"""
+    
+    def __init__(self, menu_items=None):
+        """Инициализация менеджера меню"""
+        self.menu_items = menu_items or []
+    
+    def add_menu_item(self, item):
+        """Добавление пункта меню"""
+        self.menu_items.append(item)
+    
+    def remove_menu_item(self, item_id):
+        """Удаление пункта меню"""
+        for i, item in enumerate(self.menu_items):
+            if item.get("id") == item_id:
+                self.menu_items.pop(i)
+                return True
+        return False
+    
+    def get_menu_item(self, item_id):
+        """Получение пункта меню по ID"""
+        for item in self.menu_items:
+            if item.get("id") == item_id:
+                return item
+        return None
+    
+    def display_menu(self):
+        """Отображение меню"""
+        for item in self.menu_items:
+            print(f"{item.get('id')}. {item.get('title')}")
+    
+    def get_user_choice(self):
+        """Получение выбора пользователя"""
+        self.display_menu()
+        return input("Ваш выбор: ").strip()
     """
     Класс для управления меню пользовательского интерфейса
 

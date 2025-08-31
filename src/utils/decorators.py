@@ -1,6 +1,8 @@
 import time
 from functools import wraps
 from typing import Any, Callable, Dict, Optional, Tuple
+import logging
+
 
 from .env_loader import EnvLoader
 
@@ -68,3 +70,46 @@ def simple_cache(ttl: Optional[int] = None, max_size: int = 1000) -> Callable:
         return wrapper
 
     return decorator
+
+
+def retry_on_failure(max_attempts=3, delay=1.0):
+    """Декоратор для повторных попыток при ошибке"""
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_attempts):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    if attempt == max_attempts - 1:
+                        raise e
+                    time.sleep(delay)
+            return None
+        return wrapper
+    return decorator
+
+
+def time_execution(func):
+    """Декоратор для измерения времени выполнения"""
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print(f"Функция {func.__name__} выполнилась за {execution_time:.4f} секунд")
+        return result
+    return wrapper
+
+
+def log_errors(func):
+    """Декоратор для логирования ошибок"""
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            logger = logging.getLogger(func.__module__)
+            logger.error(f"Ошибка в функции {func.__name__}: {e}")
+            raise e
+    return wrapper

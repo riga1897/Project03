@@ -282,3 +282,56 @@ def vacancy_contains_keyword(vacancy: Vacancy, keyword: str) -> bool:
                     return True
 
     return False
+
+
+class SearchQueryParser:
+    """Класс для парсинга поисковых запросов"""
+
+    def __init__(self):
+        """Инициализация парсера запросов"""
+        pass
+
+    def parse(self, query):
+        """Парсинг поискового запроса"""
+        if not query or not query.strip():
+            return None
+
+        query = query.strip()
+
+        if " AND " in query.upper():
+            keywords = [kw.strip() for kw in query.upper().split(" AND ")]
+            return {"keywords": keywords, "operator": "AND"}
+        elif " OR " in query.upper():
+            keywords = [kw.strip() for kw in query.upper().split(" OR ")]
+            return {"keywords": keywords, "operator": "OR"}
+        elif "," in query:
+            keywords = [kw.strip() for kw in query.split(",")]
+            return {"keywords": keywords, "operator": "OR"}
+        else:
+            return {"keywords": [query], "operator": "OR"}
+
+
+class AdvancedSearch:
+    """Класс для продвинутого поиска"""
+
+    def __init__(self):
+        """Инициализация продвинутого поиска"""
+        pass
+
+    def search_with_and(self, vacancies, keywords):
+        """Поиск с оператором AND"""
+        result = []
+        for vacancy in vacancies:
+            search_text = f"{vacancy.title} {vacancy.description or ''}".lower()
+            if all(keyword.lower() in search_text for keyword in keywords):
+                result.append(vacancy)
+        return result
+
+    def search_with_or(self, vacancies, keywords):
+        """Поиск с оператором OR"""
+        result = []
+        for vacancy in vacancies:
+            search_text = f"{vacancy.title} {vacancy.description or ''}".lower()
+            if any(keyword.lower() in search_text for keyword in keywords):
+                result.append(vacancy)
+        return result

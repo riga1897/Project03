@@ -346,45 +346,33 @@ class Vacancy(AbstractVacancy):
             raise ValueError(f"Невозможно создать унифицированную вакансию: {e}")
 
     def to_dict(self) -> Dict[str, Any]:
-        """
-        Преобразование объекта в словарь для сериализации
-
-        Returns:
-            Dict[str, Any]: Словарь с данными вакансии
-        """
-        # Безопасная обработка поля company
-        company_value = None
-        if self.employer:  # Используем self.employer, так как он был заполнен обработанной компанией
-            if isinstance(self.employer, str):
-                company_value = self.employer.lower()
-            elif isinstance(self.employer, dict):
-                # Если company - словарь, извлекаем имя компании
-                company_value = (
-                    self.employer.get("name", str(self.employer)).lower()
-                    if self.employer.get("name")
-                    else str(self.employer).lower()
-                )
-            else:
-                company_value = str(self.employer).lower()
-
-        return {
+        """Преобразование вакансии в словарь"""
+        result = {
             "vacancy_id": self.vacancy_id,
             "title": self.title,
-            "link": self.url,  # Использовать self.url вместо self.link
-            "salary": self.salary.to_dict() if self.salary else None,
-            "description": self.description,
-            "company": company_value,
-            "employer": self.employer,  # Сохраняем полную структуру employer
-            "employer_id": self.employer_id,  # Сохраняем ID работодателя отдельно
-            "location": self.area,  # Использовать self.area вместо self.location
+            "url": self.url,
             "source": self.source,
-            "published_date": (
-                self.published_at.isoformat() if self.published_at else None
-            ),  # Использовать self.published_at
+            "area": self.area,
             "experience": self.experience,
             "employment": self.employment,
-            "schedule": self.schedule,
+            "description": self.description,
+            "published_at": self.published_at
         }
+
+        if self.salary:
+            result["salary"] = {
+                "from_amount": self.salary.from_amount,
+                "to_amount": self.salary.to_amount,
+                "currency": self.salary.currency
+            }
+
+        if self.employer:
+            result["employer"] = {
+                "name": self.employer.name,
+                "url": self.employer.url
+            }
+
+        return result
 
     def __str__(self) -> str:
         """Строковое представление унифицированной вакансии"""

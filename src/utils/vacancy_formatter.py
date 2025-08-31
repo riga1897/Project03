@@ -8,8 +8,12 @@ from .base_formatter import BaseFormatter
 logger = logging.getLogger(__name__)
 
 
-class VacancyFormatter(BaseFormatter):
-    """Форматировщик вакансий - конкретная реализация BaseFormatter"""
+class VacancyFormatter:
+    """Класс для форматирования вакансий"""
+
+    def __init__(self):
+        """Инициализация форматировщика"""
+        pass
 
     def format_vacancy_info(self, vacancy: Any, number: Optional[int] = None) -> str:
         """
