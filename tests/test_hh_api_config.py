@@ -33,7 +33,7 @@ class TestHHAPIConfig:
         config = HHAPIConfig()
         # Проверяем что конфигурация работает
         assert config.per_page >= 1
-```import pytest
+import pytest
 from unittest.mock import patch
 from src.config.hh_api_config import HHAPIConfig
 

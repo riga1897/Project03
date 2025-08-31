@@ -77,7 +77,7 @@ class TestVacancy:
         """Тест инициализации Vacancy"""
         vacancy = Vacancy(
             "123",
-            "Python Developer", 
+            "Python Developer",
             "https://test.com/vacancy/123",
             "hh.ru",
             description="Test description"
@@ -252,9 +252,4 @@ class TestVacancy:
         assert vacancy.title == "Python Developer"
         assert vacancy.company == "Test Company"
         assert vacancy.salary == str(salary)
-        assert vacancy.source == "hh.ru"
-```
-assert vacancy.company == "Test Company"
-        assert vacancy.source == "hh.ru"
-```assert vacancy.company == "Test Company"
         assert vacancy.source == "hh.ru"
