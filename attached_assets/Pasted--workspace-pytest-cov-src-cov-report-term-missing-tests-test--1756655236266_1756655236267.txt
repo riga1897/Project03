@@ -1,0 +1,167 @@
+~/workspace$ pytest --cov=src --cov-report=term-missing tests/
+============================== test session starts ===============================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: mock-3.14.1, cov-6.2.1
+collected 0 items / 14 errors                                                    
+
+===================================== ERRORS =====================================
+____________________ ERROR collecting tests/test_abstract.py _____________________
+ImportError while importing test module '/home/runner/workspace/tests/test_abstract.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_abstract.py:4: in <module>
+    from src.storage.abstract import AbstractStorage
+E   ModuleNotFoundError: No module named 'src'
+_______________ ERROR collecting tests/test_abstract_db_manager.py _______________
+ImportError while importing test module '/home/runner/workspace/tests/test_abstract_db_manager.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_abstract_db_manager.py:4: in <module>
+    from src.storage.abstract_db_manager import AbstractDBManager
+E   ModuleNotFoundError: No module named 'src'
+___________________ ERROR collecting tests/test_api_config.py ____________________
+ImportError while importing test module '/home/runner/workspace/tests/test_api_config.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_api_config.py:5: in <module>
+    from src.config.api_config import APIConfig
+E   ModuleNotFoundError: No module named 'src'
+___________________ ERROR collecting tests/test_app_config.py ____________________
+ImportError while importing test module '/home/runner/workspace/tests/test_app_config.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_app_config.py:4: in <module>
+    from src.config.app_config import AppConfig
+E   ModuleNotFoundError: No module named 'src'
+___________________ ERROR collecting tests/test_base_parser.py ___________________
+ImportError while importing test module '/home/runner/workspace/tests/test_base_parser.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_base_parser.py:4: in <module>
+    from src.vacancies.parsers.base_parser import BaseParser
+E   ModuleNotFoundError: No module named 'src'
+_____________________ ERROR collecting tests/test_get_api.py _____________________
+ImportError while importing test module '/home/runner/workspace/tests/test_get_api.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_get_api.py:4: in <module>
+    from src.api_modules.get_api import get_api, APIFactory
+E   ModuleNotFoundError: No module named 'src'
+__________________ ERROR collecting tests/test_hh_api_config.py __________________
+ImportError while importing test module '/home/runner/workspace/tests/test_hh_api_config.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_hh_api_config.py:4: in <module>
+    from src.config.hh_api_config import HHAPIConfig
+E   ModuleNotFoundError: No module named 'src'
+____________________ ERROR collecting tests/test_hh_parser.py ____________________
+ImportError while importing test module '/home/runner/workspace/tests/test_hh_parser.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_hh_parser.py:4: in <module>
+    from src.vacancies.parsers.hh_parser import HHParser
+E   ModuleNotFoundError: No module named 'src'
+__________________ ERROR collecting tests/test_sj_api_config.py __________________
+ImportError while importing test module '/home/runner/workspace/tests/test_sj_api_config.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_sj_api_config.py:4: in <module>
+    from src.config.sj_api_config import SJAPIConfig
+E   ModuleNotFoundError: No module named 'src'
+____________________ ERROR collecting tests/test_sj_parser.py ____________________
+ImportError while importing test module '/home/runner/workspace/tests/test_sj_parser.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_sj_parser.py:4: in <module>
+    from src.vacancies.parsers.sj_parser import SJParser
+E   ModuleNotFoundError: No module named 'src'
+_________________ ERROR collecting tests/test_storage_factory.py _________________
+ImportError while importing test module '/home/runner/workspace/tests/test_storage_factory.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_storage_factory.py:4: in <module>
+    from src.storage.storage_factory import StorageFactory, get_storage
+E   ModuleNotFoundError: No module named 'src'
+________________ ERROR collecting tests/test_target_companies.py _________________
+ImportError while importing test module '/home/runner/workspace/tests/test_target_companies.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_target_companies.py:3: in <module>
+    from src.config.target_companies import TargetCompanies, get_target_companies
+E   ModuleNotFoundError: No module named 'src'
+____________________ ERROR collecting tests/test_ui_config.py ____________________
+ImportError while importing test module '/home/runner/workspace/tests/test_ui_config.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_ui_config.py:3: in <module>
+    from src.config.ui_config import UIConfig
+E   ModuleNotFoundError: No module named 'src'
+_________________ ERROR collecting tests/test_user_interface.py __________________
+ImportError while importing test module '/home/runner/workspace/tests/test_user_interface.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_user_interface.py:3: in <module>
+    from unittest.mock import MagicMock, patch, StringIO
+E   ImportError: cannot import name 'StringIO' from 'unittest.mock' (/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py)
+============================ short test summary info =============================
+ERROR tests/test_abstract.py
+ERROR tests/test_abstract_db_manager.py
+ERROR tests/test_api_config.py
+ERROR tests/test_app_config.py
+ERROR tests/test_base_parser.py
+ERROR tests/test_get_api.py
+ERROR tests/test_hh_api_config.py
+ERROR tests/test_hh_parser.py
+ERROR tests/test_sj_api_config.py
+ERROR tests/test_sj_parser.py
+ERROR tests/test_storage_factory.py
+ERROR tests/test_target_companies.py
+ERROR tests/test_ui_config.py
+ERROR tests/test_user_interface.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 14 errors during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 14 errors in 0.91s ===============================
+~/workspace$ 
