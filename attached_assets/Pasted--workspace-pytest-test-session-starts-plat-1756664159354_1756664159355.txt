@@ -1,0 +1,63 @@
+~/workspace$ pytest
+========================== test session starts ==========================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: mock-3.14.1, cov-6.2.1
+collected 279 items / 2 errors                                          
+
+================================ ERRORS =================================
+_______________ ERROR collecting tests/test_db_manager.py _______________
+.pythonlibs/lib/python3.11/site-packages/_pytest/python.py:498: in importtestmodule
+    mod = import_path(
+.pythonlibs/lib/python3.11/site-packages/_pytest/pathlib.py:587: in import_path
+    importlib.import_module(module_name)
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1204: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1176: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1147: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+.pythonlibs/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:177: in exec_module
+    source_stat, co = _rewrite_test(fn, self.config)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.pythonlibs/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:357: in _rewrite_test
+    tree = ast.parse(source, filename=strfn)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/ast.py:50: in parse
+    return compile(source, filename, mode, flags,
+E     File "/home/runner/workspace/tests/test_db_manager.py", line 1
+E       ` tags.
+E       ^
+E   SyntaxError: invalid syntax
+______________ ERROR collecting tests/test_salary_utils.py ______________
+ImportError while importing test module '/home/runner/workspace/tests/test_salary_utils.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_salary_utils.py:10: in <module>
+    from src.utils.salary import (
+E   ImportError: cannot import name 'SalaryHelper' from 'src.utils.salary' (/home/runner/workspace/tests/../src/utils/salary.py)
+=========================== warnings summary ============================
+tests/test_sj_api.py:12
+  /home/runner/workspace/tests/test_sj_api.py:12: PytestCollectionWarning: cannot collect test class 'TestableSuperjobAPI' because it has a __init__ constructor (from: tests/test_sj_api.py)
+    class TestableSuperjobAPI(SuperJobAPI):
+
+tests/test_vacancy_display_handler.py:30
+  /home/runner/workspace/tests/test_vacancy_display_handler.py:30: PytestCollectionWarning: cannot collect test class 'TestableVacancyDisplayHandler' because it has a __init__ constructor (from: tests/test_vacancy_display_handler.py)
+    class TestableVacancyDisplayHandler(VacancyDisplayHandler):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== short test summary info ========================
+ERROR tests/test_db_manager.py
+ERROR tests/test_salary_utils.py
+!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!
+===================== 2 warnings, 2 errors in 0.57s =====================
+~/workspace$ 
