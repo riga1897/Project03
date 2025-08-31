@@ -1,0 +1,33 @@
+========================== test session starts ==========================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: mock-3.14.1, cov-6.2.1
+collected 304 items / 1 error                                           
+
+================================ ERRORS =================================
+______________ ERROR collecting tests/test_salary_utils.py ______________
+ImportError while importing test module '/home/runner/workspace/tests/test_salary_utils.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_salary_utils.py:12: in <module>
+    from src.utils.salary import (
+E   ImportError: cannot import name 'normalize_salary' from 'src.utils.salary' (/home/runner/workspace/tests/../src/utils/salary.py)
+=========================== warnings summary ============================
+tests/test_sj_api.py:12
+  /home/runner/workspace/tests/test_sj_api.py:12: PytestCollectionWarning: cannot collect test class 'TestableSuperjobAPI' because it has a __init__ constructor (from: tests/test_sj_api.py)
+    class TestableSuperjobAPI(SuperJobAPI):
+
+tests/test_vacancy_display_handler.py:30
+  /home/runner/workspace/tests/test_vacancy_display_handler.py:30: PytestCollectionWarning: cannot collect test class 'TestableVacancyDisplayHandler' because it has a __init__ constructor (from: tests/test_vacancy_display_handler.py)
+    class TestableVacancyDisplayHandler(VacancyDisplayHandler):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== short test summary info ========================
+ERROR tests/test_salary_utils.py
+!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!
+===================== 2 warnings, 1 error in 0.44s ======================
+~/workspace$ 
