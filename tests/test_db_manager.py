@@ -8,26 +8,29 @@ from src.storage.db_manager import DBManager
 
 
 class MockConnection:
-    """Мок соединения с БД с поддержкой контекстного менеджера"""
-
+    """Мок соединения с БД"""
     def __init__(self):
-        self.cursor_mock = Mock()
-        self.closed = False
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
+        self.closed = 0
+        self._cursor_mock = Mock()
 
     def cursor(self):
-        return MockCursor()
+        """Мок курсора как контекстного менеджера"""
+        cursor_context = Mock()
+        cursor_context.__enter__ = Mock(return_value=self._cursor_mock)
+        cursor_context.__exit__ = Mock(return_value=None)
+        return cursor_context
 
     def commit(self):
+        """Мок коммита"""
+        pass
+
+    def rollback(self):
+        """Мок отката"""
         pass
 
     def close(self):
-        self.closed = True
+        """Мок закрытия соединения"""
+        self.closed = 1
 
     def set_client_encoding(self, encoding):
         """Метод для установки кодировки клиента"""
@@ -96,8 +99,9 @@ class TestDBManager:
     def test_get_companies_and_vacancies_count(self, mock_connect):
         """Тест получения количества компаний и вакансий"""
         mock_connection = MockConnection()
-        mock_cursor = mock_connection.cursor()
-        mock_cursor.fetch_data = [
+        mock_cursor = mock_connection.cursor() # This will return the mocked cursor context
+        mock_cursor_instance = mock_cursor.__enter__.return_value # Get the actual mock cursor instance
+        mock_cursor_instance.fetch_data = [
             ("Test Company", 5),
             ("Another Company", 3)
         ]
@@ -116,8 +120,9 @@ class TestDBManager:
     def test_get_all_vacancies(self, mock_connect):
         """Тест получения всех вакансий"""
         mock_connection = MockConnection()
-        mock_cursor = mock_connection.cursor()
-        mock_cursor.fetch_data = [
+        mock_cursor = mock_connection.cursor() # This will return the mocked cursor context
+        mock_cursor_instance = mock_cursor.__enter__.return_value # Get the actual mock cursor instance
+        mock_cursor_instance.fetch_data = [
             ("123", "Python Developer", "Test Company", 100000, "Москва", "https://test.com")
         ]
         mock_connect.return_value = mock_connection
@@ -135,14 +140,9 @@ class TestDBManager:
     def test_get_avg_salary(self, mock_connect):
         """Тест получения средней зарплаты"""
         mock_connection = MockConnection()
-        mock_cursor = Mock()
-        mock_cursor.fetchone.return_value = (125000.0,)
-
-        # Правильный мок для курсора как контекстного менеджера
-        mock_cursor_context = Mock()
-        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
-        mock_cursor_context.__exit__ = Mock(return_value=None)
-        mock_connection.cursor.return_value = mock_cursor_context
+        mock_cursor = mock_connection.cursor()
+        mock_cursor_instance = mock_cursor.__enter__.return_value
+        mock_cursor_instance.fetchone.return_value = (125000.0,)
 
         mock_connect.return_value = mock_connection
 
@@ -158,16 +158,11 @@ class TestDBManager:
     def test_get_vacancies_with_higher_salary(self, mock_connect):
         """Тест получения вакансий с зарплатой выше средней"""
         mock_connection = MockConnection()
-        mock_cursor = Mock()
-        mock_cursor.fetchall.return_value = [
+        mock_cursor = mock_connection.cursor()
+        mock_cursor_instance = mock_cursor.__enter__.return_value
+        mock_cursor_instance.fetchall.return_value = [
             ("124", "Senior Python Developer", "Test Company", 200000, "Москва", "https://test.com")
         ]
-
-        # Правильный мок для курсора как контекстного менеджера
-        mock_cursor_context = Mock()
-        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
-        mock_cursor_context.__exit__ = Mock(return_value=None)
-        mock_connection.cursor.return_value = mock_cursor_context
 
         mock_connect.return_value = mock_connection
 
@@ -185,7 +180,8 @@ class TestDBManager:
         """Тест получения вакансий по ключевому слову"""
         mock_connection = MockConnection()
         mock_cursor = mock_connection.cursor()
-        mock_cursor.fetch_data = [
+        mock_cursor_instance = mock_cursor.__enter__.return_value
+        mock_cursor_instance.fetch_data = [
             ("123", "Python Developer", "Test Company", 100000, "Москва", "https://test.com")
         ]
         mock_connect.return_value = mock_connection

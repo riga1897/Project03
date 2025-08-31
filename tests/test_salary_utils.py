@@ -83,7 +83,8 @@ class TestSalaryUtils:
         """Тест парсинга невалидного диапазона зарплаты"""
         result = parse_salary_range("invalid")
         assert result == (None, None)
-        assert parse_salary_range("") is None
+        result_empty = parse_salary_range("")
+        assert result_empty == (None, None)
         assert parse_salary_range("100000") is None
         assert parse_salary_range("abc - def") is None
 

@@ -104,16 +104,11 @@ class TestPaginator:
         def simple_formatter(item, number=None):
             return f"{number}. {item}" if number else str(item)
 
-        # Консолидированный мок для пагинации
-        with patch('src.utils.paginator.Paginator') as mock_paginator_class:
-            mock_paginator = Mock()
-            mock_paginator_class.return_value = mock_paginator
-
-            # Тестируем что пагинатор создается
-            from src.utils.paginator import Paginator
-            paginator = Paginator(items, per_page=2) # Changed to match the constructor
-            assert paginator is not None
-            assert paginator.total == 3
+        # Тестируем реальный пагинатор
+        from src.utils.paginator import Paginator
+        paginator = Paginator(items, per_page=2)
+        assert paginator is not None
+        assert paginator.total_items == 3
             assert paginator.pages == 2
 
 
@@ -126,14 +121,9 @@ class TestPaginator:
         def simple_formatter(item, number=None):
             return f"{number}. {item}" if number else str(item)
 
-        # Консолидированный мок для навигации
-        with patch('src.utils.paginator.Paginator') as mock_paginator_class:
-            mock_paginator = Mock()
-            mock_paginator_class.return_value = mock_paginator
-
-            # Тестируем навигацию пагинатора
-            from src.utils.paginator import Paginator
-            paginator = Paginator(items, per_page=5) # Changed to match the constructor
-            assert paginator is not None
-            assert paginator.total == 20
+        # Тестируем реальный пагинатор
+        from src.utils.paginator import Paginator
+        paginator = Paginator(items, per_page=5)
+        assert paginator is not None
+        assert paginator.total_items == 20
             assert paginator.pages == 4

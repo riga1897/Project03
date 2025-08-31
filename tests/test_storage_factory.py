@@ -1,4 +1,3 @@
-
 import pytest
 import sys
 import os
@@ -52,21 +51,20 @@ class TestStorageFactory:
         factory = StorageFactory()
         assert hasattr(factory, 'create_storage')
 
-    @patch('src.config.app_config.AppConfig')
     @patch('src.storage.postgres_saver.PostgresSaver')
-    def test_create_postgres_storage(self, mock_postgres_saver, mock_app_config):
+    def test_create_postgres_storage(self, mock_postgres_saver):
         """Тест создания PostgreSQL хранилища с моками"""
-        # Настраиваем моки
-        mock_config_instance = Mock()
-        mock_config_instance.get_db_config.return_value = {'host': 'localhost'}
-        mock_app_config.return_value = mock_config_instance
-        
         mock_storage_instance = Mock()
         mock_postgres_saver.return_value = mock_storage_instance
-        
-        factory = StorageFactory()
-        storage = factory.create_storage('postgres')
-        
+
+        with patch('src.config.app_config.AppConfig') as mock_app_config:
+            mock_config_instance = Mock()
+            mock_config_instance.get_db_config.return_value = {'host': 'localhost'}
+            mock_app_config.return_value = mock_config_instance
+
+            factory = StorageFactory()
+            storage = factory.create_storage('postgres')
+
         assert storage == mock_storage_instance
         mock_app_config.assert_called_once()
         mock_postgres_saver.assert_called_once()
@@ -82,9 +80,9 @@ class TestStorageFactory:
         """Тест получения хранилища по умолчанию"""
         mock_storage = Mock()
         mock_create_storage.return_value = mock_storage
-        
+
         storage = StorageFactory.get_default_storage()
-        
+
         assert storage == mock_storage
         mock_create_storage.assert_called_once_with("postgres")
 
@@ -92,35 +90,34 @@ class TestStorageFactory:
         """Тест что фабрика создает экземпляры корректно"""
         factory1 = StorageFactory()
         factory2 = StorageFactory()
-        
+
         # Фабрика не синглтон, но создается корректно
         assert factory1 is not None
         assert factory2 is not None
         assert hasattr(factory1, 'create_storage')
         assert hasattr(factory2, 'create_storage')
 
-    @patch('src.config.app_config.AppConfig')
     @patch('src.storage.postgres_saver.PostgresSaver')
-    def test_create_storage_with_db_config(self, mock_postgres_saver, mock_app_config):
+    def test_create_storage_with_db_config(self, mock_postgres_saver):
         """Тест создания хранилища с конфигурацией БД"""
-        # Настраиваем моки
-        mock_config_instance = Mock()
-        test_db_config = {
-            'host': 'test_host',
-            'port': '5432',
-            'database': 'test_db',
-            'username': 'test_user',
-            'password': 'test_pass'
-        }
-        mock_config_instance.get_db_config.return_value = test_db_config
-        mock_app_config.return_value = mock_config_instance
-        
         mock_storage_instance = Mock()
         mock_postgres_saver.return_value = mock_storage_instance
-        
-        factory = StorageFactory()
-        storage = factory.create_storage('postgres')
-        
+
+        with patch('src.config.app_config.AppConfig') as mock_app_config:
+            mock_config_instance = Mock()
+            test_db_config = {
+                'host': 'test_host',
+                'port': '5432',
+                'database': 'test_db',
+                'username': 'test_user',
+                'password': 'test_pass'
+            }
+            mock_config_instance.get_db_config.return_value = test_db_config
+            mock_app_config.return_value = mock_config_instance
+
+            factory = StorageFactory()
+            storage = factory.create_storage('postgres')
+
         assert storage == mock_storage_instance
         mock_config_instance.get_db_config.assert_called_once()
         mock_postgres_saver.assert_called_once_with(test_db_config)
@@ -128,18 +125,18 @@ class TestStorageFactory:
     def test_mock_postgres_storage_functionality(self):
         """Тест функциональности мок хранилища"""
         storage = MockPostgresStorage()
-        
+
         # Тест базовой функциональности
         assert storage.get_vacancies_count() == 0
         assert storage.connected is True
-        
+
         # Тест добавления данных
         test_vacancy = {'id': 1, 'title': 'Test Job'}
         storage.save_vacancy(test_vacancy)
-        
+
         assert storage.get_vacancies_count() == 1
         assert storage.load_vacancies() == [test_vacancy]
-        
+
         # Тест закрытия соединения
         storage.close()
         assert storage.connected is False
@@ -148,7 +145,7 @@ class TestStorageFactory:
     def test_error_handling_in_factory(self, mock_create_storage):
         """Тест обработки ошибок в фабрике"""
         mock_create_storage.side_effect = Exception("Database connection failed")
-        
+
         factory = StorageFactory()
         with pytest.raises(Exception, match="Database connection failed"):
             factory.create_storage('postgres')

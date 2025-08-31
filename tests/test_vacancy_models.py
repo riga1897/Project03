@@ -6,6 +6,23 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from src.vacancies.models import Vacancy
 
+# Создаем тестовые классы для мокирования
+class VacancySalary:
+    def __init__(self, from_amount=None, to_amount=None, currency="RUR"):
+        self.from_amount = from_amount
+        self.to_amount = to_amount
+        self.currency = currency
+    
+    def __str__(self):
+        if self.from_amount and self.to_amount:
+            return f"{self.from_amount} - {self.to_amount} {self.currency}"
+        return "Зарплата не указана"
+
+class VacancyEmployer:
+    def __init__(self, id=None, name=None):
+        self.id = id
+        self.name = name
+
 # Создаем тестовые классы для изолированного тестирования
 class VacancySalary:
     """Тестовый класс зарплаты вакансии"""
@@ -125,10 +142,11 @@ class TestVacancy:
         vacancy = Vacancy(
             vacancy_id="123",
             title="Python Developer",
-            company="Test Company",
             url="https://test.com/vacancy/123",
             source="hh.ru"
         )
+        # Устанавливаем работодателя после создания
+        vacancy.employer = {"name": "Test Company"}
         str_repr = str(vacancy)
         assert "Python Developer" in str_repr
         assert "123" in str_repr

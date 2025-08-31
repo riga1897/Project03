@@ -59,14 +59,14 @@ class TestHHParser:
         """Тест парсинга вакансии с минимальными данными"""
         minimal_data = {'id': '123', 'name': 'Test Job'}
         result = self.parser.parse_vacancy(minimal_data)
-        assert result['id'] == '123'
+        assert result.vacancy_id == '123'
         assert result['title'] == 'Test Job'
         assert result['source'] == 'hh.ru'
 
     def test_parse_hh_employer_data(self):
         """Тест парсинга данных работодателя"""
         result = self.parser.parse_vacancy(self.sample_hh_vacancy)
-        assert result['employer']['name'] == 'Test Company'
+        assert result.employer['name'] == 'Test Company'
         assert result['employer']['id'] == '1'
 
     def test_parse_hh_location_data(self):

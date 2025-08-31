@@ -86,7 +86,10 @@ class TestCachedAPI:
         mock_file_cache.return_value = mock_cache_instance
 
         api = TestCachedAPIImplementation()
-        
+
+        # Мокаем cache атрибут
+        api.cache = mock_cache_instance
+
         # Тестируем метод очистки кэша
         api.clear_cache("test")
 
