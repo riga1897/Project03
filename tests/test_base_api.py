@@ -1,107 +1,105 @@
+
 import pytest
 from unittest.mock import MagicMock, patch, Mock
 import sys
 import os
-from abc import ABC, abstractmethod
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-# Создаем тестовый класс BaseAPI для тестирования
-class BaseAPI(ABC):
-    """Тестовый базовый класс API"""
+# Импортируем из реального кода
+from src.api_modules.base_api import BaseJobAPI
 
-    def __init__(self, base_url: str = ""):
-        self.base_url = base_url
-        self.session = None
+# Создаем конкретную реализацию BaseJobAPI для тестирования
+class ConcreteBaseJobAPI(BaseJobAPI):
+    """Конкретная реализация BaseJobAPI для тестов"""
 
-    @abstractmethod
-    def get_vacancies(self, **kwargs):
-        """Получить вакансии"""
-        pass
-
-    @abstractmethod
-    def get_vacancy_details(self, vacancy_id: str):
-        """Получить детали вакансии"""
-        pass
-
-# Создаем конкретную реализацию BaseAPI для тестирования
-class ConcreteBaseAPI(BaseAPI):
-    """Конкретная реализация BaseAPI для тестов"""
-
-    def get_vacancies(self, search_query, **kwargs):
+    def get_vacancies(self, search_query: str, **kwargs):
         """Базовая реализация получения вакансий"""
-        raise ConnectionError("Connection failed")
+        # Мок реализация для тестов
+        return [
+            {
+                "id": "123",
+                "name": "Test Vacancy",
+                "employer": {"name": "Test Company"},
+                "salary": {"from": 100000, "to": 150000}
+            }
+        ]
 
-    def get_vacancy_by_id(self, vacancy_id):
-        """Базовая реализация получения вакансии по ID"""
-        return {"id": vacancy_id, "title": "Test Vacancy"}
-
-    def _make_request(self, url, headers=None):
-        """Базовая реализация запроса"""
-        return {"status": "success"}
-
-    def clear_cache(self, source_name):
-        """Базовая реализация очистки кэша"""
-        pass
+    def _validate_vacancy(self, vacancy):
+        """Базовая реализация валидации вакансии"""
+        required_fields = ["id", "name", "employer"]
+        return all(field in vacancy for field in required_fields)
 
 
-class TestBaseAPI:
-    """Тесты для BaseAPI"""
+class TestBaseJobAPI:
+    """Тесты для BaseJobAPI"""
 
-    def test_base_api_initialization(self):
-        """Тест инициализации BaseAPI"""
-        # Создаем мок для requests.Session
-        mock_session = MagicMock()
-        api = ConcreteBaseAPI()
-        api.session = mock_session # Назначаем мок сессии
+    @patch('os.path.exists')
+    @patch('os.makedirs')
+    @patch('shutil.rmtree')
+    def test_clear_cache_existing_directory(self, mock_rmtree, mock_makedirs, mock_exists):
+        """Тест очистки существующего кэша"""
+        # Консолидированный мок для всех операций с файловой системой
+        mock_exists.return_value = True
+        
+        api = ConcreteBaseJobAPI()
+        api.clear_cache("hh")
+        
+        mock_exists.assert_called_once_with("data/cache/hh")
+        mock_rmtree.assert_called_once_with("data/cache/hh")
+        mock_makedirs.assert_called_once_with("data/cache/hh", exist_ok=True)
 
-        assert hasattr(api, 'session')
-        assert api.session is not None
+    @patch('os.path.exists')
+    @patch('os.makedirs')
+    def test_clear_cache_non_existing_directory(self, mock_makedirs, mock_exists):
+        """Тест создания нового кэша"""
+        # Консолидированный мок для операций с несуществующей директорией
+        mock_exists.return_value = False
+        
+        api = ConcreteBaseJobAPI()
+        api.clear_cache("sj")
+        
+        mock_exists.assert_called_once_with("data/cache/sj")
+        mock_makedirs.assert_called_once_with("data/cache/sj", exist_ok=True)
 
-    def test_base_api_abstract_methods(self):
-        """Тест абстрактных методов BaseAPI"""
-        api = ConcreteBaseAPI()
+    @patch('os.path.exists')
+    @patch('os.makedirs')
+    def test_clear_cache_exception_handling(self, mock_makedirs, mock_exists):
+        """Тест обработки исключений при очистке кэша"""
+        # Консолидированный мок с исключением
+        mock_exists.side_effect = OSError("Permission denied")
+        
+        api = ConcreteBaseJobAPI()
+        
+        with pytest.raises(OSError):
+            api.clear_cache("test")
 
-        # Проверяем, что абстрактные методы вызывают NotImplementedError (не должны вызываться в ConcreteBaseAPI)
-        with pytest.raises(ConnectionError):
-            api.get_vacancies("test")
+    def test_get_vacancies_abstract_method(self):
+        """Тест абстрактного метода get_vacancies"""
+        api = ConcreteBaseJobAPI()
+        
+        # Проверяем, что конкретная реализация работает
+        vacancies = api.get_vacancies("Python developer")
+        assert isinstance(vacancies, list)
+        assert len(vacancies) > 0
+        assert "id" in vacancies[0]
 
-        with pytest.raises(ConnectionError):
-            api.get_vacancy_details("123")
+    def test_validate_vacancy_abstract_method(self):
+        """Тест абстрактного метода _validate_vacancy"""
+        api = ConcreteBaseJobAPI()
+        
+        # Тест валидной вакансии
+        valid_vacancy = {
+            "id": "123",
+            "name": "Test Vacancy",
+            "employer": {"name": "Test Company"}
+        }
+        assert api._validate_vacancy(valid_vacancy) is True
+        
+        # Тест невалидной вакансии
+        invalid_vacancy = {"id": "123"}
+        assert api._validate_vacancy(invalid_vacancy) is False
 
-    @patch('requests.Session.get')
-    def test_base_api_request_handling(self, mock_get):
-        """Тест обработки запросов"""
-        # Настраиваем мок
-        mock_response = Mock()
-        mock_response.json.return_value = {"test": "data"}
-        mock_response.raise_for_status.return_value = None
-        mock_get.return_value = mock_response
-
-        api = ConcreteBaseAPI()
-        # Создаем мок для requests.Session
-        mock_session = MagicMock()
-        api.session = mock_session # Назначаем мок сессии
-
-        # Проверяем, что сессия создается правильно (теперь она мок)
-        assert api.session is not None
-
-        # Тест получения вакансий
-        api.get_vacancies(search_query="Python developer")
-        mock_session.get.assert_called_once_with(f"{api.base_url}/vacancies", search_query="Python developer")
-
-        # Тест получения деталей вакансии
-        api.get_vacancy_details("123")
-        mock_session.get.assert_called_with(f"{api.base_url}/vacancies/123")
-
-    def test_base_api_headers(self):
-        """Тест заголовков запроса"""
-        api = ConcreteBaseAPI()
-        # Создаем мок для requests.Session
-        mock_session = MagicMock()
-        # Добавляем атрибут headers к мок сессии
-        mock_session.headers = {'User-Agent': 'Test-User-Agent'}
-        api.session = mock_session # Назначаем мок сессии
-
-        headers = api.session.headers
-        assert 'User-Agent' in headers
-        assert headers['User-Agent'] == 'Test-User-Agent'
+    def test_base_job_api_abstract_class(self):
+        """Тест что BaseJobAPI является абстрактным классом"""
+        with pytest.raises(TypeError):
+            BaseJobAPI()
