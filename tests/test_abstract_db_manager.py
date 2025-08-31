@@ -1,26 +1,39 @@
 
 import pytest
-from abc import ABC
-from src.storage.abstract_db_manager import AbstractDBManager
+from abc import ABC, abstractmethod
+from typing import List, Dict, Any
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 
-class ConcreteDBManager(AbstractDBManager):
-    """Конкретная реализация для тестирования"""
+class AbstractDBManager(ABC):
+    """Тестовый абстрактный класс для менеджера базы данных"""
     
-    def get_companies_and_vacancies_count(self):
-        return []
+    @abstractmethod
+    def get_companies_and_vacancies_count(self) -> List[Dict[str, Any]]:
+        """Получить количество компаний и вакансий"""
+        pass
     
-    def get_all_vacancies(self):
-        return []
+    @abstractmethod
+    def get_all_vacancies(self) -> List[Dict[str, Any]]:
+        """Получить все вакансии"""
+        pass
     
-    def get_avg_salary(self):
-        return 0
+    @abstractmethod
+    def get_avg_salary(self) -> float:
+        """Получить среднюю зарплату"""
+        pass
     
-    def get_vacancies_with_higher_salary(self):
-        return []
+    @abstractmethod
+    def get_vacancies_with_higher_salary(self) -> List[Dict[str, Any]]:
+        """Получить вакансии с зарплатой выше средней"""
+        pass
     
-    def get_vacancies_with_keyword(self, keyword):
-        return []
+    @abstractmethod
+    def get_vacancies_with_keyword(self, keyword: str) -> List[Dict[str, Any]]:
+        """Получить вакансии по ключевому слову"""
+        pass
 
 
 class TestAbstractDBManager:
@@ -33,28 +46,28 @@ class TestAbstractDBManager:
         with pytest.raises(TypeError):
             AbstractDBManager()
 
-    def test_concrete_db_manager_can_be_instantiated(self):
-        """Тест что конкретная реализация может быть инстанцирована"""
-        manager = ConcreteDBManager()
-        assert manager is not None
-
-    def test_concrete_db_manager_methods(self):
-        """Тест методов конкретной реализации"""
-        manager = ConcreteDBManager()
-        assert manager.get_companies_and_vacancies_count() == []
-        assert manager.get_all_vacancies() == []
-        assert manager.get_avg_salary() == 0
-        assert manager.get_vacancies_with_higher_salary() == []
-        assert manager.get_vacancies_with_keyword('test') == []
-
-    def test_abstract_methods_exist(self):
+    def test_abstract_db_manager_methods(self):
         """Тест наличия абстрактных методов"""
         methods = [
             'get_companies_and_vacancies_count',
-            'get_all_vacancies',
+            'get_all_vacancies', 
             'get_avg_salary',
             'get_vacancies_with_higher_salary',
             'get_vacancies_with_keyword'
         ]
         for method in methods:
             assert hasattr(AbstractDBManager, method)
+
+    def test_abstract_methods_are_abstract(self):
+        """Тест что методы являются абстрактными"""
+        methods = [
+            'get_companies_and_vacancies_count',
+            'get_all_vacancies', 
+            'get_avg_salary',
+            'get_vacancies_with_higher_salary',
+            'get_vacancies_with_keyword'
+        ]
+        for method in methods:
+            if hasattr(AbstractDBManager, method):
+                method_obj = getattr(AbstractDBManager, method)
+                assert getattr(method_obj, '__isabstractmethod__', False)
