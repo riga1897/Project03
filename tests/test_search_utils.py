@@ -127,7 +127,7 @@ class TestAdvancedSearch:
         result = search.search_with_and(vacancies, ["python", "django"])
 
         assert len(result) == 0
-```import pytest
+import pytest
 from unittest.mock import Mock, patch
 import sys
 import os
