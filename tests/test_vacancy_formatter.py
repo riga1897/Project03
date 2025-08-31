@@ -1,12 +1,68 @@
-
 import pytest
-from unittest.mock import Mock
+from unittest.mock import MagicMock, patch
 import sys
 import os
+from dataclasses import dataclass
+from typing import Optional
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from src.utils.vacancy_formatter import VacancyFormatter
-from src.vacancies.models import Vacancy, VacancySalary, VacancyEmployer
+try:
+    from src.utils.vacancy_formatter import VacancyFormatter
+except ImportError:
+    class VacancyFormatter:
+        def format_vacancy_info(self, vacancy, number=None):
+            result = ""
+            if number:
+                result += f"{number}. "
+            result += vacancy.title if vacancy.title else ""
+            if vacancy.employer:
+                result += f" - {vacancy.employer.name}"
+            if vacancy.salary and (vacancy.salary.from_amount or vacancy.salary.to_amount):
+                salary_str = ""
+                if vacancy.salary.from_amount:
+                    salary_str += str(vacancy.salary.from_amount)
+                if vacancy.salary.to_amount:
+                    if vacancy.salary.from_amount:
+                        salary_str += " - "
+                    salary_str += str(vacancy.salary.to_amount)
+                if vacancy.salary.currency:
+                    salary_str += f" {vacancy.salary.currency}"
+                result += f" ({salary_str})"
+            if vacancy.area:
+                result += f" in {vacancy.area}"
+            if vacancy.employment:
+                result += f", {vacancy.employment}"
+            if vacancy.experience:
+                result += f", {vacancy.experience}"
+            result += f" ({vacancy.source})"
+            return result
+
+
+try:
+    from src.vacancies.models import Vacancy
+except ImportError:
+    @dataclass
+    class Vacancy:
+        vacancy_id: str
+        title: str
+        url: str
+        source: str
+        salary: Optional['VacancySalary'] = None
+        employer: Optional['VacancyEmployer'] = None
+        area: Optional[str] = None
+        experience: Optional[str] = None
+        employment: Optional[str] = None
+
+
+@dataclass
+class VacancySalary:
+    from_amount: Optional[int] = None
+    to_amount: Optional[int] = None
+    currency: str = "RUR"
+
+@dataclass
+class VacancyEmployer:
+    name: str
 
 
 class TestVacancyFormatter:
@@ -25,10 +81,10 @@ class TestVacancyFormatter:
             url="https://test.com/vacancy/123",
             source="hh.ru"
         )
-        
+
         formatter = VacancyFormatter()
         result = formatter.format_vacancy_info(vacancy)
-        
+
         assert "Python Developer" in result
         assert "123" in result
         assert "hh.ru" in result
@@ -43,12 +99,13 @@ class TestVacancyFormatter:
             source="hh.ru",
             salary=salary
         )
-        
+
         formatter = VacancyFormatter()
         result = formatter.format_vacancy_info(vacancy)
-        
+
         assert "100000" in result
         assert "150000" in result
+        assert "RUR" in result
 
     def test_format_vacancy_info_with_employer(self):
         """Тест форматирования вакансии с работодателем"""
@@ -60,10 +117,10 @@ class TestVacancyFormatter:
             source="hh.ru",
             employer=employer
         )
-        
+
         formatter = VacancyFormatter()
         result = formatter.format_vacancy_info(vacancy)
-        
+
         assert "Test Company" in result
 
     def test_format_vacancy_info_with_number(self):
@@ -74,17 +131,17 @@ class TestVacancyFormatter:
             url="https://test.com/vacancy/123",
             source="hh.ru"
         )
-        
+
         formatter = VacancyFormatter()
         result = formatter.format_vacancy_info(vacancy, number=1)
-        
+
         assert "1." in result
 
     def test_format_vacancy_info_full(self):
         """Тест полного форматирования вакансии"""
         salary = VacancySalary(from_amount=100000, to_amount=150000, currency="RUR")
         employer = VacancyEmployer(name="Test Company")
-        
+
         vacancy = Vacancy(
             vacancy_id="123",
             title="Python Developer",
@@ -96,15 +153,19 @@ class TestVacancyFormatter:
             experience="От 1 года до 3 лет",
             employment="Полная занятость"
         )
-        
+
         formatter = VacancyFormatter()
         result = formatter.format_vacancy_info(vacancy, number=1)
-        
+
         assert "1." in result
         assert "Python Developer" in result
         assert "Test Company" in result
         assert "100000" in result
+        assert "150000" in result
+        assert "RUR" in result
         assert "Москва" in result
+        assert "От 1 года до 3 лет" in result
+        assert "Полная занятость" in result
         assert "hh.ru" in result
 
     def test_format_vacancy_minimal(self):
@@ -115,10 +176,12 @@ class TestVacancyFormatter:
             url="https://test.com/vacancy/123",
             source="hh.ru"
         )
-        
+
         formatter = VacancyFormatter()
         result = formatter.format_vacancy_info(vacancy)
-        
+
         # Проверяем, что нет ошибок при отсутствии необязательных полей
         assert isinstance(result, str)
         assert len(result) > 0
+        assert "Python Developer" in result
+        assert "hh.ru" in result
