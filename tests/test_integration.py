@@ -2,7 +2,7 @@
 Консолидированные интеграционные тесты с единым мокированием
 """
 
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, mock_open
 import pytest
 from typing import List, Dict, Any
 from src.api_modules.hh_api import HeadHunterAPI
