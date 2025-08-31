@@ -583,9 +583,9 @@ class UserInterface:
 
         current_key = os.getenv("SUPERJOB_API_KEY")
         if current_key and current_key != "v3.r.137440105.example.test_tool":
-            print("✅ SuperJob API ключ уже настроен")
+            print("SuperJob API ключ уже настроен")
         else:
-            print("❌ SuperJob API ключ не настроен или используется тестовый")
+            print("SuperJob API ключ не настроен или используется тестовый")
 
         print("\nДля получения API ключа SuperJob:")
         print("1. Перейдите на https://api.superjob.ru/register/")
@@ -593,12 +593,12 @@ class UserInterface:
         print("3. Получите Secret key")
         print("4. Добавьте его в Secrets как SUPERJOB_API_KEY")
         print("\nИнструкция по добавлению секретов:")
-        print("• Откройте панель Secrets в левом меню")
-        print("• Нажмите 'New Secret'")
-        print("• Введите Key: SUPERJOB_API_KEY")
-        print("• Введите Value: ваш настоящий API ключ")
-        print("• Нажмите 'Add Secret'")
-        print("• Перезапустите приложение")
+        print("Откройте панель Secrets в левом меню")
+        print("Нажмите 'New Secret'")
+        print("Введите Key: SUPERJOB_API_KEY")
+        print("Введите Value: ваш настоящий API ключ")
+        print("Нажмите 'Add Secret'")
+        print("Перезапустите приложение")
         print("\n" + "=" * 60)
 
         input("\nНажмите Enter для продолжения...")
