@@ -62,9 +62,7 @@ class TestDBConnectionOptimization:
             result = db_manager.get_companies_and_vacancies_count()
             
             # Проверяем результат
-            assert isinstance(result, list)ck, patch
-import psycopg2
-import pytest
+            assert isinstance(result, list)
 
 
 class TestDBConnectionOptimization:
