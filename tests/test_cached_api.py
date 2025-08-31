@@ -22,6 +22,14 @@ class TestCachedAPIImplementation(CachedAPI):
     
     def _validate_vacancy(self, vacancy):
         return True
+    
+    def get_vacancies(self, search_query, **kwargs):
+        """Реализация абстрактного метода get_vacancies"""
+        return [{"id": "1", "title": "Test Vacancy", "url": "https://test.com"}]
+    
+    def get_vacancies_page(self, search_query, page=0, **kwargs):
+        """Реализация абстрактного метода get_vacancies_page"""
+        return {"items": [{"id": "1", "title": "Test Vacancy"}], "pages": 1}
 
 
 class TestCachedAPI:
