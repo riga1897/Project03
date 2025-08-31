@@ -1,3 +1,4 @@
+
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 import sys
@@ -10,53 +11,74 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from src.api_modules.cached_api import CachedAPI
 
 
+class TestCachedAPIImplementation(CachedAPI):
+    """Тестовая реализация CachedAPI для тестирования"""
+    
+    def __init__(self, cache_dir="test_cache"):
+        super().__init__(cache_dir)
+    
+    def _get_empty_response(self):
+        return {"items": []}
+    
+    def _validate_vacancy(self, vacancy):
+        return True
+
+
 class TestCachedAPI:
-    """Тесты для CachedAPI"""
+    """Тесты для CachedAPI с консолидированными моками"""
 
-    @patch.multiple('src.api_modules.cached_api',
-                   CacheManager=MagicMock(),
-                   os=MagicMock(),
-                   pathlib=MagicMock())
-    def test_cached_api_initialization(self):
+    @patch('src.utils.cache.FileCache')
+    def test_cached_api_initialization(self, mock_file_cache):
         """Тест инициализации CachedAPI"""
-        api = CachedAPI()
-        assert hasattr(api, 'cache_manager')
-        assert api.cache_manager is not None
+        mock_cache_instance = Mock()
+        mock_file_cache.return_value = mock_cache_instance
+        
+        api = TestCachedAPIImplementation()
+        assert hasattr(api, 'cache')
 
-    @patch.multiple('src.api_modules.cached_api',
-                   CacheManager=MagicMock(),
-                   os=MagicMock(),
-                   pathlib=MagicMock())
-    def test_cached_api_with_cache_manager(self):
-        """Тест инициализации с кэш-менеджером"""
-        api = CachedAPI()
-        assert hasattr(api, 'cache_manager')
+    @patch('src.utils.cache.FileCache')
+    def test_cached_api_with_cache_manager(self, mock_file_cache):
+        """Тест CachedAPI с кэш менеджером"""
+        mock_cache_instance = Mock()
+        mock_file_cache.return_value = mock_cache_instance
+        
+        api = TestCachedAPIImplementation()
+        assert api.cache is not None
 
-    @patch.multiple('src.api_modules.cached_api',
-                   CacheManager=MagicMock(),
-                   os=MagicMock(),
-                   pathlib=MagicMock())
-    def test_cached_api_abstract_methods(self):
+    @patch('src.utils.cache.FileCache')
+    def test_cached_api_abstract_methods(self, mock_file_cache):
         """Тест абстрактных методов CachedAPI"""
-        api = CachedAPI()
+        api = TestCachedAPIImplementation()
+        
+        # Тестируем что абстрактные методы реализованы
+        empty_response = api._get_empty_response()
+        assert isinstance(empty_response, dict)
+        
+        is_valid = api._validate_vacancy({"test": "data"})
+        assert isinstance(is_valid, bool)
 
-        # Проверяем, что абстрактные методы определены
-        assert hasattr(api, 'get_vacancies')
-        assert hasattr(api, 'get_vacancy_by_id')
-
-    @patch.multiple('src.api_modules.cached_api',
-                   CacheManager=MagicMock(),
-                   os=MagicMock(),
-                   pathlib=MagicMock())
-    def test_cache_integration(self):
+    @patch('src.utils.cache.FileCache')
+    def test_cache_integration(self, mock_file_cache):
         """Тест интеграции с кэшем"""
-        api = CachedAPI()
+        mock_cache_instance = Mock()
+        mock_cache_instance.get.return_value = None
+        mock_cache_instance.set.return_value = None
+        mock_file_cache.return_value = mock_cache_instance
+        
+        api = TestCachedAPIImplementation()
+        
+        # Проверяем что кэш используется
+        assert api.cache is not None
 
-        # Проверяем, что кэш-менеджер правильно интегрирован
-        assert hasattr(api, 'cache_manager')
-
-    def test_cached_api_inheritance(self):
-        """Тест наследования от BaseAPI"""
-        # Проверяем что CachedAPI это абстрактный класс
-        from abc import ABC
-        assert issubclass(CachedAPI, ABC)
+    @patch('src.utils.cache.FileCache')
+    def test_clear_cache_method(self, mock_file_cache):
+        """Тест метода очистки кэша"""
+        mock_cache_instance = Mock()
+        mock_cache_instance.clear.return_value = None
+        mock_file_cache.return_value = mock_cache_instance
+        
+        api = TestCachedAPIImplementation()
+        api.clear_cache("test")
+        
+        # Проверяем что метод clear был вызван
+        mock_cache_instance.clear.assert_called()

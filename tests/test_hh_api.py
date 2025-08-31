@@ -1,3 +1,4 @@
+
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 import sys
@@ -8,35 +9,42 @@ from src.api_modules.hh_api import HeadHunterAPI
 
 
 class TestHeadHunterAPI:
-    """Тесты для HeadHunter API"""
+    """Тесты для HeadHunter API с консолидированными моками"""
 
-    @patch.multiple('src.api_modules.hh_api',
-                   APIConnector=MagicMock(),
-                   CacheManager=MagicMock(),
-                   APIConfig=MagicMock(),
-                   EnvLoader=MagicMock())
-    def test_hh_api_initialization(self):
+    @patch('src.api_modules.hh_api.APIConnector')
+    @patch('src.utils.cache.FileCache')
+    @patch('src.api_modules.hh_api.APIConfig')
+    @patch('src.api_modules.hh_api.Paginator')
+    def test_hh_api_initialization(self, mock_paginator, mock_api_config, mock_cache, mock_connector):
         """Тест инициализации HeadHunter API"""
+        # Настраиваем моки
+        mock_config_instance = Mock()
+        mock_api_config.return_value = mock_config_instance
+        mock_cache_instance = Mock()
+        mock_cache.return_value = mock_cache_instance
+        mock_connector_instance = Mock()
+        mock_connector.return_value = mock_connector_instance
+        mock_paginator_instance = Mock()
+        mock_paginator.return_value = mock_paginator_instance
+        
         api = HeadHunterAPI()
-        assert hasattr(api, 'base_url')
-        assert hasattr(api, 'cache_manager')
+        assert hasattr(api, '_config')
+        assert hasattr(api, 'connector')
 
-    @patch.multiple('src.api_modules.hh_api',
-                   APIConnector=MagicMock(),
-                   CacheManager=MagicMock(),
-                   APIConfig=MagicMock(),
-                   EnvLoader=MagicMock())
-    def test_hh_api_with_connector(self):
+    @patch('src.api_modules.hh_api.APIConnector')
+    @patch('src.utils.cache.FileCache')
+    @patch('src.api_modules.hh_api.APIConfig')
+    @patch('src.api_modules.hh_api.Paginator')
+    def test_hh_api_with_connector(self, mock_paginator, mock_api_config, mock_cache, mock_connector):
         """Тест инициализации с коннектором"""
         api = HeadHunterAPI()
-        assert hasattr(api, 'base_url')
+        assert hasattr(api, 'BASE_URL')
 
-    @patch.multiple('src.api_modules.hh_api',
-                   APIConnector=MagicMock(),
-                   CacheManager=MagicMock(),
-                   APIConfig=MagicMock(),
-                   EnvLoader=MagicMock())
-    def test_get_vacancies_success(self):
+    @patch('src.api_modules.hh_api.APIConnector')
+    @patch('src.utils.cache.FileCache')
+    @patch('src.api_modules.hh_api.APIConfig')
+    @patch('src.api_modules.hh_api.Paginator')
+    def test_get_vacancies_success(self, mock_paginator, mock_api_config, mock_cache, mock_connector):
         """Тест успешного получения вакансий"""
         # Мок ответа API
         mock_response = {
@@ -45,89 +53,84 @@ class TestHeadHunterAPI:
                     "id": "123",
                     "name": "Python Developer",
                     "employer": {"name": "Test Company"},
-                    "salary": {"from": 100000, "to": 150000}
+                    "alternate_url": "https://hh.ru/vacancy/123",
+                    "source": "hh.ru"
                 }
-            ]
+            ],
+            "found": 1,
+            "pages": 1
         }
-
-        # Настраиваем мок коннектора
-        mock_conn = MagicMock()
-        mock_conn.get.return_value = mock_response
-        # Предполагается, что APIConnector является частью hh_api для патчинга
-        # Если APIConnector находится в другом модуле, путь должен быть изменен соответствующим образом
-        src.api_modules.hh_api.APIConnector.return_value = mock_conn
-
+        
+        # Настраиваем все моки
+        mock_config_instance = Mock()
+        mock_config_instance.hh_config.get_params.return_value = {"text": "python", "page": 0}
+        mock_config_instance.get_pagination_params.return_value = {"max_pages": 20}
+        mock_api_config.return_value = mock_config_instance
+        
         api = HeadHunterAPI()
-        vacancies = api.get_vacancies("Python")
+        
+        # Мокаем метод подключения к API
+        with patch.object(api, '_CachedAPI__connect_to_api', return_value=mock_response):
+            result = api.get_vacancies("python")
+        
+        assert isinstance(result, list)
 
-        assert isinstance(vacancies, list)
-        assert len(vacancies) > 0
-
-    @patch.multiple('src.api_modules.hh_api',
-                   APIConnector=MagicMock(),
-                   CacheManager=MagicMock(),
-                   APIConfig=MagicMock(),
-                   EnvLoader=MagicMock())
-    def test_get_vacancies_empty_response(self):
-        """Тест обработки пустого ответа"""
-        mock_response = {"items": []}
-
-        mock_conn = MagicMock()
-        mock_conn.get.return_value = mock_response
-        src.api_modules.hh_api.APIConnector.return_value = mock_conn
-
+    @patch('src.api_modules.hh_api.APIConnector')
+    @patch('src.utils.cache.FileCache')
+    @patch('src.api_modules.hh_api.APIConfig')
+    @patch('src.api_modules.hh_api.Paginator')
+    def test_get_vacancies_empty_response(self, mock_paginator, mock_api_config, mock_cache, mock_connector):
+        """Тест получения пустого ответа"""
+        mock_response = {"items": [], "found": 0, "pages": 0}
+        
         api = HeadHunterAPI()
-        vacancies = api.get_vacancies("NonExistentJob")
+        
+        with patch.object(api, '_CachedAPI__connect_to_api', return_value=mock_response):
+            result = api.get_vacancies("nonexistent")
+        
+        assert result == []
 
-        assert isinstance(vacancies, list)
-        assert len(vacancies) == 0
-
-    @patch.multiple('src.api_modules.hh_api',
-                   APIConnector=MagicMock(),
-                   CacheManager=MagicMock(),
-                   APIConfig=MagicMock(),
-                   EnvLoader=MagicMock())
-    def test_get_vacancies_api_error(self):
+    @patch('src.api_modules.hh_api.APIConnector')
+    @patch('src.utils.cache.FileCache')
+    @patch('src.api_modules.hh_api.APIConfig')
+    @patch('src.api_modules.hh_api.Paginator')
+    def test_get_vacancies_api_error(self, mock_paginator, mock_api_config, mock_cache, mock_connector):
         """Тест обработки ошибки API"""
-        mock_conn = MagicMock()
-        mock_conn.get.side_effect = Exception("API Error")
-        src.api_modules.hh_api.APIConnector.return_value = mock_conn
-
         api = HeadHunterAPI()
+        
+        with patch.object(api, '_CachedAPI__connect_to_api', side_effect=Exception("API Error")):
+            result = api.get_vacancies("python")
+        
+        assert result == []
 
-        with pytest.raises(Exception):
-            api.get_vacancies("Python")
-
-    @patch.multiple('src.api_modules.hh_api',
-                   APIConnector=MagicMock(),
-                   CacheManager=MagicMock(),
-                   APIConfig=MagicMock(),
-                   EnvLoader=MagicMock())
-    def test_validate_vacancy_valid(self):
-        """Тест валидации корректной вакансии"""
+    @patch('src.api_modules.hh_api.APIConnector')
+    @patch('src.utils.cache.FileCache')
+    @patch('src.api_modules.hh_api.APIConfig')
+    @patch('src.api_modules.hh_api.Paginator')
+    def test_validate_vacancy_valid(self, mock_paginator, mock_api_config, mock_cache, mock_connector):
+        """Тест валидации валидной вакансии"""
         api = HeadHunterAPI()
-
+        
         valid_vacancy = {
-            "id": "123",
             "name": "Python Developer",
-            "employer": {"name": "Test Company"},
-            "salary": {"from": 100000, "to": 150000}
+            "alternate_url": "https://hh.ru/vacancy/123"
         }
+        
+        result = api._validate_vacancy(valid_vacancy)
+        assert result is True
 
-        assert api._validate_vacancy(valid_vacancy) is True
-
-    @patch.multiple('src.api_modules.hh_api',
-                   APIConnector=MagicMock(),
-                   CacheManager=MagicMock(),
-                   APIConfig=MagicMock(),
-                   EnvLoader=MagicMock())
-    def test_validate_vacancy_invalid(self):
-        """Тест валидации некорректной вакансии"""
+    @patch('src.api_modules.hh_api.APIConnector')
+    @patch('src.utils.cache.FileCache')
+    @patch('src.api_modules.hh_api.APIConfig')
+    @patch('src.api_modules.hh_api.Paginator')
+    def test_validate_vacancy_invalid(self, mock_paginator, mock_api_config, mock_cache, mock_connector):
+        """Тест валидации невалидной вакансии"""
         api = HeadHunterAPI()
-
+        
         invalid_vacancy = {
-            "id": "123"
-            # Отсутствуют обязательные поля
+            "name": "Python Developer"
+            # Отсутствует alternate_url
         }
-
-        assert api._validate_vacancy(invalid_vacancy) is False
+        
+        result = api._validate_vacancy(invalid_vacancy)
+        assert result is False

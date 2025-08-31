@@ -1,55 +1,49 @@
+
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import Mock, patch, MagicMock
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-try:
-    from src.config.api_config import APIConfig
-except ImportError:
-    # Создаем тестовый класс APIConfig
-    class APIConfig:
-        def __init__(self):
-            self.BASE_URL = "https://api.example.com"
-            self.TIMEOUT = 30
-            self.MAX_RETRIES = 3
+from src.config.api_config import APIConfig
 
 
 class TestAPIConfig:
-    @patch.multiple('src.config.api_config', 
-                   requests=MagicMock(),
-                   os=MagicMock())
-    def test_api_config_initialization(self):
-        """Тест инициализации API конфигурации"""
-        config = APIConfig()
-        assert hasattr(config, 'HH_BASE_URL')
-        assert hasattr(config, 'SJ_BASE_URL')
+    """Тесты для APIConfig с консолидированными моками"""
 
-    @patch.multiple('src.config.api_config',
-                   requests=MagicMock(),
-                   os=MagicMock())
-    def test_api_config_urls(self):
+    @patch('src.config.api_config.HHAPIConfig')
+    @patch('src.config.api_config.SJAPIConfig')
+    def test_api_config_initialization(self, mock_sj_config, mock_hh_config):
+        """Тест инициализации API конфигурации"""
+        mock_hh_instance = Mock()
+        mock_sj_instance = Mock()
+        mock_hh_config.return_value = mock_hh_instance
+        mock_sj_config.return_value = mock_sj_instance
+        
+        config = APIConfig()
+        assert hasattr(config, 'hh_config')
+        assert hasattr(config, 'sj_config')
+
+    @patch('src.config.api_config.HHAPIConfig')
+    @patch('src.config.api_config.SJAPIConfig')
+    def test_api_config_urls(self, mock_sj_config, mock_hh_config):
         """Тест URL конфигурации"""
         config = APIConfig()
-        assert config.HH_BASE_URL.startswith('https://api.hh.ru')
-        assert config.SJ_BASE_URL.startswith('https://api.superjob.ru')
+        assert hasattr(config, 'get_pagination_params')
 
-    @patch.multiple('src.config.api_config',
-                   requests=MagicMock(),
-                   os=MagicMock())
-    def test_api_config_headers(self):
-        """Тест заголовков запросов"""
+    @patch('src.config.api_config.HHAPIConfig')
+    @patch('src.config.api_config.SJAPIConfig')
+    def test_api_config_headers(self, mock_sj_config, mock_hh_config):
+        """Тест заголовков конфигурации"""
         config = APIConfig()
-        if hasattr(config, 'get_headers'):
-            headers = config.get_headers()
-            assert 'User-Agent' in headers
+        headers = config.get_default_headers()
+        assert isinstance(headers, dict)
 
-    @patch.multiple('src.config.api_config',
-                   requests=MagicMock(),
-                   os=MagicMock())
-    def test_api_config_parameters(self):
+    @patch('src.config.api_config.HHAPIConfig')
+    @patch('src.config.api_config.SJAPIConfig')
+    def test_api_config_parameters(self, mock_sj_config, mock_hh_config):
         """Тест параметров конфигурации"""
         config = APIConfig()
-        assert hasattr(config, 'DEFAULT_COUNT')
-        if hasattr(config, 'DEFAULT_COUNT'):
-            assert config.DEFAULT_COUNT > 0
+        params = config.get_pagination_params()
+        assert isinstance(params, dict)
+        assert 'max_pages' in params

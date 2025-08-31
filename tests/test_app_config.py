@@ -1,5 +1,6 @@
+
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import Mock, patch, MagicMock
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
@@ -8,46 +9,53 @@ from src.config.app_config import AppConfig
 
 
 class TestAppConfig:
-    @patch.multiple('src.config.app_config',
-                   os=MagicMock(),
-                   pathlib=MagicMock())
-    def test_app_config_initialization(self):
+    """Тесты для AppConfig с консолидированными моками"""
+
+    @patch('src.config.app_config.DatabaseConfig')
+    @patch('src.config.app_config.UIConfig')
+    def test_app_config_initialization(self, mock_ui_config, mock_db_config):
         """Тест инициализации конфигурации приложения"""
+        mock_db_instance = Mock()
+        mock_ui_instance = Mock()
+        mock_db_config.return_value = mock_db_instance
+        mock_ui_config.return_value = mock_ui_instance
+        
         config = AppConfig()
-        assert hasattr(config, 'DATABASE_URL')
+        assert hasattr(config, 'database')
+        assert hasattr(config, 'ui')
 
-    @patch.multiple('src.config.app_config',
-                   os=MagicMock(),
-                   pathlib=MagicMock())
-    def test_app_config_database(self):
-        """Тест настроек базы данных"""
+    @patch('src.config.app_config.DatabaseConfig')
+    @patch('src.config.app_config.UIConfig')
+    def test_app_config_database(self, mock_ui_config, mock_db_config):
+        """Тест конфигурации базы данных"""
+        mock_db_instance = Mock()
+        mock_db_instance.to_dict.return_value = {'host': 'localhost'}
+        mock_db_config.return_value = mock_db_instance
+        mock_ui_config.return_value = Mock()
+        
         config = AppConfig()
-        if hasattr(config, 'DATABASE_URL'):
-            assert config.DATABASE_URL is not None
+        db_config = config.get_db_config()
+        assert isinstance(db_config, dict)
 
-    @patch.multiple('src.config.app_config',
-                   os=MagicMock(),
-                   pathlib=MagicMock())
-    def test_app_config_logging(self):
-        """Тест настроек логирования"""
+    @patch('src.config.app_config.DatabaseConfig')
+    @patch('src.config.app_config.UIConfig')
+    def test_app_config_logging(self, mock_ui_config, mock_db_config):
+        """Тест конфигурации логирования"""
         config = AppConfig()
-        if hasattr(config, 'LOG_LEVEL'):
-            assert config.LOG_LEVEL in ['DEBUG', 'INFO', 'WARNING', 'ERROR']
+        assert hasattr(config, 'setup_logging')
 
-    @patch.multiple('src.config.app_config',
-                   os=MagicMock(),
-                   pathlib=MagicMock())
-    def test_app_config_cache(self):
-        """Тест настроек кэша"""
+    @patch('src.config.app_config.DatabaseConfig')
+    @patch('src.config.app_config.UIConfig')
+    def test_app_config_cache(self, mock_ui_config, mock_db_config):
+        """Тест конфигурации кэша"""
         config = AppConfig()
-        if hasattr(config, 'CACHE_DIR'):
-            assert config.CACHE_DIR is not None
+        cache_config = config.get_cache_config()
+        assert isinstance(cache_config, dict)
 
-    @patch.multiple('src.config.app_config',
-                   os=MagicMock(),
-                   pathlib=MagicMock())
-    def test_app_config_api_settings(self):
+    @patch('src.config.app_config.DatabaseConfig')
+    @patch('src.config.app_config.UIConfig')
+    def test_app_config_api_settings(self, mock_ui_config, mock_db_config):
         """Тест настроек API"""
         config = AppConfig()
-        if hasattr(config, 'MAX_WORKERS'):
-            assert config.MAX_WORKERS > 0
+        api_settings = config.get_api_settings()
+        assert isinstance(api_settings, dict)
