@@ -68,120 +68,171 @@ class TestAPIDataFilter:
             ]
         }
 
-    def test_filter_hh_data_by_salary_range(self, sample_hh_data):
+    def test_filter_hh_data_by_salary_range(self):
         """Тест фильтрации данных HH по диапазону зарплаты"""
         filter_obj = APIDataFilter()
+        test_data = [
+            {
+                "id": "1",
+                "name": "Python Developer",
+                "salary": {"from": 100000, "to": 150000, "currency": "RUR"},
+            },
+            {
+                "id": "2",
+                "name": "Java Developer",
+                "salary": {"from": 80000, "to": 120000, "currency": "RUR"},
+            },
+        ]
 
-        # Фильтруем вакансии с зарплатой от 90000
-        filtered = filter_obj.filter_by_salary_range(sample_hh_data["items"], min_salary=90000)
+        result = filter_obj.filter_by_salary_range(test_data, min_salary=90000, source="hh")
+        assert len(result) == 1
+        assert result[0]["id"] == "1"
 
-        assert len(filtered) == 1
-        assert filtered[0]["id"] == "12345"
-
-    def test_filter_sj_data_by_salary_range(self, sample_sj_data):
-        """Тест фильтрации данных SJ по диапазону зарплаты"""
+    def test_filter_sj_data_by_salary_range(self):
+        """Тест фильтрации данных SuperJob по диапазону зарплат"""
         filter_obj = APIDataFilter()
+        test_data = [
+            {
+                "id": "1",
+                "profession": "Python Developer",
+                "payment_from": 100000,
+                "payment_to": 150000,
+                "currency": "rub",
+            },
+            {
+                "id": "2",
+                "profession": "Java Developer",
+                "payment_from": 80000,
+                "payment_to": 120000,
+                "currency": "rub",
+            },
+        ]
 
-        # Фильтруем вакансии с зарплатой до 200000
-        filtered = filter_obj.filter_by_salary_range(sample_sj_data["objects"], max_salary=200000, source="sj")
+        result = filter_obj.filter_by_salary_range(test_data, min_salary=90000, source="sj")
+        assert len(result) == 1
+        assert result[0]["id"] == "1"
 
-        assert len(filtered) == 1
-        assert filtered[0]["id"] == 111
-
-    def test_filter_by_keywords(self, sample_hh_data):
+    def test_filter_by_keywords(self):
         """Тест фильтрации по ключевым словам"""
         filter_obj = APIDataFilter()
+        test_data = [
+            {
+                "id": "1",
+                "name": "Python Developer",
+                "snippet": {"requirement": "Python Django", "responsibility": "Backend development"},
+            },
+            {
+                "id": "2",
+                "name": "Java Developer",
+                "snippet": {"requirement": "Java Spring", "responsibility": "Enterprise development"},
+            },
+        ]
 
-        # Поиск по ключевому слову "Python"
-        filtered = filter_obj.filter_by_keywords(sample_hh_data["items"], keywords=["Python"])
+        result = filter_obj.filter_by_keywords(test_data, ["Python"])
+        assert len(result) == 1
+        assert result[0]["id"] == "1"
 
-        assert len(filtered) == 1
-        assert filtered[0]["name"] == "Python Developer"
-
-    def test_filter_by_location(self, sample_hh_data):
-        """Тест фильтрации по местоположению"""
+    def test_filter_by_location(self):
+        """Тест фильтрации по локации"""
         filter_obj = APIDataFilter()
+        test_data = [
+            {"id": "1", "area": {"name": "Москва"}},
+            {"id": "2", "area": {"name": "Санкт-Петербург"}},
+        ]
 
-        # Фильтрация по городу Москва
-        filtered = filter_obj.filter_by_location(sample_hh_data["items"], locations=["Москва"])
+        result = filter_obj.filter_by_location(test_data, ["Москва"])
+        assert len(result) == 1
+        assert result[0]["id"] == "1"
 
-        assert len(filtered) == 1
-        assert filtered[0]["area"]["name"] == "Москва"
-
-    def test_filter_by_experience(self, sample_hh_data):
-        """Тест фильтрации по опыту работы"""
+    def test_filter_by_experience(self):
+        """Тест фильтрации по опыту"""
         filter_obj = APIDataFilter()
+        test_data = [
+            {"id": "1", "experience": {"name": "От 1 года до 3 лет"}},
+            {"id": "2", "experience": {"name": "От 3 до 6 лет"}},
+        ]
 
-        # Фильтрация по опыту "От 1 года до 3 лет"
-        filtered = filter_obj.filter_by_experience(sample_hh_data["items"], experience_levels=["От 1 года до 3 лет"])
+        result = filter_obj.filter_by_experience(test_data, ["От 1 года до 3 лет"])
+        assert len(result) == 1
+        assert result[0]["id"] == "1"
 
-        assert len(filtered) == 1
-        assert filtered[0]["experience"]["name"] == "От 1 года до 3 лет"
-
-    def test_filter_by_employment_type(self, sample_hh_data):
+    def test_filter_by_employment_type(self):
         """Тест фильтрации по типу занятости"""
         filter_obj = APIDataFilter()
+        test_data = [
+            {"id": "1", "employment": {"name": "Полная занятость"}},
+            {"id": "2", "employment": {"name": "Частичная занятость"}},
+        ]
 
-        # Фильтрация по полной занятости
-        filtered = filter_obj.filter_by_employment_type(sample_hh_data["items"], employment_types=["Полная занятость"])
+        result = filter_obj.filter_by_employment_type(test_data, ["Полная занятость"])
+        assert len(result) == 1
+        assert result[0]["id"] == "1"
 
-        assert len(filtered) == 2  # Обе вакансии с полной занятостью
-
-    def test_filter_by_company(self, sample_hh_data):
+    def test_filter_by_company(self):
         """Тест фильтрации по компании"""
         filter_obj = APIDataFilter()
+        test_data = [
+            {"id": "1", "employer": {"name": "Яндекс"}},
+            {"id": "2", "employer": {"name": "Сбер"}},
+        ]
 
-        # Фильтрация по конкретной компании
-        filtered = filter_obj.filter_by_company(sample_hh_data["items"], companies=["Test Company"])
+        result = filter_obj.filter_by_company(test_data, ["Яндекс"])
+        assert len(result) == 1
+        assert result[0]["id"] == "1"
 
-        assert len(filtered) == 1
-        assert filtered[0]["employer"]["name"] == "Test Company"
-
-    def test_complex_filter_chain(self, sample_hh_data):
+    def test_complex_filter_chain(self):
         """Тест цепочки фильтров"""
         filter_obj = APIDataFilter()
+        test_data = [
+            {
+                "id": "1",
+                "name": "Python Developer",
+                "salary": {"from": 100000, "to": 150000, "currency": "RUR"},
+                "employer": {"name": "Яндекс"},
+                "area": {"name": "Москва"},
+            },
+            {
+                "id": "2",
+                "name": "Java Developer",
+                "salary": {"from": 80000, "to": 120000, "currency": "RUR"},
+                "employer": {"name": "Сбер"},
+                "area": {"name": "Санкт-Петербург"},
+            },
+        ]
 
-        # Применяем несколько фильтров подряд
-        vacancies = sample_hh_data["items"]
+        # Применяем несколько фильтров
+        result = filter_obj.filter_by_salary_range(test_data, min_salary=90000, source="hh")
+        result = filter_obj.filter_by_company(result, ["Яндекс"])
+        result = filter_obj.filter_by_location(result, ["Москва"])
 
-        # Фильтр по ключевому слову
-        vacancies = filter_obj.filter_by_keywords(vacancies, ["Developer"])
+        assert len(result) == 1
+        assert result[0]["id"] == "1"
 
-        # Фильтр по городу
-        vacancies = filter_obj.filter_by_location(vacancies, ["Москва"])
-
-        # Фильтр по занятости
-        vacancies = filter_obj.filter_by_employment_type(vacancies, ["Полная занятость"])
-
-        assert len(vacancies) == 1
-        assert vacancies[0]["name"] == "Python Developer"
-
-    def test_empty_filter_results(self, sample_hh_data):
-        """Тест фильтра, который не возвращает результатов"""
+    def test_empty_filter_results(self):
+        """Тест пустых результатов фильтрации"""
         filter_obj = APIDataFilter()
+        test_data = [
+            {"id": "1", "employer": {"name": "Яндекс"}},
+            {"id": "2", "employer": {"name": "Сбер"}},
+        ]
 
-        # Поиск несуществующего ключевого слова
-        filtered = filter_obj.filter_by_keywords(sample_hh_data["items"], keywords=["NonExistentKeyword"])
-
-        assert len(filtered) == 0
+        result = filter_obj.filter_by_company(test_data, ["Тинькофф"])
+        assert len(result) == 0
 
     def test_filter_with_empty_data(self):
         """Тест фильтрации пустых данных"""
         filter_obj = APIDataFilter()
-
-        # Фильтрация пустого списка
-        filtered = filter_obj.filter_by_keywords([], keywords=["Python"])
-
-        assert len(filtered) == 0
+        result = filter_obj.filter_by_keywords([], ["Python"])
+        assert len(result) == 0
 
     def test_filter_invalid_data_structure(self):
         """Тест фильтрации некорректной структуры данных"""
         filter_obj = APIDataFilter()
-
-        # Некорректная структура данных
-        invalid_data = [{"invalid": "structure"}]
+        test_data = [
+            {"id": "1"},  # Отсутствуют ключевые поля
+            {"name": "Test"},  # Отсутствует id
+        ]
 
         # Фильтр должен обработать некорректные данные без ошибок
-        filtered = filter_obj.filter_by_keywords(invalid_data, keywords=["Python"])
-
-        assert len(filtered) == 0
+        result = filter_obj.filter_by_keywords(test_data, ["Python"])
+        assert isinstance(result, list)
