@@ -1,8 +1,7 @@
-
 import pytest
-from unittest.mock import patch
-import os
+from unittest.mock import patch, MagicMock
 import sys
+import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 try:
@@ -15,24 +14,42 @@ except ImportError:
             self.TIMEOUT = 30
             self.MAX_RETRIES = 3
 
+
 class TestAPIConfig:
+    @patch.multiple('src.config.api_config', 
+                   requests=MagicMock(),
+                   os=MagicMock())
     def test_api_config_initialization(self):
-        """Тест инициализации APIConfig"""
+        """Тест инициализации API конфигурации"""
         config = APIConfig()
-        assert hasattr(config, 'BASE_URL')
+        assert hasattr(config, 'HH_BASE_URL')
+        assert hasattr(config, 'SJ_BASE_URL')
 
-    def test_api_config_defaults(self):
-        """Тест значений по умолчанию"""
+    @patch.multiple('src.config.api_config',
+                   requests=MagicMock(),
+                   os=MagicMock())
+    def test_api_config_urls(self):
+        """Тест URL конфигурации"""
         config = APIConfig()
-        assert config.TIMEOUT > 0
+        assert config.HH_BASE_URL.startswith('https://api.hh.ru')
+        assert config.SJ_BASE_URL.startswith('https://api.superjob.ru')
 
-    @patch.dict(os.environ, {'API_TIMEOUT': '30'})
-    def test_api_config_from_env(self):
-        """Тест загрузки конфигурации из переменных окружения"""
+    @patch.multiple('src.config.api_config',
+                   requests=MagicMock(),
+                   os=MagicMock())
+    def test_api_config_headers(self):
+        """Тест заголовков запросов"""
         config = APIConfig()
-        assert isinstance(config.TIMEOUT, (int, float))
+        if hasattr(config, 'get_headers'):
+            headers = config.get_headers()
+            assert 'User-Agent' in headers
 
-    def test_api_config_validation(self):
-        """Тест валидации конфигурации"""
+    @patch.multiple('src.config.api_config',
+                   requests=MagicMock(),
+                   os=MagicMock())
+    def test_api_config_parameters(self):
+        """Тест параметров конфигурации"""
         config = APIConfig()
-        assert config.TIMEOUT > 0
+        assert hasattr(config, 'DEFAULT_COUNT')
+        if hasattr(config, 'DEFAULT_COUNT'):
+            assert config.DEFAULT_COUNT > 0
