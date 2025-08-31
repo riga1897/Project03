@@ -1,0 +1,208 @@
+~/workspace$ 
+~/workspace$ pytest --cov=src --cov-report=term-missing tests/
+============================== test session starts ===============================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: mock-3.14.1, cov-6.2.1
+collected 141 items / 16 errors                                                  
+
+===================================== ERRORS =====================================
+____________________ ERROR collecting tests/test_abstract.py _____________________
+ImportError while importing test module '/home/runner/workspace/tests/test_abstract.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_abstract.py:4: in <module>
+    from src.storage.abstract import AbstractStorage
+E   ImportError: cannot import name 'AbstractStorage' from 'src.storage.abstract' (/home/runner/workspace/src/storage/abstract.py)
+____________________ ERROR collecting tests/test_base_api.py _____________________
+ImportError while importing test module '/home/runner/workspace/tests/test_base_api.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_base_api.py:8: in <module>
+    from src.api_modules.base_api import BaseAPI
+E   ImportError: cannot import name 'BaseAPI' from 'src.api_modules.base_api' (/home/runner/workspace/src/api_modules/base_api.py)
+______________________ ERROR collecting tests/test_cache.py ______________________
+ImportError while importing test module '/home/runner/workspace/tests/test_cache.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_cache.py:10: in <module>
+    from src.utils.cache import CacheManager
+E   ImportError: cannot import name 'CacheManager' from 'src.utils.cache' (/home/runner/workspace/src/utils/cache.py)
+___________________ ERROR collecting tests/test_decorators.py ____________________
+.pythonlibs/lib/python3.11/site-packages/_pytest/python.py:498: in importtestmodule
+    mod = import_path(
+.pythonlibs/lib/python3.11/site-packages/_pytest/pathlib.py:587: in import_path
+    importlib.import_module(module_name)
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1204: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1176: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1147: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+.pythonlibs/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:177: in exec_module
+    source_stat, co = _rewrite_test(fn, self.config)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.pythonlibs/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:357: in _rewrite_test
+    tree = ast.parse(source, filename=strfn)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/ast.py:50: in parse
+    return compile(source, filename, mode, flags,
+E     File "/home/runner/workspace/tests/test_decorators.py", line 100
+E       </new_str>
+E       ^
+E   SyntaxError: invalid syntax
+_____________________ ERROR collecting tests/test_get_api.py _____________________
+ImportError while importing test module '/home/runner/workspace/tests/test_get_api.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_get_api.py:4: in <module>
+    from src.api_modules.get_api import get_api, APIFactory
+E   ImportError: cannot import name 'get_api' from 'src.api_modules.get_api' (/home/runner/workspace/src/api_modules/get_api.py)
+____________________ ERROR collecting tests/test_paginator.py ____________________
+ImportError while importing test module '/home/runner/workspace/tests/test_paginator.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_paginator.py:8: in <module>
+    from src.utils.paginator import quick_paginate, Paginator
+E   ImportError: cannot import name 'quick_paginate' from 'src.utils.paginator' (/home/runner/workspace/src/utils/paginator.py)
+_________________ ERROR collecting tests/test_postgres_saver.py __________________
+ImportError while importing test module '/home/runner/workspace/tests/test_postgres_saver.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_postgres_saver.py:9: in <module>
+    from src.vacancies.models import Vacancy, VacancySalary, VacancyEmployer
+E   ImportError: cannot import name 'VacancySalary' from 'src.vacancies.models' (/home/runner/workspace/src/vacancies/models.py)
+__________________ ERROR collecting tests/test_salary_utils.py ___________________
+ImportError while importing test module '/home/runner/workspace/tests/test_salary_utils.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_salary_utils.py:8: in <module>
+    from src.utils.salary import parse_salary_range, format_salary, normalize_salary
+E   ImportError: cannot import name 'parse_salary_range' from 'src.utils.salary' (/home/runner/workspace/src/utils/salary.py)
+____________________ ERROR collecting tests/test_sj_parser.py ____________________
+ImportError while importing test module '/home/runner/workspace/tests/test_sj_parser.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_sj_parser.py:4: in <module>
+    from src.vacancies.parsers.sj_parser import SJParser
+E   ImportError: cannot import name 'SJParser' from 'src.vacancies.parsers.sj_parser' (/home/runner/workspace/src/vacancies/parsers/sj_parser.py)
+_________________ ERROR collecting tests/test_storage_factory.py _________________
+ImportError while importing test module '/home/runner/workspace/tests/test_storage_factory.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_storage_factory.py:4: in <module>
+    from src.storage.storage_factory import StorageFactory, get_storage
+E   ImportError: cannot import name 'get_storage' from 'src.storage.storage_factory' (/home/runner/workspace/src/storage/storage_factory.py)
+________________ ERROR collecting tests/test_target_companies.py _________________
+ImportError while importing test module '/home/runner/workspace/tests/test_target_companies.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_target_companies.py:3: in <module>
+    from src.config.target_companies import TargetCompanies, get_target_companies
+E   ImportError: cannot import name 'get_target_companies' from 'src.config.target_companies' (/home/runner/workspace/src/config/target_companies.py)
+___________________ ERROR collecting tests/test_ui_helpers.py ____________________
+ImportError while importing test module '/home/runner/workspace/tests/test_ui_helpers.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_ui_helpers.py:8: in <module>
+    from src.utils.ui_helpers import (
+E   ImportError: cannot import name 'print_section_header' from 'src.utils.ui_helpers' (/home/runner/workspace/src/utils/ui_helpers.py)
+_____________ ERROR collecting tests/test_vacancy_display_handler.py _____________
+ImportError while importing test module '/home/runner/workspace/tests/test_vacancy_display_handler.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_vacancy_display_handler.py:9: in <module>
+    from src.vacancies.models import Vacancy, VacancySalary, VacancyEmployer
+E   ImportError: cannot import name 'VacancySalary' from 'src.vacancies.models' (/home/runner/workspace/src/vacancies/models.py)
+________________ ERROR collecting tests/test_vacancy_formatter.py ________________
+ImportError while importing test module '/home/runner/workspace/tests/test_vacancy_formatter.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_vacancy_formatter.py:9: in <module>
+    from src.vacancies.models import Vacancy, VacancySalary, VacancyEmployer
+E   ImportError: cannot import name 'VacancySalary' from 'src.vacancies.models' (/home/runner/workspace/src/vacancies/models.py)
+_________________ ERROR collecting tests/test_vacancy_models.py __________________
+ImportError while importing test module '/home/runner/workspace/tests/test_vacancy_models.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_vacancy_models.py:8: in <module>
+    from src.vacancies.models import Vacancy, VacancySalary, VacancyEmployer
+E   ImportError: cannot import name 'VacancySalary' from 'src.vacancies.models' (/home/runner/workspace/src/vacancies/models.py)
+__________________ ERROR collecting tests/test_vacancy_stats.py __________________
+ImportError while importing test module '/home/runner/workspace/tests/test_vacancy_stats.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_vacancy_stats.py:9: in <module>
+    from src.vacancies.models import Vacancy, VacancySalary, VacancyEmployer
+E   ImportError: cannot import name 'VacancySalary' from 'src.vacancies.models' (/home/runner/workspace/src/vacancies/models.py)
+============================ short test summary info =============================
+ERROR tests/test_abstract.py
+ERROR tests/test_base_api.py
+ERROR tests/test_cache.py
+ERROR tests/test_decorators.py
+ERROR tests/test_get_api.py
+ERROR tests/test_paginator.py
+ERROR tests/test_postgres_saver.py
+ERROR tests/test_salary_utils.py
+ERROR tests/test_sj_parser.py
+ERROR tests/test_storage_factory.py
+ERROR tests/test_target_companies.py
+ERROR tests/test_ui_helpers.py
+ERROR tests/test_vacancy_display_handler.py
+ERROR tests/test_vacancy_formatter.py
+ERROR tests/test_vacancy_models.py
+ERROR tests/test_vacancy_stats.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 16 errors during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 16 errors in 1.61s ===============================
+~/workspace$ 
