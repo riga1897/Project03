@@ -70,7 +70,7 @@ class PostgresSaver:
             cursor = conn.cursor()
             # Тестовый SQL запрос
             cursor.execute("INSERT INTO vacancies VALUES (%s, %s, %s)", 
-                         (vacancy.id, vacancy.title, vacancy.company))
+                         (vacancy.vacancy_id, vacancy.title, vacancy.source))
             conn.commit()
             cursor.close()
             conn.close()
@@ -154,9 +154,8 @@ class TestPostgresSaver:
         mock_connect.return_value = mock_connection
 
         vacancy = Vacancy(
-            id="123",
+            vacancy_id="123",
             title="Python Developer",
-            company="Test Company",
             url="https://test.com/vacancy/123",
             source="hh.ru"
         )
@@ -234,8 +233,8 @@ class TestPostgresSaver:
         mock_connect.return_value = mock_connection
 
         vacancies = [
-            Vacancy(id="123", title="Python Developer", company="Test Company", url="https://test1.com", source="hh.ru"),
-            Vacancy(id="124", title="Java Developer", company="Test Company", url="https://test2.com", source="hh.ru")
+            Vacancy(vacancy_id="123", title="Python Developer", url="https://test1.com", source="hh.ru"),
+            Vacancy(vacancy_id="124", title="Java Developer", url="https://test2.com", source="hh.ru")
         ]
 
         mock_db_config = {"host": "localhost", "database": "test_db"}

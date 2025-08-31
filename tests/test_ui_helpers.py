@@ -172,9 +172,7 @@ class TestUIHelpers:
             url="https://test.com/vacancy/123",
             source="hh.ru",
             salary=salary,
-            employer=employer,
-            area="Москва",
-            experience="От 1 года до 3 лет"
+            employer=employer
         )
 
         display_vacancy_info(vacancy, number=1)

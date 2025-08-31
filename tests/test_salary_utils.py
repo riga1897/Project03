@@ -13,7 +13,7 @@ def parse_salary_range(salary_str: str) -> Tuple[Optional[int], Optional[int]]:
         return None, None
 
     # Удаляем валюту и лишние символы
-    clean_str = re.sub(r'[^\d\s-от до]', '', salary_str.lower())
+    clean_str = re.sub(r'[^\d\s\-отдо]', '', salary_str.lower())
 
     # Ищем числа
     numbers = re.findall(r'\d+', clean_str)
@@ -104,8 +104,8 @@ class TestSalaryUtils:
         salary = MockVacancySalary(from_amount=100000, to_amount=150000, currency="RUR")
         result = format_salary(salary.from_amount, salary.to_amount, salary.currency)
 
-        assert "100000" in result
-        assert "150000" in result
+        assert "100 000" in result
+        assert "150 000" in result
         assert "RUR" in result
 
     def test_format_salary_from_only(self):
@@ -118,7 +118,7 @@ class TestSalaryUtils:
         salary = MockVacancySalary(from_amount=100000, currency="RUR")
         result = format_salary(salary.from_amount, None, salary.currency)
 
-        assert "от 100000" in result
+        assert "от 100 000" in result
         assert "RUR" in result
 
     def test_format_salary_to_only(self):
@@ -131,7 +131,7 @@ class TestSalaryUtils:
         salary = MockVacancySalary(to_amount=150000, currency="RUR")
         result = format_salary(None, salary.to_amount, salary.currency)
 
-        assert "до 150000" in result
+        assert "до 150 000" in result
         assert "RUR" in result
 
     def test_format_salary_none(self):

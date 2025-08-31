@@ -105,20 +105,6 @@ class TestCacheManager:
         mock_file.assert_called()
         mock_json_dump.assert_called_with(test_data, mock_file(), ensure_ascii=False, indent=2)
 
-    @patch('shutil.rmtree') # Исходный код использовал shutil.rmtree, но в нашем тестовом классе такого нет.
-    # Мы можем мокировать os.remove или просто проверить, что директория была удалена, если бы такая функция была.
-    # Для соответствия, давайте предположим, что clear() в реальном классе удаляет директорию.
-    # Поскольку в нашем тестовом классе нет метода clear(), мы не можем напрямую протестировать его.
-    # Если бы был метод clear(), мы бы мокировали os.remove или rmtree.
-    # Для этого примера, давайте пропустим этот тест или адаптируем его, если бы был метод clear.
-    # Для целей демонстрации, если бы был метод clear(), мы бы сделали так:
-    # @patch('os.remove')
-    # def test_clear_cache(self, mock_remove):
-    #     cache_manager = CacheManager()
-    #     # Предполагаем, что clear удаляет все файлы в cache_dir
-    #     cache_manager.clear() # Если бы такой метод существовал
-    #     # assert mock_remove.call_count > 0 # Проверка, что были вызовы удаления
-
     def test_generate_cache_key(self):
         """Тест генерации ключа кэша"""
         cache_manager = CacheManager()
