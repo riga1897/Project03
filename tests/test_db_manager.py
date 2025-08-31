@@ -1,4 +1,3 @@
-
 import pytest
 from unittest.mock import Mock, patch, MagicMock, create_autospec
 import sys
@@ -10,30 +9,30 @@ from src.storage.db_manager import DBManager
 
 class MockConnection:
     """Мок соединения с БД с поддержкой контекстного менеджера"""
-    
+
     def __init__(self):
         self.cursor_mock = Mock()
         self.closed = False
-    
+
     def __enter__(self):
         return self
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
-    
+
     def cursor(self):
         return MockCursor()
-    
+
     def commit(self):
         pass
-    
+
     def close(self):
         self.closed = True
-    
+
     def set_client_encoding(self, encoding):
         """Метод для установки кодировки клиента"""
         pass
-    
+
     def autocommit(self):
         """Свойство автокоммита"""
         return True
@@ -41,23 +40,23 @@ class MockConnection:
 
 class MockCursor:
     """Мок курсора с поддержкой контекстного менеджера"""
-    
+
     def __init__(self):
         self.executed_queries = []
         self.fetch_data = []
-    
+
     def __enter__(self):
         return self
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
-    
+
     def execute(self, query, params=None):
         self.executed_queries.append((query, params))
-    
+
     def fetchall(self):
         return self.fetch_data
-    
+
     def fetchone(self):
         return self.fetch_data[0] if self.fetch_data else None
 
@@ -70,21 +69,26 @@ class TestDBManager:
         """Тест успешной проверки соединения"""
         mock_connection = MockConnection()
         mock_connect.return_value = mock_connection
-        
+
         db_manager = DBManager()
-        result = db_manager.check_connection()
-        
-        assert result is True
+
+        # Мокаем метод проверки соединения
+        with patch.object(db_manager, '_get_connection', return_value=mock_connection):
+            result = db_manager.check_connection()
+            assert result is True
 
     @patch('src.storage.db_manager.psycopg2.connect')
     def test_create_tables(self, mock_connect):
         """Тест создания таблиц"""
         mock_connection = MockConnection()
         mock_connect.return_value = mock_connection
-        
+
         db_manager = DBManager()
-        db_manager.create_tables()
-        
+        # Мокаем метод обеспечения существования таблиц
+        with patch.object(db_manager, '_ensure_tables_exist', return_value=True):
+             with patch.object(db_manager, '_get_connection', return_value=mock_connection):
+                db_manager.create_tables()
+
         # Проверяем что соединение было установлено
         mock_connect.assert_called()
 
@@ -98,13 +102,14 @@ class TestDBManager:
             ("Another Company", 3)
         ]
         mock_connect.return_value = mock_connection
-        
+
         db_manager = DBManager()
-        
+
         # Мокаем check_connection чтобы вернуть True
-        with patch.object(db_manager, 'check_connection', return_value=True):
-            result = db_manager.get_companies_and_vacancies_count()
-        
+        with patch.object(db_manager, '_ensure_tables_exist', return_value=True):
+            with patch.object(db_manager, '_get_connection', return_value=mock_connection):
+                result = db_manager.get_companies_and_vacancies_count()
+
         assert isinstance(result, list)
 
     @patch('src.storage.db_manager.psycopg2.connect')
@@ -116,33 +121,33 @@ class TestDBManager:
             ("123", "Python Developer", "Test Company", 100000, "Москва", "https://test.com")
         ]
         mock_connect.return_value = mock_connection
-        
+
         db_manager = DBManager()
-        
+
         # Мокаем check_connection и create_tables
-        with patch.object(db_manager, 'check_connection', return_value=True):
-            with patch.object(db_manager, 'create_tables'):
+        with patch.object(db_manager, '_ensure_tables_exist', return_value=True):
+            with patch.object(db_manager, '_get_connection', return_value=mock_connection):
                 result = db_manager.get_all_vacancies()
-        
+
         assert isinstance(result, list)
 
     @patch('src.storage.db_manager.psycopg2.connect')
     def test_get_avg_salary(self, mock_connect):
         """Тест получения средней зарплаты"""
         mock_connection = MockConnection()
-        mock_cursor = mock_connection.cursor()
-        mock_cursor.fetch_data = [(125000.0,)]
+        mock_cursor = Mock()
+        mock_cursor.fetchone.return_value = (125000.0,)
+        mock_connection.cursor.return_value.__enter__.return_value = mock_cursor
         mock_connect.return_value = mock_connection
-        
+
         db_manager = DBManager()
-        
-        # Мокаем check_connection и create_tables
-        with patch.object(db_manager, 'check_connection', return_value=True):
-            with patch.object(db_manager, 'create_tables'):
+
+        # Мокаем методы полностью
+        with patch.object(db_manager, '_ensure_tables_exist', return_value=True):
+            with patch.object(db_manager, '_get_connection', return_value=mock_connection):
                 result = db_manager.get_avg_salary()
-        
-        # Результат может быть None если нет подключения к БД
-        assert result is None or isinstance(result, (int, float))
+
+        assert result == 125000.0
 
     @patch('src.storage.db_manager.psycopg2.connect')
     def test_get_vacancies_with_higher_salary(self, mock_connect):
@@ -153,14 +158,14 @@ class TestDBManager:
             ("124", "Senior Python Developer", "Test Company", 200000, "Москва", "https://test.com")
         ]
         mock_connect.return_value = mock_connection
-        
+
         db_manager = DBManager()
-        
+
         # Мокаем check_connection и create_tables
-        with patch.object(db_manager, 'check_connection', return_value=True):
-            with patch.object(db_manager, 'create_tables'):
+        with patch.object(db_manager, '_ensure_tables_exist', return_value=True):
+            with patch.object(db_manager, '_get_connection', return_value=mock_connection):
                 result = db_manager.get_vacancies_with_higher_salary()
-        
+
         assert isinstance(result, list)
 
     @patch('src.storage.db_manager.psycopg2.connect')
@@ -172,14 +177,14 @@ class TestDBManager:
             ("123", "Python Developer", "Test Company", 100000, "Москва", "https://test.com")
         ]
         mock_connect.return_value = mock_connection
-        
+
         db_manager = DBManager()
-        
+
         # Мокаем check_connection и create_tables
-        with patch.object(db_manager, 'check_connection', return_value=True):
-            with patch.object(db_manager, 'create_tables'):
+        with patch.object(db_manager, '_ensure_tables_exist', return_value=True):
+            with patch.object(db_manager, '_get_connection', return_value=mock_connection):
                 result = db_manager.get_vacancies_with_keyword("Python")
-        
+
         assert isinstance(result, list)
 
     @patch('src.storage.db_manager.psycopg2.connect')
@@ -187,18 +192,18 @@ class TestDBManager:
         """Тест заполнения таблицы компаний"""
         mock_connection = MockConnection()
         mock_connect.return_value = mock_connection
-        
+
         db_manager = DBManager()
-        
+
         # Мокаем функцию получения целевых компаний
         test_companies = [
             {"id": "1", "name": "Test Company 1"},
             {"id": "2", "name": "Test Company 2"}
         ]
-        
+
         with patch.object(db_manager, '_get_connection', return_value=mock_connection):
-            with patch('src.config.target_companies.get_target_companies', return_value=test_companies):
-                db_manager.populate_companies_table()
-        
-        # Проверяем что метод был выполнен без ошибок
-        assert True
+            # Мокаем метод вместо несуществующей функции
+            with patch.object(db_manager, '_get_target_companies_data', return_value=test_companies):
+                result = db_manager.populate_companies_table()
+                # Проверяем что операция может быть выполнена
+                assert result is None or result is True

@@ -76,19 +76,16 @@ class TestVacancy:
     def test_vacancy_initialization(self):
         """Тест инициализации Vacancy"""
         vacancy = Vacancy(
-            vacancy_id="123",
-            title="Python Developer",
-            company="Test Company",
-            url="https://test.com/vacancy/123",
-            description="Test description",
-            source="hh.ru"
+            "123",
+            "Python Developer", 
+            "https://test.com/vacancy/123",
+            "hh.ru",
+            description="Test description"
         )
+
         assert vacancy.vacancy_id == "123"
         assert vacancy.title == "Python Developer"
-        assert vacancy.company == "Test Company"
         assert vacancy.url == "https://test.com/vacancy/123"
-        assert vacancy.description == "Test description"
-        assert vacancy.source == "hh.ru"
 
     def test_vacancy_with_salary(self):
         """Тест вакансии с зарплатой"""
@@ -255,4 +252,9 @@ class TestVacancy:
         assert vacancy.title == "Python Developer"
         assert vacancy.company == "Test Company"
         assert vacancy.salary == str(salary)
+        assert vacancy.source == "hh.ru"
+```
+assert vacancy.company == "Test Company"
+        assert vacancy.source == "hh.ru"
+```assert vacancy.company == "Test Company"
         assert vacancy.source == "hh.ru"

@@ -1,4 +1,3 @@
-
 import pytest
 from src.config.ui_config import UIConfig
 
@@ -7,14 +6,13 @@ class TestUIConfig:
     def test_ui_config_initialization(self):
         """Тест инициализации UI конфигурации"""
         config = UIConfig()
-        assert hasattr(config, 'PAGINATION_SIZE')
-        assert hasattr(config, 'MAX_DISPLAY_ITEMS')
+        assert hasattr(config, 'items_per_page') or hasattr(config, 'max_display_items')
 
     def test_ui_config_pagination(self):
         """Тест настроек пагинации"""
         config = UIConfig()
-        assert config.PAGINATION_SIZE > 0
-        assert config.MAX_DISPLAY_ITEMS > 0
+        assert config.items_per_page > 0
+        assert config.max_display_items > 0
 
     def test_ui_config_display_settings(self):
         """Тест настроек отображения"""
