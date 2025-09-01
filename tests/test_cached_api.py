@@ -48,6 +48,11 @@ class ConcreteCachedAPI(CachedAPI):
             return response["items"]
         return []
 
+    def clear_cache(self, prefix: str = None):
+        """Очистка кэша"""
+        if hasattr(self, 'cache') and self.cache:
+            self.cache.clear()
+
 
 class TestCachedAPI:
     """Тесты для CachedAPI"""

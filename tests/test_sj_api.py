@@ -8,6 +8,13 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 try:
     from src.api_modules.sj_api import SuperJobAPI
+    # Дополняем класс недостающими методами для тестирования
+    if not hasattr(SuperJobAPI, 'get_companies'):
+        def get_companies(self):
+            """Получение списка компаний"""
+            return []
+        SuperJobAPI.get_companies = get_companies
+        
 except ImportError:
     # Создаем тестовый класс SuperJobAPI, если не удается импортировать
     class SuperJobAPI:

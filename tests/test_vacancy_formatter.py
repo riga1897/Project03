@@ -12,7 +12,7 @@ from src.utils.vacancy_formatter import VacancyFormatter
 
 
 # Расширяем VacancyFormatter недостающими методами для тестирования
-class TestableVacancyFormatter(VacancyFormatter):
+class _TestableVacancyFormatter(VacancyFormatter):
     """Расширенный VacancyFormatter для тестирования"""
 
     def format_salary(self, salary):
@@ -125,7 +125,7 @@ class TestVacancyFormatter:
 
     def test_format_salary_range(self):
         """Тест форматирования диапазона зарплаты"""
-        formatter = TestableVacancyFormatter()
+        formatter = _TestableVacancyFormatter()
 
         # Полный диапазон
         salary_data = {"from": 100000, "to": 150000, "currency": "RUR"}
@@ -160,7 +160,7 @@ class TestVacancyFormatter:
 
     def test_format_employer_info(self):
         """Тест форматирования информации о работодателе"""
-        formatter = TestableVacancyFormatter()
+        formatter = _TestableVacancyFormatter()
 
         # Словарь с данными работодателя
         employer_dict = {"name": "Test Company", "id": "123"}
@@ -179,7 +179,7 @@ class TestVacancyFormatter:
 
     def test_format_location_info(self):
         """Тест форматирования информации о местоположении"""
-        formatter = TestableVacancyFormatter()
+        formatter = _TestableVacancyFormatter()
 
         # Словарь с данными местоположения
         area_dict = {"name": "Москва", "id": "1"}
@@ -196,7 +196,7 @@ class TestVacancyFormatter:
 
     def test_format_currency_symbol(self):
         """Тест форматирования символов валют"""
-        formatter = TestableVacancyFormatter()
+        formatter = _TestableVacancyFormatter()
 
         assert "руб." in formatter.get_currency_symbol("RUR")
         assert "$" in formatter.get_currency_symbol("USD")
