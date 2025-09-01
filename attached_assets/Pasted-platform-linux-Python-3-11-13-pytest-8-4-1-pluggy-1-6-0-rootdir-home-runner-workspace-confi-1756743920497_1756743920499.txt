@@ -1,0 +1,1405 @@
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: mock-3.14.1, cov-6.2.1
+collected 525 items                                                    
+
+tests/test_abstract.py ........                                  [  1%]
+tests/test_abstract_db_manager.py ....                           [  2%]
+tests/test_api_config.py ....                                    [  3%]
+tests/test_api_data_filter.py ........                           [  4%]
+tests/test_app_config.py .....                                   [  5%]
+tests/test_base_api.py ......                                    [  6%]
+tests/test_base_formatter.py ..........                          [  8%]
+tests/test_base_parser.py ......                                 [  9%]
+tests/test_cache.py .......                                      [ 11%]
+tests/test_cache_manager.py .....F.......                        [ 13%]
+tests/test_cached_api.py ...........                             [ 15%]
+tests/test_console_interface.py ......                           [ 16%]
+tests/test_db_config.py .....                                    [ 17%]
+tests/test_db_manager.py .................                       [ 20%]
+tests/test_decorators.py .......                                 [ 22%]
+tests/test_env_loader.py ............                            [ 24%]
+tests/test_file_handlers.py ............                         [ 26%]
+tests/test_get_api.py ......                                     [ 28%]
+tests/test_hh_api.py .......                                     [ 29%]
+tests/test_hh_api_config.py .....                                [ 30%]
+tests/test_hh_parser.py ........                                 [ 31%]
+tests/test_menu_manager.py ..........                            [ 33%]
+tests/test_menu_system.py .................F..                   [ 37%]
+tests/test_paginator.py ......                                   [ 38%]
+tests/test_postgres_saver.py .......                             [ 40%]
+tests/test_salary_utils.py ......................                [ 44%]
+tests/test_search_utils.py ............................          [ 49%]
+tests/test_sj_api.py ..............                              [ 52%]
+tests/test_sj_api_config.py .....                                [ 53%]
+tests/test_sj_parser.py ........                                 [ 54%]
+tests/test_source_manager.py .................                   [ 57%]
+tests/test_source_selector.py FFFFFFFFFFFFFF                     [ 60%]
+tests/test_storage_factory.py ........                           [ 62%]
+tests/test_target_companies.py .....                             [ 63%]
+tests/test_ui_config.py .....                                    [ 64%]
+tests/test_ui_helpers.py ...........                             [ 66%]
+tests/test_ui_navigation.py ......FF.........                    [ 69%]
+tests/test_unified_api.py .................                      [ 72%]
+tests/test_user_interface.py .FFFF....                           [ 74%]
+tests/test_vacancy_display_handler.py ..............             [ 76%]
+tests/test_vacancy_formatter.py ........                         [ 78%]
+tests/test_vacancy_models.py ................................... [ 85%]
+..............                                                   [ 87%]
+tests/test_vacancy_operations.py ......                          [ 88%]
+tests/test_vacancy_operations_coordinator.py .F.FF..F..E...EF... [ 92%]
+......                                                           [ 93%]
+tests/test_vacancy_search_handler.py .FFFFEF.FFE..FFFF.F         [ 97%]
+tests/test_vacancy_stats.py ......F.FFFF.F                       [100%]
+
+================================ ERRORS ================================
+_ ERROR at setup of TestVacancyOperationsCoordinator.test_storage_integration _
+
+self = <workspace.tests.test_vacancy_operations_coordinator.TestVacancyOperationsCoordinator object at 0x7f6e4ff1b490>
+
+    @pytest.fixture
+    def sample_vacancies(self) -> List[Vacancy]:
+        """Фикстура тестовых вакансий"""
+        return [
+            Vacancy(
+                title="Senior Python Developer",
+                url="https://hh.ru/vacancy/111",
+                vacancy_id="111",
+                source="hh.ru",
+                employer={"name": "TechCorp"},
+>               salary=Salary(150000, 200000),
+                       ^^^^^^^^^^^^^^^^^^^^^^
+                description="Python разработчик с опытом Django"
+            ),
+            Vacancy(
+                title="Java Backend Developer",
+                url="https://superjob.ru/vacancy/222",
+                vacancy_id="222",
+                source="superjob.ru",
+                employer={"name": "DevCompany"},
+                salary=Salary(120000, 180000),
+                description="Java разработчик для backend приложений"
+            )
+        ]
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 3 were given
+
+tests/test_vacancy_operations_coordinator.py:580: TypeError
+_ ERROR at setup of TestVacancyOperationsCoordinator.test_vacancy_management_workflow _
+
+self = <workspace.tests.test_vacancy_operations_coordinator.TestVacancyOperationsCoordinator object at 0x7f6e4ff4a250>
+
+    @pytest.fixture
+    def sample_vacancies(self) -> List[Vacancy]:
+        """Фикстура тестовых вакансий"""
+        return [
+            Vacancy(
+                title="Senior Python Developer",
+                url="https://hh.ru/vacancy/111",
+                vacancy_id="111",
+                source="hh.ru",
+                employer={"name": "TechCorp"},
+>               salary=Salary(150000, 200000),
+                       ^^^^^^^^^^^^^^^^^^^^^^
+                description="Python разработчик с опытом Django"
+            ),
+            Vacancy(
+                title="Java Backend Developer",
+                url="https://superjob.ru/vacancy/222",
+                vacancy_id="222",
+                source="superjob.ru",
+                employer={"name": "DevCompany"},
+                salary=Salary(120000, 180000),
+                description="Java разработчик для backend приложений"
+            )
+        ]
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 3 were given
+
+tests/test_vacancy_operations_coordinator.py:580: TypeError
+_ ERROR at setup of TestVacancySearchHandler.test_save_search_results __
+
+self = <workspace.tests.test_vacancy_search_handler.TestVacancySearchHandler object at 0x7f6e4ff56850>
+
+    @pytest.fixture
+    def sample_vacancies(self) -> List[Vacancy]:
+        """Фикстура тестовых вакансий"""
+        return [
+            Vacancy(
+                title="Python Developer",
+                url="https://hh.ru/vacancy/12345",
+                vacancy_id="12345",
+                source="hh.ru",
+                employer={"name": "Tech Corp"},
+>               salary=Salary(120000, 180000)
+                       ^^^^^^^^^^^^^^^^^^^^^^
+            ),
+            Vacancy(
+                title="Java Developer",
+                url="https://superjob.ru/vacancy/67890",
+                vacancy_id="67890",
+                source="superjob.ru",
+                employer={"name": "Dev Company"},
+                salary=Salary(100000, 160000)
+            )
+        ]
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 3 were given
+
+tests/test_vacancy_search_handler.py:355: TypeError
+_ ERROR at setup of TestVacancySearchHandler.test_storage_integration __
+
+self = <workspace.tests.test_vacancy_search_handler.TestVacancySearchHandler object at 0x7f6e4ff60b50>
+
+    @pytest.fixture
+    def sample_vacancies(self) -> List[Vacancy]:
+        """Фикстура тестовых вакансий"""
+        return [
+            Vacancy(
+                title="Python Developer",
+                url="https://hh.ru/vacancy/12345",
+                vacancy_id="12345",
+                source="hh.ru",
+                employer={"name": "Tech Corp"},
+>               salary=Salary(120000, 180000)
+                       ^^^^^^^^^^^^^^^^^^^^^^
+            ),
+            Vacancy(
+                title="Java Developer",
+                url="https://superjob.ru/vacancy/67890",
+                vacancy_id="67890",
+                source="superjob.ru",
+                employer={"name": "Dev Company"},
+                salary=Salary(100000, 160000)
+            )
+        ]
+E       TypeError: Salary.__init__() takes from 1 to 2 positional arguments but 3 were given
+
+tests/test_vacancy_search_handler.py:355: TypeError
+=============================== FAILURES ===============================
+______________ TestCacheManager.test_cache_ttl_expiration ______________
+
+self = <workspace.tests.test_cache_manager.TestCacheManager object at 0x7f6e517fa050>
+cache_manager = <workspace.tests.test_cache_manager.CacheManager object at 0x7f6e4ffe0ad0>
+
+    def test_cache_ttl_expiration(self, cache_manager):
+        """Тест истечения времени жизни кэша"""
+        key = "test_key"
+        value = "test_value"
+    
+        # Сохраняем с коротким TTL
+        cache_manager.set(key, value, ttl=1)
+    
+        # Сразу после сохранения значение должно быть доступно
+        assert cache_manager.get(key) == value
+    
+        # Имитируем истечение времени
+>       with patch('src.utils.cache.datetime') as mock_datetime:
+
+tests/test_cache_manager.py:283: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f6e4ffe0cd0>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.utils.cache' from '/home/runner/workspace/tests/../src/utils/cache.py'> does not have the attribute 'datetime'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_______________ TestMenuManager.test_submenu_navigation ________________
+
+self = <workspace.tests.test_menu_system.TestMenuManager object at 0x7f6e5074d810>
+mock_print = <MagicMock name='print' id='140111760800336'>
+mock_input = <MagicMock name='input' id='140111760794448'>
+menu_manager = <workspace.tests.test_menu_system.MenuManager object at 0x7f6e4fbb3190>
+
+    @patch('builtins.input', side_effect=['3.1', '0'])
+    @patch('builtins.print')
+    def test_submenu_navigation(self, mock_print, mock_input, menu_manager):
+        """Тест навигации по подменю"""
+        submenu_item = MenuItem("3.1", "Sub Option", lambda: "sub_executed")
+        main_item = MenuItem("3", "Main Option", submenu=[submenu_item])
+    
+>       result = menu_manager._enter_submenu(main_item)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_menu_system.py:392: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_menu_system.py:188: in _enter_submenu
+    self.run_menu_loop(submenu)
+tests/test_menu_system.py:161: in run_menu_loop
+    choice = self.get_user_choice(menu)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_menu_system.py:117: in get_user_choice
+    choice = input("\nВыберите пункт меню: ").strip()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1124: in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1128: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <MagicMock name='input' id='140111760794448'>
+args = ('\nВыберите пункт меню: ',), kwargs = {}
+effect = <list_iterator object at 0x7f6e50730dc0>
+
+    def _execute_mock_call(self, /, *args, **kwargs):
+        # separate from _increment_mock_call so that awaited functions are
+        # executed separately from their call, also AsyncMock overrides this method
+    
+        effect = self.side_effect
+        if effect is not None:
+            if _is_exception(effect):
+                raise effect
+            elif not _callable(effect):
+>               result = next(effect)
+                         ^^^^^^^^^^^^
+E               StopIteration
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1185: StopIteration
+________ TestSourceSelector.test_source_selector_initialization ________
+
+self = <workspace.tests.test_source_selector.TestSourceSelector object at 0x7f6e50307f10>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e4f7f61d0>
+
+    def test_source_selector_initialization(self, source_selector):
+        """Тест инициализации селектора источников"""
+        assert source_selector is not None
+>       assert hasattr(source_selector, 'available_sources')
+E       AssertionError: assert False
+E        +  where False = hasattr(<src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e4f7f61d0>, 'available_sources')
+
+tests/test_source_selector.py:165: AssertionError
+_________________ TestSourceSelector.test_show_sources _________________
+
+self = <workspace.tests.test_source_selector.TestSourceSelector object at 0x7f6e503082d0>
+mock_print = <MagicMock name='print' id='140111760501520'>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e4f44eed0>
+
+    @patch('builtins.print')
+    def test_show_sources(self, mock_print, source_selector):
+        """Тест отображения доступных источников"""
+>       source_selector.show_sources()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceSelector' object has no attribute 'show_sources'
+
+tests/test_source_selector.py:173: AttributeError
+__________ TestSourceSelector.test_select_source_valid_choice __________
+
+self = <workspace.tests.test_source_selector.TestSourceSelector object at 0x7f6e50308650>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e4ffa1490>
+
+    def test_select_source_valid_choice(self, source_selector):
+        """Тест выбора источника с корректным вводом"""
+        # Тест выбора первого источника
+>       result = source_selector.select_source("1")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceSelector' object has no attribute 'select_source'
+
+tests/test_source_selector.py:187: AttributeError
+_________ TestSourceSelector.test_select_source_invalid_choice _________
+
+self = <workspace.tests.test_source_selector.TestSourceSelector object at 0x7f6e50308a50>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e4f7f67d0>
+
+    def test_select_source_invalid_choice(self, source_selector):
+        """Тест выбора источника с некорректным вводом"""
+        # Тест с неверным номером
+        with pytest.raises(ValueError):
+>           source_selector.select_source("0")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'SourceSelector' object has no attribute 'select_source'
+
+tests/test_source_selector.py:198: AttributeError
+_____________ TestSourceSelector.test_get_selected_source ______________
+
+self = <workspace.tests.test_source_selector.TestSourceSelector object at 0x7f6e50309090>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e4fb785d0>
+
+    def test_get_selected_source(self, source_selector):
+        """Тест получения выбранного источника"""
+        # До выбора источника
+>       initial_source = source_selector.get_selected_source()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceSelector' object has no attribute 'get_selected_source'
+
+tests/test_source_selector.py:210: AttributeError
+__________ TestSourceSelector.test_available_sources_content ___________
+
+self = <workspace.tests.test_source_selector.TestSourceSelector object at 0x7f6e503096d0>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e4ffb1f50>
+
+    def test_available_sources_content(self, source_selector):
+        """Тест содержимого доступных источников"""
+>       assert hasattr(source_selector, 'available_sources')
+E       AssertionError: assert False
+E        +  where False = hasattr(<src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e4ffb1f50>, 'available_sources')
+
+tests/test_source_selector.py:221: AssertionError
+_______ TestSourceSelector.test_source_selector_state_management _______
+
+self = <workspace.tests.test_source_selector.TestSourceSelector object at 0x7f6e50309d10>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e4f75a0d0>
+
+    def test_source_selector_state_management(self, source_selector):
+        """Тест управления состоянием селектора"""
+        # Проверяем начальное состояние
+>       assert source_selector.get_selected_source() is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceSelector' object has no attribute 'get_selected_source'
+
+tests/test_source_selector.py:231: AttributeError
+__________ TestSourceSelector.test_source_selector_edge_cases __________
+
+self = <workspace.tests.test_source_selector.TestSourceSelector object at 0x7f6e5030a390>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e5076d450>
+
+    def test_source_selector_edge_cases(self, source_selector):
+        """Тест граничных случаев"""
+        # Тест с пустой строкой
+        with pytest.raises(ValueError):
+>           source_selector.select_source("")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'SourceSelector' object has no attribute 'select_source'
+
+tests/test_source_selector.py:246: AttributeError
+_______ TestSourceSelector.test_interactive_selection_simulation _______
+
+self = <workspace.tests.test_source_selector.TestSourceSelector object at 0x7f6e5030aa10>
+mock_input = <MagicMock name='input' id='140111764832912'>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e4fb53f90>
+
+    @patch('builtins.input', side_effect=["1", "2", "0"])
+    def test_interactive_selection_simulation(self, mock_input, source_selector):
+        """Тест симуляции интерактивного выбора"""
+        # Симуляция пользовательского выбора
+>       for choice in mock_input.side_effect[:-1]:  # Исключаем "0" (выход)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'list_iterator' object is not subscriptable
+
+tests/test_source_selector.py:260: TypeError
+_____ TestSourceSelector.test_source_selector_multiple_selections ______
+
+self = <workspace.tests.test_source_selector.TestSourceSelector object at 0x7f6e5030b0d0>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e4fb2e0d0>
+
+    def test_source_selector_multiple_selections(self, source_selector):
+        """Тест множественных выборов источника"""
+        selections = []
+    
+        # Делаем несколько выборов
+>       for i in range(1, min(3, len(source_selector.available_sources) + 1)):
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceSelector' object has no attribute 'available_sources'
+
+tests/test_source_selector.py:273: AttributeError
+_________ TestSourceSelector.test_source_selector_type_safety __________
+
+self = <workspace.tests.test_source_selector.TestSourceSelector object at 0x7f6e5030b7d0>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e4f70ffd0>
+
+    def test_source_selector_type_safety(self, source_selector):
+        """Тест типобезопасности селектора"""
+        # Проверяем типы возвращаемых значений
+        if hasattr(source_selector, 'available_sources'):
+            assert isinstance(source_selector.available_sources, list)
+    
+        # Проверяем тип после выбора
+>       selected = source_selector.select_source("1")
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'SourceSelector' object has no attribute 'select_source'
+
+tests/test_source_selector.py:292: AttributeError
+______ TestSourceSelector.test_source_selector_integration_ready _______
+
+self = <workspace.tests.test_source_selector.TestSourceSelector object at 0x7f6e5030bed0>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e4ff8c790>
+
+    def test_source_selector_integration_ready(self, source_selector):
+        """Тест готовности к интеграции"""
+        # Проверяем наличие всех необходимых методов
+        required_methods = ['show_sources', 'select_source', 'get_selected_source']
+    
+        for method in required_methods:
+>           assert hasattr(source_selector, method)
+E           AssertionError: assert False
+E            +  where False = hasattr(<src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e4ff8c790>, 'show_sources')
+
+tests/test_source_selector.py:302: AssertionError
+_____ TestSourceSelector.test_parametrized_source_selection[1-str] _____
+
+self = <workspace.tests.test_source_selector.TestSourceSelector object at 0x7f6e50311350>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e4fb63cd0>
+choice = '1', expected_type = <class 'str'>
+
+    @pytest.mark.parametrize("choice,expected_type", [
+        ("1", str),
+        ("2", str),
+    ])
+    def test_parametrized_source_selection(self, source_selector, choice, expected_type):
+        """Параметризованный тест выбора источников"""
+        try:
+>           result = source_selector.select_source(choice)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'SourceSelector' object has no attribute 'select_source'
+
+tests/test_source_selector.py:312: AttributeError
+_____ TestSourceSelector.test_parametrized_source_selection[2-str] _____
+
+self = <workspace.tests.test_source_selector.TestSourceSelector object at 0x7f6e503115d0>
+source_selector = <src.ui_interfaces.source_selector.SourceSelector object at 0x7f6e4fb79910>
+choice = '2', expected_type = <class 'str'>
+
+    @pytest.mark.parametrize("choice,expected_type", [
+        ("1", str),
+        ("2", str),
+    ])
+    def test_parametrized_source_selection(self, source_selector, choice, expected_type):
+        """Параметризованный тест выбора источников"""
+        try:
+>           result = source_selector.select_source(choice)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'SourceSelector' object has no attribute 'select_source'
+
+tests/test_source_selector.py:312: AttributeError
+__________ TestUINavigation.test_quick_paginate_specific_page __________
+
+self = <workspace.tests.test_ui_navigation.TestUINavigation object at 0x7f6e50366b90>
+mock_print = <MagicMock name='print' id='140111760157648'>
+mock_input = <MagicMock name='input' id='140111764834704'>
+sample_items = [{'description': 'Description 1', 'id': 1, 'title': 'Item 1'}, {'description': 'Description 2', 'id': 2, 'title': 'Ite...tion': 'Description 5', 'id': 5, 'title': 'Item 5'}, {'description': 'Description 6', 'id': 6, 'title': 'Item 6'}, ...]
+
+    @patch('builtins.input', side_effect=["1", "q"]) # Тест перехода на 1 страницу
+    @patch('builtins.print')
+    def test_quick_paginate_specific_page(self, mock_print, mock_input, sample_items):
+        """Тест перехода на конкретную страницу"""
+        if SRC_AVAILABLE:
+            quick_paginate_func = quick_paginate
+            formatter_func = lambda item, number=None: f"{number}. {item['id']}: {item['title']}" if number else f"{item['id']}: {item['title']}"
+        else:
+            def quick_paginate_test(items, formatter, header="", items_per_page=10, show_numbers=True, custom_actions=None):
+                print(f"\n{header}")
+                print("=" * 50)
+                total_items = len(items)
+                total_pages = (total_items + items_per_page - 1) // items_per_page
+                current_page = 0
+                while current_page < total_pages:
+                    start_idx = current_page * items_per_page
+                    end_idx = min(start_idx + items_per_page, total_items)
+                    for i in range(start_idx, end_idx):
+                        if show_numbers:
+                            print(f"{i + 1}. {formatter(items[i], i + 1)}")
+                        else:
+                            print(formatter(items[i]))
+                    print(f"\nСтраница {current_page + 1} из {total_pages}")
+                    if current_page < total_pages - 1:
+                        input("Нажмите Enter для следующей страницы или 'q' для выхода: ")
+                    else:
+                        input("Нажмите Enter для завершения...")
+                    current_page += 1
+    
+            quick_paginate_func = quick_paginate_test
+            formatter_func = lambda item, number=None: f"{number}. {item['id']}: {item['title']}" if number else f"{item['id']}: {item['title']}"
+    
+>       quick_paginate_func(
+            sample_items,
+            formatter=formatter_func,
+            header="Test Page Navigation",
+            items_per_page=3
+        )
+
+tests/test_ui_navigation.py:304: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_ui_navigation.py:296: in quick_paginate_test
+    input("Нажмите Enter для следующей страницы или 'q' для выхода: ")
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1124: in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1128: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <MagicMock name='input' id='140111764834704'>
+args = ("Нажмите Enter для следующей страницы или 'q' для выхода: ",)
+kwargs = {}, effect = <list_iterator object at 0x7f6e50324b80>
+
+    def _execute_mock_call(self, /, *args, **kwargs):
+        # separate from _increment_mock_call so that awaited functions are
+        # executed separately from their call, also AsyncMock overrides this method
+    
+        effect = self.side_effect
+        if effect is not None:
+            if _is_exception(effect):
+                raise effect
+            elif not _callable(effect):
+>               result = next(effect)
+                         ^^^^^^^^^^^^
+E               StopIteration
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1185: StopIteration
+____________ TestUINavigation.test_quick_paginate_next_page ____________
+
+self = <workspace.tests.test_ui_navigation.TestUINavigation object at 0x7f6e503671d0>
+mock_print = <MagicMock name='print' id='140111756785872'>
+mock_input = <MagicMock name='input' id='140111756774736'>
+sample_items = [{'description': 'Description 1', 'id': 1, 'title': 'Item 1'}, {'description': 'Description 2', 'id': 2, 'title': 'Ite...tion': 'Description 5', 'id': 5, 'title': 'Item 5'}, {'description': 'Description 6', 'id': 6, 'title': 'Item 6'}, ...]
+
+    @patch('builtins.input', side_effect=["", "q"]) # Тест без ввода номера страницы
+    @patch('builtins.print')
+    def test_quick_paginate_next_page(self, mock_print, mock_input, sample_items):
+        """Тест перехода на следующую страницу по Enter"""
+        if SRC_AVAILABLE:
+            quick_paginate_func = quick_paginate
+            formatter_func = lambda item, number=None: f"{number}. {item['id']}: {item['title']}" if number else f"{item['id']}: {item['title']}"
+        else:
+            def quick_paginate_test(items, formatter, header="", items_per_page=10, show_numbers=True, custom_actions=None):
+                print(f"\n{header}")
+                print("=" * 50)
+                total_items = len(items)
+                total_pages = (total_items + items_per_page - 1) // items_per_page
+                current_page = 0
+                while current_page < total_pages:
+                    start_idx = current_page * items_per_page
+                    end_idx = min(start_idx + items_per_page, total_items)
+                    for i in range(start_idx, end_idx):
+                        if show_numbers:
+                            print(f"{i + 1}. {formatter(items[i], i + 1)}")
+                        else:
+                            print(formatter(items[i]))
+                    print(f"\nСтраница {current_page + 1} из {total_pages}")
+                    if current_page < total_pages - 1:
+                        input("Нажмите Enter для следующей страницы, 'q' для выхода: ")
+                    else:
+                        input("Нажмите Enter для завершения...")
+                    current_page += 1
+    
+            quick_paginate_func = quick_paginate_test
+            formatter_func = lambda item, number=None: f"{number}. {item['id']}: {item['title']}" if number else f"{item['id']}: {item['title']}"
+    
+>       quick_paginate_func(
+            sample_items,
+            formatter=formatter_func,
+            header="Test Next Page",
+            items_per_page=3
+        )
+
+tests/test_ui_navigation.py:344: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_ui_navigation.py:336: in quick_paginate_test
+    input("Нажмите Enter для следующей страницы, 'q' для выхода: ")
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1124: in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1128: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <MagicMock name='input' id='140111756774736'>
+args = ("Нажмите Enter для следующей страницы, 'q' для выхода: ",)
+kwargs = {}, effect = <list_iterator object at 0x7f6e507f13c0>
+
+    def _execute_mock_call(self, /, *args, **kwargs):
+        # separate from _increment_mock_call so that awaited functions are
+        # executed separately from their call, also AsyncMock overrides this method
+    
+        effect = self.side_effect
+        if effect is not None:
+            if _is_exception(effect):
+                raise effect
+            elif not _callable(effect):
+>               result = next(effect)
+                         ^^^^^^^^^^^^
+E               StopIteration
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1185: StopIteration
+_____________ TestUserInterface.test_main_function_mocked ______________
+
+self = <MagicMock name='StorageFactory.create_storage' id='140111756725648'>
+
+    def assert_called_once(self):
+        """assert that the mock was called only once.
+        """
+        if not self.call_count == 1:
+            msg = ("Expected '%s' to have been called once. Called %s times.%s"
+                   % (self._mock_name or 'mock',
+                      self.call_count,
+                      self._calls_repr()))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'create_storage' to have been called once. Called 0 times.
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:918: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <workspace.tests.test_user_interface.TestUserInterface object at 0x7f6e503f0750>
+mock_user_interface_class = <MagicMock name='UserInterface' id='140111756714576'>
+mock_storage_factory = <MagicMock name='StorageFactory' id='140111756712272'>
+mock_app_config_class = <MagicMock name='AppConfig' id='140111756783248'>
+mock_db_manager_class = <MagicMock name='DBManager' id='140111760801040'>
+mock_logging = <MagicMock name='logging' id='140111760794000'>
+
+    @patch('src.user_interface.logging')
+    @patch('src.storage.db_manager.DBManager')
+    @patch('src.config.app_config.AppConfig')
+    @patch('src.storage.storage_factory.StorageFactory')
+    @patch('src.ui_interfaces.console_interface.UserInterface')
+    def test_main_function_mocked(
+        self,
+        mock_user_interface_class,
+        mock_storage_factory,
+        mock_app_config_class,
+        mock_db_manager_class,
+        mock_logging
+    ):
+        """Тест главной функции с полными моками"""
+        try:
+            from src.user_interface import main
+        except ImportError:
+            pytest.skip("Модуль user_interface не найден")
+    
+        # Настройка моков
+        mock_logger = Mock()
+        mock_logging.getLogger.return_value = mock_logger
+    
+        mock_db_manager = Mock()
+        mock_db_manager.check_connection.return_value = True
+        mock_db_manager.create_tables.return_value = None
+        mock_db_manager.populate_companies_table.return_value = None
+        mock_db_manager.get_companies_and_vacancies_count.return_value = []
+        mock_db_manager_class.return_value = mock_db_manager
+    
+        mock_app_config = Mock()
+        mock_app_config.default_storage_type = "postgres"
+        mock_app_config_class.return_value = mock_app_config
+    
+        mock_storage = Mock()
+        mock_storage_factory.create_storage.return_value = mock_storage
+    
+        mock_ui = Mock()
+        mock_ui.run.return_value = None  # Предотвращаем зависание
+        mock_user_interface_class.return_value = mock_ui
+    
+        # Выполняем функцию main
+        main()
+    
+        # Проверяем, что все компоненты были инициализированы
+        mock_db_manager_class.assert_called_once()
+        mock_app_config_class.assert_called_once()
+>       mock_storage_factory.create_storage.assert_called_once()
+E       AssertionError: Expected 'create_storage' to have been called once. Called 0 times.
+
+tests/test_user_interface.py:67: AssertionError
+------------------------- Captured stdout call -------------------------
+
+Критическая ошибка: invalid integer value "<Mock name='AppConfig().get_db_config().get()' id='140111756838160'>" for connection option "port"
+
+Обратитесь к разработчику для решения проблемы.
+-------------------------- Captured log call ---------------------------
+ERROR    src.storage.postgres_saver:postgres_saver.py:98 Ошибка подключения к БД postgres: invalid integer value "<Mock name='AppConfig().get_db_config().get()' id='140111756838160'>" for connection option "port"
+
+ERROR    src.storage.postgres_saver:postgres_saver.py:108 Не удается подключиться к системной БД postgres: invalid integer value "<Mock name='AppConfig().get_db_config().get()' id='140111756838160'>" for connection option "port"
+
+ERROR    src.storage.postgres_saver:postgres_saver.py:98 Ошибка подключения к БД <Mock name='AppConfig().get_db_config().get()' id='140111756838160'>: invalid integer value "<Mock name='AppConfig().get_db_config().get()' id='140111756838160'>" for connection option "port"
+
+ERROR    src.storage.postgres_saver:postgres_saver.py:117 База данных <Mock name='AppConfig().get_db_config().get()' id='140111756838160'> недоступна и не может быть создана
+ERROR    src.user_interface:user_interface.py:67 Критическая ошибка: invalid integer value "<Mock name='AppConfig().get_db_config().get()' id='140111756838160'>" for connection option "port"
+___________ TestUserInterface.test_main_function_db_failure ____________
+
+self = <workspace.tests.test_user_interface.TestUserInterface object at 0x7f6e503f1350>
+mock_db_manager_class = <MagicMock name='DBManager' id='140111768500496'>
+mock_logging = <MagicMock name='logging' id='140111760245712'>
+
+    @patch('src.user_interface.logging')
+    @patch('src.storage.db_manager.DBManager')
+    def test_main_function_db_failure(self, mock_db_manager_class, mock_logging):
+        """Тест обработки ошибки подключения к БД"""
+        try:
+            from src.user_interface import main
+        except ImportError:
+            pytest.skip("Модуль user_interface не найден")
+    
+        mock_logger = Mock()
+        mock_logging.getLogger.return_value = mock_logger
+    
+        mock_db_manager = Mock()
+        mock_db_manager.check_connection.return_value = False
+        mock_db_manager_class.return_value = mock_db_manager
+    
+        # Ожидаем исключение при неудачном подключении к БД
+>       with pytest.raises(Exception):
+E       Failed: DID NOT RAISE <class 'Exception'>
+
+tests/test_user_interface.py:87: Failed
+------------------------- Captured stdout call -------------------------
+
+Критическая ошибка: Не удается подключиться к базе данных
+Обратитесь к разработчику для решения проблемы.
+-------------------------- Captured log call ---------------------------
+ERROR    src.user_interface:user_interface.py:67 Критическая ошибка: Не удается подключиться к базе данных
+______________ TestUserInterface.test_vacancy_model_basic ______________
+
+self = <workspace.tests.test_user_interface.TestUserInterface object at 0x7f6e503f1450>
+
+    def test_vacancy_model_basic(self):
+        """Тест базовой модели вакансии"""
+        try:
+            from src.vacancies.models import Vacancy
+            from src.utils.salary import Salary
+    
+>           salary = Salary(salary_from=100000, salary_to=150000)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: Salary.__init__() got an unexpected keyword argument 'salary_from'
+
+tests/test_user_interface.py:96: TypeError
+______________ TestUserInterface.test_salary_model_basic _______________
+
+self = <workspace.tests.test_user_interface.TestUserInterface object at 0x7f6e503f1c50>
+
+    def test_salary_model_basic(self):
+        """Тест базовой модели зарплаты"""
+        try:
+            from src.utils.salary import Salary
+    
+>           salary = Salary(salary_from=50000, salary_to=80000, currency="RUR")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: Salary.__init__() got an unexpected keyword argument 'salary_from'
+
+tests/test_user_interface.py:119: TypeError
+_____ TestVacancyOperationsCoordinator.test_handle_vacancy_search ______
+
+self = <workspace.tests.test_vacancy_operations_coordinator.TestVacancyOperationsCoordinator object at 0x7f6e4ff484d0>
+mock_print = <MagicMock name='print' id='140111760804496'>
+coordinator = <src.ui_interfaces.vacancy_operations_coordinator.VacancyOperationsCoordinator object at 0x7f6e4fbb5f90>
+
+    @patch('builtins.print')
+    def test_handle_vacancy_search(self, mock_print, coordinator):
+        """Тест обработки поиска вакансий"""
+>       coordinator.handle_vacancy_search()
+
+tests/test_vacancy_operations_coordinator.py:603: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/ui_interfaces/vacancy_operations_coordinator.py:47: in handle_vacancy_search
+    self.search_handler.search_vacancies()
+src/ui_interfaces/vacancy_search_handler.py:38: in search_vacancies
+    sources = self.source_selector.get_user_source_choice()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ui_interfaces/source_selector.py:36: in get_user_source_choice
+    choice = input("Ваш выбор: ").strip()
+             ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_pytest.capture.DontReadFromInput object at 0x7f6e51fef910>
+size = -1
+
+    def read(self, size: int = -1) -> str:
+>       raise OSError(
+            "pytest: reading from stdin while output is captured!  Consider using `-s`."
+        )
+E       OSError: pytest: reading from stdin while output is captured!  Consider using `-s`.
+
+.pythonlibs/lib/python3.11/site-packages/_pytest/capture.py:229: OSError
+------------------------- Captured stdout call -------------------------
+Ваш выбор: 
+_ TestVacancyOperationsCoordinator.test_handle_top_vacancies_by_salary _
+
+self = <workspace.tests.test_vacancy_operations_coordinator.TestVacancyOperationsCoordinator object at 0x7f6e4ff49290>
+mock_print = <MagicMock name='print' id='140111752097936'>
+coordinator = <src.ui_interfaces.vacancy_operations_coordinator.VacancyOperationsCoordinator object at 0x7f6e4f37c0d0>
+
+    @patch('builtins.print')
+    def test_handle_top_vacancies_by_salary(self, mock_print, coordinator):
+        """Тест обработки топ вакансий по зарплате"""
+>       coordinator.handle_top_vacancies_by_salary()
+
+tests/test_vacancy_operations_coordinator.py:619: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/ui_interfaces/vacancy_operations_coordinator.py:55: in handle_top_vacancies_by_salary
+    self.display_handler.show_top_vacancies_by_salary()
+src/ui_interfaces/vacancy_display_handler.py:74: in show_top_vacancies_by_salary
+    n = get_positive_integer("\nВведите количество вакансий для отображения: ")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/utils/ui_helpers.py:43: in get_positive_integer
+    user_input = input(prompt).strip()
+                 ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_pytest.capture.DontReadFromInput object at 0x7f6e51fef910>
+size = -1
+
+    def read(self, size: int = -1) -> str:
+>       raise OSError(
+            "pytest: reading from stdin while output is captured!  Consider using `-s`."
+        )
+E       OSError: pytest: reading from stdin while output is captured!  Consider using `-s`.
+
+.pythonlibs/lib/python3.11/site-packages/_pytest/capture.py:229: OSError
+------------------------- Captured stdout call -------------------------
+
+Введите количество вакансий для отображения: 
+_ TestVacancyOperationsCoordinator.test_handle_search_saved_by_keyword _
+
+self = <workspace.tests.test_vacancy_operations_coordinator.TestVacancyOperationsCoordinator object at 0x7f6e4ff3fa90>
+mock_print = <MagicMock name='print' id='140111754053712'>
+coordinator = <src.ui_interfaces.vacancy_operations_coordinator.VacancyOperationsCoordinator object at 0x7f6e4f544bd0>
+
+    @patch('builtins.print')
+    def test_handle_search_saved_by_keyword(self, mock_print, coordinator):
+        """Тест обработки поиска по ключевому слову"""
+>       coordinator.handle_search_saved_by_keyword()
+
+tests/test_vacancy_operations_coordinator.py:627: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/ui_interfaces/vacancy_operations_coordinator.py:59: in handle_search_saved_by_keyword
+    self.display_handler.search_saved_vacancies_by_keyword()
+src/ui_interfaces/vacancy_display_handler.py:113: in search_saved_vacancies_by_keyword
+    keyword = get_user_input("\nВведите ключевое слово для поиска в описании: ")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/utils/ui_helpers.py:23: in get_user_input
+    user_input = input(prompt).strip()
+                 ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_pytest.capture.DontReadFromInput object at 0x7f6e51fef910>
+size = -1
+
+    def read(self, size: int = -1) -> str:
+>       raise OSError(
+            "pytest: reading from stdin while output is captured!  Consider using `-s`."
+        )
+E       OSError: pytest: reading from stdin while output is captured!  Consider using `-s`.
+
+.pythonlibs/lib/python3.11/site-packages/_pytest/capture.py:229: OSError
+------------------------- Captured stdout call -------------------------
+
+Введите ключевое слово для поиска в описании: 
+_____ TestVacancyOperationsCoordinator.test_handle_superjob_setup ______
+
+self = <workspace.tests.test_vacancy_operations_coordinator.TestVacancyOperationsCoordinator object at 0x7f6e4ff18190>
+mock_print = <MagicMock name='print' id='140111754258064'>
+coordinator = <src.ui_interfaces.vacancy_operations_coordinator.VacancyOperationsCoordinator object at 0x7f6e4f5772d0>
+
+    @patch('builtins.print')
+    def test_handle_superjob_setup(self, mock_print, coordinator):
+        """Тест обработки настройки SuperJob API"""
+>       coordinator.handle_superjob_setup()
+
+tests/test_vacancy_operations_coordinator.py:651: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/ui_interfaces/vacancy_operations_coordinator.py:227: in handle_superjob_setup
+    input("\nНажмите Enter для продолжения...")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_pytest.capture.DontReadFromInput object at 0x7f6e51fef910>
+size = -1
+
+    def read(self, size: int = -1) -> str:
+>       raise OSError(
+            "pytest: reading from stdin while output is captured!  Consider using `-s`."
+        )
+E       OSError: pytest: reading from stdin while output is captured!  Consider using `-s`.
+
+.pythonlibs/lib/python3.11/site-packages/_pytest/capture.py:229: OSError
+------------------------- Captured stdout call -------------------------
+
+Нажмите Enter для продолжения...
+_____ TestVacancyOperationsCoordinator.test_superjob_configuration _____
+
+self = <workspace.tests.test_vacancy_operations_coordinator.TestVacancyOperationsCoordinator object at 0x7f6e4ff4a8d0>
+coordinator = <src.ui_interfaces.vacancy_operations_coordinator.VacancyOperationsCoordinator object at 0x7f6e4fb6b6d0>
+
+    def test_superjob_configuration(self, coordinator):
+        """Тест настройки SuperJob API"""
+        # Тест метода настройки
+>       coordinator.handle_superjob_setup()
+
+tests/test_vacancy_operations_coordinator.py:790: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/ui_interfaces/vacancy_operations_coordinator.py:227: in handle_superjob_setup
+    input("\nНажмите Enter для продолжения...")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_pytest.capture.DontReadFromInput object at 0x7f6e51fef910>
+size = -1
+
+    def read(self, size: int = -1) -> str:
+>       raise OSError(
+            "pytest: reading from stdin while output is captured!  Consider using `-s`."
+        )
+E       OSError: pytest: reading from stdin while output is captured!  Consider using `-s`.
+
+.pythonlibs/lib/python3.11/site-packages/_pytest/capture.py:229: OSError
+------------------------- Captured stdout call -------------------------
+
+============================================================
+НАСТРОЙКА SUPERJOB API
+============================================================
+SuperJob API ключ уже настроен
+
+Для получения API ключа SuperJob:
+1. Перейдите на https://api.superjob.ru/register/
+2. Зарегистрируйте ваше приложение
+3. Получите Secret key
+4. Добавьте его в Secrets как SUPERJOB_API_KEY
+
+Инструкция по добавлению секретов:
+• Откройте панель Secrets в левом меню
+• Нажмите 'New Secret'
+• Введите Key: SUPERJOB_API_KEY
+• Введите Value: ваш настоящий API ключ
+• Нажмите 'Add Secret'
+• Перезапустите приложение
+
+============================================================
+
+Нажмите Enter для продолжения...
+_________ TestVacancySearchHandler.test_search_vacancies_basic _________
+
+self = <workspace.tests.test_vacancy_search_handler.TestVacancySearchHandler object at 0x7f6e4ff54dd0>
+search_handler = <src.ui_interfaces.vacancy_search_handler.VacancySearchHandler object at 0x7f6e4f3c2d50>
+
+    def test_search_vacancies_basic(self, search_handler):
+        """Тест базового поиска вакансий"""
+>       result = search_handler.search_vacancies("Python", "hh.ru", 15)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancySearchHandler.search_vacancies() takes 1 positional argument but 4 were given
+
+tests/test_vacancy_search_handler.py:375: TypeError
+_ TestVacancySearchHandler.test_search_vacancies_with_different_sources _
+
+self = <workspace.tests.test_vacancy_search_handler.TestVacancySearchHandler object at 0x7f6e4ff55450>
+search_handler = <src.ui_interfaces.vacancy_search_handler.VacancySearchHandler object at 0x7f6e4f515550>
+
+    def test_search_vacancies_with_different_sources(self, search_handler):
+        """Тест поиска с разными источниками"""
+        sources = ["hh.ru", "superjob.ru", "all"]
+    
+        for source in sources:
+>           result = search_handler.search_vacancies("Python", source)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: VacancySearchHandler.search_vacancies() takes 1 positional argument but 3 were given
+
+tests/test_vacancy_search_handler.py:393: TypeError
+_ TestVacancySearchHandler.test_search_vacancies_with_different_periods _
+
+self = <workspace.tests.test_vacancy_search_handler.TestVacancySearchHandler object at 0x7f6e4ff55b10>
+search_handler = <src.ui_interfaces.vacancy_search_handler.VacancySearchHandler object at 0x7f6e4f575210>
+
+    def test_search_vacancies_with_different_periods(self, search_handler):
+        """Тест поиска с разными периодами"""
+        periods = [1, 7, 15, 30]
+    
+        for period in periods:
+>           result = search_handler.search_vacancies("Python", "hh.ru", period)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: VacancySearchHandler.search_vacancies() takes 1 positional argument but 4 were given
+
+tests/test_vacancy_search_handler.py:401: TypeError
+_________ TestVacancySearchHandler.test_handle_search_workflow _________
+
+self = <workspace.tests.test_vacancy_search_handler.TestVacancySearchHandler object at 0x7f6e4ff56190>
+mock_print = <MagicMock name='print' id='140111760563280'>
+search_handler = <src.ui_interfaces.vacancy_search_handler.VacancySearchHandler object at 0x7f6e4fb7b090>
+
+    @patch('builtins.print')
+    def test_handle_search_workflow(self, mock_print, search_handler):
+        """Тест обработки рабочего процесса поиска"""
+>       search_handler.handle_search_workflow()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'VacancySearchHandler' object has no attribute 'handle_search_workflow'
+
+tests/test_vacancy_search_handler.py:407: AttributeError
+___________ TestVacancySearchHandler.test_save_empty_results ___________
+
+self = <workspace.tests.test_vacancy_search_handler.TestVacancySearchHandler object at 0x7f6e4ff56f90>
+search_handler = <src.ui_interfaces.vacancy_search_handler.VacancySearchHandler object at 0x7f6e4ffc92d0>
+mock_storage = <Mock id='140111765085520'>
+
+    def test_save_empty_results(self, search_handler, mock_storage):
+        """Тест сохранения пустых результатов"""
+        empty_vacancies = []
+>       saved_count = search_handler.save_search_results(empty_vacancies)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'VacancySearchHandler' object has no attribute 'save_search_results'
+
+tests/test_vacancy_search_handler.py:423: AttributeError
+_____ TestVacancySearchHandler.test_search_with_invalid_parameters _____
+
+self = <workspace.tests.test_vacancy_search_handler.TestVacancySearchHandler object at 0x7f6e4ff57d50>
+search_handler = <src.ui_interfaces.vacancy_search_handler.VacancySearchHandler object at 0x7f6e4f5dbc90>
+
+    def test_search_with_invalid_parameters(self, search_handler):
+        """Тест поиска с некорректными параметрами"""
+        # Тест с пустым запросом
+>       result = search_handler.search_vacancies("", "hh.ru")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancySearchHandler.search_vacancies() takes 1 positional argument but 3 were given
+
+tests/test_vacancy_search_handler.py:446: TypeError
+________ TestVacancySearchHandler.test_search_results_structure ________
+
+self = <workspace.tests.test_vacancy_search_handler.TestVacancySearchHandler object at 0x7f6e4ff60490>
+search_handler = <src.ui_interfaces.vacancy_search_handler.VacancySearchHandler object at 0x7f6e4fb50d90>
+
+    def test_search_results_structure(self, search_handler):
+        """Тест структуры результатов поиска"""
+>       result = search_handler.search_vacancies("Python")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancySearchHandler.search_vacancies() takes 1 positional argument but 2 were given
+
+tests/test_vacancy_search_handler.py:459: TypeError
+__ TestVacancySearchHandler.test_parametrized_search[Python-hh.ru-7] ___
+
+self = <workspace.tests.test_vacancy_search_handler.TestVacancySearchHandler object at 0x7f6e4ff57810>
+search_handler = <src.ui_interfaces.vacancy_search_handler.VacancySearchHandler object at 0x7f6e4f7b5bd0>
+query = 'Python', source = 'hh.ru', period = 7
+
+    @pytest.mark.parametrize("query,source,period", [
+        ("Python", "hh.ru", 7),
+        ("Java", "superjob.ru", 15),
+        ("DevOps", "all", 30),
+        ("", "hh.ru", 1),
+    ])
+    def test_parametrized_search(self, search_handler, query, source, period):
+        """Параметризованный тест поиска"""
+>       result = search_handler.search_vacancies(query, source, period)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancySearchHandler.search_vacancies() takes 1 positional argument but 4 were given
+
+tests/test_vacancy_search_handler.py:538: TypeError
+_ TestVacancySearchHandler.test_parametrized_search[Java-superjob.ru-15] _
+
+self = <workspace.tests.test_vacancy_search_handler.TestVacancySearchHandler object at 0x7f6e4ff571d0>
+search_handler = <src.ui_interfaces.vacancy_search_handler.VacancySearchHandler object at 0x7f6e4f7639d0>
+query = 'Java', source = 'superjob.ru', period = 15
+
+    @pytest.mark.parametrize("query,source,period", [
+        ("Python", "hh.ru", 7),
+        ("Java", "superjob.ru", 15),
+        ("DevOps", "all", 30),
+        ("", "hh.ru", 1),
+    ])
+    def test_parametrized_search(self, search_handler, query, source, period):
+        """Параметризованный тест поиска"""
+>       result = search_handler.search_vacancies(query, source, period)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancySearchHandler.search_vacancies() takes 1 positional argument but 4 were given
+
+tests/test_vacancy_search_handler.py:538: TypeError
+___ TestVacancySearchHandler.test_parametrized_search[DevOps-all-30] ___
+
+self = <workspace.tests.test_vacancy_search_handler.TestVacancySearchHandler object at 0x7f6e4ff56c90>
+search_handler = <src.ui_interfaces.vacancy_search_handler.VacancySearchHandler object at 0x7f6e4fbeb910>
+query = 'DevOps', source = 'all', period = 30
+
+    @pytest.mark.parametrize("query,source,period", [
+        ("Python", "hh.ru", 7),
+        ("Java", "superjob.ru", 15),
+        ("DevOps", "all", 30),
+        ("", "hh.ru", 1),
+    ])
+    def test_parametrized_search(self, search_handler, query, source, period):
+        """Параметризованный тест поиска"""
+>       result = search_handler.search_vacancies(query, source, period)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancySearchHandler.search_vacancies() takes 1 positional argument but 4 were given
+
+tests/test_vacancy_search_handler.py:538: TypeError
+_____ TestVacancySearchHandler.test_parametrized_search[-hh.ru-1] ______
+
+self = <workspace.tests.test_vacancy_search_handler.TestVacancySearchHandler object at 0x7f6e4ff569d0>
+search_handler = <src.ui_interfaces.vacancy_search_handler.VacancySearchHandler object at 0x7f6e4f7c8a90>
+query = '', source = 'hh.ru', period = 1
+
+    @pytest.mark.parametrize("query,source,period", [
+        ("Python", "hh.ru", 7),
+        ("Java", "superjob.ru", 15),
+        ("DevOps", "all", 30),
+        ("", "hh.ru", 1),
+    ])
+    def test_parametrized_search(self, search_handler, query, source, period):
+        """Параметризованный тест поиска"""
+>       result = search_handler.search_vacancies(query, source, period)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancySearchHandler.search_vacancies() takes 1 positional argument but 4 were given
+
+tests/test_vacancy_search_handler.py:538: TypeError
+__________ TestVacancySearchHandler.test_concurrent_searches ___________
+
+self = <workspace.tests.test_vacancy_search_handler.TestVacancySearchHandler object at 0x7f6e4ff54b90>
+search_handler = <src.ui_interfaces.vacancy_search_handler.VacancySearchHandler object at 0x7f6e4f7566d0>
+
+    def test_concurrent_searches(self, search_handler):
+        """Тест одновременных поисков"""
+        import concurrent.futures
+    
+        queries = ["Python", "Java", "JavaScript", "C++"]
+    
+        def search_task(query):
+            return search_handler.search_vacancies(query)
+    
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+            futures = [executor.submit(search_task, query) for query in queries]
+>           results = [future.result() for future in concurrent.futures.as_completed(futures)]
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_vacancy_search_handler.py:560: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_vacancy_search_handler.py:560: in <listcomp>
+    results = [future.result() for future in concurrent.futures.as_completed(futures)]
+               ^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/concurrent/futures/_base.py:449: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/concurrent/futures/thread.py:58: in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+query = 'Python'
+
+    def search_task(query):
+>       return search_handler.search_vacancies(query)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancySearchHandler.search_vacancies() takes 1 positional argument but 2 were given
+
+tests/test_vacancy_search_handler.py:556: TypeError
+___________ TestVacancyStats.test_salary_analysis_edge_cases ___________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f6e4ff7a450>
+
+    def test_salary_analysis_edge_cases(self):
+        """Тест анализа зарплат с граничными случаями"""
+        # Пустой список
+>       result = VacancyStats.analyze_salaries([])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyStats' has no attribute 'analyze_salaries'
+
+tests/test_vacancy_stats.py:437: AttributeError
+__________ TestVacancyStats.test_company_statistics_detailed ___________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f6e4ff7b050>
+
+    def test_company_statistics_detailed(self):
+        """Тест детальной статистики по компаниям"""
+        vacancies = [
+            Vacancy(
+                title="Job 1",
+                url="https://test.com/1",
+                vacancy_id="1",
+                source="hh.ru",
+                employer={"name": "Company A", "id": "123"}
+            ),
+            Vacancy(
+                title="Job 2",
+                url="https://test.com/2",
+                vacancy_id="2",
+                source="hh.ru",
+                employer={"name": "Company A", "id": "123"}
+            ),
+            Vacancy(
+                title="Job 3",
+                url="https://test.com/3",
+                vacancy_id="3",
+                source="hh.ru",
+                employer={"name": "Company B", "id": "456"}
+            )
+        ]
+    
+>       stats = VacancyStats.get_company_statistics(vacancies)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyStats' has no attribute 'get_company_statistics'
+
+tests/test_vacancy_stats.py:507: AttributeError
+_______ TestVacancyStats.test_experience_analysis_comprehensive ________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f6e4ff7b610>
+
+    def test_experience_analysis_comprehensive(self):
+        """Тест комплексного анализа опыта"""
+        vacancies = [
+            Vacancy(
+                title="Junior Job",
+                url="https://test.com/1",
+                vacancy_id="1",
+                source="hh.ru",
+                experience="Нет опыта"
+            ),
+            Vacancy(
+                title="Middle Job",
+                url="https://test.com/2",
+                vacancy_id="2",
+                source="hh.ru",
+                experience="От 1 года до 3 лет"
+            ),
+            Vacancy(
+                title="Senior Job",
+                url="https://test.com/3",
+                vacancy_id="3",
+                source="hh.ru",
+                experience="От 3 до 6 лет"
+            )
+        ]
+    
+>       analysis = VacancyStats.analyze_experience_requirements(vacancies)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyStats' has no attribute 'analyze_experience_requirements'
+
+tests/test_vacancy_stats.py:537: AttributeError
+__________ TestVacancyStats.test_location_statistics_detailed __________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f6e4ff62b90>
+
+    def test_location_statistics_detailed(self):
+        """Тест детальной статистики по локациям"""
+        vacancies = [
+            Vacancy(
+                title="Moscow Job 1",
+                url="https://test.com/1",
+                vacancy_id="1",
+                source="hh.ru",
+                area="Москва"
+            ),
+            Vacancy(
+                title="Moscow Job 2",
+                url="https://test.com/2",
+                vacancy_id="2",
+                source="hh.ru",
+                area="Москва"
+            ),
+            Vacancy(
+                title="SPb Job",
+                url="https://test.com/3",
+                vacancy_id="3",
+                source="hh.ru",
+                area="Санкт-Петербург"
+            )
+        ]
+    
+>       stats = VacancyStats.get_location_statistics(vacancies)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyStats' has no attribute 'get_location_statistics'
+
+tests/test_vacancy_stats.py:568: AttributeError
+________ TestVacancyStats.test_format_statistics_comprehensive _________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f6e4ff7b450>
+
+    def test_format_statistics_comprehensive(self):
+        """Тест комплексного форматирования статистики"""
+        stats = {
+            "total": 100,
+            "with_salary": 80,
+            "avg_salary": 120000,
+            "companies": {"Company A": 30, "Company B": 20, "Company C": 50},
+            "locations": {"Москва": 60, "СПб": 40}
+        }
+    
+>       formatted = VacancyStats.format_statistics(stats)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyStats' has no attribute 'format_statistics'
+
+tests/test_vacancy_stats.py:582: AttributeError
+_______________ TestVacancyStats.test_salary_percentiles _______________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f6e4ff7ba90>
+
+    def test_salary_percentiles(self):
+        """Тест расчета процентилей зарплат"""
+        salaries = [50000, 60000, 70000, 80000, 90000, 100000, 110000, 120000, 130000, 140000]
+        vacancies = []
+    
+        for i, salary in enumerate(salaries):
+            vacancy = Vacancy(
+                title=f"Job {i}",
+                url=f"https://test.com/{i}",
+                vacancy_id=str(i),
+                source="hh.ru",
+                salary={"from": salary, "to": salary + 10000, "currency": "RUR"}
+            )
+            vacancies.append(vacancy)
+    
+        percentiles = VacancyStats.calculate_salary_percentiles(vacancies)
+>       assert "p25" in percentiles
+E       AssertionError: assert 'p25' in {}
+
+tests/test_vacancy_stats.py:666: AssertionError
+======================= short test summary info ========================
+FAILED tests/test_cache_manager.py::TestCacheManager::test_cache_ttl_expiration - AttributeError: <module 'src.utils.cache' from '/home/runner/worksp...
+FAILED tests/test_menu_system.py::TestMenuManager::test_submenu_navigation - StopIteration
+FAILED tests/test_source_selector.py::TestSourceSelector::test_source_selector_initialization - AssertionError: assert False
+FAILED tests/test_source_selector.py::TestSourceSelector::test_show_sources - AttributeError: 'SourceSelector' object has no attribute 'show_sour...
+FAILED tests/test_source_selector.py::TestSourceSelector::test_select_source_valid_choice - AttributeError: 'SourceSelector' object has no attribute 'select_so...
+FAILED tests/test_source_selector.py::TestSourceSelector::test_select_source_invalid_choice - AttributeError: 'SourceSelector' object has no attribute 'select_so...
+FAILED tests/test_source_selector.py::TestSourceSelector::test_get_selected_source - AttributeError: 'SourceSelector' object has no attribute 'get_selec...
+FAILED tests/test_source_selector.py::TestSourceSelector::test_available_sources_content - AssertionError: assert False
+FAILED tests/test_source_selector.py::TestSourceSelector::test_source_selector_state_management - AttributeError: 'SourceSelector' object has no attribute 'get_selec...
+FAILED tests/test_source_selector.py::TestSourceSelector::test_source_selector_edge_cases - AttributeError: 'SourceSelector' object has no attribute 'select_so...
+FAILED tests/test_source_selector.py::TestSourceSelector::test_interactive_selection_simulation - TypeError: 'list_iterator' object is not subscriptable
+FAILED tests/test_source_selector.py::TestSourceSelector::test_source_selector_multiple_selections - AttributeError: 'SourceSelector' object has no attribute 'available...
+FAILED tests/test_source_selector.py::TestSourceSelector::test_source_selector_type_safety - AttributeError: 'SourceSelector' object has no attribute 'select_so...
+FAILED tests/test_source_selector.py::TestSourceSelector::test_source_selector_integration_ready - AssertionError: assert False
+FAILED tests/test_source_selector.py::TestSourceSelector::test_parametrized_source_selection[1-str] - AttributeError: 'SourceSelector' object has no attribute 'select_so...
+FAILED tests/test_source_selector.py::TestSourceSelector::test_parametrized_source_selection[2-str] - AttributeError: 'SourceSelector' object has no attribute 'select_so...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_quick_paginate_specific_page - StopIteration
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_quick_paginate_next_page - StopIteration
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_function_mocked - AssertionError: Expected 'create_storage' to have been called once....
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_function_db_failure - Failed: DID NOT RAISE <class 'Exception'>
+FAILED tests/test_user_interface.py::TestUserInterface::test_vacancy_model_basic - TypeError: Salary.__init__() got an unexpected keyword argument 'sa...
+FAILED tests/test_user_interface.py::TestUserInterface::test_salary_model_basic - TypeError: Salary.__init__() got an unexpected keyword argument 'sa...
+FAILED tests/test_vacancy_operations_coordinator.py::TestVacancyOperationsCoordinator::test_handle_vacancy_search - OSError: pytest: reading from stdin while output is captured!  Cons...
+FAILED tests/test_vacancy_operations_coordinator.py::TestVacancyOperationsCoordinator::test_handle_top_vacancies_by_salary - OSError: pytest: reading from stdin while output is captured!  Cons...
+FAILED tests/test_vacancy_operations_coordinator.py::TestVacancyOperationsCoordinator::test_handle_search_saved_by_keyword - OSError: pytest: reading from stdin while output is captured!  Cons...
+FAILED tests/test_vacancy_operations_coordinator.py::TestVacancyOperationsCoordinator::test_handle_superjob_setup - OSError: pytest: reading from stdin while output is captured!  Cons...
+FAILED tests/test_vacancy_operations_coordinator.py::TestVacancyOperationsCoordinator::test_superjob_configuration - OSError: pytest: reading from stdin while output is captured!  Cons...
+FAILED tests/test_vacancy_search_handler.py::TestVacancySearchHandler::test_search_vacancies_basic - TypeError: VacancySearchHandler.search_vacancies() takes 1 position...
+FAILED tests/test_vacancy_search_handler.py::TestVacancySearchHandler::test_search_vacancies_with_different_sources - TypeError: VacancySearchHandler.search_vacancies() takes 1 position...
+FAILED tests/test_vacancy_search_handler.py::TestVacancySearchHandler::test_search_vacancies_with_different_periods - TypeError: VacancySearchHandler.search_vacancies() takes 1 position...
+FAILED tests/test_vacancy_search_handler.py::TestVacancySearchHandler::test_handle_search_workflow - AttributeError: 'VacancySearchHandler' object has no attribute 'han...
+FAILED tests/test_vacancy_search_handler.py::TestVacancySearchHandler::test_save_empty_results - AttributeError: 'VacancySearchHandler' object has no attribute 'sav...
+FAILED tests/test_vacancy_search_handler.py::TestVacancySearchHandler::test_search_with_invalid_parameters - TypeError: VacancySearchHandler.search_vacancies() takes 1 position...
+FAILED tests/test_vacancy_search_handler.py::TestVacancySearchHandler::test_search_results_structure - TypeError: VacancySearchHandler.search_vacancies() takes 1 position...
+FAILED tests/test_vacancy_search_handler.py::TestVacancySearchHandler::test_parametrized_search[Python-hh.ru-7] - TypeError: VacancySearchHandler.search_vacancies() takes 1 position...
+FAILED tests/test_vacancy_search_handler.py::TestVacancySearchHandler::test_parametrized_search[Java-superjob.ru-15] - TypeError: VacancySearchHandler.search_vacancies() takes 1 position...
+FAILED tests/test_vacancy_search_handler.py::TestVacancySearchHandler::test_parametrized_search[DevOps-all-30] - TypeError: VacancySearchHandler.search_vacancies() takes 1 position...
+FAILED tests/test_vacancy_search_handler.py::TestVacancySearchHandler::test_parametrized_search[-hh.ru-1] - TypeError: VacancySearchHandler.search_vacancies() takes 1 position...
+FAILED tests/test_vacancy_search_handler.py::TestVacancySearchHandler::test_concurrent_searches - TypeError: VacancySearchHandler.search_vacancies() takes 1 position...
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_salary_analysis_edge_cases - AttributeError: type object 'VacancyStats' has no attribute 'analyz...
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_company_statistics_detailed - AttributeError: type object 'VacancyStats' has no attribute 'get_co...
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_experience_analysis_comprehensive - AttributeError: type object 'VacancyStats' has no attribute 'analyz...
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_location_statistics_detailed - AttributeError: type object 'VacancyStats' has no attribute 'get_lo...
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_format_statistics_comprehensive - AttributeError: type object 'VacancyStats' has no attribute 'format...
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_salary_percentiles - AssertionError: assert 'p25' in {}
+ERROR tests/test_vacancy_operations_coordinator.py::TestVacancyOperationsCoordinator::test_storage_integration - TypeError: Salary.__init__() takes from 1 to 2 positional arguments...
+ERROR tests/test_vacancy_operations_coordinator.py::TestVacancyOperationsCoordinator::test_vacancy_management_workflow - TypeError: Salary.__init__() takes from 1 to 2 positional arguments...
+ERROR tests/test_vacancy_search_handler.py::TestVacancySearchHandler::test_save_search_results - TypeError: Salary.__init__() takes from 1 to 2 positional arguments...
+ERROR tests/test_vacancy_search_handler.py::TestVacancySearchHandler::test_storage_integration - TypeError: Salary.__init__() takes from 1 to 2 positional arguments...
+=============== 45 failed, 476 passed, 4 errors in 2.84s ===============
+~/workspace$ ^C
+~/workspace$ 
