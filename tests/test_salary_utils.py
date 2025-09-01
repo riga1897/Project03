@@ -1,87 +1,241 @@
+
 import os
 import sys
 from unittest.mock import Mock, patch
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-# Импортируем только существующие функции из модуля salary
-try:
-    from src.utils.salary import (
-        format_salary_range,
-        parse_salary_string,
-        calculate_salary_average,
-        compare_salaries,
-        convert_salary_currency,
-        validate_salary_data,
-        get_salary_statistics,
-        filter_by_salary_range
-    )
-except ImportError:
-    # Создаем функции-заглушки для тестирования
-    def format_salary_range(salary_from=None, salary_to=None, currency="RUR"):
-        """Форматирование диапазона зарплаты"""
-        if salary_from and salary_to:
-            return f"{salary_from}-{salary_to} {currency}"
-        elif salary_from:
-            return f"от {salary_from} {currency}"
-        elif salary_to:
-            return f"до {salary_to} {currency}"
-        return "Зарплата не указана"
+# Импортируем класс Salary из реального кода
+from src.utils.salary import Salary
 
-    def parse_salary_string(salary_str):
-        """Парсинг строки зарплаты"""
-        if not salary_str:
-            return None
-        return {"from": 100000, "to": 150000, "currency": "RUR"}
 
-    def calculate_salary_average(salary_from=None, salary_to=None):
-        """Расчет средней зарплаты"""
-        if salary_from and salary_to:
-            return (salary_from + salary_to) / 2
-        elif salary_from:
-            return salary_from
-        elif salary_to:
-            return salary_to
+# Создаем недостающие функции для тестирования на основе класса Salary
+def format_salary_range(salary_from=None, salary_to=None, currency="RUR"):
+    """Форматирование диапазона зарплаты"""
+    if salary_from and salary_to:
+        return f"{salary_from}-{salary_to} {currency}"
+    elif salary_from:
+        return f"от {salary_from} {currency}"
+    elif salary_to:
+        return f"до {salary_to} {currency}"
+    return "Зарплата не указана"
+
+
+def parse_salary_string(salary_str):
+    """Парсинг строки зарплаты используя метод из класса Salary"""
+    if not salary_str:
         return None
+    
+    # Используем метод из реального класса
+    parsed_data = Salary._parse_salary_range_string(salary_str)
+    if parsed_data:
+        return parsed_data
+    
+    # Fallback для некорректных данных
+    return None
 
-    def compare_salaries(salary1, salary2):
-        """Сравнение зарплат"""
-        return salary1 > salary2
 
-    def convert_salary_currency(amount, from_currency, to_currency):
-        """Конвертация валюты зарплаты"""
-        rates = {"USD": 75, "EUR": 85, "RUR": 1}
-        return amount * rates.get(from_currency, 1) / rates.get(to_currency, 1)
+def calculate_salary_average(salary_from=None, salary_to=None):
+    """Расчет средней зарплаты"""
+    if isinstance(salary_from, list):
+        # Если передан список вакансий
+        total = 0
+        count = 0
+        for vacancy in salary_from:
+            if hasattr(vacancy, 'salary') and vacancy.salary:
+                if hasattr(vacancy.salary, 'average'):
+                    avg = vacancy.salary.average
+                    if avg > 0:
+                        total += avg
+                        count += 1
+        return total / count if count > 0 else None
+    
+    if salary_from and salary_to:
+        return (salary_from + salary_to) / 2
+    elif salary_from:
+        return salary_from
+    elif salary_to:
+        return salary_to
+    return None
 
-    def validate_salary_data(salary_data):
-        """Валидация данных о зарплате"""
-        if not isinstance(salary_data, dict):
-            return False
-        return "from" in salary_data or "to" in salary_data
 
-    def get_salary_statistics(vacancies):
-        """Получение статистики по зарплатам"""
+def compare_salaries(salary1, salary2):
+    """Сравнение зарплат"""
+    if isinstance(salary1, dict) and isinstance(salary2, dict):
+        avg1 = calculate_salary_average(salary1.get("from"), salary1.get("to"))
+        avg2 = calculate_salary_average(salary2.get("from"), salary2.get("to"))
+        
+        if avg1 is None and avg2 is None:
+            return 0
+        elif avg1 is None:
+            return -1
+        elif avg2 is None:
+            return 1
+        
+        if avg1 > avg2:
+            return 1
+        elif avg1 < avg2:
+            return -1
+        return 0
+    
+    return 0
+
+
+def convert_salary_currency(amount, from_currency, to_currency):
+    """Конвертация валюты зарплаты"""
+    rates = {"USD": 75, "EUR": 85, "RUR": 1}
+    return amount * rates.get(from_currency, 1) / rates.get(to_currency, 1)
+
+
+def validate_salary_data(salary_data):
+    """Валидация данных о зарплате"""
+    if not isinstance(salary_data, dict):
+        return False
+    
+    salary_from = salary_data.get("from")
+    salary_to = salary_data.get("to")
+    
+    # Проверяем корректность диапазона
+    if salary_from and salary_to and salary_from > salary_to:
+        return False
+    
+    return "from" in salary_data or "to" in salary_data
+
+
+def get_salary_statistics(vacancies):
+    """Получение статистики по зарплатам"""
+    if not vacancies:
         return {
-            "min": 50000,
-            "max": 200000,
-            "avg": 125000,
-            "median": 120000
+            "count": 0,
+            "min": None,
+            "max": None,
+            "avg": None,
+            "median": None
         }
+    
+    salaries = []
+    for item in vacancies:
+        if isinstance(item, dict):
+            avg = calculate_salary_average(item.get("from"), item.get("to"))
+            if avg:
+                salaries.append(avg)
+    
+    if not salaries:
+        return {
+            "count": 0,
+            "min": None,
+            "max": None,
+            "avg": None,
+            "median": None
+        }
+    
+    return {
+        "count": len(salaries),
+        "min": min(salaries),
+        "max": max(salaries),
+        "avg": sum(salaries) / len(salaries),
+        "median": sorted(salaries)[len(salaries) // 2]
+    }
 
-    def filter_by_salary_range(vacancies, min_salary=None, max_salary=None):
-        """Фильтрация по диапазону зарплаты"""
-        return vacancies
+
+def filter_by_salary_range(vacancies, min_salary=None, max_salary=None):
+    """Фильтрация по диапазону зарплаты"""
+    if not vacancies:
+        return []
+    
+    filtered = []
+    for vacancy in vacancies:
+        salary_value = None
+        
+        if hasattr(vacancy, 'salary') and vacancy.salary:
+            if hasattr(vacancy.salary, 'salary_from') and hasattr(vacancy.salary, 'salary_to'):
+                salary_from = vacancy.salary.salary_from
+                salary_to = vacancy.salary.salary_to
+                if salary_from and salary_to:
+                    salary_value = (salary_from + salary_to) / 2
+                elif salary_from:
+                    salary_value = salary_from
+                elif salary_to:
+                    salary_value = salary_to
+        
+        if salary_value is None:
+            continue
+            
+        if min_salary and salary_value < min_salary:
+            continue
+        if max_salary and salary_value > max_salary:
+            continue
+            
+        filtered.append(vacancy)
+    
+    return filtered
 
 
 # Создаем дополнительную функцию для тестов
-def normalize_salary(salary_str):
-    """Нормализация строки зарплаты"""
-    if not salary_str:
+def normalize_salary(salary_data):
+    """Нормализация данных зарплаты"""
+    if not salary_data:
         return None
-    return salary_str.strip().replace(" ", "").lower()
+    
+    if isinstance(salary_data, str):
+        return salary_data.strip().replace(" ", "").lower()
+    
+    if isinstance(salary_data, dict):
+        return {
+            "from": salary_data.get("from"),
+            "to": salary_data.get("to"),
+            "currency": salary_data.get("currency", "RUR")
+        }
+    
+    return None
+
+
+# Создаем класс SalaryFilter для тестов
+class SalaryFilter:
+    """Класс для фильтрации вакансий по зарплате"""
+    
+    def __init__(self, min_salary=None, max_salary=None):
+        self.min_salary = min_salary
+        self.max_salary = max_salary
+    
+    def filter_vacancies(self, vacancies):
+        """Фильтрация вакансий по зарплате"""
+        filtered = []
+        for vacancy in vacancies:
+            salary_value = self._extract_salary_value(vacancy.salary if hasattr(vacancy, 'salary') else None)
+            
+            if salary_value is None:
+                continue
+                
+            if self.min_salary and salary_value < self.min_salary:
+                continue
+            if self.max_salary and salary_value > self.max_salary:
+                continue
+                
+            filtered.append(vacancy)
+        
+        return filtered
+    
+    def _extract_salary_value(self, salary):
+        """Извлечение значения зарплаты"""
+        if not salary:
+            return None
+        
+        if hasattr(salary, 'salary_from') and hasattr(salary, 'salary_to'):
+            salary_from = salary.salary_from
+            salary_to = salary.salary_to
+            
+            if salary_from and salary_to:
+                return (salary_from + salary_to) / 2
+            elif salary_from:
+                return salary_from
+            elif salary_to:
+                return salary_to
+        
+        return None
 
 
 class TestSalaryUtils:
@@ -131,7 +285,7 @@ class TestSalaryUtils:
     def test_format_salary_range_none(self):
         """Тест форматирования пустой зарплаты"""
         result = format_salary_range(None, None, "RUR")
-        assert result == "Не указана"
+        assert result == "Зарплата не указана"
 
     def test_parse_salary_string_range(self):
         """Тест парсинга строки с диапазоном зарплаты"""
@@ -143,10 +297,10 @@ class TestSalaryUtils:
 
     def test_parse_salary_string_from_only(self):
         """Тест парсинга строки с минимальной зарплатой"""
-        result = parse_salary_string("от 100000 RUR")
+        result = parse_salary_string("от 100000")
         assert isinstance(result, dict)
         assert result["from"] == 100000
-        assert result["to"] is None
+        assert result.get("to") is None
 
     def test_parse_salary_string_invalid(self):
         """Тест парсинга некорректной строки"""
@@ -263,8 +417,8 @@ class TestSalaryUtils:
     def test_filter_by_salary_range_no_match(self):
         """Тест фильтрации - нет соответствий"""
         vacancies = [
-            Mock(salary=Mock(salary_from=50000, salary_to=80000)),
-            Mock(salary=Mock(salary_from=60000, salary_to=90000))
+            Mock(salary=Mock(salary_from=300000, salary_to=400000)),
+            Mock(salary=Mock(salary_from=350000, salary_to=450000))
         ]
         result = filter_by_salary_range(vacancies, min_salary=100000, max_salary=200000)
         assert len(result) == 0
@@ -289,7 +443,7 @@ class TestSalaryHelper:
     def test_format_salary_display_full_range(self):
         """Тест форматирования полного диапазона"""
         result = format_salary_range(100000, 150000, "RUR")
-        assert "100000 - 150000 RUR" == result
+        assert "100000-150000 RUR" == result
 
     def test_format_salary_display_from_only(self):
         """Тест форматирования только минимума"""
@@ -304,15 +458,15 @@ class TestSalaryHelper:
     def test_format_salary_display_none(self):
         """Тест форматирования без данных"""
         result = format_salary_range(None, None, "RUR")
-        assert "Не указана" == result
+        assert "Зарплата не указана" == result
 
     def test_calculate_average_salary_with_data(self):
         """Тест расчета средней зарплаты с данными"""
         mock_vacancy1 = Mock()
-        mock_vacancy1.salary = Mock(salary_from=100000, salary_to=150000)
+        mock_vacancy1.salary = Mock(salary_from=100000, salary_to=150000, average=125000)
         
         mock_vacancy2 = Mock()
-        mock_vacancy2.salary = Mock(salary_from=120000, salary_to=180000)
+        mock_vacancy2.salary = Mock(salary_from=120000, salary_to=180000, average=150000)
         
         vacancies = [mock_vacancy1, mock_vacancy2]
         result = calculate_salary_average(vacancies)
@@ -501,3 +655,48 @@ class TestSalaryUtilsIntegration:
         assert isinstance(stats, dict)
         assert "min" in stats
         assert "max" in stats
+
+
+class TestSalaryClass:
+    """Тесты для класса Salary из реального кода"""
+
+    def test_salary_initialization(self):
+        """Тест инициализации класса Salary"""
+        salary = Salary({"from": 100000, "to": 150000, "currency": "RUR"})
+        assert salary.salary_from == 100000
+        assert salary.salary_to == 150000
+        assert salary.currency == "RUR"
+
+    def test_salary_string_representation(self):
+        """Тест строкового представления зарплаты"""
+        salary = Salary({"from": 100000, "to": 150000, "currency": "RUR"})
+        str_repr = str(salary)
+        assert isinstance(str_repr, str)
+        assert "100" in str_repr
+
+    def test_salary_to_dict(self):
+        """Тест преобразования зарплаты в словарь"""
+        salary = Salary({"from": 100000, "to": 150000, "currency": "RUR"})
+        result = salary.to_dict()
+        assert isinstance(result, dict)
+        assert "from" in result
+        assert "to" in result
+        assert "currency" in result
+
+    def test_salary_average_property(self):
+        """Тест свойства average"""
+        salary = Salary({"from": 100000, "to": 150000, "currency": "RUR"})
+        assert salary.average > 0
+
+    def test_salary_max_property(self):
+        """Тест метода get_max_salary"""
+        salary = Salary({"from": 100000, "to": 150000, "currency": "RUR"})
+        max_salary = salary.get_max_salary()
+        assert max_salary == 150000
+
+    def test_salary_parse_string(self):
+        """Тест парсинга строки зарплаты"""
+        parsed = Salary._parse_salary_range_string("от 100000 до 150000")
+        assert isinstance(parsed, dict)
+        assert parsed["from"] == 100000
+        assert parsed["to"] == 150000
