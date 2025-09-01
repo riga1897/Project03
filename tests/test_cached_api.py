@@ -14,8 +14,8 @@ from src.vacancies.models import Vacancy
 class ConcreteCachedAPI(CachedAPI):
     """Конкретная реализация CachedAPI для тестирования"""
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, cache_dir="./test_cache"):
+        super().__init__(cache_dir)
         self.test_data = []
 
     def get_vacancies(self, search_query: str, **kwargs) -> List[Any]:

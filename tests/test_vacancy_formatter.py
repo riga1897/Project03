@@ -118,8 +118,8 @@ class TestVacancyFormatter:
 
         assert "Python Developer" in result
         assert "Test Company" in result
-        # Проверяем отформатированные числа
-        assert "100 000" in result or "150 000" in result
+        # Проверяем отформатированные числа (может быть 100,000 или 100 000)
+        assert ("100,000" in result or "100 000" in result) and ("150,000" in result or "150 000" in result)
         # Местоположение может быть в разных форматах
         assert len(result) > 100  # Проверяем что результат содержательный
 
