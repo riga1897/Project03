@@ -26,7 +26,7 @@ class VacancyEmployer:
         self.name = name
 
 
-class TestableVacancyDisplayHandler(VacancyDisplayHandler):
+class VacancyDisplayHandlerForTesting(VacancyDisplayHandler):
     """Расширенная версия VacancyDisplayHandler для тестирования"""
 
     def display_vacancies(self, vacancies):
@@ -86,13 +86,13 @@ class TestableVacancyDisplayHandler(VacancyDisplayHandler):
         return f"ID: {vacancy_id}\nНазвание: {title}\nРаботодатель: {employer_info}\nЗарплата: {salary_info}\nСсылка: {url}"
 
 # Переименованный класс для тестов
-class ExtendedVacancyDisplayHandler(TestableVacancyDisplayHandler):
+class ExtendedVacancyDisplayHandler(VacancyDisplayHandlerForTesting):
     pass
 
 # Создаем функцию-фабрику для создания тестового обработчика
 def create_test_display_handler(storage):
     """Фабрика для создания тестового обработчика отображения"""
-    return TestableVacancyDisplayHandler(storage)
+    return VacancyDisplayHandlerForTesting(storage)
 
 
 class TestVacancyDisplayHandler:

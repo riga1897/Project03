@@ -549,7 +549,8 @@ class TestVacancyDataTransformation:
         vacancy = Vacancy.from_dict(minimal_data)
         assert vacancy.vacancy_id == "123"
         assert vacancy.title == "Python Developer"
-def test_vacancy_from_minimal_dict_with_none(self):
+
+    def test_vacancy_from_minimal_dict_with_none(self):
         """Тест создания вакансии из минимального словаря с None значениями"""
         minimal_data = {
             "vacancy_id": "123",
