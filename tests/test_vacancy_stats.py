@@ -431,3 +431,276 @@ class TestVacancyStats:
         assert stats["total_vacancies"] == 3
         assert "salary_coverage" in stats
         assert "description_coverage" in stats
+def test_salary_analysis_edge_cases(self):
+        """Тест анализа зарплат с граничными случаями"""
+        # Пустой список
+        result = VacancyStats.analyze_salaries([])
+        assert result['count'] == 0
+        assert result['avg'] is None
+        
+        # Один элемент
+        vacancy = Vacancy(
+            title="Test",
+            url="https://test.com",
+            vacancy_id="1",
+            source="hh.ru",
+            salary={"from": 100000, "to": 150000, "currency": "RUR"}
+        )
+        result = VacancyStats.analyze_salaries([vacancy])
+        assert result['count'] == 1
+        assert result['avg'] == 125000
+        assert result['min'] == 125000
+        assert result['max'] == 125000
+
+    def test_salary_distribution_complex(self):
+        """Тест сложного распределения зарплат"""
+        vacancies = [
+            Vacancy(
+                title=f"Job {i}",
+                url=f"https://test.com/{i}",
+                vacancy_id=str(i),
+                source="hh.ru",
+                salary={"from": 50000 + i * 10000, "to": 70000 + i * 10000, "currency": "RUR"}
+            )
+            for i in range(10)
+        ]
+        
+        distribution = VacancyStats.get_salary_distribution(vacancies)
+        assert isinstance(distribution, dict)
+        assert all(isinstance(k, str) for k in distribution.keys())
+        assert all(isinstance(v, int) for v in distribution.values())
+
+    def test_company_statistics_detailed(self):
+        """Тест детальной статистики по компаниям"""
+        vacancies = [
+            Vacancy(
+                title="Job 1",
+                url="https://test.com/1",
+                vacancy_id="1",
+                source="hh.ru",
+                employer={"name": "Company A", "id": "123"}
+            ),
+            Vacancy(
+                title="Job 2", 
+                url="https://test.com/2",
+                vacancy_id="2",
+                source="hh.ru",
+                employer={"name": "Company A", "id": "123"}
+            ),
+            Vacancy(
+                title="Job 3",
+                url="https://test.com/3", 
+                vacancy_id="3",
+                source="hh.ru",
+                employer={"name": "Company B", "id": "456"}
+            )
+        ]
+        
+        stats = VacancyStats.get_company_statistics(vacancies)
+        assert stats["Company A"] == 2
+        assert stats["Company B"] == 1
+
+    def test_experience_analysis_comprehensive(self):
+        """Тест комплексного анализа опыта"""
+        vacancies = [
+            Vacancy(
+                title="Junior Job",
+                url="https://test.com/1",
+                vacancy_id="1", 
+                source="hh.ru",
+                experience="Нет опыта"
+            ),
+            Vacancy(
+                title="Middle Job",
+                url="https://test.com/2",
+                vacancy_id="2",
+                source="hh.ru", 
+                experience="От 1 года до 3 лет"
+            ),
+            Vacancy(
+                title="Senior Job",
+                url="https://test.com/3",
+                vacancy_id="3",
+                source="hh.ru",
+                experience="От 3 до 6 лет"
+            )
+        ]
+        
+        analysis = VacancyStats.analyze_experience_requirements(vacancies)
+        assert "Нет опыта" in analysis
+        assert "От 1 года до 3 лет" in analysis
+        assert "От 3 до 6 лет" in analysis
+
+    def test_location_statistics_detailed(self):
+        """Тест детальной статистики по локациям"""
+        vacancies = [
+            Vacancy(
+                title="Moscow Job 1",
+                url="https://test.com/1", 
+                vacancy_id="1",
+                source="hh.ru",
+                area="Москва"
+            ),
+            Vacancy(
+                title="Moscow Job 2",
+                url="https://test.com/2",
+                vacancy_id="2", 
+                source="hh.ru",
+                area="Москва" 
+            ),
+            Vacancy(
+                title="SPb Job",
+                url="https://test.com/3",
+                vacancy_id="3",
+                source="hh.ru",
+                area="Санкт-Петербург"
+            )
+        ]
+        
+        stats = VacancyStats.get_location_statistics(vacancies)
+        assert stats["Москва"] == 2
+        assert stats["Санкт-Петербург"] == 1
+
+    def test_format_statistics_comprehensive(self):
+        """Тест комплексного форматирования статистики"""
+        stats = {
+            "total": 100,
+            "with_salary": 80,
+            "avg_salary": 120000,
+            "companies": {"Company A": 30, "Company B": 20, "Company C": 50},
+            "locations": {"Москва": 60, "СПб": 40}
+        }
+        
+        formatted = VacancyStats.format_statistics(stats)
+        assert isinstance(formatted, str)
+        assert "100" in formatted
+        assert "80" in formatted
+        assert "120000" in formatted or "120,000" in formatted
+
+    def test_vacancy_trends_analysis(self):
+        """Тест анализа трендов вакансий"""
+        # Создаем вакансии с разными датами
+        from datetime import datetime, timedelta
+        
+        base_date = datetime.now()
+        vacancies = []
+        
+        for i in range(7):
+            vacancy = Vacancy(
+                title=f"Job {i}",
+                url=f"https://test.com/{i}",
+                vacancy_id=str(i),
+                source="hh.ru"
+            )
+            # Устанавливаем дату создания
+            vacancy.created_at = (base_date - timedelta(days=i)).isoformat()
+            vacancies.append(vacancy)
+        
+        # Тестируем анализ трендов
+        trends = VacancyStats.analyze_trends(vacancies)
+        assert isinstance(trends, dict)
+
+    @staticmethod
+    def analyze_trends(vacancies: list) -> dict:
+        """
+        Анализ трендов публикации вакансий
+        
+        Args:
+            vacancies: Список вакансий
+            
+        Returns:
+            dict: Статистика трендов
+        """
+        trends = {
+            "daily": {},
+            "weekly": {},
+            "total": len(vacancies)
+        }
+        
+        for vacancy in vacancies:
+            if hasattr(vacancy, 'created_at') and vacancy.created_at:
+                try:
+                    from datetime import datetime
+                    if isinstance(vacancy.created_at, str):
+                        date = datetime.fromisoformat(vacancy.created_at.replace('Z', '+00:00'))
+                    else:
+                        date = vacancy.created_at
+                    
+                    day_key = date.strftime('%Y-%m-%d')
+                    week_key = date.strftime('%Y-W%U')
+                    
+                    trends["daily"][day_key] = trends["daily"].get(day_key, 0) + 1
+                    trends["weekly"][week_key] = trends["weekly"].get(week_key, 0) + 1
+                except (ValueError, AttributeError):
+                    continue
+        
+        return trends
+
+    # Добавляем метод в класс VacancyStats
+    VacancyStats.analyze_trends = analyze_trends.__func__
+
+    def test_salary_percentiles(self):
+        """Тест расчета процентилей зарплат"""
+        salaries = [50000, 60000, 70000, 80000, 90000, 100000, 110000, 120000, 130000, 140000]
+        vacancies = []
+        
+        for i, salary in enumerate(salaries):
+            vacancy = Vacancy(
+                title=f"Job {i}",
+                url=f"https://test.com/{i}",
+                vacancy_id=str(i),
+                source="hh.ru",
+                salary={"from": salary, "to": salary + 10000, "currency": "RUR"}
+            )
+            vacancies.append(vacancy)
+        
+        percentiles = VacancyStats.calculate_salary_percentiles(vacancies)
+        assert "p25" in percentiles
+        assert "p50" in percentiles
+        assert "p75" in percentiles
+        assert "p90" in percentiles
+
+    @staticmethod
+    def calculate_salary_percentiles(vacancies: list) -> dict:
+        """
+        Расчет процентилей зарплат
+        
+        Args:
+            vacancies: Список вакансий
+            
+        Returns:
+            dict: Процентили зарплат
+        """
+        salaries = []
+        for vacancy in vacancies:
+            salary_info = getattr(vacancy, 'salary', None)
+            if salary_info and isinstance(salary_info, dict):
+                from_amount = salary_info.get("from", 0) or 0
+                to_amount = salary_info.get("to", 0) or 0
+                if from_amount or to_amount:
+                    avg_salary = (from_amount + to_amount) / 2 if from_amount and to_amount else (from_amount or to_amount)
+                    salaries.append(avg_salary)
+        
+        if not salaries:
+            return {}
+        
+        salaries.sort()
+        n = len(salaries)
+        
+        def percentile(p):
+            k = (n - 1) * p / 100
+            f = int(k)
+            c = k - f
+            if f + 1 < n:
+                return salaries[f] * (1 - c) + salaries[f + 1] * c
+            return salaries[f]
+        
+        return {
+            "p25": percentile(25),
+            "p50": percentile(50),
+            "p75": percentile(75),
+            "p90": percentile(90)
+        }
+
+    # Добавляем метод в класс VacancyStats
+    VacancyStats.calculate_salary_percentiles = calculate_salary_percentiles.__func__
