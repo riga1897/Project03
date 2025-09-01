@@ -1,7 +1,8 @@
 
 import os
 import sys
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch, MagicMock, call
+from typing import List, Dict, Any
 
 import pytest
 
@@ -12,220 +13,449 @@ from src.vacancies.models import Vacancy
 
 
 class TestVacancyOperationsCoordinator:
-    """Тесты для класса VacancyOperationsCoordinator"""
+    """
+    Тесты для класса VacancyOperationsCoordinator
+    
+    Тестирует координацию операций с вакансиями, включая поиск, отображение,
+    сохранение, удаление и очистку кэша.
+    """
 
     @pytest.fixture
-    def mock_api(self):
-        """Фикстура для мокирования API"""
-        api = Mock()
-        api.get_vacancies_from_sources.return_value = []
-        api.get_vacancies_from_target_companies.return_value = []
-        api.clear_cache.return_value = None
-        return api
-
-    @pytest.fixture
-    def mock_storage(self):
-        """Фикстура для мокирования storage"""
-        storage = Mock()
-        storage.get_vacancies.return_value = []
-        storage.delete_all_vacancies.return_value = True
-        storage.add_vacancy.return_value = []
-        storage.delete_vacancies_batch.return_value = 0
-        storage.delete_vacancy_by_id.return_value = True
-        return storage
-
-    @pytest.fixture
-    def mock_handlers(self):
-        """Фикстура для мокирования обработчиков"""
-        with patch('src.ui_interfaces.vacancy_operations_coordinator.VacancySearchHandler') as mock_search, \
-             patch('src.ui_interfaces.vacancy_operations_coordinator.VacancyDisplayHandler') as mock_display, \
-             patch('src.ui_interfaces.vacancy_operations_coordinator.SourceSelector') as mock_selector:
-            
-            # Настройка моков
-            mock_search_instance = Mock()
-            mock_display_instance = Mock()
-            mock_selector_instance = Mock()
-            
-            mock_search.return_value = mock_search_instance
-            mock_display.return_value = mock_display_instance
-            mock_selector.return_value = mock_selector_instance
-            
-            yield {
-                'search': mock_search_instance,
-                'display': mock_display_instance,
-                'selector': mock_selector_instance
+    def consolidated_mocks(self):
+        """
+        Консолидированная фикстура всех необходимых моков
+        
+        Returns:
+            Dict[str, Mock]: Словарь со всеми мокированными объектами
+        """
+        mocks = {
+            'api': Mock(),
+            'storage': Mock(),
+            'search_handler': Mock(),
+            'display_handler': Mock(),
+            'source_selector': Mock(),
+            'vacancy': Mock(),
+            'formatter': Mock(),
+            'ui_helpers': {
+                'confirm_action': Mock(),
+                'get_user_input': Mock(),
+                'filter_vacancies_by_keyword': Mock()
             }
+        }
+        
+        # Настройка API мока
+        mocks['api'].get_vacancies_from_sources.return_value = []
+        mocks['api'].get_vacancies_from_target_companies.return_value = []
+        mocks['api'].clear_cache.return_value = None
+        
+        # Настройка storage мока
+        mocks['storage'].get_vacancies.return_value = []
+        mocks['storage'].delete_all_vacancies.return_value = True
+        mocks['storage'].add_vacancy.return_value = []
+        mocks['storage'].delete_vacancies_batch.return_value = 0
+        mocks['storage'].delete_vacancy_by_id.return_value = True
+        
+        # Настройка обработчиков
+        mocks['search_handler'].search_vacancies.return_value = None
+        mocks['display_handler'].show_all_saved_vacancies.return_value = None
+        mocks['display_handler'].show_top_vacancies_by_salary.return_value = None
+        mocks['display_handler'].search_saved_vacancies_by_keyword.return_value = None
+        
+        # Настройка селектора источников
+        mocks['source_selector'].get_user_source_choice.return_value = {"hh.ru"}
+        mocks['source_selector'].display_sources_info.return_value = None
+        
+        # Настройка создания вакансий
+        test_vacancy = Vacancy(
+            vacancy_id="123",
+            title="Python Developer",
+            url="https://test.com",
+            source="hh.ru"
+        )
+        mocks['vacancy'].from_dict.return_value = test_vacancy
+        
+        # Настройка форматтера
+        mocks['formatter'].format_vacancy_info.return_value = "Formatted vacancy info"
+        
+        # Настройка UI helpers
+        mocks['ui_helpers']['confirm_action'].return_value = True
+        mocks['ui_helpers']['get_user_input'].return_value = "test input"
+        mocks['ui_helpers']['filter_vacancies_by_keyword'].return_value = []
+        
+        return mocks
 
     @pytest.fixture
-    def coordinator(self, mock_api, mock_storage, mock_handlers):
-        """Фикстура для создания VacancyOperationsCoordinator с моками"""
-        return VacancyOperationsCoordinator(mock_api, mock_storage)
+    def coordinator(self, consolidated_mocks):
+        """
+        Фикстура для создания VacancyOperationsCoordinator с полными моками
+        
+        Args:
+            consolidated_mocks: Консолидированные моки
+            
+        Returns:
+            VacancyOperationsCoordinator: Координатор с мокированными зависимостями
+        """
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.VacancySearchHandler') as mock_search_class, \
+             patch('src.ui_interfaces.vacancy_operations_coordinator.VacancyDisplayHandler') as mock_display_class, \
+             patch('src.ui_interfaces.vacancy_operations_coordinator.SourceSelector') as mock_selector_class:
+            
+            # Настройка классов-моков
+            mock_search_class.return_value = consolidated_mocks['search_handler']
+            mock_display_class.return_value = consolidated_mocks['display_handler']
+            mock_selector_class.return_value = consolidated_mocks['source_selector']
+            
+            coordinator = VacancyOperationsCoordinator(
+                consolidated_mocks['api'], 
+                consolidated_mocks['storage']
+            )
+            
+            return coordinator
 
-    def test_coordinator_initialization(self, coordinator, mock_api, mock_storage):
-        """Тест инициализации VacancyOperationsCoordinator"""
-        assert coordinator.unified_api == mock_api
-        assert coordinator.storage == mock_storage
+    def test_coordinator_initialization(self, coordinator, consolidated_mocks):
+        """
+        Тест правильной инициализации VacancyOperationsCoordinator
+        
+        Проверяет, что все компоненты правильно инициализированы
+        """
+        assert coordinator.unified_api == consolidated_mocks['api']
+        assert coordinator.storage == consolidated_mocks['storage']
         assert coordinator.search_handler is not None
         assert coordinator.display_handler is not None
         assert coordinator.source_selector is not None
 
-    def test_handle_vacancy_search(self, coordinator, mock_handlers):
-        """Тест обработки поиска вакансий"""
+    def test_handle_vacancy_search(self, coordinator, consolidated_mocks):
+        """Тест делегирования поиска вакансий обработчику"""
         coordinator.handle_vacancy_search()
-        mock_handlers['search'].search_vacancies.assert_called_once()
+        consolidated_mocks['search_handler'].search_vacancies.assert_called_once()
 
-    def test_handle_show_saved_vacancies(self, coordinator, mock_handlers):
-        """Тест отображения сохраненных вакансий"""
+    def test_handle_show_saved_vacancies(self, coordinator, consolidated_mocks):
+        """Тест делегирования отображения сохраненных вакансий"""
         coordinator.handle_show_saved_vacancies()
-        mock_handlers['display'].show_all_saved_vacancies.assert_called_once()
+        consolidated_mocks['display_handler'].show_all_saved_vacancies.assert_called_once()
 
-    def test_handle_top_vacancies_by_salary(self, coordinator, mock_handlers):
-        """Тест получения топ вакансий по зарплате"""
+    def test_handle_top_vacancies_by_salary(self, coordinator, consolidated_mocks):
+        """Тест делегирования получения топ вакансий по зарплате"""
         coordinator.handle_top_vacancies_by_salary()
-        mock_handlers['display'].show_top_vacancies_by_salary.assert_called_once()
+        consolidated_mocks['display_handler'].show_top_vacancies_by_salary.assert_called_once()
 
-    def test_handle_search_saved_by_keyword(self, coordinator, mock_handlers):
-        """Тест поиска сохраненных вакансий по ключевому слову"""
+    def test_handle_search_saved_by_keyword(self, coordinator, consolidated_mocks):
+        """Тест делегирования поиска сохраненных вакансий по ключевому слову"""
         coordinator.handle_search_saved_by_keyword()
-        mock_handlers['display'].search_saved_vacancies_by_keyword.assert_called_once()
+        consolidated_mocks['display_handler'].search_saved_vacancies_by_keyword.assert_called_once()
 
     @patch('builtins.print')
-    @patch('src.ui_interfaces.vacancy_operations_coordinator.confirm_action', return_value=True)
-    def test_handle_cache_cleanup(self, mock_confirm, mock_print, coordinator, mock_api, mock_handlers):
-        """Тест очистки кэша"""
-        mock_handlers['selector'].get_user_source_choice.return_value = {"hh.ru"}
+    def test_handle_cache_cleanup_success(self, mock_print, coordinator, consolidated_mocks):
+        """Тест успешной очистки кэша"""
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.confirm_action', return_value=True):
+            coordinator.handle_cache_cleanup()
+            
+            consolidated_mocks['source_selector'].get_user_source_choice.assert_called_once()
+            consolidated_mocks['source_selector'].display_sources_info.assert_called_once_with({"hh.ru"})
+            consolidated_mocks['api'].clear_cache.assert_called_once_with({"hh": True, "sj": False})
+
+    @patch('builtins.print')
+    def test_handle_cache_cleanup_cancelled(self, mock_print, coordinator, consolidated_mocks):
+        """Тест отмены очистки кэша"""
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.confirm_action', return_value=False):
+            coordinator.handle_cache_cleanup()
+            
+            consolidated_mocks['source_selector'].get_user_source_choice.assert_called_once()
+            consolidated_mocks['api'].clear_cache.assert_not_called()
+
+    @patch('builtins.print')
+    def test_handle_cache_cleanup_no_sources(self, mock_print, coordinator, consolidated_mocks):
+        """Тест очистки кэша без выбранных источников"""
+        consolidated_mocks['source_selector'].get_user_source_choice.return_value = None
         
         coordinator.handle_cache_cleanup()
         
-        mock_handlers['selector'].get_user_source_choice.assert_called_once()
-        mock_handlers['selector'].display_sources_info.assert_called_once_with({"hh.ru"})
-        mock_api.clear_cache.assert_called_once()
+        consolidated_mocks['source_selector'].get_user_source_choice.assert_called_once()
+        consolidated_mocks['api'].clear_cache.assert_not_called()
 
     @patch('builtins.print')
     @patch('builtins.input', return_value='0')
-    def test_handle_delete_vacancies_no_vacancies(self, mock_input, mock_print, coordinator, mock_storage):
-        """Тест удаления вакансий когда их нет"""
-        mock_storage.get_vacancies.return_value = []
+    def test_handle_delete_vacancies_cancel(self, mock_input, mock_print, coordinator, consolidated_mocks):
+        """Тест отмены удаления вакансий"""
+        test_vacancies = [
+            Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")
+        ]
+        consolidated_mocks['storage'].get_vacancies.return_value = test_vacancies
         
         coordinator.handle_delete_vacancies()
         
-        mock_storage.get_vacancies.assert_called_once()
+        consolidated_mocks['storage'].get_vacancies.assert_called_once()
 
     @patch('builtins.print')
     @patch('builtins.input', return_value='1')
-    @patch('src.ui_interfaces.vacancy_operations_coordinator.confirm_action', return_value=True)
-    def test_handle_delete_vacancies_all(self, mock_confirm, mock_input, mock_print, coordinator, mock_storage):
-        """Тест удаления всех вакансий"""
-        test_vacancies = [Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")]
-        mock_storage.get_vacancies.return_value = test_vacancies
+    def test_handle_delete_all_vacancies_success(self, mock_input, mock_print, coordinator, consolidated_mocks):
+        """Тест успешного удаления всех вакансий"""
+        test_vacancies = [
+            Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")
+        ]
+        consolidated_mocks['storage'].get_vacancies.return_value = test_vacancies
         
-        coordinator.handle_delete_vacancies()
-        
-        mock_storage.delete_all_vacancies.assert_called_once()
-
-    @patch('builtins.print')
-    @patch('builtins.input', return_value="2")
-    @patch('src.ui_interfaces.vacancy_operations_coordinator.get_user_input', return_value="Python")
-    @patch('src.utils.ui_helpers.filter_vacancies_by_keyword')
-    @patch('src.ui_interfaces.vacancy_operations_coordinator.confirm_action', return_value=True)
-    def test_handle_delete_vacancies_by_keyword(self, mock_confirm, mock_filter, mock_user_input, mock_input, mock_print, coordinator, mock_storage):
-        """Тест удаления вакансий по ключевому слову"""
-        test_vacancies = [Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")]
-        mock_storage.get_vacancies.return_value = test_vacancies
-        mock_filter.return_value = test_vacancies
-        mock_storage.delete_vacancies_batch.return_value = 1
-        
-        coordinator.handle_delete_vacancies()
-        
-        mock_storage.delete_vacancies_batch.assert_called_once()
-
-    @patch('builtins.print')
-    @patch('builtins.input', return_value="Python")
-    def test_handle_superjob_setup(self, mock_input, mock_print):
-        """Тест настройки SuperJob API"""
-        VacancyOperationsCoordinator.handle_superjob_setup()
-        mock_print.assert_called()
-
-    @patch('builtins.print')
-    @patch('src.ui_interfaces.vacancy_operations_coordinator.Vacancy')
-    def test_get_vacancies_from_sources(self, mock_vacancy, mock_print, coordinator, mock_api, mock_storage):
-        """Тест получения вакансий из источников"""
-        mock_vacancy_data = [{"id": "123", "title": "Python Developer"}]
-        mock_api.get_vacancies_from_sources.return_value = mock_vacancy_data
-        
-        mock_vacancy_instance = Mock()
-        mock_vacancy.from_dict.return_value = mock_vacancy_instance
-        
-        mock_storage.add_vacancy.return_value = ["Vacancy added"]
-        mock_storage.get_vacancies.return_value = [mock_vacancy_instance]
-        
-        result = coordinator.get_vacancies_from_sources("Python", ["hh.ru"])
-        
-        assert len(result) == 1
-        mock_api.get_vacancies_from_sources.assert_called_once()
-
-    @patch('builtins.print')
-    @patch('src.ui_interfaces.vacancy_operations_coordinator.Vacancy')
-    def test_get_vacancies_from_target_companies(self, mock_vacancy, mock_print, coordinator, mock_api, mock_storage):
-        """Тест получения вакансий от целевых компаний"""
-        mock_vacancy_data = [{"id": "123", "title": "Python Developer"}]
-        mock_api.get_vacancies_from_target_companies.return_value = mock_vacancy_data
-        
-        mock_vacancy_instance = Mock()
-        mock_vacancy.from_dict.return_value = mock_vacancy_instance
-        
-        mock_storage.add_vacancy.return_value = ["Vacancy added"]
-        mock_storage.get_vacancies.return_value = [mock_vacancy_instance]
-        
-        result = coordinator.get_vacancies_from_target_companies("Python", ["hh.ru"])
-        
-        assert len(result) == 1
-        mock_api.get_vacancies_from_target_companies.assert_called_once()
-
-    @patch('builtins.print')
-    def test_handle_delete_vacancies_cancel(self, mock_print, coordinator, mock_storage):
-        """Тест отмены удаления вакансий"""
-        test_vacancies = [Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")]
-        mock_storage.get_vacancies.return_value = test_vacancies
-        
-        with patch('builtins.input', return_value='0'):
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.confirm_action', return_value=True):
             coordinator.handle_delete_vacancies()
-        
-        mock_storage.delete_all_vacancies.assert_not_called()
+            
+            consolidated_mocks['storage'].delete_all_vacancies.assert_called_once()
 
     @patch('builtins.print')
-    def test_handle_cache_cleanup_cancelled_source_selection(self, mock_print, coordinator, mock_handlers):
-        """Тест отмены выбора источников при очистке кэша"""
-        mock_handlers['selector'].get_user_source_choice.return_value = None
+    @patch('builtins.input', return_value='2')
+    def test_handle_delete_by_keyword(self, mock_input, mock_print, coordinator, consolidated_mocks):
+        """Тест удаления вакансий по ключевому слову"""
+        test_vacancies = [
+            Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")
+        ]
+        consolidated_mocks['storage'].get_vacancies.return_value = test_vacancies
+        consolidated_mocks['storage'].delete_vacancies_batch.return_value = 1
         
-        coordinator.handle_cache_cleanup()
-        
-        # Метод должен завершиться без ошибок при отмене выбора источников
-        mock_handlers['selector'].get_user_source_choice.assert_called_once()
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.get_user_input', return_value="Python"), \
+             patch('src.utils.ui_helpers.filter_vacancies_by_keyword', return_value=test_vacancies), \
+             patch('src.ui_interfaces.vacancy_operations_coordinator.confirm_action', return_value=True):
+            
+            coordinator.handle_delete_vacancies()
+            
+            consolidated_mocks['storage'].delete_vacancies_batch.assert_called_once_with(["123"])
 
     @patch('builtins.print')
-    def test_get_vacancies_from_sources_error_handling(self, mock_print, coordinator, mock_api):
-        """Тест обработки ошибок при получении вакансий из источников"""
-        mock_api.get_vacancies_from_sources.side_effect = Exception("API Error")
+    @patch('builtins.input', return_value='3')
+    def test_handle_delete_by_id_found(self, mock_input, mock_print, coordinator, consolidated_mocks):
+        """Тест удаления вакансии по найденному ID"""
+        test_vacancy = Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")
+        consolidated_mocks['storage'].get_vacancies.return_value = [test_vacancy]
         
-        result = coordinator.get_vacancies_from_sources("Python", ["hh.ru"])
-        
-        assert result == []
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.get_user_input', return_value="123"), \
+             patch('src.ui_interfaces.vacancy_operations_coordinator.confirm_action', return_value=True), \
+             patch('src.ui_interfaces.vacancy_operations_coordinator.VacancyFormatter') as mock_formatter_class:
+            
+            mock_formatter = Mock()
+            mock_formatter.format_vacancy_info.return_value = "Formatted info"
+            mock_formatter_class.return_value = mock_formatter
+            
+            coordinator.handle_delete_vacancies()
+            
+            consolidated_mocks['storage'].delete_vacancy_by_id.assert_called_once_with("123")
 
     @patch('builtins.print')
-    def test_get_vacancies_from_target_companies_error_handling(self, mock_print, coordinator, mock_api):
-        """Тест обработки ошибок при получении вакансий от целевых компаний"""
-        mock_api.get_vacancies_from_target_companies.side_effect = Exception("API Error")
+    @patch('builtins.input', return_value='3')
+    def test_handle_delete_by_id_not_found(self, mock_input, mock_print, coordinator, consolidated_mocks):
+        """Тест удаления вакансии по несуществующему ID"""
+        test_vacancy = Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")
+        consolidated_mocks['storage'].get_vacancies.return_value = [test_vacancy]
         
-        result = coordinator.get_vacancies_from_target_companies("Python", ["hh.ru"])
-        
-        assert result == []
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.get_user_input', return_value="999"):
+            coordinator.handle_delete_vacancies()
+            
+            consolidated_mocks['storage'].delete_vacancy_by_id.assert_not_called()
 
     @patch('builtins.print')
-    def test_handle_delete_vacancies_storage_error(self, mock_print, coordinator, mock_storage):
-        """Тест обработки ошибки storage при удалении вакансий"""
-        mock_storage.get_vacancies.side_effect = Exception("Storage error")
+    def test_handle_delete_vacancies_empty_storage(self, mock_print, coordinator, consolidated_mocks):
+        """Тест удаления вакансий при пустом хранилище"""
+        consolidated_mocks['storage'].get_vacancies.return_value = []
         
         coordinator.handle_delete_vacancies()
         
-        mock_print.assert_called()
+        consolidated_mocks['storage'].get_vacancies.assert_called_once()
+
+    @patch('builtins.input', return_value='')
+    @patch('builtins.print')
+    def test_handle_superjob_setup(self, mock_print, mock_input):
+        """Тест настройки SuperJob API"""
+        with patch.dict(os.environ, {"SUPERJOB_API_KEY": "test_key"}):
+            VacancyOperationsCoordinator.handle_superjob_setup()
+            
+            mock_print.assert_called()
+
+    @patch('builtins.print')
+    def test_get_vacancies_from_sources_success(self, mock_print, coordinator, consolidated_mocks):
+        """Тест успешного получения вакансий из источников"""
+        # Настройка тестовых данных
+        mock_vacancy_data = [{"id": "123", "title": "Python Developer", "url": "https://test.com"}]
+        test_vacancy = Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")
+        
+        consolidated_mocks['api'].get_vacancies_from_sources.return_value = mock_vacancy_data
+        consolidated_mocks['storage'].add_vacancy.return_value = ["Vacancy added"]
+        consolidated_mocks['storage'].get_vacancies.return_value = [test_vacancy]
+        
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.Vacancy') as mock_vacancy_class:
+            mock_vacancy_class.from_dict.return_value = test_vacancy
+            
+            result = coordinator.get_vacancies_from_sources("Python", ["hh"])
+            
+            assert len(result) == 1
+            assert result[0] == test_vacancy
+            consolidated_mocks['api'].get_vacancies_from_sources.assert_called_once_with(
+                search_query="Python", sources=["hh"]
+            )
+
+    @patch('builtins.print')
+    def test_get_vacancies_from_sources_error(self, mock_print, coordinator, consolidated_mocks):
+        """Тест обработки ошибки при получении вакансий из источников"""
+        consolidated_mocks['api'].get_vacancies_from_sources.side_effect = Exception("API Error")
+        
+        result = coordinator.get_vacancies_from_sources("Python", ["hh"])
+        
+        assert result == []
+
+    @patch('builtins.print')
+    def test_get_vacancies_from_target_companies_success(self, mock_print, coordinator, consolidated_mocks):
+        """Тест успешного получения вакансий от целевых компаний"""
+        mock_vacancy_data = [{"id": "123", "title": "Python Developer", "url": "https://test.com"}]
+        test_vacancy = Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")
+        
+        consolidated_mocks['api'].get_vacancies_from_target_companies.return_value = mock_vacancy_data
+        consolidated_mocks['storage'].add_vacancy.return_value = ["Vacancy added"]
+        consolidated_mocks['storage'].get_vacancies.return_value = [test_vacancy]
+        
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.Vacancy') as mock_vacancy_class:
+            mock_vacancy_class.from_dict.return_value = test_vacancy
+            
+            result = coordinator.get_vacancies_from_target_companies("Python", ["hh"])
+            
+            assert len(result) == 1
+            assert result[0] == test_vacancy
+            consolidated_mocks['api'].get_vacancies_from_target_companies.assert_called_once_with(
+                search_query="Python", sources=["hh"]
+            )
+
+    @patch('builtins.print')
+    def test_get_vacancies_from_target_companies_error(self, mock_print, coordinator, consolidated_mocks):
+        """Тест обработки ошибки при получении вакансий от целевых компаний"""
+        consolidated_mocks['api'].get_vacancies_from_target_companies.side_effect = Exception("API Error")
+        
+        result = coordinator.get_vacancies_from_target_companies("Python", ["hh"])
+        
+        assert result == []
+
+    def test_handle_delete_all_vacancies_success(self, coordinator, consolidated_mocks):
+        """Тест успешного удаления всех вакансий"""
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.confirm_action', return_value=True), \
+             patch('builtins.print'):
+            
+            coordinator._handle_delete_all_vacancies()
+            
+            consolidated_mocks['storage'].delete_all_vacancies.assert_called_once()
+
+    def test_handle_delete_all_vacancies_cancelled(self, coordinator, consolidated_mocks):
+        """Тест отмены удаления всех вакансий"""
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.confirm_action', return_value=False), \
+             patch('builtins.print'):
+            
+            coordinator._handle_delete_all_vacancies()
+            
+            consolidated_mocks['storage'].delete_all_vacancies.assert_not_called()
+
+    def test_handle_delete_by_keyword_found(self, coordinator, consolidated_mocks):
+        """Тест удаления вакансий по найденному ключевому слову"""
+        test_vacancies = [
+            Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")
+        ]
+        
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.get_user_input', return_value="Python"), \
+             patch('src.utils.ui_helpers.filter_vacancies_by_keyword', return_value=test_vacancies), \
+             patch('src.ui_interfaces.vacancy_operations_coordinator.confirm_action', return_value=True), \
+             patch('builtins.print'):
+            
+            consolidated_mocks['storage'].delete_vacancies_batch.return_value = 1
+            
+            coordinator._handle_delete_by_keyword(test_vacancies)
+            
+            consolidated_mocks['storage'].delete_vacancies_batch.assert_called_once_with(["123"])
+
+    def test_handle_delete_by_keyword_not_found(self, coordinator, consolidated_mocks):
+        """Тест удаления вакансий по ненайденному ключевому слову"""
+        test_vacancies = [
+            Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")
+        ]
+        
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.get_user_input', return_value="Java"), \
+             patch('src.utils.ui_helpers.filter_vacancies_by_keyword', return_value=[]), \
+             patch('builtins.print'):
+            
+            coordinator._handle_delete_by_keyword(test_vacancies)
+            
+            consolidated_mocks['storage'].delete_vacancies_batch.assert_not_called()
+
+    def test_handle_delete_by_keyword_empty_input(self, coordinator, consolidated_mocks):
+        """Тест удаления вакансий при пустом вводе ключевого слова"""
+        test_vacancies = []
+        
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.get_user_input', return_value=""), \
+             patch('builtins.print'):
+            
+            coordinator._handle_delete_by_keyword(test_vacancies)
+            
+            consolidated_mocks['storage'].delete_vacancies_batch.assert_not_called()
+
+    def test_handle_delete_by_id_found_and_confirmed(self, coordinator, consolidated_mocks):
+        """Тест удаления найденной вакансии по ID с подтверждением"""
+        test_vacancy = Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")
+        test_vacancies = [test_vacancy]
+        
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.get_user_input', return_value="123"), \
+             patch('src.ui_interfaces.vacancy_operations_coordinator.confirm_action', return_value=True), \
+             patch('src.ui_interfaces.vacancy_operations_coordinator.VacancyFormatter') as mock_formatter_class, \
+             patch('builtins.print'):
+            
+            mock_formatter = Mock()
+            mock_formatter.format_vacancy_info.return_value = "Formatted vacancy info"
+            mock_formatter_class.return_value = mock_formatter
+            
+            coordinator._handle_delete_by_id(test_vacancies)
+            
+            consolidated_mocks['storage'].delete_vacancy_by_id.assert_called_once_with("123")
+
+    def test_handle_delete_by_id_found_not_confirmed(self, coordinator, consolidated_mocks):
+        """Тест отмены удаления найденной вакансии по ID"""
+        test_vacancy = Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")
+        test_vacancies = [test_vacancy]
+        
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.get_user_input', return_value="123"), \
+             patch('src.ui_interfaces.vacancy_operations_coordinator.confirm_action', return_value=False), \
+             patch('src.ui_interfaces.vacancy_operations_coordinator.VacancyFormatter') as mock_formatter_class, \
+             patch('builtins.print'):
+            
+            mock_formatter = Mock()
+            mock_formatter_class.return_value = mock_formatter
+            
+            coordinator._handle_delete_by_id(test_vacancies)
+            
+            consolidated_mocks['storage'].delete_vacancy_by_id.assert_not_called()
+
+    def test_handle_delete_by_id_not_found(self, coordinator, consolidated_mocks):
+        """Тест удаления несуществующей вакансии по ID"""
+        test_vacancy = Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")
+        test_vacancies = [test_vacancy]
+        
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.get_user_input', return_value="999"), \
+             patch('builtins.print'):
+            
+            coordinator._handle_delete_by_id(test_vacancies)
+            
+            consolidated_mocks['storage'].delete_vacancy_by_id.assert_not_called()
+
+    def test_handle_delete_by_id_empty_input(self, coordinator, consolidated_mocks):
+        """Тест удаления вакансии при пустом вводе ID"""
+        test_vacancies = []
+        
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.get_user_input', return_value=""), \
+             patch('builtins.print'):
+            
+            coordinator._handle_delete_by_id(test_vacancies)
+            
+            consolidated_mocks['storage'].delete_vacancy_by_id.assert_not_called()
+
+    def test_show_vacancy_for_confirmation(self, coordinator, consolidated_mocks):
+        """Тест отображения вакансии для подтверждения удаления"""
+        test_vacancy = Vacancy(vacancy_id="123", title="Python Developer", url="https://test.com", source="hh.ru")
+        
+        with patch('src.ui_interfaces.vacancy_operations_coordinator.VacancyFormatter') as mock_formatter_class, \
+             patch('builtins.print'):
+            
+            mock_formatter = Mock()
+            mock_formatter.format_vacancy_info.return_value = "Formatted vacancy info"
+            mock_formatter_class.return_value = mock_formatter
+            
+            coordinator._show_vacancy_for_confirmation(test_vacancy)
+            
+            mock_formatter.format_vacancy_info.assert_called_once_with(test_vacancy)

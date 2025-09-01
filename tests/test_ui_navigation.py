@@ -1,4 +1,3 @@
-
 import os
 import sys
 from unittest.mock import Mock, patch
@@ -34,25 +33,25 @@ class TestUINavigation:
             for i in range(1, 11)
         ]
 
-    @patch('builtins.input', side_effect=["", "q"])
+    @patch('builtins.input', side_effect=["", "", "", "q"])
     @patch('builtins.print')
     def test_quick_paginate_basic(self, mock_print, mock_input, sample_items):
         """Тест базовой пагинации"""
         try:
             from src.utils.ui_navigation import quick_paginate
-            
+
             def simple_formatter(item, number=None):
                 if number:
                     return f"{number}. {item['id']}: {item['title']}"
                 return f"{item['id']}: {item['title']}"
-            
+
             quick_paginate(
                 sample_items,
                 formatter=simple_formatter,
                 header="Test Items",
                 items_per_page=3
             )
-            
+
             mock_print.assert_called()
         except ImportError:
             # Создаем тестовую реализацию quick_paginate
@@ -61,38 +60,38 @@ class TestUINavigation:
                 if not items:
                     print("Нет элементов для отображения")
                     return
-                
+
                 print(f"\n{header}")
                 print("=" * 50)
-                
+
                 total_pages = (len(items) + items_per_page - 1) // items_per_page
                 current_page = 0
-                
+
                 while current_page < total_pages:
                     start_idx = current_page * items_per_page
                     end_idx = min(start_idx + items_per_page, len(items))
-                    
+
                     for i in range(start_idx, end_idx):
                         print(f"{i + 1}. {formatter(items[i])}")
-                    
+
                     print(f"\nСтраница {current_page + 1} из {total_pages}")
-                    
+
                     user_input = input("Нажмите Enter для следующей страницы или 'q' для выхода: ")
                     if user_input.lower() == 'q':
                         break
-                    
+
                     current_page += 1
-            
+
             def simple_formatter(item):
                 return f"{item['id']}: {item['title']}"
-            
+
             quick_paginate(
                 sample_items,
                 formatter=simple_formatter,
                 header="Test Items",
                 items_per_page=3
             )
-            
+
             mock_print.assert_called()
 
     @patch('builtins.input', return_value="q")
@@ -105,7 +104,7 @@ class TestUINavigation:
         except ImportError:
             # Тестовая реализация
             print("Нет элементов для отображения")
-        
+
         mock_print.assert_called()
 
     @patch('builtins.input', return_value="q")
@@ -114,12 +113,12 @@ class TestUINavigation:
         """Тест пагинации с вакансиями"""
         try:
             from src.utils.ui_navigation import quick_paginate
-            
+
             def vacancy_formatter(vacancy, number=None):
                 if number:
                     return f"{number}. {vacancy.title} - {vacancy.source}"
                 return f"{vacancy.title} - {vacancy.source}"
-            
+
             quick_paginate(
                 sample_vacancies[:5],
                 formatter=vacancy_formatter,
@@ -130,7 +129,7 @@ class TestUINavigation:
             # Тестовая реализация
             for i, vacancy in enumerate(sample_vacancies[:5], 1):
                 print(f"{i}. {vacancy.title} - {vacancy.source}")
-        
+
         mock_print.assert_called()
 
     def test_pagination_calculation(self):
@@ -150,7 +149,7 @@ class TestUINavigation:
                         "items_per_page": items_per_page,
                         "total_items": total_items
                     }
-                
+
                 result = calculate_pagination(100, 10)
                 assert result["total_pages"] == 10
         except ImportError:
@@ -158,22 +157,22 @@ class TestUINavigation:
             def calculate_pagination(total_items, items_per_page):
                 total_pages = (total_items + items_per_page - 1) // items_per_page
                 return {"total_pages": total_pages}
-            
+
             result = calculate_pagination(100, 10)
             assert result["total_pages"] == 10
 
-    @patch('builtins.input', side_effect=["n", "", "q"])
+    @patch('builtins.input', side_effect=["n", "", "", "q"])
     @patch('builtins.print')
     def test_navigation_controls(self, mock_print, mock_input, sample_items):
         """Тест элементов управления навигацией"""
         try:
             from src.utils.ui_navigation import quick_paginate
-            
+
             def simple_formatter(item, number=None):
                 if number:
                     return f"{number}. {item['title']}"
                 return str(item["title"])
-            
+
             quick_paginate(
                 sample_items,
                 formatter=simple_formatter,
@@ -186,5 +185,5 @@ class TestUINavigation:
             for item in sample_items[:3]:
                 print(item["title"])
             print("Навигация завершена")
-        
+
         mock_print.assert_called()

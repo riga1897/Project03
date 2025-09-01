@@ -125,8 +125,8 @@ class TestAPIDataFilter:
                 if salary and (salary.get("from", 0) >= 110000 or salary.get("to", 0) >= 110000):
                     result.append(item)
         
-        # Должна остаться только одна вакансия Java Developer с зарплатой >= 110000
-        assert len(result) == 1
+        # Две вакансии соответствуют критерию: Java Developer (120000) и ML Engineer (150000)
+        assert len(result) == 2
         assert result[0]["name"] == "Java Developer"
 
     def test_filter_by_target_companies(self, sample_api_data):
