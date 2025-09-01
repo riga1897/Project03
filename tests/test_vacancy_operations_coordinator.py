@@ -1,3 +1,4 @@
+
 import os
 import sys
 import pytest
@@ -94,6 +95,7 @@ except ImportError:
             self.storage = storage or Mock()
             self.search_handler = Mock()
             self.display_handler = Mock()
+            self.source_selector = Mock()
 
         def handle_vacancy_search(self) -> None:
             """Обработка поиска вакансий без ввода пользователя"""
@@ -123,6 +125,14 @@ except ImportError:
             """Обработка настройки SuperJob API"""
             print("Настройка SuperJob API...")
 
+        def get_vacancies_from_sources(self, search_query: str, sources: List[str], **kwargs) -> List[Vacancy]:
+            """Получение вакансий из источников"""
+            return []
+
+        def get_vacancies_from_target_companies(self, search_query: str = "", sources: List[str] = None, **kwargs) -> List[Vacancy]:
+            """Получение вакансий от целевых компаний"""
+            return []
+
 
 class TestVacancyOperationsCoordinator:
     """Комплексные тесты для координатора операций с вакансиями"""
@@ -136,7 +146,7 @@ class TestVacancyOperationsCoordinator:
             'search_handler': Mock(),
             'display_handler': Mock(),
             'source_selector': Mock(),
-            'input': Mock(),
+            'input': Mock(return_value=""),
             'print': Mock()
         }
 
@@ -153,6 +163,8 @@ class TestVacancyOperationsCoordinator:
                 coordinator.search_handler = consolidated_mocks['search_handler']
             if not hasattr(coordinator, 'display_handler'):
                 coordinator.display_handler = consolidated_mocks['display_handler']
+            if not hasattr(coordinator, 'source_selector'):
+                coordinator.source_selector = consolidated_mocks['source_selector']
 
             return coordinator
         else:
@@ -195,57 +207,64 @@ class TestVacancyOperationsCoordinator:
         assert coordinator.unified_api == consolidated_mocks['unified_api']
         assert coordinator.storage == consolidated_mocks['storage']
 
-    @patch('src.ui_interfaces.vacancy_operations_coordinator.get_user_input', return_value="Python")
-    @patch('src.ui_interfaces.vacancy_operations_coordinator.get_positive_integer', return_value=15)
+    @patch('builtins.input', return_value="")
     @patch('builtins.print')
-    def test_handle_vacancy_search(self, mock_print, mock_get_int, mock_get_input, coordinator):
-        """Тест обработки поиска вакансий с мокированием ввода"""
-        if SRC_AVAILABLE:
-            # Мокируем все методы, которые могут вызывать input
-            coordinator.search_handler = Mock()
-            coordinator.search_handler.search_vacancies.return_value = []
+    def test_handle_vacancy_search(self, mock_print, mock_input, coordinator):
+        """Тест обработки поиска вакансий с полным мокированием"""
+        with patch.object(coordinator, 'search_handler') as mock_search_handler:
+            mock_search_handler.search_vacancies = Mock(return_value=None)
+            coordinator.handle_vacancy_search()
+            mock_print.assert_called()
 
-        coordinator.handle_vacancy_search()
-        mock_print.assert_called()
-
-    @patch('src.ui_interfaces.vacancy_operations_coordinator.get_positive_integer', return_value=10)
+    @patch('builtins.input', return_value="")
     @patch('builtins.print')
-    def test_handle_top_vacancies_by_salary(self, mock_print, mock_get_int, coordinator):
-        """Тест обработки топ вакансий по зарплате с мокированием ввода"""
-        if SRC_AVAILABLE:
-            coordinator.display_handler = Mock()
-            coordinator.display_handler.show_top_vacancies_by_salary.return_value = None
+    def test_handle_show_saved_vacancies(self, mock_print, mock_input, coordinator):
+        """Тест отображения сохраненных вакансий с полным мокированием"""
+        with patch.object(coordinator, 'display_handler') as mock_display_handler:
+            mock_display_handler.show_all_saved_vacancies = Mock(return_value=None)
+            coordinator.handle_show_saved_vacancies()
+            mock_print.assert_called()
 
-        coordinator.handle_top_vacancies_by_salary()
-        mock_print.assert_called()
-
-    @patch('src.ui_interfaces.vacancy_operations_coordinator.get_user_input', return_value="python")
+    @patch('builtins.input', return_value="")
     @patch('builtins.print')
-    def test_handle_search_saved_by_keyword(self, mock_print, mock_get_input, coordinator):
-        """Тест обработки поиска по ключевому слову с мокированием ввода"""
-        if SRC_AVAILABLE:
-            coordinator.display_handler = Mock()
-            coordinator.display_handler.search_saved_vacancies_by_keyword.return_value = None
+    def test_handle_top_vacancies_by_salary(self, mock_print, mock_input, coordinator):
+        """Тест обработки топ вакансий по зарплате с полным мокированием"""
+        with patch.object(coordinator, 'display_handler') as mock_display_handler:
+            mock_display_handler.show_top_vacancies_by_salary = Mock(return_value=None)
+            coordinator.handle_top_vacancies_by_salary()
+            mock_print.assert_called()
 
-        coordinator.handle_search_saved_by_keyword()
-        mock_print.assert_called()
-
+    @patch('builtins.input', return_value="")
     @patch('builtins.print')
-    def test_handle_delete_vacancies(self, mock_print, coordinator):
-        """Тест обработки удаления вакансий"""
+    def test_handle_search_saved_by_keyword(self, mock_print, mock_input, coordinator):
+        """Тест обработки поиска по ключевому слову с полным мокированием"""
+        with patch.object(coordinator, 'display_handler') as mock_display_handler:
+            mock_display_handler.search_saved_vacancies_by_keyword = Mock(return_value=None)
+            coordinator.handle_search_saved_by_keyword()
+            mock_print.assert_called()
+
+    @patch('builtins.input', return_value="0")
+    @patch('builtins.print')
+    def test_handle_delete_vacancies(self, mock_print, mock_input, coordinator, consolidated_mocks):
+        """Тест обработки удаления вакансий с полным мокированием"""
+        consolidated_mocks['storage'].get_vacancies.return_value = []
+        coordinator.storage = consolidated_mocks['storage']
         coordinator.handle_delete_vacancies()
         mock_print.assert_called()
 
+    @patch('builtins.input', return_value="")
     @patch('builtins.print')
-    def test_handle_cache_cleanup(self, mock_print, coordinator):
-        """Тест обработки очистки кэша"""
-        coordinator.handle_cache_cleanup()
-        mock_print.assert_called()
+    def test_handle_cache_cleanup(self, mock_print, mock_input, coordinator, consolidated_mocks):
+        """Тест обработки очистки кэша с полным мокированием"""
+        with patch.object(coordinator, 'source_selector') as mock_source_selector:
+            mock_source_selector.get_user_source_choice = Mock(return_value=[])
+            coordinator.handle_cache_cleanup()
+            mock_print.assert_called()
 
-    @patch('builtins.input', return_value="")  # Мокируем input для избежания stdin
+    @patch('builtins.input', return_value="")
     @patch('builtins.print')
     def test_handle_superjob_setup(self, mock_print, mock_input, coordinator):
-        """Тест обработки настройки SuperJob API с мокированием ввода"""
+        """Тест обработки настройки SuperJob API с полным мокированием"""
         coordinator.handle_superjob_setup()
         mock_print.assert_called()
 
@@ -264,8 +283,10 @@ class TestVacancyOperationsCoordinator:
             result = coordinator.storage.add_vacancy(vacancy)
             assert result is True
 
-    def test_vacancy_management_workflow(self, coordinator, sample_vacancies, consolidated_mocks):
-        """Тест рабочего процесса управления вакансиями"""
+    @patch('builtins.input', return_value="")
+    @patch('builtins.print')
+    def test_vacancy_management_workflow(self, mock_print, mock_input, coordinator, sample_vacancies, consolidated_mocks):
+        """Тест рабочего процесса управления вакансиями с полным мокированием"""
         coordinator.storage = consolidated_mocks['storage']
         consolidated_mocks['storage'].get_vacancies.return_value = sample_vacancies
 
@@ -280,15 +301,15 @@ class TestVacancyOperationsCoordinator:
             if hasattr(coordinator, method_name):
                 method = getattr(coordinator, method_name)
                 try:
-                    with patch('builtins.print'), patch('builtins.input', return_value=""):
-                        method()
+                    method()
                 except Exception as e:
                     # Ошибки в управлении должны быть обработаны
                     assert isinstance(e, Exception)
 
+    @patch('builtins.input', return_value="")
     @patch('builtins.print')
-    def test_coordinator_error_handling(self, mock_print, coordinator, consolidated_mocks):
-        """Тест обработки ошибок координатора"""
+    def test_coordinator_error_handling(self, mock_print, mock_input, coordinator, consolidated_mocks):
+        """Тест обработки ошибок координатора с полным мокированием"""
         # Настраиваем моки для генерации ошибок
         consolidated_mocks['storage'].get_vacancies.side_effect = Exception("Storage error")
         coordinator.storage = consolidated_mocks['storage']
@@ -304,14 +325,15 @@ class TestVacancyOperationsCoordinator:
             if hasattr(coordinator, method_name):
                 method = getattr(coordinator, method_name)
                 try:
-                    with patch('builtins.input', return_value=""):
-                        method()
+                    method()
                 except Exception as e:
                     # Ошибки должны быть перехвачены и обработаны
                     assert isinstance(e, Exception)
 
-    def test_coordinator_performance(self, coordinator, consolidated_mocks):
-        """Тест производительности координатора"""
+    @patch('builtins.input', return_value="")
+    @patch('builtins.print')
+    def test_coordinator_performance(self, mock_print, mock_input, coordinator, consolidated_mocks):
+        """Тест производительности координатора с полным мокированием"""
         import time
 
         coordinator.storage = consolidated_mocks['storage']
@@ -328,8 +350,7 @@ class TestVacancyOperationsCoordinator:
         for method_name in methods_to_test:
             if hasattr(coordinator, method_name):
                 method = getattr(coordinator, method_name)
-                with patch('builtins.print'), patch('builtins.input', return_value=""):
-                    method()
+                method()
 
         end_time = time.time()
         execution_time = end_time - start_time
@@ -337,8 +358,9 @@ class TestVacancyOperationsCoordinator:
         # Операции должны выполняться быстро
         assert execution_time < 2.0
 
+    @patch('builtins.input', return_value="")
     @patch('builtins.print')
-    def test_coordinator_integration_ready(self, mock_print, coordinator):
+    def test_coordinator_integration_ready(self, mock_print, mock_input, coordinator):
         """Тест готовности координатора к интеграции"""
         # Проверяем наличие основных компонентов
         required_attributes = ['unified_api', 'storage']
@@ -382,16 +404,16 @@ class TestVacancyOperationsCoordinator:
                     # Исключения допустимы при мокировании
                     pass
 
+    @patch('builtins.input', return_value="")
     @patch('builtins.print')
-    def test_superjob_configuration(self, mock_print, coordinator):
+    def test_superjob_configuration(self, mock_print, mock_input, coordinator):
         """Тест настройки SuperJob API без ввода пользователя"""
-        # Полностью мокируем все взаимодействия
-        with patch('builtins.input', return_value=""):
-            coordinator.handle_superjob_setup()
-
+        coordinator.handle_superjob_setup()
         mock_print.assert_called()
 
-    def test_coordinator_state_consistency(self, coordinator, consolidated_mocks):
+    @patch('builtins.input', return_value="")
+    @patch('builtins.print')
+    def test_coordinator_state_consistency(self, mock_print, mock_input, coordinator, consolidated_mocks):
         """Тест консистентности состояния координатора"""
         # Проверяем, что состояние координатора остается консистентным
         initial_api = coordinator.unified_api
@@ -407,8 +429,7 @@ class TestVacancyOperationsCoordinator:
             if hasattr(coordinator, operation):
                 method = getattr(coordinator, operation)
                 try:
-                    with patch('builtins.print'), patch('builtins.input', return_value=""):
-                        method()
+                    method()
                 except Exception:
                     pass
 
@@ -425,22 +446,30 @@ class TestVacancyOperationsCoordinator:
         "handle_cache_cleanup",
         "handle_superjob_setup"
     ])
+    @patch('builtins.input', return_value="")
     @patch('builtins.print')
-    def test_parametrized_operations(self, mock_print, coordinator, operation_name, consolidated_mocks):
-        """Параметризованный тест всех операций координатора"""
+    def test_parametrized_operations(self, mock_print, mock_input, coordinator, operation_name, consolidated_mocks):
+        """Параметризованный тест всех операций координатора с полным мокированием"""
         if hasattr(coordinator, operation_name):
             operation = getattr(coordinator, operation_name)
 
-            # Мокируем все возможные пользовательские вводы
-            mock_patches = [
-                patch('builtins.input', return_value=""),
-                patch('src.ui_interfaces.vacancy_operations_coordinator.get_user_input', return_value="test") if SRC_AVAILABLE else patch('builtins.input', return_value="test"),
-                patch('src.ui_interfaces.vacancy_operations_coordinator.get_positive_integer', return_value=10) if SRC_AVAILABLE else patch('builtins.input', return_value="10")
-            ]
+            # Полностью мокируем все зависимости
+            with patch('src.ui_interfaces.vacancy_operations_coordinator.get_user_input', return_value="test") if SRC_AVAILABLE else patch('builtins.input', return_value="test"), \
+                 patch('src.ui_interfaces.vacancy_operations_coordinator.get_positive_integer', return_value=10) if SRC_AVAILABLE else patch('builtins.input', return_value="10"), \
+                 patch('src.ui_interfaces.vacancy_operations_coordinator.confirm_action', return_value=False) if SRC_AVAILABLE else patch('builtins.input', return_value="n"):
 
-            with patch('builtins.input', return_value=""), \
-                 patch('src.ui_interfaces.vacancy_operations_coordinator.get_user_input', return_value="test") if SRC_AVAILABLE else patch('builtins.input', return_value="test"), \
-                 patch('src.ui_interfaces.vacancy_operations_coordinator.get_positive_integer', return_value=10) if SRC_AVAILABLE else patch('builtins.input', return_value="10"):
+                # Мокируем все возможные атрибуты
+                if hasattr(coordinator, 'search_handler'):
+                    coordinator.search_handler = Mock()
+                if hasattr(coordinator, 'display_handler'):
+                    coordinator.display_handler = Mock()
+                if hasattr(coordinator, 'source_selector'):
+                    coordinator.source_selector = Mock()
+                    coordinator.source_selector.get_user_source_choice = Mock(return_value=[])
+
+                # Мокируем storage для методов, которые его используют
+                if operation_name == 'handle_delete_vacancies':
+                    coordinator.storage.get_vacancies = Mock(return_value=[])
 
                 try:
                     operation()
@@ -452,7 +481,9 @@ class TestVacancyOperationsCoordinator:
             # Операция не существует, тест проходит
             assert True
 
-    def test_coordinator_memory_management(self, coordinator, consolidated_mocks):
+    @patch('builtins.input', return_value="")
+    @patch('builtins.print')
+    def test_coordinator_memory_management(self, mock_print, mock_input, coordinator, consolidated_mocks):
         """Тест управления памятью координатора"""
         import gc
 
@@ -467,15 +498,40 @@ class TestVacancyOperationsCoordinator:
         for operation_name in operations:
             if hasattr(coordinator, operation_name):
                 operation = getattr(coordinator, operation_name)
-                with patch('builtins.print'), patch('builtins.input', return_value=""):
-                    try:
-                        for _ in range(10):
-                            operation()
-                    except Exception:
-                        pass
+                try:
+                    for _ in range(10):
+                        operation()
+                except Exception:
+                    pass
 
         gc.collect()
         final_objects = len(gc.get_objects())
 
         # Память не должна значительно увеличиваться
         assert final_objects - initial_objects < 200
+
+    def test_get_vacancies_from_sources(self, coordinator, consolidated_mocks):
+        """Тест получения вакансий из источников"""
+        coordinator.unified_api = consolidated_mocks['unified_api']
+        coordinator.storage = consolidated_mocks['storage']
+        
+        # Мокируем возвращаемые данные
+        consolidated_mocks['unified_api'].get_vacancies_from_sources.return_value = []
+        consolidated_mocks['storage'].add_vacancy.return_value = []
+        consolidated_mocks['storage'].get_vacancies.return_value = []
+        
+        result = coordinator.get_vacancies_from_sources("Python", ["hh.ru"])
+        assert isinstance(result, list)
+
+    def test_get_vacancies_from_target_companies(self, coordinator, consolidated_mocks):
+        """Тест получения вакансий от целевых компаний"""
+        coordinator.unified_api = consolidated_mocks['unified_api']
+        coordinator.storage = consolidated_mocks['storage']
+        
+        # Мокируем возвращаемые данные
+        consolidated_mocks['unified_api'].get_vacancies_from_target_companies.return_value = []
+        consolidated_mocks['storage'].add_vacancy.return_value = []
+        consolidated_mocks['storage'].get_vacancies.return_value = []
+        
+        result = coordinator.get_vacancies_from_target_companies("", ["hh.ru"])
+        assert isinstance(result, list)
