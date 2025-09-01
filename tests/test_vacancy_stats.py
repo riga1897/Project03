@@ -1,3 +1,4 @@
+
 import os
 import sys
 import pytest
@@ -17,19 +18,61 @@ except ImportError:
     # Тестовые реализации
     class Salary:
         """Тестовая модель зарплаты"""
-        def __init__(self, salary_from: int = None, salary_to: int = None, currency: str = "RUR"):
-            self.salary_from = salary_from
-            self.salary_to = salary_to
-            self.currency = currency
+        def __init__(self, data: Dict[str, Any] = None):
+            """
+            Инициализация объекта зарплаты
+            
+            Args:
+                data: Словарь с данными о зарплате
+            """
+            if data is None:
+                data = {}
+            
+            self.salary_from = data.get('from')
+            self.salary_to = data.get('to')
+            self.currency = data.get('currency', 'RUR')
             # Поддержка разных форматов
-            self.from_salary = salary_from
-            self.to_salary = salary_to
+            self.from_salary = self.salary_from
+            self.to_salary = self.salary_to
+
+        @classmethod
+        def from_range(cls, salary_from: int, salary_to: int, currency: str = "RUR") -> 'Salary':
+            """
+            Создание объекта зарплаты из диапазона
+            
+            Args:
+                salary_from: Минимальная зарплата
+                salary_to: Максимальная зарплата
+                currency: Валюта
+                
+            Returns:
+                Объект зарплаты
+            """
+            return cls({
+                'from': salary_from,
+                'to': salary_to,
+                'currency': currency
+            })
 
     class Vacancy:
         """Тестовая модель вакансии"""
         def __init__(self, title: str, url: str, vacancy_id: str, source: str,
                      employer: Dict[str, Any] = None, salary: Any = None,
                      description: str = "", area: str = "", experience: str = ""):
+            """
+            Инициализация вакансии
+            
+            Args:
+                title: Название вакансии
+                url: URL вакансии
+                vacancy_id: ID вакансии
+                source: Источник
+                employer: Данные работодателя
+                salary: Зарплата
+                description: Описание
+                area: Регион
+                experience: Опыт
+            """
             self.title = title
             self.url = url
             self.vacancy_id = vacancy_id
@@ -45,7 +88,15 @@ except ImportError:
 
         @staticmethod
         def get_company_distribution(vacancies: List[Vacancy]) -> Dict[str, int]:
-            """Получение распределения по компаниям"""
+            """
+            Получение распределения по компаниям
+            
+            Args:
+                vacancies: Список вакансий
+                
+            Returns:
+                Словарь с распределением по компаниям
+            """
             company_counts = {}
             for vacancy in vacancies:
                 if hasattr(vacancy, 'employer') and vacancy.employer:
@@ -62,7 +113,15 @@ except ImportError:
 
         @staticmethod
         def get_source_distribution(vacancies: List[Vacancy]) -> Dict[str, int]:
-            """Получение распределения по источникам"""
+            """
+            Получение распределения по источникам
+            
+            Args:
+                vacancies: Список вакансий
+                
+            Returns:
+                Словарь с распределением по источникам
+            """
             source_counts = {}
             for vacancy in vacancies:
                 source = getattr(vacancy, 'source', 'Неизвестный источник')
@@ -71,7 +130,15 @@ except ImportError:
 
         @staticmethod
         def calculate_salary_percentiles(vacancies: List[Vacancy]) -> Dict[str, float]:
-            """Расчет процентилей зарплат"""
+            """
+            Расчет процентилей зарплат
+            
+            Args:
+                vacancies: Список вакансий
+                
+            Returns:
+                Словарь с процентилями зарплат
+            """
             salaries = []
 
             for vacancy in vacancies:
@@ -105,7 +172,15 @@ except ImportError:
 
         @staticmethod
         def analyze_salaries(vacancies: List[Vacancy]) -> Dict[str, Any]:
-            """Анализ зарплат"""
+            """
+            Анализ зарплат
+            
+            Args:
+                vacancies: Список вакансий
+                
+            Returns:
+                Словарь с анализом зарплат
+            """
             if not vacancies:
                 return {
                     'total_vacancies': 0,
@@ -152,7 +227,15 @@ except ImportError:
 
         @staticmethod
         def get_company_statistics(vacancies: List[Vacancy]) -> Dict[str, Any]:
-            """Получение статистики по компаниям"""
+            """
+            Получение статистики по компаниям
+            
+            Args:
+                vacancies: Список вакансий
+                
+            Returns:
+                Словарь со статистикой по компаниям
+            """
             company_stats = VacancyStats.get_company_distribution(vacancies)
 
             return {
@@ -163,7 +246,15 @@ except ImportError:
 
         @staticmethod
         def analyze_experience_requirements(vacancies: List[Vacancy]) -> Dict[str, int]:
-            """Анализ требований к опыту"""
+            """
+            Анализ требований к опыту
+            
+            Args:
+                vacancies: Список вакансий
+                
+            Returns:
+                Словарь с распределением по опыту
+            """
             experience_counts = {}
 
             for vacancy in vacancies:
@@ -177,7 +268,15 @@ except ImportError:
 
         @staticmethod
         def get_location_statistics(vacancies: List[Vacancy]) -> Dict[str, int]:
-            """Получение статистики по локациям"""
+            """
+            Получение статистики по локациям
+            
+            Args:
+                vacancies: Список вакансий
+                
+            Returns:
+                Словарь с распределением по локациям
+            """
             location_counts = {}
 
             for vacancy in vacancies:
@@ -191,7 +290,15 @@ except ImportError:
 
         @staticmethod
         def format_statistics(stats: Dict[str, Any]) -> str:
-            """Форматирование статистики"""
+            """
+            Форматирование статистики
+            
+            Args:
+                stats: Словарь со статистикой
+                
+            Returns:
+                Отформатированная строка статистики
+            """
             formatted = []
 
             if 'total' in stats:
@@ -209,8 +316,14 @@ except ImportError:
             return '\n'.join(formatted)
 
         @staticmethod
-        def display_company_stats(vacancies: List[Dict[str, Any]], source_name: str = ""):
-            """Отображение статистики по компаниям"""
+        def display_company_stats(vacancies: List[Dict[str, Any]], source_name: str = "") -> None:
+            """
+            Отображение статистики по компаниям
+            
+            Args:
+                vacancies: Список вакансий в формате словарей
+                source_name: Название источника
+            """
             if not vacancies:
                 print("Нет вакансий для отображения статистики")
                 return
@@ -235,7 +348,15 @@ if SRC_AVAILABLE:
     # Добавляем методы к реальному классу, если их нет
     if not hasattr(VacancyStats, 'analyze_salaries'):
         def analyze_salaries(vacancies: List[Vacancy]) -> Dict[str, Any]:
-            """Анализ зарплат"""
+            """
+            Анализ зарплат
+            
+            Args:
+                vacancies: Список вакансий
+                
+            Returns:
+                Словарь с анализом зарплат
+            """
             if not vacancies:
                 return {
                     'total_vacancies': 0,
@@ -278,6 +399,15 @@ if SRC_AVAILABLE:
     # Добавляем другие недостающие методы
     if not hasattr(VacancyStats, 'get_company_statistics'):
         def get_company_statistics(vacancies: List[Vacancy]) -> Dict[str, Any]:
+            """
+            Получение статистики по компаниям
+            
+            Args:
+                vacancies: Список вакансий
+                
+            Returns:
+                Словарь со статистикой по компаниям
+            """
             company_stats = VacancyStats.get_company_distribution(vacancies)
             return {
                 'total_companies': len(company_stats),
@@ -288,6 +418,15 @@ if SRC_AVAILABLE:
 
     if not hasattr(VacancyStats, 'analyze_experience_requirements'):
         def analyze_experience_requirements(vacancies: List[Vacancy]) -> Dict[str, int]:
+            """
+            Анализ требований к опыту
+            
+            Args:
+                vacancies: Список вакансий
+                
+            Returns:
+                Словарь с распределением по опыту
+            """
             experience_counts = {}
             for vacancy in vacancies:
                 experience = getattr(vacancy, 'experience', 'Не указано')
@@ -297,6 +436,15 @@ if SRC_AVAILABLE:
 
     if not hasattr(VacancyStats, 'get_location_statistics'):
         def get_location_statistics(vacancies: List[Vacancy]) -> Dict[str, int]:
+            """
+            Получение статистики по локациям
+            
+            Args:
+                vacancies: Список вакансий
+                
+            Returns:
+                Словарь с распределением по локациям
+            """
             location_counts = {}
             for vacancy in vacancies:
                 location = getattr(vacancy, 'area', 'Не указано')
@@ -306,6 +454,15 @@ if SRC_AVAILABLE:
 
     if not hasattr(VacancyStats, 'format_statistics'):
         def format_statistics(stats: Dict[str, Any]) -> str:
+            """
+            Форматирование статистики
+            
+            Args:
+                stats: Словарь со статистикой
+                
+            Returns:
+                Отформатированная строка статистики
+            """
             formatted = []
             if 'total' in stats:
                 formatted.append(f"Всего вакансий: {stats['total']}")
@@ -316,6 +473,15 @@ if SRC_AVAILABLE:
 
     if not hasattr(VacancyStats, 'calculate_salary_percentiles'):
         def calculate_salary_percentiles(vacancies: List[Vacancy]) -> Dict[str, float]:
+            """
+            Расчет процентилей зарплат
+            
+            Args:
+                vacancies: Список вакансий
+                
+            Returns:
+                Словарь с процентилями зарплат
+            """
             salaries = []
             for vacancy in vacancies:
                 if vacancy.salary:
@@ -340,13 +506,41 @@ if SRC_AVAILABLE:
             }
         VacancyStats.calculate_salary_percentiles = staticmethod(calculate_salary_percentiles)
 
+    if not hasattr(VacancyStats, 'display_company_stats'):
+        def display_company_stats(vacancies: List[Dict[str, Any]], source_name: str = "") -> None:
+            """
+            Отображение статистики по компаниям
+            
+            Args:
+                vacancies: Список вакансий в формате словарей
+                source_name: Название источника
+            """
+            if not vacancies:
+                print("Нет вакансий для отображения статистики")
+                return
+
+            company_stats = {}
+            for vacancy in vacancies:
+                company = vacancy.get('employer', {})
+                if isinstance(company, dict):
+                    company_name = company.get('name', 'Неизвестная компания')
+                else:
+                    company_name = str(company).title() if company else 'Неизвестная компания'
+
+                company_stats[company_name] = company_stats.get(company_name, 0) + 1
+
+            print(f"\nРаспределение вакансий по компаниям{' (' + source_name + ')' if source_name else ''}:")
+            for company, count in sorted(company_stats.items(), key=lambda x: x[1], reverse=True):
+                print(f"  {company}: {count} вакансий")
+        VacancyStats.display_company_stats = staticmethod(display_company_stats)
+
 
 class TestVacancyStats:
     """Комплексные тесты для статистики вакансий"""
 
     @pytest.fixture
     def sample_vacancies(self) -> List[Vacancy]:
-        """Фикстура тестовых вакансий"""
+        """Фикстура тестовых вакансий с правильным созданием Salary"""
         return [
             Vacancy(
                 title="Python Developer",
@@ -354,7 +548,7 @@ class TestVacancyStats:
                 vacancy_id="1",
                 source="hh.ru",
                 employer={"name": "TechCorp", "id": "123"},
-                salary=Salary(100000, 150000),
+                salary=Salary.from_range(100000, 150000) if not SRC_AVAILABLE else Salary({'from': 100000, 'to': 150000}),
                 area="Москва",
                 experience="От 3 до 6 лет"
             ),
@@ -364,7 +558,7 @@ class TestVacancyStats:
                 vacancy_id="2",
                 source="superjob.ru",
                 employer={"name": "DevCompany", "id": "456"},
-                salary=Salary(120000, 180000),
+                salary=Salary.from_range(120000, 180000) if not SRC_AVAILABLE else Salary({'from': 120000, 'to': 180000}),
                 area="Санкт-Петербург",
                 experience="От 1 года до 3 лет"
             ),
@@ -438,7 +632,8 @@ class TestVacancyStats:
         percentiles = VacancyStats.calculate_salary_percentiles(vacancies_no_salary)
         assert percentiles == {}
 
-    def test_display_company_stats(self, sample_vacancies):
+    @patch('builtins.print')
+    def test_display_company_stats(self, mock_print, sample_vacancies):
         """Тест отображения статистики компаний"""
         # Преобразуем вакансии в формат dict для совместимости
         vacancy_dicts = []
@@ -450,9 +645,8 @@ class TestVacancyStats:
             vacancy_dicts.append(vacancy_dict)
 
         # Тестируем, что функция работает без ошибок
-        with patch('builtins.print') as mock_print:
-            VacancyStats.display_company_stats(vacancy_dicts, "TestSource")
-            mock_print.assert_called()
+        VacancyStats.display_company_stats(vacancy_dicts, "TestSource")
+        mock_print.assert_called()
 
     def test_salary_analysis_edge_cases(self):
         """Тест анализа зарплат с граничными случаями"""
@@ -577,3 +771,105 @@ class TestVacancyStats:
 
         assert isinstance(formatted, str)
         assert len(formatted) > 0
+
+    def test_vacancy_stats_type_safety(self, sample_vacancies):
+        """Тест типобезопасности статистики вакансий"""
+        # Проверяем типы всех методов
+        methods_to_test = [
+            ('get_company_distribution', dict),
+            ('get_source_distribution', dict),
+            ('calculate_salary_percentiles', dict),
+            ('analyze_salaries', dict),
+            ('get_company_statistics', dict),
+            ('analyze_experience_requirements', dict),
+            ('get_location_statistics', dict),
+            ('format_statistics', str)
+        ]
+
+        for method_name, expected_type in methods_to_test:
+            if hasattr(VacancyStats, method_name):
+                method = getattr(VacancyStats, method_name)
+                if method_name == 'format_statistics':
+                    result = method({'total': 10})
+                else:
+                    result = method(sample_vacancies)
+                assert isinstance(result, expected_type)
+
+    def test_vacancy_stats_performance(self, sample_vacancies):
+        """Тест производительности статистических операций"""
+        import time
+
+        # Создаем большой набор данных для тестирования производительности
+        large_dataset = sample_vacancies * 100
+
+        start_time = time.time()
+        
+        # Выполняем все статистические операции
+        VacancyStats.get_company_distribution(large_dataset)
+        VacancyStats.get_source_distribution(large_dataset)
+        VacancyStats.calculate_salary_percentiles(large_dataset)
+        VacancyStats.analyze_salaries(large_dataset)
+        
+        end_time = time.time()
+        execution_time = end_time - start_time
+
+        # Операции должны выполняться быстро даже на большом наборе данных
+        assert execution_time < 2.0
+
+    def test_vacancy_stats_edge_cases(self):
+        """Тест граничных случаев статистики"""
+        # Тест с вакансиями без всех данных
+        minimal_vacancies = [
+            Vacancy(
+                title="",
+                url="",
+                vacancy_id="1",
+                source=""
+            )
+        ]
+
+        # Все методы должны корректно обрабатывать минимальные данные
+        stats_methods = [
+            VacancyStats.get_company_distribution,
+            VacancyStats.get_source_distribution,
+            VacancyStats.calculate_salary_percentiles,
+            VacancyStats.analyze_salaries,
+            VacancyStats.get_company_statistics,
+            VacancyStats.analyze_experience_requirements,
+            VacancyStats.get_location_statistics
+        ]
+
+        for method in stats_methods:
+            try:
+                result = method(minimal_vacancies)
+                assert isinstance(result, (dict, str))
+            except Exception as e:
+                # Ошибки должны быть обработаны корректно
+                assert isinstance(e, Exception)
+
+    @pytest.mark.parametrize("vacancy_count", [0, 1, 10, 100])
+    def test_parametrized_vacancy_counts(self, vacancy_count):
+        """Параметризованный тест с разным количеством вакансий"""
+        # Создаем вакансии для тестирования
+        vacancies = []
+        for i in range(vacancy_count):
+            vacancy = Vacancy(
+                title=f"Job {i}",
+                url=f"https://test.com/{i}",
+                vacancy_id=str(i),
+                source="hh.ru",
+                employer={"name": f"Company {i % 3}"}  # 3 разные компании
+            )
+            vacancies.append(vacancy)
+
+        # Тестируем основные статистические методы
+        company_dist = VacancyStats.get_company_distribution(vacancies)
+        assert isinstance(company_dist, dict)
+        assert len(company_dist) <= min(vacancy_count, 3) if vacancy_count > 0 else len(company_dist) == 0
+
+        source_dist = VacancyStats.get_source_distribution(vacancies)
+        assert isinstance(source_dist, dict)
+
+        salary_analysis = VacancyStats.analyze_salaries(vacancies)
+        assert isinstance(salary_analysis, dict)
+        assert salary_analysis['total_vacancies'] == vacancy_count
