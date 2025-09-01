@@ -1,4 +1,3 @@
-
 import os
 import sys
 from dataclasses import dataclass
@@ -16,25 +15,30 @@ from src.utils.salary import Salary
 
 # Расширяем класс Vacancy для тестирования недостающими методами
 class TestableVacancy(Vacancy):
-    """Расширенный класс Vacancy для тестирования"""
-    
+    """Тестовая версия Vacancy с фиксированными значениями"""
+
+    def __init__(self, vacancy_id, title, url, source, **kwargs):
+        # Устанавливаем фиксированный ID вместо генерации UUID
+        super().__init__(vacancy_id, title, url, source, **kwargs)
+        self._id = vacancy_id  # Переопределяем ID фиксированным значением
+
     def __eq__(self, other):
         """Сравнение вакансий"""
         if not isinstance(other, Vacancy):
             return False
-        return (self.vacancy_id == other.vacancy_id and 
-                self.title == other.title and 
-                self.url == other.url and 
+        return (self.vacancy_id == other.vacancy_id and
+                self.title == other.title and
+                self.url == other.url and
                 self.source == other.source)
-    
+
     def __hash__(self):
         """Хэширование вакансии"""
         return hash((self.vacancy_id, self.title, self.url, self.source))
-    
+
     def __repr__(self):
         """Представление для разработчика"""
         return f"Vacancy(id={self.vacancy_id}, title='{self.title}', source='{self.source}')"
-    
+
     def get_employer_name(self):
         """Получение имени работодателя"""
         if isinstance(self.employer, dict):
@@ -42,17 +46,17 @@ class TestableVacancy(Vacancy):
         elif hasattr(self.employer, 'name'):
             return self.employer.name
         return "Не указано"
-    
+
     def is_valid(self):
         """Валидация данных вакансии"""
         return bool(self.vacancy_id and self.title and self.url and self.source)
-    
+
     def update_from_dict(self, data):
         """Обновление данных вакансии из словаря"""
         for key, value in data.items():
             if hasattr(self, key):
                 setattr(self, key, value)
-    
+
     def get_formatted_source(self):
         """Форматированное имя источника"""
         source_mapping = {
@@ -78,16 +82,15 @@ class TestVacancy:
         """Тест создания вакансии с зарплатой"""
         # Используем правильные параметры для Salary
         salary_data = {"from": 100000, "to": 150000, "currency": "RUR"}
-        salary = Salary(salary_data)
-        
+
         vacancy = Vacancy(
             vacancy_id="123",
-            title="Python Developer", 
+            title="Python Developer",
             url="https://test.com",
             source="hh.ru",
-            salary=salary
+            salary=salary_data
         )
-        
+
         assert vacancy.salary is not None
         assert vacancy.salary.salary_from == 100000
         assert vacancy.salary.salary_to == 150000
@@ -152,14 +155,13 @@ class TestVacancy:
         """Тест преобразования вакансии в словарь"""
         # Создаем зарплату с правильными параметрами
         salary_data = {"from": 100000, "to": 150000, "currency": "RUR"}
-        salary = Salary(salary_data)
-        
+
         vacancy = Vacancy(
             vacancy_id="123",
             title="Python Developer",
             url="https://test.com",
             source="hh.ru",
-            salary=salary
+            salary=salary_data
         )
 
         result = vacancy.to_dict()
@@ -196,14 +198,13 @@ class TestVacancy:
     def test_vacancy_salary_properties(self):
         """Тест свойств зарплаты вакансии"""
         salary_data = {"from": 100000, "to": 150000, "currency": "RUR"}
-        salary = Salary(salary_data)
-        
+
         vacancy = Vacancy(
             vacancy_id="123",
             title="Python Developer",
             url="https://test.com",
             source="hh.ru",
-            salary=salary
+            salary=salary_data
         )
 
         assert vacancy.salary is not None
@@ -296,7 +297,7 @@ class TestVacancyEdgeCases:
             "trusted": True,
             "alternate_url": "https://company.com"
         }
-        
+
         vacancy = Vacancy(
             vacancy_id="123",
             title="Python Developer",
@@ -304,21 +305,20 @@ class TestVacancyEdgeCases:
             source="hh.ru",
             employer=employer
         )
-        
+
         assert vacancy.employer == employer
 
     def test_vacancy_with_all_fields(self):
         """Тест вакансии со всеми полями"""
         salary_data = {"from": 100000, "to": 150000, "currency": "RUR"}
-        salary = Salary(salary_data)
         employer = {"name": "Test Company", "id": "123"}
-        
+
         vacancy = Vacancy(
             vacancy_id="123",
             title="Python Developer",
             url="https://test.com",
             source="hh.ru",
-            salary=salary,
+            salary=salary_data,
             employer=employer,
             description="Test description",
             area="Москва",
@@ -342,14 +342,13 @@ class TestVacancyDataTransformation:
         """Тест преобразования вакансии в словарь и обратно"""
         # Создаем оригинальную вакансию
         salary_data = {"from": 100000, "to": 150000, "currency": "RUR"}
-        salary = Salary(salary_data)
-        
+
         original_vacancy = Vacancy(
             vacancy_id="123",
             title="Python Developer",
             url="https://test.com",
             source="hh.ru",
-            salary=salary
+            salary=salary_data
         )
 
         # Преобразуем в словарь
@@ -368,14 +367,13 @@ class TestVacancyDataTransformation:
         """Тест преобразования сложных данных в словарь"""
         employer = {"name": "Test Company", "id": "123", "trusted": True}
         salary_data = {"from": 100000, "to": 150000, "currency": "RUR"}
-        salary = Salary(salary_data)
-        
+
         vacancy = Vacancy(
             vacancy_id="123",
             title="Python Developer",
             url="https://test.com",
             source="hh.ru",
-            salary=salary,
+            salary=salary_data,
             employer=employer,
             description="Long description",
             area="Москва"

@@ -1,7 +1,7 @@
-
 import os
 import sys
 from unittest.mock import Mock, patch, MagicMock
+from typing import List, Any
 
 import pytest
 
@@ -13,23 +13,30 @@ from src.vacancies.models import Vacancy
 
 class ConcreteCachedAPI(CachedAPI):
     """Конкретная реализация CachedAPI для тестирования"""
-    
+
     def __init__(self):
         super().__init__()
-        self._test_data = []
-    
-    def get_vacancies(self, query: str, **kwargs) -> list:
-        """Реализация абстрактного метода get_vacancies"""
-        # Возвращаем тестовые данные
-        return self._test_data
-    
-    def _make_request(self, url: str, params: dict = None) -> dict:
-        """Реализация абстрактного метода _make_request"""
-        return {"items": [], "found": 0}
-    
-    def _parse_response(self, response: dict) -> list:
-        """Реализация абстрактного метода _parse_response"""
-        return response.get("items", [])
+        self.test_data = []
+
+    def get_vacancies(self, search_query: str, **kwargs) -> List[Any]:
+        """Получение вакансий для тестирования"""
+        return self.test_data
+
+    def get_companies(self, **kwargs) -> List[Any]:
+        """Получение компаний для тестирования"""
+        return []
+
+    def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs) -> List[Any]:
+        """Получение страницы вакансий"""
+        return self.test_data
+
+    def _get_empty_response(self) -> List[Any]:
+        """Возвращает пустой ответ"""
+        return []
+
+    def _validate_vacancy(self, vacancy_data: Any) -> bool:
+        """Валидация данных вакансии"""
+        return isinstance(vacancy_data, dict)
 
 
 class TestCachedAPI:
@@ -58,11 +65,11 @@ class TestCachedAPI:
     def test_cached_api_abstract_methods(self, mock_file_cache):
         """Тест реализации абстрактных методов CachedAPI"""
         api = ConcreteCachedAPI()
-        
+
         # Проверяем, что все абстрактные методы реализованы
         assert hasattr(api, 'get_vacancies')
         assert callable(getattr(api, 'get_vacancies'))
-        
+
         # Тестируем вызов метода
         result = api.get_vacancies("Python")
         assert isinstance(result, list)
@@ -76,13 +83,13 @@ class TestCachedAPI:
         mock_file_cache.return_value = mock_cache_instance
 
         api = ConcreteCachedAPI()
-        
+
         # Устанавливаем тестовые данные
         test_vacancies = [
             Vacancy("123", "Python Developer", "https://test.com", "test_source")
         ]
         api._test_data = test_vacancies
-        
+
         # Тестируем получение вакансий
         result = api.get_vacancies("Python")
         assert result == test_vacancies
@@ -95,7 +102,7 @@ class TestCachedAPI:
         mock_file_cache.return_value = mock_cache_instance
 
         api = ConcreteCachedAPI()
-        
+
         # Проверяем наличие метода clear_cache или аналогичного
         if hasattr(api, 'clear_cache'):
             api.clear_cache()
@@ -137,14 +144,14 @@ class TestCachedAPIEdgeCases:
         cached_data = [
             Vacancy("123", "Python Developer", "https://test.com", "test_source")
         ]
-        
+
         mock_cache_instance = Mock()
         mock_cache_instance.get.return_value = cached_data
         mock_file_cache.return_value = mock_cache_instance
 
         api = ConcreteCachedAPI()
         result = api.get_vacancies("Python")
-        
+
         # Должен вернуться кэшированный результат или пустой список
         assert isinstance(result, list)
 
@@ -156,7 +163,7 @@ class TestCachedAPIHelpers:
     def test_make_request_method(self, mock_file_cache):
         """Тест метода _make_request"""
         api = ConcreteCachedAPI()
-        
+
         result = api._make_request("https://test.com", {"query": "Python"})
         assert isinstance(result, dict)
 
@@ -164,7 +171,7 @@ class TestCachedAPIHelpers:
     def test_parse_response_method(self, mock_file_cache):
         """Тест метода _parse_response"""
         api = ConcreteCachedAPI()
-        
+
         test_response = {"items": [{"id": "123", "name": "Test"}], "found": 1}
         result = api._parse_response(test_response)
         assert isinstance(result, list)
@@ -174,7 +181,7 @@ class TestCachedAPIHelpers:
         """Тест наследования от CachedAPI"""
         api = ConcreteCachedAPI()
         assert isinstance(api, CachedAPI)
-        
+
         # Проверяем, что все необходимые методы доступны
         assert hasattr(api, 'get_vacancies')
         assert hasattr(api, '_make_request')

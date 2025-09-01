@@ -1,4 +1,3 @@
-
 import os
 import sys
 from unittest.mock import Mock, patch
@@ -15,7 +14,7 @@ from src.utils.vacancy_formatter import VacancyFormatter
 # Расширяем VacancyFormatter недостающими методами для тестирования
 class TestableVacancyFormatter(VacancyFormatter):
     """Расширенный VacancyFormatter для тестирования"""
-    
+
     def format_salary(self, salary):
         """Форматирование зарплаты (перегружаем для тестов)"""
         if isinstance(salary, Salary):
@@ -24,7 +23,7 @@ class TestableVacancyFormatter(VacancyFormatter):
             salary_obj = Salary(salary)
             return str(salary_obj)
         return "Зарплата не указана"
-    
+
     def format_employer(self, employer):
         """Форматирование информации о работодателе"""
         if isinstance(employer, dict):
@@ -32,7 +31,7 @@ class TestableVacancyFormatter(VacancyFormatter):
         elif hasattr(employer, 'name'):
             return employer.name
         return str(employer) if employer else "Не указано"
-    
+
     def format_location(self, location):
         """Форматирование информации о местоположении"""
         if isinstance(location, dict):
@@ -40,7 +39,7 @@ class TestableVacancyFormatter(VacancyFormatter):
         elif hasattr(location, 'name'):
             return location.name
         return str(location) if location else "Не указано"
-    
+
     def get_currency_symbol(self, currency):
         """Получение символа валюты"""
         symbols = {
@@ -146,14 +145,13 @@ class TestVacancyFormatter:
     def test_format_vacancy_with_salary_object(self):
         """Тест форматирования вакансии с объектом Salary"""
         salary_data = {"from": 100000, "to": 150000, "currency": "RUR"}
-        salary = Salary(salary_data)
-        
+
         vacancy = Vacancy(
             vacancy_id="123",
             title="Python Developer",
             url="https://test.com",
             source="hh.ru",
-            salary=salary
+            salary=salary_data
         )
 
         result = self.formatter.format_vacancy_info(vacancy)
@@ -203,7 +201,7 @@ class TestVacancyFormatter:
         assert "руб." in formatter.get_currency_symbol("RUR")
         assert "$" in formatter.get_currency_symbol("USD")
         assert "€" in formatter.get_currency_symbol("EUR")
-        
+
         # Неизвестная валюта
         result = formatter.get_currency_symbol("UNKNOWN")
         assert result == "UNKNOWN"
@@ -217,7 +215,7 @@ class TestVacancyFormatter:
             # Если метод не существует, создаем локальную реализацию
             def format_number(num):
                 return f"{num:,}".replace(",", " ")
-            
+
             result = format_number(100000)
             assert "100 000" in result
 
@@ -247,7 +245,7 @@ class TestVacancyFormatterEdgeCases:
         """Тест форматирования пустой вакансии"""
         vacancy = Vacancy("", "", "", "")
         formatter = VacancyFormatter()
-        
+
         result = formatter.format_vacancy_info(vacancy)
         assert isinstance(result, str)
         assert len(result) > 0
