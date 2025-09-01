@@ -1,0 +1,449 @@
+~/workspace$ pytest
+========================== test session starts ==========================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: mock-3.14.1, cov-6.2.1
+collected 404 items                                                     
+
+tests/test_abstract.py ........                                   [  1%]
+tests/test_abstract_db_manager.py ....                            [  2%]
+tests/test_api_config.py ....                                     [  3%]
+tests/test_api_data_filter.py .F...FF.                            [  5%]
+tests/test_app_config.py .....                                    [  7%]
+tests/test_base_api.py ......                                     [  8%]
+tests/test_base_parser.py ......                                  [ 10%]
+tests/test_cache.py .......                                       [ 11%]
+tests/test_cached_api.py ...........                              [ 14%]
+tests/test_console_interface.py ......                            [ 16%]
+tests/test_db_manager.py .................                        [ 20%]
+tests/test_decorators.py .......                                  [ 22%]
+tests/test_env_loader.py ............                             [ 25%]
+tests/test_file_handlers.py ............                          [ 27%]
+tests/test_get_api.py ......                                      [ 29%]
+tests/test_hh_api.py .......                                      [ 31%]
+tests/test_hh_api_config.py .....                                 [ 32%]
+tests/test_hh_parser.py ........                                  [ 34%]
+tests/test_menu_manager.py ..........                             [ 36%]
+tests/test_paginator.py ......                                    [ 38%]
+tests/test_postgres_saver.py .......                              [ 40%]
+tests/test_salary_utils.py ......................                 [ 45%]
+tests/test_search_utils.py ..........................F.           [ 52%]
+tests/test_sj_api.py ..............                               [ 55%]
+tests/test_sj_api_config.py .....                                 [ 57%]
+tests/test_sj_parser.py ........                                  [ 59%]
+tests/test_source_selector.py ..........                          [ 61%]
+tests/test_storage_factory.py ........                            [ 63%]
+tests/test_target_companies.py .....                              [ 64%]
+tests/test_ui_config.py .....                                     [ 66%]
+tests/test_ui_helpers.py ...........                              [ 68%]
+tests/test_ui_navigation.py F.F.F                                 [ 70%]
+tests/test_unified_api.py .................                       [ 74%]
+tests/test_user_interface.py ........                             [ 76%]
+tests/test_vacancy_display_handler.py ..............              [ 79%]
+tests/test_vacancy_formatter.py ........                          [ 81%]
+tests/test_vacancy_models.py .................................... [ 90%]
+.............                                                     [ 93%]
+tests/test_vacancy_operations.py ......                           [ 95%]
+tests/test_vacancy_operations_coordinator.py .F......             [ 97%]
+tests/test_vacancy_search_handler.py F....                        [ 98%]
+tests/test_vacancy_stats.py .FFF..                                [100%]
+
+=============================== FAILURES ================================
+_____________ TestAPIDataFilter.test_filter_by_salary_range _____________
+
+self = <workspace.tests.test_api_data_filter.TestAPIDataFilter object at 0x7f133ff96110>
+sample_api_data = [{'alternate_url': 'https://hh.ru/vacancy/123', 'area': {'name': 'Москва'}, 'employer': {'id': '1740', 'name': 'Yandex...me': 'Екатеринбург'}, 'employer': {'id': '9999', 'name': 'Unknown Company'}, 'experience': {'name': 'без опыта'}, ...}]
+
+    def test_filter_by_salary_range(self, sample_api_data):
+        """Тест фильтрации по диапазону зарплаты"""
+        try:
+            from src.utils.api_data_filter import APIDataFilter
+            filter_obj = APIDataFilter()
+>           result = filter_obj.filter_by_salary(sample_api_data, min_salary=110000)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'APIDataFilter' object has no attribute 'filter_by_salary'
+
+tests/test_api_data_filter.py:111: AttributeError
+________________ TestAPIDataFilter.test_combined_filters ________________
+
+self = <workspace.tests.test_api_data_filter.TestAPIDataFilter object at 0x7f133ff9cad0>
+sample_api_data = [{'alternate_url': 'https://hh.ru/vacancy/123', 'area': {'name': 'Москва'}, 'employer': {'id': '1740', 'name': 'Yandex...me': 'Екатеринбург'}, 'employer': {'id': '9999', 'name': 'Unknown Company'}, 'experience': {'name': 'без опыта'}, ...}]
+
+    def test_combined_filters(self, sample_api_data):
+        """Тест комбинированных фильтров"""
+        try:
+            from src.utils.api_data_filter import APIDataFilter
+            filter_obj = APIDataFilter()
+    
+            # Комбинируем фильтры: зарплата от 100000 и компания Yandex
+>           filtered_by_salary = filter_obj.filter_by_salary(sample_api_data, min_salary=100000)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'APIDataFilter' object has no attribute 'filter_by_salary'
+
+tests/test_api_data_filter.py:189: AttributeError
+______________ TestAPIDataFilter.test_empty_data_filtering ______________
+
+self = <workspace.tests.test_api_data_filter.TestAPIDataFilter object at 0x7f133fb53fd0>
+
+    def test_empty_data_filtering(self):
+        """Тест фильтрации пустых данных"""
+        try:
+            from src.utils.api_data_filter import APIDataFilter
+            filter_obj = APIDataFilter()
+>           result = filter_obj.filter_by_salary([], min_salary=100000)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'APIDataFilter' object has no attribute 'filter_by_salary'
+
+tests/test_api_data_filter.py:216: AttributeError
+_________ TestSearchUtils.test_filter_vacancies_by_salary_range _________
+
+self = <workspace.tests.test_search_utils.TestSearchUtils object at 0x7f133e750ad0>
+sample_vacancies = [<src.vacancies.models.Vacancy object at 0x7f133e333ee0>, <src.vacancies.models.Vacancy object at 0x7f133e3335f0>, <src.vacancies.models.Vacancy object at 0x7f133ebaa680>]
+
+    def test_filter_vacancies_by_salary_range(self, sample_vacancies):
+        """Тест фильтрации вакансий по диапазону зарплаты"""
+        try:
+            from src.utils.search_utils import SearchUtils
+            if hasattr(SearchUtils, 'filter_by_salary_range'):
+                result = SearchUtils.filter_by_salary_range(sample_vacancies, min_salary=110000)
+            else:
+                # Тестовая реализация
+                result = []
+                for vacancy in sample_vacancies:
+                    if vacancy.salary and hasattr(vacancy.salary, 'salary_from'):
+                        if vacancy.salary.salary_from and vacancy.salary.salary_from >= 110000:
+                            result.append(vacancy)
+                        elif vacancy.salary.salary_to and vacancy.salary.salary_to >= 110000:
+                            result.append(vacancy)
+        except ImportError:
+            # Тестовая реализация
+            result = []
+            for vacancy in sample_vacancies:
+                if vacancy.salary and hasattr(vacancy.salary, 'salary_from'):
+                    if (vacancy.salary.salary_from and vacancy.salary.salary_from >= 110000) or \
+                       (vacancy.salary.salary_to and vacancy.salary.salary_to >= 110000):
+                        result.append(vacancy)
+    
+        # Должна остаться одна вакансия Java Developer
+>       assert len(result) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+tests/test_search_utils.py:465: AssertionError
+______________ TestUINavigation.test_quick_paginate_basic _______________
+
+self = <workspace.tests.test_ui_navigation.TestUINavigation object at 0x7f133e702a50>
+mock_print = <MagicMock name='print' id='139720625114576'>
+mock_input = <MagicMock name='input' id='139720625000592'>
+sample_items = [{'description': 'Description 1', 'id': 1, 'title': 'Item 1'}, {'description': 'Description 2', 'id': 2, 'title': 'Ite...tion': 'Description 5', 'id': 5, 'title': 'Item 5'}, {'description': 'Description 6', 'id': 6, 'title': 'Item 6'}, ...]
+
+    @patch('builtins.input', side_effect=["", "q"])
+    @patch('builtins.print')
+    def test_quick_paginate_basic(self, mock_print, mock_input, sample_items):
+        """Тест базовой пагинации"""
+        try:
+            from src.utils.ui_navigation import quick_paginate
+    
+            def simple_formatter(item):
+                return f"{item['id']}: {item['title']}"
+    
+>           quick_paginate(
+                sample_items,
+                formatter=simple_formatter,
+                header="Test Items",
+                items_per_page=3
+            )
+
+tests/test_ui_navigation.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/utils/ui_navigation.py:246: in quick_paginate
+    navigator.paginate_display(items, formatter, header, show_numbers, custom_actions)
+src/utils/ui_navigation.py:47: in paginate_display
+    self._display_page(items, current_page, total_pages, formatter, header, show_numbers)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.utils.ui_navigation.UINavigation object at 0x7f133e3a4f10>
+items = [{'description': 'Description 1', 'id': 1, 'title': 'Item 1'}, {'description': 'Description 2', 'id': 2, 'title': 'Ite...tion': 'Description 5', 'id': 5, 'title': 'Item 5'}, {'description': 'Description 6', 'id': 6, 'title': 'Item 6'}, ...]
+current_page = 1, total_pages = 4
+formatter = <function TestUINavigation.test_quick_paginate_basic.<locals>.simple_formatter at 0x7f133e3dc4a0>
+header = 'Test Items', show_numbers = True
+
+    def _display_page(
+        self,
+        items: List[Any],
+        current_page: int,
+        total_pages: int,
+        formatter: Callable[[Any, Optional[int]], str],
+        header: str,
+        show_numbers: bool,
+    ) -> None:
+        """Отображение текущей страницы"""
+        # Вычисление индексов для текущей страницы
+        start_idx = (current_page - 1) * self.items_per_page
+        end_idx = min(start_idx + self.items_per_page, len(items))
+        current_items = items[start_idx:end_idx]
+    
+        print(f"\n\n{header}")
+        print("=" * len(header))
+    
+        # Отображение элементов
+        for i, item in enumerate(current_items, start_idx + 1):
+            if show_numbers:
+>               formatted_item = formatter(item, i)
+                                 ^^^^^^^^^^^^^^^^^^
+E               TypeError: TestUINavigation.test_quick_paginate_basic.<locals>.simple_formatter() takes 1 positional argument but 2 were given
+
+src/utils/ui_navigation.py:92: TypeError
+__________ TestUINavigation.test_quick_paginate_with_vacancies __________
+
+self = <workspace.tests.test_ui_navigation.TestUINavigation object at 0x7f133e700150>
+mock_print = <MagicMock name='print' id='139720629394000'>
+mock_input = <MagicMock name='input' id='139720633499536'>
+sample_vacancies = [<src.vacancies.models.Vacancy object at 0x7f133e38f110>, <src.vacancies.models.Vacancy object at 0x7f133e38eea0>, <sr... <src.vacancies.models.Vacancy object at 0x7f133e38fba0>, <src.vacancies.models.Vacancy object at 0x7f133e38fad0>, ...]
+
+    @patch('builtins.input', return_value="q")
+    @patch('builtins.print')
+    def test_quick_paginate_with_vacancies(self, mock_print, mock_input, sample_vacancies):
+        """Тест пагинации с вакансиями"""
+        try:
+            from src.utils.ui_navigation import quick_paginate
+    
+            def vacancy_formatter(vacancy):
+                return f"{vacancy.title} - {vacancy.source}"
+    
+>           quick_paginate(
+                sample_vacancies[:5],
+                formatter=vacancy_formatter,
+                header="Test Vacancies",
+                items_per_page=2
+            )
+
+tests/test_ui_navigation.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/utils/ui_navigation.py:246: in quick_paginate
+    navigator.paginate_display(items, formatter, header, show_numbers, custom_actions)
+src/utils/ui_navigation.py:47: in paginate_display
+    self._display_page(items, current_page, total_pages, formatter, header, show_numbers)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.utils.ui_navigation.UINavigation object at 0x7f133e7bab10>
+items = [<src.vacancies.models.Vacancy object at 0x7f133e38f110>, <src.vacancies.models.Vacancy object at 0x7f133e38eea0>, <sr...f70>, <src.vacancies.models.Vacancy object at 0x7f133e38f1e0>, <src.vacancies.models.Vacancy object at 0x7f133e38fba0>]
+current_page = 1, total_pages = 3
+formatter = <function TestUINavigation.test_quick_paginate_with_vacancies.<locals>.vacancy_formatter at 0x7f133e3dcf40>
+header = 'Test Vacancies', show_numbers = True
+
+    def _display_page(
+        self,
+        items: List[Any],
+        current_page: int,
+        total_pages: int,
+        formatter: Callable[[Any, Optional[int]], str],
+        header: str,
+        show_numbers: bool,
+    ) -> None:
+        """Отображение текущей страницы"""
+        # Вычисление индексов для текущей страницы
+        start_idx = (current_page - 1) * self.items_per_page
+        end_idx = min(start_idx + self.items_per_page, len(items))
+        current_items = items[start_idx:end_idx]
+    
+        print(f"\n\n{header}")
+        print("=" * len(header))
+    
+        # Отображение элементов
+        for i, item in enumerate(current_items, start_idx + 1):
+            if show_numbers:
+>               formatted_item = formatter(item, i)
+                                 ^^^^^^^^^^^^^^^^^^
+E               TypeError: TestUINavigation.test_quick_paginate_with_vacancies.<locals>.vacancy_formatter() takes 1 positional argument but 2 were given
+
+src/utils/ui_navigation.py:92: TypeError
+_______________ TestUINavigation.test_navigation_controls _______________
+
+self = <workspace.tests.test_ui_navigation.TestUINavigation object at 0x7f133ebd7690>
+mock_print = <MagicMock name='print' id='139720625119504'>
+mock_input = <MagicMock name='input' id='139720625123536'>
+sample_items = [{'description': 'Description 1', 'id': 1, 'title': 'Item 1'}, {'description': 'Description 2', 'id': 2, 'title': 'Ite...tion': 'Description 5', 'id': 5, 'title': 'Item 5'}, {'description': 'Description 6', 'id': 6, 'title': 'Item 6'}, ...]
+
+    @patch('builtins.input', side_effect=["n", "", "q"])
+    @patch('builtins.print')
+    def test_navigation_controls(self, mock_print, mock_input, sample_items):
+        """Тест элементов управления навигацией"""
+        try:
+            from src.utils.ui_navigation import quick_paginate
+    
+            def simple_formatter(item):
+                return str(item["title"])
+    
+>           quick_paginate(
+                sample_items,
+                formatter=simple_formatter,
+                header="Navigation Test",
+                items_per_page=3
+            )
+
+tests/test_ui_navigation.py:171: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/utils/ui_navigation.py:246: in quick_paginate
+    navigator.paginate_display(items, formatter, header, show_numbers, custom_actions)
+src/utils/ui_navigation.py:47: in paginate_display
+    self._display_page(items, current_page, total_pages, formatter, header, show_numbers)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.utils.ui_navigation.UINavigation object at 0x7f133e3a6050>
+items = [{'description': 'Description 1', 'id': 1, 'title': 'Item 1'}, {'description': 'Description 2', 'id': 2, 'title': 'Ite...tion': 'Description 5', 'id': 5, 'title': 'Item 5'}, {'description': 'Description 6', 'id': 6, 'title': 'Item 6'}, ...]
+current_page = 1, total_pages = 4
+formatter = <function TestUINavigation.test_navigation_controls.<locals>.simple_formatter at 0x7f133e3de020>
+header = 'Navigation Test', show_numbers = True
+
+    def _display_page(
+        self,
+        items: List[Any],
+        current_page: int,
+        total_pages: int,
+        formatter: Callable[[Any, Optional[int]], str],
+        header: str,
+        show_numbers: bool,
+    ) -> None:
+        """Отображение текущей страницы"""
+        # Вычисление индексов для текущей страницы
+        start_idx = (current_page - 1) * self.items_per_page
+        end_idx = min(start_idx + self.items_per_page, len(items))
+        current_items = items[start_idx:end_idx]
+    
+        print(f"\n\n{header}")
+        print("=" * len(header))
+    
+        # Отображение элементов
+        for i, item in enumerate(current_items, start_idx + 1):
+            if show_numbers:
+>               formatted_item = formatter(item, i)
+                                 ^^^^^^^^^^^^^^^^^^
+E               TypeError: TestUINavigation.test_navigation_controls.<locals>.simple_formatter() takes 1 positional argument but 2 were given
+
+src/utils/ui_navigation.py:92: TypeError
+_ TestVacancyOperationsCoordinator.test_handle_delete_vacancies_confirmed _
+
+self = <Mock name='mock.delete_all_vacancies' id='139720637935760'>
+
+    def assert_called_once(self):
+        """assert that the mock was called only once.
+        """
+        if not self.call_count == 1:
+            msg = ("Expected '%s' to have been called once. Called %s times.%s"
+                   % (self._mock_name or 'mock',
+                      self.call_count,
+                      self._calls_repr()))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'delete_all_vacancies' to have been called once. Called 0 times.
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:918: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <workspace.tests.test_vacancy_operations_coordinator.TestVacancyOperationsCoordinator object at 0x7f133e7a93d0>
+mock_confirm = <MagicMock name='confirm_action' id='139720637928208'>
+mock_print = <MagicMock name='print' id='139720629442000'>
+coordinator = <src.ui_interfaces.vacancy_operations_coordinator.VacancyOperationsCoordinator object at 0x7f133efdd250>
+mock_storage = <Mock id='139720637932688'>
+
+    @patch('builtins.print')
+    @patch('src.utils.ui_helpers.confirm_action', return_value=True)
+    def test_handle_delete_vacancies_confirmed(self, mock_confirm, mock_print, coordinator, mock_storage):
+        """Тест удаления всех вакансий с подтверждением"""
+        test_vacancies = [Mock(vacancy_id="123", title="Test Job")]
+        mock_storage.get_vacancies.return_value = test_vacancies
+        mock_storage.delete_all_vacancies.return_value = True
+    
+        # Мокируем метод если он существует
+        if hasattr(coordinator, 'handle_delete_vacancies'):
+            coordinator.handle_delete_vacancies()
+        else:
+            # Создаем тестовую реализацию
+            vacancies = mock_storage.get_vacancies()
+            if vacancies and mock_confirm.return_value:
+                mock_storage.delete_all_vacancies()
+                print("Все вакансии удалены.")
+    
+>       mock_storage.delete_all_vacancies.assert_called_once()
+E       AssertionError: Expected 'delete_all_vacancies' to have been called once. Called 0 times.
+
+tests/test_vacancy_operations_coordinator.py:259: AssertionError
+------------------------- Captured stdout call --------------------------
+Ваш выбор: 
+--------------------------- Captured log call ---------------------------
+ERROR    src.ui_interfaces.vacancy_operations_coordinator:vacancy_operations_coordinator.py:111 Ошибка при удалении вакансий: pytest: reading from stdin while output is captured!  Consider using `-s`.
+__ TestVacancySearchHandler.test_vacancy_search_handler_initialization __
+
+self = <workspace.tests.test_vacancy_search_handler.TestVacancySearchHandler object at 0x7f133e7ad5d0>
+mock_api = <Mock id='139720620609680'>
+mock_storage = <Mock id='139720620609744'>
+
+    def test_vacancy_search_handler_initialization(self, mock_api, mock_storage):
+        """Тест инициализации VacancySearchHandler"""
+        handler = VacancySearchHandler(mock_api, mock_storage)
+>       assert handler.api == mock_api
+               ^^^^^^^^^^^
+E       AttributeError: 'VacancySearchHandler' object has no attribute 'api'
+
+tests/test_vacancy_search_handler.py:147: AttributeError
+______________ TestVacancyStats.test_get_salary_statistics ______________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f133eb22ad0>
+sample_vacancies = [<src.vacancies.models.Vacancy object at 0x7f133df7f930>, <src.vacancies.models.Vacancy object at 0x7f133df7ed00>, <src.vacancies.models.Vacancy object at 0x7f133df7f040>]
+
+    def test_get_salary_statistics(self, sample_vacancies):
+        """Тест получения статистики по зарплатам"""
+        try:
+            from src.utils.vacancy_stats import VacancyStats
+>           stats = VacancyStats.get_salary_statistics(sample_vacancies)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: type object 'VacancyStats' has no attribute 'get_salary_statistics'
+
+tests/test_vacancy_stats.py:268: AttributeError
+_____________ TestVacancyStats.test_get_company_statistics ______________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f133eb21dd0>
+sample_vacancies = [<src.vacancies.models.Vacancy object at 0x7f133df32c30>, <src.vacancies.models.Vacancy object at 0x7f133df332b0>, <src.vacancies.models.Vacancy object at 0x7f133e3fdf30>]
+
+    def test_get_company_statistics(self, sample_vacancies):
+        """Тест получения статистики по компаниям"""
+        try:
+            from src.utils.vacancy_stats import VacancyStats
+>           stats = VacancyStats.get_company_statistics(sample_vacancies)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: type object 'VacancyStats' has no attribute 'get_company_statistics'
+
+tests/test_vacancy_stats.py:296: AttributeError
+______________ TestVacancyStats.test_display_company_stats ______________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f133eb22810>
+mock_print = <MagicMock name='print' id='139720628718224'>
+sample_vacancies = [<src.vacancies.models.Vacancy object at 0x7f133ff221a0>, <src.vacancies.models.Vacancy object at 0x7f133df00940>, <src.vacancies.models.Vacancy object at 0x7f133e333ee0>]
+
+    @patch('builtins.print')
+    def test_display_company_stats(self, mock_print, sample_vacancies):
+        """Тест отображения статистики по компаниям"""
+        try:
+            from src.utils.vacancy_stats import VacancyStats
+>           VacancyStats.display_company_stats(sample_vacancies, "Test Stats")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: type object 'VacancyStats' has no attribute 'display_company_stats'
+
+tests/test_vacancy_stats.py:317: AttributeError
+======================== short test summary info ========================
+FAILED tests/test_api_data_filter.py::TestAPIDataFilter::test_filter_by_salary_range - AttributeError: 'APIDataFilter' object has no attribute 'filter_by_s...
+FAILED tests/test_api_data_filter.py::TestAPIDataFilter::test_combined_filters - AttributeError: 'APIDataFilter' object has no attribute 'filter_by_s...
+FAILED tests/test_api_data_filter.py::TestAPIDataFilter::test_empty_data_filtering - AttributeError: 'APIDataFilter' object has no attribute 'filter_by_s...
+FAILED tests/test_search_utils.py::TestSearchUtils::test_filter_vacancies_by_salary_range - assert 0 == 1
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_quick_paginate_basic - TypeError: TestUINavigation.test_quick_paginate_basic.<locals>.simpl...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_quick_paginate_with_vacancies - TypeError: TestUINavigation.test_quick_paginate_with_vacancies.<loca...
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_navigation_controls - TypeError: TestUINavigation.test_navigation_controls.<locals>.simple...
+FAILED tests/test_vacancy_operations_coordinator.py::TestVacancyOperationsCoordinator::test_handle_delete_vacancies_confirmed - AssertionError: Expected 'delete_all_vacancies' to have been called ...
+FAILED tests/test_vacancy_search_handler.py::TestVacancySearchHandler::test_vacancy_search_handler_initialization - AttributeError: 'VacancySearchHandler' object has no attribute 'api'
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_get_salary_statistics - AttributeError: type object 'VacancyStats' has no attribute 'get_sal...
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_get_company_statistics - AttributeError: type object 'VacancyStats' has no attribute 'get_com...
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_display_company_stats - AttributeError: type object 'VacancyStats' has no attribute 'display...
+==================== 12 failed, 392 passed in 1.66s =====================
+~/workspace$ 
