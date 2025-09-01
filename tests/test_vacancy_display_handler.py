@@ -1,3 +1,4 @@
+
 import os
 import sys
 from unittest.mock import MagicMock, Mock, patch
@@ -10,225 +11,170 @@ from src.vacancies.models import Vacancy
 from src.ui_interfaces.vacancy_display_handler import VacancyDisplayHandler
 
 
-# Создаем классы-помощники для тестов
-class VacancySalary:
-    """Класс для представления зарплаты в тестах"""
-    def __init__(self, from_amount=None, to_amount=None, currency="RUR"):
-        self.from_amount = from_amount
-        self.to_amount = to_amount
-        self.currency = currency
-
-
-class VacancyEmployer:
-    """Класс для представления работодателя в тестах"""
-    def __init__(self, id=None, name=None):
-        self.id = id
-        self.name = name
-
-
-class VacancyDisplayHandlerForTesting(VacancyDisplayHandler):
-    """Расширенная версия VacancyDisplayHandler для тестирования"""
-
-    def display_vacancies(self, vacancies):
-        """Метод отображения списка вакансий"""
-        if not vacancies:
-            print("Нет вакансий для отображения.")
-        else:
-            for vacancy in vacancies:
-                print(self.format_vacancy_for_display(vacancy))
-
-    def display_vacancies_paginated(self, vacancies):
-        """Метод отображения вакансий с пагинацией"""
-        if not vacancies:
-            print("Нет вакансий для отображения.")
-            return
-
-        # Упрощенная пагинация для тестов
-        for i, vacancy in enumerate(vacancies, 1):
-            print(f"{i}. {self.format_vacancy_for_display(vacancy)}")
-
-    def format_vacancy_for_display(self, vacancy):
-        """Метод форматирования вакансии для отображения"""
-        if not vacancy:
-            return "Пустая вакансия"
-
-        title = getattr(vacancy, 'title', 'Без названия')
-        vacancy_id = getattr(vacancy, 'vacancy_id', 'Неизвестный ID')
-        url = getattr(vacancy, 'url', 'Нет ссылки')
-
-        # Обработка зарплаты
-        salary_info = "Зарплата не указана"
-        if hasattr(vacancy, 'salary') and vacancy.salary:
-            if isinstance(vacancy.salary, dict):
-                from_amount = vacancy.salary.get('from_amount')
-                to_amount = vacancy.salary.get('to_amount')
-                currency = vacancy.salary.get('currency', 'RUR')
-            else:
-                from_amount = getattr(vacancy.salary, 'from_amount', None)
-                to_amount = getattr(vacancy.salary, 'to_amount', None)
-                currency = getattr(vacancy.salary, 'currency', 'RUR')
-
-            if from_amount and to_amount:
-                salary_info = f"от {from_amount} до {to_amount} {currency}"
-            elif from_amount:
-                salary_info = f"от {from_amount} {currency}"
-            elif to_amount:
-                salary_info = f"до {to_amount} {currency}"
-
-        # Обработка работодателя
-        employer_info = "Работодатель не указан"
-        if hasattr(vacancy, 'employer') and vacancy.employer:
-            if isinstance(vacancy.employer, dict):
-                employer_info = vacancy.employer.get('name', 'Неизвестный работодатель')
-            else:
-                employer_info = getattr(vacancy.employer, 'name', 'Неизвестный работодатель')
-
-        return f"ID: {vacancy_id}\nНазвание: {title}\nРаботодатель: {employer_info}\nЗарплата: {salary_info}\nСсылка: {url}"
-
-# Переименованный класс для тестов
-class ExtendedVacancyDisplayHandler(VacancyDisplayHandlerForTesting):
-    pass
-
-# Создаем функцию-фабрику для создания тестового обработчика
-def create_test_display_handler(storage):
-    """Фабрика для создания тестового обработчика отображения"""
-    return VacancyDisplayHandlerForTesting(storage)
-
-
 class TestVacancyDisplayHandler:
     """Тесты для VacancyDisplayHandler"""
 
-    def test_vacancy_display_handler_initialization(self):
-        """Тест инициализации VacancyDisplayHandler"""
-        mock_storage = Mock()
-        handler = VacancyDisplayHandler(mock_storage)
-        assert handler.storage == mock_storage
+    @pytest.fixture
+    def mock_storage(self):
+        """Фикстура для мокирования storage"""
+        storage = Mock()
+        storage.get_vacancies.return_value = []
+        storage.get_vacancies_count.return_value = 0
+        return storage
 
-    @patch("builtins.print")
-    def test_display_vacancies_empty(self, mock_print):
-        """Тест отображения пустого списка вакансий"""
-        mock_storage = Mock()
-        handler = ExtendedVacancyDisplayHandler(mock_storage)
+    @pytest.fixture
+    def display_handler(self, mock_storage):
+        """Фикстура для создания VacancyDisplayHandler"""
+        return VacancyDisplayHandler(mock_storage)
 
-        handler.display_vacancies([])
-        mock_print.assert_called_with("Нет вакансий для отображения.")
-
-    @patch("builtins.print")
-    def test_display_vacancies_with_data(self, mock_print):
-        """Тест отображения списка вакансий"""
-        mock_storage = Mock()
-        handler = ExtendedVacancyDisplayHandler(mock_storage)
-
-        vacancies = [
-            Vacancy("123", "Python Developer", "https://test.com", "hh.ru"),
-            Vacancy("124", "Java Developer", "https://test2.com", "hh.ru"),
-        ]
-
-        handler.display_vacancies(vacancies)
-        assert mock_print.call_count >= 2  # Должно быть вызвано минимум 2 раза
-
-    @patch("builtins.print")
-    def test_display_vacancies_with_pagination(self, mock_print):
-        """Тест отображения вакансий с пагинацией"""
-        mock_storage = Mock()
-        handler = ExtendedVacancyDisplayHandler(mock_storage)
-
-        vacancies = [Vacancy("123", "Python Developer", "https://test.com", "hh.ru")]
-
-        handler.display_vacancies_paginated(vacancies)
-        mock_print.assert_called()
-
-    def test_format_vacancy_for_display(self):
-        """Тест форматирования вакансии для отображения"""
-        mock_storage = Mock()
-        handler = ExtendedVacancyDisplayHandler(mock_storage)
-
-        salary = VacancySalary(from_amount=100000, to_amount=150000, currency="RUR")
-        employer = VacancyEmployer(id="1", name="Test Company")
-
-        vacancy = Vacancy(
-            vacancy_id="123",
+    @pytest.fixture
+    def sample_vacancy(self):
+        """Фикстура для создания тестовой вакансии"""
+        return Vacancy(
             title="Python Developer",
             url="https://test.com/vacancy/123",
+            vacancy_id="123",
             source="hh.ru",
+            employer={"name": "Test Company", "id": "comp123"},
+            salary={"from": 100000, "to": 150000, "currency": "RUR"},
+            description="Test description",
+            area="Москва"
         )
-        # Устанавливаем атрибуты после создания
-        vacancy.salary = salary
-        vacancy.employer = employer
 
-        result = handler.format_vacancy_for_display(vacancy)
-
-        assert "Python Developer" in result
-        assert "123" in result
-        assert "Test Company" in result
-
-    def test_format_vacancy_for_display_no_salary(self):
-        """Тест форматирования вакансии для отображения без зарплаты"""
-        mock_storage = Mock()
-        handler = ExtendedVacancyDisplayHandler(mock_storage)
-
-        employer = VacancyEmployer(id="1", name="Test Company")
-        vacancy = Vacancy(
-            vacancy_id="124",
-            title="Junior Developer",
-            url="https://test.com/vacancy/124",
-            source="hh.ru"
-        )
-        vacancy.employer = employer
-
-        result = handler.format_vacancy_for_display(vacancy)
-
-        assert "Junior Developer" in result
-        assert "Test Company" in result
-        assert "не указана" in result
-
-    def test_format_vacancy_for_display_no_employer(self):
-        """Тест форматирования вакансии для отображения без работодателя"""
-        mock_storage = Mock()
-        handler = ExtendedVacancyDisplayHandler(mock_storage)
-
-        salary = VacancySalary(from_amount=50000, currency="RUR")
-        vacancy = Vacancy(
-            vacancy_id="125",
-            title="Intern",
-            url="https://test.com/vacancy/125",
-            source="hh.ru"
-        )
-        vacancy.salary = salary
-
-        result = handler.format_vacancy_for_display(vacancy)
-
-        assert "Intern" in result
-        assert "50000" in result
-        assert "не указан" in result
-
-    @patch("builtins.print")
-    def test_show_all_saved_vacancies(self, mock_print):
-        """Тест отображения всех сохраненных вакансий"""
-        mock_storage = Mock()
-        mock_storage.get_vacancies.return_value = [
-            Vacancy("123", "Python Developer", "https://test.com", "hh.ru")
-        ]
-
+    def test_vacancy_display_handler_initialization(self, mock_storage):
+        """Тест инициализации VacancyDisplayHandler"""
         handler = VacancyDisplayHandler(mock_storage)
+        assert handler.storage == mock_storage
+        assert hasattr(handler, 'vacancy_ops')
 
-        # Мокируем методы если их нет
-        with patch.object(handler, 'show_all_saved_vacancies', return_value=None) as mock_show:
-            handler.show_all_saved_vacancies()
-            mock_show.assert_called_once()
+    @patch('src.ui_interfaces.vacancy_display_handler.quick_paginate')
+    @patch('builtins.print')
+    def test_show_all_saved_vacancies_empty(self, mock_print, mock_paginate, display_handler, mock_storage):
+        """Тест отображения пустого списка сохраненных вакансий"""
+        mock_storage.get_vacancies.return_value = []
+        mock_storage.get_vacancies_count.return_value = 0
+        
+        display_handler.show_all_saved_vacancies()
+        
+        mock_print.assert_called_with("\nНет сохраненных вакансий.")
+        mock_paginate.assert_not_called()
 
-    @patch("builtins.input", return_value="Python")
-    @patch("builtins.print")
-    def test_search_saved_vacancies_by_keyword(self, mock_print, mock_input):
-        """Тест поиска сохраненных вакансий по ключевому слову"""
-        mock_storage = Mock()
-        mock_storage.get_vacancies.return_value = [
-            Vacancy("123", "Python Developer", "https://test.com", "hh.ru")
-        ]
+    @patch('src.ui_interfaces.vacancy_display_handler.quick_paginate')
+    @patch('builtins.print')
+    def test_show_all_saved_vacancies_with_data(self, mock_print, mock_paginate, display_handler, mock_storage, sample_vacancy):
+        """Тест отображения списка сохраненных вакансий"""
+        mock_storage.get_vacancies.return_value = [sample_vacancy]
+        mock_storage.get_vacancies_count.return_value = 1
+        
+        display_handler.show_all_saved_vacancies()
+        
+        mock_paginate.assert_called_once()
+        mock_print.assert_any_call("\nСохраненных вакансий: 1")
 
-        handler = VacancyDisplayHandler(mock_storage)
+    @patch('src.ui_interfaces.vacancy_display_handler.quick_paginate')
+    @patch('src.ui_interfaces.vacancy_display_handler.get_positive_integer', return_value=5)
+    @patch('builtins.print')
+    def test_show_top_vacancies_by_salary(self, mock_print, mock_get_int, mock_paginate, display_handler, mock_storage, sample_vacancy):
+        """Тест отображения топ вакансий по зарплате"""
+        mock_storage.get_vacancies.return_value = [sample_vacancy]
+        
+        with patch.object(display_handler.vacancy_ops, 'get_vacancies_with_salary', return_value=[sample_vacancy]):
+            with patch.object(display_handler.vacancy_ops, 'sort_vacancies_by_salary', return_value=[sample_vacancy]):
+                display_handler.show_top_vacancies_by_salary()
+        
+        mock_paginate.assert_called_once()
 
-        # Мокируем метод если его нет
-        with patch.object(handler, 'search_saved_vacancies_by_keyword', return_value=None) as mock_search:
-            handler.search_saved_vacancies_by_keyword()
-            mock_search.assert_called_once()
+    @patch('src.ui_interfaces.vacancy_display_handler.quick_paginate')
+    @patch('src.ui_interfaces.vacancy_display_handler.filter_vacancies_by_keyword', return_value=[])
+    @patch('src.utils.ui_helpers.get_user_input', return_value="Python")
+    @patch('builtins.print')
+    def test_search_saved_vacancies_by_keyword_no_results(self, mock_print, mock_input, mock_filter, mock_paginate, display_handler, mock_storage, sample_vacancy):
+        """Тест поиска сохраненных вакансий по ключевому слову без результатов"""
+        mock_storage.get_vacancies.return_value = [sample_vacancy]
+        
+        display_handler.search_saved_vacancies_by_keyword()
+        
+        mock_print.assert_any_call("Среди сохраненных вакансий не найдено ни одной с ключевым словом 'Python'.")
+        mock_paginate.assert_not_called()
+
+    @patch('src.ui_interfaces.vacancy_display_handler.quick_paginate')
+    @patch('src.ui_interfaces.vacancy_display_handler.filter_vacancies_by_keyword')
+    @patch('src.utils.ui_helpers.get_user_input', return_value="Python")
+    @patch('builtins.print')
+    def test_search_saved_vacancies_by_keyword_with_results(self, mock_print, mock_input, mock_filter, mock_paginate, display_handler, mock_storage, sample_vacancy):
+        """Тест поиска сохраненных вакансий по ключевому слову с результатами"""
+        mock_storage.get_vacancies.return_value = [sample_vacancy]
+        mock_filter.return_value = [sample_vacancy]
+        
+        display_handler.search_saved_vacancies_by_keyword()
+        
+        mock_print.assert_any_call("\nНайдено 1 сохраненных вакансий с ключевым словом 'Python':")
+        mock_paginate.assert_called_once()
+
+    @patch('src.utils.ui_helpers.get_user_input', return_value="")
+    def test_search_saved_vacancies_by_keyword_empty_input(self, mock_input, display_handler):
+        """Тест поиска с пустым вводом"""
+        display_handler.search_saved_vacancies_by_keyword()
+        # Метод должен завершиться без ошибок при пустом вводе
+
+    @patch('builtins.print')
+    def test_show_all_saved_vacancies_storage_error(self, mock_print, display_handler, mock_storage):
+        """Тест обработки ошибки storage при отображении вакансий"""
+        mock_storage.get_vacancies.side_effect = Exception("Database error")
+        
+        display_handler.show_all_saved_vacancies()
+        
+        mock_print.assert_any_call("Ошибка при загрузке вакансий: Database error")
+
+    @patch('src.ui_interfaces.vacancy_display_handler.get_positive_integer', return_value=None)
+    def test_show_top_vacancies_by_salary_invalid_input(self, mock_get_int, display_handler):
+        """Тест обработки неверного ввода количества вакансий"""
+        display_handler.show_top_vacancies_by_salary()
+        # Метод должен завершиться без ошибок при неверном вводе
+
+    @patch('src.ui_interfaces.vacancy_display_handler.get_positive_integer', return_value=5)
+    @patch('builtins.print')
+    def test_show_top_vacancies_by_salary_no_vacancies(self, mock_print, mock_get_int, display_handler, mock_storage):
+        """Тест топ вакансий когда нет сохраненных вакансий"""
+        mock_storage.get_vacancies.return_value = []
+        
+        display_handler.show_top_vacancies_by_salary()
+        
+        mock_print.assert_any_call("Нет сохраненных вакансий.")
+
+    @patch('src.ui_interfaces.vacancy_display_handler.get_positive_integer', return_value=5)
+    @patch('builtins.print')
+    def test_show_top_vacancies_by_salary_no_salary_vacancies(self, mock_print, mock_get_int, display_handler, mock_storage, sample_vacancy):
+        """Тест топ вакансий когда нет вакансий с зарплатой"""
+        mock_storage.get_vacancies.return_value = [sample_vacancy]
+        
+        with patch.object(display_handler.vacancy_ops, 'get_vacancies_with_salary', return_value=[]):
+            display_handler.show_top_vacancies_by_salary()
+        
+        mock_print.assert_any_call("Среди сохраненных вакансий нет ни одной с указанной зарплатой.")
+
+    @patch('builtins.print')
+    def test_search_saved_vacancies_by_keyword_no_saved_vacancies(self, mock_print, display_handler, mock_storage):
+        """Тест поиска когда нет сохраненных вакансий"""
+        mock_storage.get_vacancies.return_value = []
+        
+        with patch('src.utils.ui_helpers.get_user_input', return_value="Python"):
+            display_handler.search_saved_vacancies_by_keyword()
+        
+        mock_print.assert_any_call("Нет сохраненных вакансий.")
+
+    @patch('builtins.print')
+    def test_search_saved_vacancies_by_keyword_storage_error(self, mock_print, display_handler, mock_storage):
+        """Тест обработки ошибки storage при поиске"""
+        mock_storage.get_vacancies.side_effect = Exception("Database error")
+        
+        with patch('src.utils.ui_helpers.get_user_input', return_value="Python"):
+            display_handler.search_saved_vacancies_by_keyword()
+        
+        mock_print.assert_any_call("Ошибка при поиске: Database error")
+
+    def test_vacancy_display_handler_attributes(self, display_handler, mock_storage):
+        """Тест проверки атрибутов VacancyDisplayHandler"""
+        assert hasattr(display_handler, 'storage')
+        assert hasattr(display_handler, 'vacancy_ops')
+        assert display_handler.storage == mock_storage
