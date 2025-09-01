@@ -1,4 +1,3 @@
-
 import os
 import sys
 from unittest.mock import MagicMock, Mock, patch
@@ -29,7 +28,7 @@ class VacancyEmployer:
 
 class TestableVacancyDisplayHandler(VacancyDisplayHandler):
     """Расширенная версия VacancyDisplayHandler для тестирования"""
-    
+
     def display_vacancies(self, vacancies):
         """Метод отображения списка вакансий"""
         if not vacancies:
@@ -37,26 +36,26 @@ class TestableVacancyDisplayHandler(VacancyDisplayHandler):
         else:
             for vacancy in vacancies:
                 print(self.format_vacancy_for_display(vacancy))
-    
+
     def display_vacancies_paginated(self, vacancies):
         """Метод отображения вакансий с пагинацией"""
         if not vacancies:
             print("Нет вакансий для отображения.")
             return
-        
+
         # Упрощенная пагинация для тестов
         for i, vacancy in enumerate(vacancies, 1):
             print(f"{i}. {self.format_vacancy_for_display(vacancy)}")
-    
+
     def format_vacancy_for_display(self, vacancy):
         """Метод форматирования вакансии для отображения"""
         if not vacancy:
             return "Пустая вакансия"
-        
+
         title = getattr(vacancy, 'title', 'Без названия')
         vacancy_id = getattr(vacancy, 'vacancy_id', 'Неизвестный ID')
         url = getattr(vacancy, 'url', 'Нет ссылки')
-        
+
         # Обработка зарплаты
         salary_info = "Зарплата не указана"
         if hasattr(vacancy, 'salary') and vacancy.salary:
@@ -68,14 +67,14 @@ class TestableVacancyDisplayHandler(VacancyDisplayHandler):
                 from_amount = getattr(vacancy.salary, 'from_amount', None)
                 to_amount = getattr(vacancy.salary, 'to_amount', None)
                 currency = getattr(vacancy.salary, 'currency', 'RUR')
-            
+
             if from_amount and to_amount:
                 salary_info = f"от {from_amount} до {to_amount} {currency}"
             elif from_amount:
                 salary_info = f"от {from_amount} {currency}"
             elif to_amount:
                 salary_info = f"до {to_amount} {currency}"
-        
+
         # Обработка работодателя
         employer_info = "Работодатель не указан"
         if hasattr(vacancy, 'employer') and vacancy.employer:
@@ -83,8 +82,12 @@ class TestableVacancyDisplayHandler(VacancyDisplayHandler):
                 employer_info = vacancy.employer.get('name', 'Неизвестный работодатель')
             else:
                 employer_info = getattr(vacancy.employer, 'name', 'Неизвестный работодатель')
-        
+
         return f"ID: {vacancy_id}\nНазвание: {title}\nРаботодатель: {employer_info}\nЗарплата: {salary_info}\nСсылка: {url}"
+
+# Переименованный класс для тестов
+class ExtendedVacancyDisplayHandler(TestableVacancyDisplayHandler):
+    pass
 
 
 class TestVacancyDisplayHandler:
@@ -100,7 +103,7 @@ class TestVacancyDisplayHandler:
     def test_display_vacancies_empty(self, mock_print):
         """Тест отображения пустого списка вакансий"""
         mock_storage = Mock()
-        handler = TestableVacancyDisplayHandler(mock_storage)
+        handler = ExtendedVacancyDisplayHandler(mock_storage)
 
         handler.display_vacancies([])
         mock_print.assert_called_with("Нет вакансий для отображения.")
@@ -109,7 +112,7 @@ class TestVacancyDisplayHandler:
     def test_display_vacancies_with_data(self, mock_print):
         """Тест отображения списка вакансий"""
         mock_storage = Mock()
-        handler = TestableVacancyDisplayHandler(mock_storage)
+        handler = ExtendedVacancyDisplayHandler(mock_storage)
 
         vacancies = [
             Vacancy("123", "Python Developer", "https://test.com", "hh.ru"),
@@ -123,7 +126,7 @@ class TestVacancyDisplayHandler:
     def test_display_vacancies_with_pagination(self, mock_print):
         """Тест отображения вакансий с пагинацией"""
         mock_storage = Mock()
-        handler = TestableVacancyDisplayHandler(mock_storage)
+        handler = ExtendedVacancyDisplayHandler(mock_storage)
 
         vacancies = [Vacancy("123", "Python Developer", "https://test.com", "hh.ru")]
 
@@ -133,7 +136,7 @@ class TestVacancyDisplayHandler:
     def test_format_vacancy_for_display(self):
         """Тест форматирования вакансии для отображения"""
         mock_storage = Mock()
-        handler = TestableVacancyDisplayHandler(mock_storage)
+        handler = ExtendedVacancyDisplayHandler(mock_storage)
 
         salary = VacancySalary(from_amount=100000, to_amount=150000, currency="RUR")
         employer = VacancyEmployer(id="1", name="Test Company")
@@ -157,7 +160,7 @@ class TestVacancyDisplayHandler:
     def test_format_vacancy_for_display_no_salary(self):
         """Тест форматирования вакансии для отображения без зарплаты"""
         mock_storage = Mock()
-        handler = TestableVacancyDisplayHandler(mock_storage)
+        handler = ExtendedVacancyDisplayHandler(mock_storage)
 
         employer = VacancyEmployer(id="1", name="Test Company")
         vacancy = Vacancy(
@@ -177,7 +180,7 @@ class TestVacancyDisplayHandler:
     def test_format_vacancy_for_display_no_employer(self):
         """Тест форматирования вакансии для отображения без работодателя"""
         mock_storage = Mock()
-        handler = TestableVacancyDisplayHandler(mock_storage)
+        handler = ExtendedVacancyDisplayHandler(mock_storage)
 
         salary = VacancySalary(from_amount=50000, currency="RUR")
         vacancy = Vacancy(
@@ -201,9 +204,9 @@ class TestVacancyDisplayHandler:
         mock_storage.get_vacancies.return_value = [
             Vacancy("123", "Python Developer", "https://test.com", "hh.ru")
         ]
-        
+
         handler = VacancyDisplayHandler(mock_storage)
-        
+
         # Мокируем методы если их нет
         with patch.object(handler, 'show_all_saved_vacancies', return_value=None) as mock_show:
             handler.show_all_saved_vacancies()
@@ -217,9 +220,9 @@ class TestVacancyDisplayHandler:
         mock_storage.get_vacancies.return_value = [
             Vacancy("123", "Python Developer", "https://test.com", "hh.ru")
         ]
-        
+
         handler = VacancyDisplayHandler(mock_storage)
-        
+
         # Мокируем метод если его нет
         with patch.object(handler, 'search_saved_vacancies_by_keyword', return_value=None) as mock_search:
             handler.search_saved_vacancies_by_keyword()
