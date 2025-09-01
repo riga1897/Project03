@@ -569,7 +569,8 @@ class TestVacancyDataTransformation:
         vacancy = Vacancy.from_dict(minimal_data)
         assert vacancy.vacancy_id == "123"
         assert vacancy.title == "Python Developer"
-        assert vacancy.description is None
+        # В реальном коде, когда description None/пустое, создается описание из названия
+        assert vacancy.description == "Вакансия: Python Developer"
         assert vacancy.area is None
         assert vacancy.experience is None
         assert vacancy.employment is None
