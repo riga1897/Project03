@@ -1,0 +1,255 @@
+~/workspace$ pytest
+========================== test session starts ==========================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: mock-3.14.1, cov-6.2.1
+collected 365 items                                                     
+
+tests/test_abstract.py ........                                   [  2%]
+tests/test_abstract_db_manager.py ....                            [  3%]
+tests/test_api_config.py ....                                     [  4%]
+tests/test_app_config.py .....                                    [  5%]
+tests/test_base_api.py ......                                     [  7%]
+tests/test_base_parser.py ......                                  [  9%]
+tests/test_cache.py .......                                       [ 10%]
+tests/test_cached_api.py ...........                              [ 13%]
+tests/test_db_manager.py .................                        [ 18%]
+tests/test_decorators.py .......                                  [ 20%]
+tests/test_env_loader.py ............                             [ 23%]
+tests/test_file_handlers.py ............                          [ 27%]
+tests/test_get_api.py ......                                      [ 28%]
+tests/test_hh_api.py .......                                      [ 30%]
+tests/test_hh_api_config.py .....                                 [ 32%]
+tests/test_hh_parser.py ........                                  [ 34%]
+tests/test_menu_manager.py ..........                             [ 36%]
+tests/test_paginator.py ......                                    [ 38%]
+tests/test_postgres_saver.py .......                              [ 40%]
+tests/test_salary_utils.py ......................                 [ 46%]
+tests/test_search_utils.py ..................                     [ 51%]
+tests/test_sj_api.py ..............                               [ 55%]
+tests/test_sj_api_config.py .....                                 [ 56%]
+tests/test_sj_parser.py ........                                  [ 58%]
+tests/test_storage_factory.py ........                            [ 61%]
+tests/test_target_companies.py .....                              [ 62%]
+tests/test_ui_config.py .....                                     [ 63%]
+tests/test_ui_helpers.py ...........                              [ 66%]
+tests/test_unified_api.py .................                       [ 71%]
+tests/test_user_interface.py ........                             [ 73%]
+tests/test_vacancy_display_handler.py .........                   [ 76%]
+tests/test_vacancy_formatter.py ..............                    [ 80%]
+tests/test_vacancy_models.py .........................E.FF.F...FF [ 89%]
+FFFFFFFFFF...                                                     [ 93%]
+tests/test_vacancy_operations_coordinator.py ...........          [ 96%]
+tests/test_vacancy_search_handler.py ......                       [ 98%]
+tests/test_vacancy_stats.py .......                               [100%]
+
+================================ ERRORS =================================
+______ ERROR at setup of test_vacancy_from_minimal_dict_with_none _______
+file /home/runner/workspace/tests/test_vacancy_models.py, line 460
+  def test_vacancy_from_minimal_dict_with_none(self):
+E       fixture 'self' not found
+>       available fixtures: cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, cov, doctest_namespace, mock_db_config, mock_vacancy_data, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session_mocker, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/runner/workspace/tests/test_vacancy_models.py:460
+=============================== FAILURES ================================
+___________________ TestSalary.test_salary_from_dict ____________________
+
+self = <workspace.tests.test_vacancy_models.TestSalary object at 0x7f03ba619ed0>
+
+    def test_salary_from_dict(self):
+        """Тест создания зарплаты из словаря"""
+        data = {"from": 100000, "to": 150000, "currency": "RUR"}
+>       salary = Salary.from_dict(data)
+                 ^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'Salary' has no attribute 'from_dict'
+
+tests/test_vacancy_models.py:501: AttributeError
+____________________ TestSalary.test_salary_to_dict _____________________
+
+self = <workspace.tests.test_vacancy_models.TestSalary object at 0x7f03ba61ab10>
+
+    def test_salary_to_dict(self):
+        """Тест преобразования зарплаты в словарь"""
+        salary = Salary(from_amount=100000, to_amount=150000, currency="RUR")
+>       salary_dict = salary.to_dict()
+                      ^^^^^^^^^^^^^^
+E       AttributeError: 'Salary' object has no attribute 'to_dict'
+
+tests/test_vacancy_models.py:509: AttributeError
+______________________ TestSalary.test_salary_hash ______________________
+
+self = <workspace.tests.test_vacancy_models.TestSalary object at 0x7f03ba61b8d0>
+
+    def test_salary_hash(self):
+        """Тест хэширования зарплат"""
+        salary1 = Salary(from_amount=100000, to_amount=150000, currency="RUR")
+        salary2 = Salary(from_amount=100000, to_amount=150000, currency="RUR")
+    
+>       assert hash(salary1) == hash(salary2)
+               ^^^^^^^^^^^^^
+E       TypeError: unhashable type: 'Salary'
+
+tests/test_vacancy_models.py:529: TypeError
+____________ TestSalary.test_salary_from_dict_missing_fields ____________
+
+self = <workspace.tests.test_vacancy_models.TestSalary object at 0x7f03ba619850>
+
+    def test_salary_from_dict_missing_fields(self):
+        """Тест создания зарплаты из словаря с недостающими полями"""
+        data = {"currency": "USD"}
+>       salary = Salary.from_dict(data)
+                 ^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'Salary' has no attribute 'from_dict'
+
+tests/test_vacancy_models.py:555: AttributeError
+_____________ TestSalary.test_salary_to_dict_missing_fields _____________
+
+self = <workspace.tests.test_vacancy_models.TestSalary object at 0x7f03ba619d50>
+
+    def test_salary_to_dict_missing_fields(self):
+        """Тест преобразования зарплаты в словарь с недостающими полями"""
+        salary = Salary(currency="USD")
+>       salary_dict = salary.to_dict()
+                      ^^^^^^^^^^^^^^
+E       AttributeError: 'Salary' object has no attribute 'to_dict'
+
+tests/test_vacancy_models.py:563: AttributeError
+_______________ TestEmployer.test_employer_initialization _______________
+
+self = <workspace.tests.test_vacancy_models.TestEmployer object at 0x7f03ba606690>
+
+    def test_employer_initialization(self):
+        """Тест инициализации работодателя"""
+>       employer = Employer(name="Test Company", id="123", trusted=True, alternate_url="https://company.com")
+                   ^^^^^^^^
+E       NameError: name 'Employer' is not defined
+
+tests/test_vacancy_models.py:574: NameError
+_________________ TestEmployer.test_employer_from_dict __________________
+
+self = <workspace.tests.test_vacancy_models.TestEmployer object at 0x7f03ba606ed0>
+
+    def test_employer_from_dict(self):
+        """Тест создания работодателя из словаря"""
+        data = {"name": "Test Company", "id": "123", "trusted": True, "alternate_url": "https://company.com"}
+>       employer = Employer.from_dict(data)
+                   ^^^^^^^^
+E       NameError: name 'Employer' is not defined
+
+tests/test_vacancy_models.py:583: NameError
+__________________ TestEmployer.test_employer_to_dict ___________________
+
+self = <workspace.tests.test_vacancy_models.TestEmployer object at 0x7f03ba607850>
+
+    def test_employer_to_dict(self):
+        """Тест преобразования работодателя в словарь"""
+>       employer = Employer(name="Test Company", id="123", trusted=True, alternate_url="https://company.com")
+                   ^^^^^^^^
+E       NameError: name 'Employer' is not defined
+
+tests/test_vacancy_models.py:591: NameError
+_________________ TestEmployer.test_employer_comparison _________________
+
+self = <workspace.tests.test_vacancy_models.TestEmployer object at 0x7f03ba607f90>
+
+    def test_employer_comparison(self):
+        """Тест сравнения работодателей"""
+>       employer1 = Employer(name="Test Company", id="123")
+                    ^^^^^^^^
+E       NameError: name 'Employer' is not defined
+
+tests/test_vacancy_models.py:601: NameError
+____________________ TestEmployer.test_employer_hash ____________________
+
+self = <workspace.tests.test_vacancy_models.TestEmployer object at 0x7f03ba605bd0>
+
+    def test_employer_hash(self):
+        """Тест хэширования работодателей"""
+>       employer1 = Employer(name="Test Company", id="123")
+                    ^^^^^^^^
+E       NameError: name 'Employer' is not defined
+
+tests/test_vacancy_models.py:610: NameError
+____________________ TestEmployer.test_employer_str _____________________
+
+self = <workspace.tests.test_vacancy_models.TestEmployer object at 0x7f03ba604650>
+
+    def test_employer_str(self):
+        """Тест строкового представления работодателя"""
+>       employer = Employer(name="Test Company", id="123")
+                   ^^^^^^^^
+E       NameError: name 'Employer' is not defined
+
+tests/test_vacancy_models.py:617: NameError
+____________________ TestEmployer.test_employer_repr ____________________
+
+self = <workspace.tests.test_vacancy_models.TestEmployer object at 0x7f03ba604ed0>
+
+    def test_employer_repr(self):
+        """Тест представления Employer для разработчика"""
+>       employer = Employer(name="Test Company", id="123")
+                   ^^^^^^^^
+E       NameError: name 'Employer' is not defined
+
+tests/test_vacancy_models.py:624: NameError
+_______________ TestEmployer.test_employer_missing_fields _______________
+
+self = <workspace.tests.test_vacancy_models.TestEmployer object at 0x7f03ba618b90>
+
+    def test_employer_missing_fields(self):
+        """Тест работодателя с недостающими полями"""
+>       employer = Employer(name="Test Company")
+                   ^^^^^^^^
+E       NameError: name 'Employer' is not defined
+
+tests/test_vacancy_models.py:632: NameError
+__________ TestEmployer.test_employer_from_dict_missing_fields __________
+
+self = <workspace.tests.test_vacancy_models.TestEmployer object at 0x7f03ba61a390>
+
+    def test_employer_from_dict_missing_fields(self):
+        """Тест создания работодателя из словаря с недостающими полями"""
+        data = {"name": "Test Company"}
+>       employer = Employer.from_dict(data)
+                   ^^^^^^^^
+E       NameError: name 'Employer' is not defined
+
+tests/test_vacancy_models.py:641: NameError
+___________ TestEmployer.test_employer_to_dict_missing_fields ___________
+
+self = <workspace.tests.test_vacancy_models.TestEmployer object at 0x7f03ba625bd0>
+
+    def test_employer_to_dict_missing_fields(self):
+        """Тест преобразования работодателя в словарь с недостающими полями"""
+>       employer = Employer(name="Test Company")
+                   ^^^^^^^^
+E       NameError: name 'Employer' is not defined
+
+tests/test_vacancy_models.py:649: NameError
+=========================== warnings summary ============================
+tests/test_vacancy_display_handler.py:29
+  /home/runner/workspace/tests/test_vacancy_display_handler.py:29: PytestCollectionWarning: cannot collect test class 'TestableVacancyDisplayHandler' because it has a __init__ constructor (from: tests/test_vacancy_display_handler.py)
+    class TestableVacancyDisplayHandler(VacancyDisplayHandler):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== short test summary info ========================
+FAILED tests/test_vacancy_models.py::TestSalary::test_salary_from_dict - AttributeError: type object 'Salary' has no attribute 'from_dict'
+FAILED tests/test_vacancy_models.py::TestSalary::test_salary_to_dict - AttributeError: 'Salary' object has no attribute 'to_dict'
+FAILED tests/test_vacancy_models.py::TestSalary::test_salary_hash - TypeError: unhashable type: 'Salary'
+FAILED tests/test_vacancy_models.py::TestSalary::test_salary_from_dict_missing_fields - AttributeError: type object 'Salary' has no attribute 'from_dict'
+FAILED tests/test_vacancy_models.py::TestSalary::test_salary_to_dict_missing_fields - AttributeError: 'Salary' object has no attribute 'to_dict'
+FAILED tests/test_vacancy_models.py::TestEmployer::test_employer_initialization - NameError: name 'Employer' is not defined
+FAILED tests/test_vacancy_models.py::TestEmployer::test_employer_from_dict - NameError: name 'Employer' is not defined
+FAILED tests/test_vacancy_models.py::TestEmployer::test_employer_to_dict - NameError: name 'Employer' is not defined
+FAILED tests/test_vacancy_models.py::TestEmployer::test_employer_comparison - NameError: name 'Employer' is not defined
+FAILED tests/test_vacancy_models.py::TestEmployer::test_employer_hash - NameError: name 'Employer' is not defined
+FAILED tests/test_vacancy_models.py::TestEmployer::test_employer_str - NameError: name 'Employer' is not defined
+FAILED tests/test_vacancy_models.py::TestEmployer::test_employer_repr - NameError: name 'Employer' is not defined
+FAILED tests/test_vacancy_models.py::TestEmployer::test_employer_missing_fields - NameError: name 'Employer' is not defined
+FAILED tests/test_vacancy_models.py::TestEmployer::test_employer_from_dict_missing_fields - NameError: name 'Employer' is not defined
+FAILED tests/test_vacancy_models.py::TestEmployer::test_employer_to_dict_missing_fields - NameError: name 'Employer' is not defined
+ERROR tests/test_vacancy_models.py::test_vacancy_from_minimal_dict_with_none
+========== 15 failed, 349 passed, 1 warning, 1 error in 1.69s ===========
+~/workspace$ 
