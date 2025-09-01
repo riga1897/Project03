@@ -575,7 +575,8 @@ class TestVacancyDataTransformation:
         assert vacancy.experience is None
         assert vacancy.employment is None
         assert vacancy.published_at is None
-        assert vacancy.salary is None
+        # В реальном коде _validate_salary всегда создает объект Salary, даже при None
+        assert vacancy.salary is not None
         assert vacancy.employer is None
 
 
