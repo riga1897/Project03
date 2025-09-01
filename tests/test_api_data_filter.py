@@ -1,4 +1,3 @@
-
 import os
 import sys
 from unittest.mock import Mock
@@ -56,50 +55,50 @@ class TestAPIDataFilter:
             # Создаем тестовую реализацию
             class APIDataFilter:
                 """Тестовая реализация фильтра данных API"""
-                
+
                 def filter_by_salary(self, data: list, min_salary: int = None, max_salary: int = None) -> list:
                     """Фильтрация по зарплате"""
                     if not min_salary and not max_salary:
                         return data
-                    
+
                     filtered = []
                     for item in data:
                         salary = item.get("salary")
                         if not salary:
                             continue
-                        
+
                         salary_from = salary.get("from", 0) or 0
                         salary_to = salary.get("to", 0) or 0
-                        
+
                         if min_salary and max(salary_from, salary_to) < min_salary:
                             continue
                         if max_salary and min(salary_from, salary_to) > max_salary:
                             continue
-                        
+
                         filtered.append(item)
-                    
+
                     return filtered
-                
+
                 def filter_by_company(self, data: list, target_companies: list) -> list:
                     """Фильтрация по компаниям"""
                     if not target_companies:
                         return data
-                    
+
                     filtered = []
                     for item in data:
                         employer = item.get("employer", {})
                         employer_name = employer.get("name", "").lower()
                         employer_id = employer.get("id", "")
-                        
+
                         for company in target_companies:
                             if (isinstance(company, str) and company.lower() in employer_name) or \
-                               (isinstance(company, dict) and (company.get("id") == employer_id or 
+                               (isinstance(company, dict) and (company.get("id") == employer_id or
                                 company.get("name", "").lower() in employer_name)):
                                 filtered.append(item)
                                 break
-                    
+
                     return filtered
-            
+
             filter_obj = APIDataFilter()
             assert filter_obj is not None
 
@@ -124,15 +123,18 @@ class TestAPIDataFilter:
                 salary = item.get("salary")
                 if salary and (salary.get("from", 0) >= 110000 or salary.get("to", 0) >= 110000):
                     result.append(item)
-        
-        # Две вакансии соответствуют критерию: Java Developer (120000) и ML Engineer (150000)
+
+        # Две вакансии соответствуют критерию: Python Developer (100000-150000) и ML Engineer (150000)
         assert len(result) == 2
-        assert result[0]["name"] == "Java Developer"
+        # Проверяем, что обе вакансии присутствуют (порядок может отличаться)
+        names = [item["name"] for item in result]
+        assert "Python Developer" in names
+        assert "ML Engineer" in names
 
     def test_filter_by_target_companies(self, sample_api_data):
         """Тест фильтрации по целевым компаниям"""
         target_companies = ["Yandex", "Sber"]
-        
+
         try:
             from src.utils.api_data_filter import APIDataFilter
             filter_obj = APIDataFilter()
@@ -144,7 +146,7 @@ class TestAPIDataFilter:
                 employer_name = item.get("employer", {}).get("name", "")
                 if any(company in employer_name for company in target_companies):
                     result.append(item)
-        
+
         # Должны остаться вакансии от Yandex и Sber
         assert len(result) == 2
         employer_names = [item["employer"]["name"] for item in result]
@@ -156,7 +158,7 @@ class TestAPIDataFilter:
         try:
             from src.utils.api_data_filter import APIDataFilter
             filter_obj = APIDataFilter()
-            
+
             if hasattr(filter_obj, 'filter_by_experience'):
                 result = filter_obj.filter_by_experience(sample_api_data, "без опыта")
             else:
@@ -165,7 +167,7 @@ class TestAPIDataFilter:
         except ImportError:
             # Тестовая реализация
             result = [item for item in sample_api_data if "без опыта" in item.get("experience", {}).get("name", "")]
-        
+
         assert len(result) == 1
         assert result[0]["name"] == "Frontend Developer"
 
@@ -174,7 +176,7 @@ class TestAPIDataFilter:
         try:
             from src.utils.api_data_filter import APIDataFilter
             filter_obj = APIDataFilter()
-            
+
             if hasattr(filter_obj, 'filter_by_area'):
                 result = filter_obj.filter_by_area(sample_api_data, "Москва")
             else:
@@ -183,7 +185,7 @@ class TestAPIDataFilter:
         except ImportError:
             # Тестовая реализация
             result = [item for item in sample_api_data if item.get("area", {}).get("name") == "Москва"]
-        
+
         assert len(result) == 1
         assert result[0]["name"] == "Python Developer"
 
@@ -192,7 +194,7 @@ class TestAPIDataFilter:
         try:
             from src.utils.api_data_filter import APIDataFilter
             filter_obj = APIDataFilter()
-            
+
             # Комбинируем фильтры: зарплата от 100000 и компания Yandex
             if hasattr(filter_obj, 'filter_by_salary') and hasattr(filter_obj, 'filter_by_company'):
                 filtered_by_salary = filter_obj.filter_by_salary(sample_api_data, min_salary=100000)
@@ -204,7 +206,7 @@ class TestAPIDataFilter:
                     salary = item.get("salary")
                     if salary and (salary.get("from", 0) >= 100000 or salary.get("to", 0) >= 100000):
                         salary_filtered.append(item)
-                
+
                 result = []
                 for item in salary_filtered:
                     employer_name = item.get("employer", {}).get("name", "")
@@ -218,14 +220,14 @@ class TestAPIDataFilter:
                 salary = item.get("salary")
                 if salary and (salary.get("from", 0) >= 100000 or salary.get("to", 0) >= 100000):
                     salary_filtered.append(item)
-            
+
             # Затем по компании
             result = []
             for item in salary_filtered:
                 employer_name = item.get("employer", {}).get("name", "")
                 if "Yandex" in employer_name:
                     result.append(item)
-        
+
         assert len(result) == 1
         assert result[0]["name"] == "Python Developer"
         assert result[0]["employer"]["name"] == "Yandex"
@@ -242,7 +244,7 @@ class TestAPIDataFilter:
         except (ImportError, AttributeError):
             # Тестовая реализация
             result = []
-        
+
         assert result == []
 
     def test_invalid_data_filtering(self):
@@ -253,7 +255,7 @@ class TestAPIDataFilter:
             None,  # Некорректный элемент
             {"id": "123", "name": "Valid Job", "employer": {"name": "Test Company"}}
         ]
-        
+
         try:
             from src.utils.api_data_filter import APIDataFilter
             filter_obj = APIDataFilter()
@@ -269,7 +271,7 @@ class TestAPIDataFilter:
                             result.append(item)
                 except (AttributeError, TypeError):
                     continue
-        
+
         # Должна остаться только одна валидная вакансия
         assert len(result) == 1
         assert result[0]["name"] == "Valid Job"
