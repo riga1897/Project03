@@ -89,6 +89,11 @@ class TestableVacancyDisplayHandler(VacancyDisplayHandler):
 class ExtendedVacancyDisplayHandler(TestableVacancyDisplayHandler):
     pass
 
+# Создаем функцию-фабрику для создания тестового обработчика
+def create_test_display_handler(storage):
+    """Фабрика для создания тестового обработчика отображения"""
+    return TestableVacancyDisplayHandler(storage)
+
 
 class TestVacancyDisplayHandler:
     """Тесты для VacancyDisplayHandler"""

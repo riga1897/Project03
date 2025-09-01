@@ -19,6 +19,98 @@ except ImportError:
         to_amount: Optional[int] = None
         currency: str = "RUR"
 
+        @classmethod
+        def from_dict(cls, data: Dict[str, Any]) -> 'Salary':
+            """Создание объекта Salary из словаря"""
+            return cls(
+                from_amount=data.get('from'),
+                to_amount=data.get('to'),
+                currency=data.get('currency', 'RUR')
+            )
+
+        def to_dict(self) -> Dict[str, Any]:
+            """Преобразование объекта Salary в словарь"""
+            return {
+                'from': self.from_amount,
+                'to': self.to_amount,
+                'currency': self.currency
+            }
+
+        def __hash__(self):
+            """Хэширование объекта Salary"""
+            return hash((self.from_amount, self.to_amount, self.currency))
+
+        def __eq__(self, other):
+            """Сравнение объектов Salary"""
+            if not isinstance(other, Salary):
+                return False
+            return (self.from_amount == other.from_amount and 
+                    self.to_amount == other.to_amount and 
+                    self.currency == other.currency)
+
+        def __str__(self):
+            """Строковое представление"""
+            parts = []
+            if self.from_amount:
+                parts.append(f"от {self.from_amount}")
+            if self.to_amount:
+                parts.append(f"до {self.to_amount}")
+            if parts:
+                parts.append(self.currency)
+                return " ".join(parts)
+            return f"Зарплата в {self.currency}"
+
+        def __repr__(self):
+            """Представление для разработчика"""
+            return f"Salary(from_amount={self.from_amount}, to_amount={self.to_amount}, currency='{self.currency}')"
+
+    @dataclass
+    class Employer:
+        name: Optional[str] = None
+        id: Optional[str] = None
+        trusted: Optional[bool] = None
+        alternate_url: Optional[str] = None
+
+        @classmethod
+        def from_dict(cls, data: Dict[str, Any]) -> 'Employer':
+            """Создание объекта Employer из словаря"""
+            return cls(
+                name=data.get('name'),
+                id=data.get('id'),
+                trusted=data.get('trusted'),
+                alternate_url=data.get('alternate_url')
+            )
+
+        def to_dict(self) -> Dict[str, Any]:
+            """Преобразование объекта Employer в словарь"""
+            return {
+                'name': self.name,
+                'id': self.id,
+                'trusted': self.trusted,
+                'alternate_url': self.alternate_url
+            }
+
+        def __hash__(self):
+            """Хэширование объекта Employer"""
+            return hash((self.name, self.id, self.trusted, self.alternate_url))
+
+        def __eq__(self, other):
+            """Сравнение объектов Employer"""
+            if not isinstance(other, Employer):
+                return False
+            return (self.name == other.name and 
+                    self.id == other.id and 
+                    self.trusted == other.trusted and 
+                    self.alternate_url == other.alternate_url)
+
+        def __str__(self):
+            """Строковое представление"""
+            return f"Employer: {self.name} (ID: {self.id})"
+
+        def __repr__(self):
+            """Представление для разработчика"""
+            return f"Employer(name='{self.name}', id='{self.id}', trusted={self.trusted})"
+
 # Создаем тестовый мок Salary с правильными атрибутами
 class MockSalary:
     def __init__(self, data):

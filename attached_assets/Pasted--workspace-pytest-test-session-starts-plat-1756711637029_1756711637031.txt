@@ -1,0 +1,65 @@
+~/workspace$ pytest
+========================== test session starts ==========================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: mock-3.14.1, cov-6.2.1
+collected 365 items                                                     
+
+tests/test_abstract.py ........                                   [  2%]
+tests/test_abstract_db_manager.py ....                            [  3%]
+tests/test_api_config.py ....                                     [  4%]
+tests/test_app_config.py .....                                    [  5%]
+tests/test_base_api.py ......                                     [  7%]
+tests/test_base_parser.py ......                                  [  9%]
+tests/test_cache.py .......                                       [ 10%]
+tests/test_cached_api.py ...........                              [ 13%]
+tests/test_db_manager.py .................                        [ 18%]
+tests/test_decorators.py .......                                  [ 20%]
+tests/test_env_loader.py ............                             [ 23%]
+tests/test_file_handlers.py ............                          [ 27%]
+tests/test_get_api.py ......                                      [ 28%]
+tests/test_hh_api.py .......                                      [ 30%]
+tests/test_hh_api_config.py .....                                 [ 32%]
+tests/test_hh_parser.py ........                                  [ 34%]
+tests/test_menu_manager.py ..........                             [ 36%]
+tests/test_paginator.py ......                                    [ 38%]
+tests/test_postgres_saver.py .......                              [ 40%]
+tests/test_salary_utils.py ......................                 [ 46%]
+tests/test_search_utils.py ..................                     [ 51%]
+tests/test_sj_api.py ..............                               [ 55%]
+tests/test_sj_api_config.py .....                                 [ 56%]
+tests/test_sj_parser.py ........                                  [ 58%]
+tests/test_storage_factory.py ........                            [ 61%]
+tests/test_target_companies.py .....                              [ 62%]
+tests/test_ui_config.py .....                                     [ 63%]
+tests/test_ui_helpers.py ...........                              [ 66%]
+tests/test_unified_api.py .................                       [ 71%]
+tests/test_user_interface.py ........                             [ 73%]
+tests/test_vacancy_display_handler.py .........                   [ 76%]
+tests/test_vacancy_formatter.py ..............                    [ 80%]
+tests/test_vacancy_models.py .........................E.......... [ 89%]
+.............                                                     [ 93%]
+tests/test_vacancy_operations_coordinator.py ...........          [ 96%]
+tests/test_vacancy_search_handler.py ......                       [ 98%]
+tests/test_vacancy_stats.py .......                               [100%]
+
+================================ ERRORS =================================
+______ ERROR at setup of test_vacancy_from_minimal_dict_with_none _______
+file /home/runner/workspace/tests/test_vacancy_models.py, line 552
+  def test_vacancy_from_minimal_dict_with_none(self):
+E       fixture 'self' not found
+>       available fixtures: cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, cov, doctest_namespace, mock_db_config, mock_vacancy_data, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session_mocker, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/runner/workspace/tests/test_vacancy_models.py:552
+=========================== warnings summary ============================
+tests/test_vacancy_display_handler.py:29
+  /home/runner/workspace/tests/test_vacancy_display_handler.py:29: PytestCollectionWarning: cannot collect test class 'TestableVacancyDisplayHandler' because it has a __init__ constructor (from: tests/test_vacancy_display_handler.py)
+    class TestableVacancyDisplayHandler(VacancyDisplayHandler):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== short test summary info ========================
+ERROR tests/test_vacancy_models.py::test_vacancy_from_minimal_dict_with_none
+================ 364 passed, 1 warning, 1 error in 1.42s ================
+~/workspace$ 
