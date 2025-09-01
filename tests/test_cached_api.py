@@ -37,6 +37,16 @@ class ConcreteCachedAPI(CachedAPI):
     def _validate_vacancy(self, vacancy_data: Any) -> bool:
         """Валидация данных вакансии"""
         return isinstance(vacancy_data, dict)
+        
+    def _make_request(self, url: str, params: dict) -> dict:
+        """Выполнение HTTP запроса"""
+        return {"status": "success", "data": []}
+        
+    def _parse_response(self, response: dict) -> list:
+        """Парсинг ответа API"""
+        if isinstance(response, dict) and "items" in response:
+            return response["items"]
+        return []
 
 
 class TestCachedAPI:
@@ -86,9 +96,9 @@ class TestCachedAPI:
 
         # Устанавливаем тестовые данные
         test_vacancies = [
-            Vacancy("123", "Python Developer", "https://test.com", "test_source")
+            Vacancy(title="Python Developer", url="https://test.com", vacancy_id="123", source="test_source")
         ]
-        api._test_data = test_vacancies
+        api.test_data = test_vacancies
 
         # Тестируем получение вакансий
         result = api.get_vacancies("Python")
@@ -105,7 +115,7 @@ class TestCachedAPI:
 
         # Проверяем наличие метода clear_cache или аналогичного
         if hasattr(api, 'clear_cache'):
-            api.clear_cache()
+            api.clear_cache("test_prefix")
             mock_cache_instance.clear.assert_called_once()
         else:
             # Если метода нет, проверяем что кэш доступен

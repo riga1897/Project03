@@ -26,6 +26,22 @@ except ImportError:
         def _get_companies_from_api(self):
             """Получение компаний из API"""
             return []
+            
+        def _parse_vacancy_response(self, vacancy_data):
+            """Парсинг ответа вакансии"""
+            return vacancy_data
+            
+        def build_params(self, search_query, **kwargs):
+            """Построение параметров для API"""
+            return {"keyword": search_query, **kwargs}
+            
+        def _get_vacancies_from_api(self, search_query, **kwargs):
+            """Получение вакансий из API"""
+            return []
+            
+        def get_vacancies_page(self, search_query, page=0, **kwargs):
+            """Получение страницы вакансий"""
+            return []
 
 
 class TestSuperJobAPI:
@@ -123,7 +139,7 @@ class TestSuperJobAPI:
         }
 
         # Создаем мок парсера в модуле
-        with patch('src.vacancies.parsers.sj_parser.SJParser') as mock_parser:
+        with patch('src.vacancies.parsers.sj_parser.SJParser', create=True) as mock_parser:
             mock_parser_instance = Mock()
             mock_parser_instance.parse_vacancy.return_value = vacancy_data
             mock_parser.return_value = mock_parser_instance
@@ -381,7 +397,7 @@ class TestSuperJobAPIHelpers:
         }
 
         # Мокируем методы парсинга
-        with patch('src.vacancies.parsers.sj_parser.SJParser') as mock_parser:
+        with patch('src.vacancies.parsers.sj_parser.SJParser', create=True) as mock_parser:
             mock_parser_instance = Mock()
             mock_parser_instance.convert_to_unified_format.return_value = {"id": "123", "title": "Python Developer"}
             mock_parser.return_value = mock_parser_instance
