@@ -33,7 +33,7 @@ class TestUINavigation:
             for i in range(1, 11)
         ]
 
-    @patch('builtins.input', side_effect=["", "", "", "q"])
+    @patch('builtins.input', side_effect=["", "", "", "", "", "q"])
     @patch('builtins.print')
     def test_quick_paginate_basic(self, mock_print, mock_input, sample_items):
         """Тест базовой пагинации"""

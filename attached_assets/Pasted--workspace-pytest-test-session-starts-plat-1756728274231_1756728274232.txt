@@ -1,0 +1,116 @@
+~/workspace$ pytest
+========================== test session starts ==========================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: mock-3.14.1, cov-6.2.1
+collected 424 items                                                     
+
+tests/test_abstract.py ........                                   [  1%]
+tests/test_abstract_db_manager.py ....                            [  2%]
+tests/test_api_config.py ....                                     [  3%]
+tests/test_api_data_filter.py ........                            [  5%]
+tests/test_app_config.py .....                                    [  6%]
+tests/test_base_api.py ......                                     [  8%]
+tests/test_base_parser.py ......                                  [  9%]
+tests/test_cache.py .......                                       [ 11%]
+tests/test_cached_api.py ...........                              [ 13%]
+tests/test_console_interface.py ......                            [ 15%]
+tests/test_db_manager.py .................                        [ 19%]
+tests/test_decorators.py .......                                  [ 20%]
+tests/test_env_loader.py ............                             [ 23%]
+tests/test_file_handlers.py ............                          [ 26%]
+tests/test_get_api.py ......                                      [ 28%]
+tests/test_hh_api.py .......                                      [ 29%]
+tests/test_hh_api_config.py .....                                 [ 30%]
+tests/test_hh_parser.py ........                                  [ 32%]
+tests/test_menu_manager.py ..........                             [ 35%]
+tests/test_paginator.py ......                                    [ 36%]
+tests/test_postgres_saver.py .......                              [ 38%]
+tests/test_salary_utils.py ......................                 [ 43%]
+tests/test_search_utils.py ............................           [ 50%]
+tests/test_sj_api.py ..............                               [ 53%]
+tests/test_sj_api_config.py .....                                 [ 54%]
+tests/test_sj_parser.py ........                                  [ 56%]
+tests/test_source_selector.py ..........                          [ 58%]
+tests/test_storage_factory.py ........                            [ 60%]
+tests/test_target_companies.py .....                              [ 61%]
+tests/test_ui_config.py .....                                     [ 62%]
+tests/test_ui_helpers.py ...........                              [ 65%]
+tests/test_ui_navigation.py F.....                                [ 66%]
+tests/test_unified_api.py .................                       [ 70%]
+tests/test_user_interface.py ........                             [ 72%]
+tests/test_vacancy_display_handler.py ..............              [ 76%]
+tests/test_vacancy_formatter.py ........                          [ 78%]
+tests/test_vacancy_models.py .................................... [ 86%]
+.............                                                     [ 89%]
+tests/test_vacancy_operations.py ......                           [ 91%]
+tests/test_vacancy_operations_coordinator.py .................... [ 95%]
+.......                                                           [ 97%]
+tests/test_vacancy_search_handler.py .....                        [ 98%]
+tests/test_vacancy_stats.py ......                                [100%]
+
+=============================== FAILURES ================================
+______________ TestUINavigation.test_quick_paginate_basic _______________
+
+self = <workspace.tests.test_ui_navigation.TestUINavigation object at 0x7f380ff09610>
+mock_print = <MagicMock name='print' id='139878758427152'>
+mock_input = <MagicMock name='input' id='139878758368016'>
+sample_items = [{'description': 'Description 1', 'id': 1, 'title': 'Item 1'}, {'description': 'Description 2', 'id': 2, 'title': 'Ite...tion': 'Description 5', 'id': 5, 'title': 'Item 5'}, {'description': 'Description 6', 'id': 6, 'title': 'Item 6'}, ...]
+
+    @patch('builtins.input', side_effect=["", "", "", "", "", "q"])
+    @patch('builtins.print')
+    def test_quick_paginate_basic(self, mock_print, mock_input, sample_items):
+        """Тест базовой пагинации"""
+        try:
+            from src.utils.ui_navigation import quick_paginate
+    
+            def simple_formatter(item, number=None):
+                if number:
+                    return f"{number}. {item['id']}: {item['title']}"
+                return f"{item['id']}: {item['title']}"
+    
+>           quick_paginate(
+                sample_items,
+                formatter=simple_formatter,
+                header="Test Items",
+                items_per_page=3
+            )
+
+tests/test_ui_navigation.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/utils/ui_navigation.py:246: in quick_paginate
+    navigator.paginate_display(items, formatter, header, show_numbers, custom_actions)
+src/utils/ui_navigation.py:58: in paginate_display
+    choice = input("\nВыберите действие: ").strip().lower()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1124: in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1128: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <MagicMock name='input' id='139878758368016'>
+args = ('\nВыберите действие: ',), kwargs = {}
+effect = <list_iterator object at 0x7f381039aef0>
+
+    def _execute_mock_call(self, /, *args, **kwargs):
+        # separate from _increment_mock_call so that awaited functions are
+        # executed separately from their call, also AsyncMock overrides this method
+    
+        effect = self.side_effect
+        if effect is not None:
+            if _is_exception(effect):
+                raise effect
+            elif not _callable(effect):
+>               result = next(effect)
+                         ^^^^^^^^^^^^
+E               StopIteration
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1185: StopIteration
+======================== short test summary info ========================
+FAILED tests/test_ui_navigation.py::TestUINavigation::test_quick_paginate_basic - StopIteration
+===================== 1 failed, 423 passed in 1.37s =====================
+~/workspace$ 
