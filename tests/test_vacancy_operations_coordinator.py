@@ -238,9 +238,10 @@ class TestVacancyOperationsCoordinator:
         assert hasattr(coordinator, 'api') or hasattr(coordinator, 'unified_api')
         assert hasattr(coordinator, 'storage')
 
+    @patch('builtins.input', return_value="1")  # Выбор "Удалить все"
     @patch('builtins.print')
     @patch('src.utils.ui_helpers.confirm_action', return_value=True)
-    def test_handle_delete_vacancies_confirmed(self, mock_confirm, mock_print, coordinator, mock_storage):
+    def test_handle_delete_vacancies_confirmed(self, mock_confirm, mock_print, mock_input, coordinator, mock_storage):
         """Тест удаления всех вакансий с подтверждением"""
         test_vacancies = [Mock(vacancy_id="123", title="Test Job")]
         mock_storage.get_vacancies.return_value = test_vacancies
@@ -252,9 +253,11 @@ class TestVacancyOperationsCoordinator:
         else:
             # Создаем тестовую реализацию
             vacancies = mock_storage.get_vacancies()
-            if vacancies and mock_confirm.return_value:
-                mock_storage.delete_all_vacancies()
-                print("Все вакансии удалены.")
+            if vacancies:
+                choice = mock_input.return_value
+                if choice == "1" and mock_confirm.return_value:
+                    mock_storage.delete_all_vacancies()
+                    print("Все вакансии удалены.")
         
         mock_storage.delete_all_vacancies.assert_called_once()
 

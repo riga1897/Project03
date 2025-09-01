@@ -41,7 +41,9 @@ class TestUINavigation:
         try:
             from src.utils.ui_navigation import quick_paginate
             
-            def simple_formatter(item):
+            def simple_formatter(item, number=None):
+                if number:
+                    return f"{number}. {item['id']}: {item['title']}"
                 return f"{item['id']}: {item['title']}"
             
             quick_paginate(
@@ -113,7 +115,9 @@ class TestUINavigation:
         try:
             from src.utils.ui_navigation import quick_paginate
             
-            def vacancy_formatter(vacancy):
+            def vacancy_formatter(vacancy, number=None):
+                if number:
+                    return f"{number}. {vacancy.title} - {vacancy.source}"
                 return f"{vacancy.title} - {vacancy.source}"
             
             quick_paginate(
@@ -165,7 +169,9 @@ class TestUINavigation:
         try:
             from src.utils.ui_navigation import quick_paginate
             
-            def simple_formatter(item):
+            def simple_formatter(item, number=None):
+                if number:
+                    return f"{number}. {item['title']}"
                 return str(item["title"])
             
             quick_paginate(

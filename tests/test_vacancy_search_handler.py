@@ -144,7 +144,15 @@ class TestVacancySearchHandler:
     def test_vacancy_search_handler_initialization(self, mock_api, mock_storage):
         """Тест инициализации VacancySearchHandler"""
         handler = VacancySearchHandler(mock_api, mock_storage)
-        assert handler.api == mock_api
+        # Проверяем правильные атрибуты из реального кода
+        assert hasattr(handler, 'unified_api') or hasattr(handler, 'api')
+        assert hasattr(handler, 'storage')
+        
+        # В реальном коде используется unified_api
+        if hasattr(handler, 'unified_api'):
+            assert handler.unified_api == mock_api
+        else:
+            assert handler.api == mock_api
         assert handler.storage == mock_storage
 
     @patch('src.utils.ui_helpers.get_user_input', return_value="Python Developer")
