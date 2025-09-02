@@ -1,4 +1,3 @@
-
 import os
 import sys
 import pytest
@@ -21,27 +20,27 @@ except ImportError:
         def __init__(self, data: Dict[str, Any] = None):
             """
             Инициализация объекта зарплаты
-            
+
             Args:
                 data: Словарь с данными о зарплате
             """
             if data is None:
                 data = {}
-            
+
             self.salary_from = data.get('from')
-            self.salary_to = data.get('to') 
+            self.salary_to = data.get('to')
             self.currency = data.get('currency', 'RUR')
 
         @classmethod
         def from_range(cls, salary_from: int, salary_to: int, currency: str = "RUR") -> 'Salary':
             """
             Создание объекта зарплаты из диапазона
-            
+
             Args:
                 salary_from: Минимальная зарплата
-                salary_to: Максимальная зарплата  
+                salary_to: Максимальная зарплата
                 currency: Валюта
-                
+
             Returns:
                 Объект зарплаты
             """
@@ -69,7 +68,7 @@ except ImportError:
                      area: str = "", experience: str = ""):
             """
             Инициализация вакансии
-            
+
             Args:
                 title: Название вакансии
                 url: URL вакансии
@@ -196,18 +195,18 @@ class TestVacancySearchHandler:
         """Фикстура обработчика поиска с консолидированными моками"""
         if SRC_AVAILABLE:
             handler = VacancySearchHandler(
-                consolidated_mocks['unified_api'], 
+                consolidated_mocks['unified_api'],
                 consolidated_mocks['storage']
             )
             # Добавляем недостающие атрибуты и методы
             if not hasattr(handler, 'source_selector'):
                 handler.source_selector = consolidated_mocks['source_selector']
                 handler.source_selector.get_user_source_choice.return_value = ("hh.ru", "HeadHunter")
-            
+
             return handler
         else:
             return VacancySearchHandler(
-                consolidated_mocks['unified_api'], 
+                consolidated_mocks['unified_api'],
                 consolidated_mocks['storage']
             )
 
@@ -236,7 +235,7 @@ class TestVacancySearchHandler:
     def test_search_handler_initialization(self, consolidated_mocks):
         """Тест инициализации обработчика поиска"""
         handler = VacancySearchHandler(
-            consolidated_mocks['unified_api'], 
+            consolidated_mocks['unified_api'],
             consolidated_mocks['storage']
         )
 
@@ -250,8 +249,8 @@ class TestVacancySearchHandler:
         """Тест базового поиска вакансий"""
         if SRC_AVAILABLE:
             # Мокируем интерактивные элементы для реального класса
-            with patch('src.ui_interfaces.vacancy_search_handler.get_user_input', return_value="Python"), \
-                 patch('src.ui_interfaces.vacancy_search_handler.get_positive_integer', return_value=15):
+            with patch('src.utils.ui_helpers.get_user_input', return_value="Python") if SRC_AVAILABLE else patch('builtins.input', return_value="Python"), \
+                 patch('src.utils.ui_helpers.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
                 result = search_handler.search_vacancies()
         else:
             result = search_handler.search_vacancies()
@@ -266,10 +265,10 @@ class TestVacancySearchHandler:
         """Тест рабочего процесса поиска вакансий"""
         # Настройка моков для полного рабочего процесса
         consolidated_mocks['storage'].get_vacancies_count.return_value = 0
-        
-        with patch('src.ui_interfaces.vacancy_search_handler.get_user_input', return_value="Python") if SRC_AVAILABLE else patch('builtins.input', return_value="Python"), \
-             patch('src.ui_interfaces.vacancy_search_handler.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
-            
+
+        with patch('src.utils.ui_helpers.get_user_input', return_value="Python") if SRC_AVAILABLE else patch('builtins.input', return_value="Python"), \
+             patch('src.utils.ui_helpers.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
+
             if hasattr(search_handler, 'handle_search_workflow'):
                 search_handler.handle_search_workflow()
                 mock_print.assert_called()
@@ -330,17 +329,17 @@ class TestVacancySearchHandler:
     def test_search_with_mocked_input(self, mock_print, search_handler, consolidated_mocks):
         """Тест поиска с замокированным вводом"""
         # Полностью мокируем все input операции
-        with patch('src.ui_interfaces.vacancy_search_handler.get_user_input', return_value="Python") if SRC_AVAILABLE else patch('builtins.input', return_value="Python"), \
-             patch('src.ui_interfaces.vacancy_search_handler.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
-            
+        with patch('src.utils.ui_helpers.get_user_input', return_value="Python") if SRC_AVAILABLE else patch('builtins.input', return_value="Python"), \
+             patch('src.utils.ui_helpers.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
+
             result = search_handler.search_vacancies() if SRC_AVAILABLE else search_handler.search_vacancies()
             assert isinstance(result, list)
 
     def test_search_results_structure(self, search_handler, consolidated_mocks):
         """Тест структуры результатов поиска"""
-        with patch('src.ui_interfaces.vacancy_search_handler.get_user_input', return_value="Python") if SRC_AVAILABLE else patch('builtins.input', return_value="Python"), \
-             patch('src.ui_interfaces.vacancy_search_handler.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
-            
+        with patch('src.utils.ui_helpers.get_user_input', return_value="Python") if SRC_AVAILABLE else patch('builtins.input', return_value="Python"), \
+             patch('src.utils.ui_helpers.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
+
             result = search_handler.search_vacancies() if SRC_AVAILABLE else search_handler.search_vacancies()
 
             assert isinstance(result, list)
@@ -376,10 +375,10 @@ class TestVacancySearchHandler:
     def test_parametrized_search_scenarios(self, mock_print, search_handler, test_scenario, consolidated_mocks):
         """Параметризованный тест различных сценариев поиска"""
         query = test_scenario["query"]
-        
-        with patch('src.ui_interfaces.vacancy_search_handler.get_user_input', return_value=query) if SRC_AVAILABLE else patch('builtins.input', return_value=query), \
-             patch('src.ui_interfaces.vacancy_search_handler.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
-            
+
+        with patch('src.utils.ui_helpers.get_user_input', return_value=query) if SRC_AVAILABLE else patch('builtins.input', return_value=query), \
+             patch('src.utils.ui_helpers.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
+
             result = search_handler.search_vacancies() if SRC_AVAILABLE else search_handler.search_vacancies()
             assert isinstance(result, list)
 
@@ -391,8 +390,8 @@ class TestVacancySearchHandler:
         queries = ["Python", "Java", "JavaScript", "C++"]
 
         def search_task(query):
-            with patch('src.ui_interfaces.vacancy_search_handler.get_user_input', return_value=query) if SRC_AVAILABLE else patch('builtins.input', return_value=query), \
-                 patch('src.ui_interfaces.vacancy_search_handler.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
+            with patch('src.utils.ui_helpers.get_user_input', return_value=query) if SRC_AVAILABLE else patch('builtins.input', return_value=query), \
+                 patch('src.utils.ui_helpers.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
                 return search_handler.search_vacancies() if SRC_AVAILABLE else search_handler.search_vacancies()
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
@@ -413,11 +412,11 @@ class TestVacancySearchHandler:
 
         for scenario in error_scenarios:
             query = scenario["query"]
-            
+
             try:
-                with patch('src.ui_interfaces.vacancy_search_handler.get_user_input', return_value=query) if SRC_AVAILABLE else patch('builtins.input', return_value=query), \
-                     patch('src.ui_interfaces.vacancy_search_handler.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
-                    
+                with patch('src.utils.ui_helpers.get_user_input', return_value=query) if SRC_AVAILABLE else patch('builtins.input', return_value=query), \
+                     patch('src.utils.ui_helpers.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
+
                     result = search_handler.search_vacancies() if SRC_AVAILABLE else search_handler.search_vacancies()
                     assert isinstance(result, list)
             except Exception as e:
@@ -428,9 +427,9 @@ class TestVacancySearchHandler:
         """Тест метрик производительности"""
         import time
 
-        with patch('src.ui_interfaces.vacancy_search_handler.get_user_input', return_value="Python") if SRC_AVAILABLE else patch('builtins.input', return_value="Python"), \
-             patch('src.ui_interfaces.vacancy_search_handler.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
-            
+        with patch('src.utils.ui_helpers.get_user_input', return_value="Python") if SRC_AVAILABLE else patch('builtins.input', return_value="Python"), \
+             patch('src.utils.ui_helpers.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
+
             start_time = time.time()
             result = search_handler.search_vacancies() if SRC_AVAILABLE else search_handler.search_vacancies()
             end_time = time.time()
@@ -445,9 +444,9 @@ class TestVacancySearchHandler:
         search_handler.storage = consolidated_mocks['storage']
         consolidated_mocks['storage'].add_vacancy.return_value = True
 
-        with patch('src.ui_interfaces.vacancy_search_handler.get_user_input', return_value="Python") if SRC_AVAILABLE else patch('builtins.input', return_value="Python"), \
-             patch('src.ui_interfaces.vacancy_search_handler.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
-            
+        with patch('src.utils.ui_helpers.get_user_input', return_value="Python") if SRC_AVAILABLE else patch('builtins.input', return_value="Python"), \
+             patch('src.utils.ui_helpers.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
+
             # Полный цикл: поиск -> сохранение -> статистика
             vacancies = search_handler.search_vacancies() if SRC_AVAILABLE else search_handler.search_vacancies()
 
@@ -466,9 +465,9 @@ class TestVacancySearchHandler:
         # Выполняем поиск и проверяем, что память освобождается
         initial_objects = len(gc.get_objects())
 
-        with patch('src.ui_interfaces.vacancy_search_handler.get_user_input', return_value="Python") if SRC_AVAILABLE else patch('builtins.input', return_value="Python"), \
-             patch('src.ui_interfaces.vacancy_search_handler.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
-            
+        with patch('src.utils.ui_helpers.get_user_input', return_value="Python") if SRC_AVAILABLE else patch('builtins.input', return_value="Python"), \
+             patch('src.utils.ui_helpers.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
+
             for _ in range(10):
                 result = search_handler.search_vacancies() if SRC_AVAILABLE else search_handler.search_vacancies()
                 del result
@@ -483,8 +482,8 @@ class TestVacancySearchHandler:
     def test_user_interaction_simulation(self, mock_print, search_handler, consolidated_mocks):
         """Тест симуляции пользовательского взаимодействия"""
         # Полностью мокируем взаимодействие с пользователем
-        with patch('src.ui_interfaces.vacancy_search_handler.get_user_input', return_value="q") if SRC_AVAILABLE else patch('builtins.input', return_value="q"):
-            
+        with patch('src.utils.ui_helpers.get_user_input', return_value="q") if SRC_AVAILABLE else patch('builtins.input', return_value="q"):
+
             if hasattr(search_handler, 'handle_search_workflow'):
                 try:
                     search_handler.handle_search_workflow()
@@ -503,7 +502,7 @@ class TestVacancySearchHandler:
         # Проверяем начальное состояние
         assert hasattr(search_handler, 'unified_api')
         assert hasattr(search_handler, 'storage')
-        
+
         # Проверяем, что моки настроены корректно
         assert search_handler.unified_api is not None
         assert search_handler.storage is not None
@@ -515,7 +514,7 @@ class TestVacancySearchHandler:
             {"vacancies": None, "expected_type": int},
             {"vacancies": [], "expected_type": int},
         ]
-        
+
         for case in test_cases:
             vacancies = case["vacancies"] or []
             if hasattr(search_handler, 'save_search_results'):
@@ -527,11 +526,11 @@ class TestVacancySearchHandler:
         # Проверяем наличие основных методов для интеграции
         required_attributes = ['unified_api', 'storage']
         optional_methods = ['search_vacancies', 'save_search_results', 'get_search_statistics']
-        
+
         # Все обязательные атрибуты должны присутствовать
         for attr in required_attributes:
             assert hasattr(search_handler, attr)
-        
+
         # Хотя бы один опциональный метод должен присутствовать
         has_optional_method = any(hasattr(search_handler, method) for method in optional_methods)
         assert has_optional_method
@@ -542,7 +541,7 @@ class TestVacancySearchHandler:
         if hasattr(search_handler, 'get_search_statistics'):
             stats = search_handler.get_search_statistics(sample_vacancies)
             assert isinstance(stats, dict)
-        
+
         if hasattr(search_handler, 'save_search_results'):
             saved_count = search_handler.save_search_results(sample_vacancies)
             assert isinstance(saved_count, int)
@@ -554,30 +553,30 @@ class TestVacancySearchHandler:
         consolidated_mocks['storage'].get_vacancies_count.return_value = 0
         consolidated_mocks['storage'].add_vacancy.return_value = True
         consolidated_mocks['unified_api'].get_vacancies.return_value = []
-        
+
         # Мокируем все пользовательские взаимодействия
         mock_inputs = {
             'get_user_input': "Python",
             'get_positive_integer': 15,
             'input': "1"
         }
-        
-        with patch('src.ui_interfaces.vacancy_search_handler.get_user_input', return_value=mock_inputs['get_user_input']) if SRC_AVAILABLE else patch('builtins.input', return_value=mock_inputs['input']), \
-             patch('src.ui_interfaces.vacancy_search_handler.get_positive_integer', return_value=mock_inputs['get_positive_integer']) if SRC_AVAILABLE else patch('builtins.input', return_value=str(mock_inputs['get_positive_integer'])):
-            
+
+        with patch('src.utils.ui_helpers.get_user_input', return_value=mock_inputs['get_user_input']) if SRC_AVAILABLE else patch('builtins.input', return_value=mock_inputs['input']), \
+             patch('src.utils.ui_helpers.get_positive_integer', return_value=mock_inputs['get_positive_integer']) if SRC_AVAILABLE else patch('builtins.input', return_value=str(mock_inputs['get_positive_integer'])):
+
             try:
                 # Полный цикл тестирования
                 result = search_handler.search_vacancies() if SRC_AVAILABLE else search_handler.search_vacancies()
                 assert isinstance(result, list)
-                
+
                 if hasattr(search_handler, 'save_search_results'):
                     saved_count = search_handler.save_search_results(result)
                     assert isinstance(saved_count, int)
-                
+
                 if hasattr(search_handler, 'get_search_statistics'):
                     stats = search_handler.get_search_statistics(result)
                     assert isinstance(stats, dict)
-                    
+
             except Exception as e:
                 # Ошибки должны быть обработаны корректно
                 assert isinstance(e, Exception)

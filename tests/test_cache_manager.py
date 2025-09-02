@@ -280,7 +280,7 @@ class TestCacheManager:
         assert cache_manager.get(key) == value
         
         # Имитируем истечение времени
-        with patch('src.utils.cache.datetime') as mock_datetime:
+        with patch('tests.test_cache_manager.datetime') as mock_datetime:
             mock_datetime.now.return_value.timestamp.return_value = datetime.now().timestamp() + 2
             assert cache_manager.get(key) is None
 
