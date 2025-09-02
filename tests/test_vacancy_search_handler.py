@@ -220,7 +220,7 @@ class TestVacancySearchHandler:
                 vacancy_id="12345",
                 source="hh.ru",
                 employer={"name": "Tech Corp"},
-                salary=Salary.from_range(120000, 180000) if not SRC_AVAILABLE else Salary({'from': 120000, 'to': 180000})
+                salary={'from': 120000, 'to': 180000} if SRC_AVAILABLE else Salary.from_range(120000, 180000)
             ),
             Vacancy(
                 title="Java Developer",
@@ -228,7 +228,7 @@ class TestVacancySearchHandler:
                 vacancy_id="67890",
                 source="superjob.ru",
                 employer={"name": "Dev Company"},
-                salary=Salary.from_range(100000, 160000) if not SRC_AVAILABLE else Salary({'from': 100000, 'to': 160000})
+                salary={'from': 100000, 'to': 160000} if SRC_AVAILABLE else Salary.from_range(100000, 160000)
             )
         ]
 
@@ -248,9 +248,13 @@ class TestVacancySearchHandler:
     def test_search_vacancies_basic(self, mock_print, mock_input, search_handler):
         """Тест базового поиска вакансий"""
         if SRC_AVAILABLE:
-            # Мокируем интерактивные элементы для реального класса
-            with patch('src.utils.ui_helpers.get_user_input', return_value="Python") if SRC_AVAILABLE else patch('builtins.input', return_value="Python"), \
-                 patch('src.utils.ui_helpers.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
+            # Мокируем все интерактивные элементы
+            with patch('src.ui_interfaces.source_selector.input', return_value="1"), \
+                 patch('src.utils.ui_helpers.get_user_input', return_value="Python"), \
+                 patch('src.utils.ui_helpers.get_positive_integer', return_value=15):
+                
+                # Мокируем API ответ
+                search_handler.unified_api.search_vacancies = Mock(return_value=[])
                 result = search_handler.search_vacancies()
         else:
             result = search_handler.search_vacancies()
@@ -275,7 +279,12 @@ class TestVacancySearchHandler:
             else:
                 # Тестовая реализация workflow
                 print("Запуск процесса поиска вакансий...")
-                source, display_name = search_handler.source_selector.get_user_source_choice()
+                choice_result = search_handler.source_selector.get_user_source_choice()
+                if isinstance(choice_result, tuple) and len(choice_result) == 2:
+                    source, display_name = choice_result
+                else:
+                    source = choice_result
+                    display_name = "Test Source"
                 print(f"Выбран источник: {display_name}")
                 mock_print.assert_called()
 
@@ -329,9 +338,14 @@ class TestVacancySearchHandler:
     def test_search_with_mocked_input(self, mock_print, search_handler, consolidated_mocks):
         """Тест поиска с замокированным вводом"""
         # Полностью мокируем все input операции
-        with patch('src.utils.ui_helpers.get_user_input', return_value="Python") if SRC_AVAILABLE else patch('builtins.input', return_value="Python"), \
+        with patch('src.ui_interfaces.source_selector.input', return_value="1") if SRC_AVAILABLE else None, \
+             patch('src.utils.ui_helpers.get_user_input', return_value="Python") if SRC_AVAILABLE else patch('builtins.input', return_value="Python"), \
              patch('src.utils.ui_helpers.get_positive_integer', return_value=15) if SRC_AVAILABLE else patch('builtins.input', return_value="15"):
 
+            # Мокируем API для предотвращения реальных запросов
+            if SRC_AVAILABLE:
+                search_handler.unified_api.search_vacancies = Mock(return_value=[])
+            
             result = search_handler.search_vacancies() if SRC_AVAILABLE else search_handler.search_vacancies()
             assert isinstance(result, list)
 

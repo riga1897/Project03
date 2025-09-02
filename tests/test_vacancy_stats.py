@@ -191,23 +191,83 @@ except ImportError:
             return location_dist
 
         @staticmethod
-        def display_company_stats(vacancies: List[Vacancy], limit: int = 10) -> None:
+        def format_statistics(stats: Dict[str, Any]) -> str:
+            """
+            Форматирование статистики
+
+            Args:
+                stats: Словарь со статистикой
+
+            Returns:
+                Отформатированная строка статистики
+            """
+            formatted = []
+            if 'total' in stats:
+                formatted.append(f"Всего вакансий: {stats['total']}")
+            if 'avg_salary' in stats:
+                formatted.append(f"Средняя зарплата: {stats['avg_salary']:,.0f}")
+            return '\n'.join(formatted)
+
+        @staticmethod
+        def calculate_salary_percentiles(vacancies: List[Vacancy]) -> Dict[str, float]:
+            """
+            Расчет процентилей зарплат
+
+            Args:
+                vacancies: Список вакансий
+
+            Returns:
+                Словарь с процентилями зарплат
+            """
+            salaries = []
+            for vacancy in vacancies:
+                if vacancy.salary:
+                    if hasattr(vacancy.salary, 'salary_from') and vacancy.salary.salary_from:
+                        salaries.append(vacancy.salary.salary_from)
+                    if hasattr(vacancy.salary, 'salary_to') and vacancy.salary.salary_to:
+                        salaries.append(vacancy.salary.salary_to)
+
+            if not salaries:
+                return {}
+
+            salaries.sort()
+            n = len(salaries)
+
+            return {
+                'p25': salaries[n // 4] if n > 0 else 0,
+                'p50': salaries[n // 2] if n > 0 else 0,
+                'p75': salaries[3 * n // 4] if n > 0 else 0,
+                'p90': salaries[9 * n // 10] if n > 0 else 0,
+                'min': min(salaries) if salaries else 0,
+                'max': max(salaries) if salaries else 0
+            }
+
+        @staticmethod
+        def display_company_stats(vacancies: List[Dict[str, Any]], source_name: str = "") -> None:
             """
             Отображение статистики по компаниям
 
             Args:
-                vacancies: Список вакансий
-                limit: Лимит компаний для отображения
+                vacancies: Список вакансий в формате словарей
+                source_name: Название источника
             """
-            print(f"Статистика по {len(vacancies)} компаниям (топ {limit})")
+            if not vacancies:
+                print("Нет вакансий для отображения статистики")
+                return
 
-            # Группируем по компаниям
-            companies = VacancyStats.get_company_distribution(vacancies)
+            company_stats = {}
+            for vacancy in vacancies:
+                company = vacancy.get('employer', {})
+                if isinstance(company, dict):
+                    company_name = company.get('name', 'Неизвестная компания')
+                else:
+                    company_name = str(company).title() if company else 'Неизвестная компания'
 
-            # Сортируем и выводим топ
-            sorted_companies = sorted(companies.items(), key=lambda x: x[1], reverse=True)
-            for i, (company, count) in enumerate(sorted_companies[:limit], 1):
-                print(f"{i}. {company}: {count} вакансий")
+                company_stats[company_name] = company_stats.get(company_name, 0) + 1
+
+            print(f"\nРаспределение вакансий по компаниям{' (' + source_name + ')' if source_name else ''}:")
+            for company, count in sorted(company_stats.items(), key=lambda x: x[1], reverse=True):
+                print(f"  {company}: {count} вакансий")
 
 
 # Если реальный класс доступен, добавляем недостающие методы
