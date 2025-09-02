@@ -263,7 +263,7 @@ class TestFullSrcCoverage:
             stats = VacancyStats()
 
             # Используем правильный конструктор для Salary
-            salary = Salary.from_range(100000, 150000, "RUR")
+            salary = Salary({"from": 100000, "to": 150000, "currency": "RUR"})
 
             vacancy = Vacancy(
                 title="Test Developer",

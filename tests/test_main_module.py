@@ -30,7 +30,7 @@ class TestMainModule:
         # Проверяем что sys.path модифицирован
         assert any('workspace' in path for path in sys.path)
 
-    @patch('main.main')  # Патчим функцию main в модуле main
+    @patch('src.user_interface.main')  # Патчим функцию main в модуле main
     def test_main_module_execution(self, mock_main: Mock) -> None:
         """
         Тест выполнения главного модуля

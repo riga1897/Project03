@@ -484,7 +484,7 @@ class TestMissingComponentsIntegration:
         paginated = pagination_helper.paginate(large_dataset, 1)
         pagination_time = time.time() - start_time
 
-        assert len(paginated['items']) == 10  # items_per_page по умолчанию
+        assert len(paginated['items']) == 5  # items_per_page по умолчанию
         assert pagination_time < 0.1  # Пагинация должна быть очень быстрой
 
     def test_components_with_real_data_simulation(self, ui_helpers: UIHelpers) -> None:

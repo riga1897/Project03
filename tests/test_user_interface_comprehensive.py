@@ -30,7 +30,7 @@ class TestUserInterfaceComprehensive:
         vacancies = []
 
         # Вакансия с полной информацией - используем правильный конструктор Salary
-        salary1 = Salary.from_range(100000, 150000, "RUR")
+        salary1 = Salary({"from": 100000, "to": 150000, "currency": "RUR"})
         vacancy1 = Vacancy(
             title="Python Developer",
             vacancy_id="1",
