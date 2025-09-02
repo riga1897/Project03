@@ -214,13 +214,13 @@ class TestVacancyOperationsCoordinator:
     @pytest.fixture
     def sample_vacancies(self) -> List[Vacancy]:
         """
-        Фикстура тестовых вакансий с правильным созданием Salary
+        Фикстура тестовых вакансий с правильным созданием объектов
         
         Returns:
             Список тестовых вакансий
         """
         if SRC_AVAILABLE:
-            # Для реального кода передаем словари напрямую
+            # Для реального кода передаем только словари, не объекты Salary
             return [
                 Vacancy(
                     title="Senior Python Developer",
@@ -293,10 +293,12 @@ class TestVacancyOperationsCoordinator:
             coordinator: Экземпляр координатора
             consolidated_mocks: Консолидированные моки
         """
+        # Мокируем ui_helpers если они доступны
         with patch('src.utils.ui_helpers.get_user_input', return_value="") if SRC_AVAILABLE else Mock():
             if hasattr(coordinator, 'search_handler'):
                 coordinator.search_handler = consolidated_mocks['search_handler']
                 coordinator.search_handler.search_vacancies.return_value = None
+            
             result = coordinator.handle_vacancy_search()
             assert result is None
 
@@ -317,6 +319,7 @@ class TestVacancyOperationsCoordinator:
         if hasattr(coordinator, 'display_handler'):
             coordinator.display_handler = consolidated_mocks['display_handler']
             coordinator.display_handler.show_all_saved_vacancies.return_value = None
+        
         result = coordinator.handle_show_saved_vacancies()
         assert result is None
 
@@ -337,6 +340,7 @@ class TestVacancyOperationsCoordinator:
         if hasattr(coordinator, 'display_handler'):
             coordinator.display_handler = consolidated_mocks['display_handler']
             coordinator.display_handler.show_top_vacancies_by_salary.return_value = None
+        
         result = coordinator.handle_top_vacancies_by_salary()
         assert result is None
 
@@ -357,6 +361,7 @@ class TestVacancyOperationsCoordinator:
         if hasattr(coordinator, 'display_handler'):
             coordinator.display_handler = consolidated_mocks['display_handler']
             coordinator.display_handler.search_saved_vacancies_by_keyword.return_value = None
+        
         result = coordinator.handle_search_saved_by_keyword()
         assert result is None
 
