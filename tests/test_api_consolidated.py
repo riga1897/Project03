@@ -20,7 +20,7 @@ from src.api_modules.hh_api import HeadHunterAPI
 from src.api_modules.sj_api import SuperJobAPI
 from src.api_modules.unified_api import UnifiedAPI
 from src.api_modules.cached_api import CachedAPI
-from src.api_modules.get_api import get_api
+from src.api_modules.get_api import APIConnector
 
 
 class ConsolidatedAPIMocks:
@@ -177,23 +177,19 @@ class TestAPIConsolidated:
             result2 = cached_api.get_vacancies(consolidated_mocks.api_data["search_query"])
             assert isinstance(result2, list)
 
-    def test_get_api_factory(self) -> None:
-        """Тест фабрики get_api"""
-        # Тест получения HeadHunter API
-        hh_api = get_api("hh")
-        assert isinstance(hh_api, HeadHunterAPI)
+    def test_api_connector_functionality(self) -> None:
+        """Тест функциональности APIConnector"""
+        connector = APIConnector()
+        assert connector is not None
+        assert hasattr(connector, 'connect')
         
-        # Тест получения SuperJob API
-        sj_api = get_api("sj")
-        assert isinstance(sj_api, SuperJobAPI)
+        # Тест подключения с моком
+        test_url = "https://api.example.com/test"
+        test_params = {"query": "python"}
         
-        # Тест получения Unified API
-        unified_api = get_api("unified")
-        assert isinstance(unified_api, UnifiedAPI)
-        
-        # Тест неизвестного источника
-        with pytest.raises((ValueError, KeyError)):
-            get_api("unknown")
+        with patch('requests.get', return_value=Mock(status_code=200, json=lambda: {"test": "data"})):
+            result = connector.connect(test_url, test_params)
+            assert isinstance(result, dict)
 
     def test_api_error_handling_consolidated(self, consolidated_mocks: ConsolidatedAPIMocks) -> None:
         """Тест обработки ошибок в API"""
