@@ -1,0 +1,495 @@
+~/workspace$ pytest
+===================================== test session starts ======================================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: mock-3.14.1, cov-6.2.1
+collected 754 items                                                                            
+
+tests/test_abstract.py ........                                                          [  1%]
+tests/test_abstract_db_manager.py ....                                                   [  1%]
+tests/test_api_config.py ....                                                            [  2%]
+tests/test_api_data_filter.py ........                                                   [  3%]
+tests/test_api_modules.py .............................                                  [  7%]
+tests/test_app_config.py .....                                                           [  7%]
+tests/test_base_api.py ......                                                            [  8%]
+tests/test_base_formatter.py ..........                                                  [  9%]
+tests/test_base_parser.py ......                                                         [ 10%]
+tests/test_cache.py .......                                                              [ 11%]
+tests/test_cache_manager.py ....................                                         [ 14%]
+tests/test_cached_api.py ...........                                                     [ 15%]
+tests/test_comprehensive_coverage.py ........................                            [ 18%]
+tests/test_console_interface.py ......                                                   [ 19%]
+tests/test_db_config.py .....                                                            [ 20%]
+tests/test_db_manager.py .................                                               [ 22%]
+tests/test_db_manager_demo.py ..F.....F........                                          [ 24%]
+tests/test_decorators.py .......                                                         [ 25%]
+tests/test_env_loader.py F...FFFFFFFF.F                                                  [ 27%]
+tests/test_extended_coverage.py ...................F...F                                 [ 30%]
+tests/test_file_handlers.py ............                                                 [ 32%]
+tests/test_full_src_coverage.py ......................FF..                               [ 35%]
+tests/test_get_api.py ......                                                             [ 36%]
+tests/test_hh_api.py .......                                                             [ 37%]
+tests/test_hh_api_config.py .....                                                        [ 38%]
+tests/test_hh_parser.py ........                                                         [ 39%]
+tests/test_integration.py .............                                                  [ 40%]
+tests/test_menu_manager.py ..........                                                    [ 42%]
+tests/test_menu_system.py ....................                                           [ 44%]
+tests/test_paginator.py ......                                                           [ 45%]
+tests/test_postgres_saver.py .......                                                     [ 46%]
+tests/test_salary_utils.py ......................                                        [ 49%]
+tests/test_search_utils.py ............................                                  [ 53%]
+tests/test_sj_api.py ..............                                                      [ 55%]
+tests/test_sj_api_config.py .....                                                        [ 55%]
+tests/test_sj_parser.py ........                                                         [ 56%]
+tests/test_source_manager.py .................                                           [ 59%]
+tests/test_source_selector.py ..................                                         [ 61%]
+tests/test_storage_factory.py ........                                                   [ 62%]
+tests/test_target_companies.py .....                                                     [ 63%]
+tests/test_ui_config.py .......................                                          [ 66%]
+tests/test_ui_helpers.py ...........                                                     [ 67%]
+tests/test_ui_navigation.py ......................                                       [ 70%]
+tests/test_unified_api.py .................                                              [ 72%]
+tests/test_user_interface.py ......................                                      [ 75%]
+tests/test_user_interface_comprehensive.py ......EE..^C
+
+============================================ ERRORS ============================================
+__________ ERROR at setup of TestUserInterfaceComprehensive.test_run_advanced_search ___________
+
+self = <workspace.tests.test_user_interface_comprehensive.TestUserInterfaceComprehensive object at 0x7f52761bb010>
+
+    @pytest.fixture
+    def sample_vacancies(self) -> List[Vacancy]:
+        """Создание тестовых вакансий"""
+        vacancies = []
+    
+        # Вакансия с полной информацией
+>       salary1 = Salary(salary_from=100000, salary_to=150000, currency="RUR")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() got an unexpected keyword argument 'salary_from'
+
+tests/test_user_interface_comprehensive.py:55: TypeError
+___________ ERROR at setup of TestUserInterfaceComprehensive.test_run_salary_filter ____________
+
+self = <workspace.tests.test_user_interface_comprehensive.TestUserInterfaceComprehensive object at 0x7f52761bb690>
+
+    @pytest.fixture
+    def sample_vacancies(self) -> List[Vacancy]:
+        """Создание тестовых вакансий"""
+        vacancies = []
+    
+        # Вакансия с полной информацией
+>       salary1 = Salary(salary_from=100000, salary_to=150000, currency="RUR")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Salary.__init__() got an unexpected keyword argument 'salary_from'
+
+tests/test_user_interface_comprehensive.py:55: TypeError
+=========================================== FAILURES ===========================================
+_____________________ TestDBManagerDemo.test_demo_methods_call_db_manager ______________________
+
+self = <workspace.tests.test_db_manager_demo.TestDBManagerDemo object at 0x7f527715f950>
+mock_print = <MagicMock name='print' id='139992149856144'>
+db_manager_demo = <src.utils.db_manager_demo.DBManagerDemo object at 0x7f52765d0a90>
+
+    @patch('builtins.print')
+    def test_demo_methods_call_db_manager(self, mock_print, db_manager_demo):
+        """Тест что демонстрация вызывает методы DB менеджера"""
+        # Запускаем полную демонстрацию
+        db_manager_demo.run_full_demo()
+    
+        # Проверяем что методы DBManager были вызваны
+        db_manager = db_manager_demo.db_manager
+    
+        assert db_manager.get_target_companies_analysis.called
+>       assert db_manager.get_companies_and_vacancies_count.called
+E       AssertionError: assert False
+E        +  where False = <Mock name='mock.get_companies_and_vacancies_count' id='139992149777872'>.called
+E        +    where <Mock name='mock.get_companies_and_vacancies_count' id='139992149777872'> = <Mock id='139992149813968'>.get_companies_and_vacancies_count
+
+tests/test_db_manager_demo.py:156: AssertionError
+________________________ TestDBManagerDemo.test_demo_individual_methods ________________________
+
+self = <workspace.tests.test_db_manager_demo.TestDBManagerDemo object at 0x7f527716e1d0>
+db_manager_demo = <src.utils.db_manager_demo.DBManagerDemo object at 0x7f52760614d0>
+
+    def test_demo_individual_methods(self, db_manager_demo):
+        """Тест отдельных методов демонстрации"""
+        # Тестируем что можем вызвать приватные методы через публичный интерфейс
+        with patch('builtins.print'):
+            # Основной метод должен вызывать все подметоды
+            db_manager_demo.run_full_demo()
+    
+        # Проверяем что все ключевые методы DBManager были вызваны
+        db_manager = db_manager_demo.db_manager
+    
+        # Проверяем вызовы основных методов
+        methods_to_check = [
+            'get_companies_and_vacancies_count',
+            'get_all_vacancies',
+            'get_avg_salary',
+            'get_vacancies_with_higher_salary',
+            'get_vacancies_with_keyword'
+        ]
+    
+        for method_name in methods_to_check:
+            method = getattr(db_manager, method_name)
+>           assert method.called, f"Метод {method_name} не был вызван"
+E           AssertionError: Метод get_companies_and_vacancies_count не был вызван
+E           assert False
+E            +  where False = <Mock name='mock.get_companies_and_vacancies_count' id='139992144111568'>.called
+
+tests/test_db_manager_demo.py:281: AssertionError
+___________________________ TestEnvLoader.test_load_env_file_success ___________________________
+
+self = <workspace.tests.test_env_loader.TestEnvLoader object at 0x7f5277185750>
+env_loader = <src.utils.env_loader.EnvLoader object at 0x7f5276090490>
+
+    @patch.dict(os.environ, {}, clear=True)
+    def test_load_env_file_success(self, env_loader):
+        """Тест успешной загрузки .env файла"""
+        env_content = "API_KEY=test_key\nDATABASE_URL=postgresql://localhost:5432/test\n"
+    
+        with patch("builtins.open", mock_open(read_data=env_content)):
+            with patch("os.path.exists", return_value=True):
+                # Реальный метод называется load_env_file
+                result = env_loader.load_env_file(".env")
+                # Проверяем что метод отработал
+                assert result is True or result is None
+    
+                # Проверяем что переменные загружены
+>               assert env_loader.get_env_var("API_KEY") == "test_key"
+E               AssertionError: assert '' == 'test_key'
+E                 
+E                 - test_key
+
+tests/test_env_loader.py:38: AssertionError
+___________________________ TestEnvLoader.test_get_env_var_required ____________________________
+
+self = <workspace.tests.test_env_loader.TestEnvLoader object at 0x7f5277185f90>
+env_loader = <src.utils.env_loader.EnvLoader object at 0x7f527608a4d0>
+
+    def test_get_env_var_required(self, env_loader):
+        """Тест получения обязательной переменной окружения"""
+        with patch.dict(os.environ, {}, clear=True):
+            with pytest.raises(ValueError):
+>               env_loader.get_env_var("REQUIRED_VAR", required=True)
+E               TypeError: EnvLoader.get_env_var() got an unexpected keyword argument 'required'
+
+tests/test_env_loader.py:64: TypeError
+________________________ TestEnvLoader.test_get_env_var_type_conversion ________________________
+
+self = <workspace.tests.test_env_loader.TestEnvLoader object at 0x7f5277186310>
+env_loader = <src.utils.env_loader.EnvLoader object at 0x7f52760a9f50>
+
+    def test_get_env_var_type_conversion(self, env_loader):
+        """Тест конвертации типов переменных окружения"""
+        test_env = {
+            "BOOL_TRUE": "true",
+            "BOOL_FALSE": "false",
+            "INT_VAR": "123",
+            "FLOAT_VAR": "123.45"
+        }
+    
+        with patch.dict(os.environ, test_env):
+            # Тест boolean конвертации
+>           assert env_loader.get_env_var("BOOL_TRUE", var_type=bool) is True
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: EnvLoader.get_env_var() got an unexpected keyword argument 'var_type'
+
+tests/test_env_loader.py:77: TypeError
+__________________________ TestEnvLoader.test_get_env_vars_by_prefix ___________________________
+
+self = <workspace.tests.test_env_loader.TestEnvLoader object at 0x7f5277186690>
+env_loader = <src.utils.env_loader.EnvLoader object at 0x7f527a73cc90>
+
+    def test_get_env_vars_by_prefix(self, env_loader):
+        """Тест получения переменных по префиксу"""
+        test_env = {
+            "DB_HOST": "localhost",
+            "DB_PORT": "5432",
+            "DB_NAME": "test",
+            "API_KEY": "key123"
+        }
+    
+        with patch.dict(os.environ, test_env):
+>           db_vars = env_loader.get_env_vars_by_prefix("DB_")
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'EnvLoader' object has no attribute 'get_env_vars_by_prefix'
+
+tests/test_env_loader.py:96: AttributeError
+__________________________ TestEnvLoader.test_validate_required_vars ___________________________
+
+self = <workspace.tests.test_env_loader.TestEnvLoader object at 0x7f5277186a10>
+env_loader = <src.utils.env_loader.EnvLoader object at 0x7f5276070d10>
+
+    def test_validate_required_vars(self, env_loader):
+        """Тест валидации обязательных переменных"""
+        required_vars = ["API_KEY", "DATABASE_URL"]
+    
+        # Тест с отсутствующими переменными
+        with patch.dict(os.environ, {}, clear=True):
+>           missing_vars = env_loader.validate_required_vars(required_vars)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'EnvLoader' object has no attribute 'validate_required_vars'
+
+tests/test_env_loader.py:109: AttributeError
+_________________________ TestEnvLoader.test_env_loader_initialization _________________________
+
+self = <workspace.tests.test_env_loader.TestEnvLoader object at 0x7f5277186f50>
+env_loader = <src.utils.env_loader.EnvLoader object at 0x7f527609de50>
+
+    def test_env_loader_initialization(self, env_loader):
+        """Тест инициализации EnvLoader"""
+        assert env_loader is not None
+        assert hasattr(env_loader, 'get_env_var')
+        assert hasattr(env_loader, 'load_env_file')
+>       assert hasattr(env_loader, 'get_env_vars_by_prefix')
+E       AssertionError: assert False
+E        +  where False = hasattr(<src.utils.env_loader.EnvLoader object at 0x7f527609de50>, 'get_env_vars_by_prefix')
+
+tests/test_env_loader.py:128: AssertionError
+________________________ TestEnvLoader.test_env_file_parsing_edge_cases ________________________
+
+self = <workspace.tests.test_env_loader.TestEnvLoader object at 0x7f5277187550>
+env_loader = <src.utils.env_loader.EnvLoader object at 0x7f5276091f10>
+
+        def test_env_file_parsing_edge_cases(self, env_loader):
+            """Тест граничных случаев парсинга .env файла"""
+            # Файл с комментариями и пустыми строками
+            env_content = """
+    # Это комментарий
+    API_KEY=test_key
+    
+    # Еще комментарий
+    DATABASE_URL="postgresql://localhost:5432/test"
+    DEBUG=true
+    
+    EMPTY_VAR=
+    """
+    
+            with patch("builtins.open", mock_open(read_data=env_content)):
+                with patch("os.path.exists", return_value=True):
+                    env_loader.load_env_file(".env")
+    
+                    # Проверяем что переменные корректно загружены
+>                   assert env_loader.get_env_var("API_KEY") == "test_key"
+E                   AssertionError: assert '' == 'test_key'
+E                     
+E                     - test_key
+
+tests/test_env_loader.py:150: AssertionError
+___________________________ TestEnvLoader.test_env_file_with_quotes ____________________________
+
+self = <workspace.tests.test_env_loader.TestEnvLoader object at 0x7f5277187b90>
+env_loader = <src.utils.env_loader.EnvLoader object at 0x7f5276019d90>
+
+        def test_env_file_with_quotes(self, env_loader):
+            """Тест обработки кавычек в .env файле"""
+            env_content = '''
+    QUOTED_VAR="value with spaces"
+    SINGLE_QUOTED='single quoted value'
+    UNQUOTED_VAR=simple_value
+    '''
+    
+            with patch("builtins.open", mock_open(read_data=env_content)):
+                with patch("os.path.exists", return_value=True):
+                    env_loader.load_env_file(".env")
+    
+>                   assert env_loader.get_env_var("QUOTED_VAR") == "value with spaces"
+E                   AssertionError: assert '' == 'value with spaces'
+E                     
+E                     - value with spaces
+
+tests/test_env_loader.py:167: AssertionError
+__________________________ TestEnvLoader.test_load_multiple_env_files __________________________
+
+self = <workspace.tests.test_env_loader.TestEnvLoader object at 0x7f5277190210>
+env_loader = <src.utils.env_loader.EnvLoader object at 0x7f52760897d0>
+
+    def test_load_multiple_env_files(self, env_loader):
+        """Тест загрузки нескольких .env файлов"""
+        env_content1 = "VAR1=value1\nVAR2=value2\n"
+        env_content2 = "VAR2=new_value2\nVAR3=value3\n"
+    
+        with patch("builtins.open", mock_open(read_data=env_content1)):
+            with patch("os.path.exists", return_value=True):
+                env_loader.load_env_file(".env")
+    
+        with patch("builtins.open", mock_open(read_data=env_content2)):
+            with patch("os.path.exists", return_value=True):
+                env_loader.load_env_file(".env.local")
+    
+        # VAR2 должна быть перезаписана
+>       assert env_loader.get_env_var("VAR1") == "value1"
+E       AssertionError: assert '' == 'value1'
+E         
+E         - value1
+
+tests/test_env_loader.py:185: AssertionError
+____________________________ TestEnvLoader.test_empty_prefix_search ____________________________
+
+self = <workspace.tests.test_env_loader.TestEnvLoader object at 0x7f5277190e90>
+env_loader = <src.utils.env_loader.EnvLoader object at 0x7f52765adc50>
+
+    def test_empty_prefix_search(self, env_loader):
+        """Тест поиска переменных с пустым префиксом"""
+        test_env = {"VAR1": "value1", "VAR2": "value2"}
+    
+        with patch.dict(os.environ, test_env):
+            # Пустой префикс должен возвращать все переменные
+>           all_vars = env_loader.get_env_vars_by_prefix("")
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'EnvLoader' object has no attribute 'get_env_vars_by_prefix'
+
+tests/test_env_loader.py:203: AttributeError
+____________________ TestUserInterfaceExtended.test_display_search_results _____________________
+
+self = <workspace.tests.test_extended_coverage.TestUserInterfaceExtended object at 0x7f52771df010>
+mock_print = <MagicMock name='print' id='139992144333328'>
+user_interface = <workspace.tests.test_extended_coverage.TestUserInterfaceExtended.user_interface.<locals>.MockUserInterface object at 0x7f527608c810>
+
+    @patch('builtins.print')
+    def test_display_search_results(self, mock_print, user_interface):
+        """Тест отображения результатов поиска"""
+        # Создаем тестовые вакансии прямо в тесте
+        sample_vacancies = [
+            {
+                "title": "Python Developer",
+                "vacancy_id": "1",
+                "url": "https://example.com/1",
+                "source": "hh.ru"
+            }
+        ]
+    
+        if EXTENDED_SRC_AVAILABLE:
+            search_handler = user_interface.search_handler
+    
+            # Тестируем отображение результатов
+            try:
+                if hasattr(search_handler, 'display_search_results'):
+                    search_handler.display_search_results(sample_vacancies, "python")
+                elif hasattr(search_handler, 'display_results'):
+                    search_handler.display_results(sample_vacancies)
+            except Exception as e:
+                # Логируем ошибку, если метод не найден или требует других параметров
+                print(f"Error calling display_search_results/display_results: {e}")
+                pass
+    
+>       assert mock_print.called
+E       AssertionError: assert False
+E        +  where False = <MagicMock name='print' id='139992144333328'>.called
+
+tests/test_extended_coverage.py:546: AssertionError
+_______________________ TestInterfaceHandlers.test_display_vacancy_list ________________________
+
+self = <workspace.tests.test_extended_coverage.TestInterfaceHandlers object at 0x7f52771df690>
+mock_print = <MagicMock name='print' id='139992144355216'>
+display_handler = <workspace.tests.test_extended_coverage.MockDisplayHandler object at 0x7f52775c9850>
+
+    @patch('builtins.print')
+    def test_display_vacancy_list(self, mock_print, display_handler):
+        """Тест отображения списка вакансий"""
+        # Создаем тестовые вакансии прямо в тесте
+        sample_vacancies = [
+            {
+                "title": "Python Developer",
+                "vacancy_id": "1",
+                "url": "https://example.com/1",
+                "source": "hh.ru"
+            },
+            {
+                "title": "Java Developer",
+                "vacancy_id": "2",
+                "url": "https://example.com/2",
+                "source": "hh.ru"
+            }
+        ]
+    
+        if EXTENDED_SRC_AVAILABLE:
+            try:
+                if hasattr(display_handler, 'display_vacancy_list'):
+                    display_handler.display_vacancy_list(sample_vacancies)
+                elif hasattr(display_handler, 'display_vacancies'):
+                    display_handler.display_vacancies(sample_vacancies)
+                else:
+                    # Для mock-объекта
+                    display_handler.display_vacancy_list(sample_vacancies)
+            except Exception as e:
+                print(f"Error calling display_vacancy_list/display_vacancies: {e}")
+                pass
+    
+>       assert mock_print.called
+E       AssertionError: assert False
+E        +  where False = <MagicMock name='print' id='139992144355216'>.called
+
+tests/test_extended_coverage.py:680: AssertionError
+_____________________ TestFullSrcCoverage.test_comprehensive_method_calls ______________________
+
+self = <workspace.tests.test_full_src_coverage.TestFullSrcCoverage object at 0x7f5276d0c850>
+
+    def test_comprehensive_method_calls(self):
+        """Тест покрытия вызовов методов"""
+        try:
+            from src.utils.vacancy_stats import VacancyStats
+            from src.vacancies.models import Vacancy
+            from src.utils.salary import Salary
+    
+            # Создаем экземпляры
+            stats = VacancyStats()
+    
+>           salary = Salary(salary_from=100000, salary_to=150000, currency="RUR")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: Salary.__init__() got an unexpected keyword argument 'salary_from'
+
+tests/test_full_src_coverage.py:593: TypeError
+_________________________ TestFullSrcCoverage.test_data_flow_coverage __________________________
+
+self = <workspace.tests.test_full_src_coverage.TestFullSrcCoverage object at 0x7f5276d0c690>
+
+    def test_data_flow_coverage(self):
+        """Тест покрытия потока данных"""
+        # Тестируем типичный поток данных: API -> Parser -> Model -> Storage
+    
+        # Тестовые данные как из API
+        api_data = {
+            "id": "123",
+            "name": "Python Developer",
+            "alternate_url": "https://example.com",
+            "salary": {"from": 100000, "to": 150000, "currency": "RUR"},
+            "employer": {"name": "Test Company"}
+        }
+    
+        try:
+            from src.vacancies.parsers.base_parser import BaseParser
+            from src.vacancies.models import Vacancy
+    
+            # Тестируем парсинг
+>           parser = BaseParser()
+                     ^^^^^^^^^^^^
+E           TypeError: Can't instantiate abstract class BaseParser with abstract methods parse_vacancies, parse_vacancy
+
+tests/test_full_src_coverage.py:628: TypeError
+=================================== short test summary info ====================================
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_demo_methods_call_db_manager - AssertionError: assert False
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_demo_individual_methods - AssertionError: Метод get_companies_and_vacancies_count не был вызван
+FAILED tests/test_env_loader.py::TestEnvLoader::test_load_env_file_success - AssertionError: assert '' == 'test_key'
+FAILED tests/test_env_loader.py::TestEnvLoader::test_get_env_var_required - TypeError: EnvLoader.get_env_var() got an unexpected keyword argument 'required'
+FAILED tests/test_env_loader.py::TestEnvLoader::test_get_env_var_type_conversion - TypeError: EnvLoader.get_env_var() got an unexpected keyword argument 'var_type'
+FAILED tests/test_env_loader.py::TestEnvLoader::test_get_env_vars_by_prefix - AttributeError: 'EnvLoader' object has no attribute 'get_env_vars_by_prefix'
+FAILED tests/test_env_loader.py::TestEnvLoader::test_validate_required_vars - AttributeError: 'EnvLoader' object has no attribute 'validate_required_vars'
+FAILED tests/test_env_loader.py::TestEnvLoader::test_env_loader_initialization - AssertionError: assert False
+FAILED tests/test_env_loader.py::TestEnvLoader::test_env_file_parsing_edge_cases - AssertionError: assert '' == 'test_key'
+FAILED tests/test_env_loader.py::TestEnvLoader::test_env_file_with_quotes - AssertionError: assert '' == 'value with spaces'
+FAILED tests/test_env_loader.py::TestEnvLoader::test_load_multiple_env_files - AssertionError: assert '' == 'value1'
+FAILED tests/test_env_loader.py::TestEnvLoader::test_empty_prefix_search - AttributeError: 'EnvLoader' object has no attribute 'get_env_vars_by_prefix'
+FAILED tests/test_extended_coverage.py::TestUserInterfaceExtended::test_display_search_results - AssertionError: assert False
+FAILED tests/test_extended_coverage.py::TestInterfaceHandlers::test_display_vacancy_list - AssertionError: assert False
+FAILED tests/test_full_src_coverage.py::TestFullSrcCoverage::test_comprehensive_method_calls - TypeError: Salary.__init__() got an unexpected keyword argument 'salary_from'
+FAILED tests/test_full_src_coverage.py::TestFullSrcCoverage::test_data_flow_coverage - TypeError: Can't instantiate abstract class BaseParser with abstract methods parse_vacancie...
+ERROR tests/test_user_interface_comprehensive.py::TestUserInterfaceComprehensive::test_run_advanced_search - TypeError: Salary.__init__() got an unexpected keyword argument 'salary_from'
+ERROR tests/test_user_interface_comprehensive.py::TestUserInterfaceComprehensive::test_run_salary_filter - TypeError: Salary.__init__() got an unexpected keyword argument 'salary_from'
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! KeyboardInterrupt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/home/runner/workspace/tests/../src/ui_interfaces/console_interface.py:126: KeyboardInterrupt
+(to show a full traceback on KeyboardInterrupt use --full-trace)
+========================== 16 failed, 564 passed, 2 errors in 15.59s ===========================
+~/workspace$ 

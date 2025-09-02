@@ -121,6 +121,9 @@ class UserInterface:
             except Exception as e:
                 logger.error(f"Ошибка в пользовательском интерфейсе: {e}")
                 print(f"Произошла ошибка: {e}")
+                # Добавляем небольшую задержку чтобы избежать бесконечного цикла ошибок
+                import time
+                time.sleep(0.1)
 
     def _show_menu(self) -> str:
         """
