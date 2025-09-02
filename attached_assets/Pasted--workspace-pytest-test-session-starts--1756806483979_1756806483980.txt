@@ -1,0 +1,601 @@
+~/workspace$ pytest
+===================================== test session starts ======================================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: mock-3.14.1, cov-6.2.1
+collected 727 items                                                                            
+
+tests/test_abstract.py ........                                                          [  1%]
+tests/test_abstract_db_manager.py ....                                                   [  1%]
+tests/test_api_config.py ....                                                            [  2%]
+tests/test_api_data_filter.py ........                                                   [  3%]
+tests/test_api_modules.py .............................                                  [  7%]
+tests/test_app_config.py .....                                                           [  7%]
+tests/test_base_api.py ......                                                            [  8%]
+tests/test_base_formatter.py ..........                                                  [ 10%]
+tests/test_base_parser.py ......                                                         [ 11%]
+tests/test_cache.py .......                                                              [ 11%]
+tests/test_cache_manager.py ....................                                         [ 14%]
+tests/test_cached_api.py ...........                                                     [ 16%]
+tests/test_comprehensive_coverage.py ........................                            [ 19%]
+tests/test_console_interface.py ......                                                   [ 20%]
+tests/test_db_config.py .....                                                            [ 21%]
+tests/test_db_manager.py .................                                               [ 23%]
+tests/test_db_manager_demo.py ..F.....F........                                          [ 25%]
+tests/test_decorators.py .......                                                         [ 26%]
+tests/test_env_loader.py ................                                                [ 28%]
+tests/test_extended_coverage.py EEEEEEEEEEEE.................FF..                        [ 33%]
+tests/test_file_handlers.py ............                                                 [ 35%]
+tests/test_full_src_coverage.py ........F......                                          [ 37%]
+tests/test_get_api.py ......                                                             [ 37%]
+tests/test_hh_api.py .......                                                             [ 38%]
+tests/test_hh_api_config.py .....                                                        [ 39%]
+tests/test_hh_parser.py ........                                                         [ 40%]
+tests/test_integration.py .............                                                  [ 42%]
+tests/test_menu_manager.py ..........                                                    [ 43%]
+tests/test_menu_system.py ....................                                           [ 46%]
+tests/test_paginator.py ......                                                           [ 47%]
+tests/test_postgres_saver.py .......                                                     [ 48%]
+tests/test_salary_utils.py ......................                                        [ 51%]
+tests/test_search_utils.py ............................                                  [ 55%]
+tests/test_sj_api.py ..............                                                      [ 57%]
+tests/test_sj_api_config.py .....                                                        [ 57%]
+tests/test_sj_parser.py ........                                                         [ 59%]
+tests/test_source_manager.py .................                                           [ 61%]
+tests/test_source_selector.py ..................                                         [ 63%]
+tests/test_storage_factory.py ........                                                   [ 64%]
+tests/test_target_companies.py .....                                                     [ 65%]
+tests/test_ui_config.py .......................                                          [ 68%]
+tests/test_ui_helpers.py ...........                                                     [ 70%]
+tests/test_ui_navigation.py ......................                                       [ 73%]
+tests/test_unified_api.py .................                                              [ 75%]
+tests/test_user_interface.py ......................                                      [ 78%]
+tests/test_user_interface_comprehensive.py .....EE.........                              [ 80%]
+tests/test_vacancy_display_handler.py ..............                                     [ 82%]
+tests/test_vacancy_formatter.py ........                                                 [ 83%]
+tests/test_vacancy_models.py .................................................           [ 90%]
+tests/test_vacancy_operations.py ......                                                  [ 91%]
+tests/test_vacancy_operations_coordinator.py ...........................                 [ 95%]
+tests/test_vacancy_search_handler.py .......................                             [ 98%]
+tests/test_vacancy_stats.py .E.FFFF.F.FF                                                 [100%]
+
+============================================ ERRORS ============================================
+______________ ERROR at setup of TestVacancyStatsExtended.test_salary_statistics _______________
+
+self = <workspace.tests.test_extended_coverage.TestVacancyStatsExtended object at 0x7f9c5b182c50>
+
+    @pytest.fixture
+    def sample_vacancies_extended(self):
+        """Расширенная фикстура для тестовых вакансий"""
+        if EXTENDED_SRC_AVAILABLE:
+            from src.vacancies.models import Vacancy
+            from src.utils.salary import Salary
+    
+            vacancies = []
+            for i in range(5):
+>               salary = Salary(amount_from=50000 + i*10000, amount_to=80000 + i*15000, currency="RUR")
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               TypeError: Salary.__init__() got an unexpected keyword argument 'amount_from'
+
+tests/test_extended_coverage.py:116: TypeError
+___________ ERROR at setup of TestVacancyStatsExtended.test_experience_distribution ____________
+
+self = <workspace.tests.test_extended_coverage.TestVacancyStatsExtended object at 0x7f9c5b182050>
+
+    @pytest.fixture
+    def sample_vacancies_extended(self):
+        """Расширенная фикстура для тестовых вакансий"""
+        if EXTENDED_SRC_AVAILABLE:
+            from src.vacancies.models import Vacancy
+            from src.utils.salary import Salary
+    
+            vacancies = []
+            for i in range(5):
+>               salary = Salary(amount_from=50000 + i*10000, amount_to=80000 + i*15000, currency="RUR")
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               TypeError: Salary.__init__() got an unexpected keyword argument 'amount_from'
+
+tests/test_extended_coverage.py:116: TypeError
+___________ ERROR at setup of TestVacancyStatsExtended.test_employment_distribution ____________
+
+self = <workspace.tests.test_extended_coverage.TestVacancyStatsExtended object at 0x7f9c5b1827d0>
+
+    @pytest.fixture
+    def sample_vacancies_extended(self):
+        """Расширенная фикстура для тестовых вакансий"""
+        if EXTENDED_SRC_AVAILABLE:
+            from src.vacancies.models import Vacancy
+            from src.utils.salary import Salary
+    
+            vacancies = []
+            for i in range(5):
+>               salary = Salary(amount_from=50000 + i*10000, amount_to=80000 + i*15000, currency="RUR")
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               TypeError: Salary.__init__() got an unexpected keyword argument 'amount_from'
+
+tests/test_extended_coverage.py:116: TypeError
+______________ ERROR at setup of TestVacancyStatsExtended.test_area_distribution _______________
+
+self = <workspace.tests.test_extended_coverage.TestVacancyStatsExtended object at 0x7f9c5b182e90>
+
+    @pytest.fixture
+    def sample_vacancies_extended(self):
+        """Расширенная фикстура для тестовых вакансий"""
+        if EXTENDED_SRC_AVAILABLE:
+            from src.vacancies.models import Vacancy
+            from src.utils.salary import Salary
+    
+            vacancies = []
+            for i in range(5):
+>               salary = Salary(amount_from=50000 + i*10000, amount_to=80000 + i*15000, currency="RUR")
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               TypeError: Salary.__init__() got an unexpected keyword argument 'amount_from'
+
+tests/test_extended_coverage.py:116: TypeError
+_________________ ERROR at setup of TestMenuManagerExtended.test_add_menu_item _________________
+
+self = <workspace.tests.test_extended_coverage.TestMenuManagerExtended object at 0x7f9c5b183f90>
+
+    @pytest.fixture
+    def menu_manager(self):
+        """Фикстура менеджера меню"""
+        if EXTENDED_SRC_AVAILABLE:
+>           return MenuManager()
+                   ^^^^^^^^^^^
+E           NameError: name 'MenuManager' is not defined
+
+tests/test_extended_coverage.py:207: NameError
+________________ ERROR at setup of TestMenuManagerExtended.test_execute_action _________________
+
+self = <workspace.tests.test_extended_coverage.TestMenuManagerExtended object at 0x7f9c5b181b90>
+
+    @pytest.fixture
+    def menu_manager(self):
+        """Фикстура менеджера меню"""
+        if EXTENDED_SRC_AVAILABLE:
+>           return MenuManager()
+                   ^^^^^^^^^^^
+E           NameError: name 'MenuManager' is not defined
+
+tests/test_extended_coverage.py:207: NameError
+___________________ ERROR at setup of TestMenuManagerExtended.test_show_menu ___________________
+
+self = <workspace.tests.test_extended_coverage.TestMenuManagerExtended object at 0x7f9c5b18d750>
+
+    @pytest.fixture
+    def menu_manager(self):
+        """Фикстура менеджера меню"""
+        if EXTENDED_SRC_AVAILABLE:
+>           return MenuManager()
+                   ^^^^^^^^^^^
+E           NameError: name 'MenuManager' is not defined
+
+tests/test_extended_coverage.py:207: NameError
+__________________ ERROR at setup of TestMenuManagerExtended.test_clear_menu ___________________
+
+self = <workspace.tests.test_extended_coverage.TestMenuManagerExtended object at 0x7f9c5b18de50>
+
+    @pytest.fixture
+    def menu_manager(self):
+        """Фикстура менеджера меню"""
+        if EXTENDED_SRC_AVAILABLE:
+>           return MenuManager()
+                   ^^^^^^^^^^^
+E           NameError: name 'MenuManager' is not defined
+
+tests/test_extended_coverage.py:207: NameError
+_________________ ERROR at setup of TestUIHelpersExtended.test_format_currency _________________
+
+self = <workspace.tests.test_extended_coverage.TestUIHelpersExtended object at 0x7f9c5b18eb10>
+
+    @pytest.fixture
+    def ui_helpers(self):
+        """Фикстура UI помощников"""
+        if EXTENDED_SRC_AVAILABLE:
+>           return UIHelpers()
+                   ^^^^^^^^^
+E           NameError: name 'UIHelpers' is not defined
+
+tests/test_extended_coverage.py:289: NameError
+________________ ERROR at setup of TestUIHelpersExtended.test_format_experience ________________
+
+self = <workspace.tests.test_extended_coverage.TestUIHelpersExtended object at 0x7f9c5b18f750>
+
+    @pytest.fixture
+    def ui_helpers(self):
+        """Фикстура UI помощников"""
+        if EXTENDED_SRC_AVAILABLE:
+>           return UIHelpers()
+                   ^^^^^^^^^
+E           NameError: name 'UIHelpers' is not defined
+
+tests/test_extended_coverage.py:289: NameError
+__________________ ERROR at setup of TestUIHelpersExtended.test_truncate_text __________________
+
+self = <workspace.tests.test_extended_coverage.TestUIHelpersExtended object at 0x7f9c5b18f1d0>
+
+    @pytest.fixture
+    def ui_helpers(self):
+        """Фикстура UI помощников"""
+        if EXTENDED_SRC_AVAILABLE:
+>           return UIHelpers()
+                   ^^^^^^^^^
+E           NameError: name 'UIHelpers' is not defined
+
+tests/test_extended_coverage.py:289: NameError
+___________________ ERROR at setup of TestUIHelpersExtended.test_format_date ___________________
+
+self = <workspace.tests.test_extended_coverage.TestUIHelpersExtended object at 0x7f9c5b18c210>
+
+    @pytest.fixture
+    def ui_helpers(self):
+        """Фикстура UI помощников"""
+        if EXTENDED_SRC_AVAILABLE:
+>           return UIHelpers()
+                   ^^^^^^^^^
+E           NameError: name 'UIHelpers' is not defined
+
+tests/test_extended_coverage.py:289: NameError
+__________ ERROR at setup of TestUserInterfaceComprehensive.test_run_advanced_search ___________
+
+self = <workspace.tests.test_user_interface_comprehensive.TestUserInterfaceComprehensive object at 0x7f9c5ad01b90>
+
+    @pytest.fixture
+    def sample_vacancies(self) -> List[Vacancy]:
+        """
+        Создание тестовых вакансий
+    
+        Returns:
+            List[Vacancy]: Список тестовых объектов вакансий
+        """
+        vacancies = []
+    
+        # Вакансия с полной информацией - используем правильный конструктор Salary
+>       salary1 = Salary.from_range(100000, 150000, "RUR")
+                  ^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'Salary' has no attribute 'from_range'
+
+tests/test_user_interface_comprehensive.py:33: AttributeError
+___________ ERROR at setup of TestUserInterfaceComprehensive.test_run_salary_filter ____________
+
+self = <workspace.tests.test_user_interface_comprehensive.TestUserInterfaceComprehensive object at 0x7f9c5ad01750>
+
+    @pytest.fixture
+    def sample_vacancies(self) -> List[Vacancy]:
+        """
+        Создание тестовых вакансий
+    
+        Returns:
+            List[Vacancy]: Список тестовых объектов вакансий
+        """
+        vacancies = []
+    
+        # Вакансия с полной информацией - используем правильный конструктор Salary
+>       salary1 = Salary.from_range(100000, 150000, "RUR")
+                  ^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'Salary' has no attribute 'from_range'
+
+tests/test_user_interface_comprehensive.py:33: AttributeError
+_____________ ERROR at setup of TestVacancyStats.test_calculate_salary_statistics ______________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f9c5adff050>
+sample_vacancies = [{'description': 'Работа с Python и Django', 'employer': {'name': 'Яндекс'}, 'salary': {'currency': 'RUR', 'from': 100...ption': 'Работа с React и TypeScript', 'employer': {'name': 'Тинькофф'}, 'salary': None, 'source': 'superjob.ru', ...}]
+
+    @pytest.fixture
+    def vacancy_objects(self, sample_vacancies: List[Dict[str, Any]]) -> List[Vacancy]:
+        """
+        Создание объектов Vacancy из тестовых данных
+    
+        Args:
+            sample_vacancies: Тестовые данные вакансий
+    
+        Returns:
+            List[Vacancy]: Список объектов вакансий
+        """
+        vacancies = []
+        for data in sample_vacancies:
+            # Создаем объект Salary если есть данные - используем правильный конструктор
+            salary = None
+            if data.get('salary'):
+                salary_data = data['salary']
+>               salary = Salary.from_range(
+                         ^^^^^^^^^^^^^^^^^
+                    salary_data.get('from'),
+                    salary_data.get('to'),
+                    salary_data.get('currency', 'RUR')
+                )
+E               AttributeError: type object 'Salary' has no attribute 'from_range'
+
+tests/test_vacancy_stats.py:89: AttributeError
+=========================================== FAILURES ===========================================
+_____________________ TestDBManagerDemo.test_demo_methods_call_db_manager ______________________
+
+self = <workspace.tests.test_db_manager_demo.TestDBManagerDemo object at 0x7f9c5bd63dd0>
+mock_print = <MagicMock name='print' id='140309516241424'>
+db_manager_demo = <src.utils.db_manager_demo.DBManagerDemo object at 0x7f9c5adfddd0>
+
+    @patch('builtins.print')
+    def test_demo_methods_call_db_manager(self, mock_print, db_manager_demo):
+        """Тест что демонстрация вызывает методы DB менеджера"""
+        # Запускаем полную демонстрацию
+        db_manager_demo.run_full_demo()
+    
+        # Проверяем что методы DBManager были вызваны
+        db_manager = db_manager_demo.db_manager
+    
+        assert db_manager.get_target_companies_analysis.called
+>       assert db_manager.get_companies_and_vacancies_count.called
+E       AssertionError: assert False
+E        +  where False = <Mock name='mock.get_companies_and_vacancies_count' id='140309528705040'>.called
+E        +    where <Mock name='mock.get_companies_and_vacancies_count' id='140309528705040'> = <Mock id='140309528701072'>.get_companies_and_vacancies_count
+
+tests/test_db_manager_demo.py:156: AssertionError
+________________________ TestDBManagerDemo.test_demo_individual_methods ________________________
+
+self = <workspace.tests.test_db_manager_demo.TestDBManagerDemo object at 0x7f9c5bd7a650>
+db_manager_demo = <src.utils.db_manager_demo.DBManagerDemo object at 0x7f9c5a91be10>
+
+    def test_demo_individual_methods(self, db_manager_demo):
+        """Тест отдельных методов демонстрации"""
+        # Тестируем что можем вызвать приватные методы через публичный интерфейс
+        with patch('builtins.print'):
+            # Основной метод должен вызывать все подметоды
+            db_manager_demo.run_full_demo()
+    
+        # Проверяем что все ключевые методы DBManager были вызваны
+        db_manager = db_manager_demo.db_manager
+    
+        # Проверяем вызовы основных методов
+        methods_to_check = [
+            'get_companies_and_vacancies_count',
+            'get_all_vacancies',
+            'get_avg_salary',
+            'get_vacancies_with_higher_salary',
+            'get_vacancies_with_keyword'
+        ]
+    
+        for method_name in methods_to_check:
+            method = getattr(db_manager, method_name)
+>           assert method.called, f"Метод {method_name} не был вызван"
+E           AssertionError: Метод get_companies_and_vacancies_count не был вызван
+E           assert False
+E            +  where False = <Mock name='mock.get_companies_and_vacancies_count' id='140309511035792'>.called
+
+tests/test_db_manager_demo.py:281: AssertionError
+______________________ TestAdvancedCoverage.test_module_interoperability _______________________
+
+self = <workspace.tests.test_extended_coverage.TestAdvancedCoverage object at 0x7f9c5b175090>
+
+    def test_module_interoperability(self) -> None:
+        """Тест взаимодействия между модулями"""
+        if EXTENDED_SRC_AVAILABLE:
+            try:
+                # Тестируем взаимодействие между компонентами
+                from src.vacancies.models import Vacancy
+                from src.utils.salary import Salary
+    
+                # Создаем объекты и тестируем их взаимодействие
+>               salary = Salary.from_range(100000, 150000, "RUR")
+                         ^^^^^^^^^^^^^^^^^
+E               AttributeError: type object 'Salary' has no attribute 'from_range'
+
+tests/test_extended_coverage.py:813: AttributeError
+_______________________ TestAdvancedCoverage.test_configuration_coverage _______________________
+
+self = <workspace.tests.test_extended_coverage.TestAdvancedCoverage object at 0x7f9c5b174950>
+
+    def test_configuration_coverage(self) -> None:
+        """Тест покрытия конфигурационных модулей"""
+        config_modules = [
+            "src.config.app_config",
+            "src.config.db_config",
+            "src.config.ui_config",
+            "src.config.target_companies"
+        ]
+    
+        for module_name in config_modules:
+            try:
+                import importlib
+                module = importlib.import_module(module_name)
+    
+                # Проверяем что модуль загружен
+                assert module is not None
+    
+                # Получаем все публичные атрибуты
+                public_attrs = [attr for attr in dir(module) if not attr.startswith('_')]
+    
+                # Проверяем каждый атрибут
+                for attr_name in public_attrs:
+                    attr = getattr(module, attr_name)
+    
+                    # Проверяем что атрибут имеет допустимый тип
+>                   assert attr is None or isinstance(attr, (str, int, float, bool, list, dict, type, type(lambda: None)))
+E                   AssertionError: assert (typing.Dict is None or False)
+E                    +  where False = isinstance(typing.Dict, (<class 'str'>, <class 'int'>, <class 'float'>, <class 'bool'>, <class 'list'>, <class 'dict'>, ...))
+
+tests/test_extended_coverage.py:859: AssertionError
+_____________________ TestFullSrcCoverage.test_comprehensive_method_calls ______________________
+
+self = <workspace.tests.test_full_src_coverage.TestFullSrcCoverage object at 0x7f9c5b98e1d0>
+
+    def test_comprehensive_method_calls(self) -> None:
+        """Тест покрытия вызовов методов"""
+        try:
+            from src.utils.vacancy_stats import VacancyStats
+            from src.vacancies.models import Vacancy
+            from src.utils.salary import Salary
+    
+            # Создаем экземпляры
+            stats = VacancyStats()
+    
+            # Используем правильный конструктор для Salary
+>           salary = Salary.from_range(100000, 150000, "RUR")
+                     ^^^^^^^^^^^^^^^^^
+E           AttributeError: type object 'Salary' has no attribute 'from_range'
+
+tests/test_full_src_coverage.py:266: AttributeError
+________________________ TestVacancyStats.test_vacancies_without_salary ________________________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f9c5adfc610>
+vacancy_stats = <src.utils.vacancy_stats.VacancyStats object at 0x7f9c5a917650>
+
+    def test_vacancies_without_salary(self, vacancy_stats: VacancyStats) -> None:
+        """Тест обработки вакансий без зарплаты"""
+        # Создаем вакансию без зарплаты
+        vacancy_no_salary = Vacancy(
+            title="Developer",
+            vacancy_id="1",
+            url="https://example.com/1",
+            source="hh.ru",
+            employer={"name": "Company1"},
+            salary=None,
+            description="Job description"
+        )
+    
+        vacancies = [vacancy_no_salary]
+>       stats = vacancy_stats.calculate_salary_statistics(vacancies)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_vacancy_stats.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.utils.vacancy_stats.VacancyStats object at 0x7f9c5a917650>
+vacancies = [<src.vacancies.models.Vacancy object at 0x7f9c43fe72b0>]
+
+    def calculate_salary_statistics(self, vacancies):
+        """Подсчет статистики по зарплатам"""
+        salaries = []
+        for vacancy in vacancies:
+            if vacancy.salary:
+>               if vacancy.salary.from_amount:
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'Salary' object has no attribute 'from_amount'
+
+src/utils/vacancy_stats.py:24: AttributeError
+________________________ TestVacancyStats.test_salary_range_calculation ________________________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f9c5adfc250>
+vacancy_stats = <src.utils.vacancy_stats.VacancyStats object at 0x7f9c5a901410>
+
+    def test_salary_range_calculation(self, vacancy_stats: VacancyStats) -> None:
+        """Тест расчета диапазона зарплат"""
+        # Создаем вакансию с диапазоном зарплат - используем правильный конструктор
+>       salary = Salary.from_range(50000, 100000, "RUR")
+                 ^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'Salary' has no attribute 'from_range'
+
+tests/test_vacancy_stats.py:164: AttributeError
+___________________________ TestVacancyStats.test_mixed_salary_types ___________________________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f9c5adfcc50>
+vacancy_stats = <src.utils.vacancy_stats.VacancyStats object at 0x7f9c43f57190>
+
+    def test_mixed_salary_types(self, vacancy_stats: VacancyStats) -> None:
+        """Тест обработки различных типов зарплат"""
+        vacancies = []
+    
+        # Вакансия с полным диапазоном - используем правильный конструктор
+>       salary1 = Salary.from_range(80000, 120000, "RUR")
+                  ^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'Salary' has no attribute 'from_range'
+
+tests/test_vacancy_stats.py:189: AttributeError
+______________ TestVacancyStats.test_salary_statistics_with_different_currencies _______________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f9c5adfd150>
+vacancy_stats = <src.utils.vacancy_stats.VacancyStats object at 0x7f9c43f27990>
+
+    def test_salary_statistics_with_different_currencies(self, vacancy_stats: VacancyStats) -> None:
+        """Тест статистики с различными валютами"""
+        vacancies = []
+    
+        # Вакансия в рублях - используем правильный конструктор
+>       salary_rur = Salary.from_range(100000, 150000, "RUR")
+                     ^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'Salary' has no attribute 'from_range'
+
+tests/test_vacancy_stats.py:243: AttributeError
+________________ TestVacancyStats.test_calculate_salary_statistics_performance _________________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f9c5adfda10>
+vacancy_stats = <src.utils.vacancy_stats.VacancyStats object at 0x7f9c5ad6eed0>
+
+    def test_calculate_salary_statistics_performance(self, vacancy_stats: VacancyStats) -> None:
+        """Тест производительности расчета статистики"""
+        import time
+    
+        # Создаем большое количество вакансий - используем правильный конструктор
+        large_vacancy_list = []
+        for i in range(100):
+>           salary = Salary.from_range(50000 + i * 1000, 100000 + i * 1000, "RUR")
+                     ^^^^^^^^^^^^^^^^^
+E           AttributeError: type object 'Salary' has no attribute 'from_range'
+
+tests/test_vacancy_stats.py:283: AttributeError
+_______________________ TestVacancyStats.test_salary_statistics_detailed _______________________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f9c5adfe5d0>
+vacancy_stats = <src.utils.vacancy_stats.VacancyStats object at 0x7f9c5a94fc90>
+
+    def test_salary_statistics_detailed(self, vacancy_stats: VacancyStats) -> None:
+        """Тест детальной статистики зарплат"""
+        # Создаем вакансии с известными зарплатами для проверки расчетов
+        vacancies = []
+    
+        # Вакансии с конкретными зарплатами
+        salaries_data = [
+            (100000, 150000),  # средняя: 125000
+            (200000, 250000),  # средняя: 225000
+            (80000, 120000),   # средняя: 100000
+        ]
+    
+        for i, (min_sal, max_sal) in enumerate(salaries_data):
+>           salary = Salary.from_range(min_sal, max_sal, "RUR")
+                     ^^^^^^^^^^^^^^^^^
+E           AttributeError: type object 'Salary' has no attribute 'from_range'
+
+tests/test_vacancy_stats.py:333: AttributeError
+______________________ TestVacancyStats.test_salary_statistics_formatting ______________________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7f9c5ade8090>
+vacancy_stats = <src.utils.vacancy_stats.VacancyStats object at 0x7f9c5ad6d0d0>
+
+    def test_salary_statistics_formatting(self, vacancy_stats: VacancyStats) -> None:
+        """Тест форматирования результатов статистики"""
+        # Создаем простую вакансию для тестирования
+>       salary = Salary.from_range(100000, 150000, "RUR")
+                 ^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'Salary' has no attribute 'from_range'
+
+tests/test_vacancy_stats.py:358: AttributeError
+=================================== short test summary info ====================================
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_demo_methods_call_db_manager - AssertionError: assert False
+FAILED tests/test_db_manager_demo.py::TestDBManagerDemo::test_demo_individual_methods - AssertionError: Метод get_companies_and_vacancies_count не был вызван
+FAILED tests/test_extended_coverage.py::TestAdvancedCoverage::test_module_interoperability - AttributeError: type object 'Salary' has no attribute 'from_range'
+FAILED tests/test_extended_coverage.py::TestAdvancedCoverage::test_configuration_coverage - AssertionError: assert (typing.Dict is None or False)
+FAILED tests/test_full_src_coverage.py::TestFullSrcCoverage::test_comprehensive_method_calls - AttributeError: type object 'Salary' has no attribute 'from_range'
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_vacancies_without_salary - AttributeError: 'Salary' object has no attribute 'from_amount'
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_salary_range_calculation - AttributeError: type object 'Salary' has no attribute 'from_range'
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_mixed_salary_types - AttributeError: type object 'Salary' has no attribute 'from_range'
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_salary_statistics_with_different_currencies - AttributeError: type object 'Salary' has no attribute 'from_range'
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_calculate_salary_statistics_performance - AttributeError: type object 'Salary' has no attribute 'from_range'
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_salary_statistics_detailed - AttributeError: type object 'Salary' has no attribute 'from_range'
+FAILED tests/test_vacancy_stats.py::TestVacancyStats::test_salary_statistics_formatting - AttributeError: type object 'Salary' has no attribute 'from_range'
+ERROR tests/test_extended_coverage.py::TestVacancyStatsExtended::test_salary_statistics - TypeError: Salary.__init__() got an unexpected keyword argument 'amount_from'
+ERROR tests/test_extended_coverage.py::TestVacancyStatsExtended::test_experience_distribution - TypeError: Salary.__init__() got an unexpected keyword argument 'amount_from'
+ERROR tests/test_extended_coverage.py::TestVacancyStatsExtended::test_employment_distribution - TypeError: Salary.__init__() got an unexpected keyword argument 'amount_from'
+ERROR tests/test_extended_coverage.py::TestVacancyStatsExtended::test_area_distribution - TypeError: Salary.__init__() got an unexpected keyword argument 'amount_from'
+ERROR tests/test_extended_coverage.py::TestMenuManagerExtended::test_add_menu_item - NameError: name 'MenuManager' is not defined
+ERROR tests/test_extended_coverage.py::TestMenuManagerExtended::test_execute_action - NameError: name 'MenuManager' is not defined
+ERROR tests/test_extended_coverage.py::TestMenuManagerExtended::test_show_menu - NameError: name 'MenuManager' is not defined
+ERROR tests/test_extended_coverage.py::TestMenuManagerExtended::test_clear_menu - NameError: name 'MenuManager' is not defined
+ERROR tests/test_extended_coverage.py::TestUIHelpersExtended::test_format_currency - NameError: name 'UIHelpers' is not defined
+ERROR tests/test_extended_coverage.py::TestUIHelpersExtended::test_format_experience - NameError: name 'UIHelpers' is not defined
+ERROR tests/test_extended_coverage.py::TestUIHelpersExtended::test_truncate_text - NameError: name 'UIHelpers' is not defined
+ERROR tests/test_extended_coverage.py::TestUIHelpersExtended::test_format_date - NameError: name 'UIHelpers' is not defined
+ERROR tests/test_user_interface_comprehensive.py::TestUserInterfaceComprehensive::test_run_advanced_search - AttributeError: type object 'Salary' has no attribute 'from_range'
+ERROR tests/test_user_interface_comprehensive.py::TestUserInterfaceComprehensive::test_run_salary_filter - AttributeError: type object 'Salary' has no attribute 'from_range'
+ERROR tests/test_vacancy_stats.py::TestVacancyStats::test_calculate_salary_statistics - AttributeError: type object 'Salary' has no attribute 'from_range'
+========================== 12 failed, 700 passed, 15 errors in 8.69s ===========================
+~/workspace$ 
