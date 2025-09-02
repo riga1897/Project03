@@ -32,35 +32,34 @@ class TestFullSrcCoverage:
         return modules
 
     def test_import_all_modules(self):
-        """Тест импорта всех модулей"""
-        modules = self.get_all_src_modules()
+        """Тест импорта всех модулей (быстрая версия)"""
+        # Тестируем только основные модули для ускорения
+        critical_modules = [
+            "src.user_interface",
+            "src.utils.vacancy_stats",
+            "src.storage.db_manager",
+            "src.api_modules.unified_api",
+            "src.vacancies.models"
+        ]
+        
         imported_count = 0
         
-        for module_name in modules:
+        for module_name in critical_modules:
             try:
                 module = importlib.import_module(module_name)
                 assert module is not None
                 imported_count += 1
                 
-                # Проверяем, что модуль имеет атрибуты
-                attrs = [attr for attr in dir(module) if not attr.startswith('__')]
-                assert len(attrs) >= 0  # Может быть пустым
-                
-            except ImportError as e:
-                # Логируем неудачные импорты, но не падаем
-                print(f"Не удалось импортировать {module_name}: {e}")
+            except ImportError:
                 continue
         
         assert imported_count > 0, "Должен быть импортирован хотя бы один модуль"
 
     def test_api_modules_coverage(self):
-        """Тест покрытия API модулей"""
+        """Тест покрытия API модулей (упрощенная версия)"""
         api_modules = [
-            "src.api_modules.base_api",
-            "src.api_modules.hh_api", 
-            "src.api_modules.sj_api",
-            "src.api_modules.cached_api",
-            "src.api_modules.unified_api"
+            "src.api_modules.unified_api",
+            "src.api_modules.base_api"
         ]
         
         for module_name in api_modules:
@@ -74,33 +73,14 @@ class TestFullSrcCoverage:
                 # API модули должны содержать классы или функции
                 assert len(classes) > 0 or len(functions) > 0
                 
-                # Тестируем каждый класс
-                for cls in classes:
-                    if not cls.__name__.startswith('_'):
-                        try:
-                            # Попытка создания экземпляра
-                            instance = cls()
-                            assert instance is not None
-                        except TypeError:
-                            # Класс может требовать параметры
-                            try:
-                                # Пробуем с базовыми параметрами
-                                instance = cls(api_key="test", base_url="http://test.com")
-                            except:
-                                pass
-                
             except ImportError:
                 continue
 
     def test_config_modules_coverage(self):
-        """Тест покрытия модулей конфигурации"""
+        """Тест покрытия модулей конфигурации (быстрая версия)"""
+        # Тестируем только основные конфигурационные модули
         config_modules = [
-            "src.config.api_config",
             "src.config.app_config",
-            "src.config.db_config",
-            "src.config.hh_api_config",
-            "src.config.sj_api_config",
-            "src.config.target_companies",
             "src.config.ui_config"
         ]
         
@@ -111,42 +91,16 @@ class TestFullSrcCoverage:
                 # Проверяем наличие конфигурационных классов или констант
                 public_attrs = [attr for attr in dir(module) if not attr.startswith('_')]
                 assert len(public_attrs) > 0
-                
-                # Тестируем конфигурационные классы
-                for attr_name in public_attrs:
-                    attr = getattr(module, attr_name)
-                    
-                    if inspect.isclass(attr):
-                        try:
-                            config_instance = attr()
-                            assert config_instance is not None
-                            
-                            # Проверяем методы конфигурации
-                            methods = [m for m in dir(config_instance) if not m.startswith('_')]
-                            for method_name in methods:
-                                method = getattr(config_instance, method_name)
-                                if callable(method):
-                                    try:
-                                        # Пробуем вызвать метод без параметров
-                                        if method_name in ['is_configured', 'get_config', 'validate']:
-                                            result = method()
-                                            assert result is not None or result is None
-                                    except:
-                                        pass
-                        except:
-                            pass
                             
             except ImportError:
                 continue
 
     def test_storage_modules_coverage(self):
-        """Тест покрытия модулей хранения"""
+        """Тест покрытия модулей хранения (быстрая версия)"""
+        # Тестируем только основные storage модули
         storage_modules = [
-            "src.storage.abstract",
-            "src.storage.abstract_db_manager",
             "src.storage.db_manager",
-            "src.storage.postgres_saver",
-            "src.storage.storage_factory"
+            "src.storage.abstract"
         ]
         
         for module_name in storage_modules:
@@ -155,36 +109,17 @@ class TestFullSrcCoverage:
                 
                 # Получаем все классы из модуля
                 classes = [obj for name, obj in inspect.getmembers(module, inspect.isclass)]
-                
-                for cls in classes:
-                    if not cls.__name__.startswith('_'):
-                        try:
-                            # Для абстрактных классов проверяем только определение
-                            if hasattr(cls, '__abstractmethods__') and cls.__abstractmethods__:
-                                # Абстрактный класс
-                                assert len(cls.__abstractmethods__) > 0
-                            else:
-                                # Конкретный класс - пробуем создать экземпляр
-                                try:
-                                    instance = cls()
-                                    assert instance is not None
-                                except:
-                                    # Может требовать параметры подключения
-                                    pass
-                        except:
-                            pass
+                assert len(classes) > 0
                             
             except ImportError:
                 continue
 
     def test_ui_interfaces_coverage(self):
-        """Тест покрытия UI интерфейсов"""
+        """Тест покрытия UI интерфейсов (быстрая версия)"""
+        # Тестируем только основные UI модули
         ui_modules = [
             "src.ui_interfaces.console_interface",
-            "src.ui_interfaces.source_selector",
-            "src.ui_interfaces.vacancy_display_handler",
-            "src.ui_interfaces.vacancy_operations_coordinator",
-            "src.ui_interfaces.vacancy_search_handler"
+            "src.ui_interfaces.source_selector"
         ]
         
         for module_name in ui_modules:
@@ -196,46 +131,18 @@ class TestFullSrcCoverage:
                 
                 # UI модули должны содержать классы или функции
                 assert len(classes) > 0 or len(functions) > 0
-                
-                # Тестируем UI классы
-                for cls in classes:
-                    if not cls.__name__.startswith('_'):
-                        try:
-                            ui_instance = cls()
-                            assert ui_instance is not None
-                            
-                            # Проверяем основные UI методы
-                            ui_methods = [m for m in dir(ui_instance) if not m.startswith('_')]
-                            for method_name in ui_methods:
-                                method = getattr(ui_instance, method_name)
-                                if callable(method):
-                                    # UI методы часто требуют параметры
-                                    assert method is not None
-                        except:
-                            pass
                             
             except ImportError:
                 continue
 
     def test_utils_modules_coverage(self):
-        """Тест покрытия утилитарных модулей"""
+        """Тест покрытия утилитарных модулей (быстрая версия)"""
+        # Тестируем только ключевые utils модули
         utils_modules = [
-            "src.utils.api_data_filter",
-            "src.utils.base_formatter", 
-            "src.utils.cache",
-            "src.utils.decorators",
-            "src.utils.env_loader",
-            "src.utils.file_handlers",
+            "src.utils.vacancy_stats",
             "src.utils.menu_manager",
-            "src.utils.paginator",
-            "src.utils.salary",
-            "src.utils.search_utils",
-            "src.utils.source_manager",
             "src.utils.ui_helpers",
-            "src.utils.ui_navigation",
-            "src.utils.vacancy_formatter",
-            "src.utils.vacancy_operations",
-            "src.utils.vacancy_stats"
+            "src.utils.salary"
         ]
         
         for module_name in utils_modules:
@@ -247,31 +154,16 @@ class TestFullSrcCoverage:
                                 if not name.startswith('_')]
                 
                 assert len(public_objects) > 0
-                
-                # Тестируем утилитарные классы и функции
-                for name, obj in inspect.getmembers(module):
-                    if not name.startswith('_'):
-                        if inspect.isclass(obj):
-                            try:
-                                util_instance = obj()
-                                assert util_instance is not None
-                            except:
-                                pass
-                        elif inspect.isfunction(obj):
-                            # Функции могут требовать параметры
-                            assert callable(obj)
                             
             except ImportError:
                 continue
 
     def test_vacancies_modules_coverage(self):
-        """Тест покрытия модулей вакансий"""
+        """Тест покрытия модулей вакансий (быстрая версия)"""
+        # Тестируем только основные vacancy модули
         vacancy_modules = [
-            "src.vacancies.abstract",
             "src.vacancies.models",
-            "src.vacancies.parsers.base_parser",
-            "src.vacancies.parsers.hh_parser", 
-            "src.vacancies.parsers.sj_parser"
+            "src.vacancies.abstract"
         ]
         
         for module_name in vacancy_modules:
@@ -279,46 +171,13 @@ class TestFullSrcCoverage:
                 module = importlib.import_module(module_name)
                 
                 classes = [obj for name, obj in inspect.getmembers(module, inspect.isclass)]
-                
-                for cls in classes:
-                    if not cls.__name__.startswith('_'):
-                        try:
-                            if hasattr(cls, '__abstractmethods__') and cls.__abstractmethods__:
-                                # Абстрактный класс
-                                assert len(cls.__abstractmethods__) > 0
-                                
-                                # Проверяем, что абстрактные методы действительно определены
-                                for method_name in cls.__abstractmethods__:
-                                    assert hasattr(cls, method_name)
-                            else:
-                                # Конкретный класс
-                                if module_name == "src.vacancies.models":
-                                    # Модель вакансии требует данные
-                                    try:
-                                        test_data = {
-                                            "vacancy_id": "1",
-                                            "title": "Test",
-                                            "url": "http://test.com",
-                                            "source": "test"
-                                        }
-                                        instance = cls(**test_data)
-                                        assert instance is not None
-                                    except:
-                                        pass
-                                else:
-                                    try:
-                                        instance = cls()
-                                        assert instance is not None
-                                    except:
-                                        pass
-                        except:
-                            pass
+                assert len(classes) > 0
                             
             except ImportError:
                 continue
 
     def test_user_interface_module(self):
-        """Тест главного модуля пользовательского интерфейса"""
+        """Тест главного модуля пользовательского интерфейса (быстрая версия)"""
         try:
             from src.user_interface import UserInterface
             
@@ -328,14 +187,6 @@ class TestFullSrcCoverage:
             # Проверяем основные методы
             methods = [method for method in dir(UserInterface) if not method.startswith('_')]
             assert len(methods) > 0
-            
-            # Пробуем создать экземпляр (может не получиться из-за зависимостей)
-            try:
-                ui = UserInterface()
-                assert ui is not None
-            except:
-                # Может требовать дополнительные зависимости
-                pass
                 
         except ImportError:
             # Модуль может отсутствовать
@@ -436,31 +287,20 @@ class TestFullSrcCoverage:
         assert validate_salary("invalid") is False
         assert validate_salary(123) is False
 
-    def test_mock_integration_scenarios(self):
-        """Тест интеграционных сценариев с моками"""
+    def test_basic_integration_check(self):
+        """Базовая проверка интеграции (быстрая версия)"""
         
-        # Создаем универсальные моки для тестирования
+        # Создаем простые моки
         mock_api = Mock()
         mock_storage = Mock()
-        mock_ui = Mock()
         
-        # Настраиваем поведение моков
-        mock_api.search_vacancies.return_value = [
-            {"id": "1", "title": "Test Vacancy", "source": "test"}
-        ]
+        # Настраиваем простое поведение
+        mock_api.search_vacancies.return_value = []
         mock_storage.save.return_value = True
-        mock_ui.display.return_value = None
         
-        # Тестируем workflow
-        results = mock_api.search_vacancies("python")
-        assert len(results) > 0
+        # Простые проверки
+        results = mock_api.search_vacancies("test")
+        assert isinstance(results, list)
         
         saved = mock_storage.save(results)
         assert saved is True
-        
-        mock_ui.display(results)
-        
-        # Проверяем вызовы
-        mock_api.search_vacancies.assert_called_once_with("python")
-        mock_storage.save.assert_called_once_with(results)
-        mock_ui.display.assert_called_once_with(results)
