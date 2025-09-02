@@ -15,7 +15,7 @@ import requests
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 # Импорты API модулей
-from src.api_modules.base_api import BaseAPI
+from src.api_modules.base_api import BaseJobAPI
 from src.api_modules.hh_api import HeadHunterAPI
 from src.api_modules.sj_api import SuperJobAPI
 from src.api_modules.unified_api import UnifiedAPI
@@ -98,15 +98,22 @@ class TestAPIConsolidated:
         return ConsolidatedAPIMocks()
 
     def test_base_api_functionality(self, consolidated_mocks: ConsolidatedAPIMocks) -> None:
-        """Тест базовой функциональности BaseAPI"""
+        """Тест базовой функциональности BaseJobAPI"""
+        # BaseJobAPI является абстрактным классом, создаем конкретную реализацию
+        class ConcreteAPI(BaseJobAPI):
+            def get_vacancies(self, search_query: str, **kwargs):
+                return [{"id": "test", "title": "Test Vacancy"}]
+            
+            def _validate_vacancy(self, vacancy):
+                return True
+        
         with patch('requests.get', return_value=consolidated_mocks.http_response):
-            base_api = BaseAPI()
+            base_api = ConcreteAPI()
             assert hasattr(base_api, 'get_vacancies')
             
             # Проверяем базовые методы
-            if hasattr(base_api, 'get_vacancies'):
-                result = base_api.get_vacancies(consolidated_mocks.api_data["search_query"])
-                assert isinstance(result, (list, dict))
+            result = base_api.get_vacancies(consolidated_mocks.api_data["search_query"])
+            assert isinstance(result, list)
 
     def test_headhunter_api_integration(self, consolidated_mocks: ConsolidatedAPIMocks) -> None:
         """Тест интеграции с HeadHunter API"""
