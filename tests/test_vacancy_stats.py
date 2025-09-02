@@ -468,37 +468,74 @@ class TestVacancyStats:
     @pytest.fixture
     def sample_vacancies(self) -> List[Vacancy]:
         """Фикстура тестовых вакансий с правильным созданием Salary"""
-        return [
-            Vacancy(
-                title="Python Developer",
-                url="https://test.com/1",
-                vacancy_id="1",
-                source="hh.ru",
-                employer={"name": "TechCorp", "id": "123"},
-                salary=Salary.from_range(100000, 150000) if not SRC_AVAILABLE else Salary({'from': 100000, 'to': 150000}),
-                area="Москва",
-                experience="От 3 до 6 лет"
-            ),
-            Vacancy(
-                title="Java Developer",
-                url="https://test.com/2",
-                vacancy_id="2",
-                source="superjob.ru",
-                employer={"name": "DevCompany", "id": "456"},
-                salary=Salary.from_range(120000, 180000) if not SRC_AVAILABLE else Salary({'from': 120000, 'to': 180000}),
-                area="Санкт-Петербург",
-                experience="От 1 года до 3 лет"
-            ),
-            Vacancy(
-                title="Frontend Developer",
-                url="https://test.com/3",
-                vacancy_id="3",
-                source="hh.ru",
-                employer={"name": "TechCorp", "id": "123"},
-                area="Москва",
-                experience="Нет опыта"
-            )
-        ]
+        if SRC_AVAILABLE:
+            # Используем реальные объекты из src
+            return [
+                Vacancy(
+                    title="Python Developer",
+                    url="https://test.com/1",
+                    vacancy_id="1",
+                    source="hh.ru",
+                    employer={"name": "TechCorp", "id": "123"},
+                    salary={'from': 100000, 'to': 150000, 'currency': 'RUR'},
+                    area="Москва",
+                    experience="От 3 до 6 лет"
+                ),
+                Vacancy(
+                    title="Java Developer",
+                    url="https://test.com/2",
+                    vacancy_id="2",
+                    source="superjob.ru",
+                    employer={"name": "DevCompany", "id": "456"},
+                    salary={'from': 120000, 'to': 180000, 'currency': 'RUR'},
+                    area="Санкт-Петербург",
+                    experience="От 1 года до 3 лет"
+                ),
+                Vacancy(
+                    title="Frontend Developer",
+                    url="https://test.com/3",
+                    vacancy_id="3",
+                    source="hh.ru",
+                    employer={"name": "TechCorp", "id": "123"},
+                    salary=None,
+                    area="Москва",
+                    experience="Нет опыта"
+                )
+            ]
+        else:
+            # Тестовые объекты
+            return [
+                Vacancy(
+                    title="Python Developer",
+                    url="https://test.com/1",
+                    vacancy_id="1",
+                    source="hh.ru",
+                    employer={"name": "TechCorp", "id": "123"},
+                    salary=Salary.from_range(100000, 150000),
+                    area="Москва",
+                    experience="От 3 до 6 лет"
+                ),
+                Vacancy(
+                    title="Java Developer",
+                    url="https://test.com/2",
+                    vacancy_id="2",
+                    source="superjob.ru",
+                    employer={"name": "DevCompany", "id": "456"},
+                    salary=Salary.from_range(120000, 180000),
+                    area="Санкт-Петербург",
+                    experience="От 1 года до 3 лет"
+                ),
+                Vacancy(
+                    title="Frontend Developer",
+                    url="https://test.com/3",
+                    vacancy_id="3",
+                    source="hh.ru",
+                    employer={"name": "TechCorp", "id": "123"},
+                    salary=None,
+                    area="Москва",
+                    experience="Нет опыта"
+                )
+            ]
 
     def test_company_distribution(self, sample_vacancies):
         """Тест распределения по компаниям"""
