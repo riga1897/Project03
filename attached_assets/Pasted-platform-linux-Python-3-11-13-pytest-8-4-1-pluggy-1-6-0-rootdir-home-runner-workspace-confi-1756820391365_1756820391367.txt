@@ -1,0 +1,2099 @@
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: mock-3.14.1, cov-6.2.1
+collected 980 items                                                                            
+
+tests/test_abstract.py ........                                                          [  0%]
+tests/test_abstract_db_manager.py ....                                                   [  1%]
+tests/test_advanced_src_coverage.py ..F.FF.Fs...                                         [  2%]
+tests/test_api_config.py ....                                                            [  2%]
+tests/test_api_consolidated.py sssssssssss                                               [  3%]
+tests/test_api_data_filter.py ........                                                   [  4%]
+tests/test_api_modules.py .............................                                  [  7%]
+tests/test_app_config.py .....                                                           [  8%]
+tests/test_base_api.py ......                                                            [  8%]
+tests/test_base_formatter.py ..........                                                  [  9%]
+tests/test_base_parser.py ......                                                         [ 10%]
+tests/test_cache.py .......                                                              [ 11%]
+tests/test_cache_manager.py ....................                                         [ 13%]
+tests/test_cached_api.py ...........                                                     [ 14%]
+tests/test_complete_api_coverage.py ................                                     [ 16%]
+tests/test_complete_module_coverage.py .F.............FF                                 [ 17%]
+tests/test_complete_src_modules_coverage.py ..F.........F                                [ 19%]
+tests/test_complete_ui_coverage.py ..............                                        [ 20%]
+tests/test_comprehensive_coverage.py ........................                            [ 22%]
+tests/test_comprehensive_src_coverage.py ...F...........F...                             [ 24%]
+tests/test_config_consolidated.py ssssssssssssss                                         [ 26%]
+tests/test_console_interface.py ......                                                   [ 26%]
+tests/test_db_config.py .....                                                            [ 27%]
+tests/test_db_manager.py .................                                               [ 29%]
+tests/test_db_manager_demo.py ..F.....F........                                          [ 30%]
+tests/test_decorators.py .......                                                         [ 31%]
+tests/test_env_loader.py ................                                                [ 33%]
+tests/test_extended_coverage.py .............................FF..                        [ 36%]
+tests/test_file_handlers.py ............                                                 [ 37%]
+tests/test_fixed_core_issues.py ....FFF......                                            [ 39%]
+tests/test_fixed_salary_integration.py ..F...FF..                                        [ 40%]
+tests/test_fixed_vacancy_stats.py ............F..                                        [ 41%]
+tests/test_full_src_coverage.py ........F......                                          [ 43%]
+tests/test_get_api.py ......                                                             [ 43%]
+tests/test_hh_api.py .......                                                             [ 44%]
+tests/test_hh_api_config.py .....                                                        [ 45%]
+tests/test_hh_parser.py ........                                                         [ 45%]
+tests/test_integration.py .............                                                  [ 47%]
+tests/test_main_module.py ..............                                                 [ 48%]
+tests/test_menu_manager.py ..........                                                    [ 49%]
+tests/test_menu_system.py ....................                                           [ 51%]
+tests/test_missing_components.py .........                                               [ 52%]
+tests/test_paginator.py ......                                                           [ 53%]
+tests/test_postgres_saver.py .......                                                     [ 53%]
+tests/test_salary_fixed.py ...........                                                   [ 55%]
+tests/test_salary_utils.py ......................                                        [ 57%]
+tests/test_salary_vacancy_integration_fixed.py .............                             [ 58%]
+tests/test_search_utils.py ............................                                  [ 61%]
+tests/test_sj_api.py ..............                                                      [ 62%]
+tests/test_sj_api_config.py .....                                                        [ 63%]
+tests/test_sj_parser.py ........                                                         [ 64%]
+tests/test_source_manager.py .................                                           [ 66%]
+tests/test_source_selector.py ..................                                         [ 67%]
+tests/test_storage_consolidated.py sssssssssss                                           [ 68%]
+tests/test_storage_factory.py ........                                                   [ 69%]
+tests/test_target_companies.py .....                                                     [ 70%]
+tests/test_ui_config.py .......................                                          [ 72%]
+tests/test_ui_helpers.py ...........                                                     [ 73%]
+tests/test_ui_navigation.py ......................                                       [ 76%]
+tests/test_ultimate_coverage_fixed.py .....................                              [ 78%]
+tests/test_unified_api.py .................                                              [ 79%]
+tests/test_user_interface.py ......................                                      [ 82%]
+tests/test_user_interface_comprehensive.py .....EE.........                              [ 83%]
+tests/test_user_interface_main.py FFFF.FF..FF                                            [ 84%]
+tests/test_vacancy_display_handler.py ..............                                     [ 86%]
+tests/test_vacancy_formatter.py ........                                                 [ 87%]
+tests/test_vacancy_models.py .................................................           [ 92%]
+tests/test_vacancy_operations.py ......                                                  [ 92%]
+tests/test_vacancy_operations_coordinator.py ...........................                 [ 95%]
+tests/test_vacancy_search_handler.py .......................                             [ 97%]
+tests/test_vacancy_stats.py .E.FFFF.F.FF                                                 [ 99%]
+tests/test_vacancy_stats_fixed.py .........                                              [100%]
+
+============================================ ERRORS ============================================
+__________ ERROR at setup of TestUserInterfaceComprehensive.test_run_advanced_search ___________
+
+self = <workspace.tests.test_user_interface_comprehensive.TestUserInterfaceComprehensive object at 0x7ff46550d9d0>
+
+    @pytest.fixture
+    def sample_vacancies(self) -> List[Vacancy]:
+        """
+        Создание тестовых вакансий
+    
+        Returns:
+            List[Vacancy]: Список тестовых объектов вакансий
+        """
+        vacancies = []
+    
+        # Вакансия с полной информацией - используем правильный конструктор Salary
+        salary1 = Salary({"from": 100000, "to": 150000, "currency": "RUR"})
+>       vacancy1 = Vacancy(
+            title="Python Developer",
+            vacancy_id="1",
+            url="https://example.com/1",
+            source="hh.ru",
+            employer={"name": "Яндекс"},
+            salary=salary1,
+            description="Работа с Python и Django"
+        )
+
+tests/test_user_interface_comprehensive.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/vacancies/models.py:74: in __init__
+    self.salary = self._validate_salary(salary)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/vacancies/models.py:100: in _validate_salary
+    return Salary(salary_data) if salary_data else Salary()
+           ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.utils.salary.Salary object at 0x7ff4641664a0>
+salary_data = <src.utils.salary.Salary object at 0x7ff4641663e0>
+
+    def __init__(self, salary_data: Optional[Dict[str, Any]] = None):
+        if salary_data is None:
+            salary_data = {}
+    
+        self.amount_from = 0
+        self.amount_to = 0
+        self.gross = False
+        self.period = "month"
+    
+        # Сначала проверяем, есть ли строковый диапазон для парсинга
+        if isinstance(salary_data, str):
+            salary_data = self._parse_salary_range_string(salary_data)
+        elif isinstance(salary_data, dict) and salary_data.get("salary_range"):
+            range_data = self._parse_salary_range_string(salary_data["salary_range"])
+            salary_data.update(range_data)
+    
+>       self._salary_from = self._validate_salary_value(salary_data.get("from"))
+                                                        ^^^^^^^^^^^^^^^
+E       AttributeError: 'Salary' object has no attribute 'get'
+
+src/utils/salary.py:25: AttributeError
+___________ ERROR at setup of TestUserInterfaceComprehensive.test_run_salary_filter ____________
+
+self = <workspace.tests.test_user_interface_comprehensive.TestUserInterfaceComprehensive object at 0x7ff4659f0b10>
+
+    @pytest.fixture
+    def sample_vacancies(self) -> List[Vacancy]:
+        """
+        Создание тестовых вакансий
+    
+        Returns:
+            List[Vacancy]: Список тестовых объектов вакансий
+        """
+        vacancies = []
+    
+        # Вакансия с полной информацией - используем правильный конструктор Salary
+        salary1 = Salary({"from": 100000, "to": 150000, "currency": "RUR"})
+>       vacancy1 = Vacancy(
+            title="Python Developer",
+            vacancy_id="1",
+            url="https://example.com/1",
+            source="hh.ru",
+            employer={"name": "Яндекс"},
+            salary=salary1,
+            description="Работа с Python и Django"
+        )
+
+tests/test_user_interface_comprehensive.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/vacancies/models.py:74: in __init__
+    self.salary = self._validate_salary(salary)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/vacancies/models.py:100: in _validate_salary
+    return Salary(salary_data) if salary_data else Salary()
+           ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.utils.salary.Salary object at 0x7ff464167c40>
+salary_data = <src.utils.salary.Salary object at 0x7ff464167fa0>
+
+    def __init__(self, salary_data: Optional[Dict[str, Any]] = None):
+        if salary_data is None:
+            salary_data = {}
+    
+        self.amount_from = 0
+        self.amount_to = 0
+        self.gross = False
+        self.period = "month"
+    
+        # Сначала проверяем, есть ли строковый диапазон для парсинга
+        if isinstance(salary_data, str):
+            salary_data = self._parse_salary_range_string(salary_data)
+        elif isinstance(salary_data, dict) and salary_data.get("salary_range"):
+            range_data = self._parse_salary_range_string(salary_data["salary_range"])
+            salary_data.update(range_data)
+    
+>       self._salary_from = self._validate_salary_value(salary_data.get("from"))
+                                                        ^^^^^^^^^^^^^^^
+E       AttributeError: 'Salary' object has no attribute 'get'
+
+src/utils/salary.py:25: AttributeError
+_____________ ERROR at setup of TestVacancyStats.test_calculate_salary_statistics ______________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7ff4655eb790>
+sample_vacancies = [{'description': 'Работа с Python и Django', 'employer': {'name': 'Яндекс'}, 'salary': {'currency': 'RUR', 'from': 100...ption': 'Работа с React и TypeScript', 'employer': {'name': 'Тинькофф'}, 'salary': None, 'source': 'superjob.ru', ...}]
+
+    @pytest.fixture
+    def vacancy_objects(self, sample_vacancies: List[Dict[str, Any]]) -> List[Vacancy]:
+        """
+        Создание объектов Vacancy из тестовых данных
+    
+        Args:
+            sample_vacancies: Тестовые данные вакансий
+    
+        Returns:
+            List[Vacancy]: Список объектов вакансий
+        """
+        vacancies = []
+        for data in sample_vacancies:
+            # Создаем объект Salary если есть данные - используем правильный конструктор
+            salary = None
+            if data.get('salary'):
+                salary_data = data['salary']
+                salary = Salary({"from": salary_data.get('from'), "to": salary_data.get('to'), "currency": salary_data.get('currency', 'RUR')})
+    
+>           vacancy = Vacancy(
+                title=data['title'],
+                vacancy_id=data['vacancy_id'],
+                url=data['url'],
+                source=data['source'],
+                employer=data.get('employer'),
+                salary=salary,
+                description=data.get('description')
+            )
+
+tests/test_vacancy_stats.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/vacancies/models.py:74: in __init__
+    self.salary = self._validate_salary(salary)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/vacancies/models.py:100: in _validate_salary
+    return Salary(salary_data) if salary_data else Salary()
+           ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.utils.salary.Salary object at 0x7ff464167fa0>
+salary_data = <src.utils.salary.Salary object at 0x7ff464166080>
+
+    def __init__(self, salary_data: Optional[Dict[str, Any]] = None):
+        if salary_data is None:
+            salary_data = {}
+    
+        self.amount_from = 0
+        self.amount_to = 0
+        self.gross = False
+        self.period = "month"
+    
+        # Сначала проверяем, есть ли строковый диапазон для парсинга
+        if isinstance(salary_data, str):
+            salary_data = self._parse_salary_range_string(salary_data)
+        elif isinstance(salary_data, dict) and salary_data.get("salary_range"):
+            range_data = self._parse_salary_range_string(salary_data["salary_range"])
+            salary_data.update(range_data)
+    
+>       self._salary_from = self._validate_salary_value(salary_data.get("from"))
+                                                        ^^^^^^^^^^^^^^^
+E       AttributeError: 'Salary' object has no attribute 'get'
+
+src/utils/salary.py:25: AttributeError
+=========================================== FAILURES ===========================================
+____________________ TestOptimizedSrcCoverage.test_database_operations_mock ____________________
+
+self = <workspace.tests.test_advanced_src_coverage.TestOptimizedSrcCoverage object at 0x7ff4669d7190>
+
+    def test_database_operations_mock(self) -> None:
+        """
+        Тест операций с базой данных через моки
+        """
+        mock_connection = MockDatabaseConnection()
+        mock_cursor = mock_connection.cursor()
+    
+        with patch('psycopg2.connect', return_value=mock_connection):
+            try:
+                db_manager = DBManager()
+                assert db_manager is not None
+    
+                # Тестируем подключение
+>               assert db_manager.check_connection() is True
+E               assert False is True
+E                +  where False = check_connection()
+E                +    where check_connection = <src.storage.db_manager.DBManager object at 0x7ff465dcfd10>.check_connection
+
+tests/test_advanced_src_coverage.py:220: AssertionError
+-------------------------------------- Captured log call ---------------------------------------
+ERROR    src.storage.db_manager:db_manager.py:809 Неожиданная ошибка при проверке подключения: 'MockDatabaseConnection' object has no attribute 'set_client_encoding'
+____________________ TestOptimizedSrcCoverage.test_statistics_calculations _____________________
+
+self = <workspace.tests.test_advanced_src_coverage.TestOptimizedSrcCoverage object at 0x7ff4669d7f50>
+
+    def test_statistics_calculations(self) -> None:
+        """
+        Тест расчета статистики
+        """
+        if not SRC_MODULES_AVAILABLE:
+            pytest.skip("SRC modules not available")
+    
+        # Создаем тестовые вакансии с различными зарплатами
+        test_vacancies = [
+>           Vacancy("Job 1", "1", "url1", "test", salary={"from": 100000, "currency": "RUR"}),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            Vacancy("Job 2", "2", "url2", "test", salary={"from": 120000, "to": 180000, "currency": "RUR"}),
+            Vacancy("Job 3", "3", "url3", "test")  # без зарплаты
+        ]
+E       TypeError: Vacancy.__init__() got multiple values for argument 'salary'
+
+tests/test_advanced_src_coverage.py:280: TypeError
+_______________________ TestOptimizedSrcCoverage.test_ui_components_mock _______________________
+
+self = <workspace.tests.test_advanced_src_coverage.TestOptimizedSrcCoverage object at 0x7ff4669e4650>
+
+    def test_ui_components_mock(self) -> None:
+        """
+        Тест UI компонентов с моками
+        """
+        mock_inputs = ["1", "python", "5", "n", "0"]
+    
+        with patch('builtins.input', side_effect=mock_inputs), \
+             patch('builtins.print') as mock_print:
+    
+            try:
+                from src.ui_interfaces.console_interface import UserInterface
+                ui = UserInterface()
+                assert ui is not None
+    
+                if hasattr(ui, 'display_message'):
+                    ui.display_message("Test message")
+    
+            except ImportError:
+                pass
+    
+            try:
+                from src.ui_interfaces.vacancy_search_handler import VacancySearchHandler
+>               search_handler = VacancySearchHandler()
+                                 ^^^^^^^^^^^^^^^^^^^^^^
+E               TypeError: VacancySearchHandler.__init__() missing 2 required positional arguments: 'unified_api' and 'storage'
+
+tests/test_advanced_src_coverage.py:311: TypeError
+____________________ TestOptimizedSrcCoverage.test_error_handling_scenarios ____________________
+
+self = <workspace.tests.test_advanced_src_coverage.TestOptimizedSrcCoverage object at 0x7ff4669e53d0>
+
+    def test_error_handling_scenarios(self) -> None:
+        """
+        Тест обработки ошибочных сценариев
+        """
+        if not SRC_MODULES_AVAILABLE:
+            pytest.skip("SRC modules not available")
+    
+        # Тестируем создание объектов с некорректными данными
+        error_scenarios = [
+            # Очень длинные строки
+            ("A" * 1000, "long_id", "https://example.com", "test"),
+            # Unicode символы
+            ("Работа 🐍", "unicode_001", "https://работа.рф", "test")
+        ]
+    
+        for title, vid, url, source in error_scenarios:
+            try:
+                vacancy = Vacancy(title, vid, url, source)
+                assert vacancy is not None
+            except (ValueError, TypeError):
+                # Ошибки валидации ожидаемы
+                pass
+    
+        # Тестируем зарплаты с некорректными данными
+        invalid_salary_data = [
+            {"from": "много", "currency": "RUR"},
+            {"currency": 123},
+            {"from": float('inf')}
+        ]
+    
+        for salary_data in invalid_salary_data:
+            try:
+>               salary = Salary(salary_data)
+                         ^^^^^^^^^^^^^^^^^^^
+
+tests/test_advanced_src_coverage.py:389: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/utils/salary.py:25: in __init__
+    self._salary_from = self._validate_salary_value(salary_data.get("from"))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = inf
+
+    @staticmethod
+    def _validate_salary_value(value: Any) -> Optional[int]:
+        """Валидация значения зарплаты"""
+        if value is None:
+            return None
+        try:
+>           salary_val = int(value)
+                         ^^^^^^^^^^
+E           OverflowError: cannot convert float infinity to integer
+
+src/utils/salary.py:56: OverflowError
+_________________ TestCompleteModuleCoverage.test_vacancy_model_comprehensive __________________
+
+self = <workspace.tests.test_complete_module_coverage.TestCompleteModuleCoverage object at 0x7ff46659ac90>
+
+    def test_vacancy_model_comprehensive(self) -> None:
+        """
+        Тест комплексной функциональности модели Vacancy
+        """
+        # Создаем зарплату правильным способом
+        salary_data = {"from": 100000, "to": 150000, "currency": "RUR"}
+        salary = Salary(salary_data)
+    
+        # Создаем вакансию
+>       vacancy = Vacancy(
+            title="Senior Python Developer",
+            vacancy_id="test123",
+            url="https://hh.ru/vacancy/12345",
+            source="hh.ru",
+            employer={"name": "Яндекс", "id": "1740"},
+            salary=salary,
+            description="Разработка высоконагруженных систем",
+            experience={"name": "От 3 до 6 лет"},
+            employment={"name": "Полная занятость"},
+            area={"name": "Москва"}
+        )
+
+tests/test_complete_module_coverage.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/vacancies/models.py:74: in __init__
+    self.salary = self._validate_salary(salary)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/vacancies/models.py:100: in _validate_salary
+    return Salary(salary_data) if salary_data else Salary()
+           ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.utils.salary.Salary object at 0x7ff4651451e0>
+salary_data = <src.utils.salary.Salary object at 0x7ff465145540>
+
+    def __init__(self, salary_data: Optional[Dict[str, Any]] = None):
+        if salary_data is None:
+            salary_data = {}
+    
+        self.amount_from = 0
+        self.amount_to = 0
+        self.gross = False
+        self.period = "month"
+    
+        # Сначала проверяем, есть ли строковый диапазон для парсинга
+        if isinstance(salary_data, str):
+            salary_data = self._parse_salary_range_string(salary_data)
+        elif isinstance(salary_data, dict) and salary_data.get("salary_range"):
+            range_data = self._parse_salary_range_string(salary_data["salary_range"])
+            salary_data.update(range_data)
+    
+>       self._salary_from = self._validate_salary_value(salary_data.get("from"))
+                                                        ^^^^^^^^^^^^^^^
+E       AttributeError: 'Salary' object has no attribute 'get'
+
+src/utils/salary.py:25: AttributeError
+_________________ TestCompleteModuleCoverage.test_comprehensive_type_checking __________________
+
+self = <workspace.tests.test_complete_module_coverage.TestCompleteModuleCoverage object at 0x7ff4665ab610>
+
+    def test_comprehensive_type_checking(self) -> None:
+        """
+        Тест комплексной проверки типов
+        """
+        # Тестируем типы основных объектов
+    
+        # Salary
+        salary = Salary({"from": 100000, "currency": "RUR"})
+        assert isinstance(salary, Salary)
+    
+        # Vacancy
+        vacancy = Vacancy("Test", "1", "https://test.com", "test")
+        assert isinstance(vacancy, Vacancy)
+    
+        # VacancyStats
+        from src.utils.vacancy_stats import VacancyStats
+        stats = VacancyStats()
+        assert isinstance(stats, VacancyStats)
+    
+        # Проверяем что методы возвращают правильные типы
+        vacancy_list = [vacancy]
+>       result = stats.calculate_salary_statistics(vacancy_list)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_complete_module_coverage.py:521: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.utils.vacancy_stats.VacancyStats object at 0x7ff464dd6210>
+vacancies = [<src.vacancies.models.Vacancy object at 0x7ff464d1c530>]
+
+    def calculate_salary_statistics(self, vacancies):
+        """Подсчет статистики по зарплатам"""
+        salaries = []
+        for vacancy in vacancies:
+            if vacancy.salary:
+>               if vacancy.salary.from_amount:
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'Salary' object has no attribute 'from_amount'
+
+src/utils/vacancy_stats.py:24: AttributeError
+_____________ TestCompleteModuleCoverage.test_integration_with_mocked_dependencies _____________
+
+self = <MagicMock name='AppConfig' id='140687640450320'>
+
+    def assert_called(self):
+        """assert that the mock was called at least once
+        """
+        if self.call_count == 0:
+            msg = ("Expected '%s' to have been called." %
+                   (self._mock_name or 'mock'))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'AppConfig' to have been called.
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:908: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <workspace.tests.test_complete_module_coverage.TestCompleteModuleCoverage object at 0x7ff4665abc10>
+
+    def test_integration_with_mocked_dependencies(self) -> None:
+        """
+        Тест интеграции с замокированными зависимостями
+        """
+        # Мокаем все внешние зависимости
+        with patch('src.storage.db_manager.DBManager') as mock_db:
+            with patch('src.config.app_config.AppConfig') as mock_config:
+                with patch('src.storage.storage_factory.StorageFactory') as mock_factory:
+    
+                    # Настройка моков
+                    mock_db_instance = Mock()
+                    mock_db_instance.check_connection.return_value = True
+                    mock_db.return_value = mock_db_instance
+    
+                    mock_config_instance = Mock()
+                    mock_config_instance.default_storage_type = "postgres"
+                    mock_config.return_value = mock_config_instance
+    
+                    mock_storage = Mock()
+                    mock_factory.create_storage.return_value = mock_storage
+    
+                    # Тестируем интеграцию
+                    from src.user_interface import main
+    
+                    with patch('src.ui_interfaces.console_interface.UserInterface') as mock_ui:
+                        mock_ui_instance = Mock()
+                        mock_ui.return_value = mock_ui_instance
+    
+                        # Выполняем функцию
+                        main()
+    
+                        # Проверяем что все компоненты были использованы
+                        mock_db.assert_called()
+>                       mock_config.assert_called()
+E                       AssertionError: Expected 'AppConfig' to have been called.
+
+tests/test_complete_module_coverage.py:557: AssertionError
+------------------------------------- Captured stdout call -------------------------------------
+
+Критическая ошибка: object of type 'Mock' has no len()
+Обратитесь к разработчику для решения проблемы.
+-------------------------------------- Captured log call ---------------------------------------
+ERROR    src.user_interface:user_interface.py:67 Критическая ошибка: object of type 'Mock' has no len()
+_____________ TestCompleteSrcModulesCoverage.test_vacancy_stats_various_scenarios ______________
+
+self = <workspace.tests.test_complete_src_modules_coverage.TestCompleteSrcModulesCoverage object at 0x7ff4665b1ad0>
+
+    def test_vacancy_stats_various_scenarios(self) -> None:
+        """
+        Тест VacancyStats в различных сценариях
+    
+        Проверяет работу с разными наборами данных
+        """
+        if not SRC_AVAILABLE:
+            pytest.skip("SRC modules not available")
+    
+        stats = VacancyStats()
+    
+        # Тестируем с различными входными данными
+        test_scenarios = [
+            [],  # Пустой список
+            None,  # None
+        ]
+    
+        for scenario in test_scenarios:
+            try:
+                result = stats.calculate_salary_statistics(scenario)
+                assert result is not None or result is None
+            except (TypeError, AttributeError):
+                # Исключения для некорректных данных ожидаемы
+                pass
+    
+        # Тестируем с вакансиями без зарплат
+        vacancies_no_salary = []
+        for i in range(5):
+            vacancy = Vacancy(
+                title=f"No Salary Dev {i}",
+                vacancy_id=f"no_sal_{i}",
+                url=f"https://example.com/no_sal_{i}",
+                source="test"
+            )
+            vacancies_no_salary.append(vacancy)
+    
+>       result = stats.calculate_salary_statistics(vacancies_no_salary)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_complete_src_modules_coverage.py:168: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.utils.vacancy_stats.VacancyStats object at 0x7ff4674a7190>
+vacancies = [<src.vacancies.models.Vacancy object at 0x7ff46775f5f0>, <src.vacancies.models.Vacancy object at 0x7ff464d53790>, <sr...750>, <src.vacancies.models.Vacancy object at 0x7ff464d50120>, <src.vacancies.models.Vacancy object at 0x7ff464d528f0>]
+
+    def calculate_salary_statistics(self, vacancies):
+        """Подсчет статистики по зарплатам"""
+        salaries = []
+        for vacancy in vacancies:
+            if vacancy.salary:
+>               if vacancy.salary.from_amount:
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'Salary' object has no attribute 'from_amount'
+
+src/utils/vacancy_stats.py:24: AttributeError
+_____________ TestCompleteSrcModulesCoverage.test_data_validation_and_sanitization _____________
+
+self = <workspace.tests.test_complete_src_modules_coverage.TestCompleteSrcModulesCoverage object at 0x7ff4665c0d50>
+
+    def test_data_validation_and_sanitization(self) -> None:
+        """
+        Тест валидации и санитизации данных
+    
+        Проверяет что входные данные обрабатываются корректно
+        """
+        if not SRC_AVAILABLE:
+            pytest.skip("SRC modules not available")
+    
+        # Тестируем валидацию URL
+        valid_urls = [
+            "https://hh.ru/vacancy/123",
+            "https://superjob.ru/vakansii/123",
+            "https://example.com/job/456"
+        ]
+    
+        for url in valid_urls:
+            vacancy = Vacancy("Test", "1", url, "test")
+>           assert vacancy.url == url
+E           AssertionError: assert '1' == 'https://hh.ru/vacancy/123'
+E             
+E             - https://hh.ru/vacancy/123
+E             + 1
+
+tests/test_complete_src_modules_coverage.py:567: AssertionError
+________________ TestComprehensiveSrcCoverage.test_vacancy_stats_comprehensive _________________
+
+self = <workspace.tests.test_comprehensive_src_coverage.TestComprehensiveSrcCoverage object at 0x7ff4665fdad0>
+
+    def test_vacancy_stats_comprehensive(self) -> None:
+        """
+        Тест статистики вакансий с правильными объектами
+        """
+        if not SRC_MODULES_AVAILABLE:
+            return
+    
+        stats = VacancyStats()
+        assert stats is not None
+    
+        # Тестируем с пустым списком
+        empty_result = stats.calculate_salary_statistics([])
+        assert empty_result is not None
+    
+        # Создаем тестовые вакансии без проблемных salary
+        test_vacancies = []
+        for i in range(3):
+            vacancy = Vacancy(
+                title=f"Developer {i}",
+                vacancy_id=str(i),
+                url=f"https://example.com/{i}",
+                source="test"
+            )
+            test_vacancies.append(vacancy)
+    
+        # Тестируем статистику с вакансиями без зарплат
+>       result = stats.calculate_salary_statistics(test_vacancies)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_comprehensive_src_coverage.py:198: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.utils.vacancy_stats.VacancyStats object at 0x7ff464dc3fd0>
+vacancies = [<src.vacancies.models.Vacancy object at 0x7ff465d7f2b0>, <src.vacancies.models.Vacancy object at 0x7ff465152b60>, <src.vacancies.models.Vacancy object at 0x7ff4651d17e0>]
+
+    def calculate_salary_statistics(self, vacancies):
+        """Подсчет статистики по зарплатам"""
+        salaries = []
+        for vacancy in vacancies:
+            if vacancy.salary:
+>               if vacancy.salary.from_amount:
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'Salary' object has no attribute 'from_amount'
+
+src/utils/vacancy_stats.py:24: AttributeError
+________________ TestComprehensiveSrcCoverage.test_performance_basic_operations ________________
+
+self = <workspace.tests.test_comprehensive_src_coverage.TestComprehensiveSrcCoverage object at 0x7ff466112190>
+
+    def test_performance_basic_operations(self) -> None:
+        """
+        Тест производительности базовых операций
+        """
+        if not SRC_MODULES_AVAILABLE:
+            return
+    
+        import time
+    
+        # Тестируем создание большого количества вакансий
+        start_time = time.time()
+    
+        vacancies = []
+        for i in range(100):
+            vacancy = Vacancy(
+                title=f"Developer {i}",
+                vacancy_id=str(i),
+                url=f"https://example.com/{i}",
+                source="test"
+            )
+            vacancies.append(vacancy)
+    
+        creation_time = time.time() - start_time
+    
+        # Операция должна выполниться быстро
+        assert creation_time < 1.0
+        assert len(vacancies) == 100
+    
+        # Тестируем статистику
+        start_time = time.time()
+    
+        stats = VacancyStats()
+>       result = stats.calculate_salary_statistics(vacancies)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_comprehensive_src_coverage.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.utils.vacancy_stats.VacancyStats object at 0x7ff4651b66d0>
+vacancies = [<src.vacancies.models.Vacancy object at 0x7ff467120870>, <src.vacancies.models.Vacancy object at 0x7ff4671220d0>, <sr... <src.vacancies.models.Vacancy object at 0x7ff46710eb60>, <src.vacancies.models.Vacancy object at 0x7ff46710fee0>, ...]
+
+    def calculate_salary_statistics(self, vacancies):
+        """Подсчет статистики по зарплатам"""
+        salaries = []
+        for vacancy in vacancies:
+            if vacancy.salary:
+>               if vacancy.salary.from_amount:
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'Salary' object has no attribute 'from_amount'
+
+src/utils/vacancy_stats.py:24: AttributeError
+_____________________ TestDBManagerDemo.test_demo_methods_call_db_manager ______________________
+
+self = <workspace.tests.test_db_manager_demo.TestDBManagerDemo object at 0x7ff46615c8d0>
+mock_print = <MagicMock name='print' id='140687640454288'>
+db_manager_demo = <src.utils.db_manager_demo.DBManagerDemo object at 0x7ff465197890>
+
+    @patch('builtins.print')
+    def test_demo_methods_call_db_manager(self, mock_print, db_manager_demo):
+        """Тест что демонстрация вызывает методы DB менеджера"""
+        # Запускаем полную демонстрацию
+        db_manager_demo.run_full_demo()
+    
+        # Проверяем что методы DBManager были вызваны
+        db_manager = db_manager_demo.db_manager
+    
+        assert db_manager.get_target_companies_analysis.called
+>       assert db_manager.get_companies_and_vacancies_count.called
+E       AssertionError: assert False
+E        +  where False = <Mock name='mock.get_companies_and_vacancies_count' id='140687644912464'>.called
+E        +    where <Mock name='mock.get_companies_and_vacancies_count' id='140687644912464'> = <Mock id='140687644916944'>.get_companies_and_vacancies_count
+
+tests/test_db_manager_demo.py:156: AssertionError
+________________________ TestDBManagerDemo.test_demo_individual_methods ________________________
+
+self = <workspace.tests.test_db_manager_demo.TestDBManagerDemo object at 0x7ff46615e590>
+db_manager_demo = <src.utils.db_manager_demo.DBManagerDemo object at 0x7ff46444e310>
+
+    def test_demo_individual_methods(self, db_manager_demo):
+        """Тест отдельных методов демонстрации"""
+        # Тестируем что можем вызвать приватные методы через публичный интерфейс
+        with patch('builtins.print'):
+            # Основной метод должен вызывать все подметоды
+            db_manager_demo.run_full_demo()
+    
+        # Проверяем что все ключевые методы DBManager были вызваны
+        db_manager = db_manager_demo.db_manager
+    
+        # Проверяем вызовы основных методов
+        methods_to_check = [
+            'get_companies_and_vacancies_count',
+            'get_all_vacancies',
+            'get_avg_salary',
+            'get_vacancies_with_higher_salary',
+            'get_vacancies_with_keyword'
+        ]
+    
+        for method_name in methods_to_check:
+            method = getattr(db_manager, method_name)
+>           assert method.called, f"Метод {method_name} не был вызван"
+E           AssertionError: Метод get_companies_and_vacancies_count не был вызван
+E           assert False
+E            +  where False = <Mock name='mock.get_companies_and_vacancies_count' id='140687630985872'>.called
+
+tests/test_db_manager_demo.py:281: AssertionError
+______________________ TestAdvancedCoverage.test_module_interoperability _______________________
+
+self = <workspace.tests.test_extended_coverage.TestAdvancedCoverage object at 0x7ff4661b9390>
+
+    def test_module_interoperability(self) -> None:
+        """Тест взаимодействия между модулями"""
+        if EXTENDED_SRC_AVAILABLE:
+            try:
+                # Тестируем взаимодействие между компонентами
+                from src.vacancies.models import Vacancy
+                from src.utils.salary import Salary
+    
+                # Создаем объекты и тестируем их взаимодействие
+                # Исправлено: Salary.from_range не существует, используем конструктор
+                salary_data = {"from": 100000, "to": 150000, "currency": "RUR"}
+                salary = Salary(salary_data)
+    
+>               vacancy = Vacancy(
+                    title="Test Developer",
+                    vacancy_id="test_1",
+                    url="https://example.com/test",
+                    source="test",
+                    salary=salary # Убедимся, что salary передается корректно
+                )
+
+tests/test_extended_coverage.py:839: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/vacancies/models.py:74: in __init__
+    self.salary = self._validate_salary(salary)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/vacancies/models.py:100: in _validate_salary
+    return Salary(salary_data) if salary_data else Salary()
+           ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.utils.salary.Salary object at 0x7ff4644cb6a0>
+salary_data = <src.utils.salary.Salary object at 0x7ff464de2c80>
+
+    def __init__(self, salary_data: Optional[Dict[str, Any]] = None):
+        if salary_data is None:
+            salary_data = {}
+    
+        self.amount_from = 0
+        self.amount_to = 0
+        self.gross = False
+        self.period = "month"
+    
+        # Сначала проверяем, есть ли строковый диапазон для парсинга
+        if isinstance(salary_data, str):
+            salary_data = self._parse_salary_range_string(salary_data)
+        elif isinstance(salary_data, dict) and salary_data.get("salary_range"):
+            range_data = self._parse_salary_range_string(salary_data["salary_range"])
+            salary_data.update(range_data)
+    
+>       self._salary_from = self._validate_salary_value(salary_data.get("from"))
+                                                        ^^^^^^^^^^^^^^^
+E       AttributeError: 'Salary' object has no attribute 'get'
+
+src/utils/salary.py:25: AttributeError
+_______________________ TestAdvancedCoverage.test_configuration_coverage _______________________
+
+self = <workspace.tests.test_extended_coverage.TestAdvancedCoverage object at 0x7ff4661b9a50>
+
+    def test_configuration_coverage(self) -> None:
+        """Тест покрытия конфигурационных модулей"""
+        config_modules = [
+            "src.config.app_config",
+            "src.config.db_config",
+            "src.config.ui_config",
+            "src.config.target_companies"
+        ]
+    
+        for module_name in config_modules:
+            try:
+                import importlib
+                module = importlib.import_module(module_name)
+    
+                # Проверяем что модуль загружен
+                assert module is not None
+    
+                # Получаем все публичные атрибуты
+                public_attrs = [attr for attr in dir(module) if not attr.startswith('_')]
+    
+                # Проверяем каждый атрибут
+                for attr_name in public_attrs:
+                    attr = getattr(module, attr_name)
+    
+                    # Проверяем что атрибут имеет допустимый тип
+>                   assert attr is None or isinstance(attr, (str, int, float, bool, list, dict, type, type(lambda: None)))
+E                   AssertionError: assert (typing.Dict is None or False)
+E                    +  where False = isinstance(typing.Dict, (<class 'str'>, <class 'int'>, <class 'float'>, <class 'bool'>, <class 'list'>, <class 'dict'>, ...))
+
+tests/test_extended_coverage.py:891: AssertionError
+____________________ TestFixedCoreIssues.test_db_manager_with_proper_mocks _____________________
+
+self = <src.storage.db_manager.DBManager object at 0x7ff464401910>
+
+    def check_connection(self) -> bool:
+        """
+        Проверяет подключение к базе данных используя простой SQL-запрос
+    
+        Returns:
+            bool: True если подключение успешно, False иначе
+        """
+        try:
+>           with self._get_connection() as conn:
+E           TypeError: 'Mock' object does not support the context manager protocol
+
+src/storage/db_manager.py:798: TypeError
+
+During handling of the above exception, another exception occurred:
+
+self = <workspace.tests.test_fixed_core_issues.TestFixedCoreIssues object at 0x7ff4661cd310>
+
+    def test_db_manager_with_proper_mocks(self) -> None:
+        """
+        Тест DBManager с правильными моками
+    
+        Исправляет проблемы с тестированием методов
+        """
+        if not SRC_AVAILABLE:
+            return
+    
+        # Создаем консолидированный мок для psycopg2
+        with patch('src.storage.db_manager.psycopg2') as mock_psycopg2:
+            mock_connection = Mock()
+            mock_cursor = Mock()
+    
+            # Настраиваем возвращаемые значения
+            mock_cursor.fetchall.return_value = [("test_company", 5)]
+            mock_cursor.fetchone.return_value = (125000,)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_psycopg2.connect.return_value = mock_connection
+    
+            # Создаем DBManager
+            db_manager = DBManager()
+    
+            # Тестируем методы с правильными моками
+            try:
+                # Этот метод должен работать с моками
+>               result = db_manager.get_companies_and_vacancies_count()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_fixed_core_issues.py:176: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/storage/db_manager.py:287: in get_companies_and_vacancies_count
+    if not self.check_connection():
+           ^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.storage.db_manager.DBManager object at 0x7ff464401910>
+
+    def check_connection(self) -> bool:
+        """
+        Проверяет подключение к базе данных используя простой SQL-запрос
+    
+        Returns:
+            bool: True если подключение успешно, False иначе
+        """
+        try:
+            with self._get_connection() as conn:
+                with conn.cursor() as cursor:
+                    # Простой SQL-запрос для проверки подключения к БД
+                    # SELECT 1 - минимальный запрос, не требующий доступа к таблицам
+                    cursor.execute("SELECT 1")
+                    result = cursor.fetchone()
+                    return result is not None and result[0] == 1
+>       except psycopg2.Error as e:
+E       TypeError: catching classes that do not inherit from BaseException is not allowed
+
+src/storage/db_manager.py:805: TypeError
+
+During handling of the above exception, another exception occurred:
+
+self = <workspace.tests.test_fixed_core_issues.TestFixedCoreIssues object at 0x7ff4661cd310>
+
+    def test_db_manager_with_proper_mocks(self) -> None:
+        """
+        Тест DBManager с правильными моками
+    
+        Исправляет проблемы с тестированием методов
+        """
+        if not SRC_AVAILABLE:
+            return
+    
+        # Создаем консолидированный мок для psycopg2
+        with patch('src.storage.db_manager.psycopg2') as mock_psycopg2:
+            mock_connection = Mock()
+            mock_cursor = Mock()
+    
+            # Настраиваем возвращаемые значения
+            mock_cursor.fetchall.return_value = [("test_company", 5)]
+            mock_cursor.fetchone.return_value = (125000,)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_psycopg2.connect.return_value = mock_connection
+    
+            # Создаем DBManager
+            db_manager = DBManager()
+    
+            # Тестируем методы с правильными моками
+            try:
+                # Этот метод должен работать с моками
+                result = db_manager.get_companies_and_vacancies_count()
+                assert result is not None
+    
+                # Проверяем что курсор был использован
+                mock_cursor.execute.assert_called()
+    
+            except Exception as e:
+                # Логируем но не падаем при ошибках подключения
+>               assert "connection" in str(e).lower() or "cursor" in str(e).lower()
+E               AssertionError: assert ('connection' in 'catching classes that do not inherit from baseexception is not allowed' or 'cursor' in 'catching classes that do not inherit from baseexception is not allowed')
+E                +  where 'catching classes that do not inherit from baseexception is not allowed' = <built-in method lower of str object at 0x7ff4644d0130>()
+E                +    where <built-in method lower of str object at 0x7ff4644d0130> = 'catching classes that do not inherit from BaseException is not allowed'.lower
+E                +      where 'catching classes that do not inherit from BaseException is not allowed' = str(TypeError('catching classes that do not inherit from BaseException is not allowed'))
+E                +  and   'catching classes that do not inherit from baseexception is not allowed' = <built-in method lower of str object at 0x7ff4644d0130>()
+E                +    where <built-in method lower of str object at 0x7ff4644d0130> = 'catching classes that do not inherit from BaseException is not allowed'.lower
+E                +      where 'catching classes that do not inherit from BaseException is not allowed' = str(TypeError('catching classes that do not inherit from BaseException is not allowed'))
+
+tests/test_fixed_core_issues.py:184: AssertionError
+______________________ TestFixedCoreIssues.test_user_interface_main_fixed ______________________
+
+self = <MagicMock name='UserInterface' id='140687629108688'>
+
+    def assert_called(self):
+        """assert that the mock was called at least once
+        """
+        if self.call_count == 0:
+            msg = ("Expected '%s' to have been called." %
+                   (self._mock_name or 'mock'))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'UserInterface' to have been called.
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:908: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <workspace.tests.test_fixed_core_issues.TestFixedCoreIssues object at 0x7ff4661cd690>
+
+    def test_user_interface_main_fixed(self) -> None:
+        """
+        Тест main функции с исправленными импортами
+    
+        Правильное патчинг для user_interface
+        """
+        if not SRC_AVAILABLE:
+            return
+    
+        # Правильные пути для патчинга
+        with patch('src.storage.db_manager.DBManager') as mock_db_manager_class:
+            with patch('src.ui_interfaces.console_interface.UserInterface') as mock_ui_class:
+    
+                # Настраиваем моки
+                mock_db_instance = Mock()
+                mock_db_instance.check_connection.return_value = True
+                mock_db_manager_class.return_value = mock_db_instance
+    
+                mock_ui_instance = Mock()
+                mock_ui_instance.run.return_value = None
+                mock_ui_class.return_value = mock_ui_instance
+    
+                try:
+                    from src.user_interface import main
+    
+                    # Вызываем main
+                    main()
+    
+                    # Проверяем что компоненты были созданы
+                    mock_db_manager_class.assert_called()
+>                   mock_ui_class.assert_called()
+E                   AssertionError: Expected 'UserInterface' to have been called.
+
+tests/test_fixed_core_issues.py:216: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <workspace.tests.test_fixed_core_issues.TestFixedCoreIssues object at 0x7ff4661cd690>
+
+    def test_user_interface_main_fixed(self) -> None:
+        """
+        Тест main функции с исправленными импортами
+    
+        Правильное патчинг для user_interface
+        """
+        if not SRC_AVAILABLE:
+            return
+    
+        # Правильные пути для патчинга
+        with patch('src.storage.db_manager.DBManager') as mock_db_manager_class:
+            with patch('src.ui_interfaces.console_interface.UserInterface') as mock_ui_class:
+    
+                # Настраиваем моки
+                mock_db_instance = Mock()
+                mock_db_instance.check_connection.return_value = True
+                mock_db_manager_class.return_value = mock_db_instance
+    
+                mock_ui_instance = Mock()
+                mock_ui_instance.run.return_value = None
+                mock_ui_class.return_value = mock_ui_instance
+    
+                try:
+                    from src.user_interface import main
+    
+                    # Вызываем main
+                    main()
+    
+                    # Проверяем что компоненты были созданы
+                    mock_db_manager_class.assert_called()
+                    mock_ui_class.assert_called()
+    
+                except Exception as e:
+                    # Проверяем что это ожидаемая ошибка с моками
+                    error_msg = str(e).lower()
+                    expected_errors = ["mock", "len", "connection", "attribute"]
+>                   assert any(err in error_msg for err in expected_errors)
+E                   assert False
+E                    +  where False = any(<generator object TestFixedCoreIssues.test_user_interface_main_fixed.<locals>.<genexpr> at 0x7ff464250f20>)
+
+tests/test_fixed_core_issues.py:222: AssertionError
+------------------------------------- Captured stdout call -------------------------------------
+
+Критическая ошибка: object of type 'Mock' has no len()
+Обратитесь к разработчику для решения проблемы.
+-------------------------------------- Captured log call ---------------------------------------
+ERROR    src.user_interface:user_interface.py:67 Критическая ошибка: object of type 'Mock' has no len()
+_____________________ TestFixedCoreIssues.test_db_manager_demo_fixed_calls _____________________
+
+self = <workspace.tests.test_fixed_core_issues.TestFixedCoreIssues object at 0x7ff4661cda10>
+
+    def test_db_manager_demo_fixed_calls(self) -> None:
+        """
+        Тест DBManagerDemo с исправленными вызовами методов
+    
+        Правильная настройка моков для демо
+        """
+        if not SRC_AVAILABLE:
+            return
+    
+        try:
+            from src.utils.db_manager_demo import DBManagerDemo
+    
+            # Создаем мок для DBManager
+            with patch('src.utils.db_manager_demo.DBManager') as mock_db_class:
+                mock_db_instance = Mock()
+    
+                # Настраиваем все необходимые методы
+                mock_db_instance.get_target_companies_analysis.return_value = []
+                mock_db_instance.get_companies_and_vacancies_count.return_value = []
+                mock_db_instance.get_all_vacancies.return_value = []
+                mock_db_instance.get_avg_salary.return_value = 100000
+                mock_db_instance.get_vacancies_with_higher_salary.return_value = []
+                mock_db_instance.get_vacancies_with_keyword.return_value = []
+    
+                mock_db_class.return_value = mock_db_instance
+    
+                # Создаем демо
+                demo = DBManagerDemo()
+    
+                # Запускаем демо с отключенным выводом
+                with patch('builtins.print'):
+>                   demo.run_full_demo()
+
+tests/test_fixed_core_issues.py:255: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/utils/db_manager_demo.py:57: in run_full_demo
+    self._demo_database_stats()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.utils.db_manager_demo.DBManagerDemo object at 0x7ff4644d75d0>
+
+    def _demo_database_stats(self) -> None:
+        """Демонстрирует получение статистики БД"""
+        print("\n8. Статистика базы данных:")
+        print("----------------------------------------")
+    
+        stats = self.db_manager.get_database_stats()
+        if stats:
+            print(f"Общее количество вакансий: {stats.get('total_vacancies', 0)}")
+            print(f"Общее количество компаний: {stats.get('total_companies', 0)}")
+            print(f"Вакансий с указанной зарплатой: {stats.get('vacancies_with_salary', 0)}")
+    
+            # Обрабатываем даты
+            latest_date = stats.get("latest_vacancy_date")
+            earliest_date = stats.get("earliest_vacancy_date")
+    
+            if latest_date:
+                if hasattr(latest_date, "strftime"):
+                    latest_str = latest_date.strftime("%d.%m.%Y %H:%M:%S")
+                else:
+                    latest_str = str(latest_date)
+                print(f"Дата последней вакансии: {latest_str}")
+            else:
+                print("Дата последней вакансии: Не указана")
+    
+            if earliest_date:
+                if hasattr(earliest_date, "strftime"):
+                    earliest_str = earliest_date.strftime("%d.%m.%Y %H:%M:%S")
+                else:
+                    earliest_str = str(earliest_date)
+                print(f"Дата первой вакансии: {earliest_str}")
+            else:
+                print("Дата первой вакансии: Не указана")
+    
+            # Дополнительная статистика если есть
+            if stats.get("vacancies_last_week"):
+                print(f"Вакансий за последнюю неделю: {stats.get('vacancies_last_week', 0)}")
+            if stats.get("vacancies_last_month"):
+                print(f"Вакансий за последний месяц: {stats.get('vacancies_last_month', 0)}")
+    
+            # Статистика заполненности полей
+            total = stats.get("total_vacancies", 0)
+>           if total > 0:
+               ^^^^^^^^^
+E           TypeError: '>' not supported between instances of 'Mock' and 'int'
+
+src/utils/db_manager_demo.py:358: TypeError
+______________ TestFixedSalaryIntegration.test_vacancy_stats_with_fixed_vacancies ______________
+
+self = <workspace.tests.test_fixed_salary_integration.TestFixedSalaryIntegration object at 0x7ff4661d6650>
+sample_vacancies_fixed = [<src.vacancies.models.Vacancy object at 0x7ff464dc4600>, <src.vacancies.models.Vacancy object at 0x7ff464dc6000>, <sr...570>, <src.vacancies.models.Vacancy object at 0x7ff464dc5640>, <src.vacancies.models.Vacancy object at 0x7ff464dc41f0>]
+
+    def test_vacancy_stats_with_fixed_vacancies(self, sample_vacancies_fixed: List[Vacancy]) -> None:
+        """Тест статистики с исправленными вакансиями"""
+        if not SRC_AVAILABLE or not sample_vacancies_fixed:
+            return
+    
+        stats = VacancyStats()
+    
+        # Тестируем с пустым списком
+        empty_result = stats.calculate_salary_statistics([])
+        assert empty_result is not None
+    
+        # Создаем список вакансий БЕЗ зарплат для безопасного тестирования
+        safe_vacancies = []
+        for i in range(3):
+            vacancy = Vacancy(
+                title=f"Test Developer {i}",
+                vacancy_id=str(i),
+                url=f"https://test.com/{i}",
+                source="test"
+            )
+            safe_vacancies.append(vacancy)
+    
+        # Тестируем статистику
+>       result = stats.calculate_salary_statistics(safe_vacancies)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_fixed_salary_integration.py:147: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.utils.vacancy_stats.VacancyStats object at 0x7ff464264790>
+vacancies = [<src.vacancies.models.Vacancy object at 0x7ff4671220d0>, <src.vacancies.models.Vacancy object at 0x7ff464485e60>, <src.vacancies.models.Vacancy object at 0x7ff464dd3930>]
+
+    def calculate_salary_statistics(self, vacancies):
+        """Подсчет статистики по зарплатам"""
+        salaries = []
+        for vacancy in vacancies:
+            if vacancy.salary:
+>               if vacancy.salary.from_amount:
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'Salary' object has no attribute 'from_amount'
+
+src/utils/vacancy_stats.py:24: AttributeError
+_________________ TestFixedSalaryIntegration.test_vacancy_with_optional_fields _________________
+
+self = <workspace.tests.test_fixed_salary_integration.TestFixedSalaryIntegration object at 0x7ff4661e0110>
+
+    def test_vacancy_with_optional_fields(self) -> None:
+        """Тест вакансии с опциональными полями"""
+        if not SRC_AVAILABLE:
+            return
+    
+        # Создаем вакансию с минимальными данными
+        minimal_vacancy = Vacancy(
+            title="Developer",
+            vacancy_id="min123",
+            url="https://example.com/minimal",
+            source="test"
+        )
+    
+        assert minimal_vacancy.title == "Developer"
+        assert minimal_vacancy.employer is None or minimal_vacancy.employer == {}
+        assert minimal_vacancy.description is None or minimal_vacancy.description == ""
+    
+        # Создаем вакансию с дополнительными полями
+        full_vacancy = Vacancy(
+            title="Senior Developer",
+            vacancy_id="full123",
+            url="https://example.com/full",
+            source="hh.ru",
+            employer={"name": "BigTech"},
+            description="Senior position",
+            experience={"name": "От 5 лет"},
+            employment={"name": "Полная занятость"},
+            area={"name": "Санкт-Петербург"}
+        )
+    
+        assert full_vacancy.employer == {"name": "BigTech"}
+        assert full_vacancy.experience == {"name": "От 5 лет"}
+>       assert full_vacancy.area == {"name": "Санкт-Петербург"}
+E       AssertionError: assert 'Санкт-Петербург' == {'name': 'Санкт-Петербург'}
+E        +  where 'Санкт-Петербург' = <src.vacancies.models.Vacancy object at 0x7ff464269160>.area
+
+tests/test_fixed_salary_integration.py:266: AssertionError
+___________________ TestFixedSalaryIntegration.test_vacancy_stats_edge_cases ___________________
+
+self = <workspace.tests.test_fixed_salary_integration.TestFixedSalaryIntegration object at 0x7ff4661d7cd0>
+
+    def test_vacancy_stats_edge_cases(self) -> None:
+        """Тест граничных случаев для статистики вакансий"""
+        if not SRC_AVAILABLE:
+            return
+    
+        stats = VacancyStats()
+    
+        # Тестируем с None
+        try:
+            result = stats.calculate_salary_statistics(None)
+            assert result is not None or result is None
+        except Exception:
+            # Исключения для None ожидаемы
+            pass
+    
+        # Тестируем с пустым списком
+        result = stats.calculate_salary_statistics([])
+        assert result is not None
+    
+        # Создаем вакансии без зарплат
+        vacancies_no_salary = []
+        for i in range(5):
+            vacancy = Vacancy(
+                title=f"No Salary Developer {i}",
+                vacancy_id=str(i),
+                url=f"https://example.com/{i}",
+                source="test"
+            )
+            vacancies_no_salary.append(vacancy)
+    
+        # Тестируем статистику с вакансиями без зарплат
+>       result = stats.calculate_salary_statistics(vacancies_no_salary)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_fixed_salary_integration.py:299: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.utils.vacancy_stats.VacancyStats object at 0x7ff4655fcfd0>
+vacancies = [<src.vacancies.models.Vacancy object at 0x7ff467120870>, <src.vacancies.models.Vacancy object at 0x7ff4694569c0>, <sr...110>, <src.vacancies.models.Vacancy object at 0x7ff4644edf30>, <src.vacancies.models.Vacancy object at 0x7ff4644ecfc0>]
+
+    def calculate_salary_statistics(self, vacancies):
+        """Подсчет статистики по зарплатам"""
+        salaries = []
+        for vacancy in vacancies:
+            if vacancy.salary:
+>               if vacancy.salary.from_amount:
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'Salary' object has no attribute 'from_amount'
+
+src/utils/vacancy_stats.py:24: AttributeError
+_____________ TestFixedVacancyStats.test_vacancy_stats_with_patched_salary_access ______________
+
+self = <unittest.mock._patch object at 0x7ff46444ca10>
+
+    def __enter__(self):
+        """Perform the patch."""
+        new, spec, spec_set = self.new, self.spec, self.spec_set
+        autospec, kwargs = self.autospec, self.kwargs
+        new_callable = self.new_callable
+        self.target = self.getter()
+    
+        # normalise False to None
+        if spec is False:
+            spec = None
+        if spec_set is False:
+            spec_set = None
+        if autospec is False:
+            autospec = None
+    
+        if spec is not None and autospec is not None:
+            raise TypeError("Can't specify spec and autospec")
+        if ((spec is not None or autospec is not None) and
+            spec_set not in (True, None)):
+            raise TypeError("Can't provide explicit spec_set *and* spec or autospec")
+    
+        original, local = self.get_original()
+    
+        if new is DEFAULT and autospec is None:
+            inherit = False
+            if spec is True:
+                # set spec to the object we are replacing
+                spec = original
+                if spec_set is True:
+                    spec_set = original
+                    spec = None
+            elif spec is not None:
+                if spec_set is True:
+                    spec_set = spec
+                    spec = None
+            elif spec_set is True:
+                spec_set = original
+    
+            if spec is not None or spec_set is not None:
+                if original is DEFAULT:
+                    raise TypeError("Can't use 'spec' with create=True")
+                if isinstance(original, type):
+                    # If we're patching out a class and there is a spec
+                    inherit = True
+            if spec is None and _is_async_obj(original):
+                Klass = AsyncMock
+            else:
+                Klass = MagicMock
+            _kwargs = {}
+            if new_callable is not None:
+                Klass = new_callable
+            elif spec is not None or spec_set is not None:
+                this_spec = spec
+                if spec_set is not None:
+                    this_spec = spec_set
+                if _is_list(this_spec):
+                    not_callable = '__call__' not in this_spec
+                else:
+                    not_callable = not callable(this_spec)
+                if _is_async_obj(this_spec):
+                    Klass = AsyncMock
+                elif not_callable:
+                    Klass = NonCallableMagicMock
+    
+            if spec is not None:
+                _kwargs['spec'] = spec
+            if spec_set is not None:
+                _kwargs['spec_set'] = spec_set
+    
+            # add a name to mocks
+            if (isinstance(Klass, type) and
+                issubclass(Klass, NonCallableMock) and self.attribute):
+                _kwargs['name'] = self.attribute
+    
+            _kwargs.update(kwargs)
+            new = Klass(**_kwargs)
+    
+            if inherit and _is_instance_mock(new):
+                # we can only tell if the instance should be callable if the
+                # spec is not a list
+                this_spec = spec
+                if spec_set is not None:
+                    this_spec = spec_set
+                if (not _is_list(this_spec) and not
+                    _instance_callable(this_spec)):
+                    Klass = NonCallableMagicMock
+    
+                _kwargs.pop('name')
+                new.return_value = Klass(_new_parent=new, _new_name='()',
+                                         **_kwargs)
+        elif autospec is not None:
+            # spec is ignored, new *must* be default, spec_set is treated
+            # as a boolean. Should we check spec is not None and that spec_set
+            # is a bool?
+            if new is not DEFAULT:
+                raise TypeError(
+                    "autospec creates the mock for you. Can't specify "
+                    "autospec and new."
+                )
+            if original is DEFAULT:
+                raise TypeError("Can't use 'autospec' with create=True")
+            spec_set = bool(spec_set)
+            if autospec is True:
+                autospec = original
+    
+            if _is_instance_mock(self.target):
+                raise InvalidSpecError(
+                    f'Cannot autospec attr {self.attribute!r} as the patch '
+                    f'target has already been mocked out. '
+                    f'[target={self.target!r}, attr={autospec!r}]')
+            if _is_instance_mock(autospec):
+                target_name = getattr(self.target, '__name__', self.target)
+                raise InvalidSpecError(
+                    f'Cannot autospec attr {self.attribute!r} from target '
+                    f'{target_name!r} as it has already been mocked out. '
+                    f'[target={self.target!r}, attr={autospec!r}]')
+    
+            new = create_autospec(autospec, spec_set=spec_set,
+                                  _name=self.attribute, **kwargs)
+        elif kwargs:
+            # can't set keyword args when we aren't creating the mock
+            # XXXX If new is a Mock we could call new.configure_mock(**kwargs)
+            raise TypeError("Can't pass kwargs to a mock we aren't creating")
+    
+        new_attr = new
+    
+        self.temp_original = original
+        self.is_local = local
+        self._exit_stack = contextlib.ExitStack()
+        try:
+>           setattr(self.target, self.attribute, new_attr)
+E           AttributeError: 'Salary' object has no attribute 'from_amount'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1555: AttributeError
+
+During handling of the above exception, another exception occurred:
+
+self = <workspace.tests.test_fixed_vacancy_stats.TestFixedVacancyStats object at 0x7ff4661ed790>
+vacancy_stats = <src.utils.vacancy_stats.VacancyStats object at 0x7ff46444d290>
+
+    def test_vacancy_stats_with_patched_salary_access(self, vacancy_stats: VacancyStats) -> None:
+        """
+        Тест VacancyStats с патчингом доступа к атрибутам зарплаты
+    
+        Использует patch для обхода проблемных атрибутов
+        """
+        # Создаем обычную вакансию
+        vacancy = Vacancy(
+            title="Patched Test Developer",
+            vacancy_id="patch001",
+            url="https://example.com/patch001",
+            source="patch_test"
+        )
+    
+        # Патчим проблемный атрибут
+>       with patch.object(vacancy.salary, 'from_amount', 100000, create=True):
+
+tests/test_fixed_vacancy_stats.py:299: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1568: in __enter__
+    if not self.__exit__(*sys.exc_info()):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7ff46444ca10>
+exc_info = (<class 'AttributeError'>, AttributeError("'Salary' object has no attribute 'from_amount'"), <traceback object at 0x7ff46444c440>)
+
+    def __exit__(self, *exc_info):
+        """Undo the patch."""
+        if self.is_local and self.temp_original is not DEFAULT:
+            setattr(self.target, self.attribute, self.temp_original)
+        else:
+>           delattr(self.target, self.attribute)
+E           AttributeError: 'Salary' object has no attribute 'from_amount'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1576: AttributeError
+_____________________ TestFullSrcCoverage.test_comprehensive_method_calls ______________________
+
+self = <workspace.tests.test_full_src_coverage.TestFullSrcCoverage object at 0x7ff4661ef9d0>
+
+    def test_comprehensive_method_calls(self) -> None:
+        """Тест покрытия вызовов методов"""
+        try:
+            from src.utils.vacancy_stats import VacancyStats
+            from src.vacancies.models import Vacancy
+            from src.utils.salary import Salary
+    
+            # Создаем экземпляры
+            stats = VacancyStats()
+    
+            # Используем правильный конструктор для Salary
+            salary = Salary({"from": 100000, "to": 150000, "currency": "RUR"})
+    
+            vacancy = Vacancy(
+                title="Test Developer",
+                vacancy_id="test_1",
+                url="https://example.com/test",
+                source="test"
+            )
+    
+            # Тестируем методы
+            result = stats.calculate_salary_statistics([])
+            assert result is not None or result is None
+    
+            # Тестируем с реальными данными
+            vacancy.salary = salary
+>           result = stats.calculate_salary_statistics([vacancy])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_full_src_coverage.py:281: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.utils.vacancy_stats.VacancyStats object at 0x7ff4644920d0>
+vacancies = [<src.vacancies.models.Vacancy object at 0x7ff464209bf0>]
+
+    def calculate_salary_statistics(self, vacancies):
+        """Подсчет статистики по зарплатам"""
+        salaries = []
+        for vacancy in vacancies:
+            if vacancy.salary:
+>               if vacancy.salary.from_amount:
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'Salary' object has no attribute 'from_amount'
+
+src/utils/vacancy_stats.py:24: AttributeError
+_______________________ TestUserInterfaceMain.test_main_function_success _______________________
+
+args = (<workspace.tests.test_user_interface_main.TestUserInterfaceMain object at 0x7ff46552b450>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7ff465528790>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+________________ TestUserInterfaceMain.test_main_function_db_connection_failure ________________
+
+args = (<workspace.tests.test_user_interface_main.TestUserInterfaceMain object at 0x7ff46552bb10>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7ff465528f90>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_________________ TestUserInterfaceMain.test_main_function_keyboard_interrupt __________________
+
+args = (<workspace.tests.test_user_interface_main.TestUserInterfaceMain object at 0x7ff465540190>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7ff465529150>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+__________________ TestUserInterfaceMain.test_main_function_generic_exception __________________
+
+args = (<workspace.tests.test_user_interface_main.TestUserInterfaceMain object at 0x7ff465540850>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7ff465529650>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_______________________ TestUserInterfaceMain.test_logging_configuration _______________________
+
+self = <workspace.tests.test_user_interface_main.TestUserInterfaceMain object at 0x7ff465522250>
+
+    def test_logging_configuration(self) -> None:
+        """Тест конфигурации логирования"""
+        import logging
+    
+        # Проверяем что логгер настроен правильно
+        logger = logging.getLogger('src.user_interface')
+        assert logger is not None
+    
+        # Проверяем уровень логирования
+        root_logger = logging.getLogger()
+>       assert root_logger.level <= logging.INFO
+E       AssertionError: assert 30 <= 20
+E        +  where 30 = <RootLogger root (WARNING)>.level
+E        +  and   20 = <module 'logging' from '/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/logging/__init__.py'>.INFO
+
+tests/test_user_interface_main.py:189: AssertionError
+___________________________ TestUserInterfaceMain.test_logging_calls ___________________________
+
+args = (<workspace.tests.test_user_interface_main.TestUserInterfaceMain object at 0x7ff465540e50>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7ff465529910>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+________________________ TestErrorHandling.test_database_error_handling ________________________
+
+args = (<workspace.tests.test_user_interface_main.TestErrorHandling object at 0x7ff465541cd0>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7ff46552a010>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_____________________________ TestErrorHandling.test_error_logging _____________________________
+
+args = (<workspace.tests.test_user_interface_main.TestErrorHandling object at 0x7ff465542050>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7ff46552a450>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+________________________ TestVacancyStats.test_vacancies_without_salary ________________________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7ff4655f4350>
+vacancy_stats = <src.utils.vacancy_stats.VacancyStats object at 0x7ff46440b1d0>
+
+    def test_vacancies_without_salary(self, vacancy_stats: VacancyStats) -> None:
+        """Тест обработки вакансий без зарплаты"""
+        # Создаем вакансию без зарплаты
+        vacancy_no_salary = Vacancy(
+            title="Developer",
+            vacancy_id="1",
+            url="https://example.com/1",
+            source="hh.ru",
+            employer={"name": "Company1"},
+            salary=None,
+            description="Job description"
+        )
+    
+        vacancies = [vacancy_no_salary]
+>       stats = vacancy_stats.calculate_salary_statistics(vacancies)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_vacancy_stats.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.utils.vacancy_stats.VacancyStats object at 0x7ff46440b1d0>
+vacancies = [<src.vacancies.models.Vacancy object at 0x7ff464ca3110>]
+
+    def calculate_salary_statistics(self, vacancies):
+        """Подсчет статистики по зарплатам"""
+        salaries = []
+        for vacancy in vacancies:
+            if vacancy.salary:
+>               if vacancy.salary.from_amount:
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'Salary' object has no attribute 'from_amount'
+
+src/utils/vacancy_stats.py:24: AttributeError
+________________________ TestVacancyStats.test_salary_range_calculation ________________________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7ff4655f4990>
+vacancy_stats = <src.utils.vacancy_stats.VacancyStats object at 0x7ff4655e8810>
+
+    def test_salary_range_calculation(self, vacancy_stats: VacancyStats) -> None:
+        """Тест расчета диапазона зарплат"""
+        # Создаем вакансию с диапазоном зарплат - используем правильный конструктор
+        salary = Salary({"from": 50000, "to": 100000, "currency": "RUR"})
+    
+>       vacancy_with_range = Vacancy(
+            title="Developer",
+            vacancy_id="1",
+            url="https://example.com/1",
+            source="hh.ru",
+            employer={"name": "Company1"},
+            salary=salary,
+            description="Job description"
+        )
+
+tests/test_vacancy_stats.py:161: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/vacancies/models.py:74: in __init__
+    self.salary = self._validate_salary(salary)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/vacancies/models.py:100: in _validate_salary
+    return Salary(salary_data) if salary_data else Salary()
+           ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.utils.salary.Salary object at 0x7ff4641d7d00>
+salary_data = <src.utils.salary.Salary object at 0x7ff4641d4ca0>
+
+    def __init__(self, salary_data: Optional[Dict[str, Any]] = None):
+        if salary_data is None:
+            salary_data = {}
+    
+        self.amount_from = 0
+        self.amount_to = 0
+        self.gross = False
+        self.period = "month"
+    
+        # Сначала проверяем, есть ли строковый диапазон для парсинга
+        if isinstance(salary_data, str):
+            salary_data = self._parse_salary_range_string(salary_data)
+        elif isinstance(salary_data, dict) and salary_data.get("salary_range"):
+            range_data = self._parse_salary_range_string(salary_data["salary_range"])
+            salary_data.update(range_data)
+    
+>       self._salary_from = self._validate_salary_value(salary_data.get("from"))
+                                                        ^^^^^^^^^^^^^^^
+E       AttributeError: 'Salary' object has no attribute 'get'
+
+src/utils/salary.py:25: AttributeError
+___________________________ TestVacancyStats.test_mixed_salary_types ___________________________
+
+self = <workspace.tests.test_vacancy_stats.TestVacancyStats object at 0x7ff4655f4fd0>
+vacancy_stats = <src.utils.vacancy_stats.VacancyStats object at 0x7ff464d68850>
+
+    def test_mixed_salary_types(self, vacancy_stats: VacancyStats) -> None:
+        """Тест обработки различных типов зарплат"""
+        vacancies = []
+    
+        # Вакансия с полным диапазоном
+        salary1 = Salary({"from": 80000, "to": 120000, "currency": "RUR"})
+>       vacancy1 = Vacancy(
