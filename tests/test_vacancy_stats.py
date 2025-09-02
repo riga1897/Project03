@@ -23,7 +23,12 @@ class TestVacancyStats:
 
     @pytest.fixture
     def sample_vacancies(self) -> List[Dict[str, Any]]:
-        """Создание тестовых вакансий"""
+        """
+        Создание тестовых вакансий
+        
+        Returns:
+            List[Dict[str, Any]]: Список тестовых данных вакансий
+        """
         return [
             {
                 "title": "Python Developer",
@@ -56,22 +61,35 @@ class TestVacancyStats:
 
     @pytest.fixture
     def vacancy_stats(self) -> VacancyStats:
-        """Создание экземпляра VacancyStats"""
+        """
+        Создание экземпляра VacancyStats
+        
+        Returns:
+            VacancyStats: Экземпляр калькулятора статистик
+        """
         return VacancyStats()
 
     @pytest.fixture
-    def vacancy_objects(self, sample_vacancies) -> List[Vacancy]:
-        """Создание объектов Vacancy из тестовых данных"""
+    def vacancy_objects(self, sample_vacancies: List[Dict[str, Any]]) -> List[Vacancy]:
+        """
+        Создание объектов Vacancy из тестовых данных
+        
+        Args:
+            sample_vacancies: Тестовые данные вакансий
+            
+        Returns:
+            List[Vacancy]: Список объектов вакансий
+        """
         vacancies = []
         for data in sample_vacancies:
-            # Создаем объект Salary если есть данные
+            # Создаем объект Salary если есть данные - используем правильный конструктор
             salary = None
             if data.get('salary'):
                 salary_data = data['salary']
-                salary = Salary(
-                    salary_from=salary_data.get('from'),
-                    salary_to=salary_data.get('to'),
-                    currency=salary_data.get('currency', 'RUR')
+                salary = Salary.from_range(
+                    salary_data.get('from'),
+                    salary_data.get('to'),
+                    salary_data.get('currency', 'RUR')
                 )
             
             vacancy = Vacancy(
@@ -87,19 +105,25 @@ class TestVacancyStats:
         
         return vacancies
 
-    def test_vacancy_stats_initialization(self, vacancy_stats):
+    def test_vacancy_stats_initialization(self, vacancy_stats: VacancyStats) -> None:
         """Тест инициализации класса статистики"""
         assert vacancy_stats is not None
         assert hasattr(vacancy_stats, 'calculate_salary_statistics')
 
-    def test_calculate_salary_statistics(self, vacancy_stats, vacancy_objects):
+    def test_calculate_salary_statistics(self, vacancy_stats: VacancyStats, vacancy_objects: List[Vacancy]) -> None:
         """Тест расчета статистики по зарплатам"""
         stats = vacancy_stats.calculate_salary_statistics(vacancy_objects)
         
         # Проверяем что метод возвращает результат
         assert stats is not None
+        # Проверяем что это словарь со статистикой
+        if isinstance(stats, dict):
+            # Возможные ключи статистики
+            expected_keys = ['count', 'average', 'min', 'max', 'median', 'with_salary_count', 'without_salary_count']
+            # Проверяем что хотя бы некоторые ключи присутствуют
+            assert any(key in stats for key in expected_keys)
 
-    def test_empty_vacancies_list(self, vacancy_stats):
+    def test_empty_vacancies_list(self, vacancy_stats: VacancyStats) -> None:
         """Тест обработки пустого списка вакансий"""
         empty_list = []
         
@@ -108,8 +132,11 @@ class TestVacancyStats:
         
         # Метод должен обработать пустой список
         assert stats is not None or stats is None
+        if stats is not None and isinstance(stats, dict):
+            # Для пустого списка статистики должны быть нулевые или None
+            assert stats.get('count', 0) == 0
 
-    def test_vacancies_without_salary(self, vacancy_stats):
+    def test_vacancies_without_salary(self, vacancy_stats: VacancyStats) -> None:
         """Тест обработки вакансий без зарплаты"""
         # Создаем вакансию без зарплаты
         vacancy_no_salary = Vacancy(
@@ -127,11 +154,14 @@ class TestVacancyStats:
         
         # Метод должен обработать вакансии без зарплаты
         assert stats is not None or stats is None
+        if stats is not None and isinstance(stats, dict):
+            # Для вакансий без зарплаты статистики зарплат должны быть пустые
+            assert stats.get('with_salary_count', 0) == 0
 
-    def test_salary_range_calculation(self, vacancy_stats):
+    def test_salary_range_calculation(self, vacancy_stats: VacancyStats) -> None:
         """Тест расчета диапазона зарплат"""
-        # Создаем вакансию с диапазоном зарплат
-        salary = Salary(salary_from=50000, salary_to=100000, currency="RUR")
+        # Создаем вакансию с диапазоном зарплат - используем правильный конструктор
+        salary = Salary.from_range(50000, 100000, "RUR")
         
         vacancy_with_range = Vacancy(
             title="Developer",
@@ -148,13 +178,15 @@ class TestVacancyStats:
         
         # Проверяем что метод работает
         assert stats is not None or stats is None
+        if stats is not None and isinstance(stats, dict):
+            assert stats.get('with_salary_count', 0) >= 1
 
-    def test_mixed_salary_types(self, vacancy_stats):
+    def test_mixed_salary_types(self, vacancy_stats: VacancyStats) -> None:
         """Тест обработки различных типов зарплат"""
         vacancies = []
         
-        # Вакансия с полным диапазоном
-        salary1 = Salary(salary_from=80000, salary_to=120000, currency="RUR")
+        # Вакансия с полным диапазоном - используем правильный конструктор
+        salary1 = Salary.from_range(80000, 120000, "RUR")
         vacancy1 = Vacancy(
             title="Python Developer",
             vacancy_id="1", 
@@ -165,7 +197,7 @@ class TestVacancyStats:
         vacancies.append(vacancy1)
         
         # Вакансия только с минимальной зарплатой
-        salary2 = Salary(salary_from=100000, salary_to=None, currency="RUR")
+        salary2 = Salary.from_range(100000, None, "RUR")
         vacancy2 = Vacancy(
             title="Java Developer",
             vacancy_id="2",
@@ -176,7 +208,7 @@ class TestVacancyStats:
         vacancies.append(vacancy2)
         
         # Вакансия только с максимальной зарплатой
-        salary3 = Salary(salary_from=None, salary_to=150000, currency="RUR")
+        salary3 = Salary.from_range(None, 150000, "RUR")
         vacancy3 = Vacancy(
             title="Frontend Developer",
             vacancy_id="3",
@@ -198,13 +230,17 @@ class TestVacancyStats:
         
         stats = vacancy_stats.calculate_salary_statistics(vacancies)
         assert stats is not None or stats is None
+        if stats is not None and isinstance(stats, dict):
+            # Должно быть 3 вакансии с зарплатой и 1 без
+            assert stats.get('with_salary_count', 0) >= 3
+            assert stats.get('without_salary_count', 0) >= 1
 
-    def test_salary_statistics_with_different_currencies(self, vacancy_stats):
+    def test_salary_statistics_with_different_currencies(self, vacancy_stats: VacancyStats) -> None:
         """Тест статистики с различными валютами"""
         vacancies = []
         
-        # Вакансия в рублях
-        salary_rur = Salary(salary_from=100000, salary_to=150000, currency="RUR")
+        # Вакансия в рублях - используем правильный конструктор
+        salary_rur = Salary.from_range(100000, 150000, "RUR")
         vacancy_rur = Vacancy(
             title="Developer RUR",
             vacancy_id="1",
@@ -215,7 +251,7 @@ class TestVacancyStats:
         vacancies.append(vacancy_rur)
         
         # Вакансия в долларах
-        salary_usd = Salary(salary_from=1000, salary_to=2000, currency="USD")
+        salary_usd = Salary.from_range(1000, 2000, "USD")
         vacancy_usd = Vacancy(
             title="Developer USD",
             vacancy_id="2",
@@ -227,21 +263,24 @@ class TestVacancyStats:
         
         stats = vacancy_stats.calculate_salary_statistics(vacancies)
         assert stats is not None or stats is None
+        if stats is not None and isinstance(stats, dict):
+            # Статистика должна учитывать разные валюты
+            assert stats.get('with_salary_count', 0) >= 2
 
-    def test_vacancy_stats_methods_existence(self, vacancy_stats):
+    def test_vacancy_stats_methods_existence(self, vacancy_stats: VacancyStats) -> None:
         """Тест наличия основных методов в VacancyStats"""
         # Проверяем что основные методы определены
         assert hasattr(vacancy_stats, 'calculate_salary_statistics')
         assert callable(getattr(vacancy_stats, 'calculate_salary_statistics'))
 
-    def test_calculate_salary_statistics_performance(self, vacancy_stats):
+    def test_calculate_salary_statistics_performance(self, vacancy_stats: VacancyStats) -> None:
         """Тест производительности расчета статистики"""
         import time
         
-        # Создаем большое количество вакансий
+        # Создаем большое количество вакансий - используем правильный конструктор
         large_vacancy_list = []
         for i in range(100):
-            salary = Salary(salary_from=50000 + i * 1000, salary_to=100000 + i * 1000, currency="RUR")
+            salary = Salary.from_range(50000 + i * 1000, 100000 + i * 1000, "RUR")
             vacancy = Vacancy(
                 title=f"Developer {i}",
                 vacancy_id=str(i),
@@ -259,7 +298,7 @@ class TestVacancyStats:
         assert (end_time - start_time) < 1.0
         assert stats is not None or stats is None
 
-    def test_edge_cases_handling(self, vacancy_stats):
+    def test_edge_cases_handling(self, vacancy_stats: VacancyStats) -> None:
         """Тест обработки граничных случаев"""
         # Тест с None в качестве аргумента
         try:
@@ -277,3 +316,62 @@ class TestVacancyStats:
         except (TypeError, AttributeError):
             # Ожидаемое поведение при некорректных данных
             pass
+
+    def test_salary_statistics_detailed(self, vacancy_stats: VacancyStats) -> None:
+        """Тест детальной статистики зарплат"""
+        # Создаем вакансии с известными зарплатами для проверки расчетов
+        vacancies = []
+        
+        # Вакансии с конкретными зарплатами
+        salaries_data = [
+            (100000, 150000),  # средняя: 125000
+            (200000, 250000),  # средняя: 225000  
+            (80000, 120000),   # средняя: 100000
+        ]
+        
+        for i, (min_sal, max_sal) in enumerate(salaries_data):
+            salary = Salary.from_range(min_sal, max_sal, "RUR")
+            vacancy = Vacancy(
+                title=f"Developer {i}",
+                vacancy_id=str(i),
+                url=f"https://example.com/{i}",
+                source="hh.ru",
+                salary=salary
+            )
+            vacancies.append(vacancy)
+        
+        stats = vacancy_stats.calculate_salary_statistics(vacancies)
+        
+        if stats is not None and isinstance(stats, dict):
+            # Проверяем основные статистики
+            assert stats.get('with_salary_count', 0) == 3
+            assert stats.get('without_salary_count', 0) == 0
+            
+            # Проверяем что средняя зарплата в разумных пределах
+            avg_salary = stats.get('average')
+            if avg_salary is not None:
+                assert 100000 <= avg_salary <= 225000  # Между минимальной и максимальной средней
+
+    def test_salary_statistics_formatting(self, vacancy_stats: VacancyStats) -> None:
+        """Тест форматирования результатов статистики"""
+        # Создаем простую вакансию для тестирования
+        salary = Salary.from_range(100000, 150000, "RUR")
+        vacancy = Vacancy(
+            title="Test Developer",
+            vacancy_id="test_1",
+            url="https://example.com/test",
+            source="hh.ru",
+            salary=salary
+        )
+        
+        stats = vacancy_stats.calculate_salary_statistics([vacancy])
+        
+        if stats is not None:
+            # Проверяем что результат можно сериализовать
+            assert isinstance(stats, (dict, str, int, float, list))
+            
+            # Если это словарь, проверяем что значения корректные
+            if isinstance(stats, dict):
+                for key, value in stats.items():
+                    assert isinstance(key, str)
+                    assert value is None or isinstance(value, (int, float, str, list, dict))
