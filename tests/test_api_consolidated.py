@@ -7,7 +7,7 @@
 import os
 import sys
 import importlib
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from unittest.mock import MagicMock, Mock, patch, call
 import pytest
 import requests
@@ -15,16 +15,12 @@ import requests
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 # Импорты API модулей
-try:
-    from src.api_modules.base_api import BaseAPI
-    from src.api_modules.hh_api import HeadHunterAPI
-    from src.api_modules.sj_api import SuperJobAPI
-    from src.api_modules.unified_api import UnifiedAPI
-    from src.api_modules.cached_api import CachedAPI
-    from src.api_modules.get_api import get_api
-    API_MODULES_AVAILABLE = True
-except ImportError:
-    API_MODULES_AVAILABLE = False
+from src.api_modules.base_api import BaseAPI
+from src.api_modules.hh_api import HeadHunterAPI
+from src.api_modules.sj_api import SuperJobAPI
+from src.api_modules.unified_api import UnifiedAPI
+from src.api_modules.cached_api import CachedAPI
+from src.api_modules.get_api import get_api
 
 
 class ConsolidatedAPIMocks:
@@ -103,27 +99,17 @@ class TestAPIConsolidated:
 
     def test_base_api_functionality(self, consolidated_mocks: ConsolidatedAPIMocks) -> None:
         """Тест базовой функциональности BaseAPI"""
-        if not API_MODULES_AVAILABLE:
-            pytest.skip("API modules not available")
-
         with patch('requests.get', return_value=consolidated_mocks.http_response):
             base_api = BaseAPI()
             assert hasattr(base_api, 'get_vacancies')
             
             # Проверяем базовые методы
             if hasattr(base_api, 'get_vacancies'):
-                try:
-                    result = base_api.get_vacancies(consolidated_mocks.api_data["search_query"])
-                    assert isinstance(result, (list, dict))
-                except Exception:
-                    # Базовый API может не иметь реализации
-                    pass
+                result = base_api.get_vacancies(consolidated_mocks.api_data["search_query"])
+                assert isinstance(result, (list, dict))
 
     def test_headhunter_api_integration(self, consolidated_mocks: ConsolidatedAPIMocks) -> None:
         """Тест интеграции с HeadHunter API"""
-        if not API_MODULES_AVAILABLE:
-            pytest.skip("API modules not available")
-
         with patch('requests.get', return_value=consolidated_mocks.http_response):
             hh_api = HeadHunterAPI()
             
@@ -143,9 +129,6 @@ class TestAPIConsolidated:
 
     def test_superjob_api_integration(self, consolidated_mocks: ConsolidatedAPIMocks) -> None:
         """Тест интеграции с SuperJob API"""
-        if not API_MODULES_AVAILABLE:
-            pytest.skip("API modules not available")
-
         with patch('requests.get', return_value=consolidated_mocks.http_response):
             sj_api = SuperJobAPI()
             
@@ -163,9 +146,6 @@ class TestAPIConsolidated:
 
     def test_unified_api_functionality(self, consolidated_mocks: ConsolidatedAPIMocks) -> None:
         """Тест функциональности UnifiedAPI"""
-        if not API_MODULES_AVAILABLE:
-            pytest.skip("API modules not available")
-
         with patch('requests.get', return_value=consolidated_mocks.http_response):
             unified_api = UnifiedAPI()
             
@@ -179,9 +159,6 @@ class TestAPIConsolidated:
 
     def test_cached_api_functionality(self, consolidated_mocks: ConsolidatedAPIMocks) -> None:
         """Тест функциональности CachedAPI"""
-        if not API_MODULES_AVAILABLE:
-            pytest.skip("API modules not available")
-
         with patch('requests.get', return_value=consolidated_mocks.http_response):
             cached_api = CachedAPI()
             
@@ -195,9 +172,6 @@ class TestAPIConsolidated:
 
     def test_get_api_factory(self) -> None:
         """Тест фабрики get_api"""
-        if not API_MODULES_AVAILABLE:
-            pytest.skip("API modules not available")
-
         # Тест получения HeadHunter API
         hh_api = get_api("hh")
         assert isinstance(hh_api, HeadHunterAPI)
@@ -216,27 +190,17 @@ class TestAPIConsolidated:
 
     def test_api_error_handling_consolidated(self, consolidated_mocks: ConsolidatedAPIMocks) -> None:
         """Тест обработки ошибок в API"""
-        if not API_MODULES_AVAILABLE:
-            pytest.skip("API modules not available")
-
         # Мок ошибки HTTP
         with patch('requests.get', side_effect=requests.exceptions.RequestException("Network error")):
             apis = [HeadHunterAPI(), SuperJobAPI()]
             
             for api in apis:
-                try:
-                    result = api.get_vacancies(consolidated_mocks.api_data["search_query"])
-                    # Некоторые API могут возвращать пустой список при ошибке
-                    assert isinstance(result, list)
-                except requests.exceptions.RequestException:
-                    # Или могут пробрасывать исключение
-                    pass
+                result = api.get_vacancies(consolidated_mocks.api_data["search_query"])
+                # API должны возвращать пустой список при ошибке
+                assert isinstance(result, list)
 
     def test_api_rate_limiting_consolidated(self, consolidated_mocks: ConsolidatedAPIMocks) -> None:
         """Тест ограничения скорости запросов"""
-        if not API_MODULES_AVAILABLE:
-            pytest.skip("API modules not available")
-
         # Мок ответа с кодом 429 (Too Many Requests)
         mock_resp = Mock()
         mock_resp.status_code = 429
@@ -246,19 +210,12 @@ class TestAPIConsolidated:
             apis = [HeadHunterAPI(), SuperJobAPI()]
             
             for api in apis:
-                try:
-                    result = api.get_vacancies(consolidated_mocks.api_data["search_query"])
-                    # API может возвращать пустой список при превышении лимита
-                    assert isinstance(result, list)
-                except Exception:
-                    # Или может выбрасывать исключение
-                    pass
+                result = api.get_vacancies(consolidated_mocks.api_data["search_query"])
+                # API возвращают пустой список при превышении лимита
+                assert isinstance(result, list)
 
     def test_api_data_validation_consolidated(self, consolidated_mocks: ConsolidatedAPIMocks) -> None:
         """Тест валидации данных API"""
-        if not API_MODULES_AVAILABLE:
-            pytest.skip("API modules not available")
-
         with patch('requests.get', return_value=consolidated_mocks.http_response):
             apis = [HeadHunterAPI(), SuperJobAPI()]
             
@@ -278,9 +235,6 @@ class TestAPIConsolidated:
 
     def test_api_search_parameters_consolidated(self, consolidated_mocks: ConsolidatedAPIMocks) -> None:
         """Тест различных параметров поиска"""
-        if not API_MODULES_AVAILABLE:
-            pytest.skip("API modules not available")
-
         with patch('requests.get', return_value=consolidated_mocks.http_response):
             hh_api = HeadHunterAPI()
             
@@ -288,18 +242,11 @@ class TestAPIConsolidated:
             search_queries = ["python", "javascript", "data scientist", ""]
             
             for query in search_queries:
-                try:
-                    result = hh_api.get_vacancies(query)
-                    assert isinstance(result, list)
-                except Exception:
-                    # Некоторые запросы могут быть некорректными
-                    pass
+                result = hh_api.get_vacancies(query)
+                assert isinstance(result, list)
 
     def test_api_configuration_consolidated(self) -> None:
         """Тест конфигурации API"""
-        if not API_MODULES_AVAILABLE:
-            pytest.skip("API modules not available")
-
         # Проверяем что API имеют необходимые конфигурационные атрибуты
         apis = [HeadHunterAPI(), SuperJobAPI()]
         
@@ -313,9 +260,6 @@ class TestAPIConsolidated:
 
     def test_api_performance_consolidated(self, consolidated_mocks: ConsolidatedAPIMocks) -> None:
         """Тест производительности API операций"""
-        if not API_MODULES_AVAILABLE:
-            pytest.skip("API modules not available")
-
         import time
         
         with patch('requests.get', return_value=consolidated_mocks.http_response):
@@ -332,9 +276,6 @@ class TestAPIConsolidated:
 
     def test_api_comprehensive_workflow(self, consolidated_mocks: ConsolidatedAPIMocks) -> None:
         """Тест комплексного рабочего процесса API"""
-        if not API_MODULES_AVAILABLE:
-            pytest.skip("API modules not available")
-
         with patch('requests.get', return_value=consolidated_mocks.http_response):
             # Создаем все API
             hh_api = HeadHunterAPI()
