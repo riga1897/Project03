@@ -534,6 +534,90 @@ class TestUserInterfaceExtended:
                     assert callable(method)
 
 
+class MockDisplayHandler:
+    """Тестовая реализация обработчика отображения"""
+
+    def __init__(self):
+        """Инициализация обработчика отображения"""
+        self.storage = Mock()
+        self.vacancy_ops = Mock()
+
+    def display_vacancy_list(self, vacancies: List[Dict[str, Any]]) -> None:
+        """Отображение списка вакансий"""
+        print(f"Отображение {len(vacancies)} вакансий")
+        for i, vacancy in enumerate(vacancies, 1):
+            print(f"{i}. {vacancy.get('title', 'Без названия')}")
+
+    def display_vacancies(self, vacancies: List[Dict[str, Any]]) -> None:
+        """Альтернативный метод отображения вакансий"""
+        self.display_vacancy_list(vacancies)
+
+    def show_all_saved_vacancies(self) -> None:
+        """Показать все сохраненные вакансии"""
+        vacancies = self.storage.get_vacancies()
+        if vacancies:
+            self.display_vacancy_list(vacancies)
+        else:
+            print("Нет сохраненных вакансий")
+
+    def show_top_vacancies_by_salary(self) -> None:
+        """Показать топ вакансий по зарплате"""
+        vacancies = self.vacancy_ops.get_vacancies_with_salary()
+        if vacancies:
+            self.display_vacancy_list(vacancies[:10])
+        else:
+            print("Нет вакансий с указанной зарплатой")
+
+    def search_saved_vacancies_by_keyword(self) -> None:
+        """Поиск сохраненных вакансий по ключевому слову"""
+        keyword = input("Введите ключевое слово: ")
+        if keyword:
+            vacancies = self.storage.get_vacancies_by_keyword(keyword)
+            if vacancies:
+                self.display_vacancy_list(vacancies)
+            else:
+                print(f"Вакансий с ключевым словом '{keyword}' не найдено")
+
+
+class VacancyOperationsCoordinator:
+    """Тестовая реализация координатора операций с вакансиями"""
+
+    def __init__(self, api: Any, storage: Any):
+        """
+        Инициализация координатора
+        
+        Args:
+            api: API для работы с вакансиями
+            storage: Хранилище данных
+        """
+        self.api = api
+        self.storage = storage
+
+    def handle_vacancy_search(self) -> None:
+        """Обработка поиска вакансий"""
+        print("Выполняется поиск вакансий...")
+
+    def handle_show_saved_vacancies(self) -> None:
+        """Обработка отображения сохраненных вакансий"""
+        print("Отображение сохраненных вакансий...")
+
+    def handle_top_vacancies_by_salary(self) -> None:
+        """Обработка отображения топ вакансий по зарплате"""
+        print("Отображение топ вакансий по зарплате...")
+
+    def handle_search_saved_by_keyword(self) -> None:
+        """Обработка поиска сохраненных по ключевому слову"""
+        print("Поиск сохраненных вакансий по ключевому слову...")
+
+    def handle_delete_vacancies(self) -> None:
+        """Обработка удаления вакансий"""
+        print("Удаление вакансий...")
+
+    def handle_cache_cleanup(self) -> None:
+        """Обработка очистки кэша"""
+        print("Очистка кэша...")
+
+
 class TestInterfaceHandlers:
     """Тесты обработчиков интерфейса"""
 
