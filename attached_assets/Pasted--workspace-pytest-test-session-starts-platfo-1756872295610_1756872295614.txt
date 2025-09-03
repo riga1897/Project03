@@ -1,0 +1,1909 @@
+~/workspace$ pytest
+========================= test session starts =========================
+platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: mock-3.14.1, cov-6.2.1
+collected 744 items                                                   
+
+tests/test_abstract.py ........                                 [  1%]
+tests/test_abstract_db_manager.py ....                          [  1%]
+tests/test_api_config.py ....                                   [  2%]
+tests/test_api_modules.py .............................         [  6%]
+tests/test_api_modules_enhanced.py ..^C.......sssss...            [  8%]
+tests/test_app_config.py .....                                  [  9%]
+tests/test_base_api.py ......                                   [  9%]
+tests/test_base_formatter.py ..........                         [ 11%]
+tests/test_base_parser.py ......                                [ 11%]
+tests/test_cache.py .......                                     [ 12%]
+tests/test_cached_api.py ...........                            [ 14%]
+tests/test_complete_ui_coverage.py ..............               [ 16%]
+tests/test_comprehensive_coverage.py ........................   [ 19%]
+tests/test_comprehensive_src_coverage.py ...................    [ 22%]
+tests/test_console_interface.py ......                          [ 22%]
+tests/test_coverage_enhancement.py ......................       [ 25%]
+tests/test_critical_modules_coverage.py .F....FFFF........      [ 28%]
+tests/test_data_normalizers_comprehensive.py .................. [ 30%]
+..........                                                      [ 31%]
+tests/test_db_config.py .....                                   [ 32%]
+tests/test_db_manager.py .................                      [ 34%]
+tests/test_decorators.py .......                                [ 35%]
+tests/test_env_loader.py ................                       [ 38%]
+tests/test_full_src_coverage.py ...............                 [ 40%]
+tests/test_get_api.py ......                                    [ 40%]
+tests/test_hh_api.py .......                                    [ 41%]
+tests/test_hh_api_config.py .....                               [ 42%]
+tests/test_hh_parser.py ........                                [ 43%]
+tests/test_integration.py .............                         [ 45%]
+tests/test_interface_components.py .....EEEEEEEEE.......F.      [ 48%]
+tests/test_main_application_interface.py ...F.F.F.FFFF........  [ 51%]
+tests/test_menu_manager.py ..........                           [ 52%]
+tests/test_missing_components.py .........                      [ 53%]
+tests/test_paginator.py ......                                  [ 54%]
+tests/test_postgres_saver.py .FFFFFF                            [ 55%]
+tests/test_salary_fixed.py ...........                          [ 56%]
+tests/test_salary_utils.py ......................               [ 59%]
+tests/test_search_utils.py ............................         [ 63%]
+tests/test_sj_api.py ..............                             [ 65%]
+tests/test_sj_api_config.py .....                               [ 66%]
+tests/test_sj_parser.py ........                                [ 67%]
+tests/test_source_manager.py .................                  [ 69%]
+tests/test_storage_factory.py ........                          [ 70%]
+tests/test_storage_services_comprehensive.py FFFFFFFFFEEEEEEEEE [ 73%]
+EEE                                                             [ 73%]
+tests/test_target_companies.py .....                            [ 74%]
+tests/test_ui_config.py .......................                 [ 77%]
+tests/test_ui_helpers_comprehensive.py ................F...F... [ 80%]
+F                                                               [ 80%]
+tests/test_ui_navigation.py ......................              [ 83%]
+tests/test_unified_api.py .................                     [ 85%]
+tests/test_user_interface.py FFFFFFFF                           [ 86%]
+tests/test_vacancy_formatter.py ........                        [ 88%]
+tests/test_vacancy_operations.py ......                         [ 88%]
+tests/test_vacancy_operations_coordinator.py .................. [ 91%]
+.........                                                       [ 92%]
+tests/test_vacancy_operations_enhanced.py ............FFFFFFFFF [ 95%]
+F                                                               [ 95%]
+tests/test_vacancy_processing_coordinator.py .............      [ 97%]
+tests/test_vacancy_stats.py ............                        [ 98%]
+tests/test_vacancy_stats_fixed.py .........                     [100%]
+
+=============================== ERRORS ================================
+_ ERROR at setup of TestVacancyRepository.test_vacancy_repository_creation _
+
+self = <tests.test_interface_components.TestVacancyRepository object at 0x7f7bcb017e50>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyRepository is None:
+            pytest.skip("VacancyRepository class not found")
+        self.mock_db_conn = Mock()
+>       self.repository = VacancyRepository(self.mock_db_conn)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancyRepository.__init__() missing 1 required positional argument: 'validator'
+
+tests/test_interface_components.py:162: TypeError
+__ ERROR at setup of TestVacancyRepository.test_save_vacancy_success __
+
+self = <tests.test_interface_components.TestVacancyRepository object at 0x7f7bcb0181d0>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyRepository is None:
+            pytest.skip("VacancyRepository class not found")
+        self.mock_db_conn = Mock()
+>       self.repository = VacancyRepository(self.mock_db_conn)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancyRepository.__init__() missing 1 required positional argument: 'validator'
+
+tests/test_interface_components.py:162: TypeError
+_______ ERROR at setup of TestVacancyRepository.test_find_by_id _______
+
+self = <tests.test_interface_components.TestVacancyRepository object at 0x7f7bcb018790>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyRepository is None:
+            pytest.skip("VacancyRepository class not found")
+        self.mock_db_conn = Mock()
+>       self.repository = VacancyRepository(self.mock_db_conn)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancyRepository.__init__() missing 1 required positional argument: 'validator'
+
+tests/test_interface_components.py:162: TypeError
+________ ERROR at setup of TestVacancyRepository.test_find_all ________
+
+self = <tests.test_interface_components.TestVacancyRepository object at 0x7f7bcb018dd0>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyRepository is None:
+            pytest.skip("VacancyRepository class not found")
+        self.mock_db_conn = Mock()
+>       self.repository = VacancyRepository(self.mock_db_conn)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancyRepository.__init__() missing 1 required positional argument: 'validator'
+
+tests/test_interface_components.py:162: TypeError
+_____ ERROR at setup of TestVacancyRepository.test_delete_vacancy _____
+
+self = <tests.test_interface_components.TestVacancyRepository object at 0x7f7bcb0193d0>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyRepository is None:
+            pytest.skip("VacancyRepository class not found")
+        self.mock_db_conn = Mock()
+>       self.repository = VacancyRepository(self.mock_db_conn)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancyRepository.__init__() missing 1 required positional argument: 'validator'
+
+tests/test_interface_components.py:162: TypeError
+_____ ERROR at setup of TestVacancyRepository.test_update_vacancy _____
+
+self = <tests.test_interface_components.TestVacancyRepository object at 0x7f7bcb0199d0>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyRepository is None:
+            pytest.skip("VacancyRepository class not found")
+        self.mock_db_conn = Mock()
+>       self.repository = VacancyRepository(self.mock_db_conn)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancyRepository.__init__() missing 1 required positional argument: 'validator'
+
+tests/test_interface_components.py:162: TypeError
+___ ERROR at setup of TestVacancyRepository.test_search_by_keyword ____
+
+self = <tests.test_interface_components.TestVacancyRepository object at 0x7f7bcb019fd0>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyRepository is None:
+            pytest.skip("VacancyRepository class not found")
+        self.mock_db_conn = Mock()
+>       self.repository = VacancyRepository(self.mock_db_conn)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancyRepository.__init__() missing 1 required positional argument: 'validator'
+
+tests/test_interface_components.py:162: TypeError
+____ ERROR at setup of TestVacancyRepository.test_count_vacancies _____
+
+self = <tests.test_interface_components.TestVacancyRepository object at 0x7f7bcb01a650>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyRepository is None:
+            pytest.skip("VacancyRepository class not found")
+        self.mock_db_conn = Mock()
+>       self.repository = VacancyRepository(self.mock_db_conn)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancyRepository.__init__() missing 1 required positional argument: 'validator'
+
+tests/test_interface_components.py:162: TypeError
+_ ERROR at setup of TestVacancyRepository.test_repository_error_handling _
+
+self = <tests.test_interface_components.TestVacancyRepository object at 0x7f7bcb01ad10>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyRepository is None:
+            pytest.skip("VacancyRepository class not found")
+        self.mock_db_conn = Mock()
+>       self.repository = VacancyRepository(self.mock_db_conn)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancyRepository.__init__() missing 1 required positional argument: 'validator'
+
+tests/test_interface_components.py:162: TypeError
+_ ERROR at setup of TestVacancyStorageService.test_vacancy_storage_service_creation _
+
+self = <tests.test_storage_services_comprehensive.TestVacancyStorageService object at 0x7f7bcaf4fb10>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyStorageService is None:
+            pytest.skip("VacancyStorageService class not found")
+        self.mock_storage = Mock()
+>       self.service = VacancyStorageService(self.mock_storage)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class VacancyStorageService with abstract methods delete_vacancy, get_storage_stats, get_vacancies
+
+tests/test_storage_services_comprehensive.py:198: TypeError
+_ ERROR at setup of TestVacancyStorageService.test_save_vacancies_success _
+
+self = <tests.test_storage_services_comprehensive.TestVacancyStorageService object at 0x7f7bcaf5c150>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyStorageService is None:
+            pytest.skip("VacancyStorageService class not found")
+        self.mock_storage = Mock()
+>       self.service = VacancyStorageService(self.mock_storage)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class VacancyStorageService with abstract methods delete_vacancy, get_storage_stats, get_vacancies
+
+tests/test_storage_services_comprehensive.py:198: TypeError
+_ ERROR at setup of TestVacancyStorageService.test_save_vacancies_failure _
+
+self = <tests.test_storage_services_comprehensive.TestVacancyStorageService object at 0x7f7bcaf5c750>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyStorageService is None:
+            pytest.skip("VacancyStorageService class not found")
+        self.mock_storage = Mock()
+>       self.service = VacancyStorageService(self.mock_storage)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class VacancyStorageService with abstract methods delete_vacancy, get_storage_stats, get_vacancies
+
+tests/test_storage_services_comprehensive.py:198: TypeError
+_ ERROR at setup of TestVacancyStorageService.test_load_vacancies_success _
+
+self = <tests.test_storage_services_comprehensive.TestVacancyStorageService object at 0x7f7bcaf5ce50>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyStorageService is None:
+            pytest.skip("VacancyStorageService class not found")
+        self.mock_storage = Mock()
+>       self.service = VacancyStorageService(self.mock_storage)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class VacancyStorageService with abstract methods delete_vacancy, get_storage_stats, get_vacancies
+
+tests/test_storage_services_comprehensive.py:198: TypeError
+_ ERROR at setup of TestVacancyStorageService.test_load_vacancies_empty _
+
+self = <tests.test_storage_services_comprehensive.TestVacancyStorageService object at 0x7f7bcaf5d510>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyStorageService is None:
+            pytest.skip("VacancyStorageService class not found")
+        self.mock_storage = Mock()
+>       self.service = VacancyStorageService(self.mock_storage)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class VacancyStorageService with abstract methods delete_vacancy, get_storage_stats, get_vacancies
+
+tests/test_storage_services_comprehensive.py:198: TypeError
+_ ERROR at setup of TestVacancyStorageService.test_delete_vacancy_success _
+
+self = <tests.test_storage_services_comprehensive.TestVacancyStorageService object at 0x7f7bcaf5dbd0>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyStorageService is None:
+            pytest.skip("VacancyStorageService class not found")
+        self.mock_storage = Mock()
+>       self.service = VacancyStorageService(self.mock_storage)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class VacancyStorageService with abstract methods delete_vacancy, get_storage_stats, get_vacancies
+
+tests/test_storage_services_comprehensive.py:198: TypeError
+_ ERROR at setup of TestVacancyStorageService.test_get_vacancy_by_id __
+
+self = <tests.test_storage_services_comprehensive.TestVacancyStorageService object at 0x7f7bcaf5e290>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyStorageService is None:
+            pytest.skip("VacancyStorageService class not found")
+        self.mock_storage = Mock()
+>       self.service = VacancyStorageService(self.mock_storage)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class VacancyStorageService with abstract methods delete_vacancy, get_storage_stats, get_vacancies
+
+tests/test_storage_services_comprehensive.py:198: TypeError
+___ ERROR at setup of TestVacancyStorageService.test_update_vacancy ___
+
+self = <tests.test_storage_services_comprehensive.TestVacancyStorageService object at 0x7f7bcaf5e950>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyStorageService is None:
+            pytest.skip("VacancyStorageService class not found")
+        self.mock_storage = Mock()
+>       self.service = VacancyStorageService(self.mock_storage)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class VacancyStorageService with abstract methods delete_vacancy, get_storage_stats, get_vacancies
+
+tests/test_storage_services_comprehensive.py:198: TypeError
+_ ERROR at setup of TestVacancyStorageService.test_get_vacancies_count _
+
+self = <tests.test_storage_services_comprehensive.TestVacancyStorageService object at 0x7f7bcaf5f010>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyStorageService is None:
+            pytest.skip("VacancyStorageService class not found")
+        self.mock_storage = Mock()
+>       self.service = VacancyStorageService(self.mock_storage)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class VacancyStorageService with abstract methods delete_vacancy, get_storage_stats, get_vacancies
+
+tests/test_storage_services_comprehensive.py:198: TypeError
+__ ERROR at setup of TestVacancyStorageService.test_search_vacancies __
+
+self = <tests.test_storage_services_comprehensive.TestVacancyStorageService object at 0x7f7bcaf5f690>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyStorageService is None:
+            pytest.skip("VacancyStorageService class not found")
+        self.mock_storage = Mock()
+>       self.service = VacancyStorageService(self.mock_storage)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class VacancyStorageService with abstract methods delete_vacancy, get_storage_stats, get_vacancies
+
+tests/test_storage_services_comprehensive.py:198: TypeError
+_ ERROR at setup of TestVacancyStorageService.test_storage_error_handling _
+
+self = <tests.test_storage_services_comprehensive.TestVacancyStorageService object at 0x7f7bcaf5fd50>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyStorageService is None:
+            pytest.skip("VacancyStorageService class not found")
+        self.mock_storage = Mock()
+>       self.service = VacancyStorageService(self.mock_storage)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class VacancyStorageService with abstract methods delete_vacancy, get_storage_stats, get_vacancies
+
+tests/test_storage_services_comprehensive.py:198: TypeError
+_ ERROR at setup of TestVacancyStorageService.test_validate_vacancy_data _
+
+self = <tests.test_storage_services_comprehensive.TestVacancyStorageService object at 0x7f7bcaf64450>
+
+    def setup_method(self):
+        """Настройка для каждого теста"""
+        if VacancyStorageService is None:
+            pytest.skip("VacancyStorageService class not found")
+        self.mock_storage = Mock()
+>       self.service = VacancyStorageService(self.mock_storage)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class VacancyStorageService with abstract methods delete_vacancy, get_storage_stats, get_vacancies
+
+tests/test_storage_services_comprehensive.py:198: TypeError
+============================== FAILURES ===============================
+_______________ TestUnifiedAPI.test_get_vacancies_basic _______________
+
+self = <tests.test_critical_modules_coverage.TestUnifiedAPI object at 0x7f7bcb150e10>
+
+    def test_get_vacancies_basic(self):
+        """Тест базового получения вакансий"""
+        if UnifiedAPI is None:
+            pytest.skip("UnifiedAPI class not found")
+    
+        api = UnifiedAPI()
+    
+        # Мокаем внутренние методы
+>       with patch.object(api, '_fetch_from_hh', return_value=[MockVacancy(1, "Python Dev")]) if hasattr(api, '_fetch_from_hh') else patch.object(api, 'search_vacancies', return_value=[MockVacancy(1, "Python Dev")]):
+
+tests/test_critical_modules_coverage.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7f7bcad83650>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <src.api_modules.unified_api.UnifiedAPI object at 0x7f7bcad84b50> does not have the attribute 'search_vacancies'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_______________ TestCachedAPI.test_cached_api_creation ________________
+
+self = <tests.test_critical_modules_coverage.TestCachedAPI object at 0x7f7bcb152e10>
+
+    def test_cached_api_creation(self):
+        """Тест создания кешированного API"""
+        if CachedAPI is None:
+            pytest.skip("CachedAPI class not found")
+    
+>       api = CachedAPI()
+              ^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_response, _validate_vacancy, get_vacancies, get_vacancies_page
+
+tests/test_critical_modules_coverage.py:203: TypeError
+_______________ TestCachedAPI.test_cache_functionality ________________
+
+self = <tests.test_critical_modules_coverage.TestCachedAPI object at 0x7f7bcb153410>
+
+    def test_cache_functionality(self):
+        """Тест функциональности кеша"""
+        if CachedAPI is None:
+            pytest.skip("CachedAPI class not found")
+    
+>       api = CachedAPI()
+              ^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_response, _validate_vacancy, get_vacancies, get_vacancies_page
+
+tests/test_critical_modules_coverage.py:211: TypeError
+_____________ TestCachedAPI.test_cache_storage_retrieval ______________
+
+self = <tests.test_critical_modules_coverage.TestCachedAPI object at 0x7f7bcb153a10>
+
+    def test_cache_storage_retrieval(self):
+        """Тест сохранения и получения из кеша"""
+        if CachedAPI is None:
+            pytest.skip("CachedAPI class not found")
+    
+>       api = CachedAPI()
+              ^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_response, _validate_vacancy, get_vacancies, get_vacancies_page
+
+tests/test_critical_modules_coverage.py:228: TypeError
+_________________ TestCachedAPI.test_cache_expiration _________________
+
+self = <tests.test_critical_modules_coverage.TestCachedAPI object at 0x7f7bcb158090>
+
+    def test_cache_expiration(self):
+        """Тест истечения срока действия кеша"""
+        if CachedAPI is None:
+            pytest.skip("CachedAPI class not found")
+    
+>       api = CachedAPI()
+              ^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_response, _validate_vacancy, get_vacancies, get_vacancies_page
+
+tests/test_critical_modules_coverage.py:246: TypeError
+___________ TestVacancyValidator.test_get_validation_errors ___________
+
+self = <tests.test_interface_components.TestVacancyValidator object at 0x7f7bcb0224d0>
+
+    def test_get_validation_errors(self):
+        """Тест получения списка ошибок валидации"""
+        vacancy = MockVacancy(1, "")  # Пустой заголовок
+        vacancy.url = "invalid-url"
+    
+        validator = VacancyValidator()
+    
+        if hasattr(validator, 'get_validation_errors'):
+>           errors = validator.get_validation_errors(vacancy)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: VacancyValidator.get_validation_errors() takes 1 positional argument but 2 were given
+
+tests/test_interface_components.py:397: TypeError
+_ TestConsoleApplicationInterface.test_handle_vacancy_search_valid_input _
+
+self = <tests.test_main_application_interface.TestConsoleApplicationInterface object at 0x7f7bcb050790>
+mock_print = <MagicMock name='print' id='140169651475536'>
+mock_input = <MagicMock name='input' id='140169650288208'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_handle_vacancy_search_valid_input(self, mock_print, mock_input):
+        """Тест поиска вакансий с валидным вводом"""
+        mock_input.return_value = "Python Developer"
+    
+        self.app._handle_vacancy_search()
+    
+        # Проверяем что были найдены вакансии
+        assert len(self.storage.saved_vacancies) == 1
+    
+        # Проверяем что информация была выведена
+>       print_calls = [call.args[0] for call in mock_print.call_args_list]
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_main_application_interface.py:124: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <list_iterator object at 0x7f7bcd53f340>
+
+>   print_calls = [call.args[0] for call in mock_print.call_args_list]
+                   ^^^^^^^^^^^^
+E   IndexError: tuple index out of range
+
+tests/test_main_application_interface.py:124: IndexError
+_ TestConsoleApplicationInterface.test_handle_view_saved_with_vacancies _
+
+self = <tests.test_main_application_interface.TestConsoleApplicationInterface object at 0x7f7bcb051390>
+mock_print = <MagicMock name='print' id='140169660373136'>
+
+    @patch('builtins.print')
+    def test_handle_view_saved_with_vacancies(self, mock_print):
+        """Тест просмотра сохраненных вакансий когда есть данные"""
+        # Добавляем вакансии в storage
+        test_vacancy = Mock()
+        test_vacancy.title = "Test Developer"
+        test_vacancy.employer = Mock(name="Test Company")
+        test_vacancy.salary = Mock(get_formatted_string=lambda: "150000 RUR")
+        test_vacancy.url = "http://test.com"
+        self.storage.saved_vacancies = [test_vacancy]
+    
+        self.app._handle_view_saved()
+    
+        # Проверяем что информация была выведена
+>       print_calls = [call.args[0] for call in mock_print.call_args_list]
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_main_application_interface.py:156: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <list_iterator object at 0x7f7bca3846d0>
+
+>   print_calls = [call.args[0] for call in mock_print.call_args_list]
+                   ^^^^^^^^^^^^
+E   IndexError: tuple index out of range
+
+tests/test_main_application_interface.py:156: IndexError
+_ TestConsoleApplicationInterface.test_handle_company_stats_with_sql_filter_service _
+
+self = <tests.test_main_application_interface.TestConsoleApplicationInterface object at 0x7f7bcb0520d0>
+mock_print = <MagicMock name='print' id='140169660373712'>
+
+    @patch('builtins.print')
+    def test_handle_company_stats_with_sql_filter_service(self, mock_print):
+        """Тест статистики компаний с SQL фильтром"""
+        # Мокаем processor как SQLFilterService
+        mock_processor = Mock()
+        mock_processor.get_companies_vacancy_count.return_value = [("Test Company", 5), ("Another Company", 3)]
+        self.app.processor = mock_processor
+    
+>       with patch('src.interfaces.main_application_interface.SQLFilterService', mock_processor.__class__):
+
+tests/test_main_application_interface.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7f7bca460510>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.interfaces.main_application_interface' from '/home/runner/workspace/tests/../src/interfaces/main_application_interface.py'> does not have the attribute 'SQLFilterService'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_ TestConsoleApplicationInterface.test_handle_company_stats_exception _
+
+self = <tests.test_main_application_interface.TestConsoleApplicationInterface object at 0x7f7bcb052dd0>
+mock_print = <MagicMock name='print' id='140169665633104'>
+
+    @patch('builtins.print')
+    def test_handle_company_stats_exception(self, mock_print):
+        """Тест обработки ошибки при получении статистики"""
+        mock_processor = Mock()
+        mock_processor.get_companies_vacancy_count.side_effect = Exception("Test error")
+        self.app.processor = mock_processor
+    
+>       with patch('src.interfaces.main_application_interface.SQLFilterService', mock_processor.__class__):
+
+tests/test_main_application_interface.py:201: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7f7bcb20dc10>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.interfaces.main_application_interface' from '/home/runner/workspace/tests/../src/interfaces/main_application_interface.py'> does not have the attribute 'SQLFilterService'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_ TestConsoleApplicationInterface.test_display_vacancy_summary_basic __
+
+self = <tests.test_main_application_interface.TestConsoleApplicationInterface object at 0x7f7bcb053450>
+mock_print = <MagicMock name='print' id='140169660096016'>
+
+    @patch('builtins.print')
+    def test_display_vacancy_summary_basic(self, mock_print):
+        """Тест отображения краткой информации о вакансиях"""
+        # Создаем тестовые вакансии
+        vacancy1 = Mock()
+        vacancy1.title = "Python Developer"
+        vacancy1.employer = Mock(name="Test Company")
+        vacancy1.salary = Mock(get_formatted_string=lambda: "100000 RUR")
+        vacancy1.url = "http://test1.com"
+    
+        vacancy2 = Mock()
+        vacancy2.title = "Java Developer"
+        vacancy2.employer = None
+        vacancy2.salary = None
+        vacancy2.url = None
+    
+        # Проверяем, что метод существует, если нет - пропускаем тест
+        if hasattr(self.app, '_display_vacancy_summary'):
+            self.app._display_vacancy_summary([vacancy1, vacancy2])
+        else:
+            pytest.skip("_display_vacancy_summary method not found")
+    
+        # Проверяем что информация была выведена
+>       print_calls = [call.args[0] for call in mock_print.call_args_list]
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_main_application_interface.py:231: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <list_iterator object at 0x7f7bcb1fe9e0>
+
+>   print_calls = [call.args[0] for call in mock_print.call_args_list]
+                   ^^^^^^^^^^^^
+E   IndexError: tuple index out of range
+
+tests/test_main_application_interface.py:231: IndexError
+_ TestConsoleApplicationInterface.test_display_vacancy_summary_salary_variations _
+
+self = <tests.test_main_application_interface.TestConsoleApplicationInterface object at 0x7f7bcb053ad0>
+mock_print = <MagicMock name='print' id='140169670654544'>
+
+    @patch('builtins.print')
+    def test_display_vacancy_summary_salary_variations(self, mock_print):
+        """Тест отображения различных вариантов зарплаты"""
+        if not hasattr(self.app, '_display_vacancy_summary'):
+            pytest.skip("_display_vacancy_summary method not found")
+    
+        # Вакансия с salary_info
+        vacancy1 = Mock()
+        vacancy1.title = "Test 1"
+        vacancy1.employer = Mock(name="Company 1")
+        vacancy1.salary = Mock(salary_info="120000 RUR")
+        vacancy1.url = "http://test1.com"
+        # Убираем get_formatted_string чтобы проверить fallback
+        del vacancy1.salary.get_formatted_string
+    
+        # Вакансия с salary_from и salary_to
+        vacancy2 = Mock()
+        vacancy2.title = "Test 2"
+        vacancy2.employer = Mock(name="Company 2")
+        vacancy2.salary = Mock(salary_from=100000, salary_to=150000)
+        vacancy2.url = "http://test2.com"
+        # Убираем все методы форматирования
+        del vacancy2.salary.get_formatted_string
+        del vacancy2.salary.salary_info
+    
+        # Вакансия только с salary_from
+        vacancy3 = Mock()
+        vacancy3.title = "Test 3"
+        vacancy3.employer = Mock(name="Company 3")
+        vacancy3.salary = Mock(salary_from=80000, salary_to=None)
+        vacancy3.url = "http://test3.com"
+        # Убираем все методы форматирования
+        del vacancy3.salary.get_formatted_string
+        del vacancy3.salary.salary_info
+    
+        # Вакансия только с salary_to
+        vacancy4 = Mock()
+        vacancy4.title = "Test 4"
+        vacancy4.employer = Mock(name="Company 4")
+        vacancy4.salary = Mock(salary_from=None, salary_to=200000)
+        vacancy4.url = "http://test4.com"
+        # Убираем все методы форматирования
+        del vacancy4.salary.get_formatted_string
+        del vacancy4.salary.salary_info
+    
+        self.app._display_vacancy_summary([vacancy1, vacancy2, vacancy3, vacancy4])
+    
+        # Проверяем различные форматы зарплаты
+>       print_calls = [call.args[0] for call in mock_print.call_args_list]
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_main_application_interface.py:285: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <list_iterator object at 0x7f7bca32bf10>
+
+>   print_calls = [call.args[0] for call in mock_print.call_args_list]
+                   ^^^^^^^^^^^^
+E   IndexError: tuple index out of range
+
+tests/test_main_application_interface.py:285: IndexError
+___ TestConsoleApplicationInterface.test_run_application_menu_loop ____
+
+self = <tests.test_main_application_interface.TestConsoleApplicationInterface object at 0x7f7bcb054150>
+mock_print = <MagicMock name='print' id='140169665631760'>
+mock_input = <MagicMock name='input' id='140169664895440'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_run_application_menu_loop(self, mock_print, mock_input):
+        """Тест основного цикла приложения"""
+        # Симулируем выбор пользователя: поиск вакансий, затем выход
+        mock_input.side_effect = ["1", "Python", "0"]
+    
+        self.app.run_application()
+    
+        # Проверяем что меню было показано
+>       print_calls = [call.args[0] for call in mock_print.call_args_list]
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_main_application_interface.py:301: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <list_iterator object at 0x7f7bcafbeda0>
+
+>   print_calls = [call.args[0] for call in mock_print.call_args_list]
+                   ^^^^^^^^^^^^
+E   IndexError: tuple index out of range
+
+tests/test_main_application_interface.py:301: IndexError
+________________ TestPostgresSaver.test_get_connection ________________
+
+self = <tests.test_postgres_saver.TestPostgresSaver object at 0x7f7bcb091dd0>
+mock_connect = <MagicMock name='connect' id='140169662954000'>
+
+    @patch("src.storage.postgres_saver.psycopg2.connect")
+    def test_get_connection(self, mock_connect):
+        """Тест получения соединения с БД"""
+        mock_connection = Mock()
+        mock_connect.return_value = mock_connection
+    
+        mock_db_config = {"host": "localhost", "database": "test_db"}
+        saver = PostgresSaver(mock_db_config)
+    
+        connection = saver._get_connection()
+>       assert connection == mock_connection
+E       AssertionError: assert <MagicMock name='mock.connect()' id='140169660265168'> == <Mock name='connect()' id='140169662953872'>
+
+tests/test_postgres_saver.py:154: AssertionError
+_________________ TestPostgresSaver.test_save_vacancy _________________
+
+self = <Mock name='connect().cursor().execute' id='140169650030416'>
+
+    def assert_called(self):
+        """assert that the mock was called at least once
+        """
+        if self.call_count == 0:
+            msg = ("Expected '%s' to have been called." %
+                   (self._mock_name or 'mock'))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'execute' to have been called.
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:908: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_postgres_saver.TestPostgresSaver object at 0x7f7bcb092390>
+mock_connect = <MagicMock name='connect' id='140169672474384'>
+
+    @patch("src.storage.postgres_saver.psycopg2.connect")
+    def test_save_vacancy(self, mock_connect):
+        """Тест сохранения вакансии"""
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        mock_connection.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_connection
+    
+        vacancy = Vacancy(
+            vacancy_id="123", title="Python Developer", url="https://test.com/vacancy/123", source="hh.ru"
+        )
+    
+        mock_db_config = {"host": "localhost", "database": "test_db"}
+        saver = PostgresSaver(mock_db_config)
+    
+        result = saver.save_vacancy(vacancy)
+    
+        # Проверяем, что SQL запрос был выполнен
+>       mock_cursor.execute.assert_called()
+E       AssertionError: Expected 'execute' to have been called.
+
+tests/test_postgres_saver.py:175: AssertionError
+________________ TestPostgresSaver.test_get_vacancies _________________
+
+self = <tests.test_postgres_saver.TestPostgresSaver object at 0x7f7bcb092990>
+mock_connect = <MagicMock name='connect' id='140169650922320'>
+
+    @patch("src.storage.postgres_saver.psycopg2.connect")
+    def test_get_vacancies(self, mock_connect):
+        """Тест получения всех вакансий"""
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        mock_connection.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_connection
+    
+        # Настраиваем возвращаемые данные
+        mock_cursor.fetchall.return_value = [
+            (
+                "123",
+                "Python Developer",
+                "Test Company",
+                "https://test.com",
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+            )
+        ]
+        mock_cursor.description = [
+            ("vacancy_id",),
+            ("title",),
+            ("company",),
+            ("url",),
+            ("salary_from",),
+            ("salary_to",),
+            ("salary_currency",),
+            ("employer_name",),
+            ("area",),
+            ("experience",),
+            ("employment",),
+            ("description",),
+        ]
+    
+        mock_db_config = {"host": "localhost", "database": "test_db"}
+        saver = PostgresSaver(mock_db_config)
+    
+        result = saver.get_vacancies()
+    
+>       assert isinstance(result, list)
+E       AssertionError: assert False
+E        +  where False = isinstance(<MagicMock name='mock.connect().cursor().fetchall()' id='140169660347408'>, list)
+
+tests/test_postgres_saver.py:223: AssertionError
+_____________ TestPostgresSaver.test_delete_vacancy_by_id _____________
+
+self = <tests.test_postgres_saver.TestPostgresSaver object at 0x7f7bcb092f50>
+mock_connect = <MagicMock name='connect' id='140169661253520'>
+
+    @patch("src.storage.postgres_saver.psycopg2.connect")
+    def test_delete_vacancy_by_id(self, mock_connect):
+        """Тест удаления вакансии по ID"""
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        mock_connection.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_connection
+        mock_cursor.rowcount = 1
+    
+        mock_db_config = {"host": "localhost", "database": "test_db"}
+        saver = PostgresSaver(mock_db_config)
+    
+        result = saver.delete_vacancy_by_id("123")
+    
+>       assert result is True
+E       assert False is True
+
+tests/test_postgres_saver.py:240: AssertionError
+__________ TestPostgresSaver.test_connection_error_handling ___________
+
+self = <tests.test_postgres_saver.TestPostgresSaver object at 0x7f7bcb093510>
+mock_connect = <MagicMock name='connect' id='140169661847888'>
+
+    @patch("src.storage.postgres_saver.psycopg2.connect")
+    def test_connection_error_handling(self, mock_connect):
+        """Тест обработки ошибок соединения"""
+        mock_connect.side_effect = Exception("Connection failed")
+    
+        mock_db_config = {"host": "localhost", "database": "test_db"}
+        saver = PostgresSaver(mock_db_config)
+    
+        # При ошибке соединения методы должны обрабатывать исключения
+        result = saver.get_vacancies()
+>       assert result == []
+E       AssertionError: assert <MagicMock na...169660347408'> == []
+E         
+E         Use -v to get more diff
+
+tests/test_postgres_saver.py:254: AssertionError
+___________ TestPostgresSaver.test_save_multiple_vacancies ____________
+
+self = <tests.test_postgres_saver.TestPostgresSaver object at 0x7f7bcb093ad0>
+mock_connect = <MagicMock name='connect' id='140169651027280'>
+
+    @patch("src.storage.postgres_saver.psycopg2.connect")
+    def test_save_multiple_vacancies(self, mock_connect):
+        """Тест сохранения нескольких вакансий"""
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        mock_connection.cursor.return_value = mock_cursor
+        mock_connect.return_value = mock_connection
+    
+        vacancies = [
+            Vacancy(vacancy_id="123", title="Python Developer", url="https://test1.com", source="hh.ru"),
+            Vacancy(vacancy_id="124", title="Java Developer", url="https://test2.com", source="hh.ru"),
+        ]
+    
+        mock_db_config = {"host": "localhost", "database": "test_db"}
+        saver = PostgresSaver(mock_db_config)
+    
+        result = saver.save_vacancies(vacancies)
+    
+        # Проверяем, что все вакансии были обработаны
+>       assert mock_cursor.execute.call_count >= len(vacancies)
+E       AssertionError: assert 0 >= 2
+E        +  where 0 = <Mock name='connect().cursor().execute' id='140169651294736'>.call_count
+E        +    where <Mock name='connect().cursor().execute' id='140169651294736'> = <Mock name='connect().cursor()' id='140169651025296'>.execute
+E        +  and   2 = len([<src.vacancies.models.Vacancy object at 0x7f7bca44d8b0>, <src.vacancies.models.Vacancy object at 0x7f7bca44c940>])
+
+tests/test_postgres_saver.py:275: AssertionError
+____ TestDeduplicationService.test_deduplication_service_creation _____
+
+self = <tests.test_storage_services_comprehensive.TestDeduplicationService object at 0x7f7bcaf4c750>
+
+    def test_deduplication_service_creation(self):
+        """Тест создания сервиса дедупликации"""
+        if DeduplicationService is None:
+            pytest.skip("DeduplicationService class not found")
+>       service = DeduplicationService()
+                  ^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DeduplicationService.__init__() missing 1 required positional argument: 'strategy'
+
+tests/test_storage_services_comprehensive.py:53: TypeError
+_____ TestDeduplicationService.test_deduplicate_vacancies_by_url ______
+
+self = <tests.test_storage_services_comprehensive.TestDeduplicationService object at 0x7f7bcaf4cd50>
+
+    def test_deduplicate_vacancies_by_url(self):
+        """Тест дедупликации по URL"""
+        vacancies = [
+            MockVacancy(1, "Python Dev", "http://test.com/1"),
+            MockVacancy(2, "Java Dev", "http://test.com/2"),
+            MockVacancy(3, "Python Dev Duplicate", "http://test.com/1")  # Дубликат
+        ]
+    
+>       service = DeduplicationService()
+                  ^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DeduplicationService.__init__() missing 1 required positional argument: 'strategy'
+
+tests/test_storage_services_comprehensive.py:64: TypeError
+___ TestDeduplicationService.test_deduplicate_vacancies_empty_list ____
+
+self = <tests.test_storage_services_comprehensive.TestDeduplicationService object at 0x7f7bcaf4d350>
+
+    def test_deduplicate_vacancies_empty_list(self):
+        """Тест дедупликации пустого списка"""
+>       service = DeduplicationService()
+                  ^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DeduplicationService.__init__() missing 1 required positional argument: 'strategy'
+
+tests/test_storage_services_comprehensive.py:74: TypeError
+__ TestDeduplicationService.test_deduplicate_vacancies_no_duplicates __
+
+self = <tests.test_storage_services_comprehensive.TestDeduplicationService object at 0x7f7bcaf4d990>
+
+    def test_deduplicate_vacancies_no_duplicates(self):
+        """Тест дедупликации когда дубликатов нет"""
+        vacancies = [
+            MockVacancy(1, "Python Dev", "http://test.com/1"),
+            MockVacancy(2, "Java Dev", "http://test.com/2"),
+            MockVacancy(3, "C++ Dev", "http://test.com/3")
+        ]
+    
+>       service = DeduplicationService()
+                  ^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DeduplicationService.__init__() missing 1 required positional argument: 'strategy'
+
+tests/test_storage_services_comprehensive.py:87: TypeError
+__________ TestDeduplicationService.test_get_duplicates_info __________
+
+self = <tests.test_storage_services_comprehensive.TestDeduplicationService object at 0x7f7bcaf4c2d0>
+
+    def test_get_duplicates_info(self):
+        """Тест получения информации о дубликатах"""
+        vacancies = [
+            MockVacancy(1, "Python Dev", "http://test.com/1"),
+            MockVacancy(2, "Java Dev", "http://test.com/2"),
+            MockVacancy(3, "Python Dev Duplicate", "http://test.com/1")
+        ]
+    
+>       service = DeduplicationService()
+                  ^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DeduplicationService.__init__() missing 1 required positional argument: 'strategy'
+
+tests/test_storage_services_comprehensive.py:101: TypeError
+________ TestFilteringService.test_filtering_service_creation _________
+
+self = <tests.test_storage_services_comprehensive.TestFilteringService object at 0x7f7bcaf4e110>
+
+    def test_filtering_service_creation(self):
+        """Тест создания сервиса фильтрации"""
+        if FilteringService is None:
+            pytest.skip("FilteringService class not found")
+>       service = FilteringService()
+                  ^^^^^^^^^^^^^^^^^^
+E       TypeError: FilteringService.__init__() missing 1 required positional argument: 'strategy'
+
+tests/test_storage_services_comprehensive.py:120: TypeError
+_____________ TestFilteringService.test_filter_by_keyword _____________
+
+self = <tests.test_storage_services_comprehensive.TestFilteringService object at 0x7f7bcaf4e650>
+
+    def test_filter_by_keyword(self):
+        """Тест фильтрации по ключевому слову"""
+        vacancies = [
+            MockVacancy(1, "Python Developer"),
+            MockVacancy(2, "Java Developer"),
+            MockVacancy(3, "Python Backend Engineer")
+        ]
+    
+>       service = FilteringService()
+                  ^^^^^^^^^^^^^^^^^^
+E       TypeError: FilteringService.__init__() missing 1 required positional argument: 'strategy'
+
+tests/test_storage_services_comprehensive.py:131: TypeError
+__________ TestFilteringService.test_filter_by_salary_range ___________
+
+self = <tests.test_storage_services_comprehensive.TestFilteringService object at 0x7f7bcaf4ec50>
+
+    def test_filter_by_salary_range(self):
+        """Тест фильтрации по диапазону зарплат"""
+        vacancies = [
+            MockVacancy(1, "Low Salary Job"),
+            MockVacancy(2, "High Salary Job"),
+            MockVacancy(3, "Medium Salary Job")
+        ]
+    
+        # Настраиваем зарплаты
+        vacancies[0].salary.salary_from = 50000
+        vacancies[0].salary.salary_to = 80000
+        vacancies[1].salary.salary_from = 150000
+        vacancies[1].salary.salary_to = 200000
+        vacancies[2].salary.salary_from = 100000
+        vacancies[2].salary.salary_to = 130000
+    
+>       service = FilteringService()
+                  ^^^^^^^^^^^^^^^^^^
+E       TypeError: FilteringService.__init__() missing 1 required positional argument: 'strategy'
+
+tests/test_storage_services_comprehensive.py:160: TypeError
+_____________ TestFilteringService.test_filter_by_company _____________
+
+self = <tests.test_storage_services_comprehensive.TestFilteringService object at 0x7f7bcaf4f290>
+
+    def test_filter_by_company(self):
+        """Тест фильтрации по компании"""
+        vacancies = [
+            MockVacancy(1, "Developer at Google"),
+            MockVacancy(2, "Developer at Yandex"),
+            MockVacancy(3, "Developer at Microsoft")
+        ]
+    
+        # Настраиваем компании
+        vacancies[0].employer.name = "Google"
+        vacancies[1].employer.name = "Yandex"
+        vacancies[2].employer.name = "Microsoft"
+    
+>       service = FilteringService()
+                  ^^^^^^^^^^^^^^^^^^
+E       TypeError: FilteringService.__init__() missing 1 required positional argument: 'strategy'
+
+tests/test_storage_services_comprehensive.py:181: TypeError
+________ TestUIHelpers.test_parse_salary_range_reversed_values ________
+
+self = <tests.test_ui_helpers_comprehensive.TestUIHelpers object at 0x7f7bcafa8250>
+
+    def test_parse_salary_range_reversed_values(self):
+        """Тест диапазона где первое значение больше второго"""
+        result = ui_helpers.parse_salary_range("150000 - 100000")
+    
+        # Функция должна вернуть значения как есть
+>       assert result == (150000, 100000)
+E       assert (100000, 150000) == (150000, 100000)
+E         
+E         At index 0 diff: 100000 != 150000
+E         Use -v to get more diff
+
+tests/test_ui_helpers_comprehensive.py:169: AssertionError
+________ TestUIHelpers.test_filter_vacancies_by_keyword_basic _________
+
+self = <tests.test_ui_helpers_comprehensive.TestUIHelpers object at 0x7f7bcaf9e050>
+
+    def test_filter_vacancies_by_keyword_basic(self):
+        """Тест фильтрации вакансий по ключевому слову"""
+        # Создаем тестовые вакансии
+        vacancy1 = Mock()
+        vacancy1.title = "Python Developer"
+        vacancy1.description = "We need a Python developer"
+    
+        vacancy2 = Mock()
+        vacancy2.title = "Java Developer"
+        vacancy2.description = "We need a Java developer"
+    
+        vacancies = [vacancy1, vacancy2]
+    
+>       result = ui_helpers.filter_vacancies_by_keyword(vacancies, "Python")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_ui_helpers_comprehensive.py:213: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/utils/ui_helpers.py:144: in filter_vacancies_by_keyword
+    full_text = _build_searchable_text(vacancy)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+vacancy = <Mock id='140169650468816'>
+
+    def _build_searchable_text(vacancy: Vacancy) -> str:
+        """
+        Формирует единую строку поиска из всех текстовых полей вакансии
+    
+        Args:
+            vacancy: Объект вакансии
+    
+        Returns:
+            str: Объединенный текст для поиска в нижнем регистре
+        """
+        searchable_text = []
+    
+        # Проверяем названия
+        if vacancy.title:
+            searchable_text.append(str(vacancy.title))
+    
+        # Проверяем описание
+        if vacancy.description:
+            searchable_text.append(str(vacancy.description))
+    
+        # Проверяем требования
+        if vacancy.requirements:
+            searchable_text.append(str(vacancy.requirements))
+    
+        # Проверяем обязанности
+        if vacancy.responsibilities:
+            searchable_text.append(str(vacancy.responsibilities))
+    
+        # Проверяем детальное описание
+        if vacancy.detailed_description:
+            searchable_text.append(str(vacancy.detailed_description))
+    
+        # Проверяем тип занятости - безопасно преобразуем в строку
+        if vacancy.employment:
+            if hasattr(vacancy.employment, '__str__'):
+                searchable_text.append(str(vacancy.employment))
+            elif hasattr(vacancy.employment, 'name'):
+                searchable_text.append(str(vacancy.employment.name))
+    
+        # Проверяем навыки
+        if vacancy.skills:
+>           for skill in vacancy.skills:
+E           TypeError: 'Mock' object is not iterable
+
+src/utils/ui_helpers.py:230: TypeError
+__________ TestUIHelpers.test_sort_vacancies_by_salary_basic __________
+
+self = <tests.test_ui_helpers_comprehensive.TestUIHelpers object at 0x7f7bcafa9490>
+
+    def test_sort_vacancies_by_salary_basic(self):
+        """Тест сортировки вакансий по зарплате"""
+        vacancy1 = Mock()
+        vacancy1.salary = Mock()
+        vacancy1.salary.salary_from = 100000
+    
+        vacancy2 = Mock()
+        vacancy2.salary = Mock()
+        vacancy2.salary.salary_from = 150000
+    
+        vacancies = [vacancy1, vacancy2]
+    
+>       result = ui_helpers.sort_vacancies_by_salary(vacancies)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_ui_helpers_comprehensive.py:281: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/utils/ui_helpers.py:276: in sort_vacancies_by_salary
+    return VacancyOperations.sort_vacancies_by_salary(vacancies, reverse)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+vacancies = [<Mock id='140169650483792'>, <Mock id='140169650479184'>]
+reverse = True
+
+    @staticmethod
+    def sort_vacancies_by_salary(vacancies: List[Vacancy], reverse: bool = True) -> List[Vacancy]:
+        """
+        Сортировка вакансий по зарплате
+    
+        Args:
+            vacancies: Список вакансий для сортировки
+            reverse: Сортировка по убыванию (True) или возрастанию (False)
+    
+        Returns:
+            List[Vacancy]: Отсортированный список вакансий
+        """
+        def get_sort_key(vacancy: Vacancy) -> int:
+            if vacancy.salary and hasattr(vacancy.salary, 'get_max_salary'):
+                max_sal = vacancy.salary.get_max_salary()
+                return max_sal if max_sal is not None else 0
+            return 0
+    
+>       return sorted(vacancies, key=get_sort_key, reverse=reverse)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<' not supported between instances of 'Mock' and 'Mock'
+
+src/utils/vacancy_operations.py:44: TypeError
+_________________ TestUserInterface.test_main_success _________________
+
+args = (<tests.test_user_interface.TestUserInterface object at 0x7f7bcade8b10>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7f7bcade2790>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+___________ TestUserInterface.test_main_db_connection_fails ___________
+
+args = (<tests.test_user_interface.TestUserInterface object at 0x7f7bcade9050>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7f7bcade2d50>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+___________ TestUserInterface.test_main_create_tables_fails ___________
+
+args = (<tests.test_user_interface.TestUserInterface object at 0x7f7bcade95d0>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7f7bcade3290>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+________ TestUserInterface.test_main_populate_companies_fails _________
+
+args = (<tests.test_user_interface.TestUserInterface object at 0x7f7bcade9b90>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7f7bcade37d0>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_______ TestUserInterface.test_main_initialization_check_fails ________
+
+args = (<tests.test_user_interface.TestUserInterface object at 0x7f7bcadea110>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7f7bcade3d10>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+___________ TestUserInterface.test_main_keyboard_interrupt ____________
+
+args = (<tests.test_user_interface.TestUserInterface object at 0x7f7bcadea710>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7f7bcade83d0>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_________ TestUserInterface.test_main_database_error_handling _________
+
+args = (<tests.test_user_interface.TestUserInterface object at 0x7f7bcadead50>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7f7bcaf25d10>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_________ TestUserInterface.test_main_general_error_handling __________
+
+args = (<tests.test_user_interface.TestUserInterface object at 0x7f7bcadeb390>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x7f7bcade8550>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_ TestVacancyOperations.test_filter_vacancies_by_criteria_with_keyword _
+
+self = <tests.test_vacancy_operations_enhanced.TestVacancyOperations object at 0x7f7bcae48210>
+mock_filter = <MagicMock name='filter_vacancies_by_keyword' id='140169646876432'>
+
+    @patch('src.utils.vacancy_operations.filter_vacancies_by_keyword')
+    def test_filter_vacancies_by_criteria_with_keyword(self, mock_filter):
+        """Тест фильтрации вакансий по критериям с ключевым словом"""
+        vacancies = [MockVacancy("Python Developer"), MockVacancy("Java Developer")]
+        mock_filter.return_value = [vacancies[0]]
+    
+        criteria = {"keyword": "Python"}
+>       result = VacancyOperations.filter_vacancies_by_criteria(vacancies, criteria)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyOperations' has no attribute 'filter_vacancies_by_criteria'
+
+tests/test_vacancy_operations_enhanced.py:207: AttributeError
+_ TestVacancyOperations.test_filter_vacancies_by_criteria_with_min_salary _
+
+self = <tests.test_vacancy_operations_enhanced.TestVacancyOperations object at 0x7f7bcae48810>
+
+    def test_filter_vacancies_by_criteria_with_min_salary(self):
+        """Тест фильтрации вакансий по критериям с минимальной зарплатой"""
+        vacancies = [
+            MockVacancy("High Salary Job", MockSalary(150000, 200000)),
+            MockVacancy("Low Salary Job", MockSalary(50000, 80000))
+        ]
+    
+        criteria = {"min_salary": 100000}
+>       result = VacancyOperations.filter_vacancies_by_criteria(vacancies, criteria)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyOperations' has no attribute 'filter_vacancies_by_criteria'
+
+tests/test_vacancy_operations_enhanced.py:221: AttributeError
+__ TestVacancyOperations.test_filter_vacancies_by_criteria_combined ___
+
+self = <tests.test_vacancy_operations_enhanced.TestVacancyOperations object at 0x7f7bcae48e10>
+
+    def test_filter_vacancies_by_criteria_combined(self):
+        """Тест фильтрации по комбинированным критериям"""
+        vacancies = [
+            MockVacancy("Python Developer", MockSalary(150000, 200000)),
+            MockVacancy("Python Junior", MockSalary(50000, 80000)),
+            MockVacancy("Java Developer", MockSalary(120000, 150000))
+        ]
+    
+        with patch('src.utils.vacancy_operations.filter_vacancies_by_keyword') as mock_filter:
+            # Мокаем чтобы вернуть только Python вакансии
+            mock_filter.return_value = [vacancies[0], vacancies[1]]
+    
+            criteria = {"keyword": "Python", "min_salary": 100000}
+>           result = VacancyOperations.filter_vacancies_by_criteria(vacancies, criteria)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: type object 'VacancyOperations' has no attribute 'filter_vacancies_by_criteria'
+
+tests/test_vacancy_operations_enhanced.py:239: AttributeError
+_ TestVacancyOperations.test_filter_vacancies_by_criteria_empty_criteria _
+
+self = <tests.test_vacancy_operations_enhanced.TestVacancyOperations object at 0x7f7bcae49410>
+
+    def test_filter_vacancies_by_criteria_empty_criteria(self):
+        """Тест фильтрации с пустыми критериями"""
+        vacancies = [MockVacancy("Job 1"), MockVacancy("Job 2")]
+    
+>       result = VacancyOperations.filter_vacancies_by_criteria(vacancies, {})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyOperations' has no attribute 'filter_vacancies_by_criteria'
+
+tests/test_vacancy_operations_enhanced.py:248: AttributeError
+__ TestVacancyOperations.test_get_vacancies_statistics_comprehensive __
+
+self = <tests.test_vacancy_operations_enhanced.TestVacancyOperations object at 0x7f7bcae49a10>
+
+    def test_get_vacancies_statistics_comprehensive(self):
+        """Тест получения комплексной статистики по вакансиям"""
+        vacancies = [
+            MockVacancy("Python Developer", MockSalary(100000, 150000)),
+            MockVacancy("Java Developer", MockSalary(80000, 120000)),
+            MockVacancy("No Salary Job", None),
+            MockVacancy("Frontend Developer", MockSalary(70000, 100000))
+        ]
+    
+>       stats = VacancyOperations.get_vacancies_statistics(vacancies)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyOperations' has no attribute 'get_vacancies_statistics'
+
+tests/test_vacancy_operations_enhanced.py:262: AttributeError
+___ TestVacancyOperations.test_get_vacancies_statistics_empty_list ____
+
+self = <tests.test_vacancy_operations_enhanced.TestVacancyOperations object at 0x7f7bcae4a010>
+
+    def test_get_vacancies_statistics_empty_list(self):
+        """Тест статистики для пустого списка"""
+>       stats = VacancyOperations.get_vacancies_statistics([])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyOperations' has no attribute 'get_vacancies_statistics'
+
+tests/test_vacancy_operations_enhanced.py:272: AttributeError
+___ TestVacancyOperations.test_get_vacancies_statistics_no_salaries ___
+
+self = <tests.test_vacancy_operations_enhanced.TestVacancyOperations object at 0x7f7bcae4a650>
+
+    def test_get_vacancies_statistics_no_salaries(self):
+        """Тест статистики когда нет зарплат"""
+        vacancies = [
+            MockVacancy("Job 1", None),
+            MockVacancy("Job 2", MockSalary(None, None))
+        ]
+    
+>       stats = VacancyOperations.get_vacancies_statistics(vacancies)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyOperations' has no attribute 'get_vacancies_statistics'
+
+tests/test_vacancy_operations_enhanced.py:287: AttributeError
+_______ TestVacancyOperations.test_deduplicate_vacancies_by_url _______
+
+self = <tests.test_vacancy_operations_enhanced.TestVacancyOperations object at 0x7f7bcae4ad10>
+
+    def test_deduplicate_vacancies_by_url(self):
+        """Тест дедупликации вакансий по URL"""
+        vacancies = [
+            MockVacancy("Job 1"),
+            MockVacancy("Job 2"),
+            MockVacancy("Job 1 Duplicate")
+        ]
+    
+        # Устанавливаем одинаковые URL для дубликатов
+        vacancies[0].url = "http://test.com/job1"
+        vacancies[1].url = "http://test.com/job2"
+        vacancies[2].url = "http://test.com/job1"  # Дубликат
+    
+>       result = VacancyOperations.deduplicate_vacancies(vacancies)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyOperations' has no attribute 'deduplicate_vacancies'
+
+tests/test_vacancy_operations_enhanced.py:308: AttributeError
+_____ TestVacancyOperations.test_deduplicate_vacancies_empty_list _____
+
+self = <tests.test_vacancy_operations_enhanced.TestVacancyOperations object at 0x7f7bcae4b3d0>
+
+    def test_deduplicate_vacancies_empty_list(self):
+        """Тест дедупликации пустого списка"""
+>       result = VacancyOperations.deduplicate_vacancies([])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyOperations' has no attribute 'deduplicate_vacancies'
+
+tests/test_vacancy_operations_enhanced.py:317: AttributeError
+___ TestVacancyOperations.test_deduplicate_vacancies_no_duplicates ____
+
+self = <tests.test_vacancy_operations_enhanced.TestVacancyOperations object at 0x7f7bcae4ba90>
+
+    def test_deduplicate_vacancies_no_duplicates(self):
+        """Тест дедупликации когда дубликатов нет"""
+        vacancies = [
+            MockVacancy("Job 1"),
+            MockVacancy("Job 2"),
+            MockVacancy("Job 3")
+        ]
+    
+        # Устанавливаем уникальные URL
+        for i, vacancy in enumerate(vacancies):
+            vacancy.url = f"http://test.com/job{i+1}"
+    
+>       result = VacancyOperations.deduplicate_vacancies(vacancies)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyOperations' has no attribute 'deduplicate_vacancies'
+
+tests/test_vacancy_operations_enhanced.py:333: AttributeError
+======================= short test summary info =======================
+FAILED tests/test_critical_modules_coverage.py::TestUnifiedAPI::test_get_vacancies_basic - AttributeError: <src.api_modules.unified_api.UnifiedAPI object at ...
+FAILED tests/test_critical_modules_coverage.py::TestCachedAPI::test_cached_api_creation - TypeError: Can't instantiate abstract class CachedAPI with abstrac...
+FAILED tests/test_critical_modules_coverage.py::TestCachedAPI::test_cache_functionality - TypeError: Can't instantiate abstract class CachedAPI with abstrac...
+FAILED tests/test_critical_modules_coverage.py::TestCachedAPI::test_cache_storage_retrieval - TypeError: Can't instantiate abstract class CachedAPI with abstrac...
+FAILED tests/test_critical_modules_coverage.py::TestCachedAPI::test_cache_expiration - TypeError: Can't instantiate abstract class CachedAPI with abstrac...
+FAILED tests/test_interface_components.py::TestVacancyValidator::test_get_validation_errors - TypeError: VacancyValidator.get_validation_errors() takes 1 positi...
+FAILED tests/test_main_application_interface.py::TestConsoleApplicationInterface::test_handle_vacancy_search_valid_input - IndexError: tuple index out of range
+FAILED tests/test_main_application_interface.py::TestConsoleApplicationInterface::test_handle_view_saved_with_vacancies - IndexError: tuple index out of range
+FAILED tests/test_main_application_interface.py::TestConsoleApplicationInterface::test_handle_company_stats_with_sql_filter_service - AttributeError: <module 'src.interfaces.main_application_interface...
+FAILED tests/test_main_application_interface.py::TestConsoleApplicationInterface::test_handle_company_stats_exception - AttributeError: <module 'src.interfaces.main_application_interface...
+FAILED tests/test_main_application_interface.py::TestConsoleApplicationInterface::test_display_vacancy_summary_basic - IndexError: tuple index out of range
+FAILED tests/test_main_application_interface.py::TestConsoleApplicationInterface::test_display_vacancy_summary_salary_variations - IndexError: tuple index out of range
+FAILED tests/test_main_application_interface.py::TestConsoleApplicationInterface::test_run_application_menu_loop - IndexError: tuple index out of range
+FAILED tests/test_postgres_saver.py::TestPostgresSaver::test_get_connection - AssertionError: assert <MagicMock name='mock.connect()' id='140169...
+FAILED tests/test_postgres_saver.py::TestPostgresSaver::test_save_vacancy - AssertionError: Expected 'execute' to have been called.
+FAILED tests/test_postgres_saver.py::TestPostgresSaver::test_get_vacancies - AssertionError: assert False
+FAILED tests/test_postgres_saver.py::TestPostgresSaver::test_delete_vacancy_by_id - assert False is True
+FAILED tests/test_postgres_saver.py::TestPostgresSaver::test_connection_error_handling - AssertionError: assert <MagicMock na...169660347408'> == []
+FAILED tests/test_postgres_saver.py::TestPostgresSaver::test_save_multiple_vacancies - AssertionError: assert 0 >= 2
+FAILED tests/test_storage_services_comprehensive.py::TestDeduplicationService::test_deduplication_service_creation - TypeError: DeduplicationService.__init__() missing 1 required posi...
+FAILED tests/test_storage_services_comprehensive.py::TestDeduplicationService::test_deduplicate_vacancies_by_url - TypeError: DeduplicationService.__init__() missing 1 required posi...
+FAILED tests/test_storage_services_comprehensive.py::TestDeduplicationService::test_deduplicate_vacancies_empty_list - TypeError: DeduplicationService.__init__() missing 1 required posi...
+FAILED tests/test_storage_services_comprehensive.py::TestDeduplicationService::test_deduplicate_vacancies_no_duplicates - TypeError: DeduplicationService.__init__() missing 1 required posi...
+FAILED tests/test_storage_services_comprehensive.py::TestDeduplicationService::test_get_duplicates_info - TypeError: DeduplicationService.__init__() missing 1 required posi...
+FAILED tests/test_storage_services_comprehensive.py::TestFilteringService::test_filtering_service_creation - TypeError: FilteringService.__init__() missing 1 required position...
+FAILED tests/test_storage_services_comprehensive.py::TestFilteringService::test_filter_by_keyword - TypeError: FilteringService.__init__() missing 1 required position...
+FAILED tests/test_storage_services_comprehensive.py::TestFilteringService::test_filter_by_salary_range - TypeError: FilteringService.__init__() missing 1 required position...
+FAILED tests/test_storage_services_comprehensive.py::TestFilteringService::test_filter_by_company - TypeError: FilteringService.__init__() missing 1 required position...
+FAILED tests/test_ui_helpers_comprehensive.py::TestUIHelpers::test_parse_salary_range_reversed_values - assert (100000, 150000) == (150000, 100000)
+FAILED tests/test_ui_helpers_comprehensive.py::TestUIHelpers::test_filter_vacancies_by_keyword_basic - TypeError: 'Mock' object is not iterable
+FAILED tests/test_ui_helpers_comprehensive.py::TestUIHelpers::test_sort_vacancies_by_salary_basic - TypeError: '<' not supported between instances of 'Mock' and 'Mock'
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_success - AttributeError: <module 'src.user_interface' from '/home/runner/wo...
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_db_connection_fails - AttributeError: <module 'src.user_interface' from '/home/runner/wo...
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_create_tables_fails - AttributeError: <module 'src.user_interface' from '/home/runner/wo...
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_populate_companies_fails - AttributeError: <module 'src.user_interface' from '/home/runner/wo...
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_initialization_check_fails - AttributeError: <module 'src.user_interface' from '/home/runner/wo...
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_keyboard_interrupt - AttributeError: <module 'src.user_interface' from '/home/runner/wo...
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_database_error_handling - AttributeError: <module 'src.user_interface' from '/home/runner/wo...
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_general_error_handling - AttributeError: <module 'src.user_interface' from '/home/runner/wo...
+FAILED tests/test_vacancy_operations_enhanced.py::TestVacancyOperations::test_filter_vacancies_by_criteria_with_keyword - AttributeError: type object 'VacancyOperations' has no attribute '...
+FAILED tests/test_vacancy_operations_enhanced.py::TestVacancyOperations::test_filter_vacancies_by_criteria_with_min_salary - AttributeError: type object 'VacancyOperations' has no attribute '...
+FAILED tests/test_vacancy_operations_enhanced.py::TestVacancyOperations::test_filter_vacancies_by_criteria_combined - AttributeError: type object 'VacancyOperations' has no attribute '...
+FAILED tests/test_vacancy_operations_enhanced.py::TestVacancyOperations::test_filter_vacancies_by_criteria_empty_criteria - AttributeError: type object 'VacancyOperations' has no attribute '...
+FAILED tests/test_vacancy_operations_enhanced.py::TestVacancyOperations::test_get_vacancies_statistics_comprehensive - AttributeError: type object 'VacancyOperations' has no attribute '...
+FAILED tests/test_vacancy_operations_enhanced.py::TestVacancyOperations::test_get_vacancies_statistics_empty_list - AttributeError: type object 'VacancyOperations' has no attribute '...
+FAILED tests/test_vacancy_operations_enhanced.py::TestVacancyOperations::test_get_vacancies_statistics_no_salaries - AttributeError: type object 'VacancyOperations' has no attribute '...
+FAILED tests/test_vacancy_operations_enhanced.py::TestVacancyOperations::test_deduplicate_vacancies_by_url - AttributeError: type object 'VacancyOperations' has no attribute '...
+FAILED tests/test_vacancy_operations_enhanced.py::TestVacancyOperations::test_deduplicate_vacancies_empty_list - AttributeError: type object 'VacancyOperations' has no attribute '...
+FAILED tests/test_vacancy_operations_enhanced.py::TestVacancyOperations::test_deduplicate_vacancies_no_duplicates - AttributeError: type object 'VacancyOperations' has no attribute '...
+ERROR tests/test_interface_components.py::TestVacancyRepository::test_vacancy_repository_creation - TypeError: VacancyRepository.__init__() missing 1 required positio...
+ERROR tests/test_interface_components.py::TestVacancyRepository::test_save_vacancy_success - TypeError: VacancyRepository.__init__() missing 1 required positio...
