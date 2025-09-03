@@ -124,6 +124,35 @@ class BaseMockAPI:
         self.cache_cleared = True
 
 
+class MockVacancy:
+    """Консолидированный мок вакансии"""
+    
+    def __init__(self, vacancy_id="123", title="Test Job", source="test"):
+        self.vacancy_id = vacancy_id
+        self.title = title
+        self.source = source
+        self.url = f"https://test.com/{vacancy_id}"
+        self.salary = Mock()
+        self.salary.salary_from = 100000
+        self.salary.salary_to = 150000
+        self.employer = Mock()
+        self.employer.name = "Test Company"
+        self.area = Mock()
+        self.area.name = "Москва"
+        self.description = "Test description"
+        self.requirements = "Test requirements"
+        self.responsibilities = "Test responsibilities"
+        self.published_at = "2025-01-01T00:00:00+0300"
+    
+    def to_dict(self):
+        return {
+            'id': self.vacancy_id,
+            'title': self.title,
+            'source': self.source,
+            'url': self.url
+        }
+
+
 class MockConnection:
     """Консолидированный мок подключения к БД"""
     
@@ -180,3 +209,21 @@ def mock_connection():
 def base_mock_api():
     """Фикстура базового мок API"""
     return BaseMockAPI()
+
+
+@pytest.fixture
+def mock_vacancy():
+    """Фикстура мок вакансии"""
+    return MockVacancy()
+
+
+@pytest.fixture
+def safe_db_config():
+    """Безопасная конфигурация БД"""
+    return {
+        "host": "localhost",
+        "port": "5432",
+        "database": "test_db",
+        "username": "test_user",
+        "password": "test_password",
+    }
