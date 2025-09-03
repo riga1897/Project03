@@ -105,7 +105,7 @@ class TestEnvLoaderComprehensive:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.env', delete=False) as temp_file:
             temp_file.write('TEST_VAR=test_value\n')
             temp_file.write('TEST_VAR_QUOTED="quoted_value"\n')
-            temp_file.write("TEST_VAR_SINGLE='single_quoted'\n')
+            temp_file.write("TEST_VAR_SINGLE='single_quoted'\n")
             temp_file.write('# This is a comment\n')
             temp_file.write('\n')  # Empty line
             temp_file.write('TEST_VAR_NUMBER=12345\n')
