@@ -13,10 +13,17 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 try:
     from src.ui_interfaces.vacancy_search_handler import VacancySearchHandler
+    from src.vacancies.models import Vacancy
     SEARCH_HANDLER_AVAILABLE = True
 except ImportError:
     SEARCH_HANDLER_AVAILABLE = False
-    from src.vacancies.models import Vacancy # Import needed for sample_search_results if handler is not available
+    # Создаем заглушку если модуль недоступен
+    class Vacancy:
+        def __init__(self, vacancy_id=None, title=None, description=None, url=None, **kwargs):
+            self.vacancy_id = vacancy_id
+            self.title = title
+            self.description = description
+            self.url = url
 
 
 class TestVacancySearchHandlerComplete:

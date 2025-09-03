@@ -247,7 +247,12 @@ class TestVacancyModelsFixed:
             employer = Employer("Test Company", "123")
 
             # Создаем вакансию с правильными аргументами
-            vacancy = Vacancy("Python Developer", employer, "https://test.com")
+            vacancy = Vacancy(
+                vacancy_id="123",
+                title="Python Developer", 
+                url="https://test.com",
+                employer=employer
+            )
 
             assert vacancy.title == "Python Developer"
             assert vacancy.url == "https://test.com"

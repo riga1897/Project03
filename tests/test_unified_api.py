@@ -68,23 +68,26 @@ class TestUnifiedAPI:
 
     def test_validate_sources_empty(self):
         """Тест валидации пустого списка источников"""
-        # Создаем экземпляр UnifiedAPI внутри теста, так как он не передается
-        # как аргумент и используется напрямую
-        api_instance = UnifiedAPI()
-        result = api_instance.validate_sources([])
-        # UnifiedAPI может возвращать доступные источники при пустом списке
-        assert isinstance(result, list)
+        with patch('src.api_modules.unified_api.HeadHunterAPI'), \
+             patch('src.api_modules.unified_api.SuperJobAPI'), \
+             patch('src.api_modules.unified_api.SuperJobParser'):
+            api_instance = UnifiedAPI()
+            result = api_instance.validate_sources([])
+            # UnifiedAPI может возвращать доступные источники при пустом списке
+            assert isinstance(result, list)
 
     def test_validate_sources_none(self):
         """Тест валидации None как списка источников"""
-        # Создаем экземпляр UnifiedAPI внутри теста
-        api_instance = UnifiedAPI()
-        try:
-            result = api_instance.validate_sources(None)
-            assert isinstance(result, list)
-        except TypeError:
-            # Ожидаемая ошибка при передаче None
-            assert True
+        with patch('src.api_modules.unified_api.HeadHunterAPI'), \
+             patch('src.api_modules.unified_api.SuperJobAPI'), \
+             patch('src.api_modules.unified_api.SuperJobParser'):
+            api_instance = UnifiedAPI()
+            try:
+                result = api_instance.validate_sources(None)
+                assert isinstance(result, list)
+            except TypeError:
+                # Ожидаемая ошибка при передаче None
+                assert True
 
     @patch('src.api_modules.unified_api.logger')
     def test_get_vacancies_from_sources_default_sources(self, mock_logger, unified_api):

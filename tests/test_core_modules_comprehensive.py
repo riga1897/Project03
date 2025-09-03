@@ -64,7 +64,12 @@ class TestVacancyModels:
         """Тест валидации корректной вакансии"""
         # Исправлен порядок аргументов: Employer(name, id)
         employer = Employer("Test Company", "123")
-        vacancy = Vacancy("Python Developer", "https://test.com", employer)
+        vacancy = Vacancy(
+            vacancy_id="123",
+            title="Python Developer",
+            url="https://test.com",
+            employer=employer
+        )
 
         # Проверяем базовые атрибуты
         assert vacancy.title == "Python Developer"
@@ -76,7 +81,12 @@ class TestVacancyModels:
 
         try:
             # Исправлен порядок аргументов: Employer(name, id)
-            vacancy = Vacancy("", "https://test.com", employer)
+            vacancy = Vacancy(
+                vacancy_id="456",
+                title="",
+                url="https://test.com",
+                employer=employer
+            )
             # Проверяем, что объект создается даже с пустым заголовком
             assert vacancy is not None
         except ValueError:

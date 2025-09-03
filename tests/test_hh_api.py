@@ -303,6 +303,7 @@ class TestHeadHunterAPI:
                     mock_logger.info.assert_called()
                     mock_stats.display_company_stats.assert_called_once()
 
+    @patch('src.config.target_companies.TargetCompanies')
     @patch('src.api_modules.hh_api.logger')
     def test_get_vacancies_from_target_companies_empty(self, mock_target_companies, mock_logger, hh_api):
         """Тест получения вакансий от целевых компаний без результатов"""
