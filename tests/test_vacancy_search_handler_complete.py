@@ -33,23 +33,15 @@ class TestVacancySearchHandlerComplete:
         
         self.sample_search_results = [
             Vacancy(
-                id="1",
+                vacancy_id="1",
                 title="Senior Python Developer",
                 description="Опытный Python разработчик для работы над проектами",
-                salary_from=150000,
-                salary_to=200000,
-                currency="RUR",
-                company_name="Tech Solutions",
                 url="https://example.com/vacancy/1"
             ),
             Vacancy(
-                id="2",
+                vacancy_id="2",
                 title="Python Backend Developer",
                 description="Backend разработчик на Python/Django",
-                salary_from=120000,
-                salary_to=160000,
-                currency="RUR",
-                company_name="Web Agency",
                 url="https://example.com/vacancy/2"
             )
         ]

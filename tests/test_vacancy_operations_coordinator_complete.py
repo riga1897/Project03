@@ -1,4 +1,3 @@
-
 """
 Комплексные тесты для модуля vacancy_operations_coordinator
 """
@@ -22,33 +21,25 @@ class TestVacancyOperationsCoordinatorComplete:
         # Создаем моки для обязательных зависимостей
         mock_unified_api = Mock()
         mock_storage = Mock()
-        
+
         # Настраиваем поведение моков
         mock_unified_api.get_vacancies.return_value = []
         mock_storage.get_vacancies.return_value = []
         mock_storage.save_vacancies.return_value = True
-        
+
         self.coordinator = VacancyOperationsCoordinator(mock_unified_api, mock_storage)
-        
+
         self.sample_vacancies = [
             Vacancy(
-                id="1",
+                vacancy_id="1",
                 title="Python Developer",
                 description="Разработка на Python",
-                salary_from=100000,
-                salary_to=150000,
-                currency="RUR",
-                company_name="Tech Corp",
                 url="https://example.com/1"
             ),
             Vacancy(
-                id="2", 
+                vacancy_id="2",
                 title="Java Developer",
                 description="Разработка на Java",
-                salary_from=120000,
-                salary_to=180000,
-                currency="RUR",
-                company_name="Software Inc",
                 url="https://example.com/2"
             )
         ]
@@ -65,7 +56,7 @@ class TestVacancyOperationsCoordinatorComplete:
         mock_api_instance = Mock()
         mock_api_instance.search_vacancies.return_value = self.sample_vacancies
         mock_api.return_value = mock_api_instance
-        
+
         if hasattr(self.coordinator, 'search_and_display'):
             with patch('builtins.input', return_value='python'):
                 result = self.coordinator.search_and_display()
@@ -78,7 +69,7 @@ class TestVacancyOperationsCoordinatorComplete:
         mock_storage_instance = Mock()
         mock_storage_instance.save_vacancies.return_value = True
         mock_storage.return_value = mock_storage_instance
-        
+
         if hasattr(self.coordinator, 'save_vacancies'):
             result = self.coordinator.save_vacancies(self.sample_vacancies)
             assert result is not None or result is None
@@ -122,7 +113,7 @@ class TestVacancyOperationsCoordinatorComplete:
                 mock_storage_instance = Mock()
                 mock_storage_instance.delete_vacancy.return_value = True
                 mock_storage.return_value = mock_storage_instance
-                
+
                 result = self.coordinator.delete_vacancies([self.sample_vacancies[0]])
                 assert result is not None or result is None
 
@@ -148,7 +139,7 @@ class TestVacancyOperationsCoordinatorComplete:
         """Тест сравнения вакансий"""
         if hasattr(self.coordinator, 'compare_vacancies'):
             comparison = self.coordinator.compare_vacancies(
-                self.sample_vacancies[0], 
+                self.sample_vacancies[0],
                 self.sample_vacancies[1]
             )
             assert comparison is not None
@@ -187,7 +178,7 @@ class TestVacancyOperationsCoordinatorComplete:
     def test_batch_operation_processing(self, mock_print):
         """Тест пакетной обработки операций"""
         operations = ['save', 'export', 'analyze']
-        
+
         if hasattr(self.coordinator, 'batch_process'):
             result = self.coordinator.batch_process(self.sample_vacancies, operations)
             assert result is not None or result is None
@@ -199,7 +190,7 @@ class TestVacancyOperationsCoordinatorComplete:
             # Сначала выполним какую-то операцию
             if hasattr(self.coordinator, 'save_vacancies'):
                 self.coordinator.save_vacancies(self.sample_vacancies)
-            
+
             # Затем отменим её
             result = self.coordinator.undo_last()
             assert result is not None or result is None

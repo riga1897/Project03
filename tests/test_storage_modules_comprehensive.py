@@ -474,7 +474,19 @@ class TestVacancyStorageService:
     def setup_method(self):
         """Настройка перед каждым тестом"""
         mock_storage = Mock()
-        self.storage_service = VacancyStorageService(mock_storage)
+        
+        # Создаем конкретную реализацию абстрактного класса
+        class TestVacancyStorageService(VacancyStorageService):
+            def delete_vacancy(self, vacancy_id):
+                return True
+                
+            def get_storage_stats(self):
+                return {"total": 100}
+                
+            def get_vacancies(self):
+                return []
+        
+        self.storage_service = TestVacancyStorageService(mock_storage)
         
     def test_storage_service_initialization(self):
         """Тестирование инициализации сервиса хранения"""

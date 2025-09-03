@@ -1,4 +1,3 @@
-
 """
 Тесты для модуля main_application_interface
 """
@@ -17,13 +16,13 @@ except ImportError:
     class MainApplicationInterface:
         def __init__(self):
             self.is_running = False
-        
+
         def start(self):
             self.is_running = True
-        
+
         def stop(self):
             self.is_running = False
-        
+
         def initialize_components(self):
             pass
 
@@ -33,12 +32,17 @@ class TestMainApplicationInterface:
 
     def setup_method(self):
         """Настройка перед каждым тестом"""
+        # Создаем моки для зависимостей
+        mock_provider = Mock()
+        mock_processor = Mock()
+        mock_storage = Mock()
+
         # Создаем конкретную реализацию для тестирования
         class TestMainApplicationInterface(MainApplicationInterface):
             def run_application(self):
                 pass
-        
-        self.app_interface = TestMainApplicationInterface()
+
+        self.app_interface = TestMainApplicationInterface(mock_provider, mock_processor, mock_storage)
 
     def test_main_application_interface_init(self):
         """Тест инициализации главного интерфейса приложения"""
@@ -102,7 +106,7 @@ class TestMainApplicationInterface:
         """Тест интеграции с API"""
         mock_api_instance = Mock()
         mock_api.return_value = mock_api_instance
-        
+
         if hasattr(self.app_interface, 'setup_api'):
             self.app_interface.setup_api()
 
@@ -111,7 +115,7 @@ class TestMainApplicationInterface:
         """Тест интеграции с хранилищем"""
         mock_storage_instance = Mock()
         mock_storage.return_value = mock_storage_instance
-        
+
         if hasattr(self.app_interface, 'setup_storage'):
             self.app_interface.setup_storage()
 

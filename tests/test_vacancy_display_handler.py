@@ -24,23 +24,15 @@ class TestVacancyDisplayHandler:
         
         self.sample_vacancies = [
             Vacancy(
-                id="1",
+                vacancy_id="1",
                 title="Python Developer",
                 description="Разработка веб-приложений на Python",
-                salary_from=100000,
-                salary_to=150000,
-                currency="RUR",
-                company_name="Tech Company",
                 url="https://example.com/vacancy/1"
             ),
             Vacancy(
-                id="2",
+                vacancy_id="2",
                 title="Java Developer",
                 description="Разработка корпоративных приложений",
-                salary_from=120000,
-                salary_to=180000,
-                currency="RUR",
-                company_name="Enterprise Corp",
                 url="https://example.com/vacancy/2"
             )
         ]

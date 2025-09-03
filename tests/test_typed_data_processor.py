@@ -33,7 +33,15 @@ class TestTypedDataProcessor:
 
     def setup_method(self):
         """Настройка перед каждым тестом"""
-        self.processor = TypedDataProcessor()
+        # Создаем конкретную реализацию абстрактного класса
+        class TestTypedDataProcessor(TypedDataProcessor):
+            def process_vacancies(self, data):
+                return data if isinstance(data, list) else [data]
+                
+            def validate_vacancy_data(self, data):
+                return isinstance(data, dict) and "title" in data
+        
+        self.processor = TestTypedDataProcessor()
 
     def test_typed_data_processor_init(self):
         """Тест инициализации процессора типизированных данных"""
