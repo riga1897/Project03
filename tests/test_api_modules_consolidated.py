@@ -1,4 +1,3 @@
-
 """
 Консолидированные тесты для API модулей с покрытием 75-80%.
 Все внешние зависимости замокированы.
@@ -34,25 +33,25 @@ def prevent_all_file_operations():
          patch('json.dump') as mock_json_dump, \
          patch('json.load', return_value={"items": [], "meta": {}}) as mock_json_load, \
          patch('tempfile.TemporaryDirectory') as mock_tempdir:
-        
+
         # Настройка моков
         mock_mkdir.return_value = None
         mock_makedirs.return_value = None
         mock_os_mkdir.return_value = None
         mock_json_dump.return_value = None
-        
+
         # Мок для temporary directory
         mock_temp_instance = MagicMock()
         mock_temp_instance.__enter__.return_value = '/tmp/test'
         mock_temp_instance.__exit__.return_value = None
         mock_tempdir.return_value = mock_temp_instance
-        
+
         yield
 
 
 class ConsolidatedAPIMocks:
     """Консолидированные моки для API тестов"""
-    
+
     def __init__(self):
         self.response = Mock()
         self.response.status_code = 200
@@ -76,28 +75,28 @@ class TestAPIModulesConsolidated:
         """Тестирование базового API функционала"""
         try:
             from src.api_modules.base_api import BaseJobAPI
-            
+
             class TestAPI(BaseJobAPI):
                 def get_vacancies(self, search_query: str, **kwargs) -> List[Dict[str, Any]]:
                     return []
-                
+
                 def _validate_vacancy(self, vacancy: dict) -> bool:
                     return True
-            
+
             api = TestAPI()
             assert api is not None
             result = api.get_vacancies("Python")
             assert isinstance(result, list)
-            
+
         except ImportError:
             # Создаем базовый класс для тестирования
             class BaseJobAPI:
                 def get_vacancies(self, search_query: str, **kwargs):
                     return []
-                
+
                 def _validate_vacancy(self, vacancy: dict):
                     return True
-            
+
             api = BaseJobAPI()
             assert api is not None
 
@@ -105,14 +104,14 @@ class TestAPIModulesConsolidated:
     def test_hh_api_functionality(self, mock_get, api_mocks):
         """Тестирование функциональности HH API"""
         mock_get.return_value = api_mocks.response
-        
+
         try:
             from src.api_modules.hh_api import HeadHunterAPI
-            
+
             api = HeadHunterAPI()
             result = api.get_vacancies("Python")
             assert isinstance(result, list)
-            
+
         except ImportError:
             pytest.skip("HeadHunterAPI module not found")
 
@@ -120,14 +119,14 @@ class TestAPIModulesConsolidated:
     def test_sj_api_functionality(self, mock_get, api_mocks):
         """Тестирование функциональности SuperJob API"""
         mock_get.return_value = api_mocks.response
-        
+
         try:
             from src.api_modules.sj_api import SuperJobAPI
-            
+
             api = SuperJobAPI()
             result = api.get_vacancies("Python")
             assert isinstance(result, list)
-            
+
         except ImportError:
             pytest.skip("SuperJobAPI module not found")
 
@@ -135,17 +134,23 @@ class TestAPIModulesConsolidated:
         """Тестирование функциональности кэширующего API"""
         try:
             from src.api_modules.cached_api import CachedAPI
-            
+
             class TestCachedAPI(CachedAPI):
                 def get_vacancies(self, search_query: str, **kwargs):
                     return []
-            
+                def _validate_vacancy(self, vacancy):
+                    return True
+                def _get_empty_response(self):
+                    return {"items": []}
+                def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs):
+                    return []
+
             with patch('pathlib.Path'), \
                  patch('tempfile.TemporaryDirectory'):
                 api = TestCachedAPI("test")
                 result = api.get_vacancies("Python")
                 assert isinstance(result, list)
-            
+
         except ImportError:
             pytest.skip("CachedAPI module not found")
 
@@ -153,11 +158,11 @@ class TestAPIModulesConsolidated:
         """Тестирование функциональности унифицированного API"""
         try:
             from src.api_modules.unified_api import UnifiedAPI
-            
+
             api = UnifiedAPI()
             sources = api.get_available_sources()
             assert isinstance(sources, list)
-            
+
         except ImportError:
             pytest.skip("UnifiedAPI module not found")
 
@@ -165,10 +170,10 @@ class TestAPIModulesConsolidated:
         """Тестирование функциональности APIConnector"""
         try:
             from src.api_modules.get_api import APIConnector
-            
+
             connector = APIConnector()
             assert connector is not None
-            
+
         except ImportError:
             pytest.skip("APIConnector module not found")
 
@@ -188,19 +193,19 @@ class TestAPIModulesConsolidated:
         """Тестирование методов валидации API"""
         try:
             from src.api_modules.base_api import BaseJobAPI
-            
+
             class TestAPI(BaseJobAPI):
                 def get_vacancies(self, search_query: str, **kwargs):
                     return []
-                
+
                 def _validate_vacancy(self, vacancy: dict):
                     return isinstance(vacancy, dict) and 'id' in vacancy
-            
+
             api = TestAPI()
             # Тестируем валидацию
             assert api._validate_vacancy({"id": "123", "name": "Test"}) is True
             assert api._validate_vacancy({}) is False
-            
+
         except ImportError:
             pytest.skip("BaseJobAPI module not found")
 
@@ -208,21 +213,21 @@ class TestAPIModulesConsolidated:
         """Тестирование интеграции API с конфигурациями"""
         # Тестируем работу API с различными конфигурациями
         configs_tested = []
-        
+
         try:
             from src.config.api_config import APIConfig
             config = APIConfig()
             configs_tested.append(config)
         except ImportError:
             pass
-        
+
         try:
             from src.config.hh_api_config import HHAPIConfig
             config = HHAPIConfig()
             configs_tested.append(config)
         except ImportError:
             pass
-        
+
         # Проверяем, что хотя бы одна конфигурация работает
         assert len(configs_tested) >= 0
 
@@ -235,11 +240,11 @@ class TestAPIModulesConsolidated:
             {"items": [{"id": "1"}], "found": 1},  # Один элемент
             {"objects": [{"id": "1"}], "total": 1}  # SuperJob формат
         ]
-        
+
         for response_data in responses:
             api_mocks.response.json.return_value = response_data
             mock_get.return_value = api_mocks.response
-            
+
             # Тестируем обработку каждого типа ответа
             assert isinstance(response_data, dict)
 
@@ -247,24 +252,24 @@ class TestAPIModulesConsolidated:
         """Тестирование поведения кэширования"""
         try:
             from src.api_modules.cached_api import CachedAPI
-            
+
             class TestCachedAPI(CachedAPI):
                 def get_vacancies(self, search_query: str, **kwargs):
                     return []
-                
+
                 def _validate_vacancy(self, vacancy: dict):
                     return True
-            
+
             with patch('pathlib.Path'), \
                  patch('tempfile.TemporaryDirectory'):
                 api = TestCachedAPI("test")
-                
+
                 # Тестируем кэширование
                 result1 = api.get_vacancies("Python")
                 result2 = api.get_vacancies("Python")
-                
+
                 assert isinstance(result1, list)
                 assert isinstance(result2, list)
-            
+
         except ImportError:
             pytest.skip("CachedAPI module not found")

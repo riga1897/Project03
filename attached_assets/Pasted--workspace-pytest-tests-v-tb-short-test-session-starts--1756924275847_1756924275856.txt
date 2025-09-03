@@ -1,3 +1,4 @@
+~/workspace$ pytest tests/ -v --tb=short
 =========================== test session starts ===========================
 platform linux -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0 -- /nix/store/2lcqw1d28vklbk8ikiwad28iq2smwndv-python-wrapped-0.1.0/bin/python3
 cachedir: .pytest_cache
@@ -62,20 +63,20 @@ tests/test_api_modules_comprehensive.py::TestSuperJobAPI::test_sj_api_authentica
 tests/test_api_modules_comprehensive.py::TestSuperJobAPI::test_sj_api_parameters_validation PASSED [  4%]
 tests/test_api_modules_comprehensive.py::TestCachedAPI::test_cached_api_initialization ERROR [  4%]
 tests/test_api_modules_comprehensive.py::TestCachedAPI::test_cached_api_search_with_caching ERROR [  4%]
-tests/test_api_modules_comprehensive.py::TestUnifiedAPI::test_unified_api_search_all_sources FAILED [  5%]
+tests/test_api_modules_comprehensive.py::TestUnifiedAPI::test_unified_api_search_all_sources PASSED [  5%]
 tests/test_api_modules_comprehensive.py::TestUnifiedAPI::test_unified_api_get_available_sources PASSED [  5%]
-tests/test_api_modules_comprehensive.py::TestUnifiedAPI::test_unified_api_error_handling FAILED [  5%]
+tests/test_api_modules_comprehensive.py::TestUnifiedAPI::test_unified_api_error_handling PASSED [  5%]
 tests/test_api_modules_comprehensive.py::TestAPIConnector::test_api_connector_init PASSED [  5%]
 tests/test_api_modules_comprehensive.py::TestAPIConnector::test_api_connector_connect FAILED [  5%]
 tests/test_api_modules_comprehensive.py::TestAPIConnector::test_api_connector_error_handling PASSED [  5%]
 tests/test_api_modules_comprehensive.py::TestAPIPerformance::test_api_response_time_simulation PASSED [  5%]
 tests/test_api_modules_comprehensive.py::TestAPIPerformance::test_api_memory_usage_simulation PASSED [  5%]
-tests/test_api_modules_comprehensive.py::TestAPIIntegration::test_full_search_workflow FAILED [  5%]
+tests/test_api_modules_comprehensive.py::TestAPIIntegration::test_full_search_workflow PASSED [  5%]
 tests/test_api_modules_comprehensive.py::TestAPIIntegration::test_api_chain_operations PASSED [  5%]
 tests/test_api_modules_consolidated.py::TestAPIModulesConsolidated::test_base_api_functionality PASSED [  5%]
 tests/test_api_modules_consolidated.py::TestAPIModulesConsolidated::test_hh_api_functionality PASSED [  6%]
 tests/test_api_modules_consolidated.py::TestAPIModulesConsolidated::test_sj_api_functionality PASSED [  6%]
-tests/test_api_modules_consolidated.py::TestAPIModulesConsolidated::test_cached_api_functionality FAILED [  6%]
+tests/test_api_modules_consolidated.py::TestAPIModulesConsolidated::test_cached_api_functionality PASSED [  6%]
 tests/test_api_modules_consolidated.py::TestAPIModulesConsolidated::test_unified_api_functionality PASSED [  6%]
 tests/test_api_modules_consolidated.py::TestAPIModulesConsolidated::test_get_api_functionality PASSED [  6%]
 tests/test_api_modules_consolidated.py::TestAPIModulesConsolidated::test_api_error_handling PASSED [  6%]
@@ -107,13 +108,13 @@ tests/test_base_api.py::TestBaseJobAPI::test_concrete_implementation_can_be_inst
 tests/test_base_api.py::TestBaseJobAPI::test_abstract_methods_are_implemented PASSED [  8%]
 tests/test_base_api.py::TestBaseJobAPI::test_get_vacancies_returns_list PASSED [  8%]
 tests/test_base_api.py::TestBaseJobAPI::test_validate_vacancy_returns_boolean PASSED [  8%]
-tests/test_base_api.py::TestBaseJobAPI::test_clear_cache_existing_directory FAILED [  9%]
+tests/test_base_api.py::TestBaseJobAPI::test_clear_cache_existing_directory PASSED [  9%]
 tests/test_base_api.py::TestBaseJobAPI::test_clear_cache_nonexistent_directory PASSED [  9%]
-tests/test_base_api.py::TestBaseJobAPI::test_clear_cache_os_error FAILED [  9%]
-tests/test_base_api.py::TestBaseJobAPI::test_clear_cache_general_exception FAILED [  9%]
-tests/test_base_api.py::TestBaseJobAPI::test_clear_cache_different_sources FAILED [  9%]
-tests/test_base_api.py::TestBaseJobAPI::test_clear_cache_logging_behavior FAILED [  9%]
-tests/test_base_api.py::TestBaseJobAPI::test_clear_cache_method_signature FAILED [  9%]
+tests/test_base_api.py::TestBaseJobAPI::test_clear_cache_os_error PASSED [  9%]
+tests/test_base_api.py::TestBaseJobAPI::test_clear_cache_general_exception PASSED [  9%]
+tests/test_base_api.py::TestBaseJobAPI::test_clear_cache_different_sources PASSED [  9%]
+tests/test_base_api.py::TestBaseJobAPI::test_clear_cache_logging_behavior PASSED [  9%]
+tests/test_base_api.py::TestBaseJobAPI::test_clear_cache_method_signature PASSED [  9%]
 tests/test_base_api.py::TestBaseJobAPI::test_clear_cache_return_type PASSED [  9%]
 tests/test_base_api.py::TestBaseJobAPI::test_abstract_methods_signatures PASSED [  9%]
 tests/test_base_api.py::TestBaseJobAPI::test_concrete_implementation_behavior PASSED [  9%]
@@ -910,8 +911,8 @@ tests/test_unified_api.py::TestUnifiedAPI::test_unified_api_initialization PASSE
 tests/test_unified_api.py::TestUnifiedAPI::test_get_available_sources PASSED [ 79%]
 tests/test_unified_api.py::TestUnifiedAPI::test_validate_sources_valid PASSED [ 80%]
 tests/test_unified_api.py::TestUnifiedAPI::test_validate_sources_invalid PASSED [ 80%]
-tests/test_unified_api.py::TestUnifiedAPI::test_validate_sources_empty FAILED [ 80%]
-tests/test_unified_api.py::TestUnifiedAPI::test_validate_sources_none FAILED [ 80%]
+tests/test_unified_api.py::TestUnifiedAPI::test_validate_sources_empty PASSED [ 80%]
+tests/test_unified_api.py::TestUnifiedAPI::test_validate_sources_none PASSED [ 80%]
 tests/test_unified_api.py::TestUnifiedAPI::test_get_vacancies_from_sources_default_sources PASSED [ 80%]
 tests/test_unified_api.py::TestUnifiedAPI::test_get_vacancies_from_sources_specific_sources PASSED [ 80%]
 tests/test_unified_api.py::TestUnifiedAPI::test_get_vacancies_from_sources_hh_only PASSED [ 80%]
@@ -1137,38 +1138,16 @@ tests/test_vacancy_validator.py::TestVacancyValidator::test_is_complete_vacancy 
 
 ================================= ERRORS ==================================
 _____ ERROR at setup of TestCachedAPI.test_cached_api_initialization ______
-tests/test_api_modules_comprehensive.py:229: in setup_method
+tests/test_api_modules_comprehensive.py:241: in setup_method
     self.cached_api = CachedAPI("test_cache")
                       ^^^^^^^^^^^^^^^^^^^^^^^
 E   TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_response, _validate_vacancy, get_vacancies, get_vacancies_page
 ___ ERROR at setup of TestCachedAPI.test_cached_api_search_with_caching ___
-tests/test_api_modules_comprehensive.py:229: in setup_method
+tests/test_api_modules_comprehensive.py:241: in setup_method
     self.cached_api = CachedAPI("test_cache")
                       ^^^^^^^^^^^^^^^^^^^^^^^
 E   TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_response, _validate_vacancy, get_vacancies, get_vacancies_page
 ================================ FAILURES =================================
-___________ TestUnifiedAPI.test_unified_api_search_all_sources ____________
-tests/test_api_modules_comprehensive.py:267: in test_unified_api_search_all_sources
-    with patch.object(self.unified_api, 'search_vacancies', return_value=[]):
-/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
-    original, local = self.get_original()
-                      ^^^^^^^^^^^^^^^^^^^
-/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
-    raise AttributeError(
-E   AttributeError: <src.api_modules.unified_api.UnifiedAPI object at 0x7f2580592ed0> does not have the attribute 'search_vacancies'
---------------------------- Captured log setup ----------------------------
-WARNING  src.api_modules.sj_api:sj_api.py:55 Используется тестовый API ключ SuperJob.                 Для полной функциональности добавьте реальный ключ                 в переменную окружения SUPERJOB_API_KEY
-_____________ TestUnifiedAPI.test_unified_api_error_handling ______________
-tests/test_api_modules_comprehensive.py:279: in test_unified_api_error_handling
-    with patch.object(self.unified_api, 'search_vacancies', side_effect=Exception("API Error")):
-/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
-    original, local = self.get_original()
-                      ^^^^^^^^^^^^^^^^^^^
-/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
-    raise AttributeError(
-E   AttributeError: <src.api_modules.unified_api.UnifiedAPI object at 0x7f25804610d0> does not have the attribute 'search_vacancies'
---------------------------- Captured log setup ----------------------------
-WARNING  src.api_modules.sj_api:sj_api.py:55 Используется тестовый API ключ SuperJob.                 Для полной функциональности добавьте реальный ключ                 в переменную окружения SUPERJOB_API_KEY
 _______________ TestAPIConnector.test_api_connector_connect _______________
 src/api_modules/get_api.py:106: in __connect
     response = requests.get(
@@ -1204,7 +1183,7 @@ src/api_modules/get_api.py:106: in __connect
 E   TypeError: '>' not supported between instances of 'int' and 'MagicMock'
 
 During handling of the above exception, another exception occurred:
-tests/test_api_modules_comprehensive.py:306: in test_api_connector_connect
+tests/test_api_modules_comprehensive.py:325: in test_api_connector_connect
     result = connector.connect("https://test.api", params={})
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 src/api_modules/get_api.py:153: in connect
@@ -1213,20 +1192,8 @@ src/api_modules/get_api.py:153: in connect
 src/api_modules/get_api.py:138: in __connect
     raise ConnectionError(f"Unexpected error: {str(e)}")
 E   ConnectionError: Unexpected error: '>' not supported between instances of 'int' and 'MagicMock'
-______________ TestAPIIntegration.test_full_search_workflow _______________
-tests/test_api_modules_comprehensive.py:371: in test_full_search_workflow
-    results = unified_api.search_vacancies("Python Developer")
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   AttributeError: 'UnifiedAPI' object has no attribute 'search_vacancies'
----------------------------- Captured log call ----------------------------
-WARNING  src.api_modules.sj_api:sj_api.py:55 Используется тестовый API ключ SuperJob.                 Для полной функциональности добавьте реальный ключ                 в переменную окружения SUPERJOB_API_KEY
-________ TestAPIModulesConsolidated.test_cached_api_functionality _________
-tests/test_api_modules_consolidated.py:145: in test_cached_api_functionality
-    api = TestCachedAPI("test")
-          ^^^^^^^^^^^^^^^^^^^^^
-E   TypeError: Can't instantiate abstract class TestCachedAPI with abstract methods _get_empty_response, _validate_vacancy, get_vacancies_page
 __________ TestAPIModulesConsolidated.test_api_caching_behavior ___________
-tests/test_api_modules_consolidated.py:260: in test_api_caching_behavior
+tests/test_api_modules_consolidated.py:265: in test_api_caching_behavior
     api = TestCachedAPI("test")
           ^^^^^^^^^^^^^^^^^^^^^
 E   TypeError: Can't instantiate abstract class TestCachedAPI with abstract methods _get_empty_response, get_vacancies_page
@@ -1277,62 +1244,6 @@ E   AssertionError: assert 'neondb' == 'Project03'
 E     
 E     - Project03
 E     + neondb
-___________ TestBaseJobAPI.test_clear_cache_existing_directory ____________
-tests/test_base_api.py:79: in test_clear_cache_existing_directory
-    with patch('src.api_modules.base_api.shutil.rmtree') as mock_rmtree:
-/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1430: in __enter__
-    self.target = self.getter()
-                  ^^^^^^^^^^^^^
-/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/pkgutil.py:715: in resolve_name
-    result = getattr(result, p)
-             ^^^^^^^^^^^^^^^^^^
-E   AttributeError: module 'src.api_modules.base_api' has no attribute 'shutil'
-________________ TestBaseJobAPI.test_clear_cache_os_error _________________
-tests/test_base_api.py:110: in test_clear_cache_os_error
-    with patch('src.api_modules.base_api.shutil.rmtree') as mock_rmtree:
-/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1430: in __enter__
-    self.target = self.getter()
-                  ^^^^^^^^^^^^^
-/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/pkgutil.py:715: in resolve_name
-    result = getattr(result, p)
-             ^^^^^^^^^^^^^^^^^^
-E   AttributeError: module 'src.api_modules.base_api' has no attribute 'shutil'
-____________ TestBaseJobAPI.test_clear_cache_general_exception ____________
-tests/test_base_api.py:127: in test_clear_cache_general_exception
-    with patch('src.api_modules.base_api.shutil.rmtree') as mock_rmtree:
-/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1430: in __enter__
-    self.target = self.getter()
-                  ^^^^^^^^^^^^^
-/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/pkgutil.py:715: in resolve_name
-    result = getattr(result, p)
-             ^^^^^^^^^^^^^^^^^^
-E   AttributeError: module 'src.api_modules.base_api' has no attribute 'shutil'
-____________ TestBaseJobAPI.test_clear_cache_different_sources ____________
-tests/test_base_api.py:141: in test_clear_cache_different_sources
-    with patch('src.api_modules.base_api.shutil.rmtree') as mock_rmtree:
-/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1430: in __enter__
-    self.target = self.getter()
-                  ^^^^^^^^^^^^^
-/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/pkgutil.py:715: in resolve_name
-    result = getattr(result, p)
-             ^^^^^^^^^^^^^^^^^^
-E   AttributeError: module 'src.api_modules.base_api' has no attribute 'shutil'
-____________ TestBaseJobAPI.test_clear_cache_logging_behavior _____________
-tests/test_base_api.py:164: in test_clear_cache_logging_behavior
-    with patch('src.api_modules.base_api.shutil.rmtree') as mock_rmtree:
-/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1430: in __enter__
-    self.target = self.getter()
-                  ^^^^^^^^^^^^^
-/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/pkgutil.py:715: in resolve_name
-    result = getattr(result, p)
-             ^^^^^^^^^^^^^^^^^^
-E   AttributeError: module 'src.api_modules.base_api' has no attribute 'shutil'
-____________ TestBaseJobAPI.test_clear_cache_method_signature _____________
-tests/test_base_api.py:181: in test_clear_cache_method_signature
-    assert len(params) == 2  # self + source
-    ^^^^^^^^^^^^^^^^^^^^^^^
-E   AssertionError: assert 1 == 2
-E    +  where 1 = len(['source'])
 _______ TestFileCache.test_deduplicate_vacancies_no_existing_cache ________
 tests/test_cache.py:185: in test_deduplicate_vacancies_no_existing_cache
     result = cache.deduplicate_vacancies(vacancies)
@@ -1402,7 +1313,7 @@ E   AttributeError: 'method' object has no attribute 'side_effect'
 ________________ TestCachedAPI.test_get_cache_status_error ________________
 tests/test_cached_api.py:305: in test_get_cache_status_error
     assert "error" in status
-E   AssertionError: assert 'error' in {'avg_file_size_kb': 0.0, 'cache_age_days': 0, 'cache_dir': '/tmp/pytest-of-runner/pytest-0/test_get_cache_status_error0/cache', 'cache_dir_exists': True, ...}
+E   AssertionError: assert 'error' in {'avg_file_size_kb': 0.0, 'cache_age_days': 0, 'cache_dir': '/tmp/pytest-of-runner/pytest-1/test_get_cache_status_error0/cache', 'cache_dir_exists': True, ...}
 _______________ TestCachedAPI.test_memory_cache_size_limit ________________
 tests/test_cached_api.py:395: in test_memory_cache_size_limit
     cached_api.cache.load_response.return_value = None
@@ -1412,8 +1323,8 @@ ______ TestConfigModulesConsolidated.test_target_companies_complete _______
 tests/test_config_modules_consolidated.py:122: in test_target_companies_complete
     assert hasattr(companies, 'target_companies') or hasattr(companies, '_companies')
 E   AssertionError: assert (False or False)
-E    +  where False = hasattr(<src.config.target_companies.TargetCompanies object at 0x7f25806071d0>, 'target_companies')
-E    +  and   False = hasattr(<src.config.target_companies.TargetCompanies object at 0x7f25806071d0>, '_companies')
+E    +  where False = hasattr(<src.config.target_companies.TargetCompanies object at 0x7fcde6d90190>, 'target_companies')
+E    +  and   False = hasattr(<src.config.target_companies.TargetCompanies object at 0x7fcde6d90190>, '_companies')
 _________ TestAPIModulesConsolidated.test_base_api_functionality __________
 tests/test_core_functionality_consolidated.py:132: in test_base_api_functionality
     api = TestAPI()
@@ -1527,7 +1438,7 @@ ________ TestAppConfigComprehensive.test_app_config_default_values ________
 tests/test_core_modules_comprehensive.py:321: in test_app_config_default_values
     assert config.default_storage_type in ["postgresql", "json", "memory"]
 E   AssertionError: assert 'postgres' in ['postgresql', 'json', 'memory']
-E    +  where 'postgres' = <src.config.app_config.AppConfig object at 0x7f2580524bd0>.default_storage_type
+E    +  where 'postgres' = <src.config.app_config.AppConfig object at 0x7fcde6420910>.default_storage_type
 _____ TestStorageFactoryComprehensive.test_storage_factory_postgresql _____
 tests/test_core_modules_comprehensive.py:329: in test_storage_factory_postgresql
     storage = StorageFactory.create_storage("postgresql")
@@ -1546,7 +1457,7 @@ __________ TestDatabaseConnection.test_database_connection_init ___________
 tests/test_database_connection.py:38: in test_database_connection_init
     assert hasattr(db_conn, 'config')
 E   AssertionError: assert False
-E    +  where False = hasattr(<src.storage.components.database_connection.DatabaseConnection object at 0x7f25803f9390>, 'config')
+E    +  where False = hasattr(<src.storage.components.database_connection.DatabaseConnection object at 0x7fcde6420d50>, 'config')
 ______________ TestDatabaseConnection.test_close_connection _______________
 tests/test_database_connection.py:70: in test_close_connection
     db_conn.close_connection(connection)
@@ -1578,7 +1489,7 @@ _______________ TestDataValidation.test_vacancy_validation ________________
 tests/test_edge_cases_complete.py:295: in test_vacancy_validation
     assert vacancy.employer is not None
 E   assert None is not None
-E    +  where None = <src.vacancies.models.Vacancy object at 0x7f258032e340>.employer
+E    +  where None = <src.vacancies.models.Vacancy object at 0x7fcde5d835f0>.employer
 ___ TestCompleteAPIModuleCoverage.test_headhunter_api_complete_coverage ___
 tests/test_final_complete_coverage.py:159: in test_headhunter_api_complete_coverage
     result = api.search_vacancies('python developer')
@@ -1601,7 +1512,7 @@ tests/test_final_complete_coverage.py:259: in test_db_manager_complete_coverage
     self.mocks['cursor'].execute.assert_called()
 E   AssertionError: Expected 'execute' to have been called.
 ---------------------------- Captured log call ----------------------------
-WARNING  src.storage.db_manager:db_manager.py:139 Поле company_id имеет неправильный тип <MagicMock name='mock.__enter__().cursor().__enter__().fetchone().__getitem__()' id='139799042653392'>, исправляем...
+WARNING  src.storage.db_manager:db_manager.py:139 Поле company_id имеет неправильный тип <MagicMock name='mock.__enter__().cursor().__enter__().fetchone().__getitem__()' id='140522318311760'>, исправляем...
 _ TestCompleteStorageModuleCoverage.test_storage_factory_complete_coverage _
 tests/test_final_complete_coverage.py:279: in test_storage_factory_complete_coverage
     pg_storage = StorageFactory.create_storage('postgresql')
@@ -1667,7 +1578,7 @@ tests/test_hh_api.py:408: in test_clear_cache
                       ^^^^^^^^^^^^^^^^^^^
 /nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
     raise AttributeError(
-E   AttributeError: <src.api_modules.hh_api.HeadHunterAPI object at 0x7f258023fb90> does not have the attribute 'super'
+E   AttributeError: <src.api_modules.hh_api.HeadHunterAPI object at 0x7fcde6451c90> does not have the attribute 'super'
 _______________ TestMainModule.test_main_module_env_loading _______________
 /nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:918: in assert_called_once
     raise AssertionError(msg)
@@ -1799,9 +1710,9 @@ E   NameError: name 'UINavigation' is not defined
 _ TestUIHelpersBuildSearchableText.test_build_searchable_text_full_vacancy _
 tests/test_ui_helpers_comprehensive.py:821: in test_build_searchable_text_full_vacancy
     assert "test developer" in result.lower()
-E   assert 'test developer' in "python developer python programming, django framework python, django development, testing detailed test description <mock name='mock.employment' id='139798968005968'> python django postgresql test company"
-E    +  where "python developer python programming, django framework python, django development, testing detailed test description <mock name='mock.employment' id='139798968005968'> python django postgresql test company" = <built-in method lower of str object at 0x7f2580090130>()
-E    +    where <built-in method lower of str object at 0x7f2580090130> = "python developer python programming, django framework python, django development, testing detailed test description <mock name='mock.employment' id='139798968005968'> python django postgresql test company".lower
+E   assert 'test developer' in "python developer python programming, django framework python, django development, testing detailed test description <mock name='mock.employment' id='140522297629904'> python django postgresql test company"
+E    +  where "python developer python programming, django framework python, django development, testing detailed test description <mock name='mock.employment' id='140522297629904'> python django postgresql test company" = <built-in method lower of str object at 0x7fcde60f2730>()
+E    +    where <built-in method lower of str object at 0x7fcde60f2730> = "python developer python programming, django framework python, django development, testing detailed test description <mock name='mock.employment' id='140522297629904'> python django postgresql test company".lower
 ________ TestUIHelpersExtended.test_parse_search_query_mixed_case _________
 tests/test_ui_helpers_extended.py:275: in test_parse_search_query_mixed_case
     assert result == {"keywords": ["python", "django"], "operator": "AND"}
@@ -1845,7 +1756,7 @@ ____ TestQuickPaginateFunction.test_quick_paginate_with_custom_actions ____
 tests/test_ui_navigation_complete.py:521: in test_quick_paginate_with_custom_actions
     assert custom_action.called
 E   AssertionError: assert False
-E    +  where False = <Mock id='139799044170832'>.called
+E    +  where False = <Mock id='140522307961488'>.called
 _____ TestUINavigationEdgeCases.test_navigation_boundary_page_numbers _____
 tests/test_ui_navigation_complete.py:637: in test_navigation_boundary_page_numbers
     self.nav.paginate_display(test_items, simple_formatter)
@@ -1925,31 +1836,8 @@ ___ TestUINavigationExtended.test_paginate_display_custom_action_error ____
 tests/test_ui_navigation_extended.py:163: in test_paginate_display_custom_action_error
     assert "Ошибка при выполнении действия" in output
 E   AssertionError: assert 'Ошибка при выполнении действия' in '\n\nError Test ========== 1: Item 0 2: Item 1 3: Item 2 4: Item 3 5: Item 4 \n==================== Навигация: Страница 1 из 1 Показано элементов: 1-5 из 5 --------------------'
-_______________ TestUnifiedAPI.test_validate_sources_empty ________________
-tests/test_unified_api.py:74: in test_validate_sources_empty
-    assert result == []
-E   AssertionError: assert ['hh', 'sj'] == []
-E     
-E     Left contains 2 more items, first extra item: 'hh'
-E     
-E     Full diff:
-E     - []
-E     + [
-E     +     'hh',
-E     +     'sj',
-E     + ]
----------------------------- Captured log call ----------------------------
-WARNING  src.api_modules.unified_api:unified_api.py:346 Нет валидных источников в [], используем все доступные
-________________ TestUnifiedAPI.test_validate_sources_none ________________
-tests/test_unified_api.py:78: in test_validate_sources_none
-    result = unified_api.validate_sources(None)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/api_modules/unified_api.py:343: in validate_sources
-    valid_sources = [s for s in sources if s in available]
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   TypeError: 'NoneType' object is not iterable
 _____________ TestUnifiedAPI.test_filter_by_target_companies ______________
-tests/test_unified_api.py:257: in test_filter_by_target_companies
+tests/test_unified_api.py:264: in test_filter_by_target_companies
     with patch('src.api_modules.unified_api.TargetCompanies') as mock_target_companies:
 /nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
     original, local = self.get_original()
@@ -1958,7 +1846,7 @@ tests/test_unified_api.py:257: in test_filter_by_target_companies
     raise AttributeError(
 E   AttributeError: <module 'src.api_modules.unified_api' from '/home/runner/workspace/tests/../src/api_modules/unified_api.py'> does not have the attribute 'TargetCompanies'
 _______ TestUnifiedAPI.test_filter_by_target_companies_empty_input ________
-tests/test_unified_api.py:281: in test_filter_by_target_companies_empty_input
+tests/test_unified_api.py:288: in test_filter_by_target_companies_empty_input
     with patch('src.api_modules.unified_api.TargetCompanies') as mock_target_companies:
 /nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
     original, local = self.get_original()
@@ -1967,9 +1855,511 @@ tests/test_unified_api.py:281: in test_filter_by_target_companies_empty_input
     raise AttributeError(
 E   AttributeError: <module 'src.api_modules.unified_api' from '/home/runner/workspace/tests/../src/api_modules/unified_api.py'> does not have the attribute 'TargetCompanies'
 ___ TestUnifiedAPI.test_filter_by_target_companies_no_target_companies ____
-tests/test_unified_api.py:291: in test_filter_by_target_companies_no_target_companies
+tests/test_unified_api.py:298: in test_filter_by_target_companies_no_target_companies
     with patch('src.api_modules.unified_api.TargetCompanies') as mock_target_companies:
 /nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
     original, local = self.get_original()
                       ^^^^^^^^^^^^^^^^^^^
 /nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <module 'src.api_modules.unified_api' from '/home/runner/workspace/tests/../src/api_modules/unified_api.py'> does not have the attribute 'TargetCompanies'
+_____ TestUnifiedAPI.test_filter_by_target_companies_missing_employer _____
+tests/test_unified_api.py:312: in test_filter_by_target_companies_missing_employer
+    with patch('src.api_modules.unified_api.TargetCompanies') as mock_target_companies:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <module 'src.api_modules.unified_api' from '/home/runner/workspace/tests/../src/api_modules/unified_api.py'> does not have the attribute 'TargetCompanies'
+______ TestUnifiedAPI.test_filter_by_target_companies_mixed_sources _______
+tests/test_unified_api.py:330: in test_filter_by_target_companies_mixed_sources
+    with patch('src.api_modules.unified_api.TargetCompanies') as mock_target_companies:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <module 'src.api_modules.unified_api' from '/home/runner/workspace/tests/../src/api_modules/unified_api.py'> does not have the attribute 'TargetCompanies'
+_________________ TestUserInterface.test_logger_creation __________________
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:939: in assert_called_with
+    raise AssertionError(_error_message()) from cause
+E   AssertionError: expected call not found.
+E   Expected: getLogger('tests.test_user_interface')
+E     Actual: getLogger('src.user_interface')
+
+During handling of the above exception, another exception occurred:
+tests/test_user_interface.py:56: in test_logger_creation
+    mock_get_logger.assert_called_with(__name__)
+E   AssertionError: expected call not found.
+E   Expected: getLogger('tests.test_user_interface')
+E     Actual: getLogger('src.user_interface')
+E   
+E   pytest introspection follows:
+E   
+E   Args:
+E   assert ('src.user_interface',) == ('tests.test_user_interface',)
+E     
+E     At index 0 diff: 'src.user_interface' != 'tests.test_user_interface'
+E     
+E     Full diff:
+E       (
+E     -     'tests.test_user_interface',
+E     ?      -- ^^ -----...
+E     
+E     ...Full output truncated (3 lines hidden), use '-vv' to show
+____________ TestUserInterface.test_main_function_success_flow ____________
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: in patched
+    with self.decoration_helper(patched,
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+_______ TestUserInterface.test_main_function_db_connection_failure ________
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: in patched
+    with self.decoration_helper(patched,
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+__________ TestUserInterface.test_main_function_db_init_failure ___________
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: in patched
+    with self.decoration_helper(patched,
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+______ TestUserInterface.test_main_function_db_verification_failure _______
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: in patched
+    with self.decoration_helper(patched,
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+_________ TestUserInterface.test_main_function_keyboard_interrupt _________
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: in patched
+    with self.decoration_helper(patched,
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+___________ TestUserInterface.test_main_function_database_error ___________
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: in patched
+    with self.decoration_helper(patched,
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+___________ TestUserInterface.test_main_function_general_error ____________
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: in patched
+    with self.decoration_helper(patched,
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+__________ TestUserInterface.test_main_function_return_on_error ___________
+tests/test_user_interface.py:245: in test_main_function_return_on_error
+    with patch('src.user_interface.DBManager') as mock_db_manager_class:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+__________ TestUserInterface.test_main_function_storage_creation __________
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: in patched
+    with self.decoration_helper(patched,
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+______ TestUserInterface.test_main_function_user_interface_creation _______
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: in patched
+    with self.decoration_helper(patched,
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+_______ TestUserInterfaceConsolidated.test_main_interface_complete ________
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: in patched
+    with self.decoration_helper(patched,
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+___ TestUserInterfaceConsolidated.test_interface_components_integration ___
+tests/test_user_interface_consolidated.py:92: in test_interface_components_integration
+    interface = MainApplicationInterface()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: Can't instantiate abstract class MainApplicationInterface with abstract method run_application
+______________ TestUtilsConsolidated.test_paginator_complete ______________
+tests/test_utils_consolidated.py:95: in test_paginator_complete
+    paginator = Paginator(test_items, per_page=10)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: Paginator() takes no arguments
+___________ TestUtilsConsolidated.test_paginator_functionality ____________
+tests/test_utils_ui_consolidated.py:222: in test_paginator_functionality
+    paginator = Paginator(test_data, page_size=10)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: Paginator() takes no arguments
+______ TestUIConsolidated.test_vacancy_display_handler_functionality ______
+tests/test_utils_ui_consolidated.py:350: in test_vacancy_display_handler_functionality
+    handler = VacancyDisplayHandler()
+              ^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: VacancyDisplayHandler.__init__() missing 1 required positional argument: 'storage'
+______ TestUIConsolidated.test_vacancy_search_handler_functionality _______
+tests/test_utils_ui_consolidated.py:403: in test_vacancy_search_handler_functionality
+    handler = VacancySearchHandler()
+              ^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: VacancySearchHandler.__init__() missing 2 required positional arguments: 'unified_api' and 'storage'
+__ TestUIConsolidated.test_vacancy_operations_coordinator_functionality ___
+tests/test_utils_ui_consolidated.py:469: in test_vacancy_operations_coordinator_functionality
+    coordinator = VacancyOperationsCoordinator()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: VacancyOperationsCoordinator.__init__() missing 2 required positional arguments: 'unified_api' and 'storage'
+_______ TestVacancyDisplayHandler.test_vacancy_display_handler_init _______
+tests/test_vacancy_display_handler.py:42: in test_vacancy_display_handler_init
+    handler = VacancyDisplayHandler()
+              ^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: VacancyDisplayHandler.__init__() missing 1 required positional argument: 'storage'
+____________ TestVacancyModelsComplete.test_base_vacancy_model ____________
+tests/test_vacancy_models_complete.py:71: in test_base_vacancy_model
+    vacancy = Vacancy(
+E   TypeError: Vacancy.__init__() got an unexpected keyword argument 'company'
+__________ TestVacancyModelsComplete.test_salary_model_complete ___________
+tests/test_vacancy_models_complete.py:116: in test_salary_model_complete
+    salary = Salary(
+E   TypeError: Salary.__init__() got an unexpected keyword argument 'salary_from'
+____________ TestVacancyModelsComplete.test_hh_parser_complete ____________
+tests/test_vacancy_models_complete.py:167: in test_hh_parser_complete
+    result = parser.parse(vacancy_mocks.hh_data)
+             ^^^^^^^^^^^^
+E   AttributeError: 'HHParser' object has no attribute 'parse'
+________ TestVacancyModelsConsolidated.test_salary_model_complete _________
+tests/test_vacancy_models_consolidated.py:83: in test_salary_model_complete
+    salary = Salary(**sample_salary_data)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: Salary.__init__() got an unexpected keyword argument 'salary_from'
+_______ TestVacancyModelsConsolidated.test_employer_model_complete ________
+tests/test_vacancy_models_consolidated.py:112: in test_employer_model_complete
+    employer = Employer(**employer_data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: Employer.__init__() got an unexpected keyword argument 'url'
+_____ TestVacancyOperationsCoordinatorComplete.test_coordinator_init ______
+tests/test_vacancy_operations_coordinator_complete.py:49: in test_coordinator_init
+    coordinator = VacancyOperationsCoordinator()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: VacancyOperationsCoordinator.__init__() missing 2 required positional arguments: 'unified_api' and 'storage'
+_________________ TestVacancyRepository.test_save_vacancy _________________
+tests/test_vacancy_repository.py:53: in test_save_vacancy
+    with patch.object(repo, 'save_vacancy') as mock_save:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <src.storage.components.vacancy_repository.VacancyRepository object at 0x7fcde5a7ed10> does not have the attribute 'save_vacancy'
+______________ TestVacancyRepository.test_get_vacancy_by_id _______________
+tests/test_vacancy_repository.py:74: in test_get_vacancy_by_id
+    vacancy = repo.get_vacancy_by_id("123")
+              ^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'VacancyRepository' object has no attribute 'get_vacancy_by_id'
+______________ TestVacancyRepository.test_get_all_vacancies _______________
+tests/test_vacancy_repository.py:92: in test_get_all_vacancies
+    vacancies = repo.get_all_vacancies()
+                ^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'VacancyRepository' object has no attribute 'get_all_vacancies'
+________________ TestVacancyRepository.test_update_vacancy ________________
+tests/test_vacancy_repository.py:103: in test_update_vacancy
+    with patch.object(repo, 'update_vacancy') as mock_update:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <src.storage.components.vacancy_repository.VacancyRepository object at 0x7fcde61bbad0> does not have the attribute 'update_vacancy'
+__________ TestVacancyRepository.test_find_vacancies_by_criteria __________
+tests/test_vacancy_repository.py:134: in test_find_vacancies_by_criteria
+    vacancies = repo.find_vacancies_by_criteria(criteria)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'VacancyRepository' object has no attribute 'find_vacancies_by_criteria'
+_______________ TestVacancyRepository.test_count_vacancies ________________
+tests/test_vacancy_repository.py:149: in test_count_vacancies
+    count = repo.count_vacancies()
+            ^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'VacancyRepository' object has no attribute 'count_vacancies'
+_____________ TestVacancyRepository.test_batch_save_vacancies _____________
+tests/test_vacancy_repository.py:161: in test_batch_save_vacancies
+    with patch.object(repo, 'batch_save_vacancies') as mock_batch_save:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: in get_original
+    raise AttributeError(
+E   AttributeError: <src.storage.components.vacancy_repository.VacancyRepository object at 0x7fcde5ae8c10> does not have the attribute 'batch_save_vacancies'
+________ TestVacancyRepository.test_get_vacancies_by_salary_range _________
+tests/test_vacancy_repository.py:179: in test_get_vacancies_by_salary_range
+    vacancies = repo.get_vacancies_by_salary_range(100000, 200000)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'VacancyRepository' object has no attribute 'get_vacancies_by_salary_range'
+________ TestVacancySearchHandlerComplete.test_search_handler_init ________
+tests/test_vacancy_search_handler_complete.py:51: in test_search_handler_init
+    handler = VacancySearchHandler()
+              ^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: VacancySearchHandler.__init__() missing 2 required positional arguments: 'unified_api' and 'storage'
+_____________ TestVacancyValidator.test_get_validation_errors _____________
+tests/test_vacancy_validator.py:130: in test_get_validation_errors
+    errors = self.validator.get_validation_errors(self.invalid_vacancy)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: VacancyValidator.get_validation_errors() takes 1 positional argument but 2 were given
+========================= short test summary info =========================
+FAILED tests/test_api_modules_comprehensive.py::TestAPIConnector::test_api_connector_connect - ConnectionError: Unexpected error: '>' not supported between instances...
+FAILED tests/test_api_modules_consolidated.py::TestAPIModulesConsolidated::test_api_caching_behavior - TypeError: Can't instantiate abstract class TestCachedAPI with abstrac...
+FAILED tests/test_app_config.py::TestAppConfig::test_get_db_config_returns_copy - AssertionError: assert 'ep-old-mud-a...aws.neon.tech' == 'localhost'
+FAILED tests/test_app_config.py::TestAppConfig::test_set_db_config_updates_existing - AssertionError: assert 'neondb' == 'Project03'
+FAILED tests/test_app_config.py::TestAppConfig::test_set_db_config_adds_new_keys - AssertionError: assert 'ep-old-mud-a...aws.neon.tech' == 'localhost'
+FAILED tests/test_app_config.py::TestAppConfig::test_set_db_config_none - TypeError: 'NoneType' object is not iterable
+FAILED tests/test_app_config.py::TestAppConfig::test_set_db_config_invalid_type - ValueError: dictionary update sequence element #0 has length 1; 2 is r...
+FAILED tests/test_app_config.py::TestAppConfig::test_multiple_instances_independence - AssertionError: assert 'ep-old-mud-a...aws.neon.tech' == 'localhost'
+FAILED tests/test_app_config.py::TestAppConfig::test_environment_variable_priority - AssertionError: assert 'neondb' == 'Project03'
+FAILED tests/test_cache.py::TestFileCache::test_deduplicate_vacancies_no_existing_cache - AttributeError: 'FileCache' object has no attribute 'deduplicate_vacan...
+FAILED tests/test_cache.py::TestFileCache::test_deduplicate_vacancies_with_existing_cache - AttributeError: 'FileCache' object has no attribute 'deduplicate_vacan...
+FAILED tests/test_cache.py::TestFileCache::test_deduplicate_vacancies_error_handling - AttributeError: 'FileCache' object has no attribute 'deduplicate_vacan...
+FAILED tests/test_cached_api.py::TestCachedAPI::test_init_cache_creates_directory - AssertionError: Expected 'mkdir' to be called once. Called 2 times.
+FAILED tests/test_cached_api.py::TestCachedAPI::test_connect_to_api_memory_cache_fallback - AttributeError: 'method' object has no attribute 'return_value'
+FAILED tests/test_cached_api.py::TestCachedAPI::test_connect_to_api_file_cache_hit - AttributeError: 'method' object has no attribute 'return_value'
+FAILED tests/test_cached_api.py::TestCachedAPI::test_connect_to_api_real_request - AttributeError: 'method' object has no attribute 'return_value'
+FAILED tests/test_cached_api.py::TestCachedAPI::test_connect_to_api_connection_error - AttributeError: 'method' object has no attribute 'return_value'
+FAILED tests/test_cached_api.py::TestCachedAPI::test_connect_to_api_timeout_error - AttributeError: 'method' object has no attribute 'return_value'
+FAILED tests/test_cached_api.py::TestCachedAPI::test_connect_to_api_general_error - AttributeError: 'method' object has no attribute 'return_value'
+FAILED tests/test_cached_api.py::TestCachedAPI::test_clear_cache_success - AttributeError: 'method' object has no attribute 'return_value'
+FAILED tests/test_cached_api.py::TestCachedAPI::test_clear_cache_error - AttributeError: 'method' object has no attribute 'side_effect'
+FAILED tests/test_cached_api.py::TestCachedAPI::test_get_cache_status_error - AssertionError: assert 'error' in {'avg_file_size_kb': 0.0, 'cache_age...
+FAILED tests/test_cached_api.py::TestCachedAPI::test_memory_cache_size_limit - AttributeError: 'method' object has no attribute 'return_value'
+FAILED tests/test_config_modules_consolidated.py::TestConfigModulesConsolidated::test_target_companies_complete - AssertionError: assert (False or False)
+FAILED tests/test_core_functionality_consolidated.py::TestAPIModulesConsolidated::test_base_api_functionality - TypeError: Can't instantiate abstract class TestAPI with abstract meth...
+FAILED tests/test_core_functionality_consolidated.py::TestAPIModulesConsolidated::test_unified_api_functionality - AttributeError: 'UnifiedAPI' object has no attribute 'search_all_sources'
+FAILED tests/test_core_functionality_consolidated.py::TestStorageModulesConsolidated::test_storage_factory_functionality - ValueError: Поддерживается только PostgreSQL хранилище, получен: postg...
+FAILED tests/test_core_functionality_consolidated.py::TestStorageModulesConsolidated::test_vacancy_repository_functionality - TypeError: VacancyRepository.__init__() missing 2 required positional ...
+FAILED tests/test_core_functionality_consolidated.py::TestVacancyModulesConsolidated::test_vacancy_models_functionality - TypeError: Vacancy.__init__() missing 1 required positional argument: ...
+FAILED tests/test_core_functionality_consolidated.py::TestUIModulesConsolidated::test_vacancy_display_handler_functionality - TypeError: VacancyDisplayHandler.__init__() missing 1 required positio...
+FAILED tests/test_core_functionality_consolidated.py::TestIntegrationScenariosConsolidated::test_data_flow_integration - TypeError: Vacancy.__init__() missing 1 required positional argument: ...
+FAILED tests/test_core_modules_comprehensive.py::TestUserInterfaceModule::test_main_function_success - AttributeError: <module 'src.user_interface' from '/home/runner/worksp...
+FAILED tests/test_core_modules_comprehensive.py::TestUserInterfaceModule::test_main_function_db_connection_error - AttributeError: <module 'src.user_interface' from '/home/runner/worksp...
+FAILED tests/test_core_modules_comprehensive.py::TestUserInterfaceModule::test_main_function_keyboard_interrupt - AttributeError: <module 'src.user_interface' from '/home/runner/worksp...
+FAILED tests/test_core_modules_comprehensive.py::TestDBManagerComprehensive::test_check_connection_success - assert False is True
+FAILED tests/test_core_modules_comprehensive.py::TestVacancyModels::test_vacancy_validation_valid - AttributeError: 'Vacancy' object has no attribute 'is_valid'
+FAILED tests/test_core_modules_comprehensive.py::TestVacancyModels::test_vacancy_validation_invalid_title - AttributeError: 'Vacancy' object has no attribute 'is_valid'
+FAILED tests/test_core_modules_comprehensive.py::TestAppConfigComprehensive::test_app_config_default_values - AssertionError: assert 'postgres' in ['postgresql', 'json', 'memory']
+FAILED tests/test_core_modules_comprehensive.py::TestStorageFactoryComprehensive::test_storage_factory_postgresql - ValueError: Поддерживается только PostgreSQL хранилище, получен: postg...
+FAILED tests/test_core_modules_comprehensive.py::TestStorageFactoryComprehensive::test_storage_factory_json - ValueError: Поддерживается только PostgreSQL хранилище, получен: json
+FAILED tests/test_database_connection.py::TestDatabaseConnection::test_database_connection_init - AssertionError: assert False
+FAILED tests/test_database_connection.py::TestDatabaseConnection::test_close_connection - TypeError: DatabaseConnection.close_connection() takes 1 positional ar...
+FAILED tests/test_edge_cases_complete.py::TestPerformanceOptimization::test_caching_performance - OSError: [Errno 30] Read-only file system: '/mock'
+FAILED tests/test_edge_cases_complete.py::TestPerformanceOptimization::test_memory_usage_optimization - TypeError: DeduplicationService.__init__() missing 1 required position...
+FAILED tests/test_edge_cases_complete.py::TestDataValidation::test_vacancy_validation - assert None is not None
+FAILED tests/test_final_complete_coverage.py::TestCompleteAPIModuleCoverage::test_headhunter_api_complete_coverage - AttributeError: 'HeadHunterAPI' object has no attribute 'search_vacanc...
+FAILED tests/test_final_complete_coverage.py::TestCompleteAPIModuleCoverage::test_superjob_api_complete_coverage - AttributeError: 'SuperJobAPI' object has no attribute 'search_vacancies'
+FAILED tests/test_final_complete_coverage.py::TestCompleteStorageModuleCoverage::test_db_manager_complete_coverage - AssertionError: Expected 'execute' to have been called.
+FAILED tests/test_final_complete_coverage.py::TestCompleteStorageModuleCoverage::test_storage_factory_complete_coverage - ValueError: Поддерживается только PostgreSQL хранилище, получен: postg...
+FAILED tests/test_final_complete_coverage.py::TestCompleteUIModuleCoverage::test_user_interface_complete_coverage - AssertionError: Expected 'print' to have been called.
+FAILED tests/test_final_complete_coverage.py::TestCompleteUtilityModuleCoverage::test_salary_comprehensive - AttributeError: 'Salary' object has no attribute 'get_average'
+FAILED tests/test_final_complete_coverage.py::TestCompleteVacancyModelCoverage::test_vacancy_model_complete_coverage - AttributeError: 'Vacancy' object has no attribute 'is_valid'
+FAILED tests/test_final_complete_coverage.py::TestCompleteConfigurationCoverage::test_app_config_complete_coverage - AssertionError: assert 'postgres' in ['postgresql', 'json', 'memory']
+FAILED tests/test_get_api.py::TestAPIConnector::test_connect_timeout_error - Failed: DID NOT RAISE <class 'ConnectionError'>
+FAILED tests/test_get_api.py::TestAPIConnector::test_connect_http_error - Failed: DID NOT RAISE <class 'ConnectionError'>
+FAILED tests/test_get_api.py::TestAPIConnector::test_connect_http_error_no_response - Failed: DID NOT RAISE <class 'ConnectionError'>
+FAILED tests/test_get_api.py::TestAPIConnector::test_connect_request_exception - Failed: DID NOT RAISE <class 'ConnectionError'>
+FAILED tests/test_hh_api.py::TestHeadHunterAPI::test_get_vacancies_from_target_companies - AttributeError: <module 'src.api_modules.hh_api' from '/home/runner/wo...
+FAILED tests/test_hh_api.py::TestHeadHunterAPI::test_clear_cache - AttributeError: <src.api_modules.hh_api.HeadHunterAPI object at 0x7fcd...
+FAILED tests/test_main.py::TestMainModule::test_main_module_env_loading - AssertionError: Expected 'load_env_file' to have been called once. Cal...
+FAILED tests/test_main.py::TestMainModule::test_main_module_user_interface_import - AssertionError: assert False
+FAILED tests/test_main.py::TestMainModule::test_main_module_file_path_handling - AssertionError: Expected 'abspath' to have been called.
+FAILED tests/test_main.py::TestMainModule::test_main_module_conditional_execution - AttributeError: module 'main' has no attribute 'main'
+FAILED tests/test_main.py::TestMainModule::test_main_module_complete_flow - AssertionError: assert False
+FAILED tests/test_main_application_interface.py::TestMainApplicationInterface::test_main_application_interface_init - TypeError: Can't instantiate abstract class MainApplicationInterface w...
+FAILED tests/test_services_consolidated.py::TestStorageServicesConsolidated::test_filtering_service_complete - TypeError: FilteringService.__init__() missing 1 required positional a...
+FAILED tests/test_services_consolidated.py::TestStorageServicesConsolidated::test_deduplication_service_complete - TypeError: DeduplicationService.__init__() missing 1 required position...
+FAILED tests/test_services_consolidated.py::TestStorageServicesConsolidated::test_vacancy_storage_service_complete - TypeError: Can't instantiate abstract class VacancyStorageService with...
+FAILED tests/test_services_consolidated.py::TestStorageServicesConsolidated::test_vacancy_processing_coordinator_complete - TypeError: VacancyProcessingCoordinator.__init__() missing 1 required ...
+FAILED tests/test_services_storage_consolidated.py::TestStorageServicesConsolidated::test_vacancy_storage_service - TypeError: Can't instantiate abstract class VacancyStorageService with...
+FAILED tests/test_services_storage_consolidated.py::TestStorageServicesConsolidated::test_deduplication_service - TypeError: DeduplicationService.__init__() missing 1 required position...
+FAILED tests/test_services_storage_consolidated.py::TestStorageServicesConsolidated::test_filtering_service - TypeError: FilteringService.__init__() missing 1 required positional a...
+FAILED tests/test_services_storage_consolidated.py::TestStorageServicesConsolidated::test_sql_filter_service - TypeError: SQLFilterService.__init__() missing 1 required positional a...
+FAILED tests/test_services_storage_consolidated.py::TestStorageServicesConsolidated::test_vacancy_processing_coordinator - TypeError: VacancyProcessingCoordinator.__init__() missing 1 required ...
+FAILED tests/test_services_storage_consolidated.py::TestStorageComponentsConsolidated::test_vacancy_repository - TypeError: VacancyRepository.__init__() missing 2 required positional ...
+FAILED tests/test_services_storage_consolidated.py::TestAbstractStorageClasses::test_abstract_filter_service - TypeError: Can't instantiate abstract class ConcreteFilterService with...
+FAILED tests/test_storage_modules_consolidated.py::TestStorageModulesConsolidated::test_vacancy_repository - TypeError: VacancyRepository.__init__() missing 2 required positional ...
+FAILED tests/test_typed_data_processor.py::TestTypedDataProcessor::test_typed_data_processor_init - TypeError: Can't instantiate abstract class TypedDataProcessor with ab...
+FAILED tests/test_ui_components_extended.py::TestUIComponentsIntegration::test_menu_and_navigation_integration - NameError: name 'quick_paginate' is not defined
+FAILED tests/test_ui_components_extended.py::TestUIComponentsIntegration::test_component_error_resilience - NameError: name 'UINavigation' is not defined
+FAILED tests/test_ui_components_extended.py::TestUIComponentsIntegration::test_navigation_input_validation_comprehensive - NameError: name 'UINavigation' is not defined
+FAILED tests/test_ui_components_extended.py::TestUIComponentsIntegration::test_ui_components_memory_efficiency - NameError: name 'UINavigation' is not defined
+FAILED tests/test_ui_components_extended.py::TestUIComponentsIntegration::test_formatter_function_robustness - NameError: name 'UINavigation' is not defined
+FAILED tests/test_ui_helpers_comprehensive.py::TestUIHelpersBuildSearchableText::test_build_searchable_text_full_vacancy - assert 'test developer' in "python developer python programming, djang...
+FAILED tests/test_ui_helpers_extended.py::TestUIHelpersExtended::test_parse_search_query_mixed_case - AssertionError: assert {'keywords': ...rator': 'AND'} == {'keywords': ...
+FAILED tests/test_ui_modules_consolidated.py::TestUIModulesConsolidated::test_vacancy_display_handler - TypeError: VacancyDisplayHandler.__init__() missing 1 required positio...
+FAILED tests/test_ui_modules_consolidated.py::TestUIModulesConsolidated::test_vacancy_search_handler - TypeError: VacancySearchHandler.__init__() missing 1 required position...
+FAILED tests/test_ui_navigation_complete.py::TestUINavigationPaginateDisplay::test_paginate_display_invalid_input - StopIteration
+FAILED tests/test_ui_navigation_complete.py::TestQuickPaginateFunction::test_quick_paginate_with_custom_actions - AssertionError: assert False
+FAILED tests/test_ui_navigation_complete.py::TestUINavigationEdgeCases::test_navigation_boundary_page_numbers - StopIteration
+FAILED tests/test_ui_navigation_comprehensive.py::TestUINavigation::test_handle_navigation_choice_page_number - OSError: pytest: reading from stdin while output is captured!  Conside...
+FAILED tests/test_ui_navigation_comprehensive.py::TestQuickPaginate::test_quick_paginate_basic - TypeError: TestQuickPaginate.test_formatter() takes 1 positional argum...
+FAILED tests/test_ui_navigation_comprehensive.py::TestQuickPaginate::test_quick_paginate_with_custom_actions - TypeError: TestQuickPaginate.test_formatter() takes 1 positional argum...
+FAILED tests/test_ui_navigation_extended.py::TestUINavigationExtended::test_paginate_display_invalid_page_number - StopIteration
+FAILED tests/test_ui_navigation_extended.py::TestUINavigationExtended::test_paginate_display_custom_actions - AssertionError: Expected 'mock' to have been called once. Called 0 times.
+FAILED tests/test_ui_navigation_extended.py::TestUINavigationExtended::test_paginate_display_custom_action_error - AssertionError: assert 'Ошибка при выполнении действия' in '\n\nError ...
+FAILED tests/test_unified_api.py::TestUnifiedAPI::test_filter_by_target_companies - AttributeError: <module 'src.api_modules.unified_api' from '/home/runn...
+FAILED tests/test_unified_api.py::TestUnifiedAPI::test_filter_by_target_companies_empty_input - AttributeError: <module 'src.api_modules.unified_api' from '/home/runn...
+FAILED tests/test_unified_api.py::TestUnifiedAPI::test_filter_by_target_companies_no_target_companies - AttributeError: <module 'src.api_modules.unified_api' from '/home/runn...
+FAILED tests/test_unified_api.py::TestUnifiedAPI::test_filter_by_target_companies_missing_employer - AttributeError: <module 'src.api_modules.unified_api' from '/home/runn...
+FAILED tests/test_unified_api.py::TestUnifiedAPI::test_filter_by_target_companies_mixed_sources - AttributeError: <module 'src.api_modules.unified_api' from '/home/runn...
+FAILED tests/test_user_interface.py::TestUserInterface::test_logger_creation - AssertionError: expected call not found.
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_function_success_flow - AttributeError: <module 'src.user_interface' from '/home/runner/worksp...
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_function_db_connection_failure - AttributeError: <module 'src.user_interface' from '/home/runner/worksp...
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_function_db_init_failure - AttributeError: <module 'src.user_interface' from '/home/runner/worksp...
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_function_db_verification_failure - AttributeError: <module 'src.user_interface' from '/home/runner/worksp...
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_function_keyboard_interrupt - AttributeError: <module 'src.user_interface' from '/home/runner/worksp...
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_function_database_error - AttributeError: <module 'src.user_interface' from '/home/runner/worksp...
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_function_general_error - AttributeError: <module 'src.user_interface' from '/home/runner/worksp...
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_function_return_on_error - AttributeError: <module 'src.user_interface' from '/home/runner/worksp...
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_function_storage_creation - AttributeError: <module 'src.user_interface' from '/home/runner/worksp...
+FAILED tests/test_user_interface.py::TestUserInterface::test_main_function_user_interface_creation - AttributeError: <module 'src.user_interface' from '/home/runner/worksp...
+FAILED tests/test_user_interface_consolidated.py::TestUserInterfaceConsolidated::test_main_interface_complete - AttributeError: <module 'src.user_interface' from '/home/runner/worksp...
+FAILED tests/test_user_interface_consolidated.py::TestUserInterfaceConsolidated::test_interface_components_integration - TypeError: Can't instantiate abstract class MainApplicationInterface w...
+FAILED tests/test_utils_consolidated.py::TestUtilsConsolidated::test_paginator_complete - TypeError: Paginator() takes no arguments
+FAILED tests/test_utils_ui_consolidated.py::TestUtilsConsolidated::test_paginator_functionality - TypeError: Paginator() takes no arguments
+FAILED tests/test_utils_ui_consolidated.py::TestUIConsolidated::test_vacancy_display_handler_functionality - TypeError: VacancyDisplayHandler.__init__() missing 1 required positio...
+FAILED tests/test_utils_ui_consolidated.py::TestUIConsolidated::test_vacancy_search_handler_functionality - TypeError: VacancySearchHandler.__init__() missing 2 required position...
+FAILED tests/test_utils_ui_consolidated.py::TestUIConsolidated::test_vacancy_operations_coordinator_functionality - TypeError: VacancyOperationsCoordinator.__init__() missing 2 required ...
+FAILED tests/test_vacancy_display_handler.py::TestVacancyDisplayHandler::test_vacancy_display_handler_init - TypeError: VacancyDisplayHandler.__init__() missing 1 required positio...
+FAILED tests/test_vacancy_models_complete.py::TestVacancyModelsComplete::test_base_vacancy_model - TypeError: Vacancy.__init__() got an unexpected keyword argument 'comp...
+FAILED tests/test_vacancy_models_complete.py::TestVacancyModelsComplete::test_salary_model_complete - TypeError: Salary.__init__() got an unexpected keyword argument 'salar...
+FAILED tests/test_vacancy_models_complete.py::TestVacancyModelsComplete::test_hh_parser_complete - AttributeError: 'HHParser' object has no attribute 'parse'
+FAILED tests/test_vacancy_models_consolidated.py::TestVacancyModelsConsolidated::test_salary_model_complete - TypeError: Salary.__init__() got an unexpected keyword argument 'salar...
+FAILED tests/test_vacancy_models_consolidated.py::TestVacancyModelsConsolidated::test_employer_model_complete - TypeError: Employer.__init__() got an unexpected keyword argument 'url'
+FAILED tests/test_vacancy_operations_coordinator_complete.py::TestVacancyOperationsCoordinatorComplete::test_coordinator_init - TypeError: VacancyOperationsCoordinator.__init__() missing 2 required ...
+FAILED tests/test_vacancy_repository.py::TestVacancyRepository::test_save_vacancy - AttributeError: <src.storage.components.vacancy_repository.VacancyRepo...
+FAILED tests/test_vacancy_repository.py::TestVacancyRepository::test_get_vacancy_by_id - AttributeError: 'VacancyRepository' object has no attribute 'get_vacan...
+FAILED tests/test_vacancy_repository.py::TestVacancyRepository::test_get_all_vacancies - AttributeError: 'VacancyRepository' object has no attribute 'get_all_v...
+FAILED tests/test_vacancy_repository.py::TestVacancyRepository::test_update_vacancy - AttributeError: <src.storage.components.vacancy_repository.VacancyRepo...
+FAILED tests/test_vacancy_repository.py::TestVacancyRepository::test_find_vacancies_by_criteria - AttributeError: 'VacancyRepository' object has no attribute 'find_vaca...
+FAILED tests/test_vacancy_repository.py::TestVacancyRepository::test_count_vacancies - AttributeError: 'VacancyRepository' object has no attribute 'count_vac...
+FAILED tests/test_vacancy_repository.py::TestVacancyRepository::test_batch_save_vacancies - AttributeError: <src.storage.components.vacancy_repository.VacancyRepo...
+FAILED tests/test_vacancy_repository.py::TestVacancyRepository::test_get_vacancies_by_salary_range - AttributeError: 'VacancyRepository' object has no attribute 'get_vacan...
+FAILED tests/test_vacancy_search_handler_complete.py::TestVacancySearchHandlerComplete::test_search_handler_init - TypeError: VacancySearchHandler.__init__() missing 2 required position...
+FAILED tests/test_vacancy_validator.py::TestVacancyValidator::test_get_validation_errors - TypeError: VacancyValidator.get_validation_errors() takes 1 positional...
+ERROR tests/test_api_modules_comprehensive.py::TestCachedAPI::test_cached_api_initialization - TypeError: Can't instantiate abstract class CachedAPI with abstract me...
+ERROR tests/test_api_modules_comprehensive.py::TestCachedAPI::test_cached_api_search_with_caching - TypeError: Can't instantiate abstract class CachedAPI with abstract me...
+========== 136 failed, 986 passed, 4 skipped, 2 errors in 9.94s ===========
+~/workspace$ 
