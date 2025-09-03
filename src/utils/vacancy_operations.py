@@ -35,12 +35,13 @@ class VacancyOperations:
         Returns:
             List[Vacancy]: Отсортированный список вакансий
         """
+
         def get_sort_key(vacancy: Vacancy) -> int:
-            if vacancy.salary and hasattr(vacancy.salary, 'get_max_salary'):
+            if vacancy.salary and hasattr(vacancy.salary, "get_max_salary"):
                 max_sal = vacancy.salary.get_max_salary()
                 return max_sal if max_sal is not None else 0
             return 0
-        
+
         return sorted(vacancies, key=get_sort_key, reverse=reverse)
 
     @staticmethod
@@ -56,20 +57,20 @@ class VacancyOperations:
             List[Vacancy]: Список отфильтрованных вакансий
         """
         filtered_vacancies = []
-        
+
         for vacancy in vacancies:
             # Пропускаем вакансии без зарплаты
             if not vacancy.salary:
                 continue
-            
+
             # Получаем значения зарплаты
             salary_from = vacancy.salary.salary_from
             salary_to = vacancy.salary.salary_to
-            
+
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:
                 continue
-            
+
             # Вычисляем среднюю зарплату для сравнения
             if salary_from and salary_to:
                 # Если есть диапазон - берем среднее
@@ -80,12 +81,14 @@ class VacancyOperations:
             else:
                 # Если есть только "до" - используем это значение
                 avg_salary = salary_to
-            
+
             # Проверяем, что зарплата больше или равна минимальной
             if avg_salary >= min_salary:
                 filtered_vacancies.append(vacancy)
-        
-        logger.info(f"Отфильтровано {len(filtered_vacancies)} вакансий из {len(vacancies)} с минимальной зарплатой {min_salary}")
+
+        logger.info(
+            f"Отфильтровано {len(filtered_vacancies)} вакансий из {len(vacancies)} с минимальной зарплатой {min_salary}"
+        )
         return filtered_vacancies
 
     @staticmethod
@@ -101,20 +104,20 @@ class VacancyOperations:
             List[Vacancy]: Список отфильтрованных вакансий
         """
         filtered_vacancies = []
-        
+
         for vacancy in vacancies:
             # Пропускаем вакансии без зарплаты
             if not vacancy.salary:
                 continue
-            
+
             # Получаем значения зарплаты
             salary_from = vacancy.salary.salary_from
             salary_to = vacancy.salary.salary_to
-            
+
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:
                 continue
-            
+
             # Вычисляем среднюю зарплату для сравнения
             if salary_from and salary_to:
                 # Если есть диапазон - берем среднее
@@ -125,12 +128,14 @@ class VacancyOperations:
             else:
                 # Если есть только "до" - используем это значение
                 avg_salary = salary_to
-            
+
             # Проверяем, что зарплата меньше или равна максимальной
             if avg_salary <= max_salary:
                 filtered_vacancies.append(vacancy)
-        
-        logger.info(f"Отфильтровано {len(filtered_vacancies)} вакансий из {len(vacancies)} с максимальной зарплатой {max_salary}")
+
+        logger.info(
+            f"Отфильтровано {len(filtered_vacancies)} вакансий из {len(vacancies)} с максимальной зарплатой {max_salary}"
+        )
         return filtered_vacancies
 
     @staticmethod
@@ -147,20 +152,20 @@ class VacancyOperations:
             List[Vacancy]: Список отфильтрованных вакансий
         """
         filtered_vacancies = []
-        
+
         for vacancy in vacancies:
             # Пропускаем вакансии без зарплаты
             if not vacancy.salary:
                 continue
-            
+
             # Получаем значения зарплаты
             salary_from = vacancy.salary.salary_from
             salary_to = vacancy.salary.salary_to
-            
+
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:
                 continue
-            
+
             # Вычисляем среднюю зарплату для сравнения
             if salary_from and salary_to:
                 # Если есть диапазон - берем среднее
@@ -171,12 +176,14 @@ class VacancyOperations:
             else:
                 # Если есть только "до" - используем это значение
                 avg_salary = salary_to
-            
+
             # Проверяем, попадает ли зарплата в диапазон
             if min_salary <= avg_salary <= max_salary:
                 filtered_vacancies.append(vacancy)
-        
-        logger.info(f"Отфильтровано {len(filtered_vacancies)} вакансий из {len(vacancies)} по диапазону {min_salary}-{max_salary}")
+
+        logger.info(
+            f"Отфильтровано {len(filtered_vacancies)} вакансий из {len(vacancies)} по диапазону {min_salary}-{max_salary}"
+        )
         return filtered_vacancies
 
     @staticmethod

@@ -99,8 +99,9 @@ class VacancySearchHandler:
 
         # Используем VacancyOperationsCoordinator для получения вакансий от целевых компаний
         from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
+
         coordinator = VacancyOperationsCoordinator(self.unified_api, self.storage)
-        
+
         vacancies = coordinator.get_vacancies_from_target_companies(
             search_query=query, sources=source_list, period=period
         )

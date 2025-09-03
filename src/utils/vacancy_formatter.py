@@ -118,21 +118,21 @@ class VacancyFormatter:
         employer = getattr(vacancy, "employer", None)
         if not employer:
             return "Не указана"
-        
+
         # В объектной архитектуре employer всегда объект с методом get_name()
-        if hasattr(employer, 'get_name'):
+        if hasattr(employer, "get_name"):
             return employer.get_name()
-        
+
         # Fallback для обратной совместимости
         return str(employer) if employer else "Не указана"
 
     def _extract_salary_info(self, vacancy: Any) -> str:
         """Извлечение информации о зарплате"""
         salary = getattr(vacancy, "salary", None)
-        
+
         if not salary:
             return "Не указана"
-        
+
         return self.format_salary(salary)
 
     def _extract_responsibilities(self, vacancy: Any) -> Optional[str]:
@@ -165,11 +165,10 @@ class VacancyFormatter:
                 from utils.salary import Salary
             except ImportError:
                 from src.utils.salary import Salary
-            
-            salary = Salary(salary)
-        
-        return str(salary)
 
+            salary = Salary(salary)
+
+        return str(salary)
 
     def format_currency(self, currency: str) -> str:
         """Форматирование валюты"""
@@ -210,11 +209,11 @@ class VacancyFormatter:
         """Форматирование опыта работы"""
         if not experience:
             return "Не указан"
-        
+
         # В объектной архитектуре experience всегда объект с методом get_name()
-        if hasattr(experience, 'get_name'):
+        if hasattr(experience, "get_name"):
             return experience.get_name()
-        
+
         # Fallback для обратной совместимости
         return str(experience)
 
@@ -222,11 +221,11 @@ class VacancyFormatter:
         """Форматирование типа занятости"""
         if not employment:
             return "Не указан"
-        
+
         # В объектной архитектуре employment всегда объект с методом get_name()
-        if hasattr(employment, 'get_name'):
+        if hasattr(employment, "get_name"):
             return employment.get_name()
-        
+
         # Fallback для обратной совместимости
         return str(employment)
 

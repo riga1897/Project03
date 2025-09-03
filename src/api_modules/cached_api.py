@@ -15,7 +15,6 @@ from pathlib import Path
 from typing import Dict, List
 
 from src.utils.cache import FileCache
-from src.utils.decorators import simple_cache
 
 from .base_api import BaseJobAPI
 
@@ -64,17 +63,18 @@ class CachedAPI(BaseJobAPI, ABC):
             Dict: Ответ API
         """
         # Создаём простой кэш в памяти без использования декораторов
-        if not hasattr(self, '_memory_cache'):
+        if not hasattr(self, "_memory_cache"):
             self._memory_cache = {}
             self._cache_timestamps = {}
-        
+
         # Создаём хэшируемый ключ из параметров
         import json
+
         cache_key = f"{url}#{json.dumps(params, sort_keys=True)}"
-        
+
         current_time = time.time()
         ttl = 300  # 5 минут
-        
+
         # Проверяем существующий кэш
         if cache_key in self._memory_cache:
             timestamp, data = self._memory_cache[cache_key]
@@ -85,7 +85,7 @@ class CachedAPI(BaseJobAPI, ABC):
                 # Удаляем устаревшие данные
                 del self._memory_cache[cache_key]
                 del self._cache_timestamps[cache_key]
-        
+
         # Если данных нет в кэше памяти, возвращаем None - пусть файловый кэш и API обработают
         return None
 
@@ -128,20 +128,20 @@ class CachedAPI(BaseJobAPI, ABC):
             logger.debug(f"Данные получены из API для {api_prefix}")
 
             # Сохраняем в кэш в памяти
-            if not hasattr(self, '_memory_cache'):
+            if not hasattr(self, "_memory_cache"):
                 self._memory_cache = {}
                 self._cache_timestamps = {}
-            
+
             import json
+
             cache_key = f"{url}#{json.dumps(params, sort_keys=True)}"
             current_time = time.time()
             self._memory_cache[cache_key] = (current_time, data)
             self._cache_timestamps[cache_key] = current_time
-            
+
             # Ограничиваем размер кэша в памяти
             if len(self._memory_cache) > 1000:
-                oldest_keys = sorted(self._cache_timestamps.keys(), 
-                                   key=lambda k: self._cache_timestamps[k])[:100]
+                oldest_keys = sorted(self._cache_timestamps.keys(), key=lambda k: self._cache_timestamps[k])[:100]
                 for old_key in oldest_keys:
                     self._memory_cache.pop(old_key, None)
                     self._cache_timestamps.pop(old_key, None)

@@ -11,6 +11,7 @@ from typing import Any, Dict, List, Optional, Tuple
 try:
     import psycopg2
     from psycopg2.extras import RealDictCursor
+
     PSYCOPG2_AVAILABLE = True
     PsycopgError = psycopg2.Error
 except ImportError:
@@ -19,6 +20,7 @@ except ImportError:
     RealDictCursor = None
     PsycopgError = Exception  # Fallback для обработки исключений
     from .simple_db_adapter import get_db_adapter
+
     print("⚠️  psycopg2 недоступен, используется простой DB адаптер")
 
 from src.config.db_config import DatabaseConfig
@@ -59,7 +61,7 @@ class DBManager(AbstractDBManager):
         if not PSYCOPG2_AVAILABLE:
             # Возвращаем простой адаптер как "подключение"
             return get_db_adapter()
-            
+
         try:
             connection_params = self.db_config.get_connection_params()
             # Добавляем явное указание кодировки UTF-8
@@ -313,7 +315,7 @@ class DBManager(AbstractDBManager):
             if not self.check_connection():
                 logger.warning("Подключение к БД недоступно при выполнении get_companies_and_vacancies_count")
                 return [(company.name, 0) for company in TARGET_COMPANIES]
-                
+
             with self._get_connection() as conn:
                 with conn.cursor() as cursor:
                     # Основной SQL-запрос с использованием LEFT JOIN для получения статистики по компаниям
@@ -585,7 +587,7 @@ class DBManager(AbstractDBManager):
             logger.error(f"Неожиданная ошибка в get_vacancies_with_higher_salary: {e}")
             return []
 
-    def get_vacancies_with_keyword(self, keyword: str) -> List['Vacancy']:
+    def get_vacancies_with_keyword(self, keyword: str) -> List["Vacancy"]:
         """
         Получает список всех вакансий, в названии которых содержатся переданные слова
         Использует SQL-оператор LIKE для поиска по ключевому слову
@@ -778,7 +780,7 @@ class DBManager(AbstractDBManager):
                 # Используем простой адаптер
                 adapter = get_db_adapter()
                 return adapter.test_connection()
-                
+
             with self._get_connection() as conn:
                 with conn.cursor() as cursor:
                     # Простой SQL-запрос для проверки подключения к БД

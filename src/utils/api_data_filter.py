@@ -3,6 +3,7 @@
 """
 
 from typing import Any, Dict, List, Optional
+
 try:
     from .abstract_filter import AbstractDataFilter
 except ImportError:
@@ -14,15 +15,15 @@ class APIDataFilter(AbstractDataFilter):
 
     def filter_by_salary(
         self,
-        data: List['Vacancy'],
+        data: List["Vacancy"],
         min_salary: Optional[int] = None,
         max_salary: Optional[int] = None,
-    ) -> List['Vacancy']:
+    ) -> List["Vacancy"]:
         """
         Реализация абстрактного метода фильтрации по зарплате
         """
         return self.filter_by_salary_range(data, min_salary, max_salary)
-    
+
     def filter_by_salary_range(
         self,
         data: List[Dict[str, Any]],
@@ -249,11 +250,11 @@ class APIDataFilter(AbstractDataFilter):
             from utils.data_normalizers import normalize_area_data
         except ImportError:
             from src.utils.data_normalizers import normalize_area_data
-        
+
         # Защитная проверка типа данных
         if not isinstance(item, dict):
             return None
-            
+
         return normalize_area_data(item.get("area"))
 
     def _extract_experience(self, item: Dict[str, Any]) -> Optional[str]:
@@ -262,11 +263,11 @@ class APIDataFilter(AbstractDataFilter):
             from utils.data_normalizers import normalize_experience_data
         except ImportError:
             from src.utils.data_normalizers import normalize_experience_data
-        
+
         # Защитная проверка типа данных
         if not isinstance(item, dict):
             return None
-            
+
         return normalize_experience_data(item.get("experience"))
 
     def _extract_employment_type(self, item: Dict[str, Any]) -> Optional[str]:
@@ -275,18 +276,18 @@ class APIDataFilter(AbstractDataFilter):
             from utils.data_normalizers import normalize_employment_data
         except ImportError:
             from src.utils.data_normalizers import normalize_employment_data
-        
+
         # Защитная проверка типа данных
         if not isinstance(item, dict):
             return None
-            
+
         return normalize_employment_data(item.get("employment"))
 
     def filter_by_location(self, data: List[Dict[str, Any]], locations: List[str]) -> List[Dict[str, Any]]:
         """Реализация абстрактного метода фильтрации по местоположению"""
         if not data or not locations:
             return data
-            
+
         filtered = []
         for item in data:
             try:
@@ -296,12 +297,12 @@ class APIDataFilter(AbstractDataFilter):
             except (KeyError, TypeError):
                 continue
         return filtered
-    
+
     def filter_by_experience(self, data: List[Dict[str, Any]], experience_levels: List[str]) -> List[Dict[str, Any]]:
         """Реализация абстрактного метода фильтрации по опыту"""
         if not data or not experience_levels:
             return data
-            
+
         filtered = []
         for item in data:
             try:
@@ -318,19 +319,19 @@ class APIDataFilter(AbstractDataFilter):
             from utils.data_normalizers import normalize_employer_data
         except ImportError:
             from src.utils.data_normalizers import normalize_employer_data
-        
+
         # Защитная проверка типа данных
         if not isinstance(item, dict):
             return None
-            
-        # Проверяем employer (HH) или firm_name (SuperJob)  
+
+        # Проверяем employer (HH) или firm_name (SuperJob)
         employer = item.get("employer")
         if employer:
             return normalize_employer_data(employer)
-        
+
         # Для SuperJob создаем структуру как для employer
         firm_name = item.get("firm_name")
         if firm_name:
             return normalize_employer_data({"name": firm_name})
-        
+
         return None

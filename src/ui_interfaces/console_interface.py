@@ -123,6 +123,7 @@ class UserInterface:
                 print(f"Произошла ошибка: {e}")
                 # Добавляем небольшую задержку чтобы избежать бесконечного цикла ошибок
                 import time
+
                 time.sleep(0.1)
 
     def _show_menu(self) -> str:
@@ -596,14 +597,8 @@ class UserInterface:
         print("1. Перейдите на https://api.superjob.ru/register/")
         print("2. Зарегистрируйте ваше приложение")
         print("3. Получите Secret key")
-        print("4. Добавьте его в Secrets как SUPERJOB_API_KEY")
-        print("\nИнструкция по добавлению секретов:")
-        print("Откройте панель Secrets в левом меню")
-        print("Нажмите 'New Secret'")
-        print("Введите Key: SUPERJOB_API_KEY")
-        print("Введите Value: ваш настоящий API ключ")
-        print("Нажмите 'Add Secret'")
-        print("Перезапустите приложение")
+        print("4. Добавьте его в .env как SUPERJOB_API_KEY")
+        print("\nПерезапустите приложение")
         print("\n" + "=" * 60)
 
         input("\nНажмите Enter для продолжения...")

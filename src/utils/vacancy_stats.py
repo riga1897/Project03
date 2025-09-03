@@ -23,20 +23,13 @@ class VacancyStats:
         without_salary_count = 0
 
         if not vacancies:
-            return {
-                "average": 0,
-                "min": 0,
-                "max": 0,
-                "count": 0,
-                "with_salary_count": 0,
-                "without_salary_count": 0
-            }
+            return {"average": 0, "min": 0, "max": 0, "count": 0, "with_salary_count": 0, "without_salary_count": 0}
 
         for vacancy in vacancies:
             try:
-                if hasattr(vacancy, 'salary') and vacancy.salary:
-                    salary_from = getattr(vacancy.salary, 'amount_from', None)
-                    salary_to = getattr(vacancy.salary, 'amount_to', None)
+                if hasattr(vacancy, "salary") and vacancy.salary:
+                    salary_from = getattr(vacancy.salary, "amount_from", None)
+                    salary_to = getattr(vacancy.salary, "amount_to", None)
 
                     # Защищаемся от Mock объектов, проверяя тип
                     if salary_from is not None and isinstance(salary_from, (int, float)) and salary_from > 0:
@@ -61,7 +54,7 @@ class VacancyStats:
                 "max": 0,
                 "count": 0,
                 "with_salary_count": with_salary_count,
-                "without_salary_count": without_salary_count
+                "without_salary_count": without_salary_count,
             }
 
         return {
@@ -120,16 +113,16 @@ class VacancyStats:
                     employer = vacancy.get("employer")
                     if isinstance(employer, dict):
                         employer_name = employer.get("name")
-                    elif hasattr(employer, 'name'):
+                    elif hasattr(employer, "name"):
                         employer_name = employer.name
                     elif isinstance(employer, str):
                         employer_name = employer
-                elif hasattr(vacancy, 'employer'):
+                elif hasattr(vacancy, "employer"):
                     # Обрабатываем объект вакансии
                     employer = vacancy.employer
                     if isinstance(employer, dict):
                         employer_name = employer.get("name")
-                    elif hasattr(employer, 'name'):
+                    elif hasattr(employer, "name"):
                         employer_name = employer.name
                     elif isinstance(employer, str):
                         employer_name = employer

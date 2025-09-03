@@ -157,6 +157,15 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             List[Dict]: Список всех найденных вакансий
         """
         try:
+            # Проверяем API ключ
+            api_key = EnvLoader.get_env_var("SUPERJOB_API_KEY", "")
+            if not api_key or api_key == "v3.r.137440105.example.test_tool":
+                logger.warning("SuperJob API ключ не настроен или используется тестовый ключ")
+                logger.info(
+                    "Для полной функциональности настройте реальный API ключ через пункт меню '9. Настройка SuperJob API'"
+                )
+                return []
+
             # Приводим поисковый запрос к нижнему регистру для регистронезависимого поиска
             search_query_lower = search_query.lower() if search_query else search_query
 
@@ -169,7 +178,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
                 "sj",
             )
 
-            if not initial_data.get("total", 0):
+            if not initial_data or not initial_data.get("total", 0):
                 logger.info("No vacancies found for query")
                 return []
 
@@ -195,7 +204,9 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             print("\nПолучение вакансий остановлено.")
             return []
         except Exception as e:
-            logger.error(f"Failed to get vacancies: {e}")
+            logger.error(f"Failed to get vacancies from SuperJob: {e}")
+            if "403" in str(e) or "401" in str(e):
+                logger.warning("Возможно, проблема с API ключом SuperJob")
             return []
 
     def _deduplicate_vacancies(self, vacancies: List[Dict], source: str = None) -> List[Dict]:
@@ -237,7 +248,8 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
         """
         try:
             # Проверяем наличие API ключа
-            if not self.config.sj_config.secret_key:
+            api_key = EnvLoader.get_env_var("SUPERJOB_API_KEY", "")
+            if not api_key or api_key == "v3.r.137440105.example.test_tool":
                 logger.warning("SuperJob API ключ не настроен, пропускаем")
                 return []
 
@@ -248,27 +260,42 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             all_vacancies = self.get_vacancies(search_query, **kwargs)
 
             if not all_vacancies:
+                logger.info("SuperJob: не найдено вакансий для фильтрации")
                 return []
 
             # Строгая фильтрация только по SuperJob ID целевых компаний
-            target_sj_ids = TargetCompanies.get_sj_ids()
-            target_vacancies = []
+            try:
+                target_sj_ids = TargetCompanies.get_sj_ids()
+                target_vacancies = []
 
-            for vacancy in all_vacancies:
-                company_id = str(vacancy.get("id_client", ""))
-                # Проверяем строгое совпадение с целевыми ID
-                if company_id in target_sj_ids:
-                    target_vacancies.append(vacancy)
+                for vacancy in all_vacancies:
+                    try:
+                        company_id = str(vacancy.get("id_client", ""))
+                        # Проверяем строгое совпадение с целевыми ID
+                        if company_id in target_sj_ids:
+                            target_vacancies.append(vacancy)
+                    except Exception as e:
+                        logger.warning(f"Ошибка при обработке вакансии: {e}")
+                        continue
 
-            logger.info(f"SuperJob: отфильтровано {len(target_vacancies)} вакансий от целевых компаний по строгому ID-matching")
+                logger.info(
+                    f"SuperJob: отфильтровано {len(target_vacancies)} вакансий от целевых компаний по строгому ID-matching"
+                )
 
-            # Показываем статистику
-            if target_vacancies:
-                from src.utils.vacancy_stats import VacancyStats
+                # Показываем статистику
+                if target_vacancies:
+                    try:
+                        from src.utils.vacancy_stats import VacancyStats
 
-                VacancyStats.display_company_stats(target_vacancies, "SuperJob - Целевые компании")
+                        VacancyStats.display_company_stats(target_vacancies, "SuperJob - Целевые компании")
+                    except Exception as e:
+                        logger.warning(f"Ошибка при отображении статистики: {e}")
 
-            return target_vacancies
+                return target_vacancies
+
+            except Exception as e:
+                logger.error(f"Ошибка при фильтрации по целевым компаниям: {e}")
+                return all_vacancies  # Возвращаем все вакансии если фильтрация не удалась
 
         except Exception as e:
             if "403" in str(e) or "ключ" in str(e).lower():

@@ -324,9 +324,9 @@ class AdvancedSearch:
         for vacancy in vacancies:
             # Включаем search_query в поиск если это объект из базы данных
             search_query = ""
-            if hasattr(vacancy, 'search_query') and vacancy.search_query:
+            if hasattr(vacancy, "search_query") and vacancy.search_query:
                 search_query = vacancy.search_query
-            
+
             search_text = f"{vacancy.title} {vacancy.description or ''} {search_query}".lower()
             if all(keyword.lower() in search_text for keyword in keywords):
                 result.append(vacancy)
@@ -338,9 +338,9 @@ class AdvancedSearch:
         for vacancy in vacancies:
             # Включаем search_query в поиск если это объект из базы данных
             search_query = ""
-            if hasattr(vacancy, 'search_query') and vacancy.search_query:
+            if hasattr(vacancy, "search_query") and vacancy.search_query:
                 search_query = vacancy.search_query
-                
+
             search_text = f"{vacancy.title} {vacancy.description or ''} {search_query}".lower()
             if any(keyword.lower() in search_text for keyword in keywords):
                 result.append(vacancy)

@@ -144,7 +144,7 @@ class VacancyOperationsCoordinator:
             if vacancy.employer:
                 if isinstance(vacancy.employer, dict):
                     print(f"   Компания: {vacancy.employer.get('name', 'Неизвестная компания')}")
-                elif hasattr(vacancy.employer, 'name'):
+                elif hasattr(vacancy.employer, "name"):
                     print(f"   Компания: {vacancy.employer.name}")
                 else:
                     print(f"   Компания: {str(vacancy.employer)}")
@@ -216,14 +216,8 @@ class VacancyOperationsCoordinator:
         print("1. Перейдите на https://api.superjob.ru/register/")
         print("2. Зарегистрируйте ваше приложение")
         print("3. Получите Secret key")
-        print("4. Добавьте его в Secrets как SUPERJOB_API_KEY")
-        print("\nИнструкция по добавлению секретов:")
-        print("• Откройте панель Secrets в левом меню")
-        print("• Нажмите 'New Secret'")
-        print("• Введите Key: SUPERJOB_API_KEY")
-        print("• Введите Value: ваш настоящий API ключ")
-        print("• Нажмите 'Add Secret'")
-        print("• Перезапустите приложение")
+        print("4. Добавьте его в .env как SUPERJOB_API_KEY")
+        print("\nПерезапустите приложение")
         print("\n" + "=" * 60)
 
         input("\nНажмите Enter для продолжения...")
@@ -253,7 +247,7 @@ class VacancyOperationsCoordinator:
             # Конвертируем в объекты Vacancy с обработкой ошибок
             vacancies = []
             conversion_errors = 0
-            
+
             for data in vacancy_data:
                 try:
                     vacancy = Vacancy.from_dict(data)
@@ -307,7 +301,7 @@ class VacancyOperationsCoordinator:
             # Конвертируем в объекты Vacancy с обработкой ошибок
             vacancies = []
             conversion_errors = 0
-            
+
             for data in vacancy_data:
                 try:
                     vacancy = Vacancy.from_dict(data)

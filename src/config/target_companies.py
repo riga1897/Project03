@@ -150,16 +150,15 @@ class TargetCompanies:
         """Проверяет, является ли компания целевой по любому ID"""
         return company_id in cls.get_all_ids()
 
-
     @classmethod
     def find_company_by_exact_name(cls, name: str) -> Optional[CompanyInfo]:
         """Находит компанию по точному названию (без псевдонимов)"""
         name_lower = name.lower()
-        
+
         for company in cls.COMPANIES:
             if company.name.lower() == name_lower:
                 return company
-        
+
         return None
 
     @classmethod
@@ -179,10 +178,12 @@ TARGET_COMPANIES = [
     for company in TargetCompanies.COMPANIES
 ]
 
+
 # Обратная совместимость - старые функции
 def get_target_company_ids() -> List[str]:
     """Устаревшая функция - используйте TargetCompanies.get_hh_ids()"""
     return TargetCompanies.get_hh_ids()
+
 
 def get_target_company_names() -> List[str]:
     """Устаревшая функция - используйте TargetCompanies.get_company_names()"""

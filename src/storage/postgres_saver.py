@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional, Union
 try:
     import psycopg2
     from psycopg2.extras import RealDictCursor
+
     PsycopgError = psycopg2.Error
 except ImportError:
     psycopg2 = None
@@ -25,8 +26,6 @@ class PostgresSaver(AbstractVacancyStorage):
     Обеспечивает сохранение, загрузку, обновление и удаление вакансий
     в PostgreSQL базе данных с валидацией данных и обработкой ошибок.
     """
-
-
 
     def __init__(self, db_config: Optional[Dict[str, str]] = None):
         """
@@ -375,14 +374,16 @@ class PostgresSaver(AbstractVacancyStorage):
                 except Exception:
                     pass
 
-    def add_vacancy_batch_optimized(self, vacancies: Union[Vacancy, List[Vacancy]], search_query: str = None) -> List[str]:
+    def add_vacancy_batch_optimized(
+        self, vacancies: Union[Vacancy, List[Vacancy]], search_query: str = None
+    ) -> List[str]:
         """
         Максимально оптимизированное batch-добавление вакансий через временные таблицы.
         Использует SQL для всех операций, минимизирует количество запросов.
         """
         if not isinstance(vacancies, list):
             vacancies = [vacancies]
-            
+
         # Исправляем двойную вложенность списков
         if len(vacancies) == 1 and isinstance(vacancies[0], list):
             vacancies = vacancies[0]
@@ -418,7 +419,7 @@ class PostgresSaver(AbstractVacancyStorage):
             results = cursor.fetchall()
             for row in results:
                 comp_id, name, hh_id, sj_id = row
-                
+
                 # Добавляем только ID-маппинги с приведением к строке
                 if hh_id:
                     company_id_mapping[str(hh_id)] = comp_id
@@ -431,10 +432,10 @@ class PostgresSaver(AbstractVacancyStorage):
 
             for vacancy in vacancies:
                 # Проверяем, что vacancy действительно объект Vacancy
-                if not hasattr(vacancy, 'employer'):
+                if not hasattr(vacancy, "employer"):
                     logger.error(f"Объект не является Vacancy: {type(vacancy)} - {vacancy}")
                     continue
-                    
+
                 # Определяем company_id для связи с таблицей companies
                 mapped_company_id = None
                 employer_name = None
@@ -444,12 +445,12 @@ class PostgresSaver(AbstractVacancyStorage):
                     if isinstance(vacancy.employer, dict):
                         employer_name = vacancy.employer.get("name", "").strip()
                         employer_id = vacancy.employer.get("id", "").strip()
-                    elif hasattr(vacancy.employer, 'get_name'):
+                    elif hasattr(vacancy.employer, "get_name"):
                         employer_name = vacancy.employer.get_name().strip()
-                        employer_id = getattr(vacancy.employer, 'id', '').strip()
-                    elif hasattr(vacancy.employer, 'name'):
-                        employer_name = str(getattr(vacancy.employer, 'name', '')).strip()
-                        employer_id = str(getattr(vacancy.employer, 'id', '')).strip()
+                        employer_id = getattr(vacancy.employer, "id", "").strip()
+                    elif hasattr(vacancy.employer, "name"):
+                        employer_name = str(getattr(vacancy.employer, "name", "")).strip()
+                        employer_id = str(getattr(vacancy.employer, "id", "")).strip()
                     else:
                         employer_name = str(vacancy.employer).strip()
                         employer_id = ""
@@ -469,26 +470,26 @@ class PostgresSaver(AbstractVacancyStorage):
             # Обрабатываем ВСЕ переданные вакансии
             for vacancy in vacancies:
                 # Проверяем, что vacancy действительно объект Vacancy
-                if not hasattr(vacancy, 'employer'):
+                if not hasattr(vacancy, "employer"):
                     logger.error(f"Объект не является Vacancy во втором цикле: {type(vacancy)}")
                     continue
-                    
+
                 mapped_company_id = vacancy_company_mapping.get(vacancy.vacancy_id, None)
 
-                # Безопасная обработка salary 
+                # Безопасная обработка salary
                 salary_from = None
                 salary_to = None
                 salary_currency = None
-                
+
                 if vacancy.salary:
-                    if hasattr(vacancy.salary, 'salary_from'):
+                    if hasattr(vacancy.salary, "salary_from"):
                         salary_from = vacancy.salary.salary_from
                         salary_to = vacancy.salary.salary_to
                         salary_currency = vacancy.salary.currency
                     elif isinstance(vacancy.salary, dict):
-                        salary_from = vacancy.salary.get('from')
-                        salary_to = vacancy.salary.get('to')
-                        salary_currency = vacancy.salary.get('currency')
+                        salary_from = vacancy.salary.get("from")
+                        salary_to = vacancy.salary.get("to")
+                        salary_currency = vacancy.salary.get("currency")
                     # Если salary - boolean или что-то другое, оставляем None
 
                 # Конвертируем employer в строку для сохранения в БД
@@ -496,10 +497,10 @@ class PostgresSaver(AbstractVacancyStorage):
                 if vacancy.employer:
                     if isinstance(vacancy.employer, dict):
                         employer_str = vacancy.employer.get("name", str(vacancy.employer))
-                    elif hasattr(vacancy.employer, 'get_name'):
+                    elif hasattr(vacancy.employer, "get_name"):
                         employer_str = vacancy.employer.get_name()
-                    elif hasattr(vacancy.employer, 'name'):
-                        employer_str = str(getattr(vacancy.employer, 'name', ''))
+                    elif hasattr(vacancy.employer, "name"):
+                        employer_str = str(getattr(vacancy.employer, "name", ""))
                     else:
                         employer_str = str(vacancy.employer)
 
@@ -509,25 +510,25 @@ class PostgresSaver(AbstractVacancyStorage):
                 except ImportError:
                     from src.utils.data_normalizers import normalize_area_data
                 area_str = normalize_area_data(vacancy.area)
-                
+
                 # Обработка полей объектов в строки для БД
                 experience_str = None
                 if vacancy.experience:
-                    if hasattr(vacancy.experience, 'get_name'):
+                    if hasattr(vacancy.experience, "get_name"):
                         experience_str = vacancy.experience.get_name()
                     else:
                         experience_str = str(vacancy.experience)
-                
+
                 employment_str = None
                 if vacancy.employment:
-                    if hasattr(vacancy.employment, 'get_name'):
+                    if hasattr(vacancy.employment, "get_name"):
                         employment_str = vacancy.employment.get_name()
                     else:
                         employment_str = str(vacancy.employment)
-                
+
                 schedule_str = None
                 if vacancy.schedule:
-                    if hasattr(vacancy.schedule, 'get_name'):
+                    if hasattr(vacancy.schedule, "get_name"):
                         schedule_str = vacancy.schedule.get_name()
                     else:
                         schedule_str = str(vacancy.schedule)
@@ -1416,10 +1417,10 @@ class PostgresSaver(AbstractVacancyStorage):
 
             # Только ID-маппинг для фильтрации
             company_id_mapping = {}  # hh_id/sj_id -> company_id
-            
+
             for row in cursor.fetchall():
                 comp_id, name, hh_id, sj_id, normalized_name = row
-                
+
                 # Добавляем только ID-маппинги с приведением к строке
                 if hh_id:
                     company_id_mapping[str(hh_id)] = comp_id
@@ -1429,7 +1430,7 @@ class PostgresSaver(AbstractVacancyStorage):
             # Подготавливаем данные для вставки с фильтрацией по целевым компаниям
             insert_data = []
             filtered_count = 0
-            
+
             # Счетчик отфильтрованных вакансий
             target_found_count = 0
 
@@ -1453,7 +1454,9 @@ class PostgresSaver(AbstractVacancyStorage):
 
                 # Логирование найденных целевых компаний
                 if mapped_company_id:
-                    logger.info(f"Найдена целевая вакансия: '{vacancy.title}' от '{employer_name}' (ID: {employer_id})")
+                    logger.info(
+                        f"Найдена целевая вакансия: '{vacancy.title}' от '{employer_name}' (ID: {employer_id})"
+                    )
 
                 # ФИЛЬТРУЕМ: пропускаем вакансии НЕ от целевых компаний
                 if not mapped_company_id:
@@ -1470,20 +1473,20 @@ class PostgresSaver(AbstractVacancyStorage):
                 dedup_key = f"{title_norm}|{company_norm}|{salary_key}|{area_norm}"
 
                 # Подготавливаем данные для вставки
-                # Безопасная обработка salary 
+                # Безопасная обработка salary
                 salary_from = None
                 salary_to = None
                 salary_currency = None
-                
+
                 if vacancy.salary:
-                    if hasattr(vacancy.salary, 'salary_from'):
+                    if hasattr(vacancy.salary, "salary_from"):
                         salary_from = vacancy.salary.salary_from
                         salary_to = vacancy.salary.salary_to
                         salary_currency = vacancy.salary.currency
                     elif isinstance(vacancy.salary, dict):
-                        salary_from = vacancy.salary.get('from')
-                        salary_to = vacancy.salary.get('to')
-                        salary_currency = vacancy.salary.get('currency')
+                        salary_from = vacancy.salary.get("from")
+                        salary_to = vacancy.salary.get("to")
+                        salary_currency = vacancy.salary.get("currency")
                     # Если salary - boolean или что-то другое, оставляем None
 
                 area_str = str(vacancy.area) if vacancy.area else None
@@ -1517,7 +1520,7 @@ class PostgresSaver(AbstractVacancyStorage):
             logger.info(
                 f"После фильтрации по целевым компаниям: {len(insert_data)} из {len(vacancies)} вакансий (отфильтровано: {filtered_count})"
             )
-            
+
             logger.info(f"Доступно ID-маппингов для сопоставления: {len(company_id_mapping)}")
             if not company_id_mapping:
                 logger.warning("company_id_mapping пустой!")
@@ -1593,9 +1596,9 @@ class PostgresSaver(AbstractVacancyStorage):
 
             # Формируем результат из исходных объектов
             result_vacancies = [vacancies[idx] for idx in unique_indices]
-            
+
             logger.info(f"Финальный этап обработки: {len(insert_data)} -> {len(result_vacancies)} вакансий")
-            
+
             duplicates_removed = len(insert_data) - len(result_vacancies)
             logger.info(f"SQL-обработка завершена: {len(vacancies)} -> {len(result_vacancies)} вакансий")
             logger.info(f"Отфильтровано по компаниям: {filtered_count}, дедуплицировано: {duplicates_removed}")

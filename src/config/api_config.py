@@ -1,4 +1,5 @@
 from typing import Any, Dict, Optional
+
 from src.config.hh_api_config import HHAPIConfig
 from src.config.sj_api_config import SJAPIConfig
 

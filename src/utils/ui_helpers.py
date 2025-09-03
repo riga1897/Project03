@@ -136,13 +136,13 @@ def filter_vacancies_by_keyword(vacancies: List[Vacancy], keyword: str) -> List[
 
     keywords = parsed_query["keywords"]
     operator = parsed_query["operator"]
-    
+
     filtered_vacancies = []
 
     for vacancy in vacancies:
         # Формируем строку поиска из всех текстовых полей
         full_text = _build_searchable_text(vacancy)
-        
+
         # Применяем логику поиска в зависимости от оператора
         if operator == "AND":
             # Все ключевые слова должны присутствовать
@@ -159,10 +159,10 @@ def filter_vacancies_by_keyword(vacancies: List[Vacancy], keyword: str) -> List[
 def _parse_search_query(query: str) -> dict:
     """
     Парсит поисковый запрос на ключевые слова и логический оператор
-    
+
     Args:
         query: Поисковый запрос
-        
+
     Returns:
         dict: {"keywords": [список_слов], "operator": "AND"/"OR"}
     """
@@ -189,10 +189,10 @@ def _parse_search_query(query: str) -> dict:
 def _build_searchable_text(vacancy: Vacancy) -> str:
     """
     Формирует единую строку поиска из всех текстовых полей вакансии
-    
+
     Args:
         vacancy: Объект вакансии
-        
+
     Returns:
         str: Объединенный текст для поиска в нижнем регистре
     """
@@ -220,9 +220,9 @@ def _build_searchable_text(vacancy: Vacancy) -> str:
 
     # Проверяем тип занятости - безопасно преобразуем в строку
     if vacancy.employment:
-        if hasattr(vacancy.employment, '__str__'):
+        if hasattr(vacancy.employment, "__str__"):
             searchable_text.append(str(vacancy.employment))
-        elif hasattr(vacancy.employment, 'name'):
+        elif hasattr(vacancy.employment, "name"):
             searchable_text.append(str(vacancy.employment.name))
 
     # Проверяем навыки
@@ -237,10 +237,10 @@ def _build_searchable_text(vacancy: Vacancy) -> str:
 
     # Проверяем компанию
     if vacancy.employer:
-        if hasattr(vacancy.employer, 'name') and vacancy.employer.name:
+        if hasattr(vacancy.employer, "name") and vacancy.employer.name:
             searchable_text.append(str(vacancy.employer.name))
-        elif isinstance(vacancy.employer, dict) and 'name' in vacancy.employer:
-            searchable_text.append(str(vacancy.employer['name']))
+        elif isinstance(vacancy.employer, dict) and "name" in vacancy.employer:
+            searchable_text.append(str(vacancy.employer["name"]))
         else:
             searchable_text.append(str(vacancy.employer))
 

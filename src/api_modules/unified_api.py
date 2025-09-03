@@ -106,27 +106,30 @@ class UnifiedAPI:
 
         # Получаем ID целевых компаний
         from src.config.target_companies import TargetCompanies
+
         target_companies = TargetCompanies.get_all_companies()
         target_hh_ids = {str(comp.hh_id) for comp in target_companies if comp.hh_id}
         target_sj_ids = {str(comp.sj_id) for comp in target_companies if comp.sj_id}
 
         filtered_vacancies = []
-        
+
         for vacancy_data in all_vacancies:
             employer_id = None
             source = vacancy_data.get("source", "").lower()
-            
+
             # Извлекаем ID работодателя
             if "employer" in vacancy_data and isinstance(vacancy_data["employer"], dict):
                 employer_id = str(vacancy_data["employer"].get("id", ""))
             elif "employer_id" in vacancy_data:
                 employer_id = str(vacancy_data["employer_id"])
-            
+
             if employer_id:
                 # Проверяем соответствие ID целевым компаниям
-                if (source == "hh" and employer_id in target_hh_ids) or \
-                   (source == "sj" and employer_id in target_sj_ids) or \
-                   (employer_id in target_hh_ids or employer_id in target_sj_ids):
+                if (
+                    (source == "hh" and employer_id in target_hh_ids)
+                    or (source == "sj" and employer_id in target_sj_ids)
+                    or (employer_id in target_hh_ids or employer_id in target_sj_ids)
+                ):
                     filtered_vacancies.append(vacancy_data)
 
         logger.info(f"Фильтрация по целевым компаниям: {len(all_vacancies)} -> {len(filtered_vacancies)} вакансий")
@@ -155,7 +158,6 @@ class UnifiedAPI:
 
             # Парсим данные SuperJob в объекты SuperJobVacancy
             if sj_data:
-                from tqdm import tqdm
 
                 print(f"Парсинг {len(sj_data)} вакансий SuperJob...")
                 sj_vacancies_raw = self.parser.parse_vacancies(sj_data)
@@ -306,12 +308,14 @@ class UnifiedAPI:
         # Фильтрация через проверку ID компаний
         if all_vacancies:
             unique_vacancies = self._filter_by_target_companies(all_vacancies)
-            
+
             if unique_vacancies:
                 logger.info(f"Всего найдено {len(unique_vacancies)} уникальных вакансий от целевых компаний")
                 return unique_vacancies
             else:
-                logger.warning(f"После фильтрации не найдено вакансий от целевых компаний из {len(all_vacancies)} исходных")
+                logger.warning(
+                    f"После фильтрации не найдено вакансий от целевых компаний из {len(all_vacancies)} исходных"
+                )
                 return []
         else:
             logger.info("Вакансии от целевых компаний не найдены")

@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional, Union
 from src.utils.salary import Salary
 
 from .abstract import AbstractVacancy
-from .abstract_models import AbstractEmployer, AbstractExperience, AbstractEmployment, AbstractSalary, AbstractSchedule
+from .abstract_models import AbstractEmployer, AbstractEmployment, AbstractExperience, AbstractSalary, AbstractSchedule
 
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
@@ -14,95 +14,93 @@ logger = logging.getLogger(__name__)
 
 class Employer(AbstractEmployer):
     """Конкретная реализация работодателя"""
-    
-    def __init__(self, name: str, employer_id: Optional[str] = None, 
-                 trusted: Optional[bool] = None, alternate_url: Optional[str] = None):
+
+    def __init__(
+        self,
+        name: str,
+        employer_id: Optional[str] = None,
+        trusted: Optional[bool] = None,
+        alternate_url: Optional[str] = None,
+    ):
         self._name = name
         self._id = employer_id
         self._trusted = trusted
         self._alternate_url = alternate_url
-    
+
     def get_name(self) -> str:
         """Получить название компании"""
         return self._name or "Не указана"
-    
+
     def get_id(self) -> Optional[str]:
         """Получить ID работодателя"""
         return self._id
-    
+
     def is_trusted(self) -> Optional[bool]:
         """Проверить, является ли работодатель проверенным"""
         return self._trusted
-    
+
     def get_url(self) -> Optional[str]:
         """Получить URL работодателя"""
         return self._alternate_url
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Преобразование объекта Employer в словарь"""
-        return {
-            'name': self._name,
-            'id': self._id,
-            'trusted': self._trusted,
-            'alternate_url': self._alternate_url
-        }
-    
+        return {"name": self._name, "id": self._id, "trusted": self._trusted, "alternate_url": self._alternate_url}
+
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Employer':
+    def from_dict(cls, data: Dict[str, Any]) -> "Employer":
         """Создание объекта Employer из словаря"""
         return cls(
-            name=data.get('name', 'Не указана'),
-            employer_id=data.get('id'),
-            trusted=data.get('trusted'),
-            alternate_url=data.get('alternate_url')
+            name=data.get("name", "Не указана"),
+            employer_id=data.get("id"),
+            trusted=data.get("trusted"),
+            alternate_url=data.get("alternate_url"),
         )
-    
+
     def __str__(self) -> str:
         return self.get_name()
-    
+
     def __repr__(self) -> str:
         return f"Employer(name='{self._name}', id='{self._id}')"
-    
+
     # Свойства для обратной совместимости
     @property
     def name(self) -> str:
         return self.get_name()
-    
-    @property 
+
+    @property
     def id(self) -> Optional[str]:
         return self.get_id()
-        
+
     @property
     def trusted(self) -> Optional[bool]:
         return self._trusted
-        
+
     @property
     def alternate_url(self) -> Optional[str]:
         return self._alternate_url
-        
+
     # Метод get для совместимости со словарями
     def get(self, key: str, default=None):
         """Dictionary-like access for backward compatibility"""
-        if key == 'name':
+        if key == "name":
             return self._name
-        elif key == 'id':
+        elif key == "id":
             return self._id
-        elif key == 'trusted':
+        elif key == "trusted":
             return self._trusted
-        elif key == 'alternate_url':
+        elif key == "alternate_url":
             return self._alternate_url
         return default
-        
+
     def __eq__(self, other):
         """Comparison with dictionaries for test compatibility"""
         if isinstance(other, dict):
-            return (self.get('name') == other.get('name') and 
-                    self.get('id') == other.get('id'))
+            return self.get("name") == other.get("name") and self.get("id") == other.get("id")
         elif isinstance(other, Employer):
-            return (self._name == other._name and 
-                    self._id == other._id)
+            return self._name == other._name and self._id == other._id
         return False
-        
+
     def __hash__(self):
         """Hash for sets and dict keys"""
         return hash((self._name, self._id))
@@ -110,52 +108,46 @@ class Employer(AbstractEmployer):
 
 class Experience(AbstractExperience):
     """Конкретная реализация опыта работы"""
-    
+
     def __init__(self, name: str, experience_id: Optional[str] = None):
         self._name = name
         self._id = experience_id
-    
+
     def get_name(self) -> str:
         """Получить описание опыта"""
         return self._name or "Не указан"
-    
+
     def get_id(self) -> Optional[str]:
         """Получить ID опыта"""
         return self._id
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
-        return {
-            'name': self._name,
-            'id': self._id
-        }
-    
+        return {"name": self._name, "id": self._id}
+
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Experience':
+    def from_dict(cls, data: Dict[str, Any]) -> "Experience":
         """Создание объекта Experience из словаря"""
         if isinstance(data, str):
             return cls(name=data)
-        return cls(
-            name=data.get('name', 'Не указан'),
-            experience_id=data.get('id')
-        )
-    
+        return cls(name=data.get("name", "Не указан"), experience_id=data.get("id"))
+
     @classmethod
-    def from_string(cls, data: str) -> 'Experience':
+    def from_string(cls, data: str) -> "Experience":
         """Создание объекта Experience из строки"""
-        return cls(name=data or 'Не указан')
-    
+        return cls(name=data or "Не указан")
+
     def __str__(self) -> str:
         return self.get_name()
-    
+
     def __repr__(self) -> str:
         return f"Experience(name='{self._name}')"
-    
+
     # Свойства для обратной совместимости
     @property
     def name(self) -> str:
         return self.get_name()
-    
+
     @property
     def id(self) -> Optional[str]:
         return self.get_id()
@@ -163,52 +155,46 @@ class Experience(AbstractExperience):
 
 class Employment(AbstractEmployment):
     """Конкретная реализация типа занятости"""
-    
+
     def __init__(self, name: str, employment_id: Optional[str] = None):
         self._name = name
         self._id = employment_id
-    
+
     def get_name(self) -> str:
         """Получить тип занятости"""
         return self._name or "Не указан"
-    
+
     def get_id(self) -> Optional[str]:
         """Получить ID типа занятости"""
         return self._id
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
-        return {
-            'name': self._name,
-            'id': self._id
-        }
-    
+        return {"name": self._name, "id": self._id}
+
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Employment':
+    def from_dict(cls, data: Dict[str, Any]) -> "Employment":
         """Создание объекта Employment из словаря"""
         if isinstance(data, str):
             return cls(name=data)
-        return cls(
-            name=data.get('name', 'Не указан'),
-            employment_id=data.get('id')
-        )
-    
-    @classmethod 
-    def from_string(cls, data: str) -> 'Employment':
+        return cls(name=data.get("name", "Не указан"), employment_id=data.get("id"))
+
+    @classmethod
+    def from_string(cls, data: str) -> "Employment":
         """Создание объекта Employment из строки"""
-        return cls(name=data or 'Не указан')
-    
+        return cls(name=data or "Не указан")
+
     def __str__(self) -> str:
         return self.get_name()
-    
+
     def __repr__(self) -> str:
         return f"Employment(name='{self._name}')"
-    
+
     # Свойства для обратной совместимости
     @property
     def name(self) -> str:
         return self.get_name()
-    
+
     @property
     def id(self) -> Optional[str]:
         return self.get_id()
@@ -283,9 +269,9 @@ class Vacancy(AbstractVacancy):
         self.employer = self._validate_employer(employer)
         self.employer_id = employer_id
 
-        # Преобразуем experience в объект  
+        # Преобразуем experience в объект
         self.experience = self._validate_experience(experience)
-        
+
         # Преобразуем employment в объект
         self.employment = self._validate_employment(employment)
         self.schedule = schedule
@@ -310,91 +296,91 @@ class Vacancy(AbstractVacancy):
             return salary_data
         # Если AbstractSalary, создаем Salary на основе его данных
         if isinstance(salary_data, AbstractSalary):
-            return Salary(salary_data.to_dict()) 
+            return Salary(salary_data.to_dict())
         # Если словарь, создаем новый объект Salary
         return Salary(salary_data) if salary_data else Salary()
-    
+
     @staticmethod
-    def _validate_employer(employer_data: Optional[Union[Employer, AbstractEmployer, Dict[str, Any]]]) -> Optional[Employer]:
+    def _validate_employer(
+        employer_data: Optional[Union[Employer, AbstractEmployer, Dict[str, Any]]],
+    ) -> Optional[Employer]:
         """Приватный метод валидации данных о работодателе"""
         if not employer_data:
             return None
-        
+
         # Если уже объект Employer, возвращаем как есть
         if isinstance(employer_data, Employer):
             return employer_data
-        
+
         # Если AbstractEmployer, создаем Employer
         if isinstance(employer_data, AbstractEmployer):
             return Employer(
                 name=employer_data.get_name(),
                 employer_id=employer_data.get_id(),
                 trusted=employer_data.is_trusted(),
-                alternate_url=employer_data.get_url()
+                alternate_url=employer_data.get_url(),
             )
-        
+
         # Если словарь, создаем объект Employer
         if isinstance(employer_data, dict):
             return Employer.from_dict(employer_data)
-        
+
         # Если строка, создаем объект с именем
         if isinstance(employer_data, str):
             return Employer(name=employer_data)
-        
+
         return None
-    
+
     @staticmethod
-    def _validate_experience(experience_data: Optional[Union[Experience, AbstractExperience, str, Dict[str, Any]]]) -> Optional[Experience]:
+    def _validate_experience(
+        experience_data: Optional[Union[Experience, AbstractExperience, str, Dict[str, Any]]],
+    ) -> Optional[Experience]:
         """Приватный метод валидации данных об опыте"""
         if not experience_data:
             return None
-        
+
         # Если уже объект Experience, возвращаем как есть
         if isinstance(experience_data, Experience):
             return experience_data
-        
+
         # Если AbstractExperience, создаем Experience
         if isinstance(experience_data, AbstractExperience):
-            return Experience(
-                name=experience_data.get_name(),
-                experience_id=experience_data.get_id()
-            )
-        
+            return Experience(name=experience_data.get_name(), experience_id=experience_data.get_id())
+
         # Если словарь, создаем объект Experience
         if isinstance(experience_data, dict):
             return Experience.from_dict(experience_data)
-        
+
         # Если строка, создаем объект из строки
         if isinstance(experience_data, str):
             return Experience.from_string(experience_data)
-        
+
         return None
-    
+
     @staticmethod
-    def _validate_employment(employment_data: Optional[Union[Employment, AbstractEmployment, str, Dict[str, Any]]]) -> Optional[Employment]:
+    def _validate_employment(
+        employment_data: Optional[Union[Employment, AbstractEmployment, str, Dict[str, Any]]],
+    ) -> Optional[Employment]:
         """Приватный метод валидации данных о занятости"""
         if not employment_data:
             return None
-        
+
         # Если уже объект Employment, возвращаем как есть
         if isinstance(employment_data, Employment):
             return employment_data
-        
+
         # Если AbstractEmployment, создаем Employment
         if isinstance(employment_data, AbstractEmployment):
-            return Employment(
-                name=employment_data.get_name(),
-                employment_id=employment_data.get_id()
-            )
-        
+            return Employment(name=employment_data.get_name(), employment_id=employment_data.get_id())
+
         # Если словарь, создаем объект Employment
         if isinstance(employment_data, dict):
             return Employment.from_dict(employment_data)
-        
+
         # Если строка, создаем объект из строки
         if isinstance(employment_data, str):
             return Employment.from_string(employment_data)
-        
+
         return None
 
     @staticmethod
@@ -580,7 +566,6 @@ class Vacancy(AbstractVacancy):
             # Если описание все еще пустое, используем название вакансии
             if not description.strip():
                 description = f"Вакансия: {title}"
-            
 
             # Для HH (snippet)
             requirements = ""
@@ -595,21 +580,25 @@ class Vacancy(AbstractVacancy):
                 requirements = data.get("candidat") or ""
             if not responsibilities:
                 responsibilities = data.get("work") or ""
-            
+
             # Извлекаем структурированные требования и обязанности из описания
             # если они все еще пустые после обработки всех источников
             try:
                 from src.utils.description_parser import DescriptionParser
-                
+
                 # Если поля пустые, пытаемся извлечь из description
-                if (not requirements or not requirements.strip()) or (not responsibilities or not responsibilities.strip()):
-                    extracted_req, extracted_resp = DescriptionParser.extract_requirements_and_responsibilities(description)
-                    
+                if (not requirements or not requirements.strip()) or (
+                    not responsibilities or not responsibilities.strip()
+                ):
+                    extracted_req, extracted_resp = DescriptionParser.extract_requirements_and_responsibilities(
+                        description
+                    )
+
                     if (not requirements or not requirements.strip()) and extracted_req:
                         requirements = extracted_req
                     if (not responsibilities or not responsibilities.strip()) and extracted_resp:
                         responsibilities = extracted_resp
-                        
+
             except ImportError:
                 logger.warning("DescriptionParser не найден, пропускаем извлечение структурированных данных")
             except Exception as e:
@@ -681,28 +670,25 @@ class Vacancy(AbstractVacancy):
                 result["salary"] = {
                     "from_amount": self.salary.get("salary_from", self.salary.get("amount_from")),
                     "to_amount": self.salary.get("salary_to", self.salary.get("amount_to")),
-                    "currency": self.salary.get("currency", "")
+                    "currency": self.salary.get("currency", ""),
                 }
             else:
                 # Если это объект Salary
                 result["salary"] = {
                     "from_amount": getattr(self.salary, "amount_from", getattr(self.salary, "salary_from", None)),
                     "to_amount": getattr(self.salary, "amount_to", getattr(self.salary, "salary_to", None)),
-                    "currency": getattr(self.salary, "currency", "")
+                    "currency": getattr(self.salary, "currency", ""),
                 }
 
         if self.employer:
             # Обработка employer как словаря или объекта
             if isinstance(self.employer, dict):
-                result["employer"] = {
-                    "name": self.employer.get("name", ""),
-                    "url": self.employer.get("url", "")
-                }
+                result["employer"] = {"name": self.employer.get("name", ""), "url": self.employer.get("url", "")}
             else:
                 # Если это объект Employer
                 result["employer"] = {
                     "name": getattr(self.employer, "name", str(self.employer)),
-                    "url": getattr(self.employer, "url", "")
+                    "url": getattr(self.employer, "url", ""),
                 }
 
         return result

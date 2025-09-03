@@ -8,15 +8,16 @@
 """
 
 from .deduplication_service import DeduplicationService, SQLDeduplicationStrategy
-from .filtering_service import FilteringService, TargetCompanyFilterStrategy, SalaryFilterStrategy, CompositeFilterStrategy
+from .filtering_service import (CompositeFilterStrategy, FilteringService, SalaryFilterStrategy,
+                                TargetCompanyFilterStrategy)
 from .vacancy_storage_service import VacancyStorageService
 
 __all__ = [
-    'DeduplicationService',
-    'SQLDeduplicationStrategy',
-    'FilteringService', 
-    'TargetCompanyFilterStrategy',
-    'SalaryFilterStrategy',
-    'CompositeFilterStrategy',
-    'VacancyStorageService'
+    "DeduplicationService",
+    "SQLDeduplicationStrategy",
+    "FilteringService",
+    "TargetCompanyFilterStrategy",
+    "SalaryFilterStrategy",
+    "CompositeFilterStrategy",
+    "VacancyStorageService",
 ]
