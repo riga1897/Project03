@@ -248,9 +248,10 @@ class TestUINavigation:
         result = self.ui_nav._handle_navigation_choice("3", 1, 5)
         assert result == 3
 
-        # Некорректный номер страницы
-        result = self.ui_nav._handle_navigation_choice("10", 1, 5)
-        assert result == 1  # Остается на текущей странице
+        # Некорректный номер страницы - мокируем input
+        with patch('builtins.input', return_value=''):
+            result = self.ui_nav._handle_navigation_choice("10", 1, 5)
+            assert result == 1  # Должен остаться на текущей странице
 
     def test_display_navigation_menu(self):
         """Тестирование отображения навигационного меню"""
@@ -300,7 +301,10 @@ class TestQuickPaginate:
     def test_formatter(self):
         """Тестирование пользовательского форматтера"""
         def test_formatter(item, number=None):
-            return f"{number}: {item}" if number else str(item)
+            """Простой форматтер для тестов"""
+            if number is not None:
+                return f"{number}: Formatted: {item}"
+            return f"Formatted: {item}"
 
     @patch('builtins.input')
     @patch('builtins.print')

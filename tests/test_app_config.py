@@ -93,17 +93,19 @@ class TestAppConfig:
     def test_get_db_config_returns_copy(self, app_config):
         """Тест, что get_db_config возвращает копию конфигурации"""
         db_config = app_config.get_db_config()
+        original_host = app_config.db_config["host"]
 
         # Изменяем возвращенную копию
         db_config["host"] = "modified_host"
 
         # Проверяем, что оригинал не изменился
         assert app_config.db_config["host"] != "modified_host"
-        assert app_config.db_config["host"] == "localhost"
+        assert app_config.db_config["host"] == original_host
 
     def test_set_db_config_updates_existing(self, app_config):
         """Тест обновления существующей конфигурации БД"""
         original_host = app_config.db_config["host"]
+        original_database = app_config.db_config["database"]
 
         # Обновляем конфигурацию
         new_config = {"host": "new_host", "port": "5434"}
@@ -114,7 +116,7 @@ class TestAppConfig:
         assert app_config.db_config["port"] == "5434"
 
         # Проверяем, что другие значения не изменились
-        assert app_config.db_config["database"] == "Project03"
+        assert app_config.db_config["database"] == original_database
         assert app_config.db_config["username"] == "postgres"
 
     def test_set_db_config_adds_new_keys(self, app_config):
