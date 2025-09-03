@@ -263,10 +263,6 @@ class TestUnifiedAPI:
 
     def test_filter_by_target_companies(self, unified_api):
         """Тест фильтрации по целевым компаниям"""
-        # Проверяем, что метод существует
-        if not hasattr(unified_api, '_filter_by_target_companies'):
-            pytest.skip("Method _filter_by_target_companies not available")
-
         # Мокаем TargetCompanies
         with patch('src.config.target_companies.TargetCompanies') as mock_target_companies:
             mock_target_companies.get_hh_ids.return_value = ["company1", "company2"]
@@ -280,33 +276,28 @@ class TestUnifiedAPI:
                 {"id": "4", "employer": {"id": "unknown"}, "source": "hh"},
             ]
 
-            try:
-                result = unified_api._filter_by_target_companies(test_vacancies)
-                # Проверяем, что результат это список
-                assert isinstance(result, list)
-            except Exception:
-                pytest.skip("Filter method implementation differs")
+            result = unified_api._filter_by_target_companies(test_vacancies)
+
+            # Должны остаться только вакансии от целевых компаний
+            assert len(result) == 3
+            company_ids = [v["employer"]["id"] for v in result]
+            assert "company1" in company_ids
+            assert "company2" in company_ids
+            assert "company3" in company_ids
+            assert "unknown" not in company_ids
 
     def test_filter_by_target_companies_empty_input(self, unified_api):
         """Тест фильтрации пустого списка вакансий"""
-        if not hasattr(unified_api, '_filter_by_target_companies'):
-            pytest.skip("Method _filter_by_target_companies not available")
-
         with patch('src.config.target_companies.TargetCompanies') as mock_target_companies:
             mock_target_companies.get_hh_ids.return_value = ["company1"]
             mock_target_companies.get_sj_ids.return_value = ["company2"]
 
-            try:
-                result = unified_api._filter_by_target_companies([])
-                assert result == []
-            except Exception:
-                pytest.skip("Filter method implementation differs")
+            result = unified_api._filter_by_target_companies([])
+
+            assert result == []
 
     def test_filter_by_target_companies_no_target_companies(self, unified_api):
         """Тест фильтрации без целевых компаний"""
-        if not hasattr(unified_api, '_filter_by_target_companies'):
-            pytest.skip("Method _filter_by_target_companies not available")
-
         with patch('src.config.target_companies.TargetCompanies') as mock_target_companies:
             mock_target_companies.get_hh_ids.return_value = []
             mock_target_companies.get_sj_ids.return_value = []
@@ -315,17 +306,12 @@ class TestUnifiedAPI:
                 {"id": "1", "employer": {"id": "company1"}, "source": "hh"},
             ]
 
-            try:
-                result = unified_api._filter_by_target_companies(test_vacancies)
-                assert result == []
-            except Exception:
-                pytest.skip("Filter method implementation differs")
+            result = unified_api._filter_by_target_companies(test_vacancies)
+
+            assert result == []
 
     def test_filter_by_target_companies_missing_employer(self, unified_api):
         """Тест фильтрации вакансий без информации о работодателе"""
-        if not hasattr(unified_api, '_filter_by_target_companies'):
-            pytest.skip("Method _filter_by_target_companies not available")
-
         with patch('src.config.target_companies.TargetCompanies') as mock_target_companies:
             mock_target_companies.get_hh_ids.return_value = ["company1"]
             mock_target_companies.get_sj_ids.return_value = ["company2"]
@@ -337,18 +323,13 @@ class TestUnifiedAPI:
                 {"id": "3", "employer": {"name": "Company"}, "source": "hh"},  # Без id
             ]
 
-            try:
-                result = unified_api._filter_by_target_companies(test_vacancies)
-                # Такие вакансии должны быть отфильтрованы
-                assert result == []
-            except Exception:
-                pytest.skip("Filter method implementation differs")
+            result = unified_api._filter_by_target_companies(test_vacancies)
+
+            # Такие вакансии должны быть отфильтрованы
+            assert result == []
 
     def test_filter_by_target_companies_mixed_sources(self, unified_api):
         """Тест фильтрации вакансий из разных источников"""
-        if not hasattr(unified_api, '_filter_by_target_companies'):
-            pytest.skip("Method _filter_by_target_companies not available")
-
         with patch('src.config.target_companies.TargetCompanies') as mock_target_companies:
             mock_target_companies.get_hh_ids.return_value = ["hh_company1", "hh_company2"]
             mock_target_companies.get_sj_ids.return_value = ["sj_company1"]
@@ -361,12 +342,13 @@ class TestUnifiedAPI:
                 {"id": "4", "employer": {"id": "other_company"}, "source": "hh"},
             ]
 
-            try:
-                result = unified_api._filter_by_target_companies(test_vacancies)
-                # Проверяем, что результат это список
-                assert isinstance(result, list)
-            except Exception:
-                pytest.skip("Filter method implementation differs")
+            result = unified_api._filter_by_target_companies(test_vacancies)
+
+            # Должны остаться вакансии от целевых компаний обоих источников
+            assert len(result) == 3
+            sources = [v["source"] for v in result]
+            assert "hh" in sources
+            assert "sj" in sources
 
     def test_get_vacancies_from_sources_with_additional_kwargs(self, unified_api):
         """Тест получения вакансий с дополнительными параметрами"""

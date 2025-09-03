@@ -8,14 +8,12 @@ import sys
 import pytest
 from unittest.mock import Mock, patch, MagicMock, call
 from typing import Any, Dict, List, Optional
-import time # Import time for performance monitoring
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 try:
     from src.ui_interfaces.vacancy_search_handler import VacancySearchHandler
     from src.vacancies.models import Vacancy
-    from src.api_modules.unified_api import UnifiedAPI # Import UnifiedAPI
     SEARCH_HANDLER_AVAILABLE = True
 except ImportError:
     SEARCH_HANDLER_AVAILABLE = False
@@ -27,11 +25,6 @@ except ImportError:
             self.description = description
             self.url = url
 
-    class UnifiedAPI: # Define a dummy UnifiedAPI if not available
-        def get_vacancies(self, query, source):
-            pass
-        def get_available_sources(self):
-            pass
 
 class TestVacancySearchHandlerComplete:
     """Исправленные комплексные тесты для обработчика поиска вакансий"""
@@ -49,13 +42,13 @@ class TestVacancySearchHandlerComplete:
         # Создаем моки для обязательных зависимостей
         mock_unified_api = Mock()
         mock_storage = Mock()
-
+        
         # Настраиваем поведение моков
         mock_unified_api.get_vacancies.return_value = []
         mock_unified_api.get_available_sources.return_value = ["hh.ru", "superjob.ru"]
         mock_storage.get_vacancies.return_value = []
         mock_storage.save_vacancies.return_value = True
-
+        
         # Если VacancySearchHandler доступен, создаем экземпляр
         if SEARCH_HANDLER_AVAILABLE:
             self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
@@ -94,31 +87,19 @@ class TestVacancySearchHandlerComplete:
     @patch('builtins.print')
     def test_get_search_query(self, mock_print, mock_input):
         """Тест получения поискового запроса от пользователя"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'get_search_query'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'get_search_query'):
             pytest.skip("VacancySearchHandler or get_search_query not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
 
         query = self.search_handler.get_search_query()
         assert query == 'python'
         mock_input.assert_called_once()
 
     @patch('builtins.input', return_value='1')
-    @patch('builtins.print')
+    @patch('builtins.print') 
     def test_select_search_source(self, mock_print, mock_input):
         """Тест выбора источника для поиска"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'select_source'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'select_source'):
             pytest.skip("VacancySearchHandler or select_source not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
 
         # Мокируем доступные источники
         with patch.object(self.search_handler, 'get_available_sources', return_value=["hh.ru", "superjob.ru"]):
@@ -126,47 +107,28 @@ class TestVacancySearchHandlerComplete:
             assert source == "hh.ru" # Ожидаем первый источник, так как input='1'
             mock_input.assert_called_once()
 
-    @patch.object(UnifiedAPI, 'get_vacancies', return_value=[])  # Используем существующий метод
-    @patch('builtins.input', side_effect=['Python', '1', '0'])
+    @patch('src.api_modules.unified_api.UnifiedAPI.search_vacancies')
     @patch('builtins.print')
-    def test_execute_search(self, mock_print, mock_input, mock_search):
+    def test_execute_search(self, mock_print, mock_search_vacancies):
         """Тест выполнения поиска вакансий"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'execute_search'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'execute_search'):
             pytest.skip("VacancySearchHandler or execute_search not available")
 
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
-
-        # Настраиваем мок
-        mock_search.return_value = [
-            {"title": "Python Developer", "url": "http://test.com"}
-        ]
-
-        try:
-            # Выполняем поиск
-            self.search_handler.execute_search()
-
-            # Проверяем, что метод выполнился
-            assert True
-        except Exception:
-            pytest.skip("Search method implementation differs")
+        mock_search_vacancies.return_value = self.sample_search_results
+        
+        results = self.search_handler.execute_search('python', ['hh.ru'])
+        assert isinstance(results, list)
+        assert len(results) == 2
+        assert results[0].title == "Senior Python Developer"
+        mock_search_vacancies.assert_called_once_with('python', ['hh.ru'])
 
     @patch('builtins.input', return_value='100000')
     @patch('builtins.print')
     def test_set_salary_filter(self, mock_print, mock_input):
         """Тест установки фильтра по зарплате"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'set_salary_filter'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'set_salary_filter'):
             pytest.skip("VacancySearchHandler or set_salary_filter not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
-
+        
         # Предполагаем, что set_salary_filter возвращает значение фильтра
         with patch.object(self.search_handler, 'set_salary_filter', return_value=100000):
             filter_result = self.search_handler.set_salary_filter()
@@ -177,15 +139,9 @@ class TestVacancySearchHandlerComplete:
     @patch('builtins.print')
     def test_set_location_filter(self, mock_print, mock_input):
         """Тест установки фильтра по местоположению"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'set_location_filter'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'set_location_filter'):
             pytest.skip("VacancySearchHandler or set_location_filter not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
-
+        
         # Предполагаем, что set_location_filter возвращает значение фильтра
         with patch.object(self.search_handler, 'set_location_filter', return_value='Москва'):
             filter_result = self.search_handler.set_location_filter()
@@ -193,18 +149,12 @@ class TestVacancySearchHandlerComplete:
             mock_input.assert_called_once()
 
     @patch('builtins.input', return_value='Tech')
-    @patch('builtins.print')
+    @patch('builtins.print') 
     def test_set_company_filter(self, mock_print, mock_input):
         """Тест установки фильтра по компании"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'set_company_filter'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'set_company_filter'):
             pytest.skip("VacancySearchHandler or set_company_filter not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
-
+            
         # Предполагаем, что set_company_filter возвращает значение фильтра
         with patch.object(self.search_handler, 'set_company_filter', return_value='Tech'):
             filter_result = self.search_handler.set_company_filter()
@@ -213,21 +163,15 @@ class TestVacancySearchHandlerComplete:
 
     def test_apply_filters_to_results(self):
         """Тест применения фильтров к результатам поиска"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'apply_filters'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'apply_filters'):
             pytest.skip("VacancySearchHandler or apply_filters not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
 
         filters = {
             'min_salary': 130000,
             'max_salary': 200000,
             'company_keywords': ['Tech']
         }
-
+        
         # Создаем мок для Vacancy, если он не импортирован
         if not SEARCH_HANDLER_AVAILABLE:
             class MockVacancy:
@@ -266,14 +210,8 @@ class TestVacancySearchHandlerComplete:
     @patch('builtins.print')
     def test_sort_search_results(self, mock_print, mock_input):
         """Тест сортировки результатов поиска"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'sort_results'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'sort_results'):
             pytest.skip("VacancySearchHandler or sort_results not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
 
         # Создаем мок для Vacancy, если он не импортирован
         if not SEARCH_HANDLER_AVAILABLE:
@@ -285,7 +223,7 @@ class TestVacancySearchHandlerComplete:
                 Vacancy(title="B", salary=100000),
                 Vacancy(title="A", salary=150000)
             ]
-
+            
         # Предполагаем, что sort_results возвращает отсортированные результаты
         expected_sorted_results = sorted(self.sample_search_results, key=lambda x: x.salary, reverse=True)
         with patch.object(self.search_handler, 'sort_results', return_value=expected_sorted_results):
@@ -298,14 +236,8 @@ class TestVacancySearchHandlerComplete:
     @patch('builtins.print')
     def test_display_search_results_summary(self, mock_print):
         """Тест отображения сводки результатов поиска"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'display_summary'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'display_summary'):
             pytest.skip("VacancySearchHandler or display_summary not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
 
         self.search_handler.display_summary(self.sample_search_results, 'python')
         mock_print.assert_called()
@@ -314,15 +246,9 @@ class TestVacancySearchHandlerComplete:
     @patch('builtins.print')
     def test_set_results_limit(self, mock_print, mock_input):
         """Тест установки лимита результатов"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'set_limit'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'set_limit'):
             pytest.skip("VacancySearchHandler or set_limit not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
-
+            
         # Предполагаем, что set_limit возвращает значение лимита
         with patch.object(self.search_handler, 'set_limit', return_value=5):
             limit = self.search_handler.set_limit()
@@ -333,15 +259,9 @@ class TestVacancySearchHandlerComplete:
     @patch('builtins.print')
     def test_set_search_period(self, mock_print, mock_input):
         """Тест установки периода поиска (в днях)"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'set_search_period'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'set_search_period'):
             pytest.skip("VacancySearchHandler or set_search_period not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
-
+            
         # Предполагаем, что set_search_period возвращает значение периода
         with patch.object(self.search_handler, 'set_search_period', return_value=7):
             period = self.search_handler.set_search_period()
@@ -350,18 +270,12 @@ class TestVacancySearchHandlerComplete:
 
     def test_validate_search_query(self):
         """Тест валидации поискового запроса"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'validate_query'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'validate_query'):
             pytest.skip("VacancySearchHandler or validate_query not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
-
+            
         # Тест валидного запроса
         assert self.search_handler.validate_query('python developer') is True
-
+        
         # Тест невалидного запроса
         assert self.search_handler.validate_query('') is False
         assert self.search_handler.validate_query('   ') is False
@@ -369,22 +283,16 @@ class TestVacancySearchHandlerComplete:
     @patch('builtins.print')
     def test_save_search_criteria(self, mock_print):
         """Тест сохранения критериев поиска"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'save_criteria'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'save_criteria'):
             pytest.skip("VacancySearchHandler or save_criteria not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
-
+            
         criteria = {
             'query': 'python',
             'sources': ['hh.ru'],
             'min_salary': 100000,
             'location': 'Москва'
         }
-
+        
         # Предполагаем, что save_criteria возвращает True при успехе
         with patch.object(self.search_handler, 'save_criteria', return_value=True):
             result = self.search_handler.save_criteria(criteria, 'my_search')
@@ -394,15 +302,9 @@ class TestVacancySearchHandlerComplete:
     @patch('builtins.print')
     def test_load_saved_search_criteria(self, mock_print, mock_input):
         """Тест загрузки сохранённых критериев поиска"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'load_criteria'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'load_criteria'):
             pytest.skip("VacancySearchHandler or load_criteria not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
-
+            
         expected_criteria = {
             'query': 'python',
             'sources': ['hh.ru'],
@@ -419,15 +321,9 @@ class TestVacancySearchHandlerComplete:
     @patch('builtins.print')
     def test_search_history(self, mock_print):
         """Тест истории поисков"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'get_search_history'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'get_search_history'):
             pytest.skip("VacancySearchHandler or get_search_history not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
-
+            
         expected_history = [{'query': 'python'}, {'query': 'java'}]
         # Предполагаем, что get_search_history возвращает список истории
         with patch.object(self.search_handler, 'get_search_history', return_value=expected_history):
@@ -439,7 +335,7 @@ class TestVacancySearchHandlerComplete:
     @patch('builtins.print')
     def test_repeat_last_search(self, mock_print, mock_input):
         """Тест повторения последнего поиска"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'repeat_last_search'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'repeat_last_search'):
             pytest.skip("VacancySearchHandler or repeat_last_search not available")
 
         # Мокируем API для имитации поиска
@@ -462,19 +358,13 @@ class TestVacancySearchHandlerComplete:
     @patch('builtins.print')
     def test_export_search_results(self, mock_print):
         """Тест экспорта результатов поиска"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'export_results'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'export_results'):
             pytest.skip("VacancySearchHandler or export_results not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
 
         # Мокируем builtins.open для перехвата записи в файл
         mock_file = Mock()
         mock_open = Mock(return_value=mock_file)
-
+        
         with patch('builtins.open', mock_open):
             result = self.search_handler.export_results(
                 self.sample_search_results, 'search_results.json'
@@ -486,30 +376,18 @@ class TestVacancySearchHandlerComplete:
     @patch('builtins.print')
     def test_advanced_search_options(self, mock_print):
         """Тест расширенных опций поиска"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'show_advanced_options'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'show_advanced_options'):
             pytest.skip("VacancySearchHandler or show_advanced_options not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
-
+            
         self.search_handler.show_advanced_options()
         mock_print.assert_called()
 
     @patch('builtins.input', return_value='python OR java')
     def test_complex_search_query(self, mock_input):
         """Тест сложного поискового запроса с операторами"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'parse_complex_query'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'parse_complex_query'):
             pytest.skip("VacancySearchHandler or parse_complex_query not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
-
+            
         # Предполагаем, что parse_complex_query возвращает разобранный запрос
         expected_parsed = {'query': 'python OR java'}
         with patch.object(self.search_handler, 'parse_complex_query', return_value=expected_parsed):
@@ -521,15 +399,9 @@ class TestVacancySearchHandlerComplete:
     @patch('builtins.print')
     def test_search_suggestions(self, mock_print):
         """Тест предложений для поиска"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'get_suggestions'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'get_suggestions'):
             pytest.skip("VacancySearchHandler or get_suggestions not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
-
+            
         expected_suggestions = ['python', 'python developer', 'python jobs']
         # Предполагаем, что get_suggestions возвращает список предложений
         with patch.object(self.search_handler, 'get_suggestions', return_value=expected_suggestions):
@@ -539,17 +411,11 @@ class TestVacancySearchHandlerComplete:
 
     def test_search_performance_monitoring(self):
         """Тест мониторинга производительности поиска"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'monitor_performance'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'monitor_performance'):
             pytest.skip("VacancySearchHandler or monitor_performance not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
-
+            
         # Эмуляция времени выполнения 1 сек
-        with patch('time.time', side_effect=[0, 1]):
+        with patch('time.time', side_effect=[0, 1]):  
             performance = self.search_handler.monitor_performance(
                 lambda: self.sample_search_results
             )
@@ -560,15 +426,9 @@ class TestVacancySearchHandlerComplete:
     @patch('builtins.print')
     def test_search_error_handling(self, mock_print):
         """Тест обработки ошибок при поиске"""
-        if not SEARCH_HANDLER_AVAILABLE or not hasattr(VacancySearchHandler, 'handle_search_error'):
+        if not SEARCH_HANDLER_AVAILABLE or not hasattr(self.search_handler, 'handle_search_error'):
             pytest.skip("VacancySearchHandler or handle_search_error not available")
-
-        # Создаем экземпляр для вызова метода, если он не был создан в setup_method
-        if self.search_handler is None:
-            mock_unified_api = Mock()
-            mock_storage = Mock()
-            self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
-
+            
         error = Exception("Search API unavailable")
         # Предполагаем, что handle_search_error логирует ошибку и возвращает None
         with patch.object(self.search_handler, 'handle_search_error', return_value=None) as mock_handle_error:

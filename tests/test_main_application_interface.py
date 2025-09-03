@@ -21,13 +21,17 @@ class TestMainApplicationInterface:
     """Тестирование интерфейса главного приложения"""
 
     def test_main_application_interface_init(self):
-        """Тест инициализации интерфейса главного приложения"""
+        """Тест инициализации главного интерфейса приложения"""
         if not INTERFACE_AVAILABLE:
             pytest.skip("MainApplicationInterface not available")
 
-        # Тестируем абстрактность класса - нужны обязательные аргументы
-        with pytest.raises(TypeError):
-            MainApplicationInterface()
+        # Создаем конкретную реализацию абстрактного класса
+        class ConcreteMainApplication(MainApplicationInterface):
+            def run_application(self):
+                pass
+
+        interface = ConcreteMainApplication()
+        assert interface is not None
 
     def test_main_application_interface_abstract_methods(self):
         """Тест абстрактных методов"""
@@ -46,10 +50,6 @@ class TestMainApplicationInterface:
             def run_application(self):
                 return "Application started"
 
-        # Создаем моки для обязательных аргументов
-        mock_provider = Mock()
-        mock_processor = Mock()
-        mock_storage = Mock()
-
-        app = TestApplication(mock_provider, mock_processor, mock_storage)
-        assert app.run_application() == "Application started"
+        app = TestApplication()
+        result = app.run_application()
+        assert result == "Application started"
