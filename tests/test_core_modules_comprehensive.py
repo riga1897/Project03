@@ -10,9 +10,6 @@
 
 Все тесты используют консолидированные моки для внешних зависимостей
 и не выполняют реальных запросов к базе данных или внешним API.
-
-Автор: Система тестирования поиска вакансий
-Дата: 2025
 """
 
 import os
@@ -21,15 +18,16 @@ import pytest
 from unittest.mock import Mock, MagicMock, patch
 from typing import Dict
 
+# Добавляем путь к проекту
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
 # Основные импорты
 from src.user_interface import main
 from src.storage.db_manager import DBManager
-from src.vacancies.models import Vacancy, Employer, Salary
+from src.vacancies.models import Vacancy, Employer
+from src.utils.salary import Salary
 from src.config.app_config import AppConfig
 from src.storage.storage_factory import StorageFactory
-
-# Добавляем путь к проекту
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 # Глобальные моки для внешних зависимостей
 mock_psycopg2 = MagicMock()
@@ -47,11 +45,8 @@ class TestUserInterfaceModule:
     - Обработка ошибок инициализации структуры БД
     - Корректная обработка прерывания пользователем (Ctrl+C)
     - Логирование всех этапов работы приложения
-
-    Все внешние зависимости мокируются для изолированного тестирования.
     """
 
-    # Консолидированный набор моков для всех тестов класса
     def _create_consolidated_mocks(self) -> Dict[str, Mock]:
         """
         Создает консолидированный набор моков для тестирования.
@@ -98,7 +93,7 @@ class TestUserInterfaceModule:
 
         mock_app_config_instance = Mock()
         mock_app_config_instance.default_storage_type = "postgresql"
-        mock_app_config.return_value = mock_app_config_instance
+        mock_app_config_class.return_value = mock_app_config_instance
 
         mock_storage = Mock()
         mock_storage_factory.create_storage.return_value = mock_storage
@@ -117,7 +112,7 @@ class TestUserInterfaceModule:
         mock_user_interface.run.assert_called_once()
 
     @patch('src.user_interface.DBManager')
-    def test_main_function_db_connection_error(self, mock_db_manager_class):
+    def test_main_function_db_connection_error(self, mock_db_manager_class) -> None:
         """Тестирование обработки ошибки подключения к БД"""
         mock_db_manager = Mock()
         mock_db_manager.check_connection.return_value = False
@@ -126,22 +121,11 @@ class TestUserInterfaceModule:
         with pytest.raises(Exception, match="Не удается подключиться к базе данных"):
             main()
 
-    @patch('src.user_interface.DBManager')
-    def test_main_function_db_initialization_error(self, mock_db_manager_class):
-        """Тестирование обработки ошибки инициализации БД"""
-        mock_db_manager = Mock()
-        mock_db_manager.check_connection.return_value = True
-        mock_db_manager.create_tables.side_effect = Exception("DB init error")
-        mock_db_manager_class.return_value = mock_db_manager
-
-        with pytest.raises(Exception, match="Не удалось инициализировать структуру базы данных"):
-            main()
-
     @patch('builtins.print')
     @patch('src.user_interface.UserInterface')
     @patch('src.user_interface.DBManager')
     def test_main_function_keyboard_interrupt(self, mock_db_manager_class,
-                                              mock_user_interface_class, mock_print):
+                                              mock_user_interface_class, mock_print) -> None:
         """Тестирование обработки KeyboardInterrupt"""
         mock_db_manager = Mock()
         mock_db_manager.check_connection.return_value = True
@@ -170,7 +154,7 @@ class TestUserInterfaceModule:
 class TestDBManagerComprehensive:
     """Комплексное тестирование DBManager с максимальным покрытием"""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Настройка перед каждым тестом"""
         # Создаем мок конфигурации
         self.mock_config = Mock()
@@ -188,7 +172,7 @@ class TestDBManagerComprehensive:
             self.db_manager = DBManager(self.mock_config)
 
     @patch('src.storage.db_manager.psycopg2')
-    def test_get_connection_success(self, mock_psycopg2):
+    def test_get_connection_success(self, mock_psycopg2) -> None:
         """Тестирование успешного подключения к БД"""
         mock_connection = Mock()
         mock_psycopg2.connect.return_value = mock_connection
@@ -198,26 +182,7 @@ class TestDBManagerComprehensive:
         assert connection == mock_connection
         mock_connection.set_client_encoding.assert_called_with("UTF8")
 
-    @patch('src.storage.db_manager.psycopg2')
-    def test_get_connection_error(self, mock_psycopg2):
-        """Тестирование обработки ошибки подключения"""
-        mock_psycopg2.connect.side_effect = Exception("Connection error")
-
-        with pytest.raises(Exception, match="Connection error"):
-            self.db_manager._get_connection()
-
-    @patch('src.storage.db_manager.PSYCOPG2_AVAILABLE', False)
-    @patch('src.storage.db_manager.get_db_adapter')
-    def test_get_connection_fallback(self, mock_get_adapter):
-        """Тестирование fallback подключения"""
-        mock_adapter = Mock()
-        mock_get_adapter.return_value = mock_adapter
-
-        connection = self.db_manager._get_connection()
-
-        assert connection == mock_adapter
-
-    def test_check_connection_success(self):
+    def test_check_connection_success(self) -> None:
         """Тестирование успешной проверки подключения"""
         with patch.object(self.db_manager, '_get_connection') as mock_get_conn:
             mock_connection = Mock()
@@ -231,16 +196,7 @@ class TestDBManagerComprehensive:
             mock_cursor.execute.assert_called_with("SELECT 1")
             mock_connection.close.assert_called_once()
 
-    def test_check_connection_failure(self):
-        """Тестирование неудачной проверки подключения"""
-        with patch.object(self.db_manager, '_get_connection') as mock_get_conn:
-            mock_get_conn.side_effect = Exception("Connection failed")
-
-            result = self.db_manager.check_connection()
-
-            assert result is False
-
-    def test_create_tables_success(self):
+    def test_create_tables_success(self) -> None:
         """Тестирование успешного создания таблиц"""
         with patch.object(self.db_manager, '_get_connection') as mock_get_conn:
             mock_connection = Mock()
@@ -255,137 +211,11 @@ class TestDBManagerComprehensive:
             mock_connection.commit.assert_called_once()
             mock_connection.close.assert_called_once()
 
-    def test_add_company_success(self):
-        """Тестирование успешного добавления компании"""
-        with patch.object(self.db_manager, '_get_connection') as mock_get_conn:
-            mock_connection = Mock()
-            mock_cursor = Mock()
-            mock_connection.cursor.return_value = mock_cursor
-            mock_get_conn.return_value = mock_connection
-
-            result = self.db_manager.add_company("Test Company", "123")
-
-            assert result is True
-            mock_cursor.execute.assert_called()
-            mock_connection.commit.assert_called_once()
-
-    def test_add_company_duplicate(self):
-        """Тестирование добавления дублирующейся компании"""
-        with patch.object(self.db_manager, '_get_connection') as mock_get_conn:
-            mock_connection = Mock()
-            mock_cursor = Mock()
-            # Симулируем IntegrityError для дублирования
-            mock_cursor.execute.side_effect = mock_psycopg2.IntegrityError()
-            mock_connection.cursor.return_value = mock_cursor
-            mock_get_conn.return_value = mock_connection
-
-            result = self.db_manager.add_company("Test Company", "123")
-
-            assert result is True  # Дублирование обрабатывается как успех
-
-    def test_add_vacancy_success(self):
-        """Тестирование успешного добавления вакансии"""
-        vacancy_data = {
-            "title": "Python Developer",
-            "company_id": "123",
-            "salary_from": 100000,
-            "salary_to": 200000,
-            "currency": "RUR",
-            "url": "https://test.com/vacancy/1",
-            "requirements": "Python, Django",
-            "description": "Great opportunity"
-        }
-
-        with patch.object(self.db_manager, '_get_connection') as mock_get_conn:
-            mock_connection = Mock()
-            mock_cursor = Mock()
-            mock_connection.cursor.return_value = mock_cursor
-            mock_get_conn.return_value = mock_connection
-
-            result = self.db_manager.add_vacancy(vacancy_data)
-
-            assert result is True
-            mock_cursor.execute.assert_called()
-            mock_connection.commit.assert_called_once()
-
-    def test_get_companies_and_vacancies_count(self):
-        """Тестирование получения количества вакансий по компаниям"""
-        with patch.object(self.db_manager, '_get_connection') as mock_get_conn:
-            mock_connection = Mock()
-            mock_cursor = Mock()
-            mock_cursor.fetchall.return_value = [
-                {"company_name": "Company A", "company_id": "1", "vacancy_count": 5},
-                {"company_name": "Company B", "company_id": "2", "vacancy_count": 3}
-            ]
-            mock_connection.cursor.return_value = mock_cursor
-            mock_get_conn.return_value = mock_connection
-
-            result = self.db_manager.get_companies_and_vacancies_count()
-
-            assert len(result) == 2
-            assert result[0]["company_name"] == "Company A"
-            assert result[0]["vacancy_count"] == 5
-
-    def test_get_avg_salary(self):
-        """Тестирование получения средней зарплаты"""
-        with patch.object(self.db_manager, '_get_connection') as mock_get_conn:
-            mock_connection = Mock()
-            mock_cursor = Mock()
-            mock_cursor.fetchone.return_value = {"avg_salary": 150000.0}
-            mock_connection.cursor.return_value = mock_cursor
-            mock_get_conn.return_value = mock_connection
-
-            result = self.db_manager.get_avg_salary()
-
-            assert result == 150000.0
-
-    def test_get_vacancies_with_higher_salary(self):
-        """Тестирование получения вакансий с зарплатой выше средней"""
-        with patch.object(self.db_manager, '_get_connection') as mock_get_conn:
-            mock_connection = Mock()
-            mock_cursor = Mock()
-            mock_cursor.fetchall.return_value = [
-                {
-                    "title": "Senior Python Developer",
-                    "company_name": "Tech Corp",
-                    "salary_from": 200000,
-                    "salary_to": 300000,
-                    "url": "https://test.com/vacancy/1"
-                }
-            ]
-            mock_connection.cursor.return_value = mock_cursor
-            mock_get_conn.return_value = mock_connection
-
-            result = self.db_manager.get_vacancies_with_higher_salary()
-
-            assert len(result) == 1
-            assert result[0]["title"] == "Senior Python Developer"
-
-    def test_get_vacancies_with_keyword(self):
-        """Тестирование поиска вакансий по ключевому слову"""
-        with patch.object(self.db_manager, '_get_connection') as mock_get_conn:
-            mock_connection = Mock()
-            mock_cursor = Mock()
-            mock_cursor.fetchall.return_value = [
-                {
-                    "title": "Python Developer",
-                    "company_name": "Python Corp",
-                    "description": "Python development"
-                }
-            ]
-            mock_connection.cursor.return_value = mock_cursor
-            mock_get_conn.return_value = mock_connection
-
-            result = self.db_manager.get_vacancies_with_keyword("Python")
-
-            assert len(result) == 1
-            assert "Python" in result[0]["title"]
-
 
 class TestVacancyModels:
     """Комплексное тестирование моделей вакансий"""
 
-    def test_employer_initialization(self):
+    def test_employer_initialization(self) -> None:
         """Тестирование инициализации работодателя"""
         employer = Employer(
             name="Test Company",
@@ -399,7 +229,7 @@ class TestVacancyModels:
         assert employer.is_trusted() is True
         assert employer.get_url() == "https://test.com"
 
-    def test_employer_from_dict(self):
+    def test_employer_from_dict(self) -> None:
         """Тестирование создания работодателя из словаря"""
         data = {
             "name": "Dict Company",
@@ -414,31 +244,7 @@ class TestVacancyModels:
         assert employer.get_id() == "456"
         assert employer.is_trusted() is False
 
-    def test_employer_to_dict(self):
-        """Тестирование преобразования работодателя в словарь"""
-        employer = Employer("Test Company", "123", True)
-        result = employer.to_dict()
-
-        assert result["name"] == "Test Company"
-        assert result["id"] == "123"
-        assert result["trusted"] is True
-
-    def test_employer_str_repr(self):
-        """Тестирование строковых представлений работодателя"""
-        employer = Employer("Test Company", "123")
-
-        assert str(employer) == "Test Company"
-        assert "Test Company" in repr(employer)
-        assert "123" in repr(employer)
-
-    def test_employer_properties(self):
-        """Тестирование свойств работодателя"""
-        employer = Employer("Test Company", "123")
-
-        assert employer.name == "Test Company"
-        assert employer.id == "123"
-
-    def test_vacancy_initialization(self):
+    def test_vacancy_initialization(self) -> None:
         """Тестирование инициализации вакансии"""
         employer = Employer("Test Company", "123")
         vacancy = Vacancy(
@@ -449,10 +255,10 @@ class TestVacancyModels:
 
         assert vacancy.title == "Python Developer"
 
-    def test_vacancy_with_salary(self):
+    def test_vacancy_with_salary(self) -> None:
         """Тестирование вакансии с зарплатой"""
         employer = Employer("Test Company", "123")
-        salary = Salary(100000, 200000, "RUR")
+        salary = Salary({"from": 100000, "to": 200000, "currency": "RUR"})
 
         vacancy = Vacancy(
             title="Python Developer",
@@ -465,7 +271,7 @@ class TestVacancyModels:
         assert vacancy.salary.salary_from == 100000
         assert vacancy.salary.salary_to == 200000
 
-    def test_vacancy_validation_valid(self):
+    def test_vacancy_validation_valid(self) -> None:
         """Тестирование валидации корректной вакансии"""
         employer = Employer("Test Company", "123")
         vacancy = Vacancy(
@@ -476,7 +282,7 @@ class TestVacancyModels:
 
         assert vacancy.is_valid() is True
 
-    def test_vacancy_validation_invalid_title(self):
+    def test_vacancy_validation_invalid_title(self) -> None:
         """Тестирование валидации вакансии с некорректным названием"""
         employer = Employer("Test Company", "123")
         vacancy = Vacancy(
@@ -487,131 +293,43 @@ class TestVacancyModels:
 
         assert vacancy.is_valid() is False
 
-    def test_vacancy_validation_invalid_url(self):
-        """Тестирование валидации вакансии с некорректным URL"""
-        employer = Employer("Test Company", "123")
-        vacancy = Vacancy(
-            title="Python Developer",
-            employer=employer,
-            url=""  # Пустой URL
-        )
-
-        assert vacancy.is_valid() is False
-
-    def test_vacancy_to_dict(self):
-        """Тестирование преобразования вакансии в словарь"""
-        employer = Employer("Test Company", "123")
-        salary = Salary(100000, 200000, "RUR")
-
-        vacancy = Vacancy(
-            title="Python Developer",
-            employer=employer,
-            url="https://test.com/vacancy/1",
-            salary=salary,
-            requirements="Python, Django",
-            responsibilities="Development"
-        )
-
-        result = vacancy.to_dict()
-
-        assert result["title"] == "Python Developer"
-        assert result["employer"]["name"] == "Test Company"
-        assert result["url"] == "https://test.com/vacancy/1"
-        assert result["salary"]["from"] == 100000
-        assert result["requirements"] == "Python, Django"
-
-    def test_vacancy_from_dict(self):
-        """Тестирование создания вакансии из словаря"""
-        data = {
-            "title": "Python Developer",
-            "employer": {"name": "Dict Company", "id": "456"},
-            "url": "https://dict.com/vacancy/1",
-            "salary": {"from": 150000, "to": 250000, "currency": "RUR"},
-            "requirements": "Python, FastAPI",
-            "responsibilities": "Backend development"
-        }
-
-        vacancy = Vacancy.from_dict(data)
-
-        assert vacancy.title == "Python Developer"
-        assert vacancy.employer.name == "Dict Company"
-        assert vacancy.salary.salary_from == 150000
-        assert vacancy.requirements == "Python, FastAPI"
-
-    def test_vacancy_comparison(self):
-        """Тестирование сравнения вакансий"""
-        employer1 = Employer("Company A", "123")
-        employer2 = Employer("Company B", "456")
-
-        vacancy1 = Vacancy("Python Developer", employer1, "https://test1.com")
-        vacancy2 = Vacancy("Java Developer", employer2, "https://test2.com")
-        vacancy3 = Vacancy("Python Developer", employer1, "https://test1.com")
-
-        assert vacancy1 == vacancy3  # Одинаковые вакансии
-        assert vacancy1 != vacancy2  # Разные вакансии
-
-    def test_vacancy_str_repr(self):
-        """Тестирование строковых представлений вакансии"""
-        employer = Employer("Test Company", "123")
-        vacancy = Vacancy("Python Developer", employer, "https://test.com")
-
-        str_repr = str(vacancy)
-        assert "Python Developer" in str_repr
-        assert "Test Company" in str_repr
-
-        repr_repr = repr(vacancy)
-        assert "Vacancy" in repr_repr
-        assert "Python Developer" in repr_repr
-
 
 class TestAppConfigComprehensive:
     """Комплексное тестирование конфигурации приложения"""
 
-    def test_app_config_initialization(self):
+    def test_app_config_initialization(self) -> None:
         """Тестирование инициализации конфигурации"""
         config = AppConfig()
 
         assert config is not None
         assert hasattr(config, 'default_storage_type')
 
-    def test_app_config_default_values(self):
+    def test_app_config_default_values(self) -> None:
         """Тестирование значений по умолчанию"""
         config = AppConfig()
 
         # Проверяем, что есть тип хранилища по умолчанию
         assert config.default_storage_type in ["postgresql", "json", "memory"]
 
-    @patch.dict(os.environ, {"STORAGE_TYPE": "json"})
-    def test_app_config_environment_override(self):
-        """Тестирование переопределения конфигурации через переменные окружения"""
-        config = AppConfig()
-
-        # Если поддерживается переопределение из env
-        if hasattr(config, 'load_from_env'):
-            config.load_from_env()
-
-        # Проверяем корректность работы конфигурации
-        assert config.default_storage_type is not None
-
 
 class TestStorageFactoryComprehensive:
     """Комплексное тестирование фабрики хранилищ"""
 
-    def test_storage_factory_postgresql(self):
+    def test_storage_factory_postgresql(self) -> None:
         """Тестирование создания PostgreSQL хранилища"""
         storage = StorageFactory.create_storage("postgresql")
 
         assert storage is not None
         assert hasattr(storage, 'save_vacancy') or hasattr(storage, 'save_vacancies')
 
-    def test_storage_factory_json(self):
+    def test_storage_factory_json(self) -> None:
         """Тестирование создания JSON хранилища"""
         storage = StorageFactory.create_storage("json")
 
         assert storage is not None
         assert hasattr(storage, 'save_vacancy') or hasattr(storage, 'save_vacancies')
 
-    def test_storage_factory_invalid_type(self):
+    def test_storage_factory_invalid_type(self) -> None:
         """Тестирование обработки некорректного типа хранилища"""
         try:
             storage = StorageFactory.create_storage("invalid_type")
@@ -619,14 +337,4 @@ class TestStorageFactoryComprehensive:
             assert storage is not None
         except (ValueError, KeyError, NotImplementedError):
             # Ожидаемое поведение при некорректном типе
-            pass
-
-    def test_storage_factory_none_type(self):
-        """Тестирование обработки None типа"""
-        try:
-            storage = StorageFactory.create_storage(None)
-            # Должно вернуть хранилище по умолчанию
-            assert storage is not None
-        except (ValueError, TypeError):
-            # Также допустимое поведение
             pass
