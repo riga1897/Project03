@@ -54,50 +54,129 @@ class ConsolidatedTestMocks:
         self.mock_cursor.execute.return_value = None
         self.mock_cursor.close = Mock()
         
-        # Моки для файловых операций
+        # Моки для файловых операций - полная изоляция
         self.mock_pathlib = MagicMock()
         self.mock_path_instance = Mock()
+        
+        # Настраиваем все методы Path для возврата безопасных значений
         self.mock_pathlib.Path.return_value = self.mock_path_instance
         self.mock_path_instance.exists.return_value = False
+        self.mock_path_instance.is_file.return_value = False
+        self.mock_path_instance.is_dir.return_value = False
         self.mock_path_instance.mkdir.return_value = None
+        self.mock_path_instance.rmdir.return_value = None
+        self.mock_path_instance.touch.return_value = None
+        self.mock_path_instance.unlink.return_value = None
+        self.mock_path_instance.rename.return_value = None
+        self.mock_path_instance.replace.return_value = None
         self.mock_path_instance.read_text.return_value = '{"items": []}'
         self.mock_path_instance.write_text.return_value = None
+        self.mock_path_instance.read_bytes.return_value = b'{"items": []}'
+        self.mock_path_instance.write_bytes.return_value = None
+        self.mock_path_instance.stat.return_value = Mock(st_size=100)
+        self.mock_path_instance.parent = self.mock_path_instance
+        self.mock_path_instance.with_suffix.return_value = self.mock_path_instance
+        self.mock_path_instance.__truediv__ = Mock(return_value=self.mock_path_instance)
+        self.mock_path_instance.__str__ = Mock(return_value='/test/path')
         
         # Моки для системных операций
         self.mock_os = MagicMock()
         self.mock_os.makedirs.return_value = None
         self.mock_os.path.exists.return_value = False
+        self.mock_os.path.isfile.return_value = False
+        self.mock_os.path.isdir.return_value = False
+        self.mock_os.remove.return_value = None
+        self.mock_os.rmdir.return_value = None
+        self.mock_os.rename.return_value = None
+        self.mock_os.getcwd.return_value = '/test/cwd'
+        self.mock_os.chdir.return_value = None
         self.mock_os.environ = {"DATABASE_URL": "postgresql://test:test@localhost:5432/test"}
+        
+        # Моки для операций shutil
+        self.mock_shutil = MagicMock()
+        self.mock_shutil.rmtree.return_value = None
+        self.mock_shutil.copy.return_value = None
+        self.mock_shutil.copytree.return_value = None
+        self.mock_shutil.move.return_value = None
         
         # Моки для пользовательского ввода
         self.mock_input = Mock(return_value="1")
         self.mock_print = Mock()
         
-        # Регистрация моков в sys.modules
+        # Моки для JSON операций
+        self.mock_json = MagicMock()
+        self.mock_json.dump.return_value = None
+        self.mock_json.dumps.return_value = '{"items": []}'
+        self.mock_json.load.return_value = {"items": []}
+        self.mock_json.loads.return_value = {"items": []}
+        
+        # Моки для tempfile
+        self.mock_tempfile = MagicMock()
+        self.mock_tempfile.mkdtemp.return_value = '/tmp/test_cache'
+        self.mock_tempfile.mkstemp.return_value = (1, '/tmp/test_file')
+        
+        # Регистрация всех моков в sys.modules для полной изоляции
         sys.modules['requests'] = self.mock_requests
         sys.modules['psycopg2'] = self.mock_psycopg2
         sys.modules['psycopg2.extras'] = MagicMock()
         sys.modules['pathlib'] = self.mock_pathlib
+        sys.modules['shutil'] = self.mock_shutil
+        sys.modules['tempfile'] = self.mock_tempfile
+        sys.modules['json'] = self.mock_json
 
 # Создаем единый экземпляр моков
 global_mocks = ConsolidatedTestMocks()
 
-# Консолидированные патчи для всех тестов
+# Консолидированные патчи для всех тестов - полная изоляция файловой системы
 consolidated_patches = [
+    # Файловые операции
     patch('builtins.open', mock_open(read_data='{"items": []}')),
-    patch('builtins.input', global_mocks.mock_input),
-    patch('builtins.print', global_mocks.mock_print),
-    patch('os.makedirs', global_mocks.mock_os.makedirs),
-    patch('os.path.exists', global_mocks.mock_os.path.exists),
     patch('pathlib.Path.exists', return_value=False),
+    patch('pathlib.Path.is_file', return_value=False),
+    patch('pathlib.Path.is_dir', return_value=False),
     patch('pathlib.Path.mkdir'),
+    patch('pathlib.Path.rmdir'),
+    patch('pathlib.Path.touch'),
+    patch('pathlib.Path.unlink'),
+    patch('pathlib.Path.rename'),
+    patch('pathlib.Path.replace'),
     patch('pathlib.Path.read_text', return_value='{"items": []}'),
     patch('pathlib.Path.write_text'),
+    patch('pathlib.Path.read_bytes', return_value=b'{"items": []}'),
+    patch('pathlib.Path.write_bytes'),
+    patch('pathlib.Path.stat'),
+    patch('os.makedirs', global_mocks.mock_os.makedirs),
+    patch('os.path.exists', global_mocks.mock_os.path.exists),
+    patch('os.path.isfile', return_value=False),
+    patch('os.path.isdir', return_value=False),
+    patch('os.remove'),
+    patch('os.rmdir'),
+    patch('os.rename'),
+    patch('shutil.rmtree'),
+    patch('shutil.copy'),
+    patch('shutil.copytree'),
+    patch('shutil.move'),
+    patch('tempfile.mkdtemp', return_value='/tmp/test_cache'),
+    patch('tempfile.mkstemp', return_value=(1, '/tmp/test_file')),
+    # JSON операции
     patch('json.dump'),
+    patch('json.dumps', return_value='{"items": []}'),
     patch('json.load', return_value={"items": []}),
+    patch('json.loads', return_value={"items": []}),
+    # Пользовательский ввод
+    patch('builtins.input', global_mocks.mock_input),
+    patch('builtins.print', global_mocks.mock_print),
+    # Системные операции
     patch('time.sleep'),
+    patch('os.getcwd', return_value='/test/cwd'),
+    patch('os.chdir'),
+    # Сетевые запросы
     patch('requests.get', global_mocks.mock_requests.get),
     patch('requests.post', global_mocks.mock_requests.post),
+    patch('requests.put', global_mocks.mock_requests.post),
+    patch('requests.delete', global_mocks.mock_requests.post),
+    # База данных
+    patch('psycopg2.connect', global_mocks.mock_psycopg2.connect),
 ]
 
 
