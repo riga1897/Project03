@@ -1,4 +1,3 @@
-
 import os
 import sys
 import pytest
@@ -18,7 +17,7 @@ except ImportError:
     # Тестовые реализации для недостающих классов
     class Salary:
         """Тестовая модель зарплаты для случаев, когда исходный код недоступен"""
-        
+
         def __init__(self, data: Optional[Union[Dict[str, Any], int]] = None) -> None:
             """
             Инициализация объекта зарплаты
@@ -28,7 +27,7 @@ except ImportError:
             """
             if data is None:
                 data = {}
-            
+
             if isinstance(data, dict):
                 self.salary_from = data.get('from', 0)
                 self.salary_to = data.get('to', 0)
@@ -63,9 +62,9 @@ except ImportError:
 
     class Vacancy:
         """Тестовая модель вакансии для случаев, когда исходный код недоступен"""
-        
+
         def __init__(self, title: str, url: str, vacancy_id: str, source: str,
-                     employer: Optional[Dict[str, Any]] = None, 
+                     employer: Optional[Dict[str, Any]] = None,
                      salary: Optional[Union[Salary, Dict[str, Any]]] = None,
                      description: str = "", area: str = "", experience: str = "") -> None:
             """
@@ -153,7 +152,7 @@ class TestVacancyOperationsCoordinator:
     def consolidated_mocks(self) -> Dict[str, Mock]:
         """
         Консолидированные моки для всех тестов
-        
+
         Returns:
             Словарь с мокированными объектами
         """
@@ -165,7 +164,7 @@ class TestVacancyOperationsCoordinator:
             'source_selector': Mock(),
             'ui_helpers': Mock(),
         }
-        
+
         # Настраиваем возвращаемые значения для предотвращения зависания
         mocks['storage'].get_vacancies.return_value = []
         mocks['storage'].add_vacancy.return_value = []
@@ -178,17 +177,17 @@ class TestVacancyOperationsCoordinator:
         mocks['ui_helpers'].get_positive_integer.return_value = 10
         mocks['ui_helpers'].confirm_action.return_value = False
         mocks['ui_helpers'].filter_vacancies_by_keyword.return_value = []
-        
+
         return mocks
 
     @pytest.fixture
     def coordinator(self, consolidated_mocks: Dict[str, Mock]) -> VacancyOperationsCoordinator:
         """
         Фикстура координатора с консолидированными моками
-        
+
         Args:
             consolidated_mocks: Словарь мокированных объектов
-            
+
         Returns:
             Экземпляр координатора операций
         """
@@ -215,7 +214,7 @@ class TestVacancyOperationsCoordinator:
     def sample_vacancies(self) -> List[Vacancy]:
         """
         Фикстура тестовых вакансий с правильным созданием объектов
-        
+
         Returns:
             Список тестовых вакансий
         """
@@ -267,7 +266,7 @@ class TestVacancyOperationsCoordinator:
     def test_coordinator_initialization(self, consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест инициализации координатора
-        
+
         Args:
             consolidated_mocks: Консолидированные моки
         """
@@ -281,12 +280,12 @@ class TestVacancyOperationsCoordinator:
 
     @patch('builtins.input', return_value="")
     @patch('builtins.print')
-    def test_handle_vacancy_search(self, mock_print: Mock, mock_input: Mock, 
+    def test_handle_vacancy_search(self, mock_print: Mock, mock_input: Mock,
                                  coordinator: VacancyOperationsCoordinator,
                                  consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест обработки поиска вакансий с полным мокированием
-        
+
         Args:
             mock_print: Мок функции print
             mock_input: Мок функции input
@@ -298,18 +297,18 @@ class TestVacancyOperationsCoordinator:
             if hasattr(coordinator, 'search_handler'):
                 coordinator.search_handler = consolidated_mocks['search_handler']
                 coordinator.search_handler.search_vacancies.return_value = None
-            
+
             result = coordinator.handle_vacancy_search()
             assert result is None
 
     @patch('builtins.input', return_value="")
     @patch('builtins.print')
-    def test_handle_show_saved_vacancies(self, mock_print: Mock, mock_input: Mock, 
+    def test_handle_show_saved_vacancies(self, mock_print: Mock, mock_input: Mock,
                                        coordinator: VacancyOperationsCoordinator,
                                        consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест отображения сохраненных вакансий с полным мокированием
-        
+
         Args:
             mock_print: Мок функции print
             mock_input: Мок функции input
@@ -319,18 +318,18 @@ class TestVacancyOperationsCoordinator:
         if hasattr(coordinator, 'display_handler'):
             coordinator.display_handler = consolidated_mocks['display_handler']
             coordinator.display_handler.show_all_saved_vacancies.return_value = None
-        
+
         result = coordinator.handle_show_saved_vacancies()
         assert result is None
 
     @patch('builtins.input', return_value="")
     @patch('builtins.print')
-    def test_handle_top_vacancies_by_salary(self, mock_print: Mock, mock_input: Mock, 
+    def test_handle_top_vacancies_by_salary(self, mock_print: Mock, mock_input: Mock,
                                           coordinator: VacancyOperationsCoordinator,
                                           consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест обработки топ вакансий по зарплате с полным мокированием
-        
+
         Args:
             mock_print: Мок функции print
             mock_input: Мок функции input
@@ -340,18 +339,18 @@ class TestVacancyOperationsCoordinator:
         if hasattr(coordinator, 'display_handler'):
             coordinator.display_handler = consolidated_mocks['display_handler']
             coordinator.display_handler.show_top_vacancies_by_salary.return_value = None
-        
+
         result = coordinator.handle_top_vacancies_by_salary()
         assert result is None
 
     @patch('builtins.input', return_value="")
     @patch('builtins.print')
-    def test_handle_search_saved_by_keyword(self, mock_print: Mock, mock_input: Mock, 
+    def test_handle_search_saved_by_keyword(self, mock_print: Mock, mock_input: Mock,
                                           coordinator: VacancyOperationsCoordinator,
                                           consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест обработки поиска по ключевому слову с полным мокированием
-        
+
         Args:
             mock_print: Мок функции print
             mock_input: Мок функции input
@@ -361,18 +360,18 @@ class TestVacancyOperationsCoordinator:
         if hasattr(coordinator, 'display_handler'):
             coordinator.display_handler = consolidated_mocks['display_handler']
             coordinator.display_handler.search_saved_vacancies_by_keyword.return_value = None
-        
+
         result = coordinator.handle_search_saved_by_keyword()
         assert result is None
 
     @patch('builtins.input', return_value="0")
     @patch('builtins.print')
-    def test_handle_delete_vacancies(self, mock_print: Mock, mock_input: Mock, 
-                                   coordinator: VacancyOperationsCoordinator, 
+    def test_handle_delete_vacancies(self, mock_print: Mock, mock_input: Mock,
+                                   coordinator: VacancyOperationsCoordinator,
                                    consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест обработки удаления вакансий с полным мокированием
-        
+
         Args:
             mock_print: Мок функции print
             mock_input: Мок функции input
@@ -381,19 +380,19 @@ class TestVacancyOperationsCoordinator:
         """
         coordinator.storage = consolidated_mocks['storage']
         consolidated_mocks['storage'].get_vacancies.return_value = []
-        
+
         with patch('src.utils.ui_helpers.confirm_action', return_value=False) if SRC_AVAILABLE else Mock():
             result = coordinator.handle_delete_vacancies()
             assert result is None
 
     @patch('builtins.input', return_value="")
     @patch('builtins.print')
-    def test_handle_cache_cleanup(self, mock_print: Mock, mock_input: Mock, 
-                                coordinator: VacancyOperationsCoordinator, 
+    def test_handle_cache_cleanup(self, mock_print: Mock, mock_input: Mock,
+                                coordinator: VacancyOperationsCoordinator,
                                 consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест обработки очистки кэша с полным мокированием
-        
+
         Args:
             mock_print: Мок функции print
             mock_input: Мок функции input
@@ -403,18 +402,18 @@ class TestVacancyOperationsCoordinator:
         if hasattr(coordinator, 'source_selector'):
             coordinator.source_selector = consolidated_mocks['source_selector']
             coordinator.source_selector.get_user_source_choice.return_value = []
-        
+
         with patch('src.utils.ui_helpers.confirm_action', return_value=False) if SRC_AVAILABLE else Mock():
             result = coordinator.handle_cache_cleanup()
             assert result is None
 
     @patch('builtins.input', return_value="")
     @patch('builtins.print')
-    def test_handle_superjob_setup(self, mock_print: Mock, mock_input: Mock, 
+    def test_handle_superjob_setup(self, mock_print: Mock, mock_input: Mock,
                                  coordinator: VacancyOperationsCoordinator) -> None:
         """
         Тест обработки настройки SuperJob API с полным мокированием
-        
+
         Args:
             mock_print: Мок функции print
             mock_input: Мок функции input
@@ -424,12 +423,12 @@ class TestVacancyOperationsCoordinator:
             result = coordinator.handle_superjob_setup()
             assert result is None
 
-    def test_storage_integration(self, coordinator: VacancyOperationsCoordinator, 
-                               sample_vacancies: List[Vacancy], 
+    def test_storage_integration(self, coordinator: VacancyOperationsCoordinator,
+                               sample_vacancies: List[Vacancy],
                                consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест интеграции с хранилищем
-        
+
         Args:
             coordinator: Экземпляр координатора
             sample_vacancies: Тестовые вакансии
@@ -451,12 +450,12 @@ class TestVacancyOperationsCoordinator:
     @patch('builtins.input', return_value="0")
     @patch('builtins.print')
     def test_vacancy_management_workflow(self, mock_print: Mock, mock_input: Mock,
-                                       coordinator: VacancyOperationsCoordinator, 
+                                       coordinator: VacancyOperationsCoordinator,
                                        sample_vacancies: List[Vacancy],
                                        consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест рабочего процесса управления вакансиями с полным мокированием
-        
+
         Args:
             mock_print: Мок функции print
             mock_input: Мок функции input
@@ -484,11 +483,11 @@ class TestVacancyOperationsCoordinator:
     @patch('builtins.input', return_value="0")
     @patch('builtins.print')
     def test_coordinator_error_handling(self, mock_print: Mock, mock_input: Mock,
-                                      coordinator: VacancyOperationsCoordinator, 
+                                      coordinator: VacancyOperationsCoordinator,
                                       consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест обработки ошибок координатора с полным мокированием
-        
+
         Args:
             mock_print: Мок функции print
             mock_input: Мок функции input
@@ -520,11 +519,11 @@ class TestVacancyOperationsCoordinator:
     @patch('builtins.input', return_value="0")
     @patch('builtins.print')
     def test_coordinator_performance(self, mock_print: Mock, mock_input: Mock,
-                                   coordinator: VacancyOperationsCoordinator, 
+                                   coordinator: VacancyOperationsCoordinator,
                                    consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест производительности координатора с полным мокированием
-        
+
         Args:
             mock_print: Мок функции print
             mock_input: Мок функции input
@@ -556,49 +555,49 @@ class TestVacancyOperationsCoordinator:
         # Операции должны выполняться быстро
         assert execution_time < 5.0
 
-    def test_get_vacancies_from_sources(self, coordinator: VacancyOperationsCoordinator, 
+    def test_get_vacancies_from_sources(self, coordinator: VacancyOperationsCoordinator,
                                       consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест получения вакансий из источников
-        
+
         Args:
             coordinator: Экземпляр координатора
             consolidated_mocks: Консолидированные моки
         """
         coordinator.unified_api = consolidated_mocks['unified_api']
         coordinator.storage = consolidated_mocks['storage']
-        
+
         # Мокируем возвращаемые данные
         consolidated_mocks['unified_api'].get_vacancies_from_sources.return_value = []
         consolidated_mocks['storage'].add_vacancy.return_value = []
         consolidated_mocks['storage'].get_vacancies.return_value = []
-        
+
         result = coordinator.get_vacancies_from_sources("Python", ["hh.ru"])
         assert isinstance(result, list)
 
-    def test_get_vacancies_from_target_companies(self, coordinator: VacancyOperationsCoordinator, 
+    def test_get_vacancies_from_target_companies(self, coordinator: VacancyOperationsCoordinator,
                                                consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест получения вакансий от целевых компаний
-        
+
         Args:
             coordinator: Экземпляр координатора
             consolidated_mocks: Консолидированные моки
         """
         coordinator.unified_api = consolidated_mocks['unified_api']
         coordinator.storage = consolidated_mocks['storage']
-        
+
         # Мокируем возвращаемые данные
         consolidated_mocks['unified_api'].get_vacancies_from_target_companies.return_value = []
         consolidated_mocks['storage'].add_vacancy.return_value = []
         consolidated_mocks['storage'].get_vacancies.return_value = []
-        
+
         result = coordinator.get_vacancies_from_target_companies("", ["hh.ru"])
         assert isinstance(result, list)
 
     @pytest.mark.parametrize("operation_name", [
         "handle_vacancy_search",
-        "handle_show_saved_vacancies", 
+        "handle_show_saved_vacancies",
         "handle_top_vacancies_by_salary",
         "handle_search_saved_by_keyword",
         "handle_delete_vacancies",
@@ -608,12 +607,12 @@ class TestVacancyOperationsCoordinator:
     @patch('builtins.input', return_value="0")
     @patch('builtins.print')
     def test_parametrized_operations(self, mock_print: Mock, mock_input: Mock,
-                                   coordinator: VacancyOperationsCoordinator, 
+                                   coordinator: VacancyOperationsCoordinator,
                                    operation_name: str,
                                    consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Параметризованный тест всех операций координатора с полным мокированием
-        
+
         Args:
             mock_print: Мок функции print
             mock_input: Мок функции input
@@ -625,11 +624,11 @@ class TestVacancyOperationsCoordinator:
             operation = getattr(coordinator, operation_name)
 
             # Полностью мокируем все зависимости
-            coordinator.search_handler = consolidated_mocks['search_handler'] 
+            coordinator.search_handler = consolidated_mocks['search_handler']
             coordinator.display_handler = consolidated_mocks['display_handler']
             coordinator.source_selector = consolidated_mocks['source_selector']
             coordinator.storage = consolidated_mocks['storage']
-            
+
             # Настраиваем возвращаемые значения
             coordinator.search_handler.search_vacancies.return_value = None
             coordinator.display_handler.show_all_saved_vacancies.return_value = None
@@ -651,11 +650,11 @@ class TestVacancyOperationsCoordinator:
             # Операция не существует, тест проходит
             assert True
 
-    def test_coordinator_type_safety(self, coordinator: VacancyOperationsCoordinator, 
+    def test_coordinator_type_safety(self, coordinator: VacancyOperationsCoordinator,
                                    sample_vacancies: List[Vacancy]) -> None:
         """
         Тест типобезопасности координатора
-        
+
         Args:
             coordinator: Экземпляр координатора
             sample_vacancies: Тестовые вакансии
@@ -680,23 +679,23 @@ class TestVacancyOperationsCoordinator:
     def test_coordinator_comprehensive_validation(self, coordinator: VacancyOperationsCoordinator) -> None:
         """
         Комплексная валидация координатора
-        
+
         Args:
             coordinator: Экземпляр координатора
         """
         # Проверяем все основные атрибуты
         essential_attributes = ['unified_api', 'storage']
-        
+
         for attr in essential_attributes:
             assert hasattr(coordinator, attr), f"Отсутствует атрибут: {attr}"
-        
+
         # Проверяем все основные методы
         essential_methods = [
             'handle_vacancy_search', 'handle_show_saved_vacancies',
             'handle_delete_vacancies', 'handle_cache_cleanup',
             'get_vacancies_from_sources', 'get_vacancies_from_target_companies'
         ]
-        
+
         for method in essential_methods:
             assert hasattr(coordinator, method), f"Отсутствует метод: {method}"
             assert callable(getattr(coordinator, method)), f"Метод {method} не вызываемый"
@@ -704,11 +703,11 @@ class TestVacancyOperationsCoordinator:
     @patch('builtins.input', return_value="0")
     @patch('builtins.print')
     def test_coordinator_state_consistency(self, mock_print: Mock, mock_input: Mock,
-                                         coordinator: VacancyOperationsCoordinator, 
+                                         coordinator: VacancyOperationsCoordinator,
                                          consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест консистентности состояния координатора
-        
+
         Args:
             mock_print: Мок функции print
             mock_input: Мок функции input
@@ -738,11 +737,11 @@ class TestVacancyOperationsCoordinator:
     @patch('builtins.input', return_value="0")
     @patch('builtins.print')
     def test_coordinator_memory_management(self, mock_print: Mock, mock_input: Mock,
-                                         coordinator: VacancyOperationsCoordinator, 
+                                         coordinator: VacancyOperationsCoordinator,
                                          consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест управления памятью координатора
-        
+
         Args:
             mock_print: Мок функции print
             mock_input: Мок функции input
@@ -776,7 +775,7 @@ class TestVacancyOperationsCoordinator:
                                             consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест интеграции рабочих процессов координатора
-        
+
         Args:
             coordinator: Экземпляр координатора
             consolidated_mocks: Консолидированные моки
@@ -784,16 +783,16 @@ class TestVacancyOperationsCoordinator:
         # Проверяем взаимодействие между компонентами
         coordinator.unified_api = consolidated_mocks['unified_api']
         coordinator.storage = consolidated_mocks['storage']
-        
+
         # Настраиваем цепочку вызовов
         consolidated_mocks['unified_api'].get_vacancies_from_sources.return_value = []
         consolidated_mocks['storage'].add_vacancy.return_value = []
-        
+
         # Тестируем полный workflow
         with patch('builtins.print'), patch('builtins.input', return_value="0"):
             result1 = coordinator.get_vacancies_from_sources("Python", ["hh.ru"])
             result2 = coordinator.get_vacancies_from_target_companies()
-            
+
             assert isinstance(result1, list)
             assert isinstance(result2, list)
 
@@ -804,7 +803,7 @@ class TestVacancyOperationsCoordinator:
                                    consolidated_mocks: Dict[str, Mock]) -> None:
         """
         Тест граничных случаев координатора
-        
+
         Args:
             mock_print: Мок функции print
             mock_input: Мок функции input
@@ -814,10 +813,10 @@ class TestVacancyOperationsCoordinator:
         # Тестируем обработку пустых данных
         coordinator.storage = consolidated_mocks['storage']
         consolidated_mocks['storage'].get_vacancies.return_value = []
-        
+
         # Все методы должны корректно обрабатывать пустые данные
         edge_case_methods = ['handle_delete_vacancies', 'handle_show_saved_vacancies']
-        
+
         for method_name in edge_case_methods:
             if hasattr(coordinator, method_name):
                 method = getattr(coordinator, method_name)
