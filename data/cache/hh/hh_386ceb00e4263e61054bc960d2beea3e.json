@@ -1,0 +1,166 @@
+{
+  "timestamp": 1756935337.2737315,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 1,
+      "only_with_salary": false,
+      "period": 1,
+      "text": "python",
+      "page": 0,
+      "employer_id": "78638"
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "119808429",
+        "premium": false,
+        "name": "Дата-инженер (Junior)",
+        "department": {
+          "id": "78638-78638-dwh",
+          "name": "Т-Банк. ИТ. DWH"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "66",
+          "name": "Нижний Новгород",
+          "url": "https://api.hh.ru/areas/66"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Нижний Новгород",
+          "street": "Алексеевская улица",
+          "building": "10/16",
+          "lat": 56.322539,
+          "lng": 44.005968,
+          "description": null,
+          "raw": "Нижний Новгород, Алексеевская улица, 10/16",
+          "metro": {
+            "station_name": "Горьковская",
+            "line_name": "Автозаводская",
+            "station_id": "50.278",
+            "line_id": "50",
+            "lat": 56.313933,
+            "lng": 43.99482
+          },
+          "metro_stations": [
+            {
+              "station_name": "Горьковская",
+              "line_name": "Автозаводская",
+              "station_id": "50.278",
+              "line_id": "50",
+              "lat": 56.313933,
+              "lng": 43.99482
+            }
+          ],
+          "id": "17465711"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T09:02:10+0300",
+        "created_at": "2025-09-03T09:02:10+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=119808429",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": {
+          "id": "32978",
+          "url": "https://hh.ru/interview/32978?employerId=78638"
+        },
+        "url": "https://api.hh.ru/vacancies/119808429?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/119808429",
+        "relations": [],
+        "employer": {
+          "id": "78638",
+          "name": "Т-Банк",
+          "url": "https://api.hh.ru/employers/78638",
+          "alternate_url": "https://hh.ru/employer/78638",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1405176.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7240372.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7240373.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=78638",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Уверенно владеете SQL. Знаете <highlighttext>Python</highlighttext> или другой язык программирования на базовом уровне. Понимаете теорию СУБД- и ETL-процессов. ",
+          "responsibility": "Участвовать в проектах по развитию Data Platform. Писать скрипты SQL и <highlighttext>Python</highlighttext>. Прорабатывать интеграции с внешними системами для Data Platform."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "148",
+            "name": "Системный аналитик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 16,
+    "pages": 16,
+    "page": 0,
+    "per_page": 1,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&employer_id=78638&enable_snippets=true&items_on_page=1&search_period=1&text=python"
+  }
+}
