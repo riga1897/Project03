@@ -19,7 +19,7 @@ from src.vacancies.abstract_models import AbstractEmployer, AbstractExperience, 
 from src.vacancies.models import Vacancy, Employer, Experience, Employment
 from src.vacancies.parsers.base_parser import BaseParser
 from src.vacancies.parsers.hh_parser import HHParser
-from src.vacancies.parsers.sj_parser import SJParser
+from src.vacancies.parsers.sj_parser import SuperJobParser
 
 
 def create_hh_vacancy_data():
@@ -611,12 +611,12 @@ class TestHHParser:
             assert vacancy.title == "Test Job"
 
 
-class TestSJParser:
+class TestSuperJobParser:
     """Комплексное тестирование парсера SuperJob"""
     
     def setup_method(self):
         """Настройка перед каждым тестом"""
-        self.parser = SJParser()
+        self.parser = SuperJobParser()
         
     def test_sj_parser_initialization(self):
         """Тестирование инициализации парсера SuperJob"""

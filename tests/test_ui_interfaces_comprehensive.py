@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 mock_psycopg2 = MagicMock()
 sys.modules['psycopg2'] = mock_psycopg2
 
-from src.ui_interfaces.console_interface import ConsoleInterface
+from src.ui_interfaces.console_interface import UserInterface
 from src.ui_interfaces.source_selector import SourceSelector
 from src.ui_interfaces.vacancy_display_handler import VacancyDisplayHandler
 from src.ui_interfaces.vacancy_search_handler import VacancySearchHandler
@@ -41,71 +41,73 @@ def create_mock_vacancy():
     return vacancy
 
 
-class TestConsoleInterface:
-    """Комплексное тестирование консольного интерфейса"""
+class TestUserInterface:
+    """Комплексное тестирование пользовательского интерфейса"""
     
     def setup_method(self):
         """Настройка перед каждым тестом"""
-        self.console_interface = ConsoleInterface()
+        mock_storage = Mock()
+        mock_db_manager = Mock()
+        self.user_interface = UserInterface(storage=mock_storage, db_manager=mock_db_manager)
         
     def test_console_interface_initialization(self):
         """Тестирование инициализации консольного интерфейса"""
-        assert self.console_interface is not None
+        assert self.user_interface is not None
         
     def test_display_welcome_message(self):
         """Тестирование отображения приветственного сообщения"""
-        if hasattr(self.console_interface, 'display_welcome'):
+        if hasattr(self.user_interface, 'display_welcome'):
             # Метод не должен вызывать исключений
             try:
-                self.console_interface.display_welcome()
+                self.user_interface.display_welcome()
             except Exception as e:
                 pytest.fail(f"display_welcome should not raise exceptions: {e}")
                 
     def test_display_main_menu(self):
         """Тестирование отображения главного меню"""
-        if hasattr(self.console_interface, 'display_main_menu'):
+        if hasattr(self.user_interface, 'display_main_menu'):
             try:
-                self.console_interface.display_main_menu()
+                self.user_interface.display_main_menu()
             except Exception as e:
                 pytest.fail(f"display_main_menu should not raise exceptions: {e}")
                 
     @patch('builtins.input', return_value='1')
     def test_get_user_choice(self, mock_input):
         """Тестирование получения выбора пользователя"""
-        if hasattr(self.console_interface, 'get_user_choice'):
+        if hasattr(self.user_interface, 'get_user_choice'):
             choice = self.console_interface.get_user_choice()
             assert isinstance(choice, (str, int))
             
     def test_display_error_message(self):
         """Тестирование отображения сообщения об ошибке"""
-        if hasattr(self.console_interface, 'display_error'):
+        if hasattr(self.user_interface, 'display_error'):
             try:
-                self.console_interface.display_error("Test error message")
+                self.user_interface.display_error("Test error message")
             except Exception as e:
                 pytest.fail(f"display_error should not raise exceptions: {e}")
                 
     def test_display_success_message(self):
         """Тестирование отображения сообщения об успехе"""
-        if hasattr(self.console_interface, 'display_success'):
+        if hasattr(self.user_interface, 'display_success'):
             try:
-                self.console_interface.display_success("Test success message")
+                self.user_interface.display_success("Test success message")
             except Exception as e:
                 pytest.fail(f"display_success should not raise exceptions: {e}")
                 
     def test_clear_screen(self):
         """Тестирование очистки экрана"""
-        if hasattr(self.console_interface, 'clear_screen'):
+        if hasattr(self.user_interface, 'clear_screen'):
             try:
-                self.console_interface.clear_screen()
+                self.user_interface.clear_screen()
             except Exception as e:
                 pytest.fail(f"clear_screen should not raise exceptions: {e}")
                 
     def test_pause_for_user(self):
         """Тестирование паузы для пользователя"""
-        if hasattr(self.console_interface, 'pause'):
+        if hasattr(self.user_interface, 'pause'):
             with patch('builtins.input', return_value=''):
                 try:
-                    self.console_interface.pause()
+                    self.user_interface.pause()
                 except Exception as e:
                     pytest.fail(f"pause should not raise exceptions: {e}")
 

@@ -17,7 +17,7 @@ mock_psycopg2 = MagicMock()
 sys.modules['psycopg2'] = mock_psycopg2
 sys.modules['psycopg2.extras'] = MagicMock()
 
-from src.storage.abstract import AbstractStorage
+from src.storage.abstract import AbstractVacancyStorage
 from src.storage.abstract_db_manager import AbstractDBManager
 from src.storage.db_manager import DBManager
 from src.storage.postgres_saver import PostgresSaver
@@ -48,19 +48,20 @@ def create_mock_vacancy():
     return vacancy
 
 
-class TestAbstractStorage:
+class TestAbstractVacancyStorage:
     """Комплексное тестирование абстрактного класса хранения"""
     
     def test_abstract_storage_cannot_be_instantiated(self):
         """Тестирование невозможности создания экземпляра абстрактного класса"""
         with pytest.raises(TypeError):
-            AbstractStorage()
+            AbstractVacancyStorage()
             
     def test_abstract_storage_methods_exist(self):
         """Тестирование наличия абстрактных методов"""
         # Проверяем, что абстрактные методы определены
-        assert hasattr(AbstractStorage, 'save_vacancies')
-        assert hasattr(AbstractStorage, 'get_vacancies')
+        assert hasattr(AbstractVacancyStorage, 'add_vacancy')
+        assert hasattr(AbstractVacancyStorage, 'get_vacancies')
+        assert hasattr(AbstractVacancyStorage, 'delete_vacancy')
 
 
 class TestAbstractDBManager:
