@@ -7,7 +7,7 @@ import os
 import sys
 import pytest
 from typing import Dict, List, Any, Optional
-from unittest.mock import Mock, MagicMock, patch
+from unittest.mock import Mock, MagicMock, patch, mock_open
 from dataclasses import dataclass
 
 # Добавляем путь к проекту
