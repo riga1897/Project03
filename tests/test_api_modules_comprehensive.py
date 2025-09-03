@@ -9,11 +9,14 @@ import sys
 import json
 import pytest
 import time
-from unittest.mock import Mock, MagicMock, patch, call
+from unittest.mock import Mock, MagicMock, patch, call, mock_open
 from typing import Dict, List, Any, Optional
 
 # Добавляем путь к проекту
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+# ПОЛНОЕ мокирование всех файловых операций
+mock_file = mock_open(read_data='{"items": [], "meta": {}}')
 
 # Глобальные моки для всех внешних зависимостей
 mock_requests = MagicMock()
@@ -61,13 +64,22 @@ except ImportError:
     class CachedAPI(BaseJobAPI):
         def __init__(self, cache_name: str = "test"):
             self.cache_name = cache_name
-            self.cache = {}
+            self.cache = Mock()  # Мокируем кэш
+            self.cache_dir = Mock()  # Мокируем директорию
+            # Мокируем все методы кэша
+            self.cache.save_response = Mock()
+            self.cache.load_response = Mock(return_value=None)
+            self.cache.clear = Mock()
         def get_vacancies(self, search_query: str, **kwargs):
             return []
         def _get_empty_response(self):
             return {"items": []}
         def _validate_vacancy(self, vacancy):
             return isinstance(vacancy, dict)
+        def clear_cache(self, prefix: str):
+            pass  # Мокированная очистка кэша
+        def get_cache_status(self, prefix: str):
+            return {"cache_dir": "/mock", "file_cache_count": 0}
 
 try:
     from src.api_modules.unified_api import UnifiedAPI
@@ -93,6 +105,15 @@ except ImportError:
         pass
 
 
+@patch('builtins.open', mock_file)
+@patch('pathlib.Path.exists', return_value=False)
+@patch('pathlib.Path.mkdir')
+@patch('pathlib.Path.write_text')
+@patch('pathlib.Path.read_text', return_value='{"items": []}')
+@patch('pathlib.Path.glob', return_value=[])
+@patch('pathlib.Path.unlink')
+@patch('os.makedirs')
+@patch('os.path.exists', return_value=False)
 class TestBaseJobAPI:
     """Комплексное тестирование базового API класса"""
 
@@ -121,6 +142,15 @@ class TestBaseJobAPI:
             assert hasattr(BaseJobAPI, 'get_vacancies')
 
 
+@patch('builtins.open', mock_file)
+@patch('pathlib.Path.exists', return_value=False)
+@patch('pathlib.Path.mkdir')
+@patch('pathlib.Path.write_text')
+@patch('pathlib.Path.read_text', return_value='{"items": []}')
+@patch('pathlib.Path.glob', return_value=[])
+@patch('pathlib.Path.unlink')
+@patch('os.makedirs')
+@patch('os.path.exists', return_value=False)
 class TestHeadHunterAPI:
     """Комплексное тестирование HH.ru API"""
 
@@ -208,6 +238,15 @@ class TestHeadHunterAPI:
             assert isinstance(url, str)
 
 
+@patch('builtins.open', mock_file)
+@patch('pathlib.Path.exists', return_value=False)
+@patch('pathlib.Path.mkdir')
+@patch('pathlib.Path.write_text')
+@patch('pathlib.Path.read_text', return_value='{"items": []}')
+@patch('pathlib.Path.glob', return_value=[])
+@patch('pathlib.Path.unlink')
+@patch('os.makedirs')
+@patch('os.path.exists', return_value=False)
 class TestSuperJobAPI:
     """Комплексное тестирование SuperJob API"""
 
@@ -265,6 +304,15 @@ class TestSuperJobAPI:
         assert isinstance(result, list)
 
 
+@patch('builtins.open', mock_file)
+@patch('pathlib.Path.exists', return_value=False)
+@patch('pathlib.Path.mkdir')
+@patch('pathlib.Path.write_text')
+@patch('pathlib.Path.read_text', return_value='{"items": []}')
+@patch('pathlib.Path.glob', return_value=[])
+@patch('pathlib.Path.unlink')
+@patch('os.makedirs')
+@patch('os.path.exists', return_value=False)
 class TestCachedAPI:
     """Комплексное тестирование кэширующего API"""
 
@@ -300,6 +348,15 @@ class TestCachedAPI:
                 assert key1 != key2
 
 
+@patch('builtins.open', mock_file)
+@patch('pathlib.Path.exists', return_value=False)
+@patch('pathlib.Path.mkdir')
+@patch('pathlib.Path.write_text')
+@patch('pathlib.Path.read_text', return_value='{"items": []}')
+@patch('pathlib.Path.glob', return_value=[])
+@patch('pathlib.Path.unlink')
+@patch('os.makedirs')
+@patch('os.path.exists', return_value=False)
 class TestUnifiedAPI:
     """Комплексное тестирование унифицированного API"""
 
@@ -335,6 +392,15 @@ class TestUnifiedAPI:
             assert isinstance(result, list)
 
 
+@patch('builtins.open', mock_file)
+@patch('pathlib.Path.exists', return_value=False)
+@patch('pathlib.Path.mkdir')
+@patch('pathlib.Path.write_text')
+@patch('pathlib.Path.read_text', return_value='{"items": []}')
+@patch('pathlib.Path.glob', return_value=[])
+@patch('pathlib.Path.unlink')
+@patch('os.makedirs')
+@patch('os.path.exists', return_value=False)
 class TestAPIConnector:
     """Комплексное тестирование фабрики API"""
 
@@ -369,6 +435,15 @@ class TestAPIConnector:
             pass
 
 
+@patch('builtins.open', mock_file)
+@patch('pathlib.Path.exists', return_value=False)
+@patch('pathlib.Path.mkdir')
+@patch('pathlib.Path.write_text')
+@patch('pathlib.Path.read_text', return_value='{"items": []}')
+@patch('pathlib.Path.glob', return_value=[])
+@patch('pathlib.Path.unlink')
+@patch('os.makedirs')
+@patch('os.path.exists', return_value=False)
 class TestAPIPerformance:
     """Тестирование производительности API"""
 
@@ -412,6 +487,15 @@ class TestAPIPerformance:
             assert isinstance(result, list)
 
 
+@patch('builtins.open', mock_file)
+@patch('pathlib.Path.exists', return_value=False)
+@patch('pathlib.Path.mkdir')
+@patch('pathlib.Path.write_text')
+@patch('pathlib.Path.read_text', return_value='{"items": []}')
+@patch('pathlib.Path.glob', return_value=[])
+@patch('pathlib.Path.unlink')
+@patch('os.makedirs')
+@patch('os.path.exists', return_value=False)
 class TestAPIIntegration:
     """Интеграционные тесты для API модулей"""
 
