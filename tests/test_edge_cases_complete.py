@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 mock_requests = MagicMock()
 mock_psycopg2 = MagicMock()
 sys.modules['requests'] = mock_requests
-sys.modules['psycopg2'] = mock_psycopg
+sys.modules['psycopg2'] = mock_psycopg2
 
 
 class TestErrorHandlingComprehensive:
