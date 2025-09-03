@@ -5,7 +5,7 @@ from unittest.mock import Mock, MagicMock
 from typing import Any, Dict, List, Optional
 
 
-class TestCachedAPI:
+class MockTestCachedAPI:
     """Тестовая реализация CachedAPI"""
     
     def __init__(self, cache_dir: str):

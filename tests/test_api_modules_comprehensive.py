@@ -250,18 +250,6 @@ class TestCachedAPI:
             def _validate_vacancy(self, vacancy):
                 return isinstance(vacancy, dict) and "id" in vacancy and "name" in vacancy
 
-        self.cached_api = TestCachedAPI("test_cache")es(self, query: str, **kwargs):
-                return {"items": []}
-
-            def get_vacancies_page(self, page: int, **kwargs):
-                return {"items": []}
-
-            def _get_empty_response(self):
-                return {"items": []}
-
-            def _validate_vacancy(self, vacancy_data):
-                return True
-
         self.cached_api = TestCachedAPI("test_cache")
 
     def test_cached_api_initialization(self) -> None:
