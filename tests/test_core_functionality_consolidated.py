@@ -14,6 +14,33 @@ from abc import ABC, abstractmethod
 # Добавляем путь к проекту
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+# Глобальные моки для предотвращения записи в файловую систему
+mock_file_operations = mock_open(read_data='{"items": [], "meta": {}}')
+
+@pytest.fixture(autouse=True)
+def prevent_file_operations():
+    """Автоматически применяемый фикстюр для предотвращения операций с файлами"""
+    with patch('pathlib.Path.mkdir'), \
+         patch('pathlib.Path.exists', return_value=False), \
+         patch('pathlib.Path.unlink'), \
+         patch('pathlib.Path.glob', return_value=[]), \
+         patch('pathlib.Path.stat'), \
+         patch('pathlib.Path.open', mock_file_operations), \
+         patch('pathlib.Path.read_text', return_value='{"items": [], "meta": {}}'), \
+         patch('pathlib.Path.write_text'), \
+         patch('pathlib.Path.touch'), \
+         patch('pathlib.Path.is_file', return_value=False), \
+         patch('pathlib.Path.is_dir', return_value=False), \
+         patch('builtins.open', mock_file_operations), \
+         patch('tempfile.TemporaryDirectory'), \
+         patch('os.makedirs'), \
+         patch('os.mkdir'), \
+         patch('os.path.exists', return_value=False), \
+         patch('shutil.rmtree'), \
+         patch('json.dump'), \
+         patch('json.load', return_value={"items": [], "meta": {}}):
+        yield
+
 
 class ConsolidatedMocks:
     """Консолидированные моки для всех тестов"""
