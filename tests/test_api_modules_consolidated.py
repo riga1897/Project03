@@ -124,12 +124,26 @@ class TestAPIModulesConsolidated:
                 self.cache = {}
             
             def get_vacancies(self, search_query: str, **kwargs) -> List[Dict[str, Any]]:
-                return []
+                cache_key = f"{search_query}:{str(sorted(kwargs.items()))}"
+                if cache_key in self.cache:
+                    return self.cache[cache_key]
+                
+                # Имитируем получение данных
+                result = [{"id": "1", "title": f"{search_query} vacancy"}]
+                self.cache[cache_key] = result
+                return result
             
             def clear_cache(self):
                 self.cache.clear()
         
         cached_api = CachedAPI()
         assert cached_api is not None
+        
+        # Тестируем кэширование
+        result1 = cached_api.get_vacancies("Python")
+        result2 = cached_api.get_vacancies("Python")
+        assert result1 == result2
+        assert len(cached_api.cache) == 1
+        
         cached_api.clear_cache()
         assert cached_api.cache == {}
