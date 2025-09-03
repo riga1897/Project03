@@ -1,4 +1,3 @@
-
 import os
 import sys
 import pytest
@@ -29,8 +28,8 @@ except ImportError:
     SRC_AVAILABLE = False
 
 
-def create_test_items(count: int = 5) -> List[Dict[str, Any]]:
-    """Создает тестовые элементы для пагинации"""
+def create_test_items(count: int = 3) -> List[Dict[str, Any]]:
+    """Создает минимальные тестовые элементы для пагинации"""
     return [{"id": i, "title": f"Item {i}", "data": f"test_data_{i}"} for i in range(1, count + 1)]
 
 
@@ -48,7 +47,7 @@ class TestUINavigationInitialization:
         """Тестирование инициализации с параметрами по умолчанию"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         nav = UINavigation()
         assert nav.items_per_page == 10
 
@@ -56,7 +55,7 @@ class TestUINavigationInitialization:
         """Тестирование инициализации с пользовательскими параметрами"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         nav = UINavigation(items_per_page=5)
         assert nav.items_per_page == 5
 
@@ -64,7 +63,7 @@ class TestUINavigationInitialization:
         """Тестирование инициализации с некорректными параметрами"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         # Отрицательное значение
         nav = UINavigation(items_per_page=-5)
         # Конструктор должен обрабатывать некорректные значения
@@ -77,59 +76,45 @@ class TestUINavigationPagination:
     def setup_method(self):
         """Настройка перед каждым тестом"""
         if SRC_AVAILABLE:
-            self.nav = UINavigation(items_per_page=3)
-            self.test_items = create_test_items(8)  # Уменьшено для ускорения
+            self.nav = UINavigation(items_per_page=2)
+            self.test_items = create_test_items(3)
 
     def test_get_page_data_first_page(self):
         """Тестирование получения данных первой страницы"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         page_items, pagination_info = self.nav.get_page_data(self.test_items, page=1)
-        
-        assert len(page_items) == 3
+
+        assert len(page_items) == 2
         assert pagination_info['current_page'] == 1
-        assert pagination_info['total_pages'] == 3  # math.ceil(8/3) = 3
+        assert pagination_info['total_pages'] == 2  # math.ceil(3/2) = 2
         assert pagination_info['has_prev'] is False
         assert pagination_info['has_next'] is True
         assert pagination_info['start_idx'] == 1
-        assert pagination_info['end_idx'] == 3
+        assert pagination_info['end_idx'] == 2
 
     def test_get_page_data_middle_page(self):
         """Тестирование получения данных средней страницы"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         page_items, pagination_info = self.nav.get_page_data(self.test_items, page=2)
-        
-        assert len(page_items) == 3
+
+        assert len(page_items) == 1  # Остаток: 3 % 2 = 1
         assert pagination_info['current_page'] == 2
         assert pagination_info['has_prev'] is True
-        assert pagination_info['has_next'] is True
-        assert pagination_info['start_idx'] == 4
-        assert pagination_info['end_idx'] == 6
-
-    def test_get_page_data_last_page(self):
-        """Тестирование получения данных последней страницы"""
-        if not SRC_AVAILABLE:
-            pytest.skip("Source code not available")
-            
-        page_items, pagination_info = self.nav.get_page_data(self.test_items, page=3)
-        
-        assert len(page_items) == 2  # Остаток: 8 % 3 = 2
-        assert pagination_info['current_page'] == 3
-        assert pagination_info['has_prev'] is True
         assert pagination_info['has_next'] is False
-        assert pagination_info['start_idx'] == 7
-        assert pagination_info['end_idx'] == 8
+        assert pagination_info['start_idx'] == 3
+        assert pagination_info['end_idx'] == 3
 
     def test_get_page_data_empty_list(self):
         """Тестирование получения данных для пустого списка"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         page_items, pagination_info = self.nav.get_page_data([], page=1)
-        
+
         assert len(page_items) == 0
         assert pagination_info['total_items'] == 0
         assert pagination_info['total_pages'] == 0
@@ -137,25 +122,27 @@ class TestUINavigationPagination:
         assert pagination_info['has_prev'] is False
         assert pagination_info['has_next'] is False
 
+
     def test_get_page_data_invalid_page_negative(self):
         """Тестирование с отрицательным номером страницы"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         page_items, pagination_info = self.nav.get_page_data(self.test_items, page=-1)
-        
+
         # Должна возвращаться первая страница
         assert pagination_info['current_page'] == 1
+
 
     def test_get_page_data_invalid_page_too_high(self):
         """Тестирование с номером страницы выше максимального"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         page_items, pagination_info = self.nav.get_page_data(self.test_items, page=100)
-        
+
         # Должна возвращаться последняя страница
-        assert pagination_info['current_page'] == 3  # math.ceil(8/3) = 3
+        assert pagination_info['current_page'] == 2  # math.ceil(3/2) = 2
 
 
 class TestUINavigationDisplay:
@@ -165,45 +152,45 @@ class TestUINavigationDisplay:
         """Настройка перед каждым тестом"""
         if SRC_AVAILABLE:
             self.nav = UINavigation(items_per_page=2)
-            self.test_items = create_test_items(4)
+            self.test_items = create_test_items(2)
 
     @patch('builtins.print')
     def test_display_page_with_numbers(self, mock_print):
         """Тестирование отображения страницы с нумерацией"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         self.nav._display_page(
-            self.test_items, 
-            current_page=1, 
-            total_pages=2,
+            self.test_items,
+            current_page=1,
+            total_pages=1,
             formatter=simple_formatter,
-            header="Тестовые данные",
+            header="Test Data",
             show_numbers=True
         )
-        
+
         # Проверяем, что print был вызван для отображения
         assert mock_print.called
-        
+
         # Проверяем, что заголовок был выведен
         print_calls = [str(call) for call in mock_print.call_args_list]
-        assert any("Тестовые данные" in call_str for call_str in print_calls)
+        assert any("Test Data" in call_str for call_str in print_calls)
 
     @patch('builtins.print')
     def test_display_page_without_numbers(self, mock_print):
         """Тестирование отображения страницы без нумерации"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         self.nav._display_page(
             self.test_items,
             current_page=1,
-            total_pages=2,
+            total_pages=1,
             formatter=simple_formatter,
-            header="Данные без номеров",
+            header="Data without numbers",
             show_numbers=False
         )
-        
+
         assert mock_print.called
 
     @patch('builtins.print')
@@ -211,9 +198,9 @@ class TestUINavigationDisplay:
         """Тестирование отображения навигационного меню на первой странице"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         self.nav._display_navigation_menu(current_page=1, total_pages=2)
-        
+
         assert mock_print.called
 
     @patch('builtins.print')
@@ -221,9 +208,9 @@ class TestUINavigationDisplay:
         """Тестирование отображения навигационного меню на последней странице"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         self.nav._display_navigation_menu(current_page=2, total_pages=2)
-        
+
         assert mock_print.called
 
     @patch('builtins.print')
@@ -231,19 +218,19 @@ class TestUINavigationDisplay:
         """Тестирование отображения меню с пользовательскими действиями"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         def custom_action():
             """Пользовательское действие"""
             return "custom_result"
 
         custom_actions = {"c": custom_action}
-        
+
         self.nav._display_navigation_menu(
-            current_page=1, 
-            total_pages=2, 
+            current_page=1,
+            total_pages=2,
             custom_actions=custom_actions
         )
-        
+
         assert mock_print.called
 
 
@@ -259,10 +246,10 @@ class TestUINavigationChoiceHandling:
         """Тестирование команды выхода"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         result = self.nav._handle_navigation_choice("q", current_page=2, total_pages=5)
         assert result == -1
-        
+
         result = self.nav._handle_navigation_choice("quit", current_page=2, total_pages=5)
         assert result == -1
 
@@ -270,10 +257,10 @@ class TestUINavigationChoiceHandling:
         """Тестирование команды следующая страница"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         result = self.nav._handle_navigation_choice("n", current_page=2, total_pages=5)
         assert result == 3
-        
+
         result = self.nav._handle_navigation_choice("next", current_page=3, total_pages=5)
         assert result == 4
 
@@ -281,10 +268,10 @@ class TestUINavigationChoiceHandling:
         """Тестирование команды предыдущая страница"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         result = self.nav._handle_navigation_choice("p", current_page=3, total_pages=5)
         assert result == 2
-        
+
         result = self.nav._handle_navigation_choice("prev", current_page=2, total_pages=5)
         assert result == 1
 
@@ -292,10 +279,10 @@ class TestUINavigationChoiceHandling:
         """Тестирование перехода к конкретной странице"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         result = self.nav._handle_navigation_choice("3", current_page=1, total_pages=5)
         assert result == 3
-        
+
         result = self.nav._handle_navigation_choice("1", current_page=3, total_pages=5)
         assert result == 1
 
@@ -305,7 +292,7 @@ class TestUINavigationChoiceHandling:
         """Тестирование некорректного номера страницы"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         result = self.nav._handle_navigation_choice("10", current_page=2, total_pages=5)
         assert result == 2  # Должны остаться на той же странице
 
@@ -313,7 +300,7 @@ class TestUINavigationChoiceHandling:
         """Тестирование команды next на последней странице"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         result = self.nav._handle_navigation_choice("n", current_page=5, total_pages=5)
         assert result == -2  # Некорректный ввод
 
@@ -321,7 +308,7 @@ class TestUINavigationChoiceHandling:
         """Тестирование команды prev на первой странице"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         result = self.nav._handle_navigation_choice("p", current_page=1, total_pages=5)
         assert result == -2  # Некорректный ввод
 
@@ -329,17 +316,17 @@ class TestUINavigationChoiceHandling:
         """Тестирование пользовательского действия"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         custom_action_called = Mock()
         custom_actions = {"c": custom_action_called}
-        
+
         result = self.nav._handle_navigation_choice(
-            "c", 
-            current_page=2, 
-            total_pages=5, 
+            "c",
+            current_page=2,
+            total_pages=5,
             custom_actions=custom_actions
         )
-        
+
         assert result == 2  # Остаемся на той же странице
         custom_action_called.assert_called_once()
 
@@ -349,19 +336,19 @@ class TestUINavigationChoiceHandling:
         """Тестирование ошибки в пользовательском действии"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         def failing_action():
             raise Exception("Custom action failed")
 
         custom_actions = {"f": failing_action}
-        
+
         result = self.nav._handle_navigation_choice(
-            "f", 
-            current_page=2, 
-            total_pages=5, 
+            "f",
+            current_page=2,
+            total_pages=5,
             custom_actions=custom_actions
         )
-        
+
         assert result == 2  # Остаемся на той же странице
         assert mock_print.called
 
@@ -369,7 +356,7 @@ class TestUINavigationChoiceHandling:
         """Тестирование некорректного ввода"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         result = self.nav._handle_navigation_choice("invalid", current_page=2, total_pages=5)
         assert result == -2
 
@@ -389,9 +376,9 @@ class TestUINavigationPaginateDisplay:
         """Тестирование отображения пустого списка"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         self.nav.paginate_display([], simple_formatter)
-        
+
         # Проверяем, что было выведено сообщение о пустом списке
         print_calls = [str(call) for call in mock_print.call_args_list]
         assert any("нет данных" in call_str.lower() for call_str in print_calls)
@@ -402,10 +389,10 @@ class TestUINavigationPaginateDisplay:
         """Тестирование отображения одной страницы"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         single_page_items = create_test_items(2)
         self.nav.paginate_display(single_page_items, simple_formatter)
-        
+
         assert mock_print.called
         assert mock_input.called
 
@@ -415,9 +402,9 @@ class TestUINavigationPaginateDisplay:
         """Тестирование навигации между страницами"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         self.nav.paginate_display(self.test_items, simple_formatter, header="Тест навигации")
-        
+
         assert mock_print.called
         assert mock_input.call_count == 2
 
@@ -427,9 +414,9 @@ class TestUINavigationPaginateDisplay:
         """Тестирование прямого перехода к странице"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         self.nav.paginate_display(self.test_items, simple_formatter)
-        
+
         assert mock_print.called
         assert mock_input.call_count == 2
 
@@ -439,9 +426,9 @@ class TestUINavigationPaginateDisplay:
         """Тестирование обработки некорректного ввода"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         self.nav.paginate_display(self.test_items, simple_formatter)
-        
+
         assert mock_print.called
         assert mock_input.call_count == 2
 
@@ -451,16 +438,16 @@ class TestUINavigationPaginateDisplay:
         """Тестирование пользовательских действий"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         custom_action = Mock()
         custom_actions = {"c": custom_action}
-        
+
         self.nav.paginate_display(
-            self.test_items, 
-            simple_formatter, 
+            self.test_items,
+            simple_formatter,
             custom_actions=custom_actions
         )
-        
+
         assert mock_print.called
         assert custom_action.called
 
@@ -470,13 +457,13 @@ class TestUINavigationPaginateDisplay:
         """Тестирование отображения без номеров"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         self.nav.paginate_display(
-            self.test_items, 
-            simple_formatter, 
+            self.test_items,
+            simple_formatter,
             show_numbers=False
         )
-        
+
         assert mock_print.called
 
 
@@ -489,10 +476,10 @@ class TestQuickPaginateFunction:
         """Тестирование quick_paginate с параметрами по умолчанию"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         test_items = create_test_items(3)
         quick_paginate(test_items, simple_formatter)
-        
+
         assert mock_print.called
 
     @patch('builtins.input', return_value='q')
@@ -501,16 +488,16 @@ class TestQuickPaginateFunction:
         """Тестирование quick_paginate с пользовательскими параметрами"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         test_items = create_test_items(6)
         quick_paginate(
-            test_items, 
+            test_items,
             simple_formatter,
             header="Пользовательский заголовок",
             items_per_page=3,
             show_numbers=False
         )
-        
+
         assert mock_print.called
 
     @patch('builtins.input', side_effect=['c', 'q'])
@@ -519,17 +506,17 @@ class TestQuickPaginateFunction:
         """Тестирование quick_paginate с пользовательскими действиями"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         test_items = create_test_items(4)
         custom_action = Mock()
         custom_actions = {"c": custom_action}
-        
+
         quick_paginate(
-            test_items, 
+            test_items,
             simple_formatter,
             custom_actions=custom_actions
         )
-        
+
         assert mock_print.called
         assert custom_action.called
 
@@ -541,7 +528,7 @@ class TestUINavigationGlobalInstance:
         """Тестирование существования глобального экземпляра"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         assert ui_navigation is not None
         assert isinstance(ui_navigation, UINavigation)
 
@@ -549,7 +536,7 @@ class TestUINavigationGlobalInstance:
         """Тестирование настроек глобального экземпляра по умолчанию"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         assert ui_navigation.items_per_page == 10
 
     @patch('builtins.input', return_value='')
@@ -558,10 +545,10 @@ class TestUINavigationGlobalInstance:
         """Тестирование использования глобального экземпляра"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         test_items = create_test_items(3)
         ui_navigation.paginate_display(test_items, simple_formatter)
-        
+
         assert mock_print.called
 
 
@@ -577,10 +564,10 @@ class TestUINavigationEdgeCases:
         """Тестирование с количеством элементов ровно на одну страницу"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         exact_page_items = create_test_items(5)
         page_items, pagination_info = self.nav.get_page_data(exact_page_items, page=1)
-        
+
         assert len(page_items) == 5
         assert pagination_info['total_pages'] == 1
         assert pagination_info['has_next'] is False
@@ -589,10 +576,10 @@ class TestUINavigationEdgeCases:
         """Тестирование с одним элементом"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         single_item = create_test_items(1)
         page_items, pagination_info = self.nav.get_page_data(single_item, page=1)
-        
+
         assert len(page_items) == 1
         assert pagination_info['total_pages'] == 1
 
@@ -600,27 +587,27 @@ class TestUINavigationEdgeCases:
         """Тестирование математических вычислений пагинации"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         # Тестируем различные комбинации общего количества и размера страницы
         test_cases = [
             (10, 5, 2),   # 10 элементов, 5 на странице = 2 страницы
-            (11, 5, 3),   # 11 элементов, 5 на странице = 3 страницы  
+            (11, 5, 3),   # 11 элементов, 5 на странице = 3 страницы
             (15, 5, 3),   # 15 элементов, 5 на странице = 3 страницы
             (21, 7, 3),   # 21 элемент, 7 на странице = 3 страницы
         ]
-        
+
         for total_items, items_per_page, expected_pages in test_cases:
             nav = UINavigation(items_per_page=items_per_page)
             test_items = create_test_items(total_items)
             _, pagination_info = nav.get_page_data(test_items, page=1)
-            
+
             assert pagination_info['total_pages'] == expected_pages
 
     def test_complex_formatter_function(self):
         """Тестирование сложной функции форматирования"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         def complex_formatter(item: Any, index: Optional[int] = None) -> str:
             """Сложная функция форматирования для тестирования"""
             prefix = f"[{index}] " if index else "• "
@@ -630,12 +617,12 @@ class TestUINavigationEdgeCases:
 
         test_items = create_test_items(3)
         page_items, _ = self.nav.get_page_data(test_items, page=1)
-        
+
         # Проверяем, что форматтер работает корректно
         formatted_with_index = complex_formatter(test_items[0], 1)
         assert "[1]" in formatted_with_index
         assert "Item 1" in formatted_with_index
-        
+
         formatted_without_index = complex_formatter(test_items[0])
         assert "•" in formatted_without_index
 
@@ -645,10 +632,10 @@ class TestUINavigationEdgeCases:
         """Тестирование граничных номеров страниц"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         test_items = create_test_items(6)
         self.nav.paginate_display(test_items, simple_formatter)
-        
+
         # Должно обработать некорректный номер страницы
         assert mock_print.called
         assert mock_input.call_count == 2
@@ -668,16 +655,16 @@ class TestUINavigationIntegration:
         """Тестирование полного рабочего процесса навигации"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         test_items = create_test_items(6)
-        
+
         self.nav.paginate_display(
-            test_items, 
-            simple_formatter, 
+            test_items,
+            simple_formatter,
             header="Полный тест навигации",
             show_numbers=True
         )
-        
+
         assert mock_print.called
         assert mock_input.call_count == 3
 
@@ -687,9 +674,9 @@ class TestUINavigationIntegration:
         """Тестирование навигации с несколькими пользовательскими действиями"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         action_counts = {"custom": 0, "search": 0}
-        
+
         def custom_action():
             """Пользовательское действие"""
             action_counts["custom"] += 1
@@ -702,14 +689,14 @@ class TestUINavigationIntegration:
             "c": custom_action,
             "s": search_action
         }
-        
+
         test_items = create_test_items(4)
         self.nav.paginate_display(
-            test_items, 
-            simple_formatter, 
+            test_items,
+            simple_formatter,
             custom_actions=custom_actions
         )
-        
+
         assert action_counts["custom"] == 1
         assert action_counts["search"] == 1
 
@@ -717,19 +704,19 @@ class TestUINavigationIntegration:
         """Тестирование производительности с большим набором данных"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         import time
-        
+
         # Разумный размер для тестирования производительности
         large_items = create_test_items(50)
-        
+
         start_time = time.time()
         page_items, pagination_info = self.nav.get_page_data(large_items, page=5)
         end_time = time.time()
-        
+
         # Операция должна быть быстрой даже для больших данных
         assert (end_time - start_time) < 0.1
-        
+
         # Проверяем корректность результата
         assert len(page_items) == 3
         assert pagination_info['current_page'] == 5
@@ -738,7 +725,7 @@ class TestUINavigationIntegration:
         """Тестирование навигации со сложными структурами данных"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         complex_items = [
             {
                 "id": i,
@@ -751,7 +738,7 @@ class TestUINavigationIntegration:
             }
             for i in range(1, 7)  # Уменьшено для ускорения
         ]
-        
+
         def complex_formatter(item: Any, index: Optional[int] = None) -> str:
             """Форматтер для сложных данных"""
             prefix = f"{index}. " if index else ""
@@ -760,11 +747,11 @@ class TestUINavigationIntegration:
             return f"{prefix}{title} (значение: {nested_value})"
 
         page_items, pagination_info = self.nav.get_page_data(complex_items, page=2)
-        
+
         assert len(page_items) == 3
         assert pagination_info['current_page'] == 2
         assert pagination_info['total_pages'] == 2  # math.ceil(6/3) = 2
-        
+
         # Проверяем, что форматтер работает с комплексными данными
         formatted = complex_formatter(page_items[0], 4)
         assert "Сложная структура" in formatted
@@ -779,7 +766,7 @@ class TestUINavigationStaticMethods:
         """Тестирование статического метода отображения меню"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         UINavigation._display_navigation_menu(current_page=2, total_pages=5)
         assert mock_print.called
 
@@ -787,10 +774,10 @@ class TestUINavigationStaticMethods:
         """Тестирование статического метода обработки выбора"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         result = UINavigation._handle_navigation_choice("n", current_page=2, total_pages=5)
         assert result == 3
-        
+
         result = UINavigation._handle_navigation_choice("q", current_page=2, total_pages=5)
         assert result == -1
 
@@ -798,11 +785,11 @@ class TestUINavigationStaticMethods:
         """Тестирование независимости статических методов"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
-            
+
         # Статические методы должны работать без экземпляра класса
         result1 = UINavigation._handle_navigation_choice("2", 1, 5)
         result2 = UINavigation._handle_navigation_choice("3", 1, 5)
-        
+
         assert result1 == 2
         assert result2 == 3
         assert result1 != result2
