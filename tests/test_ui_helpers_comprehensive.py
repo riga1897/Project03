@@ -484,7 +484,7 @@ class TestUIHelpersEdgeCases(TestUIHelpersBase):
 
         result = filter_vacancies_by_keyword(self.test_vacancies, "Python")
         assert isinstance(result, list)
-```"""
+"""
 Комплексные тесты для модуля ui_helpers.
 
 Покрывает все функции помощи пользовательского интерфейса:

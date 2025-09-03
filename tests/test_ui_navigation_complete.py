@@ -1,3 +1,9 @@
+import os
+import sys
+import pytest
+from unittest.mock import Mock, patch, MagicMock, call
+from typing import List, Dict, Any, Optional, Callable
+import math
 
 """
 Комплексные тесты для модуля ui_navigation с максимальным покрытием кода.
@@ -12,16 +18,6 @@
 Все тесты используют консолидированные моки без fallback методов.
 Оптимизированы для быстрого выполнения.
 """
-
-# Добавляем маркер для медленных тестов
-pytestmark = pytest.mark.filterwarnings("ignore::DeprecationWarning")
-
-import os
-import sys
-import pytest
-from unittest.mock import Mock, patch, MagicMock, call
-from typing import List, Dict, Any, Optional, Callable
-import math
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
