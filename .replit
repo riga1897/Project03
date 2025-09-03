@@ -5,7 +5,7 @@ packages = ["cairo", "ffmpeg-full", "freetype", "ghostscript", "gobject-introspe
 channel = "stable-25_05"
 
 [workflows]
-runButton = "Run App"
+runButton = "Project"
 
 [[workflows.workflow]]
 name = "Run App"
@@ -15,6 +15,26 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python main.py"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Test Runner"
+
+[[workflows.workflow]]
+name = "Test Runner"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python -m pytest --cov=src --cov-report=term-missing tests/ --tb=short -v"
+
+[workflows.workflow.metadata]
+outputType = "console"
 
 [agent]
 expertMode = true
