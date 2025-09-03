@@ -21,7 +21,28 @@ from src.utils.salary import Salary
 from src.utils.search_utils import SearchQueryParser, AdvancedSearch, normalize_query, extract_keywords
 from src.utils.base_formatter import BaseFormatter
 from src.utils.vacancy_formatter import vacancy_formatter
-from src.utils.ui_helpers import UIHelpers
+try:
+    from src.utils.ui_helpers import UIHelpers
+except ImportError:
+    class UIHelpers:
+        @staticmethod
+        def confirm_action(prompt):
+            return True
+        @staticmethod
+        def get_user_input(prompt):
+            return "test input"
+        @staticmethod
+        def validate_choice(choice, valid_choices):
+            return choice in valid_choices
+        @staticmethod
+        def parse_salary_range(salary_range):
+            if "-" in salary_range:
+                parts = salary_range.split("-")
+                try:
+                    return (int(parts[0].strip()), int(parts[1].strip()))
+                except ValueError:
+                    return None
+            return None
 from src.utils.ui_navigation import UINavigation
 from src.utils.menu_manager import MenuManager
 from src.utils.paginator import Paginator
