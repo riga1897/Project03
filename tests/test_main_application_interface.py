@@ -33,7 +33,12 @@ class TestMainApplicationInterface:
 
     def setup_method(self):
         """Настройка перед каждым тестом"""
-        self.app_interface = MainApplicationInterface()
+        # Создаем конкретную реализацию для тестирования
+        class TestMainApplicationInterface(MainApplicationInterface):
+            def run_application(self):
+                pass
+        
+        self.app_interface = TestMainApplicationInterface()
 
     def test_main_application_interface_init(self):
         """Тест инициализации главного интерфейса приложения"""

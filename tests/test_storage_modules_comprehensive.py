@@ -208,7 +208,7 @@ class TestPostgresSaver:
     
     def setup_method(self):
         """Настройка перед каждым тестом"""
-        with patch('src.storage.postgres_saver.DatabaseConfig') as mock_config:
+        with patch('src.config.db_config.DatabaseConfig') as mock_config:
             mock_config.return_value.get_connection_params.return_value = {
                 'host': 'localhost',
                 'port': '5432',
@@ -351,8 +351,12 @@ class TestVacancyRepository:
     
     def setup_method(self):
         """Настройка перед каждым тестом"""
-        mock_db_manager = Mock()
-        self.vacancy_repository = VacancyRepository(mock_db_manager)
+        mock_db_connection = Mock()
+        mock_validator = Mock()
+        mock_validator.validate_vacancy.return_value = True
+        mock_validator.get_validation_errors.return_value = []
+        
+        self.vacancy_repository = VacancyRepository(mock_db_connection, mock_validator)
         
     def test_vacancy_repository_initialization(self):
         """Тестирование инициализации репозитория вакансий"""

@@ -19,7 +19,8 @@ class TestVacancyDisplayHandler:
 
     def setup_method(self):
         """Настройка перед каждым тестом"""
-        self.display_handler = VacancyDisplayHandler()
+        mock_storage = Mock()
+        self.display_handler = VacancyDisplayHandler(mock_storage)
         
         self.sample_vacancies = [
             Vacancy(

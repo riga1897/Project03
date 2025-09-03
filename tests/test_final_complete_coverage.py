@@ -926,7 +926,7 @@ class TestCompleteUtilityModuleCoverage:
             
             with tempfile.TemporaryDirectory() as temp_dir:
                 cache = FileCache(temp_dir)
-                assert cache.cache_dir == temp_dir
+                assert str(cache.cache_dir) == temp_dir
                 
                 # Тестируем сохранение и получение строки
                 cache.set('string_key', 'test_string')
@@ -1023,7 +1023,9 @@ class TestCompleteUtilityModuleCoverage:
             assert formatter is not None
             
             # Тестируем форматирование зарплаты
-            salary_str = formatter.format_salary(100000, 200000, 'RUR') if hasattr(formatter, 'format_salary') else '100,000 - 200,000 RUR'
+            from src.utils.salary import Salary
+        salary_obj = Salary({'from': 100000, 'to': 200000, 'currency': 'RUR'})
+        salary_str = formatter.format_salary(salary_obj) if hasattr(formatter, 'format_salary') else '100,000 - 200,000 RUR'
             assert isinstance(salary_str, str)
             assert '100' in salary_str  # Проверяем наличие числовых значений
             
