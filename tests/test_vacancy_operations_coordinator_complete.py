@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Комплексные тесты для модуля vacancy_operations_coordinator
 """

@@ -1,7 +1,8 @@
-
+#!/usr/bin/env python3
 """
 Тесты для модуля vacancy_display_handler
 """
+
 import os
 import sys
 import pytest
@@ -21,7 +22,7 @@ class TestVacancyDisplayHandler:
         """Настройка перед каждым тестом"""
         mock_storage = Mock()
         self.display_handler = VacancyDisplayHandler(mock_storage)
-        
+
         self.sample_vacancies = [
             Vacancy(
                 vacancy_id="1",
@@ -107,7 +108,7 @@ class TestVacancyDisplayHandler:
             'max_salary': 180000,
             'min_salary': 100000
         }
-        
+
         if hasattr(self.display_handler, 'display_statistics'):
             self.display_handler.display_statistics(stats)
             mock_print.assert_called()
@@ -122,7 +123,7 @@ class TestVacancyDisplayHandler:
     def test_truncate_description(self):
         """Тест сокращения описания вакансии"""
         long_description = "Очень длинное описание вакансии " * 10
-        
+
         if hasattr(self.display_handler, 'truncate_description'):
             truncated = self.display_handler.truncate_description(long_description, 100)
             assert len(truncated) <= 103  # 100 символов + "..."
@@ -166,7 +167,7 @@ class TestVacancyDisplayHandler:
         """Тест выделения ключевых слов в тексте"""
         text = "Python разработчик в компании Tech"
         keywords = ["Python"]
-        
+
         if hasattr(self.display_handler, 'highlight_keywords'):
             highlighted = self.display_handler.highlight_keywords(text, keywords)
             assert isinstance(highlighted, str)
