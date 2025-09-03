@@ -132,7 +132,7 @@ class TestHeadHunterAPI:
         # Пропускаем тест, если метод не существует
         if not hasattr(self.hh_api, 'get_vacancy_details'):
             pytest.skip("Method get_vacancy_details not implemented")
-            
+
         mock_response = Mock()
         mock_response.json.return_value = {
             "id": "123",
@@ -275,7 +275,7 @@ class TestCachedAPI:
         # Для тестирования кэша делаем небольшую паузу
         import time
         time.sleep(0.1)
-        
+
         # Второй запрос - может вернуть из кэша, но кэш может не сработать в тестах
         result2 = self.cached_api.get_vacancies("Python")
         assert result2 == [{"id": "123", "title": "Test"}]
@@ -328,12 +328,8 @@ class TestUnifiedAPI:
         self.mock_hh_api = Mock()
         self.mock_sj_api = Mock()
 
-        self.mock_hh_api.get_vacancies = Mock(return_value=[
-            {"id": "hh_123", "source": "hh.ru", "title": "HH Vacancy"}
-        ])
-        self.mock_sj_api.get_vacancies = Mock(return_value=[
-            {"id": "sj_456", "source": "superjob.ru", "title": "SJ Vacancy"}
-        ])
+        self.mock_hh_api.get_vacancies = Mock(return_value=[{"id": "hh_123", "source": "hh.ru", "title": "HH Vacancy"}])
+        self.mock_sj_api.get_vacancies = Mock(return_value=[{"id": "sj_456", "source": "superjob.ru", "title": "SJ Vacancy"}])
 
         # Создаем UnifiedAPI с моками
         with patch('src.api_modules.hh_api.HeadHunterAPI', return_value=self.mock_hh_api), \
@@ -385,7 +381,7 @@ class TestUnifiedAPI:
         # Пропускаем тест, если метод не существует
         if not hasattr(self.unified_api, 'get_vacancies_from_sources'):
             pytest.skip("Method get_vacancies_from_sources not implemented")
-            
+
         # Симулируем ошибку в одном из API
         self.mock_hh_api.get_vacancies.side_effect = Exception("HH API Error")
 
@@ -424,10 +420,14 @@ class TestAPIConnector:
         mock_response = Mock()
         mock_response.json.return_value = {"status": "ok"}
         mock_response.status_code = 200
+        mock_response.raise_for_status.return_value = None
         mock_get.return_value = mock_response
 
-        result = api_connector.connect("https://test.api")
+        # Передаем пустой словарь параметров
+        result = api_connector.connect("https://test.api", params={})
+
         assert result == {"status": "ok"}
+        mock_get.assert_called_once()
 
     @patch('requests.get')
     def test_api_connector_error_handling(self, mock_get):
@@ -452,6 +452,7 @@ class TestAPIConnector:
         mock_response = Mock()
         mock_response.json.return_value = {"data": "test"}
         mock_response.status_code = 200
+        mock_response.raise_for_status.return_value = None
         mock_get.return_value = mock_response
 
         params = {"query": "Python", "page": 1}
