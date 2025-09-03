@@ -24,14 +24,23 @@ mock_file_operations = mock_open(read_data='{"items": [], "meta": {}}')
 def prevent_file_operations():
     """Автоматически применяемый фикстюр для предотвращения операций с файлами"""
     with patch('pathlib.Path.mkdir') as mock_mkdir, \
-         patch('pathlib.Path.exists', return_value=True) as mock_exists, \
+         patch('pathlib.Path.exists', return_value=False) as mock_exists, \
          patch('pathlib.Path.unlink') as mock_unlink, \
          patch('pathlib.Path.glob', return_value=[]) as mock_glob, \
          patch('pathlib.Path.stat') as mock_stat, \
+         patch('pathlib.Path.open', mock_file_operations) as mock_path_open, \
+         patch('pathlib.Path.read_text', return_value='{"items": [], "meta": {}}') as mock_read_text, \
+         patch('pathlib.Path.write_text') as mock_write_text, \
+         patch('pathlib.Path.touch') as mock_touch, \
+         patch('pathlib.Path.is_file', return_value=False) as mock_is_file, \
+         patch('pathlib.Path.is_dir', return_value=False) as mock_is_dir, \
          patch('builtins.open', mock_file_operations) as mock_open_builtin, \
          patch('tempfile.TemporaryDirectory') as mock_tempdir, \
          patch('os.makedirs') as mock_makedirs, \
          patch('os.mkdir') as mock_os_mkdir, \
+         patch('os.path.exists', return_value=False) as mock_os_path_exists, \
+         patch('json.dump') as mock_json_dump, \
+         patch('json.load', return_value={"items": [], "meta": {}}) as mock_json_load, \
          patch('src.utils.cache.FileCache.__init__', return_value=None) as mock_cache_init, \
          patch('src.utils.cache.FileCache._ensure_dir_exists', return_value=None) as mock_ensure_dir, \
          patch('src.utils.cache.FileCache.save_response', return_value=None) as mock_save, \

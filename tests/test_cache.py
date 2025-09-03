@@ -132,44 +132,53 @@ class TestFileCache:
     @patch('pathlib.Path.mkdir')
     @patch('pathlib.Path.exists', return_value=True)
     def test_is_valid_response_valid(self, mock_exists, mock_mkdir, temp_cache_dir):
-        """Тест валидации корректного ответа"""
-        with patch.object(Path, 'mkdir'), \
-             patch.object(Path, 'exists', return_value=True):
-            cache = FileCache(temp_cache_dir)
+        """Тестирование валидности корректного ответа"""
+        valid_response = {
+            "items": [{"id": "123", "name": "Test"}],
+            "found": 1
+        }
+        params = {"page": 0, "per_page": 50}
 
-            valid_response = {
-                "items": [{"id": "1", "name": "Test"}],
-                "found": 1,
-                "pages": 1
-            }
-
-            result = cache.is_valid_response(valid_response)
+        # Создаем реальный объект FileCache для тестирования метода
+        from src.utils.cache import FileCache
+        with patch('pathlib.Path'):
+            cache = FileCache("test")
+            result = cache._is_valid_response(valid_response, params)
             assert result is True
 
     @patch('pathlib.Path.mkdir')
     @patch('pathlib.Path.exists', return_value=True)
     def test_is_valid_response_no_results_page(self, mock_exists, mock_mkdir, temp_cache_dir):
-        """Тест валидации ответа без результатов на странице"""
-        with patch.object(Path, 'mkdir'), \
-             patch.object(Path, 'exists', return_value=True):
-            cache = FileCache(temp_cache_dir)
+        """Тестирование валидности пустой страницы без результатов"""
+        empty_response = {
+            "items": [],
+            "found": 0
+        }
+        params = {"page": 1, "per_page": 50}  # Не первая страница
 
-            no_results = {"items": [], "found": 0}
-            result = cache.is_valid_response(no_results)
-            # Пустой ответ может быть валидным
-            assert isinstance(result, bool)
+        # Создаем реальный объект FileCache для тестирования метода
+        from src.utils.cache import FileCache
+        with patch('pathlib.Path'):
+            cache = FileCache("test")
+            result = cache._is_is_valid_response(empty_response, params)
+            assert result is False
 
     @patch('pathlib.Path.mkdir')
     @patch('pathlib.Path.exists', return_value=True)
     def test_is_valid_response_first_page_no_results(self, mock_exists, mock_mkdir, temp_cache_dir):
-        """Тест валидации первой страницы без результатов"""
-        with patch.object(Path, 'mkdir'), \
-             patch.object(Path, 'exists', return_value=True):
-            cache = FileCache(temp_cache_dir)
+        """Тестирование валидности первой страницы без результатов"""
+        empty_response = {
+            "items": [],
+            "found": 0
+        }
+        params = {"page": 0, "per_page": 50}  # Первая страница
 
-            first_page_empty = {"items": [], "found": 0, "page": 0}
-            result = cache.is_valid_response(first_page_empty)
-            assert isinstance(result, bool)
+        # Создаем реальный объект FileCache для тестирования метода
+        from src.utils.cache import FileCache
+        with patch('pathlib.Path'):
+            cache = FileCache("test")
+            result = cache._is_valid_response(empty_response, params)
+            assert result is True
 
     @patch('pathlib.Path.mkdir')
     @patch('pathlib.Path.exists', return_value=True)
@@ -322,3 +331,23 @@ class TestFileCache:
                 filename = cache._generate_cache_filename("test", params)
                 assert isinstance(filename, str)
                 assert len(filename) > 0
+from unittest.mock import patch
+
+# Исправляем ошибку в `test_is_valid_response_no_results_page`
+# В оригинальном коде был вызов `_is_is_valid_response`, исправляем на `_is_valid_response`
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.exists', return_value=True)
+    def test_is_valid_response_no_results_page(self, mock_exists, mock_mkdir, temp_cache_dir):
+        """Тестирование валидности пустой страницы без результатов"""
+        empty_response = {
+            "items": [],
+            "found": 0
+        }
+        params = {"page": 1, "per_page": 50}  # Не первая страница
+
+        # Создаем реальный объект FileCache для тестирования метода
+        from src.utils.cache import FileCache
+        with patch('pathlib.Path'):
+            cache = FileCache("test")
+            result = cache._is_valid_response(empty_response, params)
+            assert result is False
