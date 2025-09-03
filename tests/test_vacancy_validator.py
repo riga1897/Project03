@@ -22,24 +22,16 @@ class TestVacancyValidator:
         self.validator = VacancyValidator()
         
         self.valid_vacancy = Vacancy(
-            id="123",
+            vacancy_id="123",
             title="Python Developer",
             description="Test description",
-            salary_from=100000,
-            salary_to=150000,
-            currency="RUR",
-            company_name="Test Company",
             url="https://test.com/vacancy/123"
         )
         
         self.invalid_vacancy = Vacancy(
-            id="",
+            vacancy_id="",
             title="",
             description="",
-            salary_from=None,
-            salary_to=None,
-            currency="",
-            company_name="",
             url=""
         )
 

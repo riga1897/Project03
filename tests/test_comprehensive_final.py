@@ -642,27 +642,29 @@ class TestServiceModules:
         mock_connect.return_value = mock_conn
         
         try:
-            from src.storage.services.filtering_service import FilteringService
-            filter_service = FilteringService()
+            from src.storage.services.filtering_service import FilteringService, TargetCompanyFilterStrategy
+            strategy = TargetCompanyFilterStrategy()
+            filter_service = FilteringService(strategy)
             
             assert filter_service is not None
             
             vacancies = [create_standard_vacancy() for _ in range(5)]
             
-            # Тестируем фильтрацию по зарплате
-            if hasattr(filter_service, 'filter_by_salary'):
-                result = filter_service.filter_by_salary(vacancies, min_salary=100000)
-                assert isinstance(result, (list, type(None)))
+            # Создаем мок DB менеджера
+            mock_db_manager = Mock()
+            
+            # Тестируем основной метод process
+            if hasattr(filter_service, 'process'):
+                result = filter_service.process(vacancies, mock_db_manager)
+                assert isinstance(result, list)
                 
-            # Тестируем фильтрацию по компании
-            if hasattr(filter_service, 'filter_by_company'):
-                result = filter_service.filter_by_company(vacancies, "Яндекс")
-                assert isinstance(result, (list, type(None)))
-                
-            # Тестируем фильтрацию по ключевым словам
-            if hasattr(filter_service, 'filter_by_keywords'):
-                result = filter_service.filter_by_keywords(vacancies, ["Python"])
-                assert isinstance(result, (list, type(None)))
+            # Тестируем смену стратегии
+            if hasattr(filter_service, 'set_strategy'):
+                from src.storage.services.filtering_service import SalaryFilterStrategy
+                salary_strategy = SalaryFilterStrategy()
+                filter_service.set_strategy(salary_strategy)
+                result = filter_service.process(vacancies, mock_db_manager)
+                assert isinstance(result, list)
                 
         except ImportError:
             pass
@@ -676,8 +678,9 @@ class TestServiceModules:
         mock_connect.return_value = mock_conn
         
         try:
-            from src.storage.services.deduplication_service import DeduplicationService
-            dedup_service = DeduplicationService()
+            from src.storage.services.deduplication_service import DeduplicationService, SQLDeduplicationStrategy
+            strategy = SQLDeduplicationStrategy()
+            dedup_service = DeduplicationService(strategy)
             
             assert dedup_service is not None
             
