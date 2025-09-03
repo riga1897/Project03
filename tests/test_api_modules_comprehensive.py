@@ -58,7 +58,7 @@ class TestHeadHunterAPI:
     def setup_method(self):
         """Настройка перед каждым тестом"""
         # Создаем мок конфигурации
-        with patch('src.api_modules.hh_api.HHAPIConfig') as mock_config_class:
+        with patch('src.api_modules.hh_api.APIConfig') as mock_config_class:
             mock_config = Mock()
             mock_config.get_base_url.return_value = "https://api.hh.ru"
             mock_config.get_search_url.return_value = "https://api.hh.ru/vacancies"
@@ -239,8 +239,22 @@ class TestCachedAPI:
         self.mock_base_api = Mock()
         self.mock_base_api.get_vacancies = Mock(return_value=[{"id": "123", "title": "Test"}])
         
-        # Создаем CachedAPI с моком
-        self.cached_api = CachedAPI(self.mock_base_api)
+        # Создаем конкретную реализацию CachedAPI для тестирования
+        class TestCachedAPIImpl(CachedAPI):
+            def _get_empty_response(self):
+                return {"items": []}
+                
+            def _validate_vacancy(self, vacancy):
+                return isinstance(vacancy, dict) and "name" in vacancy
+                
+            def get_vacancies(self, search_query: str, **kwargs):
+                return self.base_api.get_vacancies(search_query, **kwargs) if hasattr(self, 'base_api') else []
+                
+            def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs):
+                return {"items": [], "page": page}
+        
+        self.cached_api = TestCachedAPIImpl("test_cache")
+        self.cached_api.base_api = self.mock_base_api
         
     def test_cached_api_initialization(self):
         """Тестирование инициализации кэширующего API"""
@@ -310,8 +324,8 @@ class TestUnifiedAPI:
         ])
         
         # Создаем UnifiedAPI с моками
-        with patch('src.api_modules.unified_api.HHAPI', return_value=self.mock_hh_api), \
-             patch('src.api_modules.unified_api.SuperJobAPI', return_value=self.mock_sj_api):
+        with patch('src.api_modules.hh_api.HeadHunterAPI', return_value=self.mock_hh_api), \
+             patch('src.api_modules.sj_api.SuperJobAPI', return_value=self.mock_sj_api):
             self.unified_api = UnifiedAPI()
             
     def test_unified_api_initialization(self):
@@ -441,7 +455,7 @@ class TestAPIPerformance:
                 
             mock_get.side_effect = slow_response
             
-            with patch('src.api_modules.hh_api.HHAPIConfig') as mock_config:
+            with patch('src.api_modules.hh_api.APIConfig') as mock_config:
                 mock_config.return_value.get_base_url.return_value = "https://api.hh.ru"
                 mock_config.return_value.get_search_url.return_value = "https://api.hh.ru/vacancies"
                 mock_config.return_value.get_headers.return_value = {}
@@ -470,7 +484,7 @@ class TestAPIPerformance:
             mock_resp.raise_for_status.return_value = None
             mock_get.return_value = mock_resp
             
-            with patch('src.api_modules.hh_api.HHAPIConfig') as mock_config:
+            with patch('src.api_modules.hh_api.APIConfig') as mock_config:
                 mock_config.return_value.get_base_url.return_value = "https://api.hh.ru"
                 mock_config.return_value.get_search_url.return_value = "https://api.hh.ru/vacancies"
                 mock_config.return_value.get_headers.return_value = {}
@@ -520,8 +534,8 @@ class TestAPIIntegration:
         mock_get.side_effect = get_response
         
         # Тестируем полный workflow
-        with patch('src.api_modules.unified_api.HHAPIConfig') as mock_hh_config, \
-             patch('src.api_modules.unified_api.SJAPIConfig') as mock_sj_config:
+        with patch('src.config.api_config.APIConfig') as mock_hh_config, \
+             patch('src.config.sj_api_config.SJAPIConfig') as mock_sj_config:
             
             # Настраиваем конфигурации
             mock_hh_config.return_value.get_base_url.return_value = "https://api.hh.ru"
