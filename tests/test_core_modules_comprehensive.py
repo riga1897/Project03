@@ -18,10 +18,15 @@
 import os
 import sys
 import pytest
-import tempfile
-import json
-from unittest.mock import Mock, MagicMock, patch, call
-from typing import Dict, List, Any, Optional, Union
+from unittest.mock import Mock, MagicMock, patch
+from typing import Dict
+
+# Основные импорты
+from src.user_interface import main
+from src.storage.db_manager import DBManager
+from src.vacancies.models import Vacancy, Employer
+from src.config.app_config import AppConfig
+from src.storage.storage_factory import StorageFactory
 
 # Добавляем путь к проекту
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -30,13 +35,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 mock_psycopg2 = MagicMock()
 sys.modules['psycopg2'] = mock_psycopg2
 sys.modules['psycopg2.extras'] = mock_psycopg2.extras
-
-# Основные импорты
-from src.user_interface import main
-from src.storage.db_manager import DBManager
-from src.vacancies.models import Vacancy, Employer, Experience, Employment, Schedule
-from src.config.app_config import AppConfig
-from src.storage.storage_factory import StorageFactory
 
 
 class TestUserInterfaceModule:
