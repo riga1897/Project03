@@ -139,10 +139,11 @@ except ImportError:
 class TestBaseJobAPI:
     """Комплексное тестирование базового API класса"""
 
-    def test_base_api_initialization(self, mock_rmtree, mock_exists, mock_makedirs, 
-                                   mock_json_load, mock_json_dump, mock_temp_dir, 
-                                   mock_read_text, mock_write_text, mock_mkdir, 
-                                   mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir') 
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_base_api_initialization(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование инициализации базового API класса"""
         # BaseJobAPI - абстрактный класс, создаем мок наследника
         class MockAPI(BaseJobAPI):
@@ -166,10 +167,11 @@ class TestBaseJobAPI:
         mock_rmtree.assert_not_called()
 
 
-    def test_base_api_abstract_methods(self, mock_rmtree, mock_exists, mock_makedirs, 
-                                     mock_json_load, mock_json_dump, mock_temp_dir, 
-                                     mock_read_text, mock_write_text, mock_mkdir, 
-                                     mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text') 
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_base_api_abstract_methods(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование абстрактных методов базового класса"""
         # Проверяем, что класс является абстрактным
         try:
@@ -210,13 +212,13 @@ class TestHeadHunterAPI:
              patch('tempfile.TemporaryDirectory'):
             self.hh_api = HeadHunterAPI()
 
-    @patch('requests.get')
-    def test_hh_api_search_vacancies_success(self, mock_get, mock_rmtree, mock_exists, mock_makedirs, 
-                                           mock_json_load, mock_json_dump, mock_temp_dir, 
-                                           mock_read_text, mock_write_text, mock_mkdir, 
-                                           mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_hh_api_search_vacancies_success(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование успешного поиска вакансий через HH API"""
-        # Настраиваем мок ответа
+
         mock_response = Mock()
         mock_response.json.return_value = {
             "items": [
@@ -256,11 +258,11 @@ class TestHeadHunterAPI:
         mock_rmtree.assert_not_called()
 
 
-    @patch('requests.get')
-    def test_hh_api_search_vacancies_error_handling(self, mock_get, mock_rmtree, mock_exists, mock_makedirs, 
-                                                  mock_json_load, mock_json_dump, mock_temp_dir, 
-                                                  mock_read_text, mock_write_text, mock_mkdir, 
-                                                  mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_hh_api_search_vacancies_error_handling(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование обработки ошибок в HH API"""
         # Тестируем HTTP ошибку
         mock_get.side_effect = Exception("Network error")
@@ -279,11 +281,11 @@ class TestHeadHunterAPI:
         mock_rmtree.assert_not_called()
 
 
-    @patch('requests.get')
-    def test_hh_api_get_vacancy_details(self, mock_get, mock_rmtree, mock_exists, mock_makedirs, 
-                                      mock_json_load, mock_json_dump, mock_temp_dir, 
-                                      mock_read_text, mock_write_text, mock_mkdir, 
-                                      mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_hh_api_get_vacancy_details(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование получения деталей вакансии"""
         # Пропускаем тест, если метод не существует
         if not hasattr(self.hh_api, 'get_vacancy_details'):
@@ -313,10 +315,11 @@ class TestHeadHunterAPI:
         mock_rmtree.assert_not_called()
 
 
-    def test_hh_api_parameters_building(self, mock_rmtree, mock_exists, mock_makedirs, 
-                                      mock_json_load, mock_json_dump, mock_temp_dir, 
-                                      mock_read_text, mock_write_text, mock_mkdir, 
-                                      mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_hh_api_parameters_building(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование построения параметров запроса"""
         if hasattr(self.hh_api, '_build_search_params'):
             params = self.hh_api._build_search_params("Python", page=1, per_page=50)
@@ -331,10 +334,11 @@ class TestHeadHunterAPI:
         mock_rmtree.assert_not_called()
 
 
-    def test_hh_api_url_building(self, mock_rmtree, mock_exists, mock_makedirs, 
-                               mock_json_dump, mock_temp_dir, mock_read_text, 
-                               mock_write_text, mock_mkdir, mock_path_exists, 
-                               mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_hh_api_url_building(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование построения URL для запросов"""
         if hasattr(self.hh_api, '_build_search_url'):
             url = self.hh_api._build_search_url("Python")
@@ -434,10 +438,11 @@ class TestSuperJobAPI:
         mock_rmtree.assert_not_called()
 
 
-    def test_sj_api_parameters_validation(self, mock_rmtree, mock_exists, mock_makedirs, 
-                                        mock_json_load, mock_json_dump, mock_temp_dir, 
-                                        mock_read_text, mock_write_text, mock_mkdir, 
-                                        mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_sj_api_parameters_validation(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование валидации параметров"""
         # Тестируем пустой запрос
         result = self.sj_api.get_vacancies("")
@@ -478,13 +483,20 @@ class TestCachedAPI:
              patch('tempfile.TemporaryDirectory'):
             self.cached_api = CachedAPI("test_cache")
 
-    def test_cached_api_initialization(self, mock_rmtree, mock_exists, mock_makedirs, 
-                                     mock_json_load, mock_json_dump, mock_temp_dir, 
-                                     mock_read_text, mock_write_text, mock_mkdir, 
-                                     mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_cached_api_initialization(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование инициализации кэширующего API"""
-        assert self.cached_api is not None
-        assert hasattr(self.cached_api, 'cache_name')
+        # CachedAPI является абстрактным, создаем конкретную реализацию
+        class TestCachedAPI(CachedAPI):
+            def get_vacancies(self, search_query: str, **kwargs):
+                return []
+
+        api = TestCachedAPI()
+        assert api is not None
+        assert hasattr(api, 'cache_dir')
 
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
@@ -495,10 +507,11 @@ class TestCachedAPI:
         mock_rmtree.assert_not_called()
 
 
-    def test_cached_api_search_with_caching(self, mock_rmtree, mock_exists, mock_makedirs, 
-                                          mock_json_load, mock_json_dump, mock_temp_dir, 
-                                          mock_read_text, mock_write_text, mock_mkdir, 
-                                          mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_cached_api_search_with_caching(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование поиска с кэшированием"""
         # Простой тест кэширования
         result1 = self.cached_api.get_vacancies("Python")
@@ -517,10 +530,11 @@ class TestCachedAPI:
         mock_rmtree.assert_not_called()
 
 
-    def test_cached_api_cache_key_generation(self, mock_rmtree, mock_exists, mock_makedirs, 
-                                           mock_json_load, mock_json_dump, mock_temp_dir, 
-                                           mock_read_text, mock_write_text, mock_mkdir, 
-                                           mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_cached_api_cache_key_generation(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование генерации ключей кэша"""
         if hasattr(self.cached_api, '_generate_cache_key'):
             key1 = self.cached_api._generate_cache_key("Python", {"page": 1})
@@ -563,10 +577,11 @@ class TestUnifiedAPI:
              patch('tempfile.TemporaryDirectory'):
             self.unified_api = UnifiedAPI()
 
-    def test_unified_api_search_all_sources(self, mock_rmtree, mock_exists, mock_makedirs, 
-                                          mock_json_load, mock_json_dump, mock_temp_dir, 
-                                          mock_read_text, mock_write_text, mock_mkdir, 
-                                          mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_unified_api_search_all_sources(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование поиска по всем источникам"""
         with patch.object(self.unified_api, 'hh_api', create=True) as mock_hh_api, \
              patch.object(self.unified_api, 'sj_api', create=True) as mock_sj_api:
@@ -574,8 +589,9 @@ class TestUnifiedAPI:
             mock_hh_api.get_vacancies.return_value = [{"id": "hh_123", "source": "hh.ru"}]
             mock_sj_api.get_vacancies.return_value = [{"id": "sj_456", "source": "superjob.ru"}]
 
-            result = self.unified_api.get_vacancies("Python")
-            assert isinstance(result, list)
+            # Используем search_vacancies вместо get_vacancies
+            results = self.unified_api.search_vacancies("Python")
+            assert isinstance(results, list)
 
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
@@ -586,10 +602,11 @@ class TestUnifiedAPI:
         mock_rmtree.assert_not_called()
 
 
-    def test_unified_api_get_available_sources(self, mock_rmtree, mock_exists, mock_makedirs, 
-                                             mock_json_load, mock_json_dump, mock_temp_dir, 
-                                             mock_read_text, mock_write_text, mock_mkdir, 
-                                             mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_unified_api_get_available_sources(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование получения доступных источников"""
         sources = self.unified_api.get_available_sources()
         assert isinstance(sources, list)
@@ -604,18 +621,19 @@ class TestUnifiedAPI:
         mock_rmtree.assert_not_called()
 
 
-    def test_unified_api_error_handling(self, mock_rmtree, mock_exists, mock_makedirs, 
-                                      mock_json_load, mock_json_dump, mock_temp_dir, 
-                                      mock_read_text, mock_write_text, mock_mkdir, 
-                                      mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_unified_api_error_handling(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование обработки ошибок"""
         with patch.object(self.unified_api, 'hh_api', create=True) as mock_hh_api:
             # Симулируем ошибку в API
             mock_hh_api.get_vacancies.side_effect = Exception("API Error")
 
             # API должен обрабатывать ошибки корректно
-            result = self.unified_api.get_vacancies("Python")
-            assert isinstance(result, list)
+            results = self.unified_api.search_vacancies("Python")
+            assert isinstance(results, list)
 
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
@@ -641,13 +659,14 @@ class TestUnifiedAPI:
 class TestAPIConnector:
     """Комплексное тестирование фабрики API"""
 
-    def test_api_connector_init(self, mock_rmtree, mock_exists, mock_makedirs, 
-                              mock_json_load, mock_json_dump, mock_temp_dir, 
-                              mock_read_text, mock_write_text, mock_mkdir, 
-                              mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_api_connector_init(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование инициализации APIConnector"""
-        api_connector = APIConnector()
-        assert api_connector is not None
+        connector = APIConnector()
+        assert connector is not None
 
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
@@ -658,20 +677,21 @@ class TestAPIConnector:
         mock_rmtree.assert_not_called()
 
 
-    @patch('requests.get')
-    def test_api_connector_connect(self, mock_get, mock_rmtree, mock_exists, mock_makedirs, 
-                                 mock_json_load, mock_json_dump, mock_temp_dir, 
-                                 mock_read_text, mock_write_text, mock_mkdir, 
-                                 mock_path_exists, mock_file_open):
-        """Тестирование метода connect APIConnector"""
-        api_connector = APIConnector()
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_api_connector_connect(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
+        """Тестирование подключения APIConnector"""
+
         mock_response = Mock()
         mock_response.json.return_value = {"status": "ok"}
         mock_response.status_code = 200
         mock_response.raise_for_status.return_value = None
         mock_get.return_value = mock_response
 
-        result = api_connector.connect("https://test.api", params={})
+        connector = APIConnector()
+        result = connector.connect("https://test.api", params={})
         assert isinstance(result, dict)
 
         # Проверяем, что файловые операции НЕ вызывались
@@ -683,17 +703,17 @@ class TestAPIConnector:
         mock_rmtree.assert_not_called()
 
 
-    @patch('requests.get')
-    def test_api_connector_error_handling(self, mock_get, mock_rmtree, mock_exists, mock_makedirs, 
-                                        mock_json_load, mock_json_dump, mock_temp_dir, 
-                                        mock_read_text, mock_write_text, mock_mkdir, 
-                                        mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_api_connector_error_handling(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование обработки ошибок APIConnector"""
-        api_connector = APIConnector()
+        connector = APIConnector()
         mock_get.side_effect = Exception("Network error")
 
         try:
-            api_connector.connect("https://test.api")
+            connector.connect("https://test.api")
         except Exception:
             # Ожидаем ошибку подключения
             pass
@@ -722,10 +742,11 @@ class TestAPIConnector:
 class TestAPIPerformance:
     """Тестирование производительности API"""
 
-    def test_api_response_time_simulation(self, mock_rmtree, mock_exists, mock_makedirs, 
-                                        mock_json_load, mock_json_dump, mock_temp_dir, 
-                                        mock_read_text, mock_write_text, mock_mkdir, 
-                                        mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_api_response_time_simulation(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Симуляция тестирования времени ответа API"""
         start_time = time.time()
 
@@ -755,10 +776,11 @@ class TestAPIPerformance:
         mock_rmtree.assert_not_called()
 
 
-    def test_api_memory_usage_simulation(self, mock_rmtree, mock_exists, mock_makedirs, 
-                                       mock_json_load, mock_json_dump, mock_temp_dir, 
-                                       mock_read_text, mock_write_text, mock_mkdir, 
-                                       mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_api_memory_usage_simulation(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Симуляция тестирования использования памяти"""
         # Создаем ограниченный объем данных
         large_response = {
@@ -805,10 +827,11 @@ class TestAPIIntegration:
     """Интеграционные тесты для API модулей"""
 
     @patch('requests.get')
-    def test_full_search_workflow(self, mock_get, mock_rmtree, mock_exists, mock_makedirs, 
-                                mock_json_load, mock_json_dump, mock_temp_dir, 
-                                mock_read_text, mock_write_text, mock_mkdir, 
-                                mock_path_exists, mock_file_open):
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_full_search_workflow(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование полного рабочего процесса поиска"""
         # Настраиваем быстрые ответы
         mock_response = Mock()
@@ -821,9 +844,9 @@ class TestAPIIntegration:
         with patch('pathlib.Path'), \
              patch('tempfile.TemporaryDirectory'):
             unified_api = UnifiedAPI()
-            result = unified_api.get_vacancies("Python")
+            results = unified_api.search_vacancies("Python Developer")
 
-        assert isinstance(result, list)
+            assert isinstance(results, list)
 
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
@@ -834,10 +857,12 @@ class TestAPIIntegration:
         mock_rmtree.assert_not_called()
 
 
-    def test_api_chain_operations(self, mock_rmtree, mock_exists, mock_makedirs, 
-                                mock_json_load, mock_json_dump, mock_temp_dir, 
-                                mock_read_text, mock_write_text, mock_mkdir, 
-                                mock_path_exists, mock_file_open):
+    @patch('requests.get')
+    @patch('pathlib.Path.touch')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.write_text')
+    @patch('pathlib.Path.exists', return_value=False)
+    def test_api_chain_operations(self, mock_exists, mock_write, mock_mkdir, mock_touch) -> None:
         """Тестирование цепочки операций API"""
         with patch('requests.get') as mock_get:
             mock_response = Mock()
