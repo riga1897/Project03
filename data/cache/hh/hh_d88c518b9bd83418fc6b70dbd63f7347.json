@@ -1,0 +1,70 @@
+{
+  "timestamp": 1756873243.6073074,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 1,
+      "only_with_salary": true,
+      "period": 15,
+      "text": "python",
+      "page": 0
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "67890123",
+        "name": "Senior Python Developer",
+        "alternate_url": "https://hh.ru/vacancy/67890123",
+        "employer": {
+          "name": "Тинькофф",
+          "id": "78638"
+        },
+        "salary": {
+          "from": 200000,
+          "to": 300000,
+          "currency": "RUR"
+        },
+        "area": {
+          "name": "Москва",
+          "id": "1"
+        },
+        "experience": {
+          "name": "От 3 до 6 лет",
+          "id": "between3And6"
+        },
+        "employment": {
+          "name": "Полная занятость",
+          "id": "full"
+        },
+        "snippet": {
+          "requirement": "Python, FastAPI, PostgreSQL, Docker",
+          "responsibility": "Разработка высоконагруженных сервисов"
+        },
+        "published_at": "2024-01-20T14:30:00+03:00"
+      },
+      {
+        "id": "67890124",
+        "name": "Middle Python Developer",
+        "alternate_url": "https://hh.ru/vacancy/67890124",
+        "employer": {
+          "name": "Ozon",
+          "id": "2180"
+        },
+        "salary": {
+          "from": 150000,
+          "to": 220000,
+          "currency": "RUR"
+        },
+        "area": {
+          "name": "Санкт-Петербург",
+          "id": "2"
+        }
+      }
+    ],
+    "found": 1250,
+    "pages": 63,
+    "per_page": 20,
+    "page": 0
+  }
+}
