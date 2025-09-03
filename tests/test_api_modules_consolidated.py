@@ -139,15 +139,19 @@ class TestAPIModulesConsolidated:
             class TestCachedAPI(CachedAPI):
                 def get_vacancies(self, search_query: str, **kwargs):
                     return []
-                def _validate_vacancy(self, vacancy):
-                    return True
-                def _get_empty_response(self):
-                    return {"items": []}
+
                 def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs):
                     return []
 
-            with patch('pathlib.Path'), \
-                 patch('tempfile.TemporaryDirectory'):
+                def _get_empty_response(self):
+                    return {"items": [], "found": 0}
+
+                def _validate_vacancy(self, vacancy: dict):
+                    return True
+
+            with patch('pathlib.Path.mkdir'), \
+                 patch('pathlib.Path.exists', return_value=True), \
+                 patch('src.utils.cache.FileCache.__init__', return_value=None):
                 try:
                     api = TestCachedAPI("test")
                     assert api is not None

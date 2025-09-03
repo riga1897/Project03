@@ -255,8 +255,22 @@ class TestCachedAPI:
     def test_cached_api_initialization(self) -> None:
         """Тестирование инициализации кэширующего API"""
         # Создаем конкретную реализацию
+        class TestCachedAPI(CachedAPI):
+            def get_vacancies(self, search_query: str, **kwargs):
+                return [{"id": "test", "name": "Test Job"}]
+            
+            def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs):
+                return [{"id": "test", "name": "Test Job"}]
+            
+            def _get_empty_response(self):
+                return {"items": [], "found": 0}
+            
+            def _validate_vacancy(self, vacancy):
+                return isinstance(vacancy, dict) and "id" in vacancy and "name" in vacancy
+
         with patch('src.utils.cache.FileCache.__init__', return_value=None), \
-             patch('pathlib.Path.__new__', return_value=MagicMock()):
+             patch('pathlib.Path.mkdir'), \
+             patch('pathlib.Path.exists', return_value=True):
             api = TestCachedAPI("test")
             assert api is not None
 

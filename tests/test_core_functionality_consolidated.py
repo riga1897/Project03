@@ -312,16 +312,25 @@ class TestStorageModulesConsolidated:
             from src.storage.components.vacancy_repository import VacancyRepository
             from unittest.mock import Mock
             mock_db = Mock()
+            mock_db.__enter__ = Mock(return_value=mock_db)
+            mock_db.__exit__ = Mock(return_value=None)
             mock_validator = Mock()
             repo = VacancyRepository(mock_db, mock_validator)
-            assert repo is not None
 
-            # Тестируем основные операции
-            if hasattr(repo, 'save_vacancy'):
-                repo.save_vacancy({'id': '1', 'title': 'Test'})
-            if hasattr(repo, 'get_vacancies'):
-                result = repo.get_vacancies()
-                assert isinstance(result, list)
+            with patch.object(repo._db_connection, 'get_connection') as mock_get_conn:
+                mock_conn = Mock()
+                mock_conn.__enter__ = Mock(return_value=mock_conn)
+                mock_conn.__exit__ = Mock(return_value=None)
+                mock_get_conn.return_value = mock_conn
+
+                assert repo is not None
+
+                # Тестируем основные операции
+                if hasattr(repo, 'save_vacancy'):
+                    repo.save_vacancy({'id': '1', 'title': 'Test'})
+                if hasattr(repo, 'get_vacancies'):
+                    result = repo.get_vacancies()
+                    assert isinstance(result, list)
 
         except ImportError:
             # Создаем заглушку для тестирования
@@ -518,7 +527,8 @@ class TestUIModulesConsolidated:
         try:
             from src.ui_interfaces.vacancy_display_handler import VacancyDisplayHandler
 
-            handler = VacancyDisplayHandler()
+            mock_storage = Mock()
+            handler = VacancyDisplayHandler(mock_storage)
             assert handler is not None
 
             # Тестируем отображение
