@@ -19,7 +19,17 @@ class TestVacancySearchHandlerComplete:
 
     def setup_method(self):
         """Настройка перед каждым тестом"""
-        self.search_handler = VacancySearchHandler()
+        # Создаем моки для обязательных зависимостей
+        mock_unified_api = Mock()
+        mock_storage = Mock()
+        
+        # Настраиваем поведение моков
+        mock_unified_api.get_vacancies.return_value = []
+        mock_unified_api.get_available_sources.return_value = ["hh.ru", "superjob.ru"]
+        mock_storage.get_vacancies.return_value = []
+        mock_storage.save_vacancies.return_value = True
+        
+        self.search_handler = VacancySearchHandler(mock_unified_api, mock_storage)
         
         self.sample_search_results = [
             Vacancy(

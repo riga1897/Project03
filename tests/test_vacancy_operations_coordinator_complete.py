@@ -19,7 +19,16 @@ class TestVacancyOperationsCoordinatorComplete:
 
     def setup_method(self):
         """Настройка перед каждым тестом"""
-        self.coordinator = VacancyOperationsCoordinator()
+        # Создаем моки для обязательных зависимостей
+        mock_unified_api = Mock()
+        mock_storage = Mock()
+        
+        # Настраиваем поведение моков
+        mock_unified_api.get_vacancies.return_value = []
+        mock_storage.get_vacancies.return_value = []
+        mock_storage.save_vacancies.return_value = True
+        
+        self.coordinator = VacancyOperationsCoordinator(mock_unified_api, mock_storage)
         
         self.sample_vacancies = [
             Vacancy(
