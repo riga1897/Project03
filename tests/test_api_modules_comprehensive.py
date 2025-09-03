@@ -10,6 +10,7 @@ import sys
 import json
 import pytest
 import time
+import shutil
 from unittest.mock import Mock, MagicMock, patch, mock_open
 from typing import Dict, List, Any, Optional
 import tempfile
