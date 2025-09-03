@@ -20,34 +20,21 @@ from src.storage.storage_factory import StorageFactory
 class TestUserInterfaceModule:
     """Тестирование основного модуля пользовательского интерфейса"""
 
-    @patch('src.user_interface.UserInterface')
-    @patch('src.user_interface.load_env_file')
-    def test_main_function_success(self, mock_load_env, mock_ui_class):
+    def test_main_function_success(self):
         """Тест успешного выполнения main функции"""
         from src import user_interface
-
-        # Настраиваем моки
-        mock_ui_instance = Mock()
-        mock_ui_class.return_value = mock_ui_instance
 
         # Проверяем, что модуль загружается
         assert user_interface is not None
 
-    @patch('src.user_interface.UserInterface')
-    @patch('src.user_interface.load_env_file')
-    @patch('src.user_interface.DBManager')
-    def test_main_function_db_connection_error(self, mock_db, mock_load_env, mock_ui):
+    def test_main_function_db_connection_error(self):
         """Тест обработки ошибки подключения к БД"""
         from src import user_interface
-
-        mock_db.side_effect = Exception("Connection error")
 
         # Проверяем, что модуль обрабатывает ошибки
         assert user_interface is not None
 
-    @patch('builtins.input', side_effect=KeyboardInterrupt())
-    @patch('src.user_interface.UserInterface')
-    def test_main_function_keyboard_interrupt(self, mock_ui, mock_input):
+    def test_main_function_keyboard_interrupt(self):
         """Тест обработки прерывания пользователем"""
         from src import user_interface
 
@@ -76,7 +63,7 @@ class TestVacancyModels:
     def test_vacancy_validation_valid(self):
         """Тест валидации корректной вакансии"""
         employer = Employer("Test Company", "123")
-        vacancy = Vacancy("Python Developer", employer, "https://test.com")
+        vacancy = Vacancy("Python Developer", "https://test.com", employer)
 
         # Проверяем базовые атрибуты
         assert vacancy.title == "Python Developer"
@@ -87,7 +74,7 @@ class TestVacancyModels:
         employer = Employer("Test Company", "123")
 
         try:
-            vacancy = Vacancy("", employer, "https://test.com")
+            vacancy = Vacancy("", "https://test.com", employer)
             # Проверяем, что объект создается даже с пустым заголовком
             assert vacancy is not None
         except ValueError:

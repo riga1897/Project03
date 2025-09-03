@@ -21,7 +21,7 @@ class TestUINavigation:
         self.ui_nav = UINavigation(items_per_page=5)
         self.test_items = [f"item_{i}" for i in range(25)]
 
-    def test_formatter(self, item, number=None):
+    def _test_formatter(self, item, number=None):
         """Тестовый форматер элементов"""
         if number:
             return f"{number}. {item}"
@@ -50,7 +50,7 @@ class TestUINavigation:
     def test_paginate_display_single_page(self, mock_print, mock_input):
         """Тестирование отображения с одной страницей"""
         short_items = ["item_1", "item_2", "item_3"]
-        self.ui_nav.paginate_display(short_items, self.test_formatter, "Test Data")
+        self.ui_nav.paginate_display(short_items, self._test_formatter, "Test Data")
 
         assert mock_print.call_count > 0
 
@@ -63,7 +63,7 @@ class TestUINavigation:
 class TestQuickPaginate:
     """Тестирование функции быстрой пагинации"""
 
-    def test_formatter(self, item, number=None):
+    def _test_formatter(self, item, number=None):
         """Простой форматтер для тестов"""
         if number is not None:
             return f"{number}: Formatted: {item}"
@@ -74,7 +74,7 @@ class TestQuickPaginate:
     def test_quick_paginate_basic(self, mock_print, mock_input):
         """Базовое тестирование quick_paginate"""
         items = ["item1", "item2", "item3"]
-        quick_paginate(items, self.test_formatter, "Quick Test", items_per_page=2)
+        quick_paginate(items, self._test_formatter, "Quick Test", items_per_page=2)
 
         assert mock_print.call_count > 0
         assert mock_input.call_count >= 1
@@ -94,7 +94,7 @@ class TestQuickPaginate:
 
         quick_paginate(
             items, 
-            self.test_formatter, 
+            self._test_formatter, 
             "Quick Test", 
             custom_actions=custom_actions
         )

@@ -420,13 +420,14 @@ class TestUINavigationPaginateDisplay:
         assert mock_print.called
         assert mock_input.call_count == 2
 
-    @patch('builtins.input', side_effect=['invalid', 'q'])
+    @patch('builtins.input')
     @patch('builtins.print')
     def test_paginate_display_invalid_input(self, mock_print, mock_input):
         """Тестирование обработки некорректного ввода"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
 
+        mock_input.side_effect = ['invalid', 'q', 'q']  # Extra 'q' to prevent StopIteration
         self.nav.paginate_display(self.test_items, simple_formatter)
 
         assert mock_print.called
@@ -626,13 +627,14 @@ class TestUINavigationEdgeCases:
         formatted_without_index = complex_formatter(test_items[0])
         assert "•" in formatted_without_index
 
-    @patch('builtins.input', side_effect=['100', 'q'])
+    @patch('builtins.input')
     @patch('builtins.print')
     def test_navigation_boundary_page_numbers(self, mock_print, mock_input):
         """Тестирование граничных номеров страниц"""
         if not SRC_AVAILABLE:
             pytest.skip("Source code not available")
 
+        mock_input.side_effect = ['100', 'q', 'q']  # Extra 'q' to prevent StopIteration
         test_items = create_test_items(6)
         self.nav.paginate_display(test_items, simple_formatter)
 

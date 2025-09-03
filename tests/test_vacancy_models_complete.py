@@ -20,7 +20,7 @@ class TestVacancyModelsComplete:
     def test_base_vacancy_model(self):
         """Тест базовой модели вакансии"""
         employer = Employer("Test Company", "123")
-        vacancy = Vacancy("Python Developer", employer, "https://test.com")
+        vacancy = Vacancy("Python Developer", "https://test.com", employer)
 
         assert vacancy.title == "Python Developer"
         assert vacancy.url == "https://test.com"
@@ -38,7 +38,7 @@ class TestVacancyModelsComplete:
         employer = Employer("Test Company", "123")
 
         assert employer.name == "Test Company"
-        assert employer.employer_id == "123"
+        assert employer.id == "123"
 
     def test_hh_parser_complete(self):
         """Тест парсера HeadHunter"""
