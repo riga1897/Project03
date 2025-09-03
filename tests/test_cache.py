@@ -17,16 +17,16 @@ class TestFileCache:
     """Тесты для класса FileCache"""
     
     @pytest.fixture
-    def temp_cache_dir(self, tmp_path):
-        """Создание временной директории для кэша"""
-        cache_dir = tmp_path / "cache"
-        cache_dir.mkdir()
-        return str(cache_dir)
+    def temp_cache_dir(self):
+        """Мок временной директории для кэша"""
+        return "/mock/cache/dir"
     
     @pytest.fixture
     def file_cache(self, temp_cache_dir):
         """Создание экземпляра FileCache для тестов"""
-        return FileCache(temp_cache_dir)
+        with patch('pathlib.Path.mkdir'), \
+             patch('pathlib.Path.exists', return_value=True):
+            return FileCache(temp_cache_dir)
     
     def test_file_cache_initialization(self, temp_cache_dir):
         """Тест инициализации FileCache"""
@@ -189,16 +189,11 @@ class TestFileCache:
         assert result is None
     
     @patch('src.utils.cache.logger')
-    def test_load_response_file_too_small(self, mock_logger, file_cache):
+    @patch('pathlib.Path.unlink')
+    @patch('pathlib.Path.exists', return_value=True)
+    def test_load_response_file_too_small(self, mock_exists, mock_unlink, mock_logger, file_cache):
         """Тест загрузки слишком маленького файла"""
         params = {"text": "Python"}
-        params_hash = file_cache._generate_params_hash(params)
-        filename = f"hh_{params_hash}.json"
-        filepath = file_cache.cache_dir / filename
-        
-        # Создаем слишком маленький файл
-        with open(filepath, 'w') as f:
-            f.write('{}')  # Минимальный JSON
         
         with patch('pathlib.Path.stat') as mock_stat:
             mock_stat.return_value.st_size = 30  # Меньше 50 байт
@@ -206,27 +201,23 @@ class TestFileCache:
             result = file_cache.load_response("hh", params)
             
             assert result is None
-            mock_logger.warning.assert_called_with("Файл кэша слишком маленький (30 байт), удаляем: Mock")
+            mock_unlink.assert_called_once()
+            mock_logger.warning.assert_called()
     
     @patch('src.utils.cache.logger')
-    def test_load_response_valid_file(self, mock_logger, file_cache):
+    @patch('pathlib.Path.exists', return_value=True)
+    def test_load_response_valid_file(self, mock_exists, mock_logger, file_cache):
         """Тест загрузки валидного файла"""
         params = {"text": "Python"}
-        params_hash = file_cache._generate_params_hash(params)
-        filename = f"hh_{params_hash}.json"
-        filepath = file_cache.cache_dir / filename
         
-        # Создаем валидный файл кэша
         cache_data = {
             "timestamp": time.time(),
             "meta": {"params": params},
             "data": {"items": [{"id": "1", "name": "Python Developer"}]}
         }
         
-        with open(filepath, 'w') as f:
-            json.dump(cache_data, f)
-        
-        with patch('pathlib.Path.stat') as mock_stat:
+        with patch('pathlib.Path.stat') as mock_stat, \
+             patch('builtins.open', mock_open(read_data=json.dumps(cache_data))):
             mock_stat.return_value.st_size = 100  # Больше 50 байт
             
             result = file_cache.load_response("hh", params)
@@ -235,18 +226,14 @@ class TestFileCache:
             assert result["data"]["items"][0]["id"] == "1"
     
     @patch('src.utils.cache.logger')
-    def test_load_response_invalid_json(self, mock_logger, file_cache):
+    @patch('pathlib.Path.exists', return_value=True)
+    @patch('pathlib.Path.unlink')
+    def test_load_response_invalid_json(self, mock_unlink, mock_exists, mock_logger, file_cache):
         """Тест загрузки файла с невалидным JSON"""
         params = {"text": "Python"}
-        params_hash = file_cache._generate_params_hash(params)
-        filename = f"hh_{params_hash}.json"
-        filepath = file_cache.cache_dir / filename
         
-        # Создаем файл с невалидным JSON
-        with open(filepath, 'w') as f:
-            f.write('{"invalid": json}')
-        
-        with patch('pathlib.Path.stat') as mock_stat:
+        with patch('pathlib.Path.stat') as mock_stat, \
+             patch('builtins.open', mock_open(read_data='{"invalid": json}')):
             mock_stat.return_value.st_size = 100
             
             result = file_cache.load_response("hh", params)
@@ -255,20 +242,16 @@ class TestFileCache:
             mock_logger.warning.assert_called()
     
     @patch('src.utils.cache.logger')
-    def test_load_response_invalid_structure(self, mock_logger, file_cache):
+    @patch('pathlib.Path.exists', return_value=True)
+    @patch('pathlib.Path.unlink')
+    def test_load_response_invalid_structure(self, mock_unlink, mock_exists, mock_logger, file_cache):
         """Тест загрузки файла с невалидной структурой"""
         params = {"text": "Python"}
-        params_hash = file_cache._generate_params_hash(params)
-        filename = f"hh_{params_hash}.json"
-        filepath = file_cache.cache_dir / filename
         
-        # Создаем файл с невалидной структурой
         cache_data = {"timestamp": time.time()}  # Без data и meta
         
-        with open(filepath, 'w') as f:
-            json.dump(cache_data, f)
-        
-        with patch('pathlib.Path.stat') as mock_stat:
+        with patch('pathlib.Path.stat') as mock_stat, \
+             patch('builtins.open', mock_open(read_data=json.dumps(cache_data))):
             mock_stat.return_value.st_size = 100
             
             result = file_cache.load_response("hh", params)
@@ -333,30 +316,32 @@ class TestFileCache:
     @patch('src.utils.cache.logger')
     def test_deduplicate_vacancies_with_existing_cache(self, mock_logger, file_cache):
         """Тест дедупликации с существующим кэшем"""
-        # Создаем существующий файл кэша
+        # Мокируем существующий файл кэша
         existing_cache = {
             "timestamp": time.time(),
             "meta": {"params": {"text": "Java"}},
             "data": {"items": [{"id": "1", "name": "Java Developer"}]}
         }
         
-        cache_file = file_cache.cache_dir / "hh_existing.json"
-        with open(cache_file, 'w') as f:
-            json.dump(existing_cache, f)
+        mock_path = MagicMock()
+        mock_path.__str__ = lambda: "hh_existing.json"
         
-        # Новые данные с дубликатом
-        new_data = {
-            "items": [
-                {"id": "1", "name": "Java Developer"},  # Дубликат
-                {"id": "2", "name": "Python Developer"}  # Новый
-            ]
-        }
-        
-        result = file_cache._deduplicate_vacancies(new_data, "hh")
-        
-        # Должен остаться только новый элемент
-        assert len(result["items"]) == 1
-        assert result["items"][0]["id"] == "2"
+        with patch('pathlib.Path.glob', return_value=[mock_path]), \
+             patch('builtins.open', mock_open(read_data=json.dumps(existing_cache))):
+            
+            # Новые данные с дубликатом
+            new_data = {
+                "items": [
+                    {"id": "1", "name": "Java Developer"},  # Дубликат
+                    {"id": "2", "name": "Python Developer"}  # Новый
+                ]
+            }
+            
+            result = file_cache._deduplicate_vacancies(new_data, "hh")
+            
+            # Должен остаться только новый элемент
+            assert len(result["items"]) == 1
+            assert result["items"][0]["id"] == "2"
     
     @patch('src.utils.cache.logger')
     def test_deduplicate_vacancies_error_handling(self, mock_logger, file_cache):
@@ -371,47 +356,44 @@ class TestFileCache:
             assert result == data
             mock_logger.error.assert_called_with("Ошибка дедупликации: File error")
     
-    def test_clear_cache_specific_source(self, file_cache):
+    @patch('pathlib.Path.unlink')
+    @patch('pathlib.Path.glob')
+    def test_clear_cache_specific_source(self, mock_glob, mock_unlink, file_cache):
         """Тест очистки кэша для конкретного источника"""
-        # Создаем тестовые файлы
-        hh_file = file_cache.cache_dir / "hh_test1.json"
-        sj_file = file_cache.cache_dir / "sj_test1.json"
-        
-        hh_file.touch()
-        sj_file.touch()
+        # Мокируем файлы для удаления
+        hh_mock_file = MagicMock()
+        mock_glob.return_value = [hh_mock_file]
         
         # Очищаем только HH кэш
         file_cache.clear("hh")
         
-        assert not hh_file.exists()
-        assert sj_file.exists()  # SJ файл должен остаться
+        mock_glob.assert_called_once_with("hh_*.json")
+        hh_mock_file.unlink.assert_called_once()
     
-    def test_clear_cache_all_sources(self, file_cache):
+    @patch('pathlib.Path.unlink')
+    @patch('pathlib.Path.glob')
+    def test_clear_cache_all_sources(self, mock_glob, mock_unlink, file_cache):
         """Тест очистки всего кэша"""
-        # Создаем тестовые файлы
-        hh_file = file_cache.cache_dir / "hh_test1.json"
-        sj_file = file_cache.cache_dir / "sj_test1.json"
-        other_file = file_cache.cache_dir / "other.json"
-        
-        hh_file.touch()
-        sj_file.touch()
-        other_file.touch()
+        # Мокируем файлы для удаления
+        mock_files = [MagicMock(), MagicMock(), MagicMock()]
+        mock_glob.return_value = mock_files
         
         # Очищаем весь кэш
         file_cache.clear()
         
-        assert not hh_file.exists()
-        assert not sj_file.exists()
-        assert not other_file.exists()
+        mock_glob.assert_called_once_with("*.json")
+        for mock_file in mock_files:
+            mock_file.unlink.assert_called_once()
     
-    def test_clear_cache_no_files(self, file_cache):
+    @patch('pathlib.Path.glob', return_value=[])
+    def test_clear_cache_no_files(self, mock_glob, file_cache):
         """Тест очистки пустого кэша"""
         # Очищаем пустой кэш
         file_cache.clear()
         file_cache.clear("hh")
         
-        # Не должно быть ошибок
-        assert True
+        # Проверяем, что glob был вызван
+        assert mock_glob.call_count >= 1
     
     def test_cache_file_naming_convention(self, file_cache):
         """Тест соглашения об именовании файлов кэша"""

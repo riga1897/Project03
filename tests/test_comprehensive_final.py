@@ -540,9 +540,11 @@ class TestUtilityModules:
 
             try:
                 from src.utils.cache import FileCache
-                cache = FileCache("test_cache")
 
-                assert cache is not None
+                with patch('pathlib.Path.mkdir'), \
+                     patch('pathlib.Path.exists', return_value=True):
+                    cache = FileCache(cache_dir="/mock/cache/dir")
+                    assert cache is not None
 
                 # Тестируем сохранение ответа
                 if hasattr(cache, 'save_response'):

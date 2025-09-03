@@ -1,4 +1,3 @@
-
 """
 Тесты граничных случаев и исключений для полного покрытия кода.
 БЕЗ внешних запросов, записи на диск или stdin.
@@ -17,7 +16,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 mock_requests = MagicMock()
 mock_psycopg2 = MagicMock()
 sys.modules['requests'] = mock_requests
-sys.modules['psycopg2'] = mock_psycopg2
+sys.modules['psycopg2'] = mock_psycopg
 
 
 class TestErrorHandlingComprehensive:
@@ -27,7 +26,7 @@ class TestErrorHandlingComprehensive:
         """Тестирование обработки ошибок API"""
         try:
             from src.api_modules.base_api import BaseAPI
-            
+
             # Создаем конкретную реализацию для тестирования
             class TestAPI(BaseAPI):
                 def search_vacancies(self, query: str, **kwargs) -> List[Dict[str, Any]]:
@@ -47,7 +46,7 @@ class TestErrorHandlingComprehensive:
         """Тестирование обработки ошибок хранения"""
         try:
             from src.storage.abstract import AbstractStorage
-            
+
             # Создаем конкретную реализацию для тестирования
             class TestStorage(AbstractStorage):
                 def save_vacancies(self, vacancies: List[Any]) -> bool:
@@ -75,7 +74,7 @@ class TestErrorHandlingComprehensive:
         """Комплексное тестирование валидации пользовательского ввода"""
         try:
             from src.utils.ui_helpers import UIHelpers
-            
+
             helpers = UIHelpers()
             assert helpers is not None
 
@@ -95,7 +94,7 @@ class TestBoundaryConditions:
         """Тестирование обработки пустых данных"""
         try:
             from src.utils.salary import Salary
-            
+
             # Тестируем зарплату с пустыми данными
             empty_salary = Salary({})
             assert empty_salary is not None
@@ -111,11 +110,11 @@ class TestBoundaryConditions:
         """Тестирование работы с большими наборами данных"""
         try:
             from src.vacancies.models import Vacancy, Employer
-            
+
             # Создаем большой список вакансий для тестирования производительности
             employer = Employer("Test Company", "123")
             vacancies = []
-            
+
             for i in range(1000):
                 vacancy = Vacancy(
                     f"Developer {i}",
@@ -134,9 +133,9 @@ class TestBoundaryConditions:
         """Тестирование обработки Unicode данных"""
         try:
             from src.utils.data_normalizers import DataNormalizer
-            
+
             normalizer = DataNormalizer()
-            
+
             # Тестируем обработку различных кодировок
             unicode_data = {
                 'title': 'Разработчик Python',
@@ -160,22 +159,29 @@ class TestPerformanceOptimization:
         """Тестирование производительности кэширования"""
         try:
             from src.utils.cache import FileCache
-            
-            with patch('pathlib.Path.exists', return_value=False):
-                with patch('pathlib.Path.mkdir'):
-                    with patch('tempfile.TemporaryDirectory') as mock_temp:
-                        mock_temp.return_value.__enter__.return_value = '/mock/temp'
-                        
-                        cache = FileCache('/mock/cache')
-                        assert cache is not None
 
-                        # Тестируем множественные операции кэширования
-                        for i in range(100):
-                            params = {"query": f"test{i}"}
-                            data = {"result": f"data{i}"}
+            # Мокируем создание директорий и файлов для предотвращения записи на диск
+            with patch('pathlib.Path.exists', return_value=False):
+                with patch('pathlib.Path.mkdir') as mock_mkdir:
+                    with patch('builtins.open', mock_open()) as mock_file_open:
+                        with patch('tempfile.TemporaryDirectory') as mock_temp:
+                            mock_temp.return_value.__enter__.return_value = '/mock/temp'
+
+                            cache = FileCache('/mock/cache')
+                            assert cache is not None
+
+                            # Тестируем множественные операции кэширования
+                            for i in range(100):
+                                params = {"query": f"test{i}"}
+                                data = {"result": f"data{i}"}
+
+                                if hasattr(cache, 'save_response'):
+                                    cache.save_response(f"test{i}", params, data)
                             
-                            if hasattr(cache, 'save_response'):
-                                cache.save_response(f"test{i}", params, data)
+                            # Проверяем, что mkdir не вызывался
+                            mock_mkdir.assert_not_called()
+                            # Проверяем, что open не вызывался
+                            mock_file_open.assert_not_called()
 
         except ImportError:
             pytest.skip("FileCache module not found")
@@ -184,9 +190,9 @@ class TestPerformanceOptimization:
         """Тестирование оптимизации использования памяти"""
         try:
             from src.storage.services.deduplication_service import DeduplicationService
-            
+
             service = DeduplicationService()
-            
+
             # Создаем данные для тестирования дедупликации
             duplicate_data = [
                 {'id': '1', 'title': 'Python Dev'} for _ in range(1000)
@@ -226,11 +232,11 @@ class TestIntegrationScenarios:
         try:
             from src.api_modules.hh_api import HeadHunterAPI
             from src.storage.db_manager import DBManager
-            
+
             # Тестируем workflow без реальных операций
             api = HeadHunterAPI()
             db = DBManager()
-            
+
             assert api is not None
             assert db is not None
 
@@ -243,7 +249,7 @@ class TestIntegrationScenarios:
         """Тестирование workflow взаимодействия с пользователем"""
         try:
             from src.user_interface import main
-            
+
             # Тестируем главную функцию с мокированным вводом
             with patch('sys.exit'):
                 main()
@@ -259,7 +265,7 @@ class TestDataValidation:
         """Тестирование валидации зарплаты"""
         try:
             from src.utils.salary import Salary
-            
+
             # Тестируем различные некорректные данные
             invalid_data_sets = [
                 None,
@@ -280,11 +286,11 @@ class TestDataValidation:
         """Тестирование валидации вакансий"""
         try:
             from src.vacancies.models import Vacancy, Employer
-            
+
             # Тестируем создание вакансии с минимальными данными
             employer = Employer("", "")  # Пустые данные
             vacancy = Vacancy("", employer, "")  # Пустые данные
-            
+
             assert vacancy is not None
             assert vacancy.employer is not None
 

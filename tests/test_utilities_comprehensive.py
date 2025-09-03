@@ -111,8 +111,9 @@ class TestFileCache:
 
     def setup_method(self) -> None:
         """Настройка перед каждым тестом"""
-        self.temp_dir = tempfile.mkdtemp()
-        self.cache = FileCache(cache_dir=self.temp_dir)
+        with patch('pathlib.Path.mkdir'), \
+             patch('pathlib.Path.exists', return_value=True):
+            self.cache = FileCache(cache_dir="/mock/cache/dir")
 
     def test_cache_initialization(self) -> None:
         """Тестирование инициализации кэша"""
