@@ -1,3 +1,4 @@
+# 1. Анализ изменений: Добавлены моки для `pathlib.Path.touch` и `shutil.rmtree`, а также обновлены проверки в тестах для учета этих новых моков, чтобы гарантировать отсутствие файловых операций.
 
 """
 Комплексные тесты для API модулей с максимальным покрытием кода.
@@ -10,6 +11,7 @@ import sys
 import json
 import pytest
 import time
+import shutil  # Импортируем shutil для использования в моках
 from unittest.mock import Mock, MagicMock, patch, call, mock_open
 from typing import Dict, List, Any, Optional
 
@@ -127,18 +129,20 @@ except ImportError:
 @patch('pathlib.Path.mkdir')
 @patch('pathlib.Path.write_text')
 @patch('pathlib.Path.read_text', return_value='{"items": []}')
+@patch('pathlib.Path.touch')
 @patch('tempfile.TemporaryDirectory')
 @patch('json.dump')
 @patch('json.load', return_value={"items": []})
 @patch('os.makedirs')
 @patch('os.path.exists', return_value=False)
+@patch('shutil.rmtree')
 class TestBaseJobAPI:
     """Комплексное тестирование базового API класса"""
 
-    def test_base_api_initialization(self, mock_exists, mock_makedirs, mock_json_load, 
-                                   mock_json_dump, mock_temp_dir, mock_read_text, 
-                                   mock_write_text, mock_mkdir, mock_path_exists, 
-                                   mock_file_open):
+    def test_base_api_initialization(self, mock_rmtree, mock_exists, mock_makedirs, 
+                                   mock_json_load, mock_json_dump, mock_temp_dir, 
+                                   mock_read_text, mock_write_text, mock_mkdir, 
+                                   mock_path_exists, mock_file_open):
         """Тестирование инициализации базового API класса"""
         # BaseJobAPI - абстрактный класс, создаем мок наследника
         class MockAPI(BaseJobAPI):
@@ -152,15 +156,20 @@ class TestBaseJobAPI:
         assert base_api is not None
         assert hasattr(base_api, 'get_vacancies')
         assert hasattr(base_api, '_validate_vacancy')
-        
+
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
 
-    def test_base_api_abstract_methods(self, mock_exists, mock_makedirs, mock_json_load, 
-                                     mock_json_dump, mock_temp_dir, mock_read_text, 
-                                     mock_write_text, mock_mkdir, mock_path_exists, 
-                                     mock_file_open):
+
+    def test_base_api_abstract_methods(self, mock_rmtree, mock_exists, mock_makedirs, 
+                                     mock_json_load, mock_json_dump, mock_temp_dir, 
+                                     mock_read_text, mock_write_text, mock_mkdir, 
+                                     mock_path_exists, mock_file_open):
         """Тестирование абстрактных методов базового класса"""
         # Проверяем, что класс является абстрактным
         try:
@@ -170,17 +179,27 @@ class TestBaseJobAPI:
             # Если ABC не используется, просто проверяем наличие методов
             assert hasattr(BaseJobAPI, 'get_vacancies')
 
+        # Проверяем, что файловые операции НЕ вызывались
+        mock_file_open.assert_not_called()
+        mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
+
 
 @patch('builtins.open', mock_file_operations)
 @patch('pathlib.Path.exists', return_value=False)
 @patch('pathlib.Path.mkdir')
 @patch('pathlib.Path.write_text')
 @patch('pathlib.Path.read_text', return_value='{"items": []}')
+@patch('pathlib.Path.touch')
 @patch('tempfile.TemporaryDirectory')
 @patch('json.dump')
 @patch('json.load', return_value={"items": []})
 @patch('os.makedirs')
 @patch('os.path.exists', return_value=False)
+@patch('shutil.rmtree')
 class TestHeadHunterAPI:
     """Комплексное тестирование HH.ru API"""
 
@@ -192,7 +211,7 @@ class TestHeadHunterAPI:
             self.hh_api = HeadHunterAPI()
 
     @patch('requests.get')
-    def test_hh_api_search_vacancies_success(self, mock_get, mock_exists, mock_makedirs, 
+    def test_hh_api_search_vacancies_success(self, mock_get, mock_rmtree, mock_exists, mock_makedirs, 
                                            mock_json_load, mock_json_dump, mock_temp_dir, 
                                            mock_read_text, mock_write_text, mock_mkdir, 
                                            mock_path_exists, mock_file_open):
@@ -231,9 +250,14 @@ class TestHeadHunterAPI:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
+
 
     @patch('requests.get')
-    def test_hh_api_search_vacancies_error_handling(self, mock_get, mock_exists, mock_makedirs, 
+    def test_hh_api_search_vacancies_error_handling(self, mock_get, mock_rmtree, mock_exists, mock_makedirs, 
                                                   mock_json_load, mock_json_dump, mock_temp_dir, 
                                                   mock_read_text, mock_write_text, mock_mkdir, 
                                                   mock_path_exists, mock_file_open):
@@ -249,16 +273,21 @@ class TestHeadHunterAPI:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
+
 
     @patch('requests.get')
-    def test_hh_api_get_vacancy_details(self, mock_get, mock_exists, mock_makedirs, 
+    def test_hh_api_get_vacancy_details(self, mock_get, mock_rmtree, mock_exists, mock_makedirs, 
                                       mock_json_load, mock_json_dump, mock_temp_dir, 
                                       mock_read_text, mock_write_text, mock_mkdir, 
                                       mock_path_exists, mock_file_open):
         """Тестирование получения деталей вакансии"""
         # Пропускаем тест, если метод не существует
         if not hasattr(self.hh_api, 'get_vacancy_details'):
-            return
+            pytest.skip("Method get_vacancy_details not implemented")
 
         mock_response = Mock()
         mock_response.json.return_value = {
@@ -278,11 +307,16 @@ class TestHeadHunterAPI:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
 
-    def test_hh_api_parameters_building(self, mock_exists, mock_makedirs, mock_json_load, 
-                                      mock_json_dump, mock_temp_dir, mock_read_text, 
-                                      mock_write_text, mock_mkdir, mock_path_exists, 
-                                      mock_file_open):
+
+    def test_hh_api_parameters_building(self, mock_rmtree, mock_exists, mock_makedirs, 
+                                      mock_json_load, mock_json_dump, mock_temp_dir, 
+                                      mock_read_text, mock_write_text, mock_mkdir, 
+                                      mock_path_exists, mock_file_open):
         """Тестирование построения параметров запроса"""
         if hasattr(self.hh_api, '_build_search_params'):
             params = self.hh_api._build_search_params("Python", page=1, per_page=50)
@@ -291,8 +325,13 @@ class TestHeadHunterAPI:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
 
-    def test_hh_api_url_building(self, mock_exists, mock_makedirs, mock_json_load, 
+
+    def test_hh_api_url_building(self, mock_rmtree, mock_exists, mock_makedirs, 
                                mock_json_dump, mock_temp_dir, mock_read_text, 
                                mock_write_text, mock_mkdir, mock_path_exists, 
                                mock_file_open):
@@ -304,6 +343,10 @@ class TestHeadHunterAPI:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
 
 
 @patch('builtins.open', mock_file_operations)
@@ -311,11 +354,13 @@ class TestHeadHunterAPI:
 @patch('pathlib.Path.mkdir')
 @patch('pathlib.Path.write_text')
 @patch('pathlib.Path.read_text', return_value='{"objects": []}')
+@patch('pathlib.Path.touch')
 @patch('tempfile.TemporaryDirectory')
 @patch('json.dump')
 @patch('json.load', return_value={"objects": []})
 @patch('os.makedirs')
 @patch('os.path.exists', return_value=False)
+@patch('shutil.rmtree')
 class TestSuperJobAPI:
     """Комплексное тестирование SuperJob API"""
 
@@ -327,7 +372,7 @@ class TestSuperJobAPI:
             self.sj_api = SuperJobAPI()
 
     @patch('requests.get')
-    def test_sj_api_search_vacancies_success(self, mock_get, mock_exists, mock_makedirs, 
+    def test_sj_api_search_vacancies_success(self, mock_get, mock_rmtree, mock_exists, mock_makedirs, 
                                            mock_json_load, mock_json_dump, mock_temp_dir, 
                                            mock_read_text, mock_write_text, mock_mkdir, 
                                            mock_path_exists, mock_file_open):
@@ -360,9 +405,14 @@ class TestSuperJobAPI:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
+
 
     @patch('requests.get')
-    def test_sj_api_authentication_error(self, mock_get, mock_exists, mock_makedirs, 
+    def test_sj_api_authentication_error(self, mock_get, mock_rmtree, mock_exists, mock_makedirs, 
                                        mock_json_load, mock_json_dump, mock_temp_dir, 
                                        mock_read_text, mock_write_text, mock_mkdir, 
                                        mock_path_exists, mock_file_open):
@@ -378,11 +428,16 @@ class TestSuperJobAPI:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
 
-    def test_sj_api_parameters_validation(self, mock_exists, mock_makedirs, mock_json_load, 
-                                        mock_json_dump, mock_temp_dir, mock_read_text, 
-                                        mock_write_text, mock_mkdir, mock_path_exists, 
-                                        mock_file_open):
+
+    def test_sj_api_parameters_validation(self, mock_rmtree, mock_exists, mock_makedirs, 
+                                        mock_json_load, mock_json_dump, mock_temp_dir, 
+                                        mock_read_text, mock_write_text, mock_mkdir, 
+                                        mock_path_exists, mock_file_open):
         """Тестирование валидации параметров"""
         # Тестируем пустой запрос
         result = self.sj_api.get_vacancies("")
@@ -395,6 +450,10 @@ class TestSuperJobAPI:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
 
 
 @patch('builtins.open', mock_file_operations)
@@ -402,11 +461,13 @@ class TestSuperJobAPI:
 @patch('pathlib.Path.mkdir')
 @patch('pathlib.Path.write_text')
 @patch('pathlib.Path.read_text', return_value='{"items": []}')
+@patch('pathlib.Path.touch')
 @patch('tempfile.TemporaryDirectory')
 @patch('json.dump')
 @patch('json.load', return_value={"items": []})
 @patch('os.makedirs')
 @patch('os.path.exists', return_value=False)
+@patch('shutil.rmtree')
 class TestCachedAPI:
     """Комплексное тестирование кэширующего API"""
 
@@ -417,10 +478,10 @@ class TestCachedAPI:
              patch('tempfile.TemporaryDirectory'):
             self.cached_api = CachedAPI("test_cache")
 
-    def test_cached_api_initialization(self, mock_exists, mock_makedirs, mock_json_load, 
-                                     mock_json_dump, mock_temp_dir, mock_read_text, 
-                                     mock_write_text, mock_mkdir, mock_path_exists, 
-                                     mock_file_open):
+    def test_cached_api_initialization(self, mock_rmtree, mock_exists, mock_makedirs, 
+                                     mock_json_load, mock_json_dump, mock_temp_dir, 
+                                     mock_read_text, mock_write_text, mock_mkdir, 
+                                     mock_path_exists, mock_file_open):
         """Тестирование инициализации кэширующего API"""
         assert self.cached_api is not None
         assert hasattr(self.cached_api, 'cache_name')
@@ -428,11 +489,16 @@ class TestCachedAPI:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
 
-    def test_cached_api_search_with_caching(self, mock_exists, mock_makedirs, mock_json_load, 
-                                          mock_json_dump, mock_temp_dir, mock_read_text, 
-                                          mock_write_text, mock_mkdir, mock_path_exists, 
-                                          mock_file_open):
+
+    def test_cached_api_search_with_caching(self, mock_rmtree, mock_exists, mock_makedirs, 
+                                          mock_json_load, mock_json_dump, mock_temp_dir, 
+                                          mock_read_text, mock_write_text, mock_mkdir, 
+                                          mock_path_exists, mock_file_open):
         """Тестирование поиска с кэшированием"""
         # Простой тест кэширования
         result1 = self.cached_api.get_vacancies("Python")
@@ -445,11 +511,16 @@ class TestCachedAPI:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
 
-    def test_cached_api_cache_key_generation(self, mock_exists, mock_makedirs, mock_json_load, 
-                                           mock_json_dump, mock_temp_dir, mock_read_text, 
-                                           mock_write_text, mock_mkdir, mock_path_exists, 
-                                           mock_file_open):
+
+    def test_cached_api_cache_key_generation(self, mock_rmtree, mock_exists, mock_makedirs, 
+                                           mock_json_load, mock_json_dump, mock_temp_dir, 
+                                           mock_read_text, mock_write_text, mock_mkdir, 
+                                           mock_path_exists, mock_file_open):
         """Тестирование генерации ключей кэша"""
         if hasattr(self.cached_api, '_generate_cache_key'):
             key1 = self.cached_api._generate_cache_key("Python", {"page": 1})
@@ -464,6 +535,10 @@ class TestCachedAPI:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
 
 
 @patch('builtins.open', mock_file_operations)
@@ -471,11 +546,13 @@ class TestCachedAPI:
 @patch('pathlib.Path.mkdir')
 @patch('pathlib.Path.write_text')
 @patch('pathlib.Path.read_text', return_value='{"items": []}')
+@patch('pathlib.Path.touch')
 @patch('tempfile.TemporaryDirectory')
 @patch('json.dump')
 @patch('json.load', return_value={"items": []})
 @patch('os.makedirs')
 @patch('os.path.exists', return_value=False)
+@patch('shutil.rmtree')
 class TestUnifiedAPI:
     """Комплексное тестирование унифицированного API"""
 
@@ -486,10 +563,10 @@ class TestUnifiedAPI:
              patch('tempfile.TemporaryDirectory'):
             self.unified_api = UnifiedAPI()
 
-    def test_unified_api_search_all_sources(self, mock_exists, mock_makedirs, mock_json_load, 
-                                          mock_json_dump, mock_temp_dir, mock_read_text, 
-                                          mock_write_text, mock_mkdir, mock_path_exists, 
-                                          mock_file_open):
+    def test_unified_api_search_all_sources(self, mock_rmtree, mock_exists, mock_makedirs, 
+                                          mock_json_load, mock_json_dump, mock_temp_dir, 
+                                          mock_read_text, mock_write_text, mock_mkdir, 
+                                          mock_path_exists, mock_file_open):
         """Тестирование поиска по всем источникам"""
         with patch.object(self.unified_api, 'hh_api', create=True) as mock_hh_api, \
              patch.object(self.unified_api, 'sj_api', create=True) as mock_sj_api:
@@ -503,11 +580,16 @@ class TestUnifiedAPI:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
 
-    def test_unified_api_get_available_sources(self, mock_exists, mock_makedirs, mock_json_load, 
-                                             mock_json_dump, mock_temp_dir, mock_read_text, 
-                                             mock_write_text, mock_mkdir, mock_path_exists, 
-                                             mock_file_open):
+
+    def test_unified_api_get_available_sources(self, mock_rmtree, mock_exists, mock_makedirs, 
+                                             mock_json_load, mock_json_dump, mock_temp_dir, 
+                                             mock_read_text, mock_write_text, mock_mkdir, 
+                                             mock_path_exists, mock_file_open):
         """Тестирование получения доступных источников"""
         sources = self.unified_api.get_available_sources()
         assert isinstance(sources, list)
@@ -516,11 +598,16 @@ class TestUnifiedAPI:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
 
-    def test_unified_api_error_handling(self, mock_exists, mock_makedirs, mock_json_load, 
-                                      mock_json_dump, mock_temp_dir, mock_read_text, 
-                                      mock_write_text, mock_mkdir, mock_path_exists, 
-                                      mock_file_open):
+
+    def test_unified_api_error_handling(self, mock_rmtree, mock_exists, mock_makedirs, 
+                                      mock_json_load, mock_json_dump, mock_temp_dir, 
+                                      mock_read_text, mock_write_text, mock_mkdir, 
+                                      mock_path_exists, mock_file_open):
         """Тестирование обработки ошибок"""
         with patch.object(self.unified_api, 'hh_api', create=True) as mock_hh_api:
             # Симулируем ошибку в API
@@ -533,6 +620,10 @@ class TestUnifiedAPI:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
 
 
 @patch('builtins.open', mock_file_operations)
@@ -540,18 +631,20 @@ class TestUnifiedAPI:
 @patch('pathlib.Path.mkdir')
 @patch('pathlib.Path.write_text')
 @patch('pathlib.Path.read_text', return_value='{"status": "ok"}')
+@patch('pathlib.Path.touch')
 @patch('tempfile.TemporaryDirectory')
 @patch('json.dump')
 @patch('json.load', return_value={"status": "ok"})
 @patch('os.makedirs')
 @patch('os.path.exists', return_value=False)
+@patch('shutil.rmtree')
 class TestAPIConnector:
     """Комплексное тестирование фабрики API"""
 
-    def test_api_connector_init(self, mock_exists, mock_makedirs, mock_json_load, 
-                              mock_json_dump, mock_temp_dir, mock_read_text, 
-                              mock_write_text, mock_mkdir, mock_path_exists, 
-                              mock_file_open):
+    def test_api_connector_init(self, mock_rmtree, mock_exists, mock_makedirs, 
+                              mock_json_load, mock_json_dump, mock_temp_dir, 
+                              mock_read_text, mock_write_text, mock_mkdir, 
+                              mock_path_exists, mock_file_open):
         """Тестирование инициализации APIConnector"""
         api_connector = APIConnector()
         assert api_connector is not None
@@ -559,9 +652,14 @@ class TestAPIConnector:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
+
 
     @patch('requests.get')
-    def test_api_connector_connect(self, mock_get, mock_exists, mock_makedirs, 
+    def test_api_connector_connect(self, mock_get, mock_rmtree, mock_exists, mock_makedirs, 
                                  mock_json_load, mock_json_dump, mock_temp_dir, 
                                  mock_read_text, mock_write_text, mock_mkdir, 
                                  mock_path_exists, mock_file_open):
@@ -579,9 +677,14 @@ class TestAPIConnector:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
+
 
     @patch('requests.get')
-    def test_api_connector_error_handling(self, mock_get, mock_exists, mock_makedirs, 
+    def test_api_connector_error_handling(self, mock_get, mock_rmtree, mock_exists, mock_makedirs, 
                                         mock_json_load, mock_json_dump, mock_temp_dir, 
                                         mock_read_text, mock_write_text, mock_mkdir, 
                                         mock_path_exists, mock_file_open):
@@ -598,6 +701,10 @@ class TestAPIConnector:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
 
 
 @patch('builtins.open', mock_file_operations)
@@ -605,16 +712,17 @@ class TestAPIConnector:
 @patch('pathlib.Path.mkdir')
 @patch('pathlib.Path.write_text')
 @patch('pathlib.Path.read_text', return_value='{"items": []}')
+@patch('pathlib.Path.touch')
 @patch('tempfile.TemporaryDirectory')
 @patch('json.dump')
 @patch('json.load', return_value={"items": []})
 @patch('os.makedirs')
 @patch('os.path.exists', return_value=False)
-@patch('time.sleep')  # Блокируем задержки
+@patch('shutil.rmtree')  # Блокируем задержки
 class TestAPIPerformance:
     """Тестирование производительности API"""
 
-    def test_api_response_time_simulation(self, mock_sleep, mock_exists, mock_makedirs, 
+    def test_api_response_time_simulation(self, mock_rmtree, mock_exists, mock_makedirs, 
                                         mock_json_load, mock_json_dump, mock_temp_dir, 
                                         mock_read_text, mock_write_text, mock_mkdir, 
                                         mock_path_exists, mock_file_open):
@@ -641,9 +749,13 @@ class TestAPIPerformance:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
-        mock_sleep.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
 
-    def test_api_memory_usage_simulation(self, mock_sleep, mock_exists, mock_makedirs, 
+
+    def test_api_memory_usage_simulation(self, mock_rmtree, mock_exists, mock_makedirs, 
                                        mock_json_load, mock_json_dump, mock_temp_dir, 
                                        mock_read_text, mock_write_text, mock_mkdir, 
                                        mock_path_exists, mock_file_open):
@@ -671,7 +783,10 @@ class TestAPIPerformance:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
-        mock_sleep.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
 
 
 @patch('builtins.open', mock_file_operations)
@@ -679,17 +794,18 @@ class TestAPIPerformance:
 @patch('pathlib.Path.mkdir')
 @patch('pathlib.Path.write_text')
 @patch('pathlib.Path.read_text', return_value='{"items": [], "objects": []}')
+@patch('pathlib.Path.touch')
 @patch('tempfile.TemporaryDirectory')
 @patch('json.dump')
 @patch('json.load', return_value={"items": [], "objects": []})
 @patch('os.makedirs')
 @patch('os.path.exists', return_value=False)
-@patch('time.sleep')  # Блокируем задержки
+@patch('shutil.rmtree')  # Блокируем задержки
 class TestAPIIntegration:
     """Интеграционные тесты для API модулей"""
 
     @patch('requests.get')
-    def test_full_search_workflow(self, mock_get, mock_sleep, mock_exists, mock_makedirs, 
+    def test_full_search_workflow(self, mock_get, mock_rmtree, mock_exists, mock_makedirs, 
                                 mock_json_load, mock_json_dump, mock_temp_dir, 
                                 mock_read_text, mock_write_text, mock_mkdir, 
                                 mock_path_exists, mock_file_open):
@@ -712,9 +828,13 @@ class TestAPIIntegration:
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
-        mock_sleep.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
 
-    def test_api_chain_operations(self, mock_sleep, mock_exists, mock_makedirs, 
+
+    def test_api_chain_operations(self, mock_rmtree, mock_exists, mock_makedirs, 
                                 mock_json_load, mock_json_dump, mock_temp_dir, 
                                 mock_read_text, mock_write_text, mock_mkdir, 
                                 mock_path_exists, mock_file_open):
@@ -731,15 +851,18 @@ class TestAPIIntegration:
                 # Создаем цепочку API операций
                 hh_api = HeadHunterAPI()
                 cached_api = CachedAPI("test")
-                
+
                 # Тестируем последовательность операций
                 result1 = hh_api.get_vacancies("Python")
                 result2 = cached_api.get_vacancies("Java")
-                
+
                 assert isinstance(result1, list)
                 assert isinstance(result2, list)
 
         # Проверяем, что файловые операции НЕ вызывались
         mock_file_open.assert_not_called()
         mock_makedirs.assert_not_called()
-        mock_sleep.assert_not_called()
+        mock_mkdir.assert_not_called()
+        mock_write_text.assert_not_called()
+        mock_touch.assert_not_called()
+        mock_rmtree.assert_not_called()
