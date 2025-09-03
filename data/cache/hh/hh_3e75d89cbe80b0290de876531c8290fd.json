@@ -1,0 +1,50 @@
+{
+  "timestamp": 1756875539.8139796,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 50,
+      "only_with_salary": true,
+      "period": 15,
+      "text": "python",
+      "page": 0
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "test_123",
+        "name": "Python Developer",
+        "alternate_url": "https://hh.ru/vacancy/test_123",
+        "employer": {
+          "name": "Яндекс",
+          "id": "1740"
+        },
+        "salary": {
+          "from": 150000,
+          "to": 250000,
+          "currency": "RUR"
+        },
+        "area": {
+          "name": "Москва",
+          "id": "1"
+        },
+        "snippet": {
+          "requirement": "Python",
+          "responsibility": "Development"
+        }
+      }
+    ],
+    "objects": [
+      {
+        "id": 67890,
+        "profession": "Java Developer",
+        "firm_name": "Сбер",
+        "payment_from": 180000,
+        "payment_to": 280000
+      }
+    ],
+    "found": 50,
+    "total": 50
+  }
+}
