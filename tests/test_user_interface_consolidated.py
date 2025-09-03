@@ -1,4 +1,3 @@
-
 """
 Консолидированные тесты для пользовательского интерфейса с покрытием 75-80%.
 """
@@ -27,17 +26,17 @@ class TestUserInterfaceConsolidated:
         mock_db.check_connection.return_value = True
         mock_db.create_tables.return_value = None
         mock_db_manager.return_value = mock_db
-        
+
         mock_storage = Mock()
         mock_storage_factory.create_storage.return_value = mock_storage
-        
+
         try:
             from src.user_interface import main
-            
+
             # Тестируем запуск главной функции
             with patch('sys.exit'):
                 main()
-            
+
         except (ImportError, SystemExit):
             # Создаем тестовую реализацию
             def main():
@@ -48,7 +47,7 @@ class TestUserInterfaceConsolidated:
                 elif choice == "0":
                     print("Выход")
                     sys.exit()
-            
+
             with patch('sys.exit'):
                 main()
 
@@ -58,29 +57,29 @@ class TestUserInterfaceConsolidated:
         """Тестирование рабочего процесса консольного интерфейса"""
         try:
             from src.ui_interfaces.console_interface import ConsoleInterface
-            
+
             interface = ConsoleInterface()
             assert interface is not None
-            
+
             # Тестируем основной цикл
             if hasattr(interface, 'run'):
                 interface.run()
-            
+
         except ImportError:
             class ConsoleInterface:
                 def __init__(self):
                     self.running = False
-                
+
                 def run(self):
                     self.running = True
                     self.show_main_menu()
-                
+
                 def show_main_menu(self):
                     print("=== ГЛАВНОЕ МЕНЮ ===")
                     choice = input("Выберите действие: ")
                     if choice == '0':
                         self.running = False
-            
+
             interface = ConsoleInterface()
             interface.run()
 
@@ -88,26 +87,35 @@ class TestUserInterfaceConsolidated:
         """Тестирование интеграции компонентов интерфейса"""
         try:
             from src.interfaces.main_application_interface import MainApplicationInterface
-            
-            interface = MainApplicationInterface()
-            assert interface is not None
-            
+
+            # Создаем конкретную реализацию абстрактного класса
+            class ConcreteMainApplication(MainApplicationInterface):
+                def run_application(self):
+                    pass
+
+            interface = ConcreteMainApplication()
+
         except ImportError:
             class MainApplicationInterface:
                 def __init__(self):
                     self.running = False
                     self.storage = Mock()
                     self.api = Mock()
-                
+
                 def start(self):
                     self.running = True
-                
+
                 def stop(self):
                     self.running = False
-            
-            interface = MainApplicationInterface()
+
+            # Создаем конкретную реализацию абстрактного класса
+            class ConcreteMainApplication(MainApplicationInterface):
+                def run_application(self):
+                    pass
+
+            interface = ConcreteMainApplication()
             interface.start()
             assert interface.running is True
-            
+
             interface.stop()
             assert interface.running is False

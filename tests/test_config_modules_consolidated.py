@@ -78,7 +78,7 @@ class TestConfigModulesConsolidated:
             config = SJAPIConfig()
             assert config.api_key is not None
 
-    @patch('os.environ.get') 
+    @patch('os.environ.get')
     def test_db_config_complete(self, mock_env_get, config_mocks):
         """Полное тестирование конфигурации БД"""
         mock_env_get.side_effect = lambda key, default=None: config_mocks.os_environ.get(key, default)
@@ -176,7 +176,7 @@ class TestConfigModulesConsolidated:
         # Тестируем загрузку различных типов конфигурационных файлов
         test_configs = [
             'config.json',
-            'database.conf', 
+            'database.conf',
             'api_settings.yaml'
         ]
 

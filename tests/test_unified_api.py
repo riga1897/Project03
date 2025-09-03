@@ -261,7 +261,7 @@ class TestUnifiedAPI:
     def test_filter_by_target_companies(self, unified_api):
         """Тест фильтрации по целевым компаниям"""
         # Мокаем TargetCompanies
-        with patch('src.api_modules.unified_api.TargetCompanies') as mock_target_companies:
+        with patch('src.config.target_companies.TargetCompanies') as mock_target_companies:
             mock_target_companies.get_hh_ids.return_value = ["company1", "company2"]
             mock_target_companies.get_sj_ids.return_value = ["company3"]
 
@@ -285,7 +285,7 @@ class TestUnifiedAPI:
 
     def test_filter_by_target_companies_empty_input(self, unified_api):
         """Тест фильтрации пустого списка вакансий"""
-        with patch('src.api_modules.unified_api.TargetCompanies') as mock_target_companies:
+        with patch('src.config.target_companies.TargetCompanies') as mock_target_companies:
             mock_target_companies.get_hh_ids.return_value = ["company1"]
             mock_target_companies.get_sj_ids.return_value = ["company2"]
 
@@ -295,7 +295,7 @@ class TestUnifiedAPI:
 
     def test_filter_by_target_companies_no_target_companies(self, unified_api):
         """Тест фильтрации без целевых компаний"""
-        with patch('src.api_modules.unified_api.TargetCompanies') as mock_target_companies:
+        with patch('src.config.target_companies.TargetCompanies') as mock_target_companies:
             mock_target_companies.get_hh_ids.return_value = []
             mock_target_companies.get_sj_ids.return_value = []
 
@@ -309,7 +309,7 @@ class TestUnifiedAPI:
 
     def test_filter_by_target_companies_missing_employer(self, unified_api):
         """Тест фильтрации вакансий без информации о работодателе"""
-        with patch('src.api_modules.unified_api.TargetCompanies') as mock_target_companies:
+        with patch('src.config.target_companies.TargetCompanies') as mock_target_companies:
             mock_target_companies.get_hh_ids.return_value = ["company1"]
             mock_target_companies.get_sj_ids.return_value = ["company2"]
 
@@ -327,7 +327,7 @@ class TestUnifiedAPI:
 
     def test_filter_by_target_companies_mixed_sources(self, unified_api):
         """Тест фильтрации вакансий из разных источников"""
-        with patch('src.api_modules.unified_api.TargetCompanies') as mock_target_companies:
+        with patch('src.config.target_companies.TargetCompanies') as mock_target_companies:
             mock_target_companies.get_hh_ids.return_value = ["hh_company1", "hh_company2"]
             mock_target_companies.get_sj_ids.return_value = ["sj_company1"]
 

@@ -77,9 +77,11 @@ class TestVacancyModelsConsolidated:
     def test_salary_model_complete(self, sample_salary_data):
         """Полное тестирование модели зарплаты"""
         try:
-            from src.vacancies.models import Salary
+            from src.utils.salary import Salary
 
-            salary = Salary(**sample_salary_data)
+            # Используем правильный формат
+            salary_data = {'from': 100000, 'to': 200000, 'currency': 'RUR'}
+            salary = Salary(salary_data)
             assert salary is not None
 
         except ImportError:
@@ -104,13 +106,8 @@ class TestVacancyModelsConsolidated:
         try:
             from src.vacancies.models import Employer
 
-            employer_data = {
-                'employer_id': 'emp_123',
-                'name': 'Тест Компания',
-                'url': 'https://test.com/company/123'
-            }
-
-            employer = Employer(**employer_data)
+            # Используем правильный конструктор
+            employer = Employer("Тест Компания", "emp_123")
             assert employer is not None
 
             if hasattr(employer, 'get_name'):

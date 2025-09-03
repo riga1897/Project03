@@ -405,10 +405,16 @@ class TestAbstractStorageClasses:
         try:
             from src.storage.services.abstract_filter_service import AbstractFilterService
 
-            # Создаем конкретную реализацию
+            # Создаем конкретную реализацию со всеми абстрактными методами
             class ConcreteFilterService(AbstractFilterService):
                 def apply_filter(self, data: List[Any], criteria: Dict) -> List[Any]:
                     return data
+
+                def filter_by_company_ids(self, data: List[Any], company_ids: List[str]) -> List[Any]:
+                    return data
+
+                def get_target_company_stats(self, data: List[Any]) -> Dict:
+                    return {}
 
             service = ConcreteFilterService()
             assert service is not None

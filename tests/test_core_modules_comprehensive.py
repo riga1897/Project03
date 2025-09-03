@@ -62,6 +62,7 @@ class TestVacancyModels:
 
     def test_vacancy_validation_valid(self):
         """Тест валидации корректной вакансии"""
+        # Исправлен порядок аргументов: Employer(name, id)
         employer = Employer("Test Company", "123")
         vacancy = Vacancy("Python Developer", "https://test.com", employer)
 
@@ -74,6 +75,7 @@ class TestVacancyModels:
         employer = Employer("Test Company", "123")
 
         try:
+            # Исправлен порядок аргументов: Employer(name, id)
             vacancy = Vacancy("", "https://test.com", employer)
             # Проверяем, что объект создается даже с пустым заголовком
             assert vacancy is not None
