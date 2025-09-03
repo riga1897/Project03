@@ -26,8 +26,16 @@ with patch.dict('sys.modules', {
 }):
     pass
 
-# Мок для предотвращения записи файлов
+# Мок для предотвращения записи файлов и создания директорий
 mock_file_operations = mock_open(read_data='{"items": [], "meta": {}}')
+
+# Мокируем все файловые операции глобально для предотвращения записи в data/
+with patch('pathlib.Path.mkdir'), \
+     patch('pathlib.Path.exists', return_value=True), \
+     patch('builtins.open', mock_file_operations), \
+     patch('src.utils.cache.FileCache._ensure_dir_exists'), \
+     patch('tempfile.TemporaryDirectory'):
+    pass
 
 try:
     from src.api_modules.base_api import BaseJobAPI
@@ -110,7 +118,10 @@ class TestHeadHunterAPI:
     def setup_method(self):
         """Настройка перед каждым тестом"""
         with patch('requests.get'), \
-             patch('pathlib.Path'), \
+             patch('pathlib.Path.mkdir'), \
+             patch('pathlib.Path.exists', return_value=True), \
+             patch('builtins.open', mock_file_operations), \
+             patch('src.utils.cache.FileCache._ensure_dir_exists'), \
              patch('tempfile.TemporaryDirectory'):
             self.hh_api = HeadHunterAPI()
 
@@ -165,7 +176,10 @@ class TestSuperJobAPI:
     def setup_method(self):
         """Настройка перед каждым тестом"""
         with patch('requests.get'), \
-             patch('pathlib.Path'), \
+             patch('pathlib.Path.mkdir'), \
+             patch('pathlib.Path.exists', return_value=True), \
+             patch('builtins.open', mock_file_operations), \
+             patch('src.utils.cache.FileCache._ensure_dir_exists'), \
              patch('tempfile.TemporaryDirectory'):
             self.sj_api = SuperJobAPI()
 
@@ -214,7 +228,10 @@ class TestCachedAPI:
     def setup_method(self):
         """Настройка перед каждым тестом"""
         with patch('requests.get'), \
-             patch('pathlib.Path'), \
+             patch('pathlib.Path.mkdir'), \
+             patch('pathlib.Path.exists', return_value=True), \
+             patch('builtins.open', mock_file_operations), \
+             patch('src.utils.cache.FileCache._ensure_dir_exists'), \
              patch('tempfile.TemporaryDirectory'):
             self.cached_api = CachedAPI("test_cache")
 
@@ -225,7 +242,10 @@ class TestCachedAPI:
             def get_vacancies(self, search_query: str, **kwargs):
                 return []
 
-        with patch('pathlib.Path'), \
+        with patch('pathlib.Path.mkdir'), \
+             patch('pathlib.Path.exists', return_value=True), \
+             patch('builtins.open', mock_file_operations), \
+             patch('src.utils.cache.FileCache._ensure_dir_exists'), \
              patch('tempfile.TemporaryDirectory'):
             api = TestCachedAPI()
             assert api is not None
@@ -314,7 +334,10 @@ class TestAPIPerformance:
             mock_resp.raise_for_status.return_value = None
             mock_get.return_value = mock_resp
 
-            with patch('pathlib.Path'), \
+            with patch('pathlib.Path.mkdir'), \
+                 patch('pathlib.Path.exists', return_value=True), \
+                 patch('builtins.open', mock_file_operations), \
+                 patch('src.utils.cache.FileCache._ensure_dir_exists'), \
                  patch('tempfile.TemporaryDirectory'):
                 hh_api = HeadHunterAPI()
                 hh_api.get_vacancies("Python")
@@ -335,7 +358,10 @@ class TestAPIPerformance:
             mock_resp.raise_for_status.return_value = None
             mock_get.return_value = mock_resp
 
-            with patch('pathlib.Path'), \
+            with patch('pathlib.Path.mkdir'), \
+                 patch('pathlib.Path.exists', return_value=True), \
+                 patch('builtins.open', mock_file_operations), \
+                 patch('src.utils.cache.FileCache._ensure_dir_exists'), \
                  patch('tempfile.TemporaryDirectory'):
                 hh_api = HeadHunterAPI()
                 result = hh_api.get_vacancies("Python")
@@ -355,7 +381,10 @@ class TestAPIIntegration:
         mock_response.raise_for_status.return_value = None
         mock_get.return_value = mock_response
 
-        with patch('pathlib.Path'), \
+        with patch('pathlib.Path.mkdir'), \
+             patch('pathlib.Path.exists', return_value=True), \
+             patch('builtins.open', mock_file_operations), \
+             patch('src.utils.cache.FileCache._ensure_dir_exists'), \
              patch('tempfile.TemporaryDirectory'):
             unified_api = UnifiedAPI()
             results = unified_api.search_vacancies("Python Developer")
@@ -370,7 +399,10 @@ class TestAPIIntegration:
         mock_response.raise_for_status.return_value = None
         mock_get.return_value = mock_response
 
-        with patch('pathlib.Path'), \
+        with patch('pathlib.Path.mkdir'), \
+             patch('pathlib.Path.exists', return_value=True), \
+             patch('builtins.open', mock_file_operations), \
+             patch('src.utils.cache.FileCache._ensure_dir_exists'), \
              patch('tempfile.TemporaryDirectory'):
             hh_api = HeadHunterAPI()
             result1 = hh_api.get_vacancies("Python")
