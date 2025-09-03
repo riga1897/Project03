@@ -7,9 +7,8 @@ import os
 import sys
 import json
 import pytest
-from unittest.mock import Mock, MagicMock, patch, mock_open
+from unittest.mock import patch, mock_open
 from pathlib import Path
-from typing import Dict, Any, List
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -331,13 +330,13 @@ class TestFileCache:
                 filename = cache._generate_cache_filename("test", params)
                 assert isinstance(filename, str)
                 assert len(filename) > 0
-from unittest.mock import patch
+
 
 # Исправляем ошибку в `test_is_valid_response_no_results_page`
 # В оригинальном коде был вызов `_is_is_valid_response`, исправляем на `_is_valid_response`
-    @patch('pathlib.Path.mkdir')
-    @patch('pathlib.Path.exists', return_value=True)
-    def test_is_valid_response_no_results_page(self, mock_exists, mock_mkdir, temp_cache_dir):
+@patch('pathlib.Path.mkdir')
+@patch('pathlib.Path.exists', return_value=True)
+def test_is_valid_response_no_results_page(self, mock_exists, mock_mkdir, temp_cache_dir):
         """Тестирование валидности пустой страницы без результатов"""
         empty_response = {
             "items": [],
