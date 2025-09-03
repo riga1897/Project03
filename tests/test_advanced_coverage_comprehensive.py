@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 # Импорты для тестирования
 from src.utils.env_loader import EnvLoader
 from src.utils.cache import FileCache
-from src.utils.decorators import simple_cache, retry
+from src.utils.decorators import simple_cache, retry_on_failure as retry
 from src.utils.salary import Salary
 from src.utils.menu_manager import MenuManager
 from src.utils.paginator import Paginator
