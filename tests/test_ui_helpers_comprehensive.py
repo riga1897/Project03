@@ -1,5 +1,4 @@
 
-```python
 """
 Комплексные тесты для модуля ui_helpers.
 
@@ -513,4 +512,3 @@ class TestUIHelpersEdgeCases:
         
         result = filter_vacancies_by_keyword(vacancies, "Python")
         assert isinstance(result, list)
-```
