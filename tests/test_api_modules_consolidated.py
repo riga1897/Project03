@@ -137,6 +137,13 @@ class TestAPIModulesConsolidated:
 
             # Создаем конкретную реализацию
             class TestCachedAPI(CachedAPI):
+                def __init__(self, cache_name: str = "test"):
+                    # Bypass the parent __init__ to avoid file operations
+                    self.cache_name = cache_name
+                    self.cache_dir = None
+                    self.cache = Mock()
+                    self.connector = Mock()
+                
                 def get_vacancies(self, search_query: str, **kwargs):
                     return []
 

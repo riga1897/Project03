@@ -361,7 +361,7 @@ class TestVacancyModulesConsolidated:
                 'salary': {'from': 100000, 'to': 200000, 'currency': 'RUR'}
             }
 
-            vacancy = Vacancy(vacancy_data)
+            vacancy = Vacancy(vacancy_data, "https://test.example.com")
             assert vacancy is not None
             assert hasattr(vacancy, 'id') or hasattr(vacancy, 'vacancy_id')
 

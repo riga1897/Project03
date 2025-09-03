@@ -238,15 +238,24 @@ class TestCachedAPI:
         """Настройка для каждого теста"""
         # Создаем конкретную реализацию CachedAPI для тестов
         class TestCachedAPI(CachedAPI):
+            def __init__(self, cache_name: str = "test"):
+                # Bypass the parent __init__ to avoid file operations
+                self.cache_name = cache_name
+                self.cache_dir = None
+                self.cache = Mock()
+                self.connector = Mock()
+                self._memory_cache = {}
+                self._cache_timestamps = {}
+
             def get_vacancies(self, search_query: str, **kwargs):
                 return [{"id": "test", "name": "Test Job"}]
-            
+
             def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs):
                 return [{"id": "test", "name": "Test Job"}]
-            
+
             def _get_empty_response(self):
                 return {"items": [], "found": 0}
-            
+
             def _validate_vacancy(self, vacancy):
                 return isinstance(vacancy, dict) and "id" in vacancy and "name" in vacancy
 
@@ -256,15 +265,24 @@ class TestCachedAPI:
         """Тестирование инициализации кэширующего API"""
         # Создаем конкретную реализацию
         class TestCachedAPI(CachedAPI):
+            def __init__(self, cache_name: str = "test"):
+                # Bypass the parent __init__ to avoid file operations
+                self.cache_name = cache_name
+                self.cache_dir = None
+                self.cache = Mock()
+                self.connector = Mock()
+                self._memory_cache = {}
+                self._cache_timestamps = {}
+
             def get_vacancies(self, search_query: str, **kwargs):
                 return [{"id": "test", "name": "Test Job"}]
-            
+
             def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs):
                 return [{"id": "test", "name": "Test Job"}]
-            
+
             def _get_empty_response(self):
                 return {"items": [], "found": 0}
-            
+
             def _validate_vacancy(self, vacancy):
                 return isinstance(vacancy, dict) and "id" in vacancy and "name" in vacancy
 

@@ -115,7 +115,15 @@ class TestStorageServicesConsolidated:
         try:
             from src.storage.services.vacancy_storage_service import VacancyStorageService
 
-            service = VacancyStorageService()
+            class TestVacancyStorageService(VacancyStorageService):
+                def delete_vacancy(self, vacancy_id: str) -> bool:
+                    return True
+                def get_storage_stats(self) -> dict:
+                    return {}
+                def get_vacancies(self, filters=None) -> list:
+                    return []
+
+            service = TestVacancyStorageService()
             assert service is not None
 
             # Тестируем сохранение
@@ -145,7 +153,15 @@ class TestStorageServicesConsolidated:
                         cursor.execute("SELECT * FROM vacancies")
                         return cursor.fetchall()
 
-            service = VacancyStorageService()
+            class TestVacancyStorageService(VacancyStorageService):
+                def delete_vacancy(self, vacancy_id: str) -> bool:
+                    return True
+                def get_storage_stats(self) -> dict:
+                    return {}
+                def get_vacancies(self, filters=None) -> list:
+                    return []
+
+            service = TestVacancyStorageService()
             test_vacancy = Mock(vacancy_id="123", title="Test")
             service.save_vacancy(test_vacancy)
 
@@ -154,7 +170,8 @@ class TestStorageServicesConsolidated:
         try:
             from src.storage.services.vacancy_processing_coordinator import VacancyProcessingCoordinator
 
-            coordinator = VacancyProcessingCoordinator()
+            mock_db_manager = Mock()
+            coordinator = VacancyProcessingCoordinator(mock_db_manager)
             assert coordinator is not None
 
         except ImportError:
@@ -174,6 +191,7 @@ class TestStorageServicesConsolidated:
                         self.storage_service.save_vacancy(vacancy)
                     return len(unique)
 
-            coordinator = VacancyProcessingCoordinator()
+            mock_db_manager = Mock()
+            coordinator = VacancyProcessingCoordinator(mock_db_manager)
             result = coordinator.process_vacancies([{"id": "1"}])
             assert isinstance(result, int)
