@@ -1,0 +1,173 @@
+{
+  "timestamp": 1756894782.3748524,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 50,
+      "only_with_salary": true,
+      "period": 15,
+      "text": "python developer",
+      "page": 1
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "124819286",
+        "premium": false,
+        "name": "Junior Node.JS программист (DataMining)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "3",
+          "name": "Екатеринбург",
+          "url": "https://api.hh.ru/areas/3"
+        },
+        "salary": {
+          "from": 50000,
+          "to": 100000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 50000,
+          "to": 100000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Екатеринбург",
+          "street": "улица Энгельса",
+          "building": "36",
+          "lat": 56.834038,
+          "lng": 60.621792,
+          "description": null,
+          "raw": "Екатеринбург, улица Энгельса, 36",
+          "metro": {
+            "station_name": "Площадь 1905 года",
+            "line_name": "Север-Юг",
+            "station_id": "48.266",
+            "line_id": "48",
+            "lat": 56.837982,
+            "lng": 60.59734
+          },
+          "metro_stations": [
+            {
+              "station_name": "Площадь 1905 года",
+              "line_name": "Север-Юг",
+              "station_id": "48.266",
+              "line_id": "48",
+              "lat": 56.837982,
+              "lng": 60.59734
+            }
+          ],
+          "id": "6154316"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T12:55:50+0300",
+        "created_at": "2025-09-03T12:55:50+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124819286",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124819286?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124819286",
+        "relations": [],
+        "employer": {
+          "id": "3672566",
+          "name": "BRANDPOL",
+          "url": "https://api.hh.ru/employers/3672566",
+          "alternate_url": "https://hh.ru/employer/3672566",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1259755.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6659346.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6659347.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3672566",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Уверенное использование Node.JS и <highlighttext>Python</highlighttext>. Знание базовых структур данных и алгоритмов, способность оценивать скорость работы алгоритмов. Умение работать с удаленными...",
+          "responsibility": "Точно оценивать время на выполнение поставленных задач. Быть \"белыми хакерами\" всегда решать не решаемые задачи. Вовремя выполнять свои задачи. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "40",
+            "name": "Другое"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 1093,
+    "pages": 22,
+    "page": 1,
+    "per_page": 50,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&enable_snippets=true&items_on_page=50&label=with_salary&only_with_salary=true&page=1&search_period=15&text=python+developer"
+  }
+}

@@ -1,0 +1,297 @@
+{
+  "timestamp": 1756894791.73879,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 50,
+      "only_with_salary": true,
+      "period": 15,
+      "text": "python developer",
+      "page": 6
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "124819990",
+        "premium": false,
+        "name": "DevOps-инженер Infra",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 250000,
+          "to": 280000,
+          "currency": "RUR",
+          "gross": true
+        },
+        "salary_range": {
+          "from": 250000,
+          "to": 280000,
+          "currency": "RUR",
+          "gross": true,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T13:01:49+0300",
+        "created_at": "2025-09-03T13:01:49+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124819990",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124819990?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124819990",
+        "relations": [],
+        "employer": {
+          "id": "4305039",
+          "name": "Outlines Technologies",
+          "url": "https://api.hh.ru/employers/4305039",
+          "alternate_url": "https://hh.ru/employer/4305039",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1312742.JPG",
+            "90": "https://img.hhcdn.ru/employer-logo/6871226.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/6871227.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4305039",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт написания автоматизаций на Bash, <highlighttext>Python</highlighttext>. Опыт работы с Git. Опыт взаимодействия с другими командами <highlighttext>разработки</highlighttext>, локализации и устранения проблем. ",
+          "responsibility": "Переводить инфраструктуру (redis, kafka, elk и другие) на IaC-подход. Разрабатывать скрипты на bash, <highlighttext>python</highlighttext>. Разрабатывать различные внутренние инструменты для..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124818303",
+        "premium": false,
+        "name": "BIM координатор/BIM-менеджер",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "2",
+          "name": "Санкт-Петербург",
+          "url": "https://api.hh.ru/areas/2"
+        },
+        "salary": {
+          "from": null,
+          "to": 180000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": null,
+          "to": 180000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Санкт-Петербург",
+          "street": "улица Короленко",
+          "building": "7",
+          "lat": 59.941258,
+          "lng": 30.350687,
+          "description": null,
+          "raw": "Санкт-Петербург, улица Короленко, 7",
+          "metro": {
+            "station_name": "Чернышевская",
+            "line_name": "Кировско-Выборгская",
+            "station_id": "14.198",
+            "line_id": "14",
+            "lat": 59.94453,
+            "lng": 30.359919
+          },
+          "metro_stations": [
+            {
+              "station_name": "Чернышевская",
+              "line_name": "Кировско-Выборгская",
+              "station_id": "14.198",
+              "line_id": "14",
+              "lat": 59.94453,
+              "lng": 30.359919
+            }
+          ],
+          "id": "2699903"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T12:44:22+0300",
+        "created_at": "2025-09-03T12:44:22+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124818303",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124818303?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124818303",
+        "relations": [],
+        "employer": {
+          "id": "12932",
+          "name": "Архитектурное бюро А.Лен",
+          "url": "https://api.hh.ru/employers/12932",
+          "alternate_url": "https://hh.ru/employer/12932",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/931585.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/4166896.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/4166897.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=12932",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Свободное владение программами Autodesk Revit, Navisworks, AutoCAD Architecture. Приветствуется знание Dynamo (<highlighttext>Python</highlighttext>, C#), SketchUP. Обязательное знание нормативной документации, а также...",
+          "responsibility": "Контроль за соблюдением EIR, <highlighttext>разработка</highlighttext> и согласование BEP. Организация процесса BIM-проектирования и координирование рабочей группы. <highlighttext>Разработка</highlighttext> архитектурных семейств. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "14",
+            "name": "Архитектор"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 1093,
+    "pages": 22,
+    "page": 6,
+    "per_page": 50,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&enable_snippets=true&items_on_page=50&label=with_salary&only_with_salary=true&page=6&search_period=15&text=python+developer"
+  }
+}

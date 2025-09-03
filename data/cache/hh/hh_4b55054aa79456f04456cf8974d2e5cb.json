@@ -1,0 +1,164 @@
+{
+  "timestamp": 1756894797.0634472,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 50,
+      "only_with_salary": true,
+      "period": 15,
+      "text": "python developer",
+      "page": 9
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "122309727",
+        "premium": false,
+        "name": "Backend-разработчик",
+        "department": {
+          "id": "68587-68587-StratRaz",
+          "name": "Алабуга. Служба стратегического развития"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "4",
+          "name": "Новосибирск",
+          "url": "https://api.hh.ru/areas/4"
+        },
+        "salary": {
+          "from": 375000,
+          "to": null,
+          "currency": "RUR",
+          "gross": true
+        },
+        "salary_range": {
+          "from": 375000,
+          "to": null,
+          "currency": "RUR",
+          "gross": true,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Елабужский район",
+          "street": "Особая экономическая зона Алабуга",
+          "building": null,
+          "lat": 55.83428,
+          "lng": 52.046124,
+          "description": null,
+          "raw": "Елабужский район, Особая экономическая зона Алабуга",
+          "metro": null,
+          "metro_stations": [],
+          "id": "13972622"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-27T10:55:04+0300",
+        "created_at": "2025-08-27T10:55:04+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=122309727",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/122309727?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/122309727",
+        "relations": [],
+        "employer": {
+          "id": "68587",
+          "name": "Алабуга, ОЭЗ ППТ",
+          "url": "https://api.hh.ru/employers/68587",
+          "alternate_url": "https://hh.ru/employer/68587",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1392604.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7190199.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7190200.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=68587",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт от 3-х лет коммерческой <highlighttext>разработки</highlighttext>. Уверенные знания <highlighttext>Python</highlighttext>. Опыт <highlighttext>разработки</highlighttext> асинхронных приложений. Знания WebSocket и REST. ",
+          "responsibility": "<highlighttext>Разработка</highlighttext> нового функционала. <highlighttext>Разработка</highlighttext> проектов с нуля. Проведение Code Review. Подбор технологий для новых проектов. Улучшение существующей кодовой базы. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 1093,
+    "pages": 22,
+    "page": 9,
+    "per_page": 50,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&enable_snippets=true&items_on_page=50&label=with_salary&only_with_salary=true&page=9&search_period=15&text=python+developer"
+  }
+}
