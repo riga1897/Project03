@@ -29,13 +29,22 @@ def prevent_file_operations():
          patch('pathlib.Path.glob', return_value=[]) as mock_glob, \
          patch('pathlib.Path.stat') as mock_stat, \
          patch('builtins.open', mock_file_operations) as mock_open_builtin, \
-         patch('tempfile.TemporaryDirectory') as mock_tempdir:
+         patch('tempfile.TemporaryDirectory') as mock_tempdir, \
+         patch('os.makedirs') as mock_makedirs, \
+         patch('os.mkdir') as mock_os_mkdir, \
+         patch('src.utils.cache.FileCache.__init__', return_value=None) as mock_cache_init, \
+         patch('src.utils.cache.FileCache._ensure_dir_exists', return_value=None) as mock_ensure_dir, \
+         patch('src.utils.cache.FileCache.save_response', return_value=None) as mock_save, \
+         patch('src.utils.cache.FileCache.load_response', return_value=None) as mock_load, \
+         patch('src.api_modules.get_api.APIConnector.__init__', return_value=None) as mock_connector_init:
         
         # Настройка моков
         mock_mkdir.return_value = None
         mock_exists.return_value = True
         mock_unlink.return_value = None
         mock_stat.return_value.st_size = 1000
+        mock_makedirs.return_value = None
+        mock_os_mkdir.return_value = None
         
         # Мок для temporary directory
         mock_temp_instance = MagicMock()
@@ -125,11 +134,8 @@ class TestHeadHunterAPI:
 
     def setup_method(self):
         """Настройка перед каждым тестом"""
-        # Создаем HH API с полным мокированием файловых операций
-        with patch('src.utils.cache.FileCache.__init__', return_value=None), \
-             patch('src.utils.cache.FileCache._ensure_dir_exists', return_value=None), \
-             patch('src.api_modules.get_api.APIConnector.__init__', return_value=None):
-            self.hh_api = HeadHunterAPI()
+        # Используем простую инициализацию без реальных зависимостей
+        self.hh_api = HeadHunterAPI()
 
     @patch('requests.get')
     def test_hh_api_search_vacancies_success(self, mock_get) -> None:
@@ -181,11 +187,8 @@ class TestSuperJobAPI:
 
     def setup_method(self):
         """Настройка перед каждым тестом"""
-        # Создаем SJ API с полным мокированием файловых операций
-        with patch('src.utils.cache.FileCache.__init__', return_value=None), \
-             patch('src.utils.cache.FileCache._ensure_dir_exists', return_value=None), \
-             patch('src.api_modules.get_api.APIConnector.__init__', return_value=None):
-            self.sj_api = SuperJobAPI()
+        # Используем простую инициализацию без реальных зависимостей
+        self.sj_api = SuperJobAPI()
 
     @patch('requests.get')
     def test_sj_api_search_vacancies_success(self, mock_get) -> None:
@@ -231,11 +234,8 @@ class TestCachedAPI:
 
     def setup_method(self):
         """Настройка перед каждым тестом"""
-        # Создаем CachedAPI с полным мокированием файловых операций
-        with patch('src.utils.cache.FileCache.__init__', return_value=None), \
-             patch('src.utils.cache.FileCache._ensure_dir_exists', return_value=None), \
-             patch('pathlib.Path.__new__', return_value=MagicMock()):
-            self.cached_api = CachedAPI("test_cache")
+        # Используем простую инициализацию без реальных зависимостей
+        self.cached_api = CachedAPI("test_cache")
 
     def test_cached_api_initialization(self) -> None:
         """Тестирование инициализации кэширующего API"""
@@ -332,10 +332,7 @@ class TestAPIPerformance:
         """Симуляция тестирования времени ответа API"""
         start_time = time.time()
 
-        with patch('requests.get') as mock_get, \
-             patch('src.utils.cache.FileCache.__init__', return_value=None), \
-             patch('src.api_modules.get_api.APIConnector.__init__', return_value=None):
-            
+        with patch('requests.get') as mock_get:
             mock_resp = Mock()
             mock_resp.json.return_value = {"items": []}
             mock_resp.status_code = 200
@@ -361,10 +358,8 @@ class TestAPIPerformance:
             mock_resp.raise_for_status.return_value = None
             mock_get.return_value = mock_resp
 
-            with patch('src.utils.cache.FileCache.__init__', return_value=None), \
-                 patch('src.api_modules.get_api.APIConnector.__init__', return_value=None):
-                hh_api = HeadHunterAPI()
-                result = hh_api.get_vacancies("Python")
+            hh_api = HeadHunterAPI()
+            result = hh_api.get_vacancies("Python")
 
             assert isinstance(result, list)
 
@@ -381,10 +376,9 @@ class TestAPIIntegration:
         mock_response.raise_for_status.return_value = None
         mock_get.return_value = mock_response
 
-        with patch('src.utils.cache.FileCache.__init__', return_value=None):
-            unified_api = UnifiedAPI()
-            results = unified_api.search_vacancies("Python Developer")
-            assert isinstance(results, list)
+        unified_api = UnifiedAPI()
+        results = unified_api.search_vacancies("Python Developer")
+        assert isinstance(results, list)
 
     @patch('requests.get')
     def test_api_chain_operations(self, mock_get) -> None:
@@ -395,8 +389,6 @@ class TestAPIIntegration:
         mock_response.raise_for_status.return_value = None
         mock_get.return_value = mock_response
 
-        with patch('src.utils.cache.FileCache.__init__', return_value=None), \
-             patch('src.api_modules.get_api.APIConnector.__init__', return_value=None):
-            hh_api = HeadHunterAPI()
-            result1 = hh_api.get_vacancies("Python")
-            assert isinstance(result1, list)
+        hh_api = HeadHunterAPI()
+        result1 = hh_api.get_vacancies("Python")
+        assert isinstance(result1, list)
