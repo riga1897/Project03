@@ -1,5 +1,5 @@
 {
-  "timestamp": 1756921790.541436,
+  "timestamp": 1756922073.2245605,
   "meta": {
     "params": {
       "area": 113,
@@ -13,28 +13,28 @@
   "data": {
     "items": [
       {
-        "id": "124838926",
+        "id": "124801660",
         "premium": false,
-        "name": "Frontend Developer (Js, VueJs)",
+        "name": "Python-разработчик",
         "department": null,
         "has_test": false,
         "response_letter_required": false,
         "area": {
-          "id": "2",
-          "name": "Санкт-Петербург",
-          "url": "https://api.hh.ru/areas/2"
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
         },
         "salary": {
-          "from": 80000,
-          "to": null,
+          "from": 110000,
+          "to": 130000,
           "currency": "RUR",
-          "gross": false
+          "gross": true
         },
         "salary_range": {
-          "from": 80000,
-          "to": null,
+          "from": 110000,
+          "to": 130000,
           "currency": "RUR",
-          "gross": false,
+          "gross": true,
           "mode": {
             "id": "MONTH",
             "name": "За месяц"
@@ -48,36 +48,63 @@
           "id": "open",
           "name": "Открытая"
         },
-        "address": null,
+        "address": {
+          "city": null,
+          "street": null,
+          "building": null,
+          "lat": null,
+          "lng": null,
+          "description": null,
+          "raw": null,
+          "metro": {
+            "station_name": "Дмитровская",
+            "line_name": "Серпуховско-Тимирязевская",
+            "station_id": "9.35",
+            "line_id": "9",
+            "lat": 55.808056,
+            "lng": 37.581734
+          },
+          "metro_stations": [
+            {
+              "station_name": "Дмитровская",
+              "line_name": "Серпуховско-Тимирязевская",
+              "station_id": "9.35",
+              "line_id": "9",
+              "lat": 55.808056,
+              "lng": 37.581734
+            }
+          ],
+          "id": "831881"
+        },
         "response_url": null,
         "sort_point_distance": null,
-        "published_at": "2025-09-03T17:51:42+0300",
-        "created_at": "2025-09-03T17:51:42+0300",
+        "published_at": "2025-09-03T09:21:01+0300",
+        "created_at": "2025-09-03T09:21:01+0300",
         "archived": false,
-        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124838926",
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124801660",
         "show_logo_in_search": null,
         "show_contacts": false,
         "insider_interview": null,
-        "url": "https://api.hh.ru/vacancies/124838926?host=hh.ru",
-        "alternate_url": "https://hh.ru/vacancy/124838926",
+        "url": "https://api.hh.ru/vacancies/124801660?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124801660",
         "relations": [],
         "employer": {
-          "id": "5430966",
-          "name": "Buzz",
-          "url": "https://api.hh.ru/employers/5430966",
-          "alternate_url": "https://hh.ru/employer/5430966",
+          "id": "2842803",
+          "name": "Базальт СПО",
+          "url": "https://api.hh.ru/employers/2842803",
+          "alternate_url": "https://hh.ru/employer/2842803",
           "logo_urls": {
-            "original": "https://img.hhcdn.ru/employer-logo-original/954818.png",
-            "90": "https://img.hhcdn.ru/employer-logo/4259800.png",
-            "240": "https://img.hhcdn.ru/employer-logo/4259801.png"
+            "original": "https://img.hhcdn.ru/employer-logo-original/423284.png",
+            "90": "https://img.hhcdn.ru/employer-logo/2135206.png",
+            "240": "https://img.hhcdn.ru/employer-logo/2135207.png"
           },
-          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=5430966",
-          "accredited_it_employer": false,
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2842803",
+          "accredited_it_employer": true,
           "trusted": true
         },
         "snippet": {
-          "requirement": "Серьезным плюсом будет: Опыт работы с Nuxt 3 (SSR/SSG). Опыт backend разработки на <highlighttext>Python</highlighttext>. Опыт работы с Docker. ",
-          "responsibility": null
+          "requirement": "Опыт разработки на <highlighttext>Python</highlighttext> в Linux, Git. Знание основ РСУБД, HTTP, REST API, принципов ООП. Готовность разбираться в предметной области...",
+          "responsibility": "Реализация интеграции с различными внешними сервисами. Автоматизация бизнес процессов. Написание программного кода, тестов, рефакторинг, документирование. Планирование архитектуры компонентов системы, выбор..."
         },
         "contacts": null,
         "schedule": {
@@ -89,12 +116,7 @@
         "working_time_modes": [],
         "accept_temporary": false,
         "fly_in_fly_out_duration": [],
-        "work_format": [
-          {
-            "id": "ON_SITE",
-            "name": "На месте работодателя"
-          }
-        ],
+        "work_format": [],
         "working_hours": [
           {
             "id": "HOURS_8",
