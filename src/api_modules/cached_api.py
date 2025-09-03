@@ -51,10 +51,9 @@ class CachedAPI(BaseJobAPI, ABC):
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.cache = FileCache(str(self.cache_dir))
 
-    @simple_cache(ttl=300)  # Кэш в памяти на 5 минут
     def _cached_api_request(self, url: str, params: Dict, api_prefix: str) -> Dict:
         """
-        Кэшированный API запрос в памяти
+        Кэшированный API запрос в памяти с исправленным хэшированием
 
         Args:
             url: URL для запроса
@@ -64,13 +63,31 @@ class CachedAPI(BaseJobAPI, ABC):
         Returns:
             Dict: Ответ API
         """
-        try:
-            data = self.connector._APIConnector__connect(url, params)
-            logger.debug(f"Данные получены из API для {api_prefix} (кэш в памяти)")
-            return data
-        except Exception as e:
-            logger.error(f"Ошибка API запроса: {e}")
-            return self._get_empty_response()
+        # Создаём простой кэш в памяти без использования декораторов
+        if not hasattr(self, '_memory_cache'):
+            self._memory_cache = {}
+            self._cache_timestamps = {}
+        
+        # Создаём хэшируемый ключ из параметров
+        import json
+        cache_key = f"{url}#{json.dumps(params, sort_keys=True)}"
+        
+        current_time = time.time()
+        ttl = 300  # 5 минут
+        
+        # Проверяем существующий кэш
+        if cache_key in self._memory_cache:
+            timestamp, data = self._memory_cache[cache_key]
+            if current_time - timestamp < ttl:
+                logger.debug(f"Данные получены из кэша в памяти для {api_prefix}")
+                return data
+            else:
+                # Удаляем устаревшие данные
+                del self._memory_cache[cache_key]
+                del self._cache_timestamps[cache_key]
+        
+        # Если данных нет в кэше памяти, возвращаем None - пусть файловый кэш и API обработают
+        return None
 
     def __connect_to_api(self, url: str, params: Dict, api_prefix: str) -> Dict:
         """
@@ -92,12 +109,10 @@ class CachedAPI(BaseJobAPI, ABC):
         # 1. Проверяем кэш в памяти (быстрее всего)
         try:
             memory_result = self._cached_api_request(url, params, api_prefix)
-            if memory_result != self._get_empty_response():
-                logger.debug(f"Данные получены из кэша в памяти для {api_prefix}")
+            if memory_result is not None:
                 return memory_result
         except Exception as e:
-            # Игнорируем ошибки кэша в памяти, переходим к файловому кэшу
-            logging.warning(f"Ошибка кэша памяти: {str(e)}. Переключаемся на файловый кэш")
+            logger.warning(f"Ошибка кэша памяти: {e}. Переключаемся на файловый кэш")
 
         # 2. Проверяем файловый кэш
         cached_response = self.cache.load_response(api_prefix, params)
@@ -106,13 +121,32 @@ class CachedAPI(BaseJobAPI, ABC):
             data = cached_response.get("data", self._get_empty_response())
             return data
 
-        # 3. Делаем реальный запрос к API с параллельным кэшированием
+        # 3. Делаем реальный запрос к API с сохранением в оба кэша
         try:
             # Делаем прямой запрос к API
             data = self.connector._APIConnector__connect(url, params)
             logger.debug(f"Данные получены из API для {api_prefix}")
 
-            # Проверяем целостность полученных данных перед кэшированием
+            # Сохраняем в кэш в памяти
+            if not hasattr(self, '_memory_cache'):
+                self._memory_cache = {}
+                self._cache_timestamps = {}
+            
+            import json
+            cache_key = f"{url}#{json.dumps(params, sort_keys=True)}"
+            current_time = time.time()
+            self._memory_cache[cache_key] = (current_time, data)
+            self._cache_timestamps[cache_key] = current_time
+            
+            # Ограничиваем размер кэша в памяти
+            if len(self._memory_cache) > 1000:
+                oldest_keys = sorted(self._cache_timestamps.keys(), 
+                                   key=lambda k: self._cache_timestamps[k])[:100]
+                for old_key in oldest_keys:
+                    self._memory_cache.pop(old_key, None)
+                    self._cache_timestamps.pop(old_key, None)
+
+            # Проверяем целостность полученных данных перед файловым кэшированием
             if data and data != self._get_empty_response() and self._is_complete_response(data, params):
                 # Дополнительная валидация структуры данных
                 if self._validate_response_structure(data):
@@ -128,11 +162,6 @@ class CachedAPI(BaseJobAPI, ABC):
 
         except (ConnectionError, TimeoutError) as e:
             logger.error(f"Ошибка соединения с API {api_prefix}: {e}")
-            # При ошибке соединения не возвращаем пустой ответ, а пробуем кэш
-            cached_fallback = self.cache.load_response(api_prefix, params)
-            if cached_fallback:
-                logger.info(f"Используем устаревший кэш из-за проблем с соединением для {api_prefix}")
-                return cached_fallback.get("data", self._get_empty_response())
             return self._get_empty_response()
         except Exception as e:
             logger.error(f"Неизвестная ошибка API {api_prefix}: {e}")

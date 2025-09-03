@@ -11,25 +11,25 @@ logger = logging.getLogger(__name__)
 class SuperJobParser(BaseParser):
     """Парсер для обработки данных вакансий SuperJob"""
 
-    @staticmethod
-    def parse_vacancies(vacancies_data: List[Dict[str, Any]]) -> List[Vacancy]:
+    def parse_vacancies(self, raw_vacancies: List[Dict[str, Any]]) -> List[Vacancy]:
         """
-        Парсинг списка вакансий SuperJob
+        Парсинг списка вакансий SuperJob - возвращает объекты Vacancy
 
         Args:
-            vacancies_data: Данные вакансий от API SuperJob
+            raw_vacancies: Данные вакансий от API SuperJob
 
         Returns:
-            List[SuperJobVacancy]: Список объектов вакансий
+            List[Vacancy]: Список объектов вакансий
         """
         parsed_vacancies = []
 
-        for vacancy_data in vacancies_data:
+        for vacancy_data in raw_vacancies:
             try:
                 # Устанавливаем источник если не установлен
                 if "source" not in vacancy_data or not vacancy_data["source"]:
                     vacancy_data["source"] = "superjob.ru"
 
+                # Создаем объект вакансии напрямую из данных
                 vacancy = Vacancy.from_dict(vacancy_data)
                 parsed_vacancies.append(vacancy)
             except ValueError as e:
@@ -39,7 +39,7 @@ class SuperJobParser(BaseParser):
                 logger.error(f"Неожиданная ошибка при парсинге вакансии SuperJob: {e}")
                 continue
 
-        logger.info(f"Успешно распарсено {len(parsed_vacancies)} вакансий SuperJob из {len(vacancies_data)}")
+        logger.info(f"Успешно распарсено {len(parsed_vacancies)} вакансий SuperJob из {len(raw_vacancies)}")
         return parsed_vacancies
 
     @staticmethod
@@ -85,8 +85,7 @@ class SuperJobParser(BaseParser):
             "source": sj_vacancy.source or "superjob.ru",
         }
 
-    @staticmethod
-    def parse_vacancy(vacancy_data: Dict[str, Any]) -> Dict[str, Any]:
+    def parse_vacancy(self, raw_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Парсинг одной вакансии SJ в словарь
 
@@ -97,22 +96,22 @@ class SuperJobParser(BaseParser):
             Dict[str, Any]: Словарь с данными вакансии
         """
         try:
-            town_info = vacancy_data.get("town", {})
-            experience_info = vacancy_data.get("experience", {})
-            type_of_work_info = vacancy_data.get("type_of_work", {})
-            place_of_work_info = vacancy_data.get("place_of_work", {})
+            town_info = raw_data.get("town", {})
+            experience_info = raw_data.get("experience", {})
+            type_of_work_info = raw_data.get("type_of_work", {})
+            place_of_work_info = raw_data.get("place_of_work", {})
 
             # Обработка описания - объединяем vacancyRichText и work
             description_parts = []
-            if vacancy_data.get("vacancyRichText"):
-                description_parts.append(vacancy_data.get("vacancyRichText"))
-            if vacancy_data.get("work"):
-                description_parts.append(vacancy_data.get("work"))
+            if raw_data.get("vacancyRichText"):
+                description_parts.append(raw_data.get("vacancyRichText"))
+            if raw_data.get("work"):
+                description_parts.append(raw_data.get("work"))
             description = " ".join(filter(None, description_parts))
 
             # Обработка зарплаты - разбираем диапазон
-            payment_from = vacancy_data.get("payment_from")
-            payment_to = vacancy_data.get("payment_to")
+            payment_from = raw_data.get("payment_from")
+            payment_to = raw_data.get("payment_to")
 
             # Если зарплата задана одним числом без диапазона, используем его как salary_from
             if payment_from and not payment_to:
@@ -126,28 +125,28 @@ class SuperJobParser(BaseParser):
                 salary_to = payment_to
 
             return {
-                "vacancy_id": str(vacancy_data.get("id", "")),
-                "title": vacancy_data.get("profession", ""),
-                "url": vacancy_data.get("link", ""),
+                "vacancy_id": str(raw_data.get("id", "")),
+                "title": raw_data.get("profession", ""),
+                "url": raw_data.get("link", ""),
                 "salary_from": salary_from,
                 "salary_to": salary_to,
-                "salary_currency": vacancy_data.get("currency"),
+                "salary_currency": raw_data.get("currency"),
                 "description": description or "",
-                "requirements": vacancy_data.get("candidat", ""),
-                "responsibilities": vacancy_data.get("work", ""),
-                "employer": vacancy_data.get("firm_name", ""),
+                "requirements": raw_data.get("candidat", ""),
+                "responsibilities": raw_data.get("work", ""),
+                "employer": raw_data.get("firm_name", ""),
                 "area": town_info.get("title", "") if town_info else "",
                 "experience": experience_info.get("title", "") if experience_info else "",
                 "employment": type_of_work_info.get("title", "") if type_of_work_info else "",
                 "schedule": place_of_work_info.get("title", "") if place_of_work_info else "",
-                "published_at": vacancy_data.get("date_pub_timestamp", ""),
+                "published_at": raw_data.get("date_pub_timestamp", ""),
                 "source": "superjob.ru",
             }
         except Exception as e:
             logger.error(f"Ошибка при парсинге вакансии SJ: {e}")
             return {
-                "vacancy_id": str(vacancy_data.get("id", "")),
-                "title": vacancy_data.get("profession", ""),
+                "vacancy_id": str(raw_data.get("id", "")),
+                "title": raw_data.get("profession", ""),
                 "url": "",
                 "salary_from": None,
                 "salary_to": None,

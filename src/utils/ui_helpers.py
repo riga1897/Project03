@@ -116,86 +116,136 @@ def confirm_action(prompt: str) -> bool:
 
 def filter_vacancies_by_keyword(vacancies: List[Vacancy], keyword: str) -> List[Vacancy]:
     """
-    Расширенная фильтрация вакансий по ключевому слову
+    Фильтрует вакансии по ключевому слову в названии или описании.
+    Поддерживает логические операторы AND и OR.
 
     Args:
         vacancies: Список вакансий для фильтрации
-        keyword: Ключевое слово для поиска
+        keyword: Ключевое слово или запрос для поиска (поддерживает "python AND call", "java OR kotlin")
 
     Returns:
-        Список отфильтрованных вакансий с оценкой релевантности
+        List[Vacancy]: Отфильтрованный список вакансий
     """
+    if not keyword or not vacancies:
+        return []
+
+    # Парсим поисковый запрос на ключевые слова и оператор
+    parsed_query = _parse_search_query(keyword)
+    if not parsed_query:
+        return []
+
+    keywords = parsed_query["keywords"]
+    operator = parsed_query["operator"]
+    
     filtered_vacancies = []
-    keyword_lower = keyword.lower()
 
     for vacancy in vacancies:
-        relevance_score = 0
-
-        # Проверяем по ID вакансии (очень высокий приоритет)
-        if vacancy.vacancy_id and keyword_lower in vacancy.vacancy_id.lower():
-            relevance_score += 15
-
-        # Проверяем в заголовке (высокий приоритет)
-        if vacancy.title and keyword_lower in vacancy.title.lower():
-            relevance_score += 10
-
-        # Проверяем в требованиях (средний приоритет)
-        if vacancy.requirements and keyword_lower in vacancy.requirements.lower():
-            relevance_score += 5
-
-        # Проверяем в обязанностях (средний приоритет)
-        if vacancy.responsibilities and keyword_lower in vacancy.responsibilities.lower():
-            relevance_score += 5
-
-        # Проверяем в описании (низкий приоритет)
-        if vacancy.description and keyword_lower in vacancy.description.lower():
-            relevance_score += 3
-
-        # Проверяем в детальном описании
-        if vacancy.detailed_description and keyword_lower in vacancy.detailed_description.lower():
-            relevance_score += 2
-
-        # Проверяем в навыках
-        if vacancy.skills:
-            for skill in vacancy.skills:
-                if isinstance(skill, dict) and "name" in skill:
-                    if keyword_lower in skill["name"].lower():
-                        relevance_score += 6
-                elif isinstance(skill, str) and keyword_lower in skill.lower():
-                    relevance_score += 6
-
-        # Дополнительные проверки для улучшения поиска
-        # Проверяем в информации о работодателе
-        if vacancy.employer and isinstance(vacancy.employer, dict):
-            employer_name = vacancy.employer.get("name", "")
-            if employer_name and keyword_lower in employer_name.lower():
-                relevance_score += 4
-
-        # Проверяем в типе занятости
-        if vacancy.employment and keyword_lower in vacancy.employment.lower():
-            relevance_score += 3
-
-        # Проверяем в графике работы
-        if vacancy.schedule and keyword_lower in vacancy.schedule.lower():
-            relevance_score += 3
-
-        # Проверяем в опыте работы
-        if vacancy.experience and keyword_lower in vacancy.experience.lower():
-            relevance_score += 3
-
-        # Проверяем в бонусах/льготах
-        if vacancy.benefits and keyword_lower in vacancy.benefits.lower():
-            relevance_score += 2
-
-        if relevance_score > 0:
-            # Добавляем временный атрибут для сортировки
-            vacancy._relevance_score = relevance_score
-            filtered_vacancies.append(vacancy)
-
-    # Сортируем по релевантности
-    filtered_vacancies.sort(key=lambda x: getattr(x, "_relevance_score", 0), reverse=True)
+        # Формируем строку поиска из всех текстовых полей
+        full_text = _build_searchable_text(vacancy)
+        
+        # Применяем логику поиска в зависимости от оператора
+        if operator == "AND":
+            # Все ключевые слова должны присутствовать
+            if all(kw.lower() in full_text for kw in keywords):
+                filtered_vacancies.append(vacancy)
+        else:  # OR или одно слово
+            # Достаточно любого ключевого слова
+            if any(kw.lower() in full_text for kw in keywords):
+                filtered_vacancies.append(vacancy)
 
     return filtered_vacancies
+
+
+def _parse_search_query(query: str) -> dict:
+    """
+    Парсит поисковый запрос на ключевые слова и логический оператор
+    
+    Args:
+        query: Поисковый запрос
+        
+    Returns:
+        dict: {"keywords": [список_слов], "operator": "AND"/"OR"}
+    """
+    if not query or not query.strip():
+        return None
+
+    query = query.strip()
+
+    # Проверяем наличие операторов (регистронезависимо)
+    if " AND " in query.upper():
+        keywords = [kw.strip() for kw in query.split(" AND ") if kw.strip()]
+        return {"keywords": keywords, "operator": "AND"}
+    elif " OR " in query.upper():
+        keywords = [kw.strip() for kw in query.split(" OR ") if kw.strip()]
+        return {"keywords": keywords, "operator": "OR"}
+    elif "," in query:
+        keywords = [kw.strip() for kw in query.split(",") if kw.strip()]
+        return {"keywords": keywords, "operator": "OR"}
+    else:
+        # Одно слово или фраза
+        return {"keywords": [query], "operator": "OR"}
+
+
+def _build_searchable_text(vacancy: Vacancy) -> str:
+    """
+    Формирует единую строку поиска из всех текстовых полей вакансии
+    
+    Args:
+        vacancy: Объект вакансии
+        
+    Returns:
+        str: Объединенный текст для поиска в нижнем регистре
+    """
+    searchable_text = []
+
+    # Проверяем названия
+    if vacancy.title:
+        searchable_text.append(str(vacancy.title))
+
+    # Проверяем описание
+    if vacancy.description:
+        searchable_text.append(str(vacancy.description))
+
+    # Проверяем требования
+    if vacancy.requirements:
+        searchable_text.append(str(vacancy.requirements))
+
+    # Проверяем обязанности
+    if vacancy.responsibilities:
+        searchable_text.append(str(vacancy.responsibilities))
+
+    # Проверяем детальное описание
+    if vacancy.detailed_description:
+        searchable_text.append(str(vacancy.detailed_description))
+
+    # Проверяем тип занятости - безопасно преобразуем в строку
+    if vacancy.employment:
+        if hasattr(vacancy.employment, '__str__'):
+            searchable_text.append(str(vacancy.employment))
+        elif hasattr(vacancy.employment, 'name'):
+            searchable_text.append(str(vacancy.employment.name))
+
+    # Проверяем навыки
+    if vacancy.skills:
+        for skill in vacancy.skills:
+            if isinstance(skill, dict) and "name" in skill:
+                searchable_text.append(str(skill["name"]))
+            elif isinstance(skill, str):
+                searchable_text.append(skill)
+            else:
+                searchable_text.append(str(skill))
+
+    # Проверяем компанию
+    if vacancy.employer:
+        if hasattr(vacancy.employer, 'name') and vacancy.employer.name:
+            searchable_text.append(str(vacancy.employer.name))
+        elif isinstance(vacancy.employer, dict) and 'name' in vacancy.employer:
+            searchable_text.append(str(vacancy.employer['name']))
+        else:
+            searchable_text.append(str(vacancy.employer))
+
+    # Объединяем весь текст и возвращаем в нижнем регистре
+    return " ".join(searchable_text).lower()
 
 
 # Эти функции перенесены в src/utils/vacancy_operations.py

@@ -2,8 +2,14 @@ import logging
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
 
-import psycopg2
-from psycopg2.extras import RealDictCursor
+try:
+    import psycopg2
+    from psycopg2.extras import RealDictCursor
+    PsycopgError = psycopg2.Error
+except ImportError:
+    psycopg2 = None
+    RealDictCursor = None
+    PsycopgError = Exception
 
 from src.storage.abstract import AbstractVacancyStorage
 from src.vacancies.abstract import AbstractVacancy
@@ -20,38 +26,7 @@ class PostgresSaver(AbstractVacancyStorage):
     в PostgreSQL базе данных с валидацией данных и обработкой ошибок.
     """
 
-    # Mapping for std company names, based on the intention of the provided snippet.
-    COMPANY_NAME_STANDARDIZATION = {
-        "яндекс": "Яндекс",
-        "сбер": "Сбер",
-        "сбербанк": "Сбер",
-        "тинькофф": "Тинькофф",
-        "т-банк": "Тинькофф",
-        "tinkoff": "Тинькофф",
-        "vk": "VK",
-        "вконтакте": "VK",
-        "вк": "VK",
-        "ozon": "Ozon",
-        "озон": "Ozon",
-        "wildberries": "Wildberries",
-        "wb": "Wildberries",
-        "альфа-банк": "Альфа-Банк",
-        "alfa-bank": "Альфа-Банк",
-    }
 
-    def _standardize_employer_name(self, employer_name: Optional[str]) -> Optional[str]:
-        """
-        Standardizes employer name using a predefined mapping.
-        This is an interpretation of the provided snippet's intention to improve company handling.
-        """
-        if not employer_name:
-            return None
-
-        lower_name = employer_name.lower()
-        for pattern, standardized_name in self.COMPANY_NAME_STANDARDIZATION.items():
-            if pattern in lower_name:
-                return standardized_name
-        return employer_name  # Return original if no pattern matches
 
     def __init__(self, db_config: Optional[Dict[str, str]] = None):
         """
@@ -94,7 +69,7 @@ class PostgresSaver(AbstractVacancyStorage):
             # Устанавливаем кодировку для соединения
             connection.set_client_encoding("UTF8")
             return connection
-        except psycopg2.Error as e:
+        except PsycopgError as e:
             logger.error(f"Ошибка подключения к БД {db_name}: {e}")
             raise
 
@@ -104,7 +79,7 @@ class PostgresSaver(AbstractVacancyStorage):
         try:
             connection = self._get_connection("postgres")
             connection.autocommit = True
-        except psycopg2.Error as e:
+        except PsycopgError as e:
             logger.error(f"Не удается подключиться к системной БД postgres: {e}")
             logger.info("Пытаемся подключиться к целевой БД напрямую...")
             try:
@@ -113,7 +88,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 test_connection.close()
                 logger.info(f"✓ База данных {self.database} уже доступна")
                 return
-            except psycopg2.Error:
+            except PsycopgError:
                 logger.error(f"База данных {self.database} недоступна и не может быть создана")
                 raise
 
@@ -133,14 +108,14 @@ class PostgresSaver(AbstractVacancyStorage):
                 cursor.execute(f'CREATE DATABASE "{self.database}"')
                 logger.info(f"✓ База данных {self.database} успешно создана")
 
-        except psycopg2.Error as e:
+        except PsycopgError as e:
             logger.error(f"Ошибка при создании базы данных {self.database}: {e}")
             # Пытаемся подключиться к целевой БД - возможно она уже существует
             try:
                 test_connection = self._get_connection()
                 test_connection.close()
                 logger.info(f"✓ База данных {self.database} доступна (возможно уже существовала)")
-            except psycopg2.Error:
+            except PsycopgError:
                 raise e
         finally:
             if "cursor" in locals():
@@ -194,7 +169,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 try:
                     cursor.execute(f"CREATE INDEX IF NOT EXISTS {index_name} ON companies({columns});")
                     logger.info(f"✓ Индекс {index_name} проверен/создан")
-                except psycopg2.Error as e:
+                except PsycopgError as e:
                     logger.warn(f"Не удалось создать индекс {index_name}: {e}")
 
             connection.commit()
@@ -203,14 +178,25 @@ class PostgresSaver(AbstractVacancyStorage):
             # Инициализируем целевые компании
             self._initialize_target_companies()
 
-        except psycopg2.Error as e:
+        except PsycopgError as e:
             logger.error(f"Ошибка создания таблицы companies: {e}")
-            connection.rollback()
+            if not connection.closed:
+                try:
+                    connection.rollback()
+                except Exception:
+                    pass  # Соединение уже закрыто
             raise
         finally:
             if "cursor" in locals():
-                cursor.close()
-            connection.close()
+                try:
+                    cursor.close()
+                except Exception:
+                    pass
+            if not connection.closed:
+                try:
+                    connection.close()
+                except Exception:
+                    pass
 
     def _initialize_target_companies(self):
         """Инициализирует целевые компании в таблице companies"""
@@ -249,13 +235,22 @@ class PostgresSaver(AbstractVacancyStorage):
 
         except Exception as e:
             logger.error(f"Ошибка инициализации целевых компаний: {e}")
-            if "connection" in locals():
-                connection.rollback()
+            if "connection" in locals() and not connection.closed:
+                try:
+                    connection.rollback()
+                except Exception:
+                    pass  # Соединение уже закрыто
         finally:
             if "cursor" in locals():
-                cursor.close()
-            if "connection" in locals():
-                connection.close()
+                try:
+                    cursor.close()
+                except Exception:
+                    pass
+            if "connection" in locals() and not connection.closed:
+                try:
+                    connection.close()
+                except Exception:
+                    pass
 
     def _ensure_tables_exist(self):
         """Создает таблицы если они не существуют"""
@@ -298,7 +293,6 @@ class PostgresSaver(AbstractVacancyStorage):
                 ("area", "VARCHAR(200)"),
                 ("source", "VARCHAR(50) DEFAULT 'unknown'"),
                 ("published_at", "TIMESTAMP"),
-                ("company_id", "INTEGER"),
             ]
 
             # Проверяем и добавляем недостающие поля
@@ -317,17 +311,6 @@ class PostgresSaver(AbstractVacancyStorage):
                     logger.info(f"Добавляем поле {field_name} в таблицу vacancies...")
                     cursor.execute(f"ALTER TABLE vacancies ADD COLUMN {field_name} {field_type};")
                     logger.info(f"✓ Поле {field_name} добавлено")
-                elif field_name == "company_id" and field_info[1] not in ("integer", "bigint"):
-                    # Специальная обработка для company_id - должен быть INTEGER
-                    logger.warning(f"Поле company_id имеет тип {field_info[1]}, исправляем на INTEGER...")
-                    try:
-                        # Удаляем старое поле с неправильным типом
-                        cursor.execute("ALTER TABLE vacancies DROP COLUMN IF EXISTS company_id CASCADE")
-                        # Добавляем новое поле с правильным типом
-                        cursor.execute("ALTER TABLE vacancies ADD COLUMN company_id INTEGER")
-                        logger.info("✓ Поле company_id пересоздано с типом INTEGER")
-                    except psycopg2.Error as e:
-                        logger.error(f"Не удалось пересоздать поле company_id: {e}")
 
             # Создаем индексы для оптимизации запросов
             indexes_to_create = [
@@ -342,7 +325,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 try:
                     cursor.execute(f"CREATE INDEX IF NOT EXISTS {index_name} ON vacancies({columns});")
                     logger.info(f"✓ Индекс {index_name} проверен/создан")
-                except psycopg2.Error as e:
+                except PsycopgError as e:
                     logger.warn(f"Не удалось создать индекс {index_name}: {e}")
 
             # Создаем внешний ключ если его еще нет
@@ -366,28 +349,44 @@ class PostgresSaver(AbstractVacancyStorage):
                     """
                     )
                     logger.info("✓ Внешний ключ fk_vacancies_company_id создан")
-            except psycopg2.Error as e:
+            except PsycopgError as e:
                 logger.warning(f"Не удалось создать внешний ключ: {e}")
 
             connection.commit()
             logger.info("✓ Таблицы успешно созданы/проверены")
 
-        except psycopg2.Error as e:
+        except PsycopgError as e:
             logger.error(f"Ошибка создания таблиц: {e}")
-            connection.rollback()
+            if not connection.closed:
+                try:
+                    connection.rollback()
+                except Exception:
+                    pass  # Соединение уже закрыто
             raise
         finally:
             if "cursor" in locals():
-                cursor.close()
-            connection.close()
+                try:
+                    cursor.close()
+                except Exception:
+                    pass
+            if not connection.closed:
+                try:
+                    connection.close()
+                except Exception:
+                    pass
 
-    def add_vacancy_batch_optimized(self, vacancies: Union[Vacancy, List[Vacancy]]) -> List[str]:
+    def add_vacancy_batch_optimized(self, vacancies: Union[Vacancy, List[Vacancy]], search_query: str = None) -> List[str]:
         """
         Максимально оптимизированное batch-добавление вакансий через временные таблицы.
         Использует SQL для всех операций, минимизирует количество запросов.
         """
         if not isinstance(vacancies, list):
             vacancies = [vacancies]
+            
+        # Исправляем двойную вложенность списков
+        if len(vacancies) == 1 and isinstance(vacancies[0], list):
+            vacancies = vacancies[0]
+            logger.debug(f"Исправлена двойная вложенность списка: получено {len(vacancies)} вакансий")
 
         if not vacancies:
             return []
@@ -406,28 +405,36 @@ class PostgresSaver(AbstractVacancyStorage):
             """
             )
 
-            # Получаем сопоставление компаний из БД с расширенным поиском
+            # Получаем сопоставление компаний только по ID
             cursor.execute(
                 """
-                SELECT id, name, LOWER(name) as normalized_name
+                SELECT id, name, hh_id, sj_id
                 FROM companies
             """
             )
 
-            company_mapping = {}
-            company_patterns = {}  # Для поиска по частичному совпадению
+            company_id_mapping = {}  # hh_id/sj_id -> company_id
 
             results = cursor.fetchall()
             for row in results:
-                comp_id, original_name, normalized_name = row[0], row[1], row[2]
-                company_mapping[normalized_name] = comp_id
-                company_patterns[original_name] = comp_id
+                comp_id, name, hh_id, sj_id = row
+                
+                # Добавляем только ID-маппинги с приведением к строке
+                if hh_id:
+                    company_id_mapping[str(hh_id)] = comp_id
+                if sj_id:
+                    company_id_mapping[str(sj_id)] = comp_id
 
             # Подготавливаем данные для вставки/обновления (все переданные вакансии)
             insert_data = []
             vacancy_company_mapping = {}  # Словарь для сохранения соответствия vacancy_id -> company_id
 
             for vacancy in vacancies:
+                # Проверяем, что vacancy действительно объект Vacancy
+                if not hasattr(vacancy, 'employer'):
+                    logger.error(f"Объект не является Vacancy: {type(vacancy)} - {vacancy}")
+                    continue
+                    
                 # Определяем company_id для связи с таблицей companies
                 mapped_company_id = None
                 employer_name = None
@@ -437,57 +444,19 @@ class PostgresSaver(AbstractVacancyStorage):
                     if isinstance(vacancy.employer, dict):
                         employer_name = vacancy.employer.get("name", "").strip()
                         employer_id = vacancy.employer.get("id", "").strip()
+                    elif hasattr(vacancy.employer, 'get_name'):
+                        employer_name = vacancy.employer.get_name().strip()
+                        employer_id = getattr(vacancy.employer, 'id', '').strip()
+                    elif hasattr(vacancy.employer, 'name'):
+                        employer_name = str(getattr(vacancy.employer, 'name', '')).strip()
+                        employer_id = str(getattr(vacancy.employer, 'id', '')).strip()
                     else:
                         employer_name = str(vacancy.employer).strip()
+                        employer_id = ""
 
-                # 1. Приоритет: поиск по hh_id/sj_id из данных вакансии
+                # Фильтруем ТОЛЬКО по ID компаний (hh_id и sj_id)
                 if employer_id:
-                    cursor.execute(
-                        """
-                        SELECT id FROM companies
-                        WHERE hh_id = %s OR sj_id = %s
-                        LIMIT 1
-                    """,
-                        (employer_id, employer_id),
-                    )
-
-                    result = cursor.fetchone()
-                    if result:
-                        mapped_company_id = result[0]  # Используем индекс для обычного cursor
-                        logger.debug(
-                            f"Найдено точное соответствие по ID: employer_id={employer_id} -> company_id={mapped_company_id}"
-                        )
-
-                # 2. Fallback: поиск по названию только если не найден по ID
-                if not mapped_company_id and employer_name:
-                    employer_lower = employer_name.lower()
-
-                    # 2.1. Поиск точного соответствия в нормализованных названиях
-                    mapped_company_id = company_mapping.get(employer_lower)
-
-                    # 2.2. Поиск по частичному соответствию с ключевыми словами
-                    if not mapped_company_id:
-                        for pattern_name, comp_id in company_patterns.items():
-                            pattern_lower = pattern_name.lower()
-                            # Проверяем вхождение ключевых слов
-                            if len(pattern_lower) > 3:
-                                if pattern_lower in employer_lower or employer_lower in pattern_lower:
-                                    mapped_company_id = comp_id
-                                    logger.debug(
-                                        f"Найдено соответствие по частичному совпадению: '{employer_name}' -> '{pattern_name}' (company_id: {comp_id})"
-                                    )
-                                    break
-
-                    # 2.3. Дополнительный поиск по альтернативным названиям
-                    if not mapped_company_id:
-                        for alt_name, comp_id in company_mapping.items():
-                            if isinstance(alt_name, str) and len(alt_name) > 2:
-                                if alt_name in employer_lower:
-                                    mapped_company_id = comp_id
-                                    logger.debug(
-                                        f"Найдено соответствие по альтернативному названию: '{employer_name}' -> '{alt_name}' (company_id: {comp_id})"
-                                    )
-                                    break
+                    mapped_company_id = company_id_mapping.get(str(employer_id))
 
                 # Сохраняем соответствие и устанавливаем company_id
                 if mapped_company_id:
@@ -499,27 +468,69 @@ class PostgresSaver(AbstractVacancyStorage):
 
             # Обрабатываем ВСЕ переданные вакансии
             for vacancy in vacancies:
+                # Проверяем, что vacancy действительно объект Vacancy
+                if not hasattr(vacancy, 'employer'):
+                    logger.error(f"Объект не является Vacancy во втором цикле: {type(vacancy)}")
+                    continue
+                    
                 mapped_company_id = vacancy_company_mapping.get(vacancy.vacancy_id, None)
 
-                salary_from = vacancy.salary.salary_from if vacancy.salary else None
-                salary_to = vacancy.salary.salary_to if vacancy.salary else None
-                salary_currency = vacancy.salary.currency if vacancy.salary else None
+                # Безопасная обработка salary 
+                salary_from = None
+                salary_to = None
+                salary_currency = None
+                
+                if vacancy.salary:
+                    if hasattr(vacancy.salary, 'salary_from'):
+                        salary_from = vacancy.salary.salary_from
+                        salary_to = vacancy.salary.salary_to
+                        salary_currency = vacancy.salary.currency
+                    elif isinstance(vacancy.salary, dict):
+                        salary_from = vacancy.salary.get('from')
+                        salary_to = vacancy.salary.get('to')
+                        salary_currency = vacancy.salary.get('currency')
+                    # Если salary - boolean или что-то другое, оставляем None
 
                 # Конвертируем employer в строку для сохранения в БД
                 employer_str = None
                 if vacancy.employer:
                     if isinstance(vacancy.employer, dict):
                         employer_str = vacancy.employer.get("name", str(vacancy.employer))
+                    elif hasattr(vacancy.employer, 'get_name'):
+                        employer_str = vacancy.employer.get_name()
+                    elif hasattr(vacancy.employer, 'name'):
+                        employer_str = str(getattr(vacancy.employer, 'name', ''))
                     else:
                         employer_str = str(vacancy.employer)
 
-                # Конвертируем area в строку для сохранения в БД
-                area_str = None
-                if vacancy.area:
-                    if isinstance(vacancy.area, dict):
-                        area_str = vacancy.area.get("name", str(vacancy.area))
+                # Унифицированная обработка area для сохранения в БД
+                try:
+                    from utils.data_normalizers import normalize_area_data
+                except ImportError:
+                    from src.utils.data_normalizers import normalize_area_data
+                area_str = normalize_area_data(vacancy.area)
+                
+                # Обработка полей объектов в строки для БД
+                experience_str = None
+                if vacancy.experience:
+                    if hasattr(vacancy.experience, 'get_name'):
+                        experience_str = vacancy.experience.get_name()
                     else:
-                        area_str = str(vacancy.area)
+                        experience_str = str(vacancy.experience)
+                
+                employment_str = None
+                if vacancy.employment:
+                    if hasattr(vacancy.employment, 'get_name'):
+                        employment_str = vacancy.employment.get_name()
+                    else:
+                        employment_str = str(vacancy.employment)
+                
+                schedule_str = None
+                if vacancy.schedule:
+                    if hasattr(vacancy.schedule, 'get_name'):
+                        schedule_str = vacancy.schedule.get_name()
+                    else:
+                        schedule_str = str(vacancy.schedule)
 
                 # Обработка даты published_at
                 published_date = self._normalize_published_date(vacancy.published_at)
@@ -535,13 +546,14 @@ class PostgresSaver(AbstractVacancyStorage):
                         vacancy.description,
                         vacancy.requirements,
                         vacancy.responsibilities,
-                        vacancy.experience,
-                        vacancy.employment,
-                        vacancy.schedule,
+                        experience_str,
+                        employment_str,
+                        schedule_str,
                         area_str,
                         vacancy.source,
                         published_date,
                         mapped_company_id,  # Всегда будет не None для целевых компаний
+                        search_query,
                     )
                 )
 
@@ -553,7 +565,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 """INSERT INTO temp_new_vacancies (
                     vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
-                    employment, schedule, area, source, published_at, company_id
+                    employment, schedule, area, source, published_at, company_id, search_query
                 ) VALUES %s""",
                 insert_data,
                 template=None,
@@ -566,11 +578,11 @@ class PostgresSaver(AbstractVacancyStorage):
                 INSERT INTO vacancies (
                     vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
-                    employment, schedule, area, source, published_at, company_id
+                    employment, schedule, area, source, published_at, company_id, search_query
                 )
                 SELECT t.vacancy_id, t.title, t.url, t.salary_from, t.salary_to, t.salary_currency,
                        t.description, t.requirements, t.responsibilities, t.experience,
-                       t.employment, t.schedule, t.area, t.source, t.published_at, t.company_id
+                       t.employment, t.schedule, t.area, t.source, t.published_at, t.company_id, t.search_query
                 FROM temp_new_vacancies t
                 LEFT JOIN vacancies v ON t.vacancy_id = v.vacancy_id
                 WHERE v.vacancy_id IS NULL
@@ -658,9 +670,13 @@ class PostgresSaver(AbstractVacancyStorage):
                 f"Результат: сохранено {new_count + updated_count} из {total_input} вакансий (новых: {new_count}, обновлено: {updated_count})"
             )
 
-        except psycopg2.Error as e:
+        except PsycopgError as e:
             logger.error(f"Ошибка при batch операции через временные таблицы: {e}")
-            connection.rollback()
+            if not connection.closed:
+                try:
+                    connection.rollback()
+                except Exception:
+                    pass
             raise
         finally:
             if "cursor" in locals():
@@ -669,24 +685,29 @@ class PostgresSaver(AbstractVacancyStorage):
 
         return update_messages
 
-    def add_vacancy(self, vacancy: Vacancy) -> bool:
+    def add_vacancy(self, vacancy: Union[Vacancy, List[Vacancy]]) -> Union[bool, List[str]]:
         """
-        Добавляет одну вакансию в базу данных
+        Добавляет одну вакансию или список вакансий в базу данных
 
         Args:
-            vacancy: Объект вакансии для добавления
+            vacancy: Объект вакансии или список вакансий для добавления
 
         Returns:
-            bool: True если добавлено успешно, False иначе
+            Union[bool, List[str]]: True/False для одной вакансии, список сообщений для множественных
         """
         try:
-            result = self.add_vacancies([vacancy])
-            # add_vacancies возвращает список добавленных вакансий
-            # Если список не пустой, значит вакансия добавлена
-            return len(result) > 0 if isinstance(result, list) else bool(result)
+            if isinstance(vacancy, list):
+                # Если передан список, используем batch метод
+                return self.add_vacancy_batch_optimized(vacancy)
+            else:
+                # Если передана одна вакансия, конвертируем в список
+                result = self.add_vacancies([vacancy])
+                # add_vacancies возвращает список добавленных вакансий
+                # Если список не пустой, значит вакансия добавлена
+                return len(result) > 0 if isinstance(result, list) else bool(result)
         except Exception as e:
             logger.error(f"Ошибка добавления вакансии: {e}")
-            return False
+            return False if not isinstance(vacancy, list) else []
 
     def add_vacancies(self, vacancies: List[Vacancy]) -> List[str]:
         """
@@ -732,52 +753,6 @@ class PostgresSaver(AbstractVacancyStorage):
         update_messages = self.add_vacancy_batch_optimized(vacancies)
         return len(update_messages)
 
-    def _find_company_by_employer_info(
-        self, employer_name: str, employer_id: str = None, company_mapping: Dict[str, int] = None
-    ) -> Optional[int]:
-        """
-        Находит ID компании по информации о работодателе
-
-        Args:
-            employer_name: Название работодателя (не используется)
-            employer_id: ID работодателя из API
-            company_mapping: Кэш соответствий названий -> ID (не используется)
-
-        Returns:
-            ID компании из таблицы companies или None
-        """
-        if not employer_id:
-            return None
-
-        try:
-            connection = self._get_connection()
-            cursor = connection.cursor()
-
-            # Ищем точное соответствие только по hh_id или sj_id
-            cursor.execute(
-                """
-                SELECT id FROM companies
-                WHERE hh_id = %s OR sj_id = %s
-                LIMIT 1
-            """,
-                (employer_id, employer_id),
-            )
-
-            result = cursor.fetchone()
-            if result:
-                return result[0]  # Используем индекс для обычного cursor
-
-            return None
-
-        except Exception as e:
-            logger.error(f"Ошибка поиска компании по ID {employer_id}: {e}")
-            return None
-        finally:
-            if "cursor" in locals():
-                cursor.close()
-            if "connection" in locals():
-                connection.close()
-
     def load_vacancies(
         self, limit: Optional[int] = None, offset: int = 0, filters: Optional[Dict[str, Any]] = None
     ) -> List[Vacancy]:
@@ -813,10 +788,8 @@ class PostgresSaver(AbstractVacancyStorage):
                     params.append(filters["salary_to"])
 
                 if filters.get("employer"):  # Filter by company name from joined table
-                    standardized_employer = self._standardize_employer_name(filters["employer"])
-                    if standardized_employer:
-                        where_conditions.append("LOWER(c.name) LIKE LOWER(%s)")
-                        params.append(f"%{standardized_employer}%")
+                    where_conditions.append("LOWER(c.name) LIKE LOWER(%s)")
+                    params.append(f"%{filters['employer']}%")
 
                 # Filter by company name directly using the join
                 if filters.get("company_name"):
@@ -843,7 +816,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
             return self._convert_rows_to_vacancies(results)
 
-        except psycopg2.Error as e:
+        except PsycopgError as e:
             logger.error(f"Ошибка загрузки вакансий: {e}")
             return []
         finally:
@@ -1051,9 +1024,13 @@ class PostgresSaver(AbstractVacancyStorage):
             connection.commit()
             logger.info("Все вакансии удалены")
             return True
-        except psycopg2.Error as e:
+        except PsycopgError as e:
             logger.error(f"Ошибка при удалении всех вакансий: {e}")
-            connection.rollback()
+            if not connection.closed:
+                try:
+                    connection.rollback()
+                except Exception:
+                    pass
             return False
         finally:
             if "cursor" in locals():
@@ -1075,9 +1052,13 @@ class PostgresSaver(AbstractVacancyStorage):
                 logger.warning(f"Вакансия с ID {vacancy_id} не найдена")
                 return False
 
-        except psycopg2.Error as e:
+        except PsycopgError as e:
             logger.error(f"Ошибка при удалении вакансии {vacancy_id}: {e}")
-            connection.rollback()
+            if not connection.closed:
+                try:
+                    connection.rollback()
+                except Exception:
+                    pass
             return False
         finally:
             if "cursor" in locals():
@@ -1099,9 +1080,13 @@ class PostgresSaver(AbstractVacancyStorage):
 
             return deleted_count
 
-        except psycopg2.Error as e:
+        except PsycopgError as e:
             logger.error(f"Ошибка при удалении вакансий по ключевому слову '{keyword}': {e}")
-            connection.rollback()
+            if not connection.closed:
+                try:
+                    connection.rollback()
+                except Exception:
+                    pass
             return 0
         finally:
             if "cursor" in locals():
@@ -1145,9 +1130,13 @@ class PostgresSaver(AbstractVacancyStorage):
 
             return deleted_count
 
-        except psycopg2.Error as e:
+        except PsycopgError as e:
             logger.error(f"Ошибка при batch удалении вакансий: {e}")
-            connection.rollback()
+            if not connection.closed:
+                try:
+                    connection.rollback()
+                except Exception:
+                    pass
             return 0
         finally:
             if "cursor" in locals():
@@ -1161,7 +1150,7 @@ class PostgresSaver(AbstractVacancyStorage):
             cursor = connection.cursor()
             cursor.execute("SELECT 1 FROM vacancies WHERE vacancy_id = %s", (vacancy.vacancy_id,))
             return cursor.fetchone() is not None
-        except psycopg2.Error as e:
+        except PsycopgError as e:
             logger.error(f"Ошибка проверки существования вакансии: {e}")
             return False
         finally:
@@ -1222,9 +1211,13 @@ class PostgresSaver(AbstractVacancyStorage):
             connection.commit()
             return result
 
-        except psycopg2.Error as e:
+        except PsycopgError as e:
             logger.error(f"Ошибка batch проверки через временную таблицу: {e}")
-            connection.rollback()
+            if not connection.closed:
+                try:
+                    connection.rollback()
+                except Exception:
+                    pass
             # В случае ошибки возвращаем словарь с False для всех
             return {v.vacancy_id: False for v in vacancies}
         finally:
@@ -1240,7 +1233,7 @@ class PostgresSaver(AbstractVacancyStorage):
             cursor.execute("SELECT COUNT(*) FROM vacancies")
             count = cursor.fetchone()[0]
             return count * 1024  # Примерный размер в байтах
-        except psycopg2.Error as e:
+        except PsycopgError as e:
             logger.error(f"Ошибка получения размера БД: {e}")
             return 0
         finally:
@@ -1281,10 +1274,8 @@ class PostgresSaver(AbstractVacancyStorage):
                     params.append(filters["salary_to"])
 
                 if filters.get("employer"):  # Filter by company name from joined table
-                    standardized_employer = self._standardize_employer_name(filters["employer"])
-                    if standardized_employer:
-                        where_conditions.append("LOWER(c.name) LIKE LOWER(%s)")
-                        params.append(f"%{standardized_employer}%")
+                    where_conditions.append("LOWER(c.name) LIKE LOWER(%s)")
+                    params.append(f"%{filters['employer']}%")
 
                 # Filter by company name directly
                 if filters.get("company_name"):
@@ -1297,7 +1288,7 @@ class PostgresSaver(AbstractVacancyStorage):
             cursor.execute(query, params)
             return cursor.fetchone()[0]
 
-        except psycopg2.Error as e:
+        except PsycopgError as e:
             logger.error(f"Ошибка подсчета вакансий: {e}")
             return 0
         finally:
@@ -1349,7 +1340,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
             return self._convert_rows_to_vacancies(results)
 
-        except psycopg2.Error as e:
+        except PsycopgError as e:
             logger.error(f"Ошибка batch поиска вакансий: {e}")
             return []
         finally:
@@ -1423,20 +1414,24 @@ class PostgresSaver(AbstractVacancyStorage):
             """
             )
 
-            company_mapping = {}
+            # Только ID-маппинг для фильтрации
             company_id_mapping = {}  # hh_id/sj_id -> company_id
-
+            
             for row in cursor.fetchall():
                 comp_id, name, hh_id, sj_id, normalized_name = row
-                company_mapping[normalized_name] = comp_id
+                
+                # Добавляем только ID-маппинги с приведением к строке
                 if hh_id:
-                    company_id_mapping[hh_id] = comp_id
+                    company_id_mapping[str(hh_id)] = comp_id
                 if sj_id:
-                    company_id_mapping[sj_id] = comp_id
+                    company_id_mapping[str(sj_id)] = comp_id
 
             # Подготавливаем данные для вставки с фильтрацией по целевым компаниям
             insert_data = []
             filtered_count = 0
+            
+            # Счетчик отфильтрованных вакансий
+            target_found_count = 0
 
             for idx, vacancy in enumerate(vacancies):
                 # Извлекаем данные работодателя
@@ -1451,23 +1446,14 @@ class PostgresSaver(AbstractVacancyStorage):
                         employer_name = str(vacancy.employer).strip()
 
                 # Определяем company_id - ФИЛЬТРАЦИЯ ПО ЦЕЛЕВЫМ КОМПАНИЯМ
+                # Фильтруем ТОЛЬКО по ID компаний (hh_id и sj_id)
                 mapped_company_id = None
-
-                # Поиск по ID (приоритет)
                 if employer_id:
-                    mapped_company_id = company_id_mapping.get(employer_id)
+                    mapped_company_id = company_id_mapping.get(str(employer_id))
 
-                # Поиск по названию
-                if not mapped_company_id and employer_name:
-                    employer_lower = employer_name.lower()
-                    mapped_company_id = company_mapping.get(employer_lower)
-
-                    # Частичное совпадение
-                    if not mapped_company_id:
-                        for alt_name, comp_id in company_mapping.items():
-                            if len(alt_name) > 2 and (alt_name in employer_lower or employer_lower in alt_name):
-                                mapped_company_id = comp_id
-                                break
+                # Логирование найденных целевых компаний
+                if mapped_company_id:
+                    logger.info(f"Найдена целевая вакансия: '{vacancy.title}' от '{employer_name}' (ID: {employer_id})")
 
                 # ФИЛЬТРУЕМ: пропускаем вакансии НЕ от целевых компаний
                 if not mapped_company_id:
@@ -1484,9 +1470,21 @@ class PostgresSaver(AbstractVacancyStorage):
                 dedup_key = f"{title_norm}|{company_norm}|{salary_key}|{area_norm}"
 
                 # Подготавливаем данные для вставки
-                salary_from = vacancy.salary.salary_from if vacancy.salary else None
-                salary_to = vacancy.salary.salary_to if vacancy.salary else None
-                salary_currency = vacancy.salary.currency if vacancy.salary else None
+                # Безопасная обработка salary 
+                salary_from = None
+                salary_to = None
+                salary_currency = None
+                
+                if vacancy.salary:
+                    if hasattr(vacancy.salary, 'salary_from'):
+                        salary_from = vacancy.salary.salary_from
+                        salary_to = vacancy.salary.salary_to
+                        salary_currency = vacancy.salary.currency
+                    elif isinstance(vacancy.salary, dict):
+                        salary_from = vacancy.salary.get('from')
+                        salary_to = vacancy.salary.get('to')
+                        salary_currency = vacancy.salary.get('currency')
+                    # Если salary - boolean или что-то другое, оставляем None
 
                 area_str = str(vacancy.area) if vacancy.area else None
                 published_date = self._normalize_published_date(vacancy.published_at)
@@ -1503,9 +1501,9 @@ class PostgresSaver(AbstractVacancyStorage):
                         vacancy.description,
                         vacancy.requirements,
                         vacancy.responsibilities,
-                        vacancy.experience,
-                        vacancy.employment,
-                        vacancy.schedule,
+                        experience_str,
+                        employment_str,
+                        schedule_str,
                         area_str,
                         vacancy.source,
                         published_date,
@@ -1519,6 +1517,10 @@ class PostgresSaver(AbstractVacancyStorage):
             logger.info(
                 f"После фильтрации по целевым компаниям: {len(insert_data)} из {len(vacancies)} вакансий (отфильтровано: {filtered_count})"
             )
+            
+            logger.info(f"Доступно ID-маппингов для сопоставления: {len(company_id_mapping)}")
+            if not company_id_mapping:
+                logger.warning("company_id_mapping пустой!")
 
             if not insert_data:
                 return []
@@ -1591,345 +1593,29 @@ class PostgresSaver(AbstractVacancyStorage):
 
             # Формируем результат из исходных объектов
             result_vacancies = [vacancies[idx] for idx in unique_indices]
-
+            
+            logger.info(f"Финальный этап обработки: {len(insert_data)} -> {len(result_vacancies)} вакансий")
+            
             duplicates_removed = len(insert_data) - len(result_vacancies)
             logger.info(f"SQL-обработка завершена: {len(vacancies)} -> {len(result_vacancies)} вакансий")
             logger.info(f"Отфильтровано по компаниям: {filtered_count}, дедуплицировано: {duplicates_removed}")
 
             connection.commit()
+            logger.info(f"Возвращаем отфильтрованные вакансии: {len(result_vacancies)}")
             return result_vacancies
 
         except Exception as e:
             logger.error(f"Ошибка SQL-фильтрации и дедупликации: {e}")
-            connection.rollback()
+            if not connection.closed:
+                try:
+                    connection.rollback()
+                except Exception:
+                    pass
             return vacancies  # Возвращаем исходный список при ошибке
         finally:
             if "cursor" in locals():
                 cursor.close()
             connection.close()
-
-    def filter_api_vacancies_via_temp_table(self, vacancies: List[Vacancy], filters: Dict[str, Any]) -> List[Vacancy]:
-        """
-        Фильтрация вакансий из API через временную таблицу средствами SQL
-
-        Args:
-            vacancies: Список вакансий из API для фильтрации
-            filters: Словарь с фильтрами (salary_from, salary_to, keywords, employers, etc.)
-
-        Returns:
-            List[Vacancy]: Отфильтрованный список вакансий
-        """
-        if not vacancies:
-            return []
-
-        connection = self._get_connection()
-        try:
-            cursor = connection.cursor()
-
-            # Создаем временную таблицу с такой же структурой как основная таблица vacancies
-            cursor.execute(
-                """
-                CREATE TEMP TABLE temp_api_vacancies AS
-                SELECT * FROM vacancies WHERE 1=0
-            """
-            )
-
-            # Получаем сопоставление компаний из БД с расширенным поиском
-            cursor.execute(
-                """
-                SELECT id, name, LOWER(name) as normalized_name
-                FROM companies
-            """
-            )
-
-            company_mapping = {}
-            company_patterns = {}  # Для поиска по частичному совпадению
-
-            results = cursor.fetchall()
-            for row in results:
-                comp_id, original_name, normalized_name = row[0], row[1], row[2]
-                company_mapping[normalized_name] = comp_id
-                company_patterns[original_name] = comp_id
-
-            # Подготавливаем данные для вставки
-            insert_data = []
-            for vacancy in vacancies:
-                salary_from = vacancy.salary.salary_from if vacancy.salary else None
-                salary_to = vacancy.salary.salary_to if vacancy.salary else None
-                salary_currency = vacancy.salary.currency if vacancy.salary else None
-
-                # Определяем company_id для связи с таблицей companies
-                mapped_company_id = None
-                employer_name = None
-                employer_id = None
-
-                if vacancy.employer:
-                    # Правильно извлекаем имя работодателя и ID
-                    if isinstance(vacancy.employer, dict):
-                        employer_name = vacancy.employer.get("name")
-                        employer_id = vacancy.employer.get("id")
-                    elif isinstance(vacancy.employer, str):
-                        employer_name = vacancy.employer
-                    else:
-                        employer_name = str(vacancy.employer)
-
-                # Поиск компании только по названию
-                if employer_name and employer_name.strip():
-                    employer_lower = employer_name.lower().strip()
-
-                    # 1. Прямое соответствие по названию
-                    mapped_company_id = company_mapping.get(employer_lower)
-
-                    # 2. Поиск частичного соответствия
-                    if not mapped_company_id:
-                        # Сначала ищем точные вхождения
-                        for alt_name, comp_id in company_mapping.items():
-                            if isinstance(alt_name, str) and alt_name == employer_lower:
-                                mapped_company_id = comp_id
-                                break
-
-                    # 3. Поиск частичного соответствия
-                    if not mapped_company_id:
-                        for alt_name, comp_id in company_mapping.items():
-                            if (
-                                isinstance(alt_name, str)
-                                and len(alt_name) > 2
-                                and (alt_name in employer_lower or employer_lower in alt_name)
-                            ):
-                                mapped_company_id = comp_id
-                                break
-
-                    # 4. Логирование для отладки
-                    if not mapped_company_id and employer_name:
-                        logger.debug(
-                            f"Company_id не найден для работодателя: '{employer_name}' (vacancy_id: {vacancy.vacancy_id})"
-                        )
-
-                # Конвертируем employer в строку для сохранения в БД
-                employer_str = None
-                if vacancy.employer:
-                    if isinstance(vacancy.employer, dict):
-                        employer_str = vacancy.employer.get("name", str(vacancy.employer))
-                    else:
-                        employer_str = str(vacancy.employer)
-
-                # Конвертируем area в строку для сохранения в БД
-                area_str = None
-                if vacancy.area:
-                    if isinstance(vacancy.area, dict):
-                        area_str = vacancy.area.get("name", str(vacancy.area))
-                    else:
-                        area_str = str(vacancy.area)
-
-                # Обработка даты published_at
-                published_date = self._normalize_published_date(vacancy.published_at)
-
-                insert_data.append(
-                    (
-                        vacancy.vacancy_id,
-                        vacancy.title,
-                        vacancy.url,
-                        salary_from,
-                        salary_to,
-                        salary_currency,
-                        vacancy.description,
-                        vacancy.requirements,
-                        vacancy.responsibilities,
-                        vacancy.experience,
-                        vacancy.employment,
-                        vacancy.schedule,
-                        area_str,
-                        vacancy.source,
-                        published_date,
-                        mapped_company_id,  # Оставляем как integer
-                    )
-                )
-
-            # Bulk insert во временную таблицу
-            from psycopg2.extras import execute_values
-
-            execute_values(
-                cursor,
-                """INSERT INTO temp_api_vacancies (
-                    vacancy_id, title, url, salary_from, salary_to, salary_currency,
-                    description, requirements, responsibilities, experience,
-                    employment, schedule, area, source, published_at, company_id
-                ) VALUES %s""",
-                insert_data,
-                template=None,
-                page_size=1000,
-            )
-
-            # Строим SQL-запрос с фильтрами
-            where_conditions = []
-            params = []
-
-            # Фильтр по зарплате от
-            if filters.get("salary_from"):
-                where_conditions.append("(salary_from >= %s OR salary_to >= %s)")
-                params.extend([filters["salary_from"], filters["salary_from"]])
-
-            # Фильтр по зарплате до
-            if filters.get("salary_to"):
-                where_conditions.append("(salary_from <= %s OR salary_to <= %s)")
-                params.extend([filters["salary_to"], filters["salary_to"]])
-
-            # Фильтр по ключевым словам в названии/описании
-            if filters.get("keywords"):
-                keywords = filters["keywords"] if isinstance(filters["keywords"], list) else [filters["keywords"]]
-                keyword_conditions = []
-                for keyword in keywords:
-                    keyword_conditions.append(
-                        "(LOWER(title) LIKE LOWER(%s) OR LOWER(description) LIKE LOWER(%s) OR LOWER(requirements) LIKE LOWER(%s))"
-                    )
-                    keyword_param = f"%{keyword}%"
-                    params.extend([keyword_param, keyword_param, keyword_param])
-
-                if keyword_conditions:
-                    where_conditions.append(f"({' OR '.join(keyword_conditions)})")
-
-            # Фильтр по работодателям (целевые компании)
-            if filters.get("target_employers"):
-                employers = filters["target_employers"]
-                employer_conditions = []
-                for employer in employers:
-                    # Standardize employer name for filtering as well
-                    standardized_employer = self._standardize_employer_name(employer)
-                    if standardized_employer:
-                        employer_conditions.append("LOWER(employer) LIKE LOWER(%s)")
-                        params.append(f"%{standardized_employer}%")
-
-                if employer_conditions:
-                    where_conditions.append(f"({' OR '.join(employer_conditions)})")
-
-            # Фильтр по опыту работы
-            if filters.get("experience"):
-                where_conditions.append("LOWER(experience) LIKE LOWER(%s)")
-                params.append(f"%{filters['experience']}%")
-
-            # Фильтр по типу занятости
-            if filters.get("employment"):
-                where_conditions.append("LOWER(employment) LIKE LOWER(%s)")
-                params.append(f"%{filters['employment']}%")
-
-            # Фильтр по графику работы
-            if filters.get("schedule"):
-                where_conditions.append("LOWER(schedule) LIKE LOWER(%s)")
-                params.append(f"%{filters['schedule']}%")
-
-            # Фильтр по региону
-            if filters.get("area"):
-                where_conditions.append("LOWER(area) LIKE LOWER(%s)")
-                params.append(f"%{filters['area']}%")
-
-            # Фильтр по company_id
-            if filters.get("company_id"):
-                where_conditions.append("company_id = %s")
-                params.append(filters["company_id"])
-
-            # Исключение уже существующих вакансий (опционально)
-            if filters.get("exclude_existing", False):
-                where_conditions.append(
-                    """
-                    NOT EXISTS (
-                        SELECT 1 FROM vacancies v
-                        WHERE v.vacancy_id = temp_api_vacancies.vacancy_id
-                    )
-                """
-                )
-
-            # Формируем итоговый запрос
-            query = "SELECT * FROM temp_api_vacancies"
-            if where_conditions:
-                query += " WHERE " + " AND ".join(where_conditions)
-
-            # Добавляем сортировку
-            if filters.get("sort_by_salary", False):
-                query += " ORDER BY COALESCE(salary_from, salary_to, 0) DESC"
-            else:
-                query += " ORDER BY published_at DESC"
-
-            # Ограничение количества результатов
-            if filters.get("limit"):
-                query += " LIMIT %s"
-                params.append(filters["limit"])
-
-            cursor.execute(query, params)
-            results = cursor.fetchall()
-
-            # Конвертируем результаты обратно в объекты Vacancy
-            filtered_vacancies = []
-            for row in results:
-                try:
-                    # Используем индексы для обращения к данным
-                    vacancy_id = row[1]  # vacancy_id - второе поле в таблице (после id)
-                    company_id = row[-1] if len(row) > 15 else None  # company_id - последнее поле
-
-                    # Находим оригинальную вакансию из списка по ID
-                    original_vacancy = next((v for v in vacancies if v.vacancy_id == vacancy_id), None)
-                    if original_vacancy:
-                        # Update company_id in the original vacancy object
-                        original_vacancy.company_id = company_id
-                        filtered_vacancies.append(original_vacancy)
-                except Exception as e:
-                    logger.error(f"Ошибка при восстановлении вакансии: {e}")
-                    continue
-
-            connection.commit()
-            logger.info(
-                f"SQL-фильтрация через временную таблицу: отобрано {len(filtered_vacancies)} из {len(vacancies)} вакансий"
-            )
-
-            return filtered_vacancies
-
-        except psycopg2.Error as e:
-            logger.error(f"Ошибка SQL-фильтрации через временную таблицу: {e}")
-            connection.rollback()
-            return vacancies  # Возвращаем исходный список при ошибке
-        finally:
-            if "cursor" in locals():
-                cursor.close()
-            connection.close
-
-    def _build_where_condons(self, filters: Optional[Dict[str, Any]]) -> Dict[str, Any]:
-        """Вспомогательный метод для построения WHERE условий"""
-        conditions = []
-        params = []
-
-        if not filters:
-            return {"conditions": conditions, "params": params}
-
-        if filters.get("title"):
-            conditions.append("LOWER(title) LIKE LOWER(%s)")
-            params.append(f"%{filters['title']}%")
-
-        if filters.get("salary_from"):
-            conditions.append("(salary_from >= %s OR salary_to >= %s)")
-            params.extend([filters["salary_from"], filters["salary_from"]])
-
-        if filters.get("salary_to"):
-            conditions.append("(salary_from <= %s OR salary_to <= %s)")
-            params.extend([filters["salary_to"], filters["salary_to"]])
-
-        if filters.get("employer"):  # Filter by company name (requires JOIN in calling query)
-            standardized_employer = self._standardize_employer_name(filters["employer"])
-            if standardized_employer:
-                conditions.append("LOWER(c.name) LIKE LOWER(%s)")
-                params.append(f"%{standardized_employer}%")
-
-        if filters.get("company_id"):  # Filter by company_id
-            conditions.append("company_id = %s")
-            params.append(filters["company_id"])
-
-        if filters.get("experience"):
-            conditions.append("LOWER(experience) LIKE LOWER(%s)")
-            params.append(f"%{filters['experience']}%")
-
-        if filters.get("employment"):
-            conditions.append("LOWER(employment) LIKE LOWER(%s)")
-            params.append(f"%{filters['employment']}%")
-
-        return {"conditions": conditions, "params": params}
 
     def _normalize_text(self, text: str) -> str:
         """
@@ -1962,9 +1648,11 @@ class PostgresSaver(AbstractVacancyStorage):
         """
         Нормализует дату published_at, пытаясь преобразовать ее в объект datetime.
         Поддерживает строки в формате ISO и объекты datetime.
+        Если дата не задана или пустая, используется текущая дата.
         """
-        if not published_at:
-            return None
+        if not published_at or (isinstance(published_at, str) and not published_at.strip()):
+            # Если дата не указана, используем текущую дату
+            return datetime.now()
 
         if isinstance(published_at, datetime):
             return published_at

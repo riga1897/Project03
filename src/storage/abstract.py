@@ -39,9 +39,10 @@ class AbstractVacancyStorage(ABC):
         """
 
     @abstractmethod
-    def add_vacancy_batch_optimized(self, vacancies: List[AbstractVacancy]) -> List[str]:
+    def add_vacancy_batch_optimized(self, vacancies: List[AbstractVacancy], search_query: str = None) -> List[str]:
         """
         Оптимизированное batch-добавление вакансий
         :param vacancies: Список вакансий для добавления
+        :param search_query: Поисковый запрос, по которому найдены вакансии
         :return: Список сообщений об операциях
         """

@@ -436,7 +436,6 @@ class TestSalaryClass:
         max_salary = salary.get_max_salary()
         assert max_salary == 150000
 
-    @pytest.mark.skipif(not SALARY_CLASS_AVAILABLE, reason="Salary class not available")
     def test_salary_parse_string(self):
         """Тест парсинга строки зарплаты"""
         parsed = Salary._parse_salary_range_string("от 100000 до 150000")

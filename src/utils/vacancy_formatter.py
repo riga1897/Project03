@@ -2,7 +2,10 @@ import logging
 import re
 from typing import Any, List, Optional
 
-from ..vacancies.models import Vacancy
+try:
+    from ..vacancies.models import Vacancy
+except ImportError:
+    from vacancies.models import Vacancy
 from .base_formatter import BaseFormatter
 
 logger = logging.getLogger(__name__)
@@ -63,8 +66,12 @@ class VacancyFormatter:
 
         # Зарплата
         salary_info = self._extract_salary_info(vacancy)
-        if salary_info and salary_info != "Не указана":
-            lines.append(f"Зарплата: {salary_info}")
+        lines.append(f"Зарплата: {salary_info}")
+
+        # Регион/местоположение
+        area = getattr(vacancy, "area", None)
+        if area:
+            lines.append(f"Регион: {area}")
 
         # Опыт
         experience = getattr(vacancy, "experience", None)
@@ -106,25 +113,26 @@ class VacancyFormatter:
 
         return lines
 
-    def _extract_company_name(self, vacancy: Any) -> Optional[str]:
-        """Извлечение названия компании"""
+    def _extract_company_name(self, vacancy: Any) -> str:
+        """Извлечение названия компании из объекта вакансии"""
         employer = getattr(vacancy, "employer", None)
-        if employer:
-            if isinstance(employer, dict):
-                name = employer.get("name")
-                return name if name and str(name).strip() else "Не указана"
-            elif isinstance(employer, str) and employer.strip():
-                return employer
-            else:
-                return str(employer) if employer else "Не указана"
-        return "Не указана"
+        if not employer:
+            return "Не указана"
+        
+        # В объектной архитектуре employer всегда объект с методом get_name()
+        if hasattr(employer, 'get_name'):
+            return employer.get_name()
+        
+        # Fallback для обратной совместимости
+        return str(employer) if employer else "Не указана"
 
-    def _extract_salary_info(self, vacancy: Any) -> Optional[str]:
+    def _extract_salary_info(self, vacancy: Any) -> str:
         """Извлечение информации о зарплате"""
         salary = getattr(vacancy, "salary", None)
+        
         if not salary:
-            return None
-
+            return "Не указана"
+        
         return self.format_salary(salary)
 
     def _extract_responsibilities(self, vacancy: Any) -> Optional[str]:
@@ -150,32 +158,18 @@ class VacancyFormatter:
         if not salary:
             return "Не указана"
 
+        # Унифицируем: используем только объекты Salary, не словари
+        # Если пришел словарь - преобразуем в объект Salary
         if isinstance(salary, dict):
-            return self._format_salary_dict(salary)
-        else:
-            return str(salary)
+            try:
+                from utils.salary import Salary
+            except ImportError:
+                from src.utils.salary import Salary
+            
+            salary = Salary(salary)
+        
+        return str(salary)
 
-    def _format_salary_dict(self, salary_dict: dict) -> str:
-        """Форматирование словаря зарплаты"""
-        if not salary_dict:
-            return "Не указана"
-
-        from_salary = salary_dict.get("from")
-        to_salary = salary_dict.get("to")
-        currency = salary_dict.get("currency", "RUR")
-
-        currency_display = self.format_currency(currency)
-
-        if from_salary and to_salary:
-            return (
-                f"от {self.format_number(from_salary)} до {self.format_number(to_salary)} {currency_display} в месяц"
-            )
-        elif from_salary:
-            return f"от {self.format_number(from_salary)} {currency_display} в месяц"
-        elif to_salary:
-            return f"до {self.format_number(to_salary)} {currency_display} в месяц"
-        else:
-            return "Не указана"
 
     def format_currency(self, currency: str) -> str:
         """Форматирование валюты"""
@@ -212,16 +206,28 @@ class VacancyFormatter:
 
         return date_str
 
-    def format_experience(self, experience: str) -> str:
+    def format_experience(self, experience: Any) -> str:
         """Форматирование опыта работы"""
         if not experience:
             return "Не указан"
+        
+        # В объектной архитектуре experience всегда объект с методом get_name()
+        if hasattr(experience, 'get_name'):
+            return experience.get_name()
+        
+        # Fallback для обратной совместимости
         return str(experience)
 
-    def format_employment_type(self, employment: str) -> str:
+    def format_employment_type(self, employment: Any) -> str:
         """Форматирование типа занятости"""
         if not employment:
             return "Не указан"
+        
+        # В объектной архитектуре employment всегда объект с методом get_name()
+        if hasattr(employment, 'get_name'):
+            return employment.get_name()
+        
+        # Fallback для обратной совместимости
         return str(employment)
 
     def format_schedule(self, schedule: str) -> str:
@@ -289,10 +295,12 @@ class VacancyFormatter:
 
         # Зарплата
         salary_info = formatter._extract_salary_info(vacancy)
-        if salary_info and salary_info != "Не указана":
-            lines.append(f"Зарплата: {salary_info}")
-        else:
-            lines.append("Зарплата не указана")
+        lines.append(f"Зарплата: {salary_info}")
+
+        # Регион/местоположение
+        area = getattr(vacancy, "area", None)
+        if area:
+            lines.append(f"Регион: {area}")
 
         # Ссылка
         url = getattr(vacancy, "url", None) or getattr(vacancy, "alternate_url", None)

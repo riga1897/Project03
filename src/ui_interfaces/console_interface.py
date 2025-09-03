@@ -411,8 +411,9 @@ class UserInterface:
                 print(f"   Название: {vacancy.title or 'Не указано'}")
                 if vacancy.employer:
                     print(f"   Компания: {vacancy.employer.get('name', 'Не указана')}")
-                if vacancy.salary:
-                    print(f"   Зарплата: {vacancy.salary}")
+                salary_display = str(vacancy.salary) if vacancy.salary else "Не указана"
+                if salary_display != "Зарплата не указана":
+                    print(f"   Зарплата: {salary_display}")
                 else:
                     print("   Зарплата: Не указана")
                 print(f"   Ссылка: {vacancy.url}")
@@ -510,8 +511,9 @@ class UserInterface:
                     print(f"Название: {vacancy_to_delete.title or 'Не указано'}")
                     if vacancy_to_delete.employer:
                         print(f"Компания: {vacancy_to_delete.employer.get('name', 'Не указана')}")
-                    if vacancy_to_delete.salary:
-                        print(f"Зарплата: {vacancy_to_delete.salary}")
+                    salary_display = str(vacancy_to_delete.salary) if vacancy_to_delete.salary else "Не указана"
+                    if salary_display != "Зарплата не указана":
+                        print(f"Зарплата: {salary_display}")
                     else:
                         print("Зарплата: Не указана")
                     print(f"Ссылка: {vacancy_to_delete.url}")

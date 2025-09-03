@@ -3,11 +3,26 @@
 """
 
 from typing import Any, Dict, List, Optional
+try:
+    from .abstract_filter import AbstractDataFilter
+except ImportError:
+    from src.utils.abstract_filter import AbstractDataFilter
 
 
-class APIDataFilter:
+class APIDataFilter(AbstractDataFilter):
     """Класс для фильтрации данных API различных источников"""
 
+    def filter_by_salary(
+        self,
+        data: List['Vacancy'],
+        min_salary: Optional[int] = None,
+        max_salary: Optional[int] = None,
+    ) -> List['Vacancy']:
+        """
+        Реализация абстрактного метода фильтрации по зарплате
+        """
+        return self.filter_by_salary_range(data, min_salary, max_salary)
+    
     def filter_by_salary_range(
         self,
         data: List[Dict[str, Any]],
@@ -230,38 +245,92 @@ class APIDataFilter:
 
     def _extract_location(self, item: Dict[str, Any]) -> Optional[str]:
         """Извлечение местоположения"""
-        if "area" in item:
-            area = item["area"]
-            if isinstance(area, dict):
-                return area.get("name")
-            return str(area)
-        return None
+        try:
+            from utils.data_normalizers import normalize_area_data
+        except ImportError:
+            from src.utils.data_normalizers import normalize_area_data
+        
+        # Защитная проверка типа данных
+        if not isinstance(item, dict):
+            return None
+            
+        return normalize_area_data(item.get("area"))
 
     def _extract_experience(self, item: Dict[str, Any]) -> Optional[str]:
         """Извлечение опыта работы"""
-        if "experience" in item:
-            experience = item["experience"]
-            if isinstance(experience, dict):
-                return experience.get("name") or experience.get("title")
-            return str(experience)
-        return None
+        try:
+            from utils.data_normalizers import normalize_experience_data
+        except ImportError:
+            from src.utils.data_normalizers import normalize_experience_data
+        
+        # Защитная проверка типа данных
+        if not isinstance(item, dict):
+            return None
+            
+        return normalize_experience_data(item.get("experience"))
 
     def _extract_employment_type(self, item: Dict[str, Any]) -> Optional[str]:
         """Извлечение типа занятости"""
-        if "employment" in item:
-            employment = item["employment"]
-            if isinstance(employment, dict):
-                return employment.get("name")
-            return str(employment)
-        return None
+        try:
+            from utils.data_normalizers import normalize_employment_data
+        except ImportError:
+            from src.utils.data_normalizers import normalize_employment_data
+        
+        # Защитная проверка типа данных
+        if not isinstance(item, dict):
+            return None
+            
+        return normalize_employment_data(item.get("employment"))
+
+    def filter_by_location(self, data: List[Dict[str, Any]], locations: List[str]) -> List[Dict[str, Any]]:
+        """Реализация абстрактного метода фильтрации по местоположению"""
+        if not data or not locations:
+            return data
+            
+        filtered = []
+        for item in data:
+            try:
+                item_location = self._extract_location(item)
+                if item_location and any(loc.lower() in item_location.lower() for loc in locations):
+                    filtered.append(item)
+            except (KeyError, TypeError):
+                continue
+        return filtered
+    
+    def filter_by_experience(self, data: List[Dict[str, Any]], experience_levels: List[str]) -> List[Dict[str, Any]]:
+        """Реализация абстрактного метода фильтрации по опыту"""
+        if not data or not experience_levels:
+            return data
+            
+        filtered = []
+        for item in data:
+            try:
+                item_experience = self._extract_experience(item)
+                if item_experience and any(exp.lower() in item_experience.lower() for exp in experience_levels):
+                    filtered.append(item)
+            except (KeyError, TypeError):
+                continue
+        return filtered
 
     def _extract_company_name(self, item: Dict[str, Any]) -> Optional[str]:
         """Извлечение названия компании"""
-        if "employer" in item:
-            employer = item["employer"]
-            if isinstance(employer, dict):
-                return employer.get("name")
-            return str(employer)
-        elif "firm_name" in item:  # SuperJob
-            return str(item["firm_name"])
+        try:
+            from utils.data_normalizers import normalize_employer_data
+        except ImportError:
+            from src.utils.data_normalizers import normalize_employer_data
+        
+        # Защитная проверка типа данных
+        if not isinstance(item, dict):
+            return None
+            
+        # Проверяем employer (HH) или firm_name (SuperJob)  
+        employer = item.get("employer")
+        if employer:
+            return normalize_employer_data(employer)
+        
+        # Для SuperJob создаем структуру как для employer
+        firm_name = item.get("firm_name")
+        if firm_name:
+            return normalize_employer_data({"name": firm_name})
+        
         return None

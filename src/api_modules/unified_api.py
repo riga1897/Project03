@@ -82,61 +82,55 @@ class UnifiedAPI:
         filtered_vacancies = self._filter_by_target_companies(all_vacancies)
 
         if not filtered_vacancies:
-            print("Не найдено вакансий от целевых компаний")
+            logger.info("Не найдено вакансий от целевых компаний")
             return []
 
-        print(
+        logger.info(
             f"После SQL-фильтрации и дедупликации: {len(filtered_vacancies)} уникальных вакансий от целевых компаний"
         )
 
         return filtered_vacancies
 
-    def _filter_by_target_companies(self, all_vacancies: List[Dict]) -> List[Dict]:
+    def _filter_by_target_companies(self, all_vacancies: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
-        Фильтрация вакансий по целевым компаниям через PostgresSaver
+        Фильтрация вакансий по целевым компаниям через проверку ID работодателя
 
         Args:
             all_vacancies: Все полученные вакансии
 
         Returns:
-            List[Dict]: Вакансии только от целевых компаний после SQL-фильтрации
+            List[Dict]: Вакансии только от целевых компаний
         """
         if not all_vacancies:
             return []
 
-        # Преобразуем в объекты Vacancy для передачи в PostgresSaver
-        from src.vacancies.models import Vacancy
+        # Получаем ID целевых компаний
+        from src.config.target_companies import TargetCompanies
+        target_companies = TargetCompanies.get_all_companies()
+        target_hh_ids = {str(comp.hh_id) for comp in target_companies if comp.hh_id}
+        target_sj_ids = {str(comp.sj_id) for comp in target_companies if comp.sj_id}
 
-        vacancy_objects = []
+        filtered_vacancies = []
+        
         for vacancy_data in all_vacancies:
-            try:
-                vacancy = Vacancy.from_dict(vacancy_data)
-                vacancy_objects.append(vacancy)
-            except Exception as e:
-                logger.warning(f"Ошибка создания объекта Vacancy: {e}")
-                continue
+            employer_id = None
+            source = vacancy_data.get("source", "").lower()
+            
+            # Извлекаем ID работодателя
+            if "employer" in vacancy_data and isinstance(vacancy_data["employer"], dict):
+                employer_id = str(vacancy_data["employer"].get("id", ""))
+            elif "employer_id" in vacancy_data:
+                employer_id = str(vacancy_data["employer_id"])
+            
+            if employer_id:
+                # Проверяем соответствие ID целевым компаниям
+                if (source == "hh" and employer_id in target_hh_ids) or \
+                   (source == "sj" and employer_id in target_sj_ids) or \
+                   (employer_id in target_hh_ids or employer_id in target_sj_ids):
+                    filtered_vacancies.append(vacancy_data)
 
-        # Используем PostgresSaver для SQL-фильтрации и дедупликации
-        from src.storage.postgres_saver import PostgresSaver
-
-        postgres_saver = PostgresSaver()
-
-        # Применяем фильтрацию через временные таблицы
-        filtered_vacancies = postgres_saver.filter_and_deduplicate_vacancies(
-            vacancy_objects, {"target_companies_only": True}
-        )
-
-        # Преобразуем обратно в словари для совместимости
-        filtered_dicts = []
-        for vacancy in filtered_vacancies:
-            try:
-                vacancy_dict = vacancy.to_dict()
-                filtered_dicts.append(vacancy_dict)
-            except Exception as e:
-                logger.warning(f"Ошибка преобразования Vacancy в dict: {e}")
-                continue
-
-        return filtered_dicts
+        logger.info(f"Фильтрация по целевым компаниям: {len(all_vacancies)} -> {len(filtered_vacancies)} вакансий")
+        return filtered_vacancies
 
     def get_hh_vacancies(self, query: str, **kwargs) -> List[Vacancy]:
         """Получение вакансий только с HH.ru с дедупликацией"""
@@ -309,11 +303,16 @@ class UnifiedAPI:
             except Exception as e:
                 logger.error(f"Ошибка получения вакансий от SuperJob: {e}")
 
-        # Дедупликация только если есть вакансии
+        # Фильтрация через проверку ID компаний
         if all_vacancies:
-            unique_vacancies = self._deduplicate_cross_platform(all_vacancies)
-            logger.info(f"Всего найдено {len(unique_vacancies)} уникальных вакансий от целевых компаний")
-            return unique_vacancies
+            unique_vacancies = self._filter_by_target_companies(all_vacancies)
+            
+            if unique_vacancies:
+                logger.info(f"Всего найдено {len(unique_vacancies)} уникальных вакансий от целевых компаний")
+                return unique_vacancies
+            else:
+                logger.warning(f"После фильтрации не найдено вакансий от целевых компаний из {len(all_vacancies)} исходных")
+                return []
         else:
             logger.info("Вакансии от целевых компаний не найдены")
             return []

@@ -8,8 +8,18 @@
 import logging
 from typing import Any, Dict, List, Optional, Tuple
 
-import psycopg2
-from psycopg2.extras import RealDictCursor
+try:
+    import psycopg2
+    from psycopg2.extras import RealDictCursor
+    PSYCOPG2_AVAILABLE = True
+    PsycopgError = psycopg2.Error
+except ImportError:
+    PSYCOPG2_AVAILABLE = False
+    psycopg2 = None
+    RealDictCursor = None
+    PsycopgError = Exception  # Fallback для обработки исключений
+    from .simple_db_adapter import get_db_adapter
+    print("⚠️  psycopg2 недоступен, используется простой DB адаптер")
 
 from src.config.db_config import DatabaseConfig
 from src.config.target_companies import TargetCompanies
@@ -36,16 +46,20 @@ class DBManager(AbstractDBManager):
         """
         self.db_config = db_config or DatabaseConfig()
 
-    def _get_connection(self) -> psycopg2.extensions.connection:
+    def _get_connection(self):
         """
-        Создает подключение к базе данных используя SQL-драйвер psycopg2
+        Создает подключение к базе данных
 
         Returns:
-            psycopg2.extensions.connection: Подключение к БД
+            connection: Подключение к БД (psycopg2 или простой адаптер)
 
         Raises:
-            psycopg2.Error: При ошибке подключения к БД
+            Exception: При ошибке подключения к БД
         """
+        if not PSYCOPG2_AVAILABLE:
+            # Возвращаем простой адаптер как "подключение"
+            return get_db_adapter()
+            
         try:
             connection_params = self.db_config.get_connection_params()
             # Добавляем явное указание кодировки UTF-8
@@ -55,7 +69,7 @@ class DBManager(AbstractDBManager):
             # Устанавливаем кодировку для соединения
             connection.set_client_encoding("UTF8")
             return connection
-        except psycopg2.Error as e:
+        except Exception as e:
             logger.error(f"Ошибка подключения к базе данных: {e}")
             raise
 
@@ -104,6 +118,7 @@ class DBManager(AbstractDBManager):
                             source VARCHAR(50),
                             published_at TIMESTAMP,
                             company_id INTEGER,
+                            search_query TEXT,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                         );
@@ -156,6 +171,7 @@ class DBManager(AbstractDBManager):
                         ("idx_vacancies_title", "vacancies", "title"),
                         ("idx_vacancies_company_id", "vacancies", "company_id"),
                         ("idx_vacancies_salary", "vacancies", "salary_from, salary_to"),
+                        ("idx_vacancies_search_query", "vacancies", "search_query"),
                     ]
 
                     for index_name, table_name, columns in indexes:
@@ -227,6 +243,10 @@ class DBManager(AbstractDBManager):
 
                     if companies_count > 0:
                         logger.info(f"✓ Таблица companies уже содержит {companies_count} компаний")
+                        # Для отладки: показываем, какие компании есть в БД
+                        cursor.execute("SELECT name, hh_id, sj_id FROM companies ORDER BY name LIMIT 5")
+                        existing_companies = cursor.fetchall()
+                        logger.info(f"DEBUG: Первые 5 компаний в БД: {existing_companies}")
                         return
 
                     # Добавляем целевые компании с их API идентификаторами
@@ -289,6 +309,11 @@ class DBManager(AbstractDBManager):
             return [(company.name, 0) for company in TARGET_COMPANIES]
 
         try:
+            # Дополнительная проверка подключения перед выполнением запроса
+            if not self.check_connection():
+                logger.warning("Подключение к БД недоступно при выполнении get_companies_and_vacancies_count")
+                return [(company.name, 0) for company in TARGET_COMPANIES]
+                
             with self._get_connection() as conn:
                 with conn.cursor() as cursor:
                     # Основной SQL-запрос с использованием LEFT JOIN для получения статистики по компаниям
@@ -307,43 +332,7 @@ class DBManager(AbstractDBManager):
                     cursor.execute(query)
                     results = cursor.fetchall()
 
-                    # Если есть результаты с вакансиями, возвращаем их
-                    if any(count > 0 for _, count in results):
-                        return results
-
-                    # Если нет связанных данных, работаем напрямую с таблицей vacancies
-                    logger.info("Нет данных в основной схеме, переходим к fallback")
-
-                    # Создаем результат для всех целевых компаний
-                    company_results = []
-
-                    for target_company in TARGET_COMPANIES:
-                        company_name = target_company.name
-
-                        # Сначала пытаемся найти компанию по ID в таблице companies
-                        cursor.execute("SELECT id FROM companies WHERE name = %s", (company_name,))
-                        company_record = cursor.fetchone()
-
-                        vacancy_count = 0
-
-                        if company_record:
-                            # Если компания найдена в таблице companies, ищем по company_id
-                            company_db_id = company_record[0]
-                            cursor.execute(
-                                """
-                                SELECT COUNT(*) FROM vacancies
-                                WHERE company_id = %s
-                            """,
-                                (company_db_id,),
-                            )
-                            count_result = cursor.fetchone()
-                            vacancy_count = count_result[0] if count_result else 0
-
-                        company_results.append((company_name, vacancy_count))
-
-                    # Сортируем по количеству вакансий (убывание), затем по названию
-                    company_results.sort(key=lambda x: (-x[1], x[0]))
-                    return company_results
+                    return results
 
         except Exception as e:
             logger.error(f"Ошибка при получении списка компаний и количества вакансий: {e}")
@@ -517,7 +506,7 @@ class DBManager(AbstractDBManager):
                     result = cursor.fetchone()
                     return float(result[0]) if result[0] is not None else None
 
-        except psycopg2.Error as e:
+        except Exception as e:
             logger.error(f"Ошибка при выполнении SQL-запроса для расчета средней зарплаты: {e}")
             return None
 
@@ -582,31 +571,21 @@ class DBManager(AbstractDBManager):
 
         try:
             with self._get_connection() as conn:
-                with conn.cursor() as cursor:
+                with conn.cursor(cursor_factory=RealDictCursor) as cursor:
                     cursor.execute(query, (avg_salary,))
                     results = cursor.fetchall()
 
-                    # Преобразуем результаты в список словарей
-                    columns = ["title", "company_name", "salary_info", "url", "calculated_salary", "vacancy_id"]
-                    vacancies = []
+                    logger.debug(f"Найдено {len(results)} вакансий с зарплатой выше средней")
+                    return [dict(row) for row in results]
 
-                    for row in results:
-                        vacancy_dict = {}
-                        for i, column in enumerate(columns):
-                            vacancy_dict[column] = row[i] if i < len(row) else None
-                        vacancies.append(vacancy_dict)
-
-                    logger.debug(f"Найдено {len(vacancies)} вакансий с зарплатой выше средней")
-                    return vacancies
-
-        except psycopg2.Error as e:
+        except Exception as e:
             logger.error(f"Ошибка при выполнении SQL-запроса для получения вакансий с высокой зарплатой: {e}")
             return []
         except Exception as e:
             logger.error(f"Неожиданная ошибка в get_vacancies_with_higher_salary: {e}")
             return []
 
-    def get_vacancies_with_keyword(self, keyword: str) -> List[Dict[str, Any]]:
+    def get_vacancies_with_keyword(self, keyword: str) -> List['Vacancy']:
         """
         Получает список всех вакансий, в названии которых содержатся переданные слова
         Использует SQL-оператор LIKE для поиска по ключевому слову
@@ -642,7 +621,7 @@ class DBManager(AbstractDBManager):
             v.vacancy_id
         FROM vacancies v
         LEFT JOIN companies c ON v.company_id = c.id
-        WHERE LOWER(v.title) LIKE LOWER(%s)
+        WHERE (LOWER(v.title) LIKE LOWER(%s) OR LOWER(v.search_query) LIKE LOWER(%s))
         -- Сортировка: сначала по зарплате (убывание), затем по названию вакансии (возрастание)
         ORDER BY
             CASE
@@ -660,7 +639,7 @@ class DBManager(AbstractDBManager):
 
             with self._get_connection() as conn:
                 with conn.cursor() as cursor:
-                    cursor.execute(query, (search_pattern,))
+                    cursor.execute(query, (search_pattern, search_pattern))
                     results = cursor.fetchall()
 
                     # Преобразуем результаты в список словарей
@@ -676,7 +655,7 @@ class DBManager(AbstractDBManager):
                     logger.debug(f"Поиск по '{keyword}': найдено {len(vacancies)} вакансий")
                     return vacancies
 
-        except psycopg2.Error as e:
+        except Exception as e:
             logger.error(f"Ошибка при выполнении SQL-запроса для поиска вакансий по ключевому слову '{keyword}': {e}")
             return []
         except Exception as e:
@@ -768,14 +747,14 @@ class DBManager(AbstractDBManager):
 
             return stats
 
-        except psycopg2.Error as e:
+        except Exception as e:
             logger.error(f"Ошибка при выполнении SQL-запросов для получения статистики БД: {e}")
             return {}
         except Exception as e:
             logger.error(f"Неожиданная ошибка при получении статистики БД: {e}")
             return {}
 
-    def get_connection(self) -> psycopg2.extensions.connection:
+    def get_connection(self):
         """
         Публичный метод для получения подключения к базе данных
 
@@ -783,7 +762,7 @@ class DBManager(AbstractDBManager):
             psycopg2.extensions.connection: Подключение к БД
 
         Raises:
-            psycopg2.Error: При ошибке подключения к БД
+            Exception: При ошибке подключения к БД
         """
         return self._get_connection()
 
@@ -795,6 +774,11 @@ class DBManager(AbstractDBManager):
             bool: True если подключение успешно, False иначе
         """
         try:
+            if not PSYCOPG2_AVAILABLE:
+                # Используем простой адаптер
+                adapter = get_db_adapter()
+                return adapter.test_connection()
+                
             with self._get_connection() as conn:
                 with conn.cursor() as cursor:
                     # Простой SQL-запрос для проверки подключения к БД
@@ -802,7 +786,7 @@ class DBManager(AbstractDBManager):
                     cursor.execute("SELECT 1")
                     result = cursor.fetchone()
                     return result is not None and result[0] == 1
-        except psycopg2.Error as e:
+        except Exception as e:
             logger.error(f"Ошибка подключения к БД: {e}")
             return False
         except Exception as e:
@@ -811,7 +795,7 @@ class DBManager(AbstractDBManager):
 
     def filter_companies_by_targets(self, api_companies: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
-        Фильтрует компании из API по целевым компаниям используя SQL-запрос
+        Фильтрует компании из API СТРОГО по ID целевых компаний
 
         Args:
             api_companies: Список компаний из API
@@ -822,57 +806,10 @@ class DBManager(AbstractDBManager):
         if not api_companies:
             return []
 
-        # Создаем список названий целевых компаний для SQL-поиска
-        target_company_names = [company.name.lower() for company in TARGET_COMPANIES]
-
-        try:
-            with self._get_connection() as conn:
-                with conn.cursor() as cursor:
-                    # Создаем временную таблицу для компаний из API
-                    cursor.execute(
-                        """
-                        CREATE TEMP TABLE temp_api_companies (
-                            company_id VARCHAR(50),
-                            company_name VARCHAR(500)
-                        ) ON COMMIT DROP
-                    """
-                    )
-
-                    # Вставляем данные о компаниях из API
-                    api_data = [(str(comp.get("id", "")), comp.get("name", "")) for comp in api_companies]
-                    from psycopg2.extras import execute_values
-
-                    execute_values(
-                        cursor,
-                        "INSERT INTO temp_api_companies (company_id, company_name) VALUES %s",
-                        api_data,
-                        template=None,
-                        page_size=1000,
-                    )
-
-                    # SQL-запрос для поиска целевых компаний
-                    placeholders = ",".join(["%s"] * len(target_company_names))
-                    query = f"""
-                    SELECT company_id, company_name
-                    FROM temp_api_companies
-                    WHERE LOWER(company_name) IN ({placeholders})
-                    OR """ + " OR ".join(
-                        ["LOWER(company_name) LIKE %s" for _ in target_company_names]
-                    )
-
-                    # Параметры: точные совпадения + LIKE поиск
-                    params = target_company_names + [f"%{name}%" for name in target_company_names]
-
-                    cursor.execute(query, params)
-                    results = cursor.fetchall()
-
-                    # Возвращаем найденные компании из исходного списка
-                    found_ids = {row[0] for row in results}
-                    return [comp for comp in api_companies if str(comp.get("id", "")) in found_ids]
-
-        except psycopg2.Error as e:
-            logger.error(f"Ошибка SQL-фильтрации компаний: {e}")
-            return api_companies
+        # Собираем только hh_id и sj_id из целевых компаний
+        # ЗАГЛУШКА: Фильтрация компаний теперь выполняется в PostgresSaver.filter_and_deduplicate_vacancies
+        logger.info("Фильтрация компаний должна выполняться через PostgresSaver.filter_and_deduplicate_vacancies")
+        return api_companies  # Возвращаем без фильтрации
 
     def analyze_api_data_with_sql(
         self, api_data: List[Dict[str, Any]], analysis_type: str = "vacancy_stats"
@@ -1015,6 +952,6 @@ class DBManager(AbstractDBManager):
 
                     return results
 
-        except psycopg2.Error as e:
+        except Exception as e:
             logger.error(f"Ошибка SQL-анализа данных API: {e}")
             return {}

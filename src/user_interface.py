@@ -39,12 +39,20 @@ def main() -> None:
 
         # Инициализируем базу данных (создание таблиц + заполнение компаний)
         logger.info("Инициализация структуры базы данных...")
-        db_manager.create_tables()
-        db_manager.populate_companies_table()
+        try:
+            db_manager.create_tables()
+            db_manager.populate_companies_table()
+        except Exception as init_error:
+            logger.error(f"Ошибка при инициализации структуры БД: {init_error}")
+            raise Exception(f"Не удалось инициализировать структуру базы данных: {init_error}")
 
         # Проверка корректности инициализации
-        test_companies = db_manager.get_companies_and_vacancies_count()
-        logger.info(f"База данных инициализирована корректно. Найдено {len(test_companies)} компаний")
+        try:
+            test_companies = db_manager.get_companies_and_vacancies_count()
+            logger.info(f"База данных инициализирована корректно. Найдено {len(test_companies)} компаний")
+        except Exception as db_error:
+            logger.error(f"Ошибка при проверке инициализации БД: {db_error}")
+            raise Exception(f"База данных не была корректно инициализирована: {db_error}")
 
         # Инициализируем конфигурацию приложения
         app_config = AppConfig()
@@ -66,8 +74,12 @@ def main() -> None:
     except Exception as e:
         logger.error(f"Критическая ошибка: {e}")
         print(f"\nКритическая ошибка: {e}")
-        if "базы данных" in str(e).lower() or "database" in str(e).lower():
+        if any(keyword in str(e).lower() for keyword in ["базы данных", "database", "connection", "подключ"]):
             print("Программа не может работать без базы данных. Завершение работы.")
+            print("Проверьте:")
+            print("1. Настройки подключения в файле .env")
+            print("2. Что PostgreSQL сервер запущен и доступен")
+            print("3. Правильность параметров подключения")
         else:
             print("Обратитесь к разработчику для решения проблемы.")
         return

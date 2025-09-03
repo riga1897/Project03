@@ -5,7 +5,7 @@ from src.api_modules.base_api import BaseJobAPI
 from src.api_modules.cached_api import CachedAPI
 from src.api_modules.get_api import APIConnector
 from src.config.api_config import APIConfig
-from src.config.target_companies import get_target_company_ids
+from src.config.target_companies import TargetCompanies
 from src.utils.paginator import Paginator
 
 logger = logging.getLogger(__name__)
@@ -204,7 +204,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         Returns:
             List[Dict]: Список вакансий от целевых компаний
         """
-        target_company_ids = get_target_company_ids()
+        target_company_ids = TargetCompanies.get_hh_ids()
         all_vacancies = []
 
         logger.info(f"Получение вакансий от {len(target_company_ids)} целевых компаний")
@@ -226,7 +226,11 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         if all_vacancies:
             from src.utils.vacancy_stats import VacancyStats
 
-            VacancyStats.display_company_stats(all_vacancies, "HH.ru - Целевые компании")
+            stats = VacancyStats()
+            stats.display_company_stats(all_vacancies, "HH.ru - Целевые компании")
+            logger.info(f"Возвращаем {len(all_vacancies)} вакансий от целевых компаний")
+        else:
+            logger.warning("Получен пустой список вакансий от целевых компаний")
 
         return all_vacancies
 

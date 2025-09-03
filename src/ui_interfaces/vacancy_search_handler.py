@@ -97,20 +97,18 @@ class VacancySearchHandler:
             elif source == "superjob.ru":
                 source_list.append("sj")
 
-        # Используем обычный метод поиска, который делает реальные API запросы
-        vacancies_data = self.unified_api.get_vacancies_from_sources(
+        # Используем VacancyOperationsCoordinator для получения вакансий от целевых компаний
+        from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
+        coordinator = VacancyOperationsCoordinator(self.unified_api, self.storage)
+        
+        vacancies = coordinator.get_vacancies_from_target_companies(
             search_query=query, sources=source_list, period=period
         )
 
-        # Конвертируем данные в объекты Vacancy
-        vacancies = []
-        for vacancy_data in vacancies_data:
-            try:
-                vacancy = Vacancy.from_dict(vacancy_data)
-                vacancies.append(vacancy)
-            except Exception as e:
-                logger.warning(f"Ошибка создания объекта Vacancy: {e}")
-                continue
+        if vacancies:
+            print(f"Найдено {len(vacancies)} вакансий от целевых компаний")
+        else:
+            print("Вакансии от целевых компаний не найдены")
 
         return vacancies
 
@@ -157,29 +155,32 @@ class VacancySearchHandler:
                     items_per_page=5,
                 )
         elif duplicate_info["total_count"] > 0:
-            print("Нет новых вакансий для предпросмотра - все найденные вакансии уже есть в базе данных.")
+            # Когда все вакансии уже существуют - просто информируем
+            pass  # Информация уже выведена в _display_duplicate_info
 
         # Предлагаем сохранить только новые вакансии
         if duplicate_info["new_vacancies"]:
             if confirm_action(f"Сохранить {len(duplicate_info['new_vacancies'])} новых вакансий?"):
-                self._save_vacancies(duplicate_info["new_vacancies"])
+                self._save_vacancies(duplicate_info["new_vacancies"], query)
             else:
                 print("Новые вакансии не сохранены")
         elif duplicate_info["total_count"] > 0:
-            print("Нет новых вакансий для сохранения.")
+            # Сообщение уже выведено в _display_duplicate_info
+            pass
 
-    def _save_vacancies(self, vacancies: List[Vacancy]) -> None:
+    def _save_vacancies(self, vacancies: List[Vacancy], search_query: str = None) -> None:
         """
         Сохранение вакансий в хранилище
 
         Args:
             vacancies: Список вакансий для сохранения
+            search_query: Поисковый запрос, по которому были найдены вакансии
         """
         try:
             print(f"Сохранение {len(vacancies)} вакансий...")
 
-            # Сохраняем новые вакансии оптимизированным методом
-            update_messages = self.storage.add_vacancy_batch_optimized(vacancies)
+            # Сохраняем новые вакансии оптимизированным методом с поисковым запросом
+            update_messages = self.storage.add_vacancy_batch_optimized(vacancies, search_query)
 
             if update_messages:
                 for message in update_messages:
@@ -211,6 +212,12 @@ class VacancySearchHandler:
 
         # Используем batch-метод для проверки дубликатов
         existence_map = self.storage.check_vacancies_exist_batch(vacancies)
+
+        # Защитная проверка типа результата
+        if not isinstance(existence_map, dict):
+            logger.error(f"check_vacancies_exist_batch вернул неожиданный тип: {type(existence_map)}")
+            # Если не словарь, считаем все вакансии новыми
+            existence_map = {}
 
         duplicates = []
         new_vacancies = []

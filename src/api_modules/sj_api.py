@@ -3,7 +3,7 @@ from typing import Dict, List, Optional
 
 from src.config.api_config import APIConfig
 from src.config.sj_api_config import SJAPIConfig
-from src.config.target_companies import get_target_company_names
+from src.config.target_companies import TargetCompanies
 from src.utils.env_loader import EnvLoader
 from src.utils.paginator import Paginator
 
@@ -241,28 +241,26 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
                 logger.warning("SuperJob API ключ не настроен, пропускаем")
                 return []
 
-            # SuperJob не имеет фильтра по конкретным компаниям в API
-            # Получаем все вакансии и фильтруем по целевым компаниям
-            logger.info("SuperJob: получение всех вакансий для фильтрации по целевым компаниям")
+            # SuperJob не имеет прямого фильтра по ID компаний в API
+            # Используем строгую фильтрацию только по ID целевых компаний
+            logger.info("SuperJob: получение всех вакансий для строгой ID-based фильтрации")
 
             all_vacancies = self.get_vacancies(search_query, **kwargs)
 
             if not all_vacancies:
                 return []
 
-            # Фильтруем по целевым компаниям
-            target_companies = get_target_company_names()
+            # Строгая фильтрация только по SuperJob ID целевых компаний
+            target_sj_ids = TargetCompanies.get_sj_ids()
             target_vacancies = []
 
             for vacancy in all_vacancies:
-                company_name = vacancy.get("firm_name", "").lower()
-                # Проверяем совпадение с целевыми компаниями (нечеткое сравнение)
-                for target_company in target_companies:
-                    if target_company.lower() in company_name or company_name in target_company.lower():
-                        target_vacancies.append(vacancy)
-                        break
+                company_id = str(vacancy.get("id_client", ""))
+                # Проверяем строгое совпадение с целевыми ID
+                if company_id in target_sj_ids:
+                    target_vacancies.append(vacancy)
 
-            logger.info(f"SuperJob: отфильтровано {len(target_vacancies)} вакансий от целевых компаний")
+            logger.info(f"SuperJob: отфильтровано {len(target_vacancies)} вакансий от целевых компаний по строгому ID-matching")
 
             # Показываем статистику
             if target_vacancies:

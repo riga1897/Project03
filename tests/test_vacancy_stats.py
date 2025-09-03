@@ -81,19 +81,14 @@ class TestVacancyStats:
         """
         vacancies = []
         for data in sample_vacancies:
-            # Создаем объект Salary если есть данные - используем правильный конструктор
-            salary = None
-            if data.get('salary'):
-                salary_data = data['salary']
-                salary = Salary({"from": salary_data.get('from'), "to": salary_data.get('to'), "currency": salary_data.get('currency', 'RUR')})
-
+            # Передаем словарь salary напрямую в Vacancy для правильного создания
             vacancy = Vacancy(
                 title=data['title'],
                 vacancy_id=data['vacancy_id'],
                 url=data['url'],
                 source=data['source'],
                 employer=data.get('employer'),
-                salary=salary,
+                salary=data.get('salary'),  # Передаем словарь, не объект
                 description=data.get('description')
             )
             vacancies.append(vacancy)

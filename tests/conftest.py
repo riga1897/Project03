@@ -1,12 +1,77 @@
 import os
 import sys
 from pathlib import Path
+from unittest.mock import Mock, MagicMock
 
-# Добавляем корневую директорию проекта в sys.path
+# КРИТИЧЕСКИ ВАЖНО: мокаем psycopg2 ПЕРВЫМ ДЕЛОМ перед всеми импортами
+class MockPsycopg2:
+    """Заглушка для модуля psycopg2."""
+    
+    class Error(Exception):
+        """Базовый класс исключений psycopg2."""
+        pass
+    
+    class DatabaseError(Error):
+        """Ошибка базы данных."""
+        pass
+    
+    class IntegrityError(DatabaseError):
+        """Ошибка целостности данных."""
+        pass
+    
+    class ProgrammingError(DatabaseError):
+        """Ошибка программирования SQL."""
+        pass
+    
+    @staticmethod
+    def connect(*args, **kwargs):
+        """Имитация подключения к базе данных."""
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+        mock_conn.cursor.return_value = mock_cursor
+        return mock_conn
+
+# Мок для подмодулей psycopg2
+class MockPsycopg2Extras:
+    """Заглушка для psycopg2.extras."""
+    RealDictCursor = MagicMock
+
+class MockPsycopg2SQL:
+    """Заглушка для psycopg2.sql."""
+    
+    @staticmethod
+    def SQL(text):
+        """Имитация SQL объекта."""
+        return Mock(as_string=lambda x: text)
+    
+    @staticmethod
+    def Identifier(name):
+        """Имитация Identifier объекта."""
+        return Mock(as_string=lambda x: f'"{name}"')
+
+# Устанавливаем мок до импорта других модулей
+mock_psycopg2 = MockPsycopg2()
+mock_extras = MockPsycopg2Extras()
+mock_sql = MockPsycopg2SQL()
+
+sys.modules['psycopg2'] = mock_psycopg2
+# Безопасное мокание внутренних модулей psycopg2
+try:
+    sys.modules['psycopg2._psycopg'] = Mock()
+except Exception:
+    pass  # Игнорируем если модуль недоступен
+sys.modules['psycopg2.extras'] = mock_extras
+sys.modules['psycopg2.sql'] = mock_sql
+
+# Добавляем атрибуты к основному модулю
+mock_psycopg2.extras = mock_extras
+mock_psycopg2.sql = mock_sql
+mock_psycopg2.extensions = Mock()  # Добавляем extensions атрибут
+
+# Теперь добавляем корневую директорию проекта в sys.path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from unittest.mock import MagicMock
 from typing import Any, Dict, List, Optional
 
 import pytest

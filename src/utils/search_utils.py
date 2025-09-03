@@ -319,19 +319,29 @@ class AdvancedSearch:
         pass
 
     def search_with_and(self, vacancies, keywords):
-        """Поиск с оператором AND"""
+        """Поиск с оператором AND - ищет во всех текстовых полях включая search_query"""
         result = []
         for vacancy in vacancies:
-            search_text = f"{vacancy.title} {vacancy.description or ''}".lower()
+            # Включаем search_query в поиск если это объект из базы данных
+            search_query = ""
+            if hasattr(vacancy, 'search_query') and vacancy.search_query:
+                search_query = vacancy.search_query
+            
+            search_text = f"{vacancy.title} {vacancy.description or ''} {search_query}".lower()
             if all(keyword.lower() in search_text for keyword in keywords):
                 result.append(vacancy)
         return result
 
     def search_with_or(self, vacancies, keywords):
-        """Поиск с оператором OR"""
+        """Поиск с оператором OR - ищет во всех текстовых полях включая search_query"""
         result = []
         for vacancy in vacancies:
-            search_text = f"{vacancy.title} {vacancy.description or ''}".lower()
+            # Включаем search_query в поиск если это объект из базы данных
+            search_query = ""
+            if hasattr(vacancy, 'search_query') and vacancy.search_query:
+                search_query = vacancy.search_query
+                
+            search_text = f"{vacancy.title} {vacancy.description or ''} {search_query}".lower()
             if any(keyword.lower() in search_text for keyword in keywords):
                 result.append(vacancy)
         return result

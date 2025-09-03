@@ -15,12 +15,11 @@ class HHParser(BaseParser):
         self.cache = FileCache(cache_dir)
         self.base_url = "https://api.hh.ru/vacancies"
 
-    def parse_vacancies(self, raw_vacancies: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Парсинг вакансий по предоставленным сырым данным"""
+    def parse_vacancies(self, raw_vacancies: List[Dict[str, Any]]) -> List[Vacancy]:
+        """Парсинг вакансий по предоставленным сырым данным - возвращает объекты Vacancy"""
         if not raw_vacancies:
             return []
-        parsed_vacancies = self._parse_items(raw_vacancies)
-        return [Vacancy.to_dict(vacancy) for vacancy in parsed_vacancies]
+        return self._parse_items(raw_vacancies)
 
     def _parse_items(self, raw_data: List[Dict[str, Any]]) -> List[Vacancy]:
         """Преобразование сырых данных HH в объекты Vacancy"""
@@ -48,24 +47,8 @@ class HHParser(BaseParser):
                     if desc_parts:
                         item["description"] = " ".join(desc_parts)
 
-                # Создаем объект вакансии напрямую из данных API
+                # Создаем объект вакансии из данных API
                 vacancy = Vacancy.from_dict(item)
-
-                # Отладочная информация
-                vacancy_id = str(item.get("id", ""))
-                if vacancy_id in ["124403607", "124403580", "124403642"]:
-                    print(f"DEBUG HH Parser: Обрабатывается вакансия ID {vacancy_id}: {item.get('name')}")
-                    print(f"DEBUG HH Parser: item содержит ключи: {list(item.keys())}")
-                    print(f"DEBUG HH Parser: item['id'] = {item.get('id')}")
-                    print("DEBUG HH Parser: Передаем в Vacancy.from_dict...")
-
-                vacancy = Vacancy.from_dict(item)
-
-                if vacancy_id in ["124403607", "124403580", "124403642"]:
-                    print(f"DEBUG HH Parser: Созданная вакансия имеет ID: {vacancy.vacancy_id}")
-                    print(f"DEBUG HH Parser: Ожидали ID: {vacancy_id}")
-                    if vacancy.vacancy_id != vacancy_id:
-                        print(f"ОШИБКА: ID изменился с {vacancy_id} на {vacancy.vacancy_id}!")
 
                 vacancies.append(vacancy)
 
@@ -75,8 +58,7 @@ class HHParser(BaseParser):
         logger.info(f"Успешно распарсено {len(vacancies)} вакансий HH из {len(raw_data)}")
         return vacancies
 
-    @staticmethod
-    def parse_vacancy(vacancy_data: Dict[str, Any]) -> Dict[str, Any]:
+    def parse_vacancy(self, raw_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Парсинг одной вакансии HH в словарь
 
@@ -87,18 +69,18 @@ class HHParser(BaseParser):
             Dict[str, Any]: Словарь с данными вакансии
         """
         try:
-            salary_info = vacancy_data.get("salary", {})
-            snippet_info = vacancy_data.get("snippet", {})
-            employer_info = vacancy_data.get("employer", {})
-            area_info = vacancy_data.get("area", {})
-            experience_info = vacancy_data.get("experience", {})
-            employment_info = vacancy_data.get("employment", {})
-            schedule_info = vacancy_data.get("schedule", {})
+            salary_info = raw_data.get("salary", {})
+            snippet_info = raw_data.get("snippet", {})
+            employer_info = raw_data.get("employer", {})
+            area_info = raw_data.get("area", {})
+            experience_info = raw_data.get("experience", {})
+            employment_info = raw_data.get("employment", {})
+            schedule_info = raw_data.get("schedule", {})
 
             return {
-                "vacancy_id": str(vacancy_data.get("id", "")),
-                "title": vacancy_data.get("name", ""),
-                "url": vacancy_data.get("alternate_url", ""),
+                "vacancy_id": str(raw_data.get("id", "")),
+                "title": raw_data.get("name", ""),
+                "url": raw_data.get("alternate_url", ""),
                 "salary_from": salary_info.get("from") if salary_info else None,
                 "salary_to": salary_info.get("to") if salary_info else None,
                 "salary_currency": salary_info.get("currency") if salary_info else None,
@@ -109,13 +91,13 @@ class HHParser(BaseParser):
                 "experience": experience_info.get("name", "") if experience_info else "",
                 "employment": employment_info.get("name", "") if employment_info else "",
                 "schedule": schedule_info.get("name", "") if schedule_info else "",
-                "published_at": vacancy_data.get("published_at", ""),
+                "published_at": raw_data.get("published_at", ""),
             }
         except Exception as e:
             logger.error(f"Ошибка при парсинге вакансии HH: {e}")
             return {
-                "vacancy_id": str(vacancy_data.get("id", "")),
-                "title": vacancy_data.get("name", ""),
+                "vacancy_id": str(raw_data.get("id", "")),
+                "title": raw_data.get("name", ""),
                 "url": "",
                 "salary_from": None,
                 "salary_to": None,
@@ -137,11 +119,7 @@ class HHParser(BaseParser):
         return Vacancy(
             vacancy_id=hh_vacancy.vacancy_id,
             title=hh_vacancy.title,
-            url=(
-                (hh_vacancy.raw_data.get("alternate_url") if hh_vacancy.raw_data else "")
-                or (hh_vacancy.raw_data.get("url") if hh_vacancy.raw_data else "")
-                or ""
-            ),
+            url=hh_vacancy.url,
             salary=hh_vacancy.salary.to_dict() if hh_vacancy.salary else None,
             description=hh_vacancy.description,
             requirements=hh_vacancy.requirements,  # requirement из snippet

@@ -144,8 +144,10 @@ class VacancyOperationsCoordinator:
             if vacancy.employer:
                 if isinstance(vacancy.employer, dict):
                     print(f"   Компания: {vacancy.employer.get('name', 'Неизвестная компания')}")
+                elif hasattr(vacancy.employer, 'name'):
+                    print(f"   Компания: {vacancy.employer.name}")
                 else:
-                    print(f"   Компания: {vacancy.employer}")
+                    print(f"   Компания: {str(vacancy.employer)}")
             print(f"   Ссылка: {vacancy.url}")
             print("-" * 40)
         if len(filtered_vacancies) > 5:
@@ -244,31 +246,36 @@ class VacancyOperationsCoordinator:
                 search_query=search_query, sources=sources, **kwargs
             )
 
-            # Конвертируем в объекты Vacancy
-            vacancies = [Vacancy.from_dict(data) for data in vacancy_data]
+            if not vacancy_data:
+                print("Не удалось получить данные вакансий от API")
+                return []
+
+            # Конвертируем в объекты Vacancy с обработкой ошибок
+            vacancies = []
+            conversion_errors = 0
+            
+            for data in vacancy_data:
+                try:
+                    vacancy = Vacancy.from_dict(data)
+                    vacancies.append(vacancy)
+                except Exception as e:
+                    conversion_errors += 1
+                    logger.error(f"Ошибка конвертации вакансии: {e}")
+                    continue
+
+            if conversion_errors > 0:
+                print(f"Не удалось конвертировать {conversion_errors} вакансий")
 
             if vacancies:
-                # Сохраняем найденные вакансии
-                update_messages = self.storage.add_vacancy(vacancies)
-
-                # Получаем реальное количество вакансий в БД после сохранения
-                total_in_db = len(self.storage.get_vacancies())
-
-                if update_messages:
-                    # Показываем детали операций
-                    for message in update_messages[:10]:  # Показываем первые 10
-                        print(f"  • {message}")
-
-                    if len(update_messages) > 10:
-                        remaining = len(update_messages) - 10
-                        print(f"  • ... и еще {remaining} операций")
-
-                print(f"Общее количество вакансий в базе данных: {total_in_db}")
+                print(f"Успешно конвертировано {len(vacancies)} вакансий в объекты Vacancy")
+            else:
+                print("Не удалось создать объекты вакансий из полученных данных")
 
             return vacancies
 
         except Exception as e:
             logger.error(f"Ошибка при получении вакансий из источников: {e}")
+            print(f"Общая ошибка получения вакансий: {e}")
             return []
 
     def get_vacancies_from_target_companies(
@@ -291,29 +298,36 @@ class VacancyOperationsCoordinator:
                 search_query=search_query, sources=sources, **kwargs
             )
 
-            # Конвертируем в объекты Vacancy
-            vacancies = [Vacancy.from_dict(data) for data in vacancy_data]
+            if not vacancy_data:
+                print("API не вернул данных о вакансиях")
+                return []
+
+            print(f"API вернул {len(vacancy_data)} записей о вакансиях")
+
+            # Конвертируем в объекты Vacancy с обработкой ошибок
+            vacancies = []
+            conversion_errors = 0
+            
+            for data in vacancy_data:
+                try:
+                    vacancy = Vacancy.from_dict(data)
+                    vacancies.append(vacancy)
+                except Exception as e:
+                    conversion_errors += 1
+                    logger.error(f"Ошибка конвертации вакансии: {e}")
+                    continue
+
+            if conversion_errors > 0:
+                print(f"Не удалось конвертировать {conversion_errors} вакансий")
 
             if vacancies:
-                # Сохраняем найденные вакансии
-                update_messages = self.storage.add_vacancy(vacancies)
-
-                # Получаем реальное количество вакансий в БД после сохранения
-                total_in_db = len(self.storage.get_vacancies())
-
-                if update_messages:
-                    # Показываем детали операций
-                    for message in update_messages[:10]:  # Показываем первые 10
-                        print(f"  • {message}")
-
-                    if len(update_messages) > 10:
-                        remaining = len(update_messages) - 10
-                        print(f"  • ... и еще {remaining} операций")
-
-                print(f"Общее количество вакансий в базе данных: {total_in_db}")
+                print(f"Успешно конвертировано {len(vacancies)} вакансий в объекты Vacancy")
+            else:
+                print("Не удалось создать объекты вакансий из полученных данных")
 
             return vacancies
 
         except Exception as e:
             logger.error(f"Ошибка при получении вакансий от целевых компаний: {e}")
+            print(f"Общая ошибка получения вакансий: {e}")
             return []

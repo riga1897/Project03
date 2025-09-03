@@ -45,10 +45,13 @@ class FileCache:
                 logger.debug(f"Пропускаем сохранение некорректного ответа в кэш: {params}")
                 return
 
-            cache_key = self._generate_params_hash(params)  # Renamed from _generate_cache_key to _generate_params_hash
-            file_path = self.cache_dir / f"{prefix}_{cache_key}.json"  # Added prefix to filename
+            # Дедупликация: проверяем, нет ли уже таких же данных в кэше
+            deduplicated_data = self._deduplicate_vacancies(data, prefix)
+            
+            cache_key = self._generate_params_hash(params)
+            file_path = self.cache_dir / f"{prefix}_{cache_key}.json"
 
-            cache_data = {"timestamp": time.time(), "meta": {"params": params}, "data": data}
+            cache_data = {"timestamp": time.time(), "meta": {"params": params}, "data": deduplicated_data}
 
             with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(cache_data, f, indent=2, ensure_ascii=False)
@@ -171,6 +174,66 @@ class FileCache:
         except Exception as e:
             logger.error(f"Ошибка валидации структуры кэша: {e}")
             return False
+
+    def _deduplicate_vacancies(self, data: Dict, prefix: str) -> Dict:
+        """
+        Дедупликация вакансий по отношению к существующим файлам кэша
+        
+        Args:
+            data: Данные для сохранения
+            prefix: Префикс источника (hh, sj)
+        
+        Returns:
+            Dict: Очищенные от дубликатов данные
+        """
+        try:
+            # Извлекаем новые вакансии
+            new_items = data.get('items', [])
+            if not new_items:
+                return data
+            
+            # Собираем ID всех существующих вакансий в кэше
+            existing_vacancy_ids = set()
+            
+            for cache_file in self.cache_dir.glob(f"{prefix}_*.json"):
+                try:
+                    with open(cache_file, 'r', encoding='utf-8') as f:
+                        cached_data = json.load(f)
+                    
+                    cached_items = cached_data.get('data', {}).get('items', [])
+                    for item in cached_items:
+                        vacancy_id = item.get('id')
+                        if vacancy_id:
+                            existing_vacancy_ids.add(str(vacancy_id))
+                            
+                except Exception as e:
+                    logger.debug(f"Ошибка чтения файла кэша {cache_file}: {e}")
+            
+            # Офильтровываем новые вакансии, исключая дубликаты
+            unique_items = []
+            duplicates_found = 0
+            
+            for item in new_items:
+                vacancy_id = item.get('id')
+                if vacancy_id and str(vacancy_id) not in existing_vacancy_ids:
+                    unique_items.append(item)
+                    existing_vacancy_ids.add(str(vacancy_id))  # Добавляем к списку существующих
+                elif vacancy_id:
+                    duplicates_found += 1
+                else:
+                    unique_items.append(item)  # Вакансии без ID сохраняем
+            
+            if duplicates_found > 0:
+                logger.debug(f"Обнаружено {duplicates_found} дубликатов, сохраняем {len(unique_items)} уникальных вакансий")
+            
+            # Обновляем данные с очищенным списком
+            deduplicated_data = data.copy()
+            deduplicated_data['items'] = unique_items
+            return deduplicated_data
+            
+        except Exception as e:
+            logger.error(f"Ошибка дедупликации: {e}")
+            return data  # Возвращаем оригинальные данные при ошибке
 
     def clear(self, source: Optional[str] = None) -> None:
         """Очистка кэша"""

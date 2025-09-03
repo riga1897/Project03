@@ -19,21 +19,58 @@ class VacancyStats:
     def calculate_salary_statistics(self, vacancies):
         """Подсчет статистики по зарплатам"""
         salaries = []
+        with_salary_count = 0
+        without_salary_count = 0
+
+        if not vacancies:
+            return {
+                "average": 0,
+                "min": 0,
+                "max": 0,
+                "count": 0,
+                "with_salary_count": 0,
+                "without_salary_count": 0
+            }
+
         for vacancy in vacancies:
-            if vacancy.salary:
-                if vacancy.salary.from_amount:
-                    salaries.append(vacancy.salary.from_amount)
-                elif vacancy.salary.to_amount:
-                    salaries.append(vacancy.salary.to_amount)
+            try:
+                if hasattr(vacancy, 'salary') and vacancy.salary:
+                    salary_from = getattr(vacancy.salary, 'amount_from', None)
+                    salary_to = getattr(vacancy.salary, 'amount_to', None)
+
+                    # Защищаемся от Mock объектов, проверяя тип
+                    if salary_from is not None and isinstance(salary_from, (int, float)) and salary_from > 0:
+                        salaries.append(int(salary_from))
+                        with_salary_count += 1
+                    elif salary_to is not None and isinstance(salary_to, (int, float)) and salary_to > 0:
+                        salaries.append(int(salary_to))
+                        with_salary_count += 1
+                    else:
+                        without_salary_count += 1
+                else:
+                    without_salary_count += 1
+            except (AttributeError, TypeError):
+                # Обработка случаев с Mock объектами или некорректными данными
+                without_salary_count += 1
+                continue
 
         if not salaries:
-            return {"average": 0, "min": 0, "max": 0, "count": 0}
+            return {
+                "average": 0,
+                "min": 0,
+                "max": 0,
+                "count": 0,
+                "with_salary_count": with_salary_count,
+                "without_salary_count": without_salary_count
+            }
 
         return {
             "average": sum(salaries) // len(salaries),
             "min": min(salaries),
             "max": max(salaries),
             "count": len(salaries),
+            "with_salary_count": with_salary_count,
+            "without_salary_count": without_salary_count,
         }
 
     def get_top_employers(self, vacancies, top_n=10):
@@ -56,6 +93,64 @@ class VacancyStats:
             source_counts[source] = source_counts.get(source, 0) + 1
 
         return source_counts
+
+    def display_company_stats(self, vacancies, source_name: str = None):
+        """
+        Отображение статистики по компаниям
+
+        Args:
+            vacancies: Список вакансий
+            source_name: Название источника для заголовка
+        """
+        if not vacancies:
+            print("Нет вакансий для отображения статистики")
+            return
+
+        print(f"Статистика по компаниям{' (' + source_name + ')' if source_name else ''}: {len(vacancies)} вакансий")
+
+        # Подсчитываем вакансии по компаниям
+        company_stats = {}
+        for vacancy in vacancies:
+            try:
+                # Получаем имя работодателя из разных возможных структур
+                employer_name = None
+
+                if isinstance(vacancy, dict):
+                    # Обрабатываем словарь
+                    employer = vacancy.get("employer")
+                    if isinstance(employer, dict):
+                        employer_name = employer.get("name")
+                    elif hasattr(employer, 'name'):
+                        employer_name = employer.name
+                    elif isinstance(employer, str):
+                        employer_name = employer
+                elif hasattr(vacancy, 'employer'):
+                    # Обрабатываем объект вакансии
+                    employer = vacancy.employer
+                    if isinstance(employer, dict):
+                        employer_name = employer.get("name")
+                    elif hasattr(employer, 'name'):
+                        employer_name = employer.name
+                    elif isinstance(employer, str):
+                        employer_name = employer
+
+                if employer_name:
+                    company_stats[employer_name] = company_stats.get(employer_name, 0) + 1
+                else:
+                    company_stats["Неизвестная компания"] = company_stats.get("Неизвестная компания", 0) + 1
+
+            except Exception as e:
+                print(f"Ошибка обработки вакансии для статистики: {e}")
+                continue
+
+        # Выводим топ компаний
+        if company_stats:
+            print("\nТоп компаний по количеству вакансий:")
+            sorted_companies = sorted(company_stats.items(), key=lambda x: x[1], reverse=True)
+            for company, count in sorted_companies[:10]:  # Показываем топ 10
+                print(f"  {company}: {count} вакансий")
+        else:
+            print("Не удалось определить статистику по компаниям")
 
 
 def calculate_statistics(vacancies):
@@ -138,7 +233,7 @@ def calculate_statistics(vacancies):
                 if isinstance(employer, dict) and "name" in employer:
                     return employer["name"]
 
-        # ПРИОРИТЕТ 5: Преобразованные данные - поле company (fallback)
+        # ПРИОРИТЕТ 5: Преобразованные данные - поле company
         if isinstance(vacancy, dict) and "company" in vacancy:
             company = vacancy["company"]
             if company and str(company).strip() and str(company) != "None":

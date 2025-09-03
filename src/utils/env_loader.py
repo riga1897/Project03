@@ -1,56 +1,5 @@
-import json
 import logging
 import os
-
-
-class EnvLoader:
-    """Класс для загрузки переменных окружения"""
-
-    def __init__(self):
-        """Инициализация загрузчика переменных окружения"""
-        pass
-
-    def load_file(self, file_path):
-        """Загрузка переменных из файла"""
-        if not os.path.exists(file_path):
-            return False
-
-        try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                for line in f:
-                    key, value = self.parse_line(line.strip())
-                    if key and value:
-                        self.set_env_var(key, value)
-            return True
-        except OSError:
-            return False
-
-    def parse_line(self, line):
-        """Парсинг строки переменной окружения"""
-        if not line or line.startswith("#"):
-            return None, None
-
-        if "=" not in line:
-            return None, None
-
-        key, value = line.split("=", 1)
-        return key.strip(), value.strip()
-
-    def set_env_var(self, key, value):
-        """Установка переменной окружения"""
-        os.environ[key] = value
-
-    def get_env_var(self, key, default=None):
-        """Получение переменной окружения"""
-        return os.environ.get(key, default)
-
-
-def load_env_file(file_path=".env"):
-    """Функция для загрузки .env файла"""
-    loader = EnvLoader()
-    return loader.load_file(file_path)
-
-
 from typing import Optional
 
 logger = logging.getLogger(__name__)

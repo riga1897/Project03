@@ -134,6 +134,16 @@ class Salary:
         return self._currency
 
     @property
+    def from_amount(self) -> Optional[int]:
+        """Alias for amount_from for backwards compatibility"""
+        return self.amount_from
+
+    @property
+    def to_amount(self) -> Optional[int]:
+        """Alias for amount_to for backwards compatibility"""
+        return self.amount_to
+
+    @property
     def average(self) -> int:
         """Среднее значение зарплаты"""
         if self.amount_from and self.amount_to:
@@ -164,7 +174,7 @@ class Salary:
     def __str__(self) -> str:
         """Строковое представление зарплаты"""
         if not self.amount_from and not self.amount_to:
-            return "Зарплата не указана"
+            return "Не указана"
 
         components = []
         if self.amount_from:

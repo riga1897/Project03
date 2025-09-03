@@ -35,7 +35,13 @@ class VacancyOperations:
         Returns:
             List[Vacancy]: Отсортированный список вакансий
         """
-        return sorted(vacancies, key=lambda x: x.salary.get_max_salary() if x.salary else 0, reverse=reverse)
+        def get_sort_key(vacancy: Vacancy) -> int:
+            if vacancy.salary and hasattr(vacancy.salary, 'get_max_salary'):
+                max_sal = vacancy.salary.get_max_salary()
+                return max_sal if max_sal is not None else 0
+            return 0
+        
+        return sorted(vacancies, key=get_sort_key, reverse=reverse)
 
     @staticmethod
     def filter_vacancies_by_min_salary(vacancies: List[Vacancy], min_salary: int) -> List[Vacancy]:
@@ -49,21 +55,38 @@ class VacancyOperations:
         Returns:
             List[Vacancy]: Список отфильтрованных вакансий
         """
-        return [
-            v
-            for v in vacancies
-            if v.salary
-            and (
-                # Если есть только нижняя граница - она должна быть >= min_salary
-                (v.salary.salary_from and not v.salary.salary_to and v.salary.salary_from >= min_salary)
-                or
-                # Если есть только верхняя граница - она должна быть >= min_salary
-                (not v.salary.salary_from and v.salary.salary_to and v.salary.salary_to >= min_salary)
-                or
-                # Если есть обе границы - нижняя граница должна быть >= min_salary
-                (v.salary.salary_from and v.salary.salary_to and v.salary.salary_from >= min_salary)
-            )
-        ]
+        filtered_vacancies = []
+        
+        for vacancy in vacancies:
+            # Пропускаем вакансии без зарплаты
+            if not vacancy.salary:
+                continue
+            
+            # Получаем значения зарплаты
+            salary_from = vacancy.salary.salary_from
+            salary_to = vacancy.salary.salary_to
+            
+            # Если нет ни одного значения зарплаты, пропускаем
+            if not salary_from and not salary_to:
+                continue
+            
+            # Вычисляем среднюю зарплату для сравнения
+            if salary_from and salary_to:
+                # Если есть диапазон - берем среднее
+                avg_salary = (salary_from + salary_to) / 2
+            elif salary_from:
+                # Если есть только "от" - используем это значение
+                avg_salary = salary_from
+            else:
+                # Если есть только "до" - используем это значение
+                avg_salary = salary_to
+            
+            # Проверяем, что зарплата больше или равна минимальной
+            if avg_salary >= min_salary:
+                filtered_vacancies.append(vacancy)
+        
+        logger.info(f"Отфильтровано {len(filtered_vacancies)} вакансий из {len(vacancies)} с минимальной зарплатой {min_salary}")
+        return filtered_vacancies
 
     @staticmethod
     def filter_vacancies_by_max_salary(vacancies: List[Vacancy], max_salary: int) -> List[Vacancy]:
@@ -77,26 +100,38 @@ class VacancyOperations:
         Returns:
             List[Vacancy]: Список отфильтрованных вакансий
         """
-        return [
-            v
-            for v in vacancies
-            if v.salary
-            and (
-                # Если есть только нижняя граница - она должна быть <= max_salary
-                (v.salary.salary_from and not v.salary.salary_to and v.salary.salary_from <= max_salary)
-                or
-                # Если есть только верхняя граница - она должна быть <= max_salary
-                (not v.salary.salary_from and v.salary.salary_to and v.salary.salary_to <= max_salary)
-                or
-                # Если есть обе границы - ОБЕ границы должны быть <= max_salary
-                (
-                    v.salary.salary_from
-                    and v.salary.salary_to
-                    and v.salary.salary_from <= max_salary
-                    and v.salary.salary_to <= max_salary
-                )
-            )
-        ]
+        filtered_vacancies = []
+        
+        for vacancy in vacancies:
+            # Пропускаем вакансии без зарплаты
+            if not vacancy.salary:
+                continue
+            
+            # Получаем значения зарплаты
+            salary_from = vacancy.salary.salary_from
+            salary_to = vacancy.salary.salary_to
+            
+            # Если нет ни одного значения зарплаты, пропускаем
+            if not salary_from and not salary_to:
+                continue
+            
+            # Вычисляем среднюю зарплату для сравнения
+            if salary_from and salary_to:
+                # Если есть диапазон - берем среднее
+                avg_salary = (salary_from + salary_to) / 2
+            elif salary_from:
+                # Если есть только "от" - используем это значение
+                avg_salary = salary_from
+            else:
+                # Если есть только "до" - используем это значение
+                avg_salary = salary_to
+            
+            # Проверяем, что зарплата меньше или равна максимальной
+            if avg_salary <= max_salary:
+                filtered_vacancies.append(vacancy)
+        
+        logger.info(f"Отфильтровано {len(filtered_vacancies)} вакансий из {len(vacancies)} с максимальной зарплатой {max_salary}")
+        return filtered_vacancies
 
     @staticmethod
     def filter_vacancies_by_salary_range(vacancies: List[Vacancy], min_salary: int, max_salary: int) -> List[Vacancy]:
@@ -111,21 +146,38 @@ class VacancyOperations:
         Returns:
             List[Vacancy]: Список отфильтрованных вакансий
         """
-        return [
-            v
-            for v in vacancies
-            if v.salary
-            and (
-                (v.salary.salary_from and min_salary <= v.salary.salary_from <= max_salary)
-                or (v.salary.salary_to and min_salary <= v.salary.salary_to <= max_salary)
-                or (
-                    v.salary.salary_from
-                    and v.salary.salary_to
-                    and v.salary.salary_from <= max_salary
-                    and v.salary.salary_to >= min_salary
-                )
-            )
-        ]
+        filtered_vacancies = []
+        
+        for vacancy in vacancies:
+            # Пропускаем вакансии без зарплаты
+            if not vacancy.salary:
+                continue
+            
+            # Получаем значения зарплаты
+            salary_from = vacancy.salary.salary_from
+            salary_to = vacancy.salary.salary_to
+            
+            # Если нет ни одного значения зарплаты, пропускаем
+            if not salary_from and not salary_to:
+                continue
+            
+            # Вычисляем среднюю зарплату для сравнения
+            if salary_from and salary_to:
+                # Если есть диапазон - берем среднее
+                avg_salary = (salary_from + salary_to) / 2
+            elif salary_from:
+                # Если есть только "от" - используем это значение
+                avg_salary = salary_from
+            else:
+                # Если есть только "до" - используем это значение
+                avg_salary = salary_to
+            
+            # Проверяем, попадает ли зарплата в диапазон
+            if min_salary <= avg_salary <= max_salary:
+                filtered_vacancies.append(vacancy)
+        
+        logger.info(f"Отфильтровано {len(filtered_vacancies)} вакансий из {len(vacancies)} по диапазону {min_salary}-{max_salary}")
+        return filtered_vacancies
 
     @staticmethod
     def filter_vacancies_by_multiple_keywords(vacancies: List[Vacancy], keywords: List[str]) -> List[Vacancy]:
@@ -139,26 +191,9 @@ class VacancyOperations:
         Returns:
             List[Vacancy]: Список отфильтрованных вакансий
         """
-        if not keywords:
-            return vacancies
-
-        filtered_vacancies = []
-
-        for vacancy in vacancies:
-            matches = 0
-            for keyword in keywords:
-                if filter_vacancies_by_keyword([vacancy], keyword):
-                    matches += 1
-
-            # Включаем вакансию, если найдено хотя бы одно совпадение
-            if matches > 0:
-                vacancy._keyword_matches = matches
-                filtered_vacancies.append(vacancy)
-
-        # Сортируем по количеству совпадений
-        filtered_vacancies.sort(key=lambda x: getattr(x, "_keyword_matches", 0), reverse=True)
-
-        return filtered_vacancies
+        # ЗАГЛУШКА: Поиск теперь выполняется только в PostgresSaver.search_vacancies_batch
+        logger.warning("Метод search_by_keywords устарел. Используйте SQLFilterService")
+        return vacancies  # Возвращаем без изменений для обратной совместимости
 
     @staticmethod
     def search_vacancies_advanced(vacancies: List[Vacancy], query: str) -> List[Vacancy]:
@@ -260,24 +295,12 @@ class VacancyOperations:
                 if sql_results:
                     return sql_results
             except Exception as e:
-                logger.warning(f"SQL-поиск не удался, переходим на Python-поиск: {e}")
+                logger.error(f"SQL-поиск не удался: {e}")
+                logger.info("Поиск должен выполняться только через PostgresSaver.search_vacancies_batch")
+                return []  # Возвращаем пустой результат
 
-        # Fallback к Python-поиску для данных из памяти/API
-        keyword_lower = keyword.lower().strip()
-        found_vacancies = []
-
-        for vacancy in vacancies:
-            # Поиск в названии
-            if keyword_lower in vacancy.title.lower():
-                found_vacancies.append(vacancy)
-                continue
-
-            # Поиск в описании (если есть)
-            if vacancy.description and keyword_lower in vacancy.description.lower():
-                found_vacancies.append(vacancy)
-                continue
-
-        return found_vacancies
+        # Если SQL не сработал, возвращаем пустой результат
+        return []
 
     @staticmethod
     def debug_vacancy_search(vacancy: Vacancy, keyword: str) -> None:
@@ -304,7 +327,7 @@ class VacancyOperations:
 
         for field_name, field_value in fields_to_check:
             if field_value and keyword.lower() in str(field_value).lower():
-                print(f"  ✓ Найдено в поле '{field_name}': ...{str(field_value)[:100]}...")
+                logger.debug(f"Найдено в поле '{field_name}': ...{str(field_value)[:100]}...")
 
         print("=" * 50)
 
@@ -333,8 +356,8 @@ class VacancyOperations:
             pattern = r"\b" + re.escape(keyword) + r"\b"
             matches = re.findall(pattern, full_text)
             if matches:
-                print(f"  ✓ Найдено '{keyword}': {matches}")
+                logger.debug(f"Найдено '{keyword}': {matches}")
             else:
-                print(f"  ✗ НЕ найдено '{keyword}'")
+                logger.debug(f"НЕ найдено '{keyword}'")
 
         print("=" * 50)

@@ -1,5 +1,6 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Dict
+from src.utils.env_loader import EnvLoader
 
 
 @dataclass
@@ -8,13 +9,14 @@ class HHAPIConfig:
 
     area: int = 113  # Россия по умолчанию
     per_page: int = 50  # Количество элементов на странице
-    only_with_salary: bool = False
+    only_with_salary: bool = False  # Будет загружено из .env
     period: int = 15  # Период 15 дней по умолчанию
-    custom_params: Dict[str, Any] = None
+    custom_params: Dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
-        if self.custom_params is None:
-            self.custom_params = {}
+        # Загружаем настройку фильтрации по зарплате из .env
+        env_value = EnvLoader.get_env_var("FILTER_ONLY_WITH_SALARY", "false")
+        self.only_with_salary = str(env_value).lower() in ("true", "1", "yes", "on")
 
     def get_params(self, **kwargs) -> Dict[str, Any]:
         """Генерация параметров запроса с учетом переопределений"""
