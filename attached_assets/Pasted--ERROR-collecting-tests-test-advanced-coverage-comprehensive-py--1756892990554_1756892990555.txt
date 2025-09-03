@@ -1,0 +1,94 @@
+_________________ ERROR collecting tests/test_advanced_coverage_comprehensive.py _________________
+.pythonlibs/lib/python3.11/site-packages/_pytest/python.py:498: in importtestmodule
+    mod = import_path(
+.pythonlibs/lib/python3.11/site-packages/_pytest/pathlib.py:587: in import_path
+    importlib.import_module(module_name)
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1204: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1176: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1147: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+.pythonlibs/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:177: in exec_module
+    source_stat, co = _rewrite_test(fn, self.config)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.pythonlibs/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:357: in _rewrite_test
+    tree = ast.parse(source, filename=strfn)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/ast.py:50: in parse
+    return compile(source, filename, mode, flags,
+E     File "/home/runner/workspace/tests/test_advanced_coverage_comprehensive.py", line 190
+E       temp_file.write("TEST_VAR_SINGLE='single_quoted'\n')
+E                       ^
+E   SyntaxError: unterminated string literal (detected at line 190)
+___________________ ERROR collecting tests/test_core_modules_comprehensive.py ____________________
+.pythonlibs/lib/python3.11/site-packages/_pytest/python.py:498: in importtestmodule
+    mod = import_path(
+.pythonlibs/lib/python3.11/site-packages/_pytest/pathlib.py:587: in import_path
+    importlib.import_module(module_name)
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1204: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1176: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1147: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+.pythonlibs/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:177: in exec_module
+    source_stat, co = _rewrite_test(fn, self.config)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.pythonlibs/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:357: in _rewrite_test
+    tree = ast.parse(source, filename=strfn)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/ast.py:50: in parse
+    return compile(source, filename, mode, flags,
+E     File "/home/runner/workspace/tests/test_core_modules_comprehensive.py", line 633
+E       ```"""
+E       ^
+E   SyntaxError: invalid syntax
+_____________________ ERROR collecting tests/test_final_complete_coverage.py _____________________
+.pythonlibs/lib/python3.11/site-packages/_pytest/python.py:498: in importtestmodule
+    mod = import_path(
+.pythonlibs/lib/python3.11/site-packages/_pytest/pathlib.py:587: in import_path
+    importlib.import_module(module_name)
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1204: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1176: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1147: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+.pythonlibs/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:177: in exec_module
+    source_stat, co = _rewrite_test(fn, self.config)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.pythonlibs/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:357: in _rewrite_test
+    tree = ast.parse(source, filename=strfn)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/ast.py:50: in parse
+    return compile(source, filename, mode, flags,
+E     File "/home/runner/workspace/tests/test_final_complete_coverage.py", line 1027
+E       salary_obj = Salary({'from': 100000, 'to': 200000, 'currency': 'RUR'})
+E       ^^^^^^^^^^
+E   SyntaxError: expected 'except' or 'finally' block
+_____________________ ERROR collecting tests/test_utilities_comprehensive.py _____________________
+ImportError while importing test module '/home/runner/workspace/tests/test_utilities_comprehensive.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_utilities_comprehensive.py:24: in <module>
+    from src.utils.ui_helpers import UIHelpers
+E   ImportError: cannot import name 'UIHelpers' from 'src.utils.ui_helpers' (/home/runner/workspace/tests/../src/utils/ui_helpers.py)
