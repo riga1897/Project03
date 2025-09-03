@@ -21,12 +21,9 @@ class EnvLoader:
         if cls._loaded:
             return
 
-        # Ищем .env файл в нескольких местах
+        # .env должен искаться только в корне проекта
         possible_paths = [
-            env_file_path,  # Относительный путь
-            os.path.abspath(env_file_path),  # Абсолютный путь
-            os.path.join(os.getcwd(), env_file_path),  # В текущей рабочей директории
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", env_file_path),  # В корне проекта
+            env_file_path,  # Только относительный путь от корня проекта
         ]
 
         env_file_found = None

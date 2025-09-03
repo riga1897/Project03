@@ -1,0 +1,255 @@
+{
+  "timestamp": 1756882543.2836106,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 50,
+      "only_with_salary": false,
+      "period": 1,
+      "text": "python",
+      "page": 0,
+      "employer_id": "1057"
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "123889098",
+        "premium": false,
+        "name": "DevOps Engineer (KFP)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-02T13:12:14+0300",
+        "created_at": "2025-09-02T13:12:14+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123889098",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123889098?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123889098",
+        "relations": [],
+        "employer": {
+          "id": "1057",
+          "name": "Лаборатория Касперского",
+          "url": "https://api.hh.ru/employers/1057",
+          "alternate_url": "https://hh.ru/employer/1057",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1391729.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7186699.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7186700.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=1057",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Знание и опыт разработки на <highlighttext>Python</highlighttext>. Способность чтения технической литературы и написания писем на английском языке. Опыт работы c системами...",
+          "responsibility": "Поддержка, развитие и администрирование инфраструктуры проекта. Создание автоматических сценариев развертывания приложений и инфраструктуры (ansible, terraform). Поддержка команды разработчиков, автоматизация процессов..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": true,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "122539872",
+        "premium": false,
+        "name": "System Engineer (Helix)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-02T12:13:57+0300",
+        "created_at": "2025-09-02T12:13:57+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=122539872",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/122539872?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/122539872",
+        "relations": [],
+        "employer": {
+          "id": "1057",
+          "name": "Лаборатория Касперского",
+          "url": "https://api.hh.ru/employers/1057",
+          "alternate_url": "https://hh.ru/employer/1057",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1391729.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7186699.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7186700.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=1057",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Ansible, MS TFS/Azure DevOps, Jenkins. Nginx, HAProxy. SCOM, Prometheus, Grafana, VictoriaMetrics, InfluxDB. Навыки написания скриптов на PowerShell, <highlighttext>Python</highlighttext>, Bash. ",
+          "responsibility": "Поддержка и развитие сервисов, обеспечивающих работу продуктов Лаборатории Касперского. Построение и развитие автоматизации обслуживания поддерживаемых сервисов. Построение мониторинга работоспособности систем..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "114",
+            "name": "Системный инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 3,
+    "pages": 1,
+    "page": 0,
+    "per_page": 50,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&employer_id=1057&enable_snippets=true&items_on_page=50&search_period=1&text=python"
+  }
+}

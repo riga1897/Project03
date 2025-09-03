@@ -23,18 +23,22 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Test Runner"
+args = "Job Vacancy Search App"
 
 [[workflows.workflow]]
-name = "Test Runner"
+name = "Job Vacancy Search App"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python -m pytest --cov=src --cov-report=term-missing tests/ --tb=short -v"
+args = "python main.py"
 
 [workflows.workflow.metadata]
 outputType = "console"
 
 [agent]
 expertMode = true
+
+[deployment]
+deploymentTarget = "vm"
+run = ["python", "main.py"]
