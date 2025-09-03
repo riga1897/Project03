@@ -34,12 +34,25 @@ class ConsolidatedTestMocks:
         self.mock_psycopg2 = MagicMock()
         self.mock_connection = Mock()
         self.mock_cursor = Mock()
+        
+        # Настраиваем cursor как контекстный менеджер
+        self.mock_cursor.__enter__ = Mock(return_value=self.mock_cursor)
+        self.mock_cursor.__exit__ = Mock(return_value=None)
+        
+        # Настраиваем connection
         self.mock_psycopg2.connect.return_value = self.mock_connection
-        self.mock_connection.cursor.return_value.__enter__.return_value = self.mock_cursor
-        self.mock_connection.cursor.return_value.__exit__.return_value = None
+        self.mock_connection.cursor.return_value = self.mock_cursor
+        self.mock_connection.commit = Mock()
+        self.mock_connection.rollback = Mock()
+        self.mock_connection.close = Mock()
+        self.mock_connection.__enter__ = Mock(return_value=self.mock_connection)
+        self.mock_connection.__exit__ = Mock(return_value=None)
+        
+        # Настраиваем методы cursor
         self.mock_cursor.fetchall.return_value = []
         self.mock_cursor.fetchone.return_value = None
         self.mock_cursor.execute.return_value = None
+        self.mock_cursor.close = Mock()
         
         # Моки для файловых операций
         self.mock_pathlib = MagicMock()
