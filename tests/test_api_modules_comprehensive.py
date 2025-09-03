@@ -1,4 +1,3 @@
-
 """
 Комплексные тесты для API модулей с максимальным покрытием кода.
 Включает в себя тестирование всех методов, исключений и edge cases.
@@ -21,7 +20,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 # Мок для предотвращения записи файлов и создания директорий
 mock_file_operations = mock_open(read_data='{"items": [], "meta": {}}')
 
-# Глобальные патчи для предотвращения записи в файловую систему
+# Глобальные патчи для предотвращения операций с файлами
 @pytest.fixture(autouse=True)
 def prevent_file_operations():
     """Автоматически применяемый фикстюр для предотвращения операций с файлами"""
@@ -76,16 +75,16 @@ except ImportError:
     class CachedAPI(BaseJobAPI):
         def __init__(self, cache_name: str = "test"):
             self.cache_name = cache_name
-        
+
         def get_vacancies(self, search_query: str, **kwargs):
             return []
-        
+
         def _validate_vacancy(self, vacancy):
             return True
-        
+
         def _get_empty_response(self):
             return {"items": []}
-        
+
         def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs):
             return []
 
@@ -236,23 +235,26 @@ class TestCachedAPI:
     """Комплексное тестирование кэширующего API"""
 
     def setup_method(self):
-        """Настройка перед каждым тестом"""
-        # Используем простую инициализацию без реальных зависимостей
-        self.cached_api = CachedAPI("test_cache")
+        """Настройка для каждого теста"""
+        # Создаем конкретную реализацию CachedAPI для тестов
+        class TestCachedAPI(CachedAPI):
+            def get_vacancies(self, query: str, **kwargs):
+                return {"items": []}
+
+            def get_vacancies_page(self, page: int, **kwargs):
+                return {"items": []}
+
+            def _get_empty_response(self):
+                return {"items": []}
+
+            def _validate_vacancy(self, vacancy_data):
+                return True
+
+        self.cached_api = TestCachedAPI("test_cache")
 
     def test_cached_api_initialization(self) -> None:
         """Тестирование инициализации кэширующего API"""
         # Создаем конкретную реализацию
-        class TestCachedAPI(CachedAPI):
-            def get_vacancies(self, search_query: str, **kwargs):
-                return []
-            def _get_empty_response(self):
-                return {"items": []}
-            def _validate_vacancy(self, vacancy):
-                return True
-            def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs):
-                return []
-
         with patch('src.utils.cache.FileCache.__init__', return_value=None), \
              patch('pathlib.Path.__new__', return_value=MagicMock()):
             api = TestCachedAPI("test")

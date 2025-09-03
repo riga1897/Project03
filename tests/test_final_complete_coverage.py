@@ -276,7 +276,7 @@ class TestCompleteStorageModuleCoverage:
 
             # Тестируем создание PostgreSQL хранилища
             with patch('psycopg2.connect', return_value=self.mocks['connection']):
-                pg_storage = StorageFactory.create_storage('postgresql')
+                pg_storage = StorageFactory.create_storage('postgres')
                 assert pg_storage is not None
 
             # Тестируем создание JSON хранилища
@@ -540,7 +540,7 @@ class TestCompleteConfigurationCoverage:
             # Тестируем основные настройки
             assert hasattr(config, 'default_storage_type')
             storage_type = config.default_storage_type
-            assert storage_type in ['postgresql', 'json', 'memory']
+            assert storage_type in ['postgres', 'json', 'memory']
 
         except ImportError:
             assert True

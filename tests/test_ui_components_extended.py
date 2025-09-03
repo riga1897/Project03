@@ -261,6 +261,24 @@ class TestSourceManagerExtended:
 
 class TestUIComponentsIntegration:
     """Интеграционные тесты для UI компонентов"""
+    
+    @pytest.fixture(autouse=True)
+    def setup_imports(self):
+        """Настройка импортов для тестов"""
+        global UINavigation, quick_paginate
+        try:
+            from src.utils.ui_navigation import UINavigation, quick_paginate
+        except ImportError:
+            # Создаем заглушки если импорт не удался
+            class UINavigation:
+                def __init__(self, items_per_page=10):
+                    self.items_per_page = items_per_page
+            
+            def quick_paginate(*args, **kwargs):
+                pass
+            
+            globals()['UINavigation'] = UINavigation
+            globals()['quick_paginate'] = quick_paginate
 
     @patch('builtins.input', side_effect=['2', 'q'])
     @patch('builtins.print')

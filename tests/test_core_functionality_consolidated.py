@@ -310,8 +310,10 @@ class TestStorageModulesConsolidated:
 
         try:
             from src.storage.components.vacancy_repository import VacancyRepository
-
-            repo = VacancyRepository()
+            from unittest.mock import Mock
+            mock_db = Mock()
+            mock_validator = Mock()
+            repo = VacancyRepository(mock_db, mock_validator)
             assert repo is not None
 
             # Тестируем основные операции
@@ -648,7 +650,8 @@ class TestIntegrationScenariosConsolidated:
                 assert isinstance(parsed_data, dict)
 
             # Тестируем создание модели
-            vacancy = Vacancy(test_data)
+            test_data["url"] = "https://test.example.com"
+            vacancy = Vacancy(test_data, "https://test.example.com")
             assert vacancy is not None
 
         except ImportError:
@@ -658,11 +661,12 @@ class TestIntegrationScenariosConsolidated:
                     return data
 
             class Vacancy:
-                def __init__(self, data):
+                def __init__(self, data, url):
                     self.data = data
+                    self.url = url
 
             parser = HHParser()
-            vacancy = Vacancy(test_data)
+            vacancy = Vacancy(test_data, "https://test.example.com")
 
             assert parser is not None
             assert vacancy is not None

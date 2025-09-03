@@ -318,7 +318,7 @@ class TestAppConfigComprehensive:
         config = AppConfig()
 
         # Проверяем, что есть тип хранилища по умолчанию
-        assert config.default_storage_type in ["postgresql", "json", "memory"]
+        assert config.default_storage_type in ["postgres", "json", "memory"]
 
 
 class TestStorageFactoryComprehensive:
@@ -326,7 +326,7 @@ class TestStorageFactoryComprehensive:
 
     def test_storage_factory_postgresql(self) -> None:
         """Тестирование создания PostgreSQL хранилища"""
-        storage = StorageFactory.create_storage("postgresql")
+        storage = StorageFactory.create_storage("postgres")
 
         assert storage is not None
         assert hasattr(storage, 'save_vacancy') or hasattr(storage, 'save_vacancies')
