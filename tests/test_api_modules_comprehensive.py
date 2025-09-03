@@ -238,7 +238,19 @@ class TestCachedAPI:
         """Настройка для каждого теста"""
         # Создаем конкретную реализацию CachedAPI для тестов
         class TestCachedAPI(CachedAPI):
-            def get_vacancies(self, query: str, **kwargs):
+            def get_vacancies(self, search_query: str, **kwargs):
+                return [{"id": "test", "name": "Test Job"}]
+            
+            def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs):
+                return [{"id": "test", "name": "Test Job"}]
+            
+            def _get_empty_response(self):
+                return {"items": [], "found": 0}
+            
+            def _validate_vacancy(self, vacancy):
+                return isinstance(vacancy, dict) and "id" in vacancy and "name" in vacancy
+
+        self.cached_api = TestCachedAPI("test_cache")es(self, query: str, **kwargs):
                 return {"items": []}
 
             def get_vacancies_page(self, page: int, **kwargs):
