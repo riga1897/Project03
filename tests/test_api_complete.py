@@ -233,7 +233,7 @@ class TestUnifiedAPI:
         unified_api.get_hh_vacancies = Mock(return_value=[{"id": "hh1", "source": "hh"}])
         unified_api.get_sj_vacancies = Mock(return_value=[{"id": "sj1", "source": "sj"}])
         
-        result = unified_api.get_vacancies_from_all_sources("Python", sources=["hh", "sj"])
+        result = unified_api.get_vacancies_from_all_sources("Python")
         assert isinstance(result, list)
 
 
