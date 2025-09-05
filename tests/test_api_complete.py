@@ -119,7 +119,7 @@ class TestHeadHunterAPI:
             mock_connect.assert_called()
 
     
-def test_validate_vacancy(self, hh_api):
+    def test_validate_vacancy(self, hh_api):
         """Тест валидации вакансии"""
         if not API_MODULES_AVAILABLE:
             pytest.skip("API modules not available")
