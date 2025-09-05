@@ -1,11 +1,14 @@
-
-"""Абстрактные классы и базовые модели для работы с вакансиями."""
+"""
+Абстрактные классы и базовые модели для работы с вакансиями.
+"""
 
 import abc
 
 
 class AbstractVacancy(abc.ABC):
-    """Абстрактный класс для представления вакансии."""
+    """
+    Абстрактный класс для представления вакансии.
+    """
 
     @abc.abstractmethod
     def get_title(self) -> str:
@@ -40,7 +43,7 @@ class Vacancy(AbstractVacancy):
                  city: str):
         """
         Инициализировать вакансию.
-        
+
         Args:
             title: Название вакансии
             salary: Информация о зарплате
@@ -48,6 +51,7 @@ class Vacancy(AbstractVacancy):
             description: Описание вакансии
             city: Город размещения
         """
+
         self.title = title
         self.salary = salary
         self.url = url
