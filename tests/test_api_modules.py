@@ -1,4 +1,3 @@
-
 """
 Тесты для модулей API
 """
@@ -18,75 +17,75 @@ try:
     from src.api_modules.sj_api import SuperJobAPI
     from src.api_modules.base_api import BaseJobAPI
     from src.api_modules.cached_api import CachedAPI
-    SRC_AVAILABLE = True
+    API_MODULES_AVAILABLE = True
 except ImportError:
-    SRC_AVAILABLE = False
-    
+    API_MODULES_AVAILABLE = False
+
     class BaseAPI:
         """Базовый API класс для тестирования"""
-        
+
         def __init__(self):
             """Инициализация базового API"""
             self.base_url: str = "https://api.example.com"
             self.timeout: int = 30
             self.headers: Dict[str, str] = {}
-        
+
         def search_vacancies(self, query: str, **kwargs) -> List[Dict[str, Any]]:
             """
             Поиск вакансий
-            
+
             Args:
                 query: Поисковый запрос
                 **kwargs: Дополнительные параметры
-                
+
             Returns:
                 Список вакансий
             """
             return []
-        
+
         def get_vacancy_details(self, vacancy_id: str) -> Optional[Dict[str, Any]]:
             """
             Получение деталей вакансии
-            
+
             Args:
                 vacancy_id: ID вакансии
-                
+
             Returns:
                 Данные вакансии или None
             """
             return None
-        
+
         def _make_request(self, url: str, params: Dict[str, Any] = None) -> Dict[str, Any]:
             """
             Выполнение HTTP запроса
-            
+
             Args:
                 url: URL запроса
                 params: Параметры запроса
-                
+
             Returns:
                 Ответ сервера
             """
             return {"status": "success", "data": []}
-    
+
     class HeadHunterAPI(BaseAPI):
         """Тестовый API для HeadHunter"""
-        
+
         def __init__(self):
             """Инициализация HH API"""
             super().__init__()
             self.base_url = "https://api.hh.ru"
             self.source_name = "hh.ru"
-        
+
         def search_vacancies(self, query: str, page: int = 0, per_page: int = 20) -> List[Dict[str, Any]]:
             """
             Поиск вакансий в HH
-            
+
             Args:
                 query: Поисковый запрос
                 page: Номер страницы
                 per_page: Количество вакансий на странице
-                
+
             Returns:
                 Список вакансий
             """
@@ -101,14 +100,14 @@ except ImportError:
                 }
                 for i in range(min(per_page, 10))
             ]
-    
+
     class SuperJobAPI(BaseAPI):
         """Тестовый API для SuperJob"""
-        
+
         def __init__(self, api_key: str = "test_key"):
             """
             Инициализация SJ API
-            
+
             Args:
                 api_key: API ключ
             """
@@ -117,16 +116,16 @@ except ImportError:
             self.api_key = api_key
             self.source_name = "superjob.ru"
             self.headers = {"X-Api-App-Id": api_key}
-        
+
         def search_vacancies(self, query: str, page: int = 0, count: int = 20) -> List[Dict[str, Any]]:
             """
             Поиск вакансий в SuperJob
-            
+
             Args:
                 query: Поисковый запрос
                 page: Номер страницы
                 count: Количество вакансий на странице
-                
+
             Returns:
                 Список вакансий
             """
@@ -142,90 +141,116 @@ except ImportError:
                 }
                 for i in range(min(count, 10))
             ]
-    
-    class CachedAPI(BaseAPI):
+
+    class CachedAPI:
         """Тестовый кэшированный API"""
-        
-        def __init__(self, api_instance: BaseAPI):
+
+        def __init__(self, cache_dir: str = "test_cache"):
             """
             Инициализация кэшированного API
-            
+
             Args:
-                api_instance: Экземпляр API для кэширования
+                cache_dir: Директория кэша
             """
-            super().__init__()
-            self.api = api_instance
+            self.cache_dir = cache_dir
             self.cache: Dict[str, Any] = {}
             self.cache_ttl = 300  # 5 минут
-        
+
         def search_vacancies(self, query: str, **kwargs) -> List[Dict[str, Any]]:
             """
             Поиск вакансий с кэшированием
-            
+
             Args:
                 query: Поисковый запрос
                 **kwargs: Дополнительные параметры
-                
+
             Returns:
                 Список вакансий
             """
             cache_key = f"search_{query}_{kwargs}"
-            
+
             if cache_key in self.cache:
                 return self.cache[cache_key]
-            
-            result = self.api.search_vacancies(query, **kwargs)
+
+            result = [{"id": "test", "title": query}]
             self.cache[cache_key] = result
-            
+
             return result
-        
+
         def clear_cache(self) -> None:
             """Очистить кэш"""
             self.cache.clear()
-    
+
+    class ConcreteCachedAPI(CachedAPI if API_MODULES_AVAILABLE else object):
+        """Конкретная реализация CachedAPI для тестирования"""
+
+        def __init__(self, cache_dir: str = "test_cache"):
+            if API_MODULES_AVAILABLE:
+                # Инициализация без параметров, так как CachedAPI требует другие аргументы
+                super(CachedAPI, self).__init__()
+                self.cache_dir = cache_dir
+                self.cache = {}
+            else:
+                super().__init__()
+                self.cache_dir = cache_dir
+                self.cache = {}
+
+        def _get_empty_response(self):
+            return {"items": [], "found": 0}
+
+        def _validate_vacancy(self, vacancy):
+            return isinstance(vacancy, dict) and "id" in vacancy
+
+        def get_vacancies_page(self, search_query, page=0, **kwargs):
+            return [{"id": f"test_{page}", "title": search_query}]
+
+        def get_vacancies(self, search_query, **kwargs):
+            return [{"id": "test", "title": search_query}]
+
+
     class UnifiedAPI:
         """Тестовый унифицированный API"""
-        
+
         def __init__(self):
             """Инициализация унифицированного API"""
             self.hh_api = HeadHunterAPI()
             self.sj_api = SuperJobAPI()
             self.cached_hh = CachedAPI(self.hh_api)
             self.cached_sj = CachedAPI(self.sj_api)
-            
+
             self.available_sources = ["hh.ru", "superjob.ru", "all"]
-        
+
         def search_vacancies(self, query: str, sources: List[str] = None, **kwargs) -> List[Dict[str, Any]]:
             """
             Поиск вакансий через несколько источников
-            
+
             Args:
                 query: Поисковый запрос
                 sources: Список источников
                 **kwargs: Дополнительные параметры
-                
+
             Returns:
                 Объединенный список вакансий
             """
             if sources is None:
                 sources = ["all"]
-            
+
             results = []
-            
+
             if "hh.ru" in sources or "all" in sources:
                 hh_results = self.cached_hh.search_vacancies(query, **kwargs)
                 results.extend(hh_results)
-            
+
             if "superjob.ru" in sources or "all" in sources:
                 sj_results = self.cached_sj.search_vacancies(query, **kwargs)
                 results.extend(sj_results)
-            
+
             return results
-        
+
         def get_available_sources(self) -> List[str]:
             """
             Получить доступные источники
-            
+
             Returns:
                 Список доступных источников
             """
@@ -236,7 +261,7 @@ class TestAPIModules:
     """Комплексные тесты для модулей API"""
 
     @pytest.fixture
-    def base_api(self) -> BaseJobAPI:
+    def base_api(self) -> BaseAPI:
         """Фикстура базового API"""
         return BaseAPI()
 
@@ -272,7 +297,7 @@ class TestAPIModules:
         # Тест поиска вакансий
         results = base_api.search_vacancies("Python")
         assert isinstance(results, list)
-        
+
         # Тест получения деталей вакансии
         details = base_api.get_vacancy_details("123")
         assert details is None or isinstance(details, dict)
@@ -286,10 +311,10 @@ class TestAPIModules:
     def test_hh_api_search_vacancies(self, hh_api):
         """Тест поиска вакансий в HeadHunter API"""
         results = hh_api.search_vacancies("Python", page=0, per_page=5)
-        
+
         assert isinstance(results, list)
         assert len(results) <= 5
-        
+
         if results:
             vacancy = results[0]
             assert "id" in vacancy
@@ -308,10 +333,10 @@ class TestAPIModules:
     def test_sj_api_search_vacancies(self, sj_api):
         """Тест поиска вакансий в SuperJob API"""
         results = sj_api.search_vacancies("Java", page=0, count=3)
-        
+
         assert isinstance(results, list)
         assert len(results) <= 3
-        
+
         if results:
             vacancy = results[0]
             assert "id" in vacancy
@@ -329,15 +354,15 @@ class TestAPIModules:
     def test_cached_api_caching_functionality(self, cached_api):
         """Тест функциональности кэширования"""
         query = "Python"
-        
+
         # Первый запрос - должен попасть в API и кэш
         results1 = cached_api.search_vacancies(query)
         assert isinstance(results1, list)
-        
+
         # Проверяем, что результат сохранен в кэше
         cache_key = f"search_{query}_{{}}"
         assert cache_key in cached_api.cache
-        
+
         # Второй запрос - должен взяться из кэша
         results2 = cached_api.search_vacancies(query)
         assert results1 == results2
@@ -347,7 +372,7 @@ class TestAPIModules:
         # Делаем запрос для заполнения кэша
         cached_api.search_vacancies("Python")
         assert len(cached_api.cache) > 0
-        
+
         # Очищаем кэш
         cached_api.clear_cache()
         assert len(cached_api.cache) == 0
@@ -362,7 +387,7 @@ class TestAPIModules:
     def test_unified_api_get_available_sources(self, unified_api):
         """Тест получения доступных источников"""
         sources = unified_api.get_available_sources()
-        
+
         assert isinstance(sources, list)
         assert "hh.ru" in sources
         assert "superjob.ru" in sources
@@ -373,7 +398,7 @@ class TestAPIModules:
         # Поиск только в HH
         hh_results = unified_api.search_vacancies("Python", sources=["hh.ru"])
         assert isinstance(hh_results, list)
-        
+
         # Поиск только в SuperJob
         sj_results = unified_api.search_vacancies("Python", sources=["superjob.ru"])
         assert isinstance(sj_results, list)
@@ -383,7 +408,7 @@ class TestAPIModules:
         # Поиск во всех источниках
         all_results = unified_api.search_vacancies("Python", sources=["all"])
         assert isinstance(all_results, list)
-        
+
         # Поиск в конкретных источниках
         specific_results = unified_api.search_vacancies("Python", sources=["hh.ru", "superjob.ru"])
         assert isinstance(specific_results, list)
@@ -426,9 +451,9 @@ class TestAPIModules:
         # Полный цикл: поиск -> получение результатов -> проверка данных
         query = "Python Developer"
         results = unified_api.search_vacancies(query, sources=["all"])
-        
+
         assert isinstance(results, list)
-        
+
         if results:
             # Проверяем структуру результатов
             for result in results[:3]:  # Проверяем первые 3 результата
@@ -442,51 +467,51 @@ class TestAPIModules:
     def test_api_performance(self, unified_api):
         """Тест производительности API"""
         import time
-        
+
         start_time = time.time()
-        
+
         # Выполняем несколько поисковых запросов
         queries = ["Python", "Java", "JavaScript"]
         for query in queries:
             unified_api.search_vacancies(query, sources=["hh.ru"])
-        
+
         end_time = time.time()
         execution_time = end_time - start_time
-        
+
         # API операции должны быть относительно быстрыми
         assert execution_time < 5.0  # Менее 5 секунд для 3 запросов
 
     def test_api_caching_performance(self, cached_api):
         """Тест производительности кэширования"""
         import time
-        
+
         query = "Python"
-        
+
         # Первый запрос (без кэша)
         start_time = time.time()
         cached_api.search_vacancies(query)
         first_call_time = time.time() - start_time
-        
+
         # Второй запрос (из кэша)
         start_time = time.time()
         cached_api.search_vacancies(query)
         cached_call_time = time.time() - start_time
-        
+
         # Кэшированный вызов должен быть быстрее
         assert cached_call_time <= first_call_time
 
     def test_api_memory_usage(self, unified_api):
         """Тест использования памяти API"""
         import sys
-        
+
         initial_refs = sys.getrefcount(unified_api)
-        
+
         # Выполняем много запросов
         for i in range(20):
             unified_api.search_vacancies(f"query_{i}")
-        
+
         final_refs = sys.getrefcount(unified_api)
-        
+
         # Количество ссылок не должно значительно увеличиться
         assert final_refs - initial_refs <= 5
 
@@ -494,24 +519,24 @@ class TestAPIModules:
         """Тест параллельных запросов к API"""
         import threading
         import time
-        
+
         results = []
-        
+
         def search_worker(query):
             result = unified_api.search_vacancies(f"Python {query}")
             results.append(len(result) >= 0)  # Проверяем, что запрос прошел
-        
+
         # Создаем несколько потоков
         threads = []
         for i in range(3):
             thread = threading.Thread(target=search_worker, args=(i,))
             threads.append(thread)
             thread.start()
-        
+
         # Ждем завершения всех потоков
         for thread in threads:
             thread.join()
-        
+
         # Все запросы должны завершиться успешно
         assert all(results)
         assert len(results) == 3
@@ -521,16 +546,16 @@ class TestAPIModules:
         # Проверяем типы возвращаемых значений
         sources = unified_api.get_available_sources()
         assert isinstance(sources, list)
-        
+
         results = unified_api.search_vacancies("Python")
         assert isinstance(results, list)
-        
+
         for result in results[:1]:  # Проверяем первый результат
             assert isinstance(result, dict)
 
     def test_import_availability(self):
         """Тест доступности импорта модулей"""
-        if SRC_AVAILABLE:
+        if API_MODULES_AVAILABLE:
             # Проверяем, что все классы импортируются корректно
             assert UnifiedAPI is not None
             assert HeadHunterAPI is not None

@@ -29,6 +29,40 @@ class ConcreteFormatter(BaseFormatter if BASE_FORMATTER_AVAILABLE else object):
     def format_vacancies_list(self, vacancies):
         """Форматирование списка вакансий"""
         return [self.format_vacancy(v) for v in vacancies]
+    
+    # Реализация всех абстрактных методов BaseFormatter
+    def clean_html_tags(self, text):
+        return str(text) if text else ""
+    
+    def format_company_name(self, company):
+        return str(company) if company else "N/A"
+    
+    def format_currency(self, currency):
+        return str(currency) if currency else "RUR"
+    
+    def format_date(self, date):
+        return str(date) if date else ""
+    
+    def format_employment_type(self, employment):
+        return str(employment) if employment else ""
+    
+    def format_experience(self, experience):
+        return str(experience) if experience else ""
+    
+    def format_number(self, number):
+        return str(number) if number is not None else "0"
+    
+    def format_salary(self, salary):
+        return str(salary) if salary else ""
+    
+    def format_schedule(self, schedule):
+        return str(schedule) if schedule else ""
+    
+    def format_text(self, text):
+        return str(text) if text else ""
+    
+    def format_vacancy_info(self, vacancy):
+        return self.format_vacancy(vacancy)
 
 
 class TestBaseFormatter:

@@ -13,12 +13,22 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 try:
-    from src.api_modules.get_api import APIConnector
+    from src.api_modules.get_api import APIConnector as GetAPI
     from src.api_modules.base_api import BaseJobAPI
     GET_API_AVAILABLE = True
 except ImportError:
     GET_API_AVAILABLE = False
-    GetAPI = object
+    
+    class GetAPI:
+        def __init__(self):
+            self.session = Mock()
+        
+        def _make_request(self, url, params=None, timeout=30):
+            return {}
+        
+        def get_vacancies(self, query):
+            raise NotImplementedError()
+    
     BaseJobAPI = object
 
 
