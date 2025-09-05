@@ -1,10 +1,6 @@
 """
-Модуль сервисов для работы с вакансиями на основе SOLID принципов
-
-Содержит:
-- DeduplicationService: Сервис дедупликации вакансий
-- FilteringService: Сервис фильтрации по целевым компаниям
-- VacancyStorageService: Основной сервис (замена postgres_saver)
+Сервисы для работы с данными в хранилище.
+Включает в себя фильтрацию, дедупликацию и обработку данных
 """
 
 from .deduplication_service import DeduplicationService, SQLDeduplicationStrategy

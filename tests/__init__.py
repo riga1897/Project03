@@ -1,1 +1,1 @@
-# Tests package initialization
+"""Тесты для приложения поиска вакансий."""

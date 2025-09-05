@@ -1,3 +1,4 @@
+"""Модули для работы с хранением данных."""
 # Обновлены импорты в __init__.py для включения AbstractDBManager.
 from .abstract import AbstractVacancyStorage
 from .abstract_db_manager import AbstractDBManager
