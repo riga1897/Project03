@@ -21,8 +21,40 @@ class ConcreteFormatter(BaseFormatter if BASE_FORMATTER_AVAILABLE else object):
     """Конкретная реализация BaseFormatter для тестирования"""
 
     def format(self, data):
-        """Конкретная реализация метода format"""
-        return f"Formatted: {data}"
+        return str(data)
+
+    def clean_html_tags(self, text):
+        return text
+
+    def format_company_name(self, company):
+        return str(company)
+
+    def format_currency(self, amount):
+        return str(amount)
+
+    def format_date(self, date):
+        return str(date)
+
+    def format_employment_type(self, employment):
+        return str(employment)
+
+    def format_experience(self, experience):
+        return str(experience)
+
+    def format_number(self, number):
+        return str(number)
+
+    def format_salary(self, salary):
+        return str(salary)
+
+    def format_schedule(self, schedule):
+        return str(schedule)
+
+    def format_text(self, text):
+        return str(text)
+
+    def format_vacancy_info(self, vacancy):
+        return str(vacancy)
 
 
 class TestBaseFormatter:
@@ -58,7 +90,11 @@ class TestBaseFormatter:
             pytest.skip("BaseFormatter not available")
 
         abstract_methods = BaseFormatter.__abstractmethods__
-        assert 'format' in abstract_methods
+        expected_methods = {'clean_html_tags', 'format_company_name', 'format_currency',
+                          'format_date', 'format_employment_type', 'format_experience',
+                          'format_number', 'format_salary', 'format_schedule',
+                          'format_text', 'format_vacancy_info'}
+        assert expected_methods.issubset(abstract_methods)
 
     def test_logging_setup(self):
         """Тест настройки логирования"""
