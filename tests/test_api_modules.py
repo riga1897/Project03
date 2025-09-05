@@ -261,27 +261,27 @@ class TestAPIModules:
     """Комплексные тесты для модулей API"""
 
     @pytest.fixture
-    def base_api(self) -> BaseAPI:
+    def base_api(self):
         """Фикстура базового API"""
         return BaseAPI()
 
     @pytest.fixture
-    def hh_api(self) -> HeadHunterAPI:
+    def hh_api(self):
         """Фикстура HeadHunter API"""
         return HeadHunterAPI()
 
     @pytest.fixture
-    def sj_api(self) -> SuperJobAPI:
+    def sj_api(self):
         """Фикстура SuperJob API"""
         return SuperJobAPI("test_key")
 
     @pytest.fixture
-    def unified_api(self) -> UnifiedAPI:
+    def unified_api(self):
         """Фикстура унифицированного API"""
         return UnifiedAPI()
 
     @pytest.fixture
-    def cached_api(self, hh_api) -> CachedAPI:
+    def cached_api(self, hh_api):
         """Фикстура кэшированного API"""
         return CachedAPI(hh_api)
 
