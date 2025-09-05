@@ -1,0 +1,394 @@
+
+"""
+Полные тесты для MainApplicationInterface
+"""
+
+import pytest
+from unittest.mock import Mock, patch, MagicMock
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+try:
+    from src.interfaces.main_application_interface import MainApplicationInterface
+    INTERFACE_AVAILABLE = True
+except ImportError:
+    INTERFACE_AVAILABLE = False
+    MainApplicationInterface = object
+
+
+class ConcreteMainApp(MainApplicationInterface if INTERFACE_AVAILABLE else object):
+    """Конкретная реализация MainApplicationInterface для тестирования"""
+    
+    def run_application(self):
+        self.start_application()
+        return "Application started"
+    
+    def start_application(self):
+        pass
+
+
+@pytest.mark.skipif(not INTERFACE_AVAILABLE, reason="MainApplicationInterface not available")
+class TestMainApplicationInterfaceComplete:
+    """Полное тестирование MainApplicationInterface"""
+    
+    @pytest.fixture
+    def mock_provider(self):
+        """Мок провайдера данных"""
+        return Mock()
+    
+    @pytest.fixture
+    def mock_processor(self):
+        """Мок процессора"""
+        return Mock()
+    
+    @pytest.fixture
+    def mock_storage(self):
+        """Мок хранилища"""
+        return Mock()
+    
+    @pytest.fixture
+    def app_interface(self, mock_provider, mock_processor, mock_storage):
+        """Экземпляр интерфейса приложения"""
+        return ConcreteMainApp(mock_provider, mock_processor, mock_storage)
+    
+    def test_init_with_dependencies(self, mock_provider, mock_processor, mock_storage):
+        """Тест инициализации с зависимостями"""
+        app = ConcreteMainApp(mock_provider, mock_processor, mock_storage)
+        assert app.data_provider == mock_provider
+        assert app.processor == mock_processor
+        assert app.storage == mock_storage
+    
+    def test_run_application_abstract(self):
+        """Тест что базовый класс абстрактный"""
+        with pytest.raises(TypeError):
+            MainApplicationInterface(Mock(), Mock(), Mock())
+    
+    def test_concrete_run_application(self, app_interface):
+        """Тест конкретной реализации run_application"""
+        with patch.object(app_interface, 'start_application') as mock_start:
+            result = app_interface.run_application()
+            assert result == "Application started"
+            mock_start.assert_called_once()
+    
+    def test_get_data_sources(self, app_interface):
+        """Тест получения источников данных"""
+        mock_sources = ["hh", "sj"]
+        app_interface.data_provider.get_available_sources.return_value = mock_sources
+        
+        result = app_interface.get_data_sources()
+        assert result == mock_sources
+    
+    def test_get_data_sources_error(self, app_interface):
+        """Тест обработки ошибок при получении источников"""
+        app_interface.data_provider.get_available_sources.side_effect = Exception("Provider error")
+        
+        result = app_interface.get_data_sources()
+        assert result == []
+    
+    def test_validate_sources(self, app_interface):
+        """Тест валидации источников"""
+        sources = ["hh", "sj"]
+        app_interface.data_provider.validate_sources.return_value = sources
+        
+        result = app_interface.validate_sources(sources)
+        assert result == sources
+    
+    def test_validate_sources_error(self, app_interface):
+        """Тест обработки ошибок валидации источников"""
+        app_interface.data_provider.validate_sources.side_effect = Exception("Validation error")
+        
+        result = app_interface.validate_sources(["invalid"])
+        assert result == []
+    
+    def test_process_data(self, app_interface):
+        """Тест обработки данных"""
+        mock_data = [{"id": "1", "title": "Test Job"}]
+        processed_data = [{"id": "1", "title": "Processed Job"}]
+        
+        app_interface.processor.process.return_value = processed_data
+        
+        result = app_interface.process_data(mock_data)
+        assert result == processed_data
+        app_interface.processor.process.assert_called_once_with(mock_data)
+    
+    def test_process_data_empty(self, app_interface):
+        """Тест обработки пустых данных"""
+        result = app_interface.process_data([])
+        assert result == []
+    
+    def test_process_data_none(self, app_interface):
+        """Тест обработки None данных"""
+        result = app_interface.process_data(None)
+        assert result == []
+    
+    def test_process_data_error(self, app_interface):
+        """Тест обработки ошибок при обработке данных"""
+        app_interface.processor.process.side_effect = Exception("Processing error")
+        
+        result = app_interface.process_data([{"id": "1"}])
+        assert result == []
+    
+    def test_store_data(self, app_interface):
+        """Тест сохранения данных"""
+        mock_data = [{"id": "1", "title": "Test Job"}]
+        app_interface.storage.save.return_value = True
+        
+        result = app_interface.store_data(mock_data)
+        assert result is True
+        app_interface.storage.save.assert_called_once_with(mock_data)
+    
+    def test_store_data_empty(self, app_interface):
+        """Тест сохранения пустых данных"""
+        result = app_interface.store_data([])
+        assert result is False
+    
+    def test_store_data_none(self, app_interface):
+        """Тест сохранения None данных"""
+        result = app_interface.store_data(None)
+        assert result is False
+    
+    def test_store_data_error(self, app_interface):
+        """Тест обработки ошибок при сохранении данных"""
+        app_interface.storage.save.side_effect = Exception("Storage error")
+        
+        result = app_interface.store_data([{"id": "1"}])
+        assert result is False
+    
+    def test_search_data(self, app_interface):
+        """Тест поиска данных"""
+        mock_results = [{"id": "1", "title": "Python Job"}]
+        app_interface.data_provider.search.return_value = mock_results
+        
+        result = app_interface.search_data("python", sources=["hh"])
+        assert result == mock_results
+        app_interface.data_provider.search.assert_called_once_with("python", sources=["hh"])
+    
+    def test_search_data_no_sources(self, app_interface):
+        """Тест поиска данных без указания источников"""
+        mock_results = [{"id": "1", "title": "Python Job"}]
+        available_sources = ["hh", "sj"]
+        
+        app_interface.data_provider.get_available_sources.return_value = available_sources
+        app_interface.data_provider.search.return_value = mock_results
+        
+        result = app_interface.search_data("python")
+        assert result == mock_results
+        app_interface.data_provider.search.assert_called_once_with("python", sources=available_sources)
+    
+    def test_search_data_empty_query(self, app_interface):
+        """Тест поиска с пустым запросом"""
+        result = app_interface.search_data("")
+        assert result == []
+    
+    def test_search_data_none_query(self, app_interface):
+        """Тест поиска с None запросом"""
+        result = app_interface.search_data(None)
+        assert result == []
+    
+    def test_search_data_error(self, app_interface):
+        """Тест обработки ошибок при поиске"""
+        app_interface.data_provider.search.side_effect = Exception("Search error")
+        
+        result = app_interface.search_data("python")
+        assert result == []
+    
+    def test_get_storage_stats(self, app_interface):
+        """Тест получения статистики хранилища"""
+        mock_stats = {"total": 100, "sources": {"hh": 60, "sj": 40}}
+        app_interface.storage.get_stats.return_value = mock_stats
+        
+        result = app_interface.get_storage_stats()
+        assert result == mock_stats
+        app_interface.storage.get_stats.assert_called_once()
+    
+    def test_get_storage_stats_error(self, app_interface):
+        """Тест обработки ошибок при получении статистики"""
+        app_interface.storage.get_stats.side_effect = Exception("Stats error")
+        
+        result = app_interface.get_storage_stats()
+        assert result == {}
+    
+    def test_clear_storage_data(self, app_interface):
+        """Тест очистки данных хранилища"""
+        app_interface.storage.clear.return_value = True
+        
+        result = app_interface.clear_storage_data()
+        assert result is True
+        app_interface.storage.clear.assert_called_once()
+    
+    def test_clear_storage_data_error(self, app_interface):
+        """Тест обработки ошибок при очистке хранилища"""
+        app_interface.storage.clear.side_effect = Exception("Clear error")
+        
+        result = app_interface.clear_storage_data()
+        assert result is False
+    
+    def test_get_cached_data(self, app_interface):
+        """Тест получения кэшированных данных"""
+        mock_cached_data = [{"id": "1", "title": "Cached Job"}]
+        app_interface.data_provider.get_cached_data.return_value = mock_cached_data
+        
+        result = app_interface.get_cached_data("python")
+        assert result == mock_cached_data
+        app_interface.data_provider.get_cached_data.assert_called_once_with("python")
+    
+    def test_get_cached_data_error(self, app_interface):
+        """Тест обработки ошибок при получении кэшированных данных"""
+        app_interface.data_provider.get_cached_data.side_effect = Exception("Cache error")
+        
+        result = app_interface.get_cached_data("python")
+        assert result == []
+    
+    def test_clear_cache_data(self, app_interface):
+        """Тест очистки кэшированных данных"""
+        sources = {"hh": True, "sj": False}
+        app_interface.data_provider.clear_cache.return_value = True
+        
+        result = app_interface.clear_cache_data(sources)
+        assert result is True
+        app_interface.data_provider.clear_cache.assert_called_once_with(sources)
+    
+    def test_clear_cache_data_error(self, app_interface):
+        """Тест обработки ошибок при очистке кэша"""
+        app_interface.data_provider.clear_cache.side_effect = Exception("Cache clear error")
+        
+        result = app_interface.clear_cache_data({"hh": True})
+        assert result is False
+    
+    def test_export_data(self, app_interface):
+        """Тест экспорта данных"""
+        mock_data = [{"id": "1", "title": "Export Job"}]
+        app_interface.storage.export.return_value = "/path/to/export.json"
+        
+        result = app_interface.export_data(mock_data, "json", "/tmp/export.json")
+        assert result == "/path/to/export.json"
+        app_interface.storage.export.assert_called_once_with(mock_data, "json", "/tmp/export.json")
+    
+    def test_export_data_empty(self, app_interface):
+        """Тест экспорта пустых данных"""
+        result = app_interface.export_data([], "json", "/tmp/export.json")
+        assert result is None
+    
+    def test_export_data_error(self, app_interface):
+        """Тест обработки ошибок при экспорте"""
+        app_interface.storage.export.side_effect = Exception("Export error")
+        
+        result = app_interface.export_data([{"id": "1"}], "json", "/tmp/export.json")
+        assert result is None
+    
+    def test_import_data(self, app_interface):
+        """Тест импорта данных"""
+        mock_imported_data = [{"id": "1", "title": "Imported Job"}]
+        app_interface.storage.import_data.return_value = mock_imported_data
+        
+        result = app_interface.import_data("/path/to/import.json", "json")
+        assert result == mock_imported_data
+        app_interface.storage.import_data.assert_called_once_with("/path/to/import.json", "json")
+    
+    def test_import_data_error(self, app_interface):
+        """Тест обработки ошибок при импорте"""
+        app_interface.storage.import_data.side_effect = Exception("Import error")
+        
+        result = app_interface.import_data("/path/to/import.json", "json")
+        assert result == []
+    
+    def test_setup_logging(self, app_interface):
+        """Тест настройки логирования"""
+        with patch('logging.basicConfig') as mock_config:
+            app_interface.setup_logging("DEBUG")
+            mock_config.assert_called_once()
+    
+    def test_setup_logging_error(self, app_interface):
+        """Тест обработки ошибок настройки логирования"""
+        with patch('logging.basicConfig', side_effect=Exception("Logging error")):
+            # Не должно падать
+            app_interface.setup_logging("DEBUG")
+    
+    def test_validate_configuration(self, app_interface):
+        """Тест валидации конфигурации"""
+        mock_config = {"api_key": "test", "db_url": "postgres://test"}
+        
+        with patch.object(app_interface, '_check_api_keys', return_value=True), \
+             patch.object(app_interface, '_check_database_connection', return_value=True):
+            result = app_interface.validate_configuration(mock_config)
+            assert result is True
+    
+    def test_validate_configuration_invalid(self, app_interface):
+        """Тест валидации некорректной конфигурации"""
+        mock_config = {"invalid": "config"}
+        
+        with patch.object(app_interface, '_check_api_keys', return_value=False):
+            result = app_interface.validate_configuration(mock_config)
+            assert result is False
+    
+    def test_check_api_keys(self, app_interface):
+        """Тест проверки API ключей"""
+        config = {"hh_api_key": "test_hh", "sj_api_key": "test_sj"}
+        result = app_interface._check_api_keys(config)
+        assert result is True
+    
+    def test_check_api_keys_missing(self, app_interface):
+        """Тест проверки отсутствующих API ключей"""
+        config = {}
+        result = app_interface._check_api_keys(config)
+        assert result is False
+    
+    def test_check_database_connection(self, app_interface):
+        """Тест проверки соединения с БД"""
+        config = {"db_url": "postgresql://test"}
+        
+        with patch.object(app_interface.storage, 'test_connection', return_value=True):
+            result = app_interface._check_database_connection(config)
+            assert result is True
+    
+    def test_check_database_connection_fail(self, app_interface):
+        """Тест неудачной проверки соединения с БД"""
+        config = {"db_url": "postgresql://invalid"}
+        
+        with patch.object(app_interface.storage, 'test_connection', return_value=False):
+            result = app_interface._check_database_connection(config)
+            assert result is False
+
+
+@pytest.mark.skipif(not INTERFACE_AVAILABLE, reason="MainApplicationInterface not available")
+class TestMainApplicationInterfaceIntegration:
+    """Интеграционные тесты MainApplicationInterface"""
+    
+    def test_full_workflow(self):
+        """Тест полного рабочего процесса"""
+        mock_provider = Mock()
+        mock_processor = Mock()
+        mock_storage = Mock()
+        
+        # Настройка моков
+        mock_provider.search.return_value = [{"id": "1", "title": "Test Job"}]
+        mock_processor.process.return_value = [{"id": "1", "title": "Processed Job"}]
+        mock_storage.save.return_value = True
+        
+        app = ConcreteMainApp(mock_provider, mock_processor, mock_storage)
+        
+        # Выполняем полный цикл
+        search_results = app.search_data("python")
+        processed_data = app.process_data(search_results)
+        saved = app.store_data(processed_data)
+        
+        assert len(search_results) == 1
+        assert len(processed_data) == 1
+        assert saved is True
+    
+    def test_error_recovery(self):
+        """Тест восстановления после ошибок"""
+        mock_provider = Mock()
+        mock_processor = Mock()
+        mock_storage = Mock()
+        
+        # Настройка ошибок
+        mock_provider.search.side_effect = Exception("Search error")
+        
+        app = ConcreteMainApp(mock_provider, mock_processor, mock_storage)
+        
+        # Приложение должно справляться с ошибками
+        search_results = app.search_data("python")
+        assert search_results == []
