@@ -216,9 +216,25 @@ class TestUnifiedAPI:
         if not API_MODULES_AVAILABLE:
             return Mock()
         
-        with patch('src.api_modules.hh_api.HeadHunterAPI'), \
-             patch('src.api_modules.sj_api.SuperJobAPI'):
-            return UnifiedAPI()
+        with patch('src.api_modules.unified_api.HeadHunterAPI') as mock_hh, \
+             patch('src.api_modules.unified_api.SuperJobAPI') as mock_sj, \
+             patch('src.api_modules.unified_api.SuperJobParser') as mock_parser:
+            
+            # Мокаем конструкторы API
+            mock_hh_instance = Mock()
+            mock_sj_instance = Mock() 
+            mock_parser_instance = Mock()
+            
+            mock_hh.return_value = mock_hh_instance
+            mock_sj.return_value = mock_sj_instance
+            mock_parser.return_value = mock_parser_instance
+            
+            api = UnifiedAPI()
+            api.hh_api = mock_hh_instance
+            api.sj_api = mock_sj_instance
+            api.parser = mock_parser_instance
+            
+            return api
     
     def test_init(self, unified_api):
         """Тест инициализации"""
@@ -229,12 +245,18 @@ class TestUnifiedAPI:
         if not API_MODULES_AVAILABLE:
             pytest.skip("API modules not available")
         
-        # Мокаем методы получения вакансий
-        unified_api.get_hh_vacancies = Mock(return_value=[{"id": "hh1", "source": "hh"}])
-        unified_api.get_sj_vacancies = Mock(return_value=[{"id": "sj1", "source": "sj"}])
+        # Полностью мокаем get_vacancies_from_sources чтобы не было реальных сетевых вызовов
+        mock_vacancies = [
+            {"id": "hh1", "source": "hh", "title": "Python Developer"},
+            {"id": "sj1", "source": "sj", "title": "Python Engineer"}
+        ]
         
-        result = unified_api.get_vacancies_from_all_sources("Python")
-        assert isinstance(result, list)
+        with patch.object(unified_api, 'get_vacancies_from_sources', return_value=mock_vacancies) as mock_get:
+            result = unified_api.get_vacancies_from_all_sources("Python")
+            
+            assert isinstance(result, list)
+            assert len(result) == 2
+            mock_get.assert_called_once_with("Python", sources=["hh", "sj"])
 
 
 class ConcreteCachedAPI(CachedAPI if API_MODULES_AVAILABLE else object):
