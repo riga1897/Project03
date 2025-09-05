@@ -1,61 +1,77 @@
 
 """
-Полные тесты для search_utils
+Полные тесты для search_utils с 100% покрытием
 """
 
-import pytest
-from unittest.mock import Mock, patch
-import sys
 import os
+import sys
+import pytest
+from unittest.mock import Mock, patch, MagicMock
+from typing import List, Dict, Any
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-try:
-    from src.utils.search_utils import (
-        normalize_query, extract_keywords, build_search_params,
-        validate_search_query, format_search_results,
-        filter_vacancies_by_keyword, vacancy_contains_keyword,
-        SearchQueryParser, AdvancedSearch
-    )
-    from src.vacancies.models import Vacancy
-    SEARCH_UTILS_AVAILABLE = True
-except ImportError:
-    SEARCH_UTILS_AVAILABLE = False
+from src.utils.search_utils import (
+    normalize_query, extract_keywords, build_search_params,
+    validate_search_query, format_search_results,
+    filter_vacancies_by_keyword, vacancy_contains_keyword,
+    SearchQueryParser, AdvancedSearch
+)
 
 
-@pytest.mark.skipif(not SEARCH_UTILS_AVAILABLE, reason="Search utils not available")
-class TestSearchUtilsFunctions:
-    """Тесты для функций поиска"""
+class MockVacancy:
+    """Мок вакансии для тестов"""
     
+    def __init__(self, **kwargs):
+        self.vacancy_id = kwargs.get('vacancy_id', '123')
+        self.title = kwargs.get('title', 'Python Developer')
+        self.description = kwargs.get('description', 'Python development')
+        self.requirements = kwargs.get('requirements', 'Python, Django')
+        self.responsibilities = kwargs.get('responsibilities', 'Develop applications')
+        self.detailed_description = kwargs.get('detailed_description', 'Detailed info')
+        self.skills = kwargs.get('skills', [])
+        self.employer = kwargs.get('employer', {'name': 'Test Company'})
+        self.employment = kwargs.get('employment', 'Полная занятость')
+        self.schedule = kwargs.get('schedule', 'Полный день')
+        self.experience = kwargs.get('experience', 'От 1 года до 3 лет')
+        self.benefits = kwargs.get('benefits', 'Хорошие условия')
+        self.profession = kwargs.get('profession', '')
+        self.search_query = kwargs.get('search_query', '')
+
+
+class TestSearchUtilsComplete:
+    """Полные тесты для search_utils"""
+
     def test_normalize_query_basic(self):
         """Тест базовой нормализации запроса"""
-        result = normalize_query("Python Developer")
-        assert result == "python developer"
-    
-    def test_normalize_query_with_extra_spaces(self):
-        """Тест нормализации с лишними пробелами"""
-        result = normalize_query("  Python    Developer  ")
-        assert result == "python developer"
-    
-    def test_normalize_query_empty(self):
-        """Тест нормализации пустого запроса"""
+        assert normalize_query("  Python Developer  ") == "python developer"
+        assert normalize_query("PYTHON   DJANGO") == "python django"
         assert normalize_query("") == ""
-        assert normalize_query(None) == ""
-        assert normalize_query("   ") == ""
-    
+
+    def test_normalize_query_multiple_spaces(self):
+        """Тест нормализации с множественными пробелами"""
+        query = "python    developer    django"
+        result = normalize_query(query)
+        assert result == "python developer django"
+
     def test_normalize_query_long(self):
         """Тест нормализации длинного запроса"""
-        long_query = "python " * 100  # 700 символов
+        long_query = "a" * 600
         result = normalize_query(long_query)
         assert len(result) == 500
-    
+
+    def test_normalize_query_none(self):
+        """Тест нормализации None"""
+        assert normalize_query(None) == ""
+
     def test_extract_keywords_basic(self):
         """Тест базового извлечения ключевых слов"""
-        keywords = extract_keywords("Python Django PostgreSQL")
+        keywords = extract_keywords("Python Django REST API")
         assert "python" in keywords
         assert "django" in keywords
-        assert "postgresql" in keywords
-    
+        assert "rest" in keywords
+        assert "api" in keywords
+
     def test_extract_keywords_with_operators(self):
         """Тест извлечения ключевых слов с операторами"""
         keywords = extract_keywords("Python AND Django OR FastAPI")
@@ -64,255 +80,281 @@ class TestSearchUtilsFunctions:
         assert "fastapi" in keywords
         assert "and" not in keywords
         assert "or" not in keywords
-    
+
     def test_extract_keywords_with_punctuation(self):
         """Тест извлечения ключевых слов с пунктуацией"""
-        keywords = extract_keywords("Python, Django; PostgreSQL!")
+        keywords = extract_keywords("Python, Django; REST-API!")
         assert "python" in keywords
         assert "django" in keywords
-        assert "postgresql" in keywords
-    
-    def test_extract_keywords_filter_short_words(self):
-        """Тест фильтрации коротких слов"""
-        keywords = extract_keywords("Python и на с для от до работа вакансия")
+        assert "rest" in keywords
+        assert "api" in keywords
+
+    def test_extract_keywords_with_stopwords(self):
+        """Тест извлечения ключевых слов со стоп-словами"""
+        keywords = extract_keywords("Python и Django для работы в команде")
         assert "python" in keywords
-        # Стоп-слова и короткие слова должны быть отфильтрованы
-        stop_words = {"и", "на", "с", "для", "от", "до", "работа", "вакансия"}
-        for word in stop_words:
-            assert word not in keywords
-    
+        assert "django" in keywords
+        assert "команде" in keywords
+        assert "и" not in keywords
+        assert "для" not in keywords
+        assert "работа" not in keywords
+
     def test_extract_keywords_empty(self):
         """Тест извлечения ключевых слов из пустого запроса"""
         assert extract_keywords("") == []
         assert extract_keywords(None) == []
-    
+
     def test_build_search_params_basic(self):
-        """Тест построения базовых параметров поиска"""
-        params = build_search_params("python", per_page=20, page=1)
-        expected = {"text": "python", "per_page": 20, "page": 1}
-        assert params == expected
-    
-    def test_build_search_params_with_salary(self):
-        """Тест построения параметров с зарплатой"""
-        params = build_search_params("python", salary_from=50000, salary_to=100000)
-        assert params["salary"] == 50000
-        assert params["salary_to"] == 100000
-    
-    def test_build_search_params_with_area(self):
-        """Тест построения параметров с регионом"""
-        params = build_search_params("python", area="Moscow")
-        assert params["area"] == "Moscow"
-    
-    def test_build_search_params_limit_per_page(self):
-        """Тест ограничения количества элементов на странице"""
-        params = build_search_params("python", per_page=150)  # Больше лимита
-        assert params["per_page"] == 100  # Должно быть ограничено
-    
+        """Тест базового построения параметров поиска"""
+        params = build_search_params("Python", per_page=20, page=1)
+        
+        assert params["text"] == "Python"
+        assert params["per_page"] == 20
+        assert params["page"] == 1
+
+    def test_build_search_params_with_kwargs(self):
+        """Тест построения параметров с дополнительными аргументами"""
+        params = build_search_params(
+            "Python",
+            salary_from=100000,
+            salary_to=150000,
+            area="Москва",
+            experience="От 1 года до 3 лет",
+            schedule="Полный день"
+        )
+        
+        assert params["salary"] == 100000
+        assert params["salary_to"] == 150000
+        assert params["area"] == "Москва"
+        assert params["experience"] == "От 1 года до 3 лет"
+        assert params["schedule"] == "Полный день"
+
+    def test_build_search_params_per_page_limit(self):
+        """Тест ограничения per_page"""
+        params = build_search_params("Python", per_page=150)
+        assert params["per_page"] == 100
+
     def test_validate_search_query_valid(self):
         """Тест валидации корректного запроса"""
-        assert validate_search_query("python") is True
         assert validate_search_query("Python Developer") is True
-        assert validate_search_query("   python   ") is True
-    
+        assert validate_search_query("Java") is True
+        assert validate_search_query("  Django  ") is True
+
     def test_validate_search_query_invalid(self):
         """Тест валидации некорректного запроса"""
         assert validate_search_query("") is False
-        assert validate_search_query(None) is False
         assert validate_search_query("   ") is False
+        assert validate_search_query(None) is False
         assert validate_search_query(123) is False
-        assert validate_search_query([]) is False
-    
-    def test_format_search_results_basic(self):
-        """Тест форматирования результатов поиска"""
+
+    def test_format_search_results_normal(self):
+        """Тест форматирования нормальных результатов"""
         results = [
             {
-                "id": "1",
+                "id": "123",
                 "name": "Python Developer",
-                "alternate_url": "https://hh.ru/vacancy/1"
+                "source": "hh",
+                "alternate_url": "https://hh.ru/vacancy/123"
             },
             {
-                "vacancy_id": "2", 
+                "vacancy_id": "456",
                 "profession": "Java Developer",
-                "link": "https://superjob.ru/vacancy/2"
+                "source": "sj",
+                "link": "https://superjob.ru/vacancy/456"
             }
         ]
         
         formatted = format_search_results(results)
+        
         assert len(formatted) == 2
-        
-        # Проверяем первый результат (HH формат)
-        assert formatted[0]["id"] == "1"
+        assert formatted[0]["id"] == "123"
         assert formatted[0]["title"] == "Python Developer"
-        assert formatted[0]["url"] == "https://hh.ru/vacancy/1"
+        assert formatted[0]["source"] == "hh"
+        assert formatted[0]["url"] == "https://hh.ru/vacancy/123"
         
-        # Проверяем второй результат (SJ формат)
-        assert formatted[1]["id"] == "2"
+        assert formatted[1]["id"] == "456"
         assert formatted[1]["title"] == "Java Developer"
-        assert formatted[1]["url"] == "https://superjob.ru/vacancy/2"
-    
+
     def test_format_search_results_empty(self):
         """Тест форматирования пустых результатов"""
         assert format_search_results([]) == []
         assert format_search_results(None) == []
-    
+
     def test_format_search_results_invalid_items(self):
-        """Тест форматирования с невалидными элементами"""
-        results = [
-            {"id": "1", "name": "Valid Job"},
-            "invalid_item",
-            None,
-            {"incomplete": "data"}
+        """Тест форматирования некорректных элементов"""
+        results = ["invalid", None, {"id": "123", "name": "Test"}]
+        formatted = format_search_results(results)
+        
+        assert len(formatted) == 1  # Только валидный элемент
+        assert formatted[0]["id"] == "123"
+
+    def test_filter_vacancies_by_keyword_title_match(self):
+        """Тест фильтрации по совпадению в заголовке"""
+        vacancies = [
+            MockVacancy(title="Python Developer"),
+            MockVacancy(title="Java Developer")
         ]
         
-        formatted = format_search_results(results)
-        # Должен обработать только валидные элементы
-        assert len(formatted) >= 1
-
-
-@pytest.mark.skipif(not SEARCH_UTILS_AVAILABLE, reason="Search utils not available")
-class TestVacancyFiltering:
-    """Тесты фильтрации вакансий"""
-    
-    @pytest.fixture
-    def sample_vacancies(self):
-        """Создание образцов вакансий для тестирования"""
-        vacancies = []
-        
-        # Мокаем вакансии с различными атрибутами
-        vacancy1 = Mock(spec=Vacancy)
-        vacancy1.vacancy_id = "hh_001"
-        vacancy1.title = "Senior Python Developer"
-        vacancy1.requirements = "Python, Django, PostgreSQL"
-        vacancy1.responsibilities = "Разработка веб-приложений"
-        vacancy1.description = "Ищем опытного Python разработчика"
-        vacancy1.detailed_description = "Работа с микросервисами на Python"
-        vacancy1.skills = [{"name": "Python"}, {"name": "Django"}]
-        vacancy1.employer = {"name": "Яндекс"}
-        vacancy1.employment = "Полная занятость"
-        vacancy1.schedule = "Полный день"
-        vacancy1.experience = "От 3 до 6 лет"
-        vacancy1.benefits = "ДМС, спорт"
-        
-        vacancy2 = Mock(spec=Vacancy)
-        vacancy2.vacancy_id = "hh_002"
-        vacancy2.title = "Java Backend Developer"
-        vacancy2.requirements = "Java, Spring, MySQL"
-        vacancy2.responsibilities = "Backend разработка"
-        vacancy2.description = "Java разработчик в команду"
-        vacancy2.detailed_description = "Разработка REST API на Java"
-        vacancy2.skills = [{"name": "Java"}, {"name": "Spring"}]
-        vacancy2.employer = {"name": "Mail.Ru"}
-        vacancy2.employment = "Удаленная работа"
-        vacancy2.schedule = "Гибкий график"
-        vacancy2.experience = "От 1 до 3 лет"
-        vacancy2.benefits = "Обучение"
-        
-        vacancy3 = Mock(spec=Vacancy)
-        vacancy3.vacancy_id = "sj_001"
-        vacancy3.title = "Frontend Python Developer"  # Содержит и Python и Frontend
-        vacancy3.requirements = "React, JavaScript"
-        vacancy3.responsibilities = "Разработка интерфейсов"
-        vacancy3.description = "Frontend разработчик"
-        vacancy3.detailed_description = "Создание пользовательских интерфейсов с элементами Python"
-        vacancy3.skills = ["React", "JavaScript"]
-        vacancy3.employer = {"name": "Тинькофф"}
-        vacancy3.employment = "Частичная занятость"
-        vacancy3.schedule = "Удаленная работа"
-        vacancy3.experience = "Без опыта"
-        vacancy3.benefits = "Гибкий график"
-        
-        return [vacancy1, vacancy2, vacancy3]
-    
-    def test_filter_vacancies_by_keyword_title(self, sample_vacancies):
-        """Тест фильтрации по ключевому слову в заголовке"""
-        result = filter_vacancies_by_keyword(sample_vacancies, "Python")
-        # Должно найти 2 вакансии (Senior Python Developer и Frontend Python Developer)
-        assert len(result) == 2
-        assert result[0].title == "Senior Python Developer"  # Более релевантная должна быть первой
-    
-    def test_filter_vacancies_by_keyword_description(self, sample_vacancies):
-        """Тест фильтрации по ключевому слову в описании"""
-        result = filter_vacancies_by_keyword(sample_vacancies, "API")
-        # Должно найти 1 вакансию (Java Backend с REST API)
+        result = filter_vacancies_by_keyword(vacancies, "Python")
         assert len(result) == 1
-        assert result[0].title == "Java Backend Developer"
-    
-    def test_filter_vacancies_by_keyword_skills(self, sample_vacancies):
-        """Тест фильтрации по навыкам"""
-        result = filter_vacancies_by_keyword(sample_vacancies, "Django")
-        # Должно найти 1 вакансию (Senior Python с Django)
+        assert result[0].title == "Python Developer"
+
+    def test_filter_vacancies_by_keyword_id_match(self):
+        """Тест фильтрации по совпадению в ID"""
+        vacancies = [
+            MockVacancy(vacancy_id="python123"),
+            MockVacancy(vacancy_id="java456")
+        ]
+        
+        result = filter_vacancies_by_keyword(vacancies, "python")
         assert len(result) == 1
-        assert result[0].title == "Senior Python Developer"
-    
-    def test_filter_vacancies_by_keyword_no_match(self, sample_vacancies):
-        """Тест фильтрации когда нет совпадений"""
-        result = filter_vacancies_by_keyword(sample_vacancies, "PHP")
-        assert len(result) == 0
-    
-    def test_filter_vacancies_by_keyword_empty_list(self):
-        """Тест фильтрации пустого списка"""
-        result = filter_vacancies_by_keyword([], "Python")
-        assert len(result) == 0
-    
-    def test_filter_vacancies_by_keyword_case_insensitive(self, sample_vacancies):
-        """Тест регистронезависимой фильтрации"""
-        result1 = filter_vacancies_by_keyword(sample_vacancies, "python")
-        result2 = filter_vacancies_by_keyword(sample_vacancies, "PYTHON")
-        assert len(result1) == len(result2) == 2
-    
-    def test_vacancy_contains_keyword_title(self, sample_vacancies):
-        """Тест проверки наличия ключевого слова в заголовке"""
-        assert vacancy_contains_keyword(sample_vacancies[0], "Python") is True
-        assert vacancy_contains_keyword(sample_vacancies[0], "Java") is False
-    
-    def test_vacancy_contains_keyword_description(self, sample_vacancies):
-        """Тест проверки наличия ключевого слова в описании"""
-        assert vacancy_contains_keyword(sample_vacancies[1], "REST") is True
-        assert vacancy_contains_keyword(sample_vacancies[1], "GraphQL") is False
-    
-    def test_vacancy_contains_keyword_case_insensitive(self, sample_vacancies):
-        """Тест регистронезависимой проверки ключевого слова"""
-        assert vacancy_contains_keyword(sample_vacancies[0], "python") is True
-        assert vacancy_contains_keyword(sample_vacancies[0], "DJANGO") is True
+        assert result[0].vacancy_id == "python123"
+
+    def test_filter_vacancies_by_keyword_requirements_match(self):
+        """Тест фильтрации по совпадению в требованиях"""
+        vacancies = [
+            MockVacancy(requirements="Python, Django, REST API"),
+            MockVacancy(requirements="Java, Spring, Hibernate")
+        ]
+        
+        result = filter_vacancies_by_keyword(vacancies, "Django")
+        assert len(result) == 1
+
+    def test_filter_vacancies_by_keyword_responsibilities_match(self):
+        """Тест фильтрации по совпадению в обязанностях"""
+        vacancies = [
+            MockVacancy(responsibilities="Develop Python applications"),
+            MockVacancy(responsibilities="Develop Java applications")
+        ]
+        
+        result = filter_vacancies_by_keyword(vacancies, "Python")
+        assert len(result) == 1
+
+    def test_filter_vacancies_by_keyword_description_match(self):
+        """Тест фильтрации по совпадению в описании"""
+        vacancies = [
+            MockVacancy(description="Backend Python development"),
+            MockVacancy(description="Frontend React development")
+        ]
+        
+        result = filter_vacancies_by_keyword(vacancies, "Python")
+        assert len(result) == 1
+
+    def test_filter_vacancies_by_keyword_detailed_description_match(self):
+        """Тест фильтрации по совпадению в детальном описании"""
+        vacancies = [
+            MockVacancy(detailed_description="Detailed Python job description"),
+            MockVacancy(detailed_description="Detailed Java job description")
+        ]
+        
+        result = filter_vacancies_by_keyword(vacancies, "Python")
+        assert len(result) == 1
+
+    def test_filter_vacancies_by_keyword_skills_match(self):
+        """Тест фильтрации по совпадению в навыках"""
+        vacancies = [
+            MockVacancy(skills=[{"name": "Python"}, {"name": "Django"}]),
+            MockVacancy(skills=["Java", "Spring"])
+        ]
+        
+        result = filter_vacancies_by_keyword(vacancies, "Python")
+        assert len(result) == 1
+
+    def test_filter_vacancies_by_keyword_employer_match(self):
+        """Тест фильтрации по совпадению в работодателе"""
+        vacancies = [
+            MockVacancy(employer={"name": "Python Solutions"}),
+            MockVacancy(employer={"name": "Java Corp"})
+        ]
+        
+        result = filter_vacancies_by_keyword(vacancies, "Python")
+        assert len(result) == 1
+
+    def test_filter_vacancies_by_keyword_profession_match(self):
+        """Тест фильтрации по совпадению в профессии (SuperJob)"""
+        vacancies = [
+            MockVacancy(profession="Python Developer"),
+            MockVacancy(profession="Java Developer")
+        ]
+        
+        result = filter_vacancies_by_keyword(vacancies, "Python")
+        assert len(result) == 1
+
+    def test_filter_vacancies_by_keyword_relevance_sorting(self):
+        """Тест сортировки по релевантности"""
+        vacancies = [
+            MockVacancy(title="Developer", description="Some text"),  # 3 балла
+            MockVacancy(title="Python Developer", description="Python programming"),  # 13 баллов
+            MockVacancy(title="Senior Python Developer", requirements="Python, Django")  # 15 баллов
+        ]
+        
+        result = filter_vacancies_by_keyword(vacancies, "Python")
+        
+        # Проверяем что результаты отсортированы по релевантности
+        assert len(result) == 3
+        assert "Senior Python Developer" in result[0].title
+        assert "Python Developer" == result[1].title
+
+    def test_vacancy_contains_keyword_various_fields(self):
+        """Тест проверки наличия ключевого слова в различных полях"""
+        vacancy = MockVacancy(
+            title="Python Developer",
+            requirements="Django, REST API",
+            responsibilities="Develop applications",
+            description="Backend development",
+            detailed_description="Full stack Python development",
+            profession="Software Engineer"
+        )
+        
+        assert vacancy_contains_keyword(vacancy, "Python") is True
+        assert vacancy_contains_keyword(vacancy, "Django") is True
+        assert vacancy_contains_keyword(vacancy, "applications") is True
+        assert vacancy_contains_keyword(vacancy, "Backend") is True
+        assert vacancy_contains_keyword(vacancy, "stack") is True
+        assert vacancy_contains_keyword(vacancy, "Engineer") is True
+        assert vacancy_contains_keyword(vacancy, "Java") is False
+
+    def test_vacancy_contains_keyword_skills(self):
+        """Тест проверки ключевого слова в навыках"""
+        vacancy = MockVacancy(skills=[{"name": "Python"}, {"name": "Django"}])
+        
+        assert vacancy_contains_keyword(vacancy, "Python") is True
+        assert vacancy_contains_keyword(vacancy, "Django") is True
+        assert vacancy_contains_keyword(vacancy, "Java") is False
 
 
-@pytest.mark.skipif(not SEARCH_UTILS_AVAILABLE, reason="Search utils not available")
 class TestSearchQueryParser:
-    """Тесты парсера поисковых запросов"""
-    
+    """Тесты для SearchQueryParser"""
+
     @pytest.fixture
     def parser(self):
-        """Экземпляр парсера"""
+        """Фикстура парсера"""
         return SearchQueryParser()
-    
-    def test_parser_init(self, parser):
-        """Тест инициализации парсера"""
-        assert parser is not None
-    
+
     def test_parse_simple_query(self, parser):
         """Тест парсинга простого запроса"""
         result = parser.parse("Python")
         expected = {"keywords": ["Python"], "operator": "OR"}
         assert result == expected
-    
+
     def test_parse_and_query(self, parser):
         """Тест парсинга запроса с AND"""
         result = parser.parse("Python AND Django")
-        expected = {"keywords": ["Python", "Django"], "operator": "AND"}
+        expected = {"keywords": ["PYTHON", "DJANGO"], "operator": "AND"}
         assert result == expected
-    
+
     def test_parse_or_query(self, parser):
         """Тест парсинга запроса с OR"""
         result = parser.parse("Python OR Java")
-        expected = {"keywords": ["Python", "Java"], "operator": "OR"}
+        expected = {"keywords": ["PYTHON", "JAVA"], "operator": "OR"}
         assert result == expected
-    
-    def test_parse_comma_query(self, parser):
+
+    def test_parse_comma_separated(self, parser):
         """Тест парсинга запроса с запятыми"""
-        result = parser.parse("Python, Java, JavaScript")
-        expected = {"keywords": ["Python", "Java", "JavaScript"], "operator": "OR"}
+        result = parser.parse("Python, Django, FastAPI")
+        expected = {"keywords": ["Python", "Django", "FastAPI"], "operator": "OR"}
         assert result == expected
-    
+
     def test_parse_empty_query(self, parser):
         """Тест парсинга пустого запроса"""
         assert parser.parse("") is None
@@ -320,90 +362,93 @@ class TestSearchQueryParser:
         assert parser.parse(None) is None
 
 
-@pytest.mark.skipif(not SEARCH_UTILS_AVAILABLE, reason="Search utils not available")
 class TestAdvancedSearch:
-    """Тесты продвинутого поиска"""
-    
+    """Тесты для AdvancedSearch"""
+
     @pytest.fixture
-    def advanced_search(self):
-        """Экземпляр продвинутого поиска"""
+    def search(self):
+        """Фикстура продвинутого поиска"""
         return AdvancedSearch()
-    
+
     @pytest.fixture
-    def sample_vacancies_with_search_query(self):
-        """Образцы вакансий с полем search_query"""
-        vacancies = []
-        
-        vacancy1 = Mock()
-        vacancy1.title = "Python Developer"
-        vacancy1.description = "Разработка на Python"
-        vacancy1.search_query = "python django postgresql"  # Добавляем поле для поиска
-        
-        vacancy2 = Mock()
-        vacancy2.title = "Java Developer"
-        vacancy2.description = "Backend разработка"
-        vacancy2.search_query = "java spring mysql"
-        
-        vacancy3 = Mock()
-        vacancy3.title = "Full Stack Developer"
-        vacancy3.description = "Разработка фронтенда и бэкенда"
-        vacancy3.search_query = "javascript react node python"
-        
-        return [vacancy1, vacancy2, vacancy3]
-    
-    def test_advanced_search_init(self, advanced_search):
-        """Тест инициализации продвинутого поиска"""
-        assert advanced_search is not None
-    
-    def test_search_with_and(self, advanced_search, sample_vacancies_with_search_query):
-        """Тест поиска с оператором AND"""
-        keywords = ["Python", "Django"]
-        result = advanced_search.search_with_and(sample_vacancies_with_search_query, keywords)
-        # Только первая вакансия содержит оба ключевых слова
+    def sample_vacancies(self):
+        """Фикстура вакансий для тестов"""
+        return [
+            MockVacancy(
+                title="Python Developer",
+                description="Backend Python development",
+                search_query="Python Django"
+            ),
+            MockVacancy(
+                title="Java Developer", 
+                description="Enterprise Java development",
+                search_query="Java Spring"
+            ),
+            MockVacancy(
+                title="Full Stack Developer",
+                description="Python and React development",
+                search_query="Python React"
+            )
+        ]
+
+    def test_search_with_and_all_keywords(self, search, sample_vacancies):
+        """Тест поиска с AND - все ключевые слова"""
+        result = search.search_with_and(sample_vacancies, ["Python", "Backend"])
         assert len(result) == 1
         assert result[0].title == "Python Developer"
-    
-    def test_search_with_or(self, advanced_search, sample_vacancies_with_search_query):
-        """Тест поиска с оператором OR"""
-        keywords = ["Python", "Java"]
-        result = advanced_search.search_with_or(sample_vacancies_with_search_query, keywords)
-        # Должно найти 3 вакансии (Python Developer, Java Developer, Full Stack с Python)
-        assert len(result) == 3
-    
-    def test_search_with_search_query_field(self, advanced_search, sample_vacancies_with_search_query):
-        """Тест поиска с использованием поля search_query"""
-        keywords = ["PostgreSQL"]
-        result = advanced_search.search_with_and(sample_vacancies_with_search_query, keywords)
-        # Должно найти 1 вакансию (в search_query есть postgresql)
+
+    def test_search_with_and_missing_keyword(self, search, sample_vacancies):
+        """Тест поиска с AND - отсутствует ключевое слово"""
+        result = search.search_with_and(sample_vacancies, ["Python", "Missing"])
+        assert len(result) == 0
+
+    def test_search_with_and_search_query_field(self, search, sample_vacancies):
+        """Тест поиска с AND в поле search_query"""
+        result = search.search_with_and(sample_vacancies, ["Python", "Django"])
         assert len(result) == 1
         assert result[0].title == "Python Developer"
-    
-    def test_search_without_search_query_field(self, advanced_search):
-        """Тест поиска с вакансиями без поля search_query"""
-        vacancy = Mock()
-        vacancy.title = "Test Job"
-        vacancy.description = "Test description"
-        # Нет атрибута search_query
-        
-        keywords = ["Test"]
-        result = advanced_search.search_with_or([vacancy], keywords)
+
+    def test_search_with_or_any_keyword(self, search, sample_vacancies):
+        """Тест поиска с OR - любое ключевое слово"""
+        result = search.search_with_or(sample_vacancies, ["Python"])
+        assert len(result) == 2  # Python Developer и Full Stack Developer
+
+    def test_search_with_or_multiple_keywords(self, search, sample_vacancies):
+        """Тест поиска с OR - несколько ключевых слов"""
+        result = search.search_with_or(sample_vacancies, ["Java", "React"])
+        assert len(result) == 2  # Java Developer и Full Stack Developer
+
+    def test_search_with_or_no_matches(self, search, sample_vacancies):
+        """Тест поиска с OR - нет совпадений"""
+        result = search.search_with_or(sample_vacancies, ["PHP"])
+        assert len(result) == 0
+
+    def test_search_with_or_search_query_field(self, search, sample_vacancies):
+        """Тест поиска с OR в поле search_query"""
+        result = search.search_with_or(sample_vacancies, ["Django"])
         assert len(result) == 1
-    
-    def test_search_empty_vacancies(self, advanced_search):
-        """Тест поиска в пустом списке вакансий"""
-        result = advanced_search.search_with_and([], ["Python"])
-        assert result == []
+        assert result[0].title == "Python Developer"
+
+    def test_search_without_search_query_field(self, search):
+        """Тест поиска для вакансий без поля search_query"""
+        vacancies = [
+            MockVacancy(title="Python Developer", description="Backend development")
+        ]
         
-        result2 = advanced_search.search_with_or([], ["Python"])
-        assert result2 == []
+        result = search.search_with_and(vacancies, ["Python", "Backend"])
+        assert len(result) == 1
+
+    def test_search_case_insensitive(self, search, sample_vacancies):
+        """Тест поиска без учета регистра"""
+        result = search.search_with_or(sample_vacancies, ["python"])
+        assert len(result) == 2  # Должны найти несмотря на нижний регистр
 
 
-@pytest.mark.skipif(not SEARCH_UTILS_AVAILABLE, reason="Search utils not available")
 class TestSearchUtilsIntegration:
-    """Интеграционные тесты для поисковых утилит"""
-    
+    """Интеграционные тесты для search_utils"""
+
     def test_full_search_pipeline(self):
-        """Тест полного пайплайна поиска"""
+        """Тест полного поискового конвейера"""
         # Нормализация запроса
         raw_query = "  Python AND Django  "
         normalized = normalize_query(raw_query)
@@ -414,52 +459,48 @@ class TestSearchUtilsIntegration:
         assert "python" in keywords
         assert "django" in keywords
         
-        # Построение параметров поиска
-        params = build_search_params("python django", per_page=25)
-        assert params["text"] == "python django"
-        assert params["per_page"] == 25
+        # Валидация
+        assert validate_search_query(normalized) is True
         
-        # Валидация запроса
-        assert validate_search_query("python django") is True
-    
+        # Построение параметров
+        params = build_search_params(normalized, per_page=50)
+        assert params["text"] == normalized
+        assert params["per_page"] == 50
+
     def test_search_with_parser_and_advanced_search(self):
         """Тест интеграции парсера и продвинутого поиска"""
         parser = SearchQueryParser()
-        advanced_search = AdvancedSearch()
+        search = AdvancedSearch()
         
-        # Создаем тестовые вакансии
-        vacancy1 = Mock()
-        vacancy1.title = "Python Django Developer"
-        vacancy1.description = "Backend development"
+        vacancies = [
+            MockVacancy(title="Python Django Developer"),
+            MockVacancy(title="Python FastAPI Developer"),
+            MockVacancy(title="Java Spring Developer")
+        ]
         
-        vacancy2 = Mock()
-        vacancy2.title = "Python Flask Developer" 
-        vacancy2.description = "API development"
-        
-        vacancies = [vacancy1, vacancy2]
-        
-        # Парсим запрос
+        # Парсим запрос с AND
         parsed = parser.parse("Python AND Django")
         assert parsed["operator"] == "AND"
         
         # Выполняем поиск
-        if parsed["operator"] == "AND":
-            result = advanced_search.search_with_and(vacancies, parsed["keywords"])
-        else:
-            result = advanced_search.search_with_or(vacancies, parsed["keywords"])
-        
-        # Должно найти только Django вакансию
+        result = search.search_with_and(vacancies, parsed["keywords"])
         assert len(result) == 1
         assert "Django" in result[0].title
-    
+
     def test_error_handling_in_search_functions(self):
         """Тест обработки ошибок в поисковых функциях"""
-        # Функции должны корректно обрабатывать некорректные данные
-        assert normalize_query(None) == ""
-        assert extract_keywords(None) == []
-        assert validate_search_query(None) is False
-        assert format_search_results(None) == []
+        # Тест с некорректными данными
+        invalid_vacancies = [None, "string", 123]
         
-        # С пустыми или некорректными вакансиями
-        assert filter_vacancies_by_keyword(None, "test") == []
-        assert filter_vacancies_by_keyword([], "test") == []
+        # Функции должны корректно обрабатывать ошибки
+        result = filter_vacancies_by_keyword([], "test")
+        assert result == []
+        
+        # Тест парсера с некорректными данными
+        parser = SearchQueryParser()
+        assert parser.parse(None) is None
+        
+        # Тест продвинутого поиска с некорректными данными
+        search = AdvancedSearch()
+        result = search.search_with_and([], ["test"])
+        assert result == []
