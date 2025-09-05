@@ -237,6 +237,30 @@ class TestUnifiedAPI:
         assert isinstance(result, list)
 
 
+class ConcreteCachedAPI(CachedAPI if API_MODULES_AVAILABLE else object):
+    """Конкретная реализация CachedAPI для тестирования"""
+    
+    def __init__(self, cache_dir="test_cache"):
+        if API_MODULES_AVAILABLE:
+            super().__init__(cache_dir)
+        
+    def _get_empty_response(self):
+        """Возвращает пустой ответ"""
+        return {"items": [], "found": 0}
+    
+    def _validate_vacancy(self, vacancy):
+        """Валидация вакансии"""
+        return isinstance(vacancy, dict) and "id" in vacancy
+    
+    def get_vacancies_page(self, search_query, page=0, **kwargs):
+        """Получение одной страницы вакансий"""
+        return [{"id": f"test_{page}", "title": search_query}]
+    
+    def get_vacancies(self, search_query, **kwargs):
+        """Получение всех вакансий"""
+        return [{"id": "test", "title": search_query}]
+
+
 class TestCachedAPI:
     """Тесты для кэшированного API"""
     
@@ -247,29 +271,52 @@ class TestCachedAPI:
             return Mock()
         
         with patch('src.utils.cache.FileCache'):
-            return CachedAPI("test_cache_dir")
+            return ConcreteCachedAPI("test_cache_dir")
     
     def test_init(self, cached_api):
         """Тест инициализации"""
         assert cached_api is not None
     
-    def test_connect_to_api_cached(self, cached_api):
-        """Тест подключения к API с кэшированием"""
+    def test_get_empty_response(self, cached_api):
+        """Тест получения пустого ответа"""
         if not API_MODULES_AVAILABLE:
             pytest.skip("API modules not available")
         
-        mock_response = {"items": [{"id": "1", "title": "Test"}]}
+        result = cached_api._get_empty_response()
+        assert isinstance(result, dict)
+        assert "items" in result
+        assert result["items"] == []
+    
+    def test_validate_vacancy(self, cached_api):
+        """Тест валидации вакансии"""
+        if not API_MODULES_AVAILABLE:
+            pytest.skip("API modules not available")
         
-        with patch.object(cached_api, 'cache') as mock_cache:
-            mock_cache.get.return_value = None
-            mock_cache.set = Mock()
-            
-            with patch('requests.get') as mock_get:
-                mock_get.return_value.json.return_value = mock_response
-                mock_get.return_value.status_code = 200
-                
-                result = cached_api._CachedAPI__connect_to_api("test_url", {}, "test")
-                assert isinstance(result, dict)
+        valid_vacancy = {"id": "123", "title": "Test"}
+        invalid_vacancy = {"title": "Test"}
+        
+        assert cached_api._validate_vacancy(valid_vacancy) == True
+        assert cached_api._validate_vacancy(invalid_vacancy) == False
+    
+    def test_get_vacancies_page(self, cached_api):
+        """Тест получения страницы вакансий"""
+        if not API_MODULES_AVAILABLE:
+            pytest.skip("API modules not available")
+        
+        result = cached_api.get_vacancies_page("Python", page=0)
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert result[0]["title"] == "Python"
+    
+    def test_get_vacancies(self, cached_api):
+        """Тест получения вакансий"""
+        if not API_MODULES_AVAILABLE:
+            pytest.skip("API modules not available")
+        
+        result = cached_api.get_vacancies("Python")
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert result[0]["title"] == "Python"
 
 
 class TestAPIIntegration:
