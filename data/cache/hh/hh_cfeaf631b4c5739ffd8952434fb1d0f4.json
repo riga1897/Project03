@@ -1,0 +1,195 @@
+{
+  "timestamp": 1757109164.9456513,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 1,
+      "only_with_salary": false,
+      "period": 3,
+      "text": "java",
+      "page": 0,
+      "employer_id": "2748"
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "124268077",
+        "premium": false,
+        "name": "Администратор Linux",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 115000,
+          "to": 145000,
+          "currency": "RUR",
+          "gross": true
+        },
+        "salary_range": {
+          "from": 115000,
+          "to": 145000,
+          "currency": "RUR",
+          "gross": true,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "улица Дубовая Роща",
+          "building": "25к1с2",
+          "lat": 55.818983,
+          "lng": 37.604008,
+          "description": null,
+          "raw": "Москва, улица Дубовая Роща, 25к1с2",
+          "metro": {
+            "station_name": "ВДНХ",
+            "line_name": "Калужско-Рижская",
+            "station_id": "6.27",
+            "line_id": "6",
+            "lat": 55.819626,
+            "lng": 37.640751
+          },
+          "metro_stations": [
+            {
+              "station_name": "ВДНХ",
+              "line_name": "Калужско-Рижская",
+              "station_id": "6.27",
+              "line_id": "6",
+              "lat": 55.819626,
+              "lng": 37.640751
+            },
+            {
+              "station_name": "Дмитровская",
+              "line_name": "Серпуховско-Тимирязевская",
+              "station_id": "9.35",
+              "line_id": "9",
+              "lat": 55.808056,
+              "lng": 37.581734
+            },
+            {
+              "station_name": "Тимирязевская",
+              "line_name": "Серпуховско-Тимирязевская",
+              "station_id": "9.141",
+              "line_id": "9",
+              "lat": 55.81866,
+              "lng": 37.574498
+            }
+          ],
+          "id": "440821"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T10:24:04+0300",
+        "created_at": "2025-09-04T10:24:04+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124268077",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124268077?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124268077",
+        "relations": [],
+        "employer": {
+          "id": "2748",
+          "name": "Ростелеком",
+          "url": "https://api.hh.ru/employers/2748",
+          "alternate_url": "https://hh.ru/employer/2748",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/592930.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/2812975.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/2812976.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2748",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Знание программ: Linux administration, Automation, scripting and development (python, <highlighttext>java</highlighttext>), Configuration management (Chef), Containerization (Docker), Monitoring and logging (Zabbix, Grafana...",
+          "responsibility": "Поддержание и развитие систем мониторинга. Поддержка серверного оборудования. Выполнение требований ИБ. Формирование дашбордов для важных мероприятий. Алертинг. Автоматизация задач."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "40",
+            "name": "Другое"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 1,
+    "pages": 1,
+    "page": 0,
+    "per_page": 1,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&employer_id=2748&enable_snippets=true&items_on_page=1&search_period=3&text=java"
+  }
+}

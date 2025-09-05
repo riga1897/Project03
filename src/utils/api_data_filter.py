@@ -283,21 +283,6 @@ class APIDataFilter(AbstractDataFilter):
 
         return normalize_employment_data(item.get("employment"))
 
-    def filter_by_location(self, data: List[Dict[str, Any]], locations: List[str]) -> List[Dict[str, Any]]:
-        """Реализация абстрактного метода фильтрации по местоположению"""
-        if not data or not locations:
-            return data
-
-        filtered = []
-        for item in data:
-            try:
-                item_location = self._extract_location(item)
-                if item_location and any(loc.lower() in item_location.lower() for loc in locations):
-                    filtered.append(item)
-            except (KeyError, TypeError):
-                continue
-        return filtered
-
     def _extract_company_name(self, item: Dict[str, Any]) -> Optional[str]:
         """Извлечение названия компании"""
         try:

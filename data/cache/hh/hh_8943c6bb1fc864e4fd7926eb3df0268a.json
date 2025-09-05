@@ -1,0 +1,194 @@
+{
+  "timestamp": 1757109166.8836045,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 50,
+      "only_with_salary": false,
+      "period": 3,
+      "text": "java",
+      "page": 0,
+      "employer_id": "80"
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "122650775",
+        "premium": false,
+        "name": "Руководитель по развитию продукта (разработка терминального софта)",
+        "department": {
+          "id": "80-80-expert",
+          "name": "Альфа-Банк. Центральный офис"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Замоскворецкая линия",
+          "building": "метро Технопарк",
+          "lat": 55.69393,
+          "lng": 37.66443,
+          "description": null,
+          "raw": "Москва, Замоскворецкая линия, метро Технопарк",
+          "metro": {
+            "station_name": "Автозаводская",
+            "line_name": "Замоскворецкая",
+            "station_id": "2.2",
+            "line_id": "2",
+            "lat": 55.706634,
+            "lng": 37.657008
+          },
+          "metro_stations": [
+            {
+              "station_name": "Автозаводская",
+              "line_name": "Замоскворецкая",
+              "station_id": "2.2",
+              "line_id": "2",
+              "lat": 55.706634,
+              "lng": 37.657008
+            },
+            {
+              "station_name": "Автозаводская",
+              "line_name": "МЦК",
+              "station_id": "95.530",
+              "line_id": "95",
+              "lat": 55.70631,
+              "lng": 37.66314
+            },
+            {
+              "station_name": "ЗИЛ",
+              "line_name": "МЦК",
+              "station_id": "95.531",
+              "line_id": "95",
+              "lat": 55.698333,
+              "lng": 37.648333
+            },
+            {
+              "station_name": "Технопарк",
+              "line_name": "Замоскворецкая",
+              "station_id": "2.512",
+              "line_id": "2",
+              "lat": 55.695,
+              "lng": 37.664167
+            }
+          ],
+          "id": "18648679"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T09:15:13+0300",
+        "created_at": "2025-09-04T09:15:13+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=122650775",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": {
+          "id": "32631",
+          "url": "https://hh.ru/interview/32631?employerId=80"
+        },
+        "url": "https://api.hh.ru/vacancies/122650775?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/122650775",
+        "relations": [],
+        "employer": {
+          "id": "80",
+          "name": "Альфа-Банк",
+          "url": "https://api.hh.ru/employers/80",
+          "alternate_url": "https://hh.ru/employer/80",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/663873.png",
+            "90": "https://img.hhcdn.ru/employer-logo/3096624.png",
+            "240": "https://img.hhcdn.ru/employer-logo/3096625.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=80",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт управления командой разработки от 3ех человек. Отличное знание <highlighttext>Java</highlighttext>/Kotlin, понимание принципов ООП и паттернов проектирования. ",
+          "responsibility": "Руководить командой разработчиков мобильных приложений под платформу Android. Организовывать процесс разработки, осуществлять постановку задач и контролировать сроки исполнения. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "73",
+            "name": "Менеджер продукта"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 2,
+    "pages": 1,
+    "page": 0,
+    "per_page": 50,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&employer_id=80&enable_snippets=true&items_on_page=50&search_period=3&text=java"
+  }
+}

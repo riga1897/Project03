@@ -1,0 +1,595 @@
+{
+  "timestamp": 1757109164.2479053,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 50,
+      "only_with_salary": false,
+      "period": 3,
+      "text": "java",
+      "page": 0,
+      "employer_id": "4934"
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "124892413",
+        "premium": false,
+        "name": "Руководитель группы разработки",
+        "department": {
+          "id": "bil-4934-it",
+          "name": "билайн: ИТ, Data, Digital"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Краснопролетарская улица",
+          "building": null,
+          "lat": 55.776862,
+          "lng": 37.607008,
+          "description": null,
+          "raw": "Москва, Краснопролетарская улица",
+          "metro": {
+            "station_name": "Новослободская",
+            "line_name": "Кольцевая",
+            "station_id": "5.82",
+            "line_id": "5",
+            "lat": 55.779606,
+            "lng": 37.601252
+          },
+          "metro_stations": [
+            {
+              "station_name": "Новослободская",
+              "line_name": "Кольцевая",
+              "station_id": "5.82",
+              "line_id": "5",
+              "lat": 55.779606,
+              "lng": 37.601252
+            }
+          ],
+          "id": "7264042"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T18:29:51+0300",
+        "created_at": "2025-09-04T18:29:51+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124892413",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124892413?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124892413",
+        "relations": [],
+        "employer": {
+          "id": "4934",
+          "name": "билайн",
+          "url": "https://api.hh.ru/employers/4934",
+          "alternate_url": "https://hh.ru/employer/4934",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1389754.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7178803.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7178804.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4934",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы с микросервисной архитектурой. Глубокое знание <highlighttext>Java</highlighttext> и Spring Framework. Опыт работы с RESTful и SOAP API. ",
+          "responsibility": "Управление командой разработки, включая контроль занятости, планирование задач, распределение ресурсов совместно с владельцами продуктов и контроль выполнения задач. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "104",
+            "name": "Руководитель группы разработки"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124358081",
+        "premium": false,
+        "name": "Middle Java developer",
+        "department": {
+          "id": "bil-4934-it",
+          "name": "билайн: ИТ, Data, Digital"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T10:53:22+0300",
+        "created_at": "2025-09-03T10:53:22+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124358081",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124358081?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124358081",
+        "relations": [],
+        "employer": {
+          "id": "4934",
+          "name": "билайн",
+          "url": "https://api.hh.ru/employers/4934",
+          "alternate_url": "https://hh.ru/employer/4934",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1389754.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7178803.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7178804.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4934",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт от 3 лет разработки на <highlighttext>java</highlighttext>/kotlin. Опыт работы со Spring экосистемой, Spring Boot. Опыт работы с реляционными БД...",
+          "responsibility": "Создание единого профиля для персонализации взаимодействий с клиентом. Предоставлять информацию практически мгновенно для более чем 200 систем-потребителей, поддерживая нагрузку..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124504950",
+        "premium": false,
+        "name": "Senior backend developer (Java)",
+        "department": {
+          "id": "bil-4934-it",
+          "name": "билайн: ИТ, Data, Digital"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T15:54:28+0300",
+        "created_at": "2025-09-04T15:54:28+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124504950",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124504950?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124504950",
+        "relations": [],
+        "employer": {
+          "id": "4934",
+          "name": "билайн",
+          "url": "https://api.hh.ru/employers/4934",
+          "alternate_url": "https://hh.ru/employer/4934",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1389754.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7178803.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7178804.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4934",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Углубленное знание <highlighttext>Java</highlighttext> SE и <highlighttext>Java</highlighttext> EE, Spring Framework (Spring Boot, Spring MVC), Hibernate, JPA. Умение работать с реляционными (PostgreSQL...",
+          "responsibility": "Разработка и поддержка серверной части приложений на <highlighttext>Java</highlighttext>. Проектирование архитектуры приложений и выбор технологий. Оптимизация производительности и масштабируемости существующих систем. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124636879",
+        "premium": false,
+        "name": "Ведущий Android разработчик",
+        "department": {
+          "id": "bil-4934-it",
+          "name": "билайн: ИТ, Data, Digital"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T13:39:05+0300",
+        "created_at": "2025-09-04T13:39:05+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124636879",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124636879?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124636879",
+        "relations": [],
+        "employer": {
+          "id": "4934",
+          "name": "билайн",
+          "url": "https://api.hh.ru/employers/4934",
+          "alternate_url": "https://hh.ru/employer/4934",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1389754.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7178803.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7178804.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4934",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Отличные знания и опыт разработки под Android на <highlighttext>Java</highlighttext> и Kotlin. Приветствуется опыт разработки интерфейсов с использованием Jetpack Compose. ",
+          "responsibility": "Разработка современного мультимедиа приложения для Android/Android TV/AOSP STB, с участием на всех стадиях - от идеи до конечной реализации. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123901470",
+        "premium": false,
+        "name": "Архитектор информационных систем (по работе с данными)",
+        "department": {
+          "id": "bil-4934-it",
+          "name": "билайн: ИТ, Data, Digital"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T13:58:21+0300",
+        "created_at": "2025-09-04T13:58:21+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123901470",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123901470?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123901470",
+        "relations": [],
+        "employer": {
+          "id": "4934",
+          "name": "билайн",
+          "url": "https://api.hh.ru/employers/4934",
+          "alternate_url": "https://hh.ru/employer/4934",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1389754.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7178803.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7178804.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4934",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Имеете опыт написания программ на одном из высоко-уровневых ЯП (Python, <highlighttext>Java</highlighttext>, C#) от 3-х лет. Знаете принципы разработки...",
+          "responsibility": "Участвовать в процессе проектирования архитектурных и интеграционных решений, в том числе связанных с хранением и обработкой больших объемов структурированных, неструктурированных..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 6,
+    "pages": 1,
+    "page": 0,
+    "per_page": 50,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&employer_id=4934&enable_snippets=true&items_on_page=50&search_period=3&text=java"
+  }
+}
