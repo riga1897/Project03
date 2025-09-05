@@ -34,7 +34,10 @@ class TestVacancyRepository:
         assert self.repository is not None
         # Проверяем, что репозиторий имеет необходимые атрибуты
         assert hasattr(self.repository, 'db_connection') or hasattr(self.repository, '_db_connection')
-        assert self.repository.validator == self.mock_validator
+        assert hasattr(self.repository, 'validator') or hasattr(self.repository, '_validator')
+        # Проверяем что валидатор правильно установлен
+        validator = getattr(self.repository, 'validator', getattr(self.repository, '_validator', None))
+        assert validator == self.mock_validator
 
     def test_save_vacancy(self):
         """Тест сохранения вакансии"""

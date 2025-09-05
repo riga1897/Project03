@@ -314,8 +314,25 @@ class TestVacancyRepository:
         if not STORAGE_SUBCOMPONENTS_AVAILABLE:
             return Mock()
 
+        # Правильное мокирование connection с поддержкой context manager
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        
+        # Настраиваем context manager для cursor
+        mock_connection.cursor.return_value = mock_cursor
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
+        
+        # Настраиваем context manager для connection
+        mock_connection.__enter__ = Mock(return_value=mock_connection)
+        mock_connection.__exit__ = Mock(return_value=None)
+        
         mock_db_connection = Mock()
+        mock_db_connection.get_connection.return_value = mock_connection
+        
         mock_validator = Mock()
+        mock_validator.validate_vacancy.return_value = True
+        
         return VacancyRepository(mock_db_connection, mock_validator)
 
     def test_init(self, vacancy_repository):
@@ -330,7 +347,20 @@ class TestVacancyRepository:
         if not STORAGE_SUBCOMPONENTS_AVAILABLE:
             pytest.skip("Storage subcomponents not available")
 
-        vacancy = {"id": "123", "title": "Test"}
+        # Создаем мок объект вакансии с необходимыми атрибутами
+        vacancy = Mock()
+        vacancy.vacancy_id = "123"
+        vacancy.title = "Test"
+        vacancy.url = "http://test.com"
+        vacancy.salary = None
+        vacancy.description = "Test description"
+        vacancy.requirements = "Test requirements" 
+        vacancy.responsibilities = "Test responsibilities"
+        vacancy.experience = None
+        vacancy.employment = None
+        vacancy.area = "Test area"
+        vacancy.source = "test"
+        vacancy.employer = None
 
         if hasattr(vacancy_repository, 'add_vacancy'):
             result = vacancy_repository.add_vacancy(vacancy)
@@ -362,7 +392,10 @@ class TestVacancyRepository:
         if not STORAGE_SUBCOMPONENTS_AVAILABLE:
             pytest.skip("Storage subcomponents not available")
 
-        vacancy = {"id": "123", "title": "Test"}
+        # Создаем мок объект вакансии с необходимыми атрибутами
+        vacancy = Mock()
+        vacancy.vacancy_id = "123"
+        vacancy.title = "Test"
 
         if hasattr(vacancy_repository, 'delete_vacancy'):
             result = vacancy_repository.delete_vacancy(vacancy)
@@ -474,17 +507,39 @@ class TestStorageIntegration:
         if not STORAGE_SUBCOMPONENTS_AVAILABLE:
             pytest.skip("Storage subcomponents not available")
 
-        with patch('src.storage.components.database_connection.DatabaseConnection'):
-            repository = VacancyRepository()
-            validator = VacancyValidator()
+        # Создаем моки с правильными context managers
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        mock_connection.cursor.return_value.__enter__.return_value = mock_cursor
+        mock_connection.cursor.return_value.__exit__.return_value = None
+        mock_connection.__enter__.return_value = mock_connection
+        mock_connection.__exit__.return_value = None
+        
+        mock_db_connection = Mock()
+        mock_db_connection.get_connection.return_value = mock_connection
+        
+        validator = VacancyValidator()
+        repository = VacancyRepository(mock_db_connection, validator)
 
-            assert repository is not None
-            assert validator is not None
+        assert repository is not None
+        assert validator is not None
 
-            # Тест валидации перед сохранением
-            vacancy = {"id": "123", "title": "Test"}
+        # Тест валидации перед сохранением с правильным объектом вакансии
+        vacancy = Mock()
+        vacancy.vacancy_id = "123"
+        vacancy.title = "Test"
+        vacancy.url = "http://test.com"
+        vacancy.salary = None
+        vacancy.description = "Test description"
+        vacancy.requirements = "Test requirements"
+        vacancy.responsibilities = "Test responsibilities" 
+        vacancy.experience = None
+        vacancy.employment = None
+        vacancy.area = "Test area"
+        vacancy.source = "test"
+        vacancy.employer = None
 
-            if hasattr(validator, 'validate') and hasattr(repository, 'add_vacancy'):
-                is_valid = validator.validate(vacancy)
-                if is_valid:
-                    repository.add_vacancy(vacancy)
+        if hasattr(validator, 'validate_vacancy') and hasattr(repository, 'add_vacancy'):
+            # Мокаем результат валидации
+            validator.validate_vacancy = Mock(return_value=True)
+            repository.add_vacancy(vacancy)

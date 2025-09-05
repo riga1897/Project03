@@ -75,13 +75,18 @@ class TestStorageModulesConsolidated:
         
         try:
             from src.storage.components.vacancy_repository import VacancyRepository
+            from src.storage.components.database_connection import DatabaseConnection
+            from src.storage.components.vacancy_validator import VacancyValidator
             from src.vacancies.models import Vacancy
             
-            repo = VacancyRepository()
+            # Создаем зависимости для репозитория
+            db_connection = DatabaseConnection()
+            validator = VacancyValidator()
+            repo = VacancyRepository(db_connection, validator)
             assert repo is not None
             
             # Тестируем добавление вакансии
-            test_vacancy = Vacancy(vacancy_id="test_1", title="Test Developer")
+            test_vacancy = Vacancy(vacancy_id="test_1", title="Test Developer", url="http://test.com")
             repo.add_vacancy(test_vacancy)
             
             # Тестируем получение вакансий

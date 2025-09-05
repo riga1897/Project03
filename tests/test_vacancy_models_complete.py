@@ -20,11 +20,16 @@ class TestVacancyModelsComplete:
     def test_base_vacancy_model(self):
         """Тест базовой модели вакансии"""
         employer = Employer("Test Company", "123")
-        vacancy = Vacancy("Python Developer", "https://test.com", employer)
+        vacancy = Vacancy(
+            title="Python Developer", 
+            url="https://test.com", 
+            employer=employer
+        )
 
         assert vacancy.title == "Python Developer"
         assert vacancy.url == "https://test.com"
         assert vacancy.employer is not None
+        assert vacancy.vacancy_id is not None  # ID должен генерироваться автоматически
 
     def test_salary_model_complete(self):
         """Тест модели зарплаты"""

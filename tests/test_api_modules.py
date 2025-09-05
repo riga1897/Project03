@@ -21,6 +21,55 @@ try:
 except ImportError:
     API_MODULES_AVAILABLE = False
 
+
+class ConcreteJobAPI(BaseAPI if API_MODULES_AVAILABLE else object):
+    """Конкретная реализация BaseJobAPI для тестирования"""
+    
+    def get_vacancies(self, search_query, **kwargs):
+        return [{"id": "1", "title": search_query}]
+    
+    def _validate_vacancy(self, vacancy):
+        return isinstance(vacancy, dict) and "id" in vacancy
+
+
+class ConcreteCachedAPI(CachedAPI if API_MODULES_AVAILABLE else object):
+    """Конкретная реализация CachedAPI для тестирования"""
+    
+    def __init__(self, cache_dir="test_cache"):
+        if API_MODULES_AVAILABLE:
+            super().__init__(cache_dir)
+        else:
+            self.cache = {}
+            self.api = Mock()
+        
+    def _get_empty_response(self):
+        """Возвращает пустой ответ"""
+        return {"items": [], "found": 0}
+    
+    def _validate_vacancy(self, vacancy):
+        """Валидация вакансии"""
+        return isinstance(vacancy, dict) and "id" in vacancy
+    
+    def get_vacancies_page(self, search_query, page=0, **kwargs):
+        """Получение одной страницы вакансий"""
+        return [{"id": f"test_{page}", "title": search_query}]
+    
+    def get_vacancies(self, search_query, **kwargs):
+        """Получение всех вакансий"""
+        return [{"id": "test", "title": search_query}]
+    
+    def search_vacancies(self, query, **kwargs):
+        """Поиск вакансий с кэшированием"""
+        cache_key = f"search_{query}_{{}}"
+        if cache_key not in self.cache:
+            # Имитируем результат поиска
+            self.cache[cache_key] = [{"id": f"cached_{query}", "title": f"{query} Developer"}]
+        return self.cache[cache_key]
+    
+    def clear_cache(self):
+        """Очистка кэша"""
+        self.cache.clear()
+
     class BaseAPI:
         """Базовый API класс для тестирования"""
 
@@ -263,7 +312,10 @@ class TestAPIModules:
     @pytest.fixture
     def base_api(self):
         """Фикстура базового API"""
-        return BaseAPI()
+        if API_MODULES_AVAILABLE:
+            return ConcreteJobAPI()
+        else:
+            return BaseAPI()
 
     @pytest.fixture
     def hh_api(self):
@@ -283,10 +335,7 @@ class TestAPIModules:
     @pytest.fixture
     def cached_api(self, hh_api):
         """Фикстура кэшированного API"""
-        if API_MODULES_AVAILABLE:
-            return ConcreteCachedAPI()
-        else:
-            return CachedAPI()
+        return ConcreteCachedAPI()
 
     def test_base_api_initialization(self, base_api):
         """Тест инициализации базового API"""
