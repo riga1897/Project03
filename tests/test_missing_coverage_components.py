@@ -9,7 +9,7 @@ import pytest
 from unittest.mock import Mock, patch, MagicMock
 from typing import List, Dict, Any
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__, ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 # Проверяем доступность модулей
 try:
