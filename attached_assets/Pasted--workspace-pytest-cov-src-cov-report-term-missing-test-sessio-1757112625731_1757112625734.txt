@@ -1,0 +1,1591 @@
+~/workspace$ pytest --cov=src --cov-report=term-missing
+=============================== test session starts ================================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 1276 items                                                               
+
+tests/test_abstract.py ........                                              [  0%]
+tests/test_abstract_db_manager.py ....                                       [  0%]
+tests/test_api_complete.py ...................                               [  2%]
+tests/test_api_config.py ....                                                [  2%]
+tests/test_api_data_filter.py ......                                         [  3%]
+tests/test_api_fixes.py ...F...                                              [  3%]
+tests/test_api_modules.py .............................                      [  6%]
+tests/test_api_modules_consolidated.py ....                                  [  6%]
+tests/test_app_config.py .........                                           [  7%]
+tests/test_base_api.py ...............                                       [  8%]
+tests/test_base_formatter.py ....FFFFFFFFFF                                  [  9%]
+tests/test_base_formatter_complete.py ........................F..........    [ 12%]
+tests/test_base_parser.py ......                                             [ 12%]
+tests/test_cache.py ......................                                   [ 14%]
+tests/test_cached_api.py ....                                                [ 14%]
+tests/test_cached_api_complete.py sssssssssssssssssssFFFsssssss              [ 16%]
+tests/test_components_fixed.py ...                                           [ 17%]
+tests/test_comprehensive_fixed.py s....                                      [ 17%]
+tests/test_config_consolidated.py .....                                      [ 17%]
+tests/test_config_missing_coverage.py ssssssssss.............ss...           [ 20%]
+tests/test_config_modules_consolidated.py ......                             [ 20%]
+tests/test_console_interface.py ......                                       [ 21%]
+tests/test_core_functionality_consolidated.py .....                          [ 21%]
+tests/test_core_modules_comprehensive.py ........                            [ 22%]
+tests/test_data_normalizers_comprehensive.py ............................    [ 24%]
+tests/test_database_connection.py ........                                   [ 24%]
+tests/test_db_config.py .....                                                [ 25%]
+tests/test_db_manager.py .................                                   [ 26%]
+tests/test_decorators.py .......                                             [ 27%]
+tests/test_description_parser.py ..........                                  [ 27%]
+tests/test_env_loader.py ................                                    [ 29%]
+tests/test_filter_utils.py ssssss                                            [ 29%]
+tests/test_get_api_complete.py ssssssssssssssssssss                          [ 31%]
+tests/test_hh_api_complete.py .................                              [ 32%]
+tests/test_hh_api_config.py .....                                            [ 32%]
+tests/test_hh_parser.py ........                                             [ 33%]
+tests/test_integration.py .............                                      [ 34%]
+tests/test_interfaces.py Fss                                                 [ 34%]
+tests/test_main_application_interface.py F.F                                 [ 35%]
+tests/test_main_application_interface_complete.py F..FFFFFFFFFFFFFFFFFFFFFFF [ 37%]
+FFFFFFFFFFFFFFFFF                                                            [ 38%]
+tests/test_main_consolidated.py .........                                    [ 39%]
+tests/test_menu_manager.py ..........                                        [ 39%]
+tests/test_missing_components.py .........                                   [ 40%]
+tests/test_missing_coverage_components.py ......EEEE..FFF..                  [ 41%]
+tests/test_models_fixed.py ...                                               [ 42%]
+tests/test_paginator.py ......                                               [ 42%]
+tests/test_parsers_complete.py sss.sss.ssss                                  [ 43%]
+tests/test_repository_fixed.py ..                                            [ 43%]
+tests/test_salary_fixed.py ...........                                       [ 44%]
+tests/test_salary_utils.py ......................                            [ 46%]
+tests/test_search_utils.py ............................                      [ 48%]
+tests/test_search_utils_complete.py .................FF.FFFFFFF............. [ 51%]
+......                                                                       [ 52%]
+tests/test_services_consolidated.py ....                                     [ 52%]
+tests/test_services_storage_consolidated.py ..........                       [ 53%]
+tests/test_simple_db_adapter.py ........F                                    [ 53%]
+tests/test_sj_api.py ..............                                          [ 55%]
+tests/test_sj_api_complete.py .............F....                             [ 56%]
+tests/test_sj_api_config.py .....                                            [ 56%]
+tests/test_sj_parser.py ........                                             [ 57%]
+tests/test_sj_parser_complete.py ssssssssssssss                              [ 58%]
+tests/test_source_manager.py .................                               [ 59%]
+tests/test_source_selector.py .................                              [ 61%]
+tests/test_storage_abstractions.py ssssssss                                  [ 61%]
+tests/test_storage_complete.py .............                                 [ 62%]
+tests/test_storage_factory.py ........                                       [ 63%]
+tests/test_storage_modules_consolidated.py .F..                              [ 63%]
+tests/test_target_companies.py .....                                         [ 64%]
+tests/test_typed_data_processor.py ................                          [ 65%]
+tests/test_ui_components_extended.py .F................                      [ 66%]
+tests/test_ui_config.py .......................                              [ 68%]
+tests/test_ui_helpers_comprehensive.py ..................................... [ 71%]
+..                                                                           [ 71%]
+tests/test_ui_helpers_extended.py ........................................   [ 74%]
+tests/test_ui_modules_consolidated.py .....                                  [ 75%]
+tests/test_ui_navigation.py ......................                           [ 76%]
+tests/test_ui_navigation_complete.py ..s..                                   [ 77%]
+tests/test_ui_navigation_comprehensive.py ......                             [ 77%]
+tests/test_ui_navigation_extended.py .......FF..........................     [ 80%]
+tests/test_unified_api.py ................F...F.                             [ 82%]
+tests/test_unified_api_complete.py ......F......................             [ 84%]
+tests/test_unified_api_fixed.py ...                                          [ 84%]
+tests/test_user_interface.py ...............                                 [ 85%]
+tests/test_user_interface_consolidated.py F.F                                [ 86%]
+tests/test_user_interface_fixed.py ...                                       [ 86%]
+tests/test_utils_consolidated.py .....                                       [ 86%]
+tests/test_utils_ui_consolidated.py ......                                   [ 87%]
+tests/test_vacancy_abstractions.py .................                         [ 88%]
+tests/test_vacancy_display_handler.py F..................                    [ 90%]
+tests/test_vacancy_formatter.py ........                                     [ 90%]
+tests/test_vacancy_models_complete.py F...                                   [ 91%]
+tests/test_vacancy_models_consolidated.py ..F.                               [ 91%]
+tests/test_vacancy_operations.py ......                                      [ 91%]
+tests/test_vacancy_operations_coordinator.py ...........................     [ 93%]
+tests/test_vacancy_operations_coordinator_complete.py F..................... [ 95%]
+                                                                             [ 95%]
+tests/test_vacancy_processing_coordinator.py .............                   [ 96%]
+tests/test_vacancy_repository.py F........                                   [ 97%]
+tests/test_vacancy_stats.py ............                                     [ 98%]
+tests/test_vacancy_stats_fixed.py .........                                  [ 99%]
+tests/test_vacancy_validator.py ............                                 [100%]
+
+====================================== ERRORS ======================================
+_ ERROR at setup of TestVacancyRepositoryFixed.test_repository_init_with_dependencies _
+
+self = <tests.test_missing_coverage_components.TestVacancyRepositoryFixed object at 0x7f14c98645d0>
+
+    @pytest.fixture
+    def mock_db_connection(self):
+        """Фикстура мок подключения к БД"""
+        connection = Mock()
+        cursor = Mock()
+        cursor.fetchall.return_value = []
+        cursor.fetchone.return_value = None
+>       connection.cursor.return_value.__enter__.return_value = cursor
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_missing_coverage_components.py:161: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Mock name='mock.cursor()' id='139727237118416'>, name = '__enter__'
+
+    def __getattr__(self, name):
+        if name in {'_mock_methods', '_mock_unsafe'}:
+            raise AttributeError(name)
+        elif self._mock_methods is not None:
+            if name not in self._mock_methods or name in _all_magics:
+                raise AttributeError("Mock object has no attribute %r" % name)
+        elif _is_magic(name):
+>           raise AttributeError(name)
+E           AttributeError: __enter__
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:655: AttributeError
+__________ ERROR at setup of TestVacancyRepositoryFixed.test_save_vacancy __________
+
+self = <tests.test_missing_coverage_components.TestVacancyRepositoryFixed object at 0x7f14c9864c50>
+
+    @pytest.fixture
+    def mock_db_connection(self):
+        """Фикстура мок подключения к БД"""
+        connection = Mock()
+        cursor = Mock()
+        cursor.fetchall.return_value = []
+        cursor.fetchone.return_value = None
+>       connection.cursor.return_value.__enter__.return_value = cursor
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_missing_coverage_components.py:161: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Mock name='mock.cursor()' id='139727233739280'>, name = '__enter__'
+
+    def __getattr__(self, name):
+        if name in {'_mock_methods', '_mock_unsafe'}:
+            raise AttributeError(name)
+        elif self._mock_methods is not None:
+            if name not in self._mock_methods or name in _all_magics:
+                raise AttributeError("Mock object has no attribute %r" % name)
+        elif _is_magic(name):
+>           raise AttributeError(name)
+E           AttributeError: __enter__
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:655: AttributeError
+_______ ERROR at setup of TestVacancyRepositoryFixed.test_get_all_vacancies ________
+
+self = <tests.test_missing_coverage_components.TestVacancyRepositoryFixed object at 0x7f14c98652d0>
+
+    @pytest.fixture
+    def mock_db_connection(self):
+        """Фикстура мок подключения к БД"""
+        connection = Mock()
+        cursor = Mock()
+        cursor.fetchall.return_value = []
+        cursor.fetchone.return_value = None
+>       connection.cursor.return_value.__enter__.return_value = cursor
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_missing_coverage_components.py:161: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Mock name='mock.cursor()' id='139727233060304'>, name = '__enter__'
+
+    def __getattr__(self, name):
+        if name in {'_mock_methods', '_mock_unsafe'}:
+            raise AttributeError(name)
+        elif self._mock_methods is not None:
+            if name not in self._mock_methods or name in _all_magics:
+                raise AttributeError("Mock object has no attribute %r" % name)
+        elif _is_magic(name):
+>           raise AttributeError(name)
+E           AttributeError: __enter__
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:655: AttributeError
+________ ERROR at setup of TestVacancyRepositoryFixed.test_find_by_keyword _________
+
+self = <tests.test_missing_coverage_components.TestVacancyRepositoryFixed object at 0x7f14c9865a10>
+
+    @pytest.fixture
+    def mock_db_connection(self):
+        """Фикстура мок подключения к БД"""
+        connection = Mock()
+        cursor = Mock()
+        cursor.fetchall.return_value = []
+        cursor.fetchone.return_value = None
+>       connection.cursor.return_value.__enter__.return_value = cursor
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_missing_coverage_components.py:161: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Mock name='mock.cursor()' id='139727232754640'>, name = '__enter__'
+
+    def __getattr__(self, name):
+        if name in {'_mock_methods', '_mock_unsafe'}:
+            raise AttributeError(name)
+        elif self._mock_methods is not None:
+            if name not in self._mock_methods or name in _all_magics:
+                raise AttributeError("Mock object has no attribute %r" % name)
+        elif _is_magic(name):
+>           raise AttributeError(name)
+E           AttributeError: __enter__
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:655: AttributeError
+===================================== FAILURES =====================================
+______________ TestAPIFixes.test_unified_api_target_companies_filter _______________
+
+self = <tests.test_api_fixes.TestAPIFixes object at 0x7f14c9adbe90>
+
+    def test_unified_api_target_companies_filter(self):
+        """Тест фильтрации по целевым компаниям"""
+        if not UNIFIED_API_AVAILABLE:
+            pytest.skip("UnifiedAPI not available")
+    
+        api = UnifiedAPI()
+    
+        # Создаем правильную структуру данных для фильтрации
+        with patch('src.config.target_companies.TargetCompanies') as mock_target:
+            instance = Mock()
+            instance.get_hh_ids.return_value = ["company1"]
+            instance.get_sj_ids.return_value = ["company2"]
+            mock_target.return_value = instance
+    
+            test_vacancies = [
+                {"id": "1", "employer": {"id": "company1"}, "source": "hh"}
+            ]
+    
+            if hasattr(api, '_filter_by_target_companies'):
+                # Мокаем создание объекта TargetCompanies в методе
+>               with patch.object(api, '_get_target_companies', return_value=instance):
+
+tests/test_api_fixes.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f14cb356a50>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <src.api_modules.unified_api.UnifiedAPI object at 0x7f14c9f71650> does not have the attribute '_get_target_companies'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+-------------------------------- Captured log call ---------------------------------
+WARNING  src.api_modules.sj_api:sj_api.py:55 Используется тестовый API ключ SuperJob.                 Для полной функциональности добавьте реальный ключ                 в переменную окружения SUPERJOB_API_KEY
+__________________ TestBaseFormatter.test_format_item_with_index ___________________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7f14c9b47a50>
+formatter = <tests.test_base_formatter.TestBaseFormatter.formatter.<locals>.ConcreteFormatter object at 0x7f14c8271010>
+
+    def test_format_item_with_index(self, formatter):
+        """Тест форматирования элемента с индексом"""
+        if not BASE_FORMATTER_AVAILABLE:
+            # Mocking the method if BaseFormatter is not available
+            formatter.format_item.return_value = "1. test"
+>       result = formatter.format_item("test", 1)
+                 ^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteFormatter' object has no attribute 'format_item'
+
+tests/test_base_formatter.py:139: AttributeError
+_________________ TestBaseFormatter.test_format_item_without_index _________________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7f14c9b47dd0>
+formatter = <tests.test_base_formatter.TestBaseFormatter.formatter.<locals>.ConcreteFormatter object at 0x7f14c828af90>
+
+    def test_format_item_without_index(self, formatter):
+        """Тест форматирования элемента без индекса"""
+        if not BASE_FORMATTER_AVAILABLE:
+            # Mocking the method if BaseFormatter is not available
+            formatter.format_item.return_value = "test"
+>       result = formatter.format_item("test")
+                 ^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteFormatter' object has no attribute 'format_item'
+
+tests/test_base_formatter.py:147: AttributeError
+__________________ TestBaseFormatter.test_format_item_none_index ___________________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7f14c9b4c390>
+formatter = <tests.test_base_formatter.TestBaseFormatter.formatter.<locals>.ConcreteFormatter object at 0x7f14c8205a10>
+
+    def test_format_item_none_index(self, formatter):
+        """Тест форматирования элемента с None индексом"""
+        if not BASE_FORMATTER_AVAILABLE:
+            # Mocking the method if BaseFormatter is not available
+            formatter.format_item.return_value = "test"
+>       result = formatter.format_item("test", None)
+                 ^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteFormatter' object has no attribute 'format_item'
+
+tests/test_base_formatter.py:155: AttributeError
+_____________________ TestBaseFormatter.test_format_list_basic _____________________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7f14c9b4c9d0>
+formatter = <tests.test_base_formatter.TestBaseFormatter.formatter.<locals>.ConcreteFormatter object at 0x7f14c827af50>
+
+    def test_format_list_basic(self, formatter):
+        """Тест базового форматирования списка"""
+        items = ["item1", "item2", "item3"]
+        if not BASE_FORMATTER_AVAILABLE:
+            # Mocking the method if BaseFormatter is not available
+            formatted_items = [f"{i+1}. {item}" for i, item in enumerate(items)]
+            formatter.format_list.return_value = formatted_items
+>       result = formatter.format_list(items)
+                 ^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteFormatter' object has no attribute 'format_list'
+
+tests/test_base_formatter.py:165: AttributeError
+______________ TestBaseFormatter.test_format_list_custom_start_index _______________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7f14c9b4d010>
+formatter = <tests.test_base_formatter.TestBaseFormatter.formatter.<locals>.ConcreteFormatter object at 0x7f14c8281d50>
+
+    def test_format_list_custom_start_index(self, formatter):
+        """Тест форматирования списка с кастомным начальным индексом"""
+        items = ["item1", "item2"]
+        if not BASE_FORMATTER_AVAILABLE:
+            # Mocking the method if BaseFormatter is not available
+            formatted_items = [f"{i+5}. {item}" for i, item in enumerate(items, start=5)]
+            formatter.format_list.return_value = formatted_items
+>       result = formatter.format_list(items, start_index=5)
+                 ^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteFormatter' object has no attribute 'format_list'
+
+tests/test_base_formatter.py:176: AttributeError
+_____________________ TestBaseFormatter.test_format_list_empty _____________________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7f14c9b4d610>
+formatter = <tests.test_base_formatter.TestBaseFormatter.formatter.<locals>.ConcreteFormatter object at 0x7f14c81a3190>
+
+    def test_format_list_empty(self, formatter):
+        """Тест форматирования пустого списка"""
+        if not BASE_FORMATTER_AVAILABLE:
+            # Mocking the method if BaseFormatter is not available
+            formatter.format_list.return_value = []
+>       result = formatter.format_list([])
+                 ^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteFormatter' object has no attribute 'format_list'
+
+tests/test_base_formatter.py:185: AttributeError
+__________________ TestBaseFormatter.test_format_table_row_basic ___________________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7f14c9b4dc50>
+formatter = <tests.test_base_formatter.TestBaseFormatter.formatter.<locals>.ConcreteFormatter object at 0x7f14c8237050>
+
+    def test_format_table_row_basic(self, formatter):
+        """Тест форматирования строки таблицы"""
+        data = {"name": "Test", "age": 25, "city": "Moscow"}
+        columns = ["name", "age", "city"]
+        if not BASE_FORMATTER_AVAILABLE:
+            # Mocking the method if BaseFormatter is not available
+            values = [str(data.get(col, "")) for col in columns]
+            formatter.format_table_row.return_value = " | ".join(values)
+>       result = formatter.format_table_row(data, columns)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteFormatter' object has no attribute 'format_table_row'
+
+tests/test_base_formatter.py:196: AttributeError
+______________ TestBaseFormatter.test_format_table_row_missing_column ______________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7f14c9b4e290>
+formatter = <tests.test_base_formatter.TestBaseFormatter.formatter.<locals>.ConcreteFormatter object at 0x7f14c8239010>
+
+    def test_format_table_row_missing_column(self, formatter):
+        """Тест форматирования строки таблицы с отсутствующей колонкой"""
+        data = {"name": "Test", "age": 25}
+        columns = ["name", "age", "city"]
+        if not BASE_FORMATTER_AVAILABLE:
+            # Mocking the method if BaseFormatter is not available
+            values = [str(data.get(col, "")) for col in columns]
+            formatter.format_table_row.return_value = " | ".join(values)
+>       result = formatter.format_table_row(data, columns)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteFormatter' object has no attribute 'format_table_row'
+
+tests/test_base_formatter.py:207: AttributeError
+______________ TestBaseFormatter.test_format_table_row_empty_columns _______________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7f14c9b4e8d0>
+formatter = <tests.test_base_formatter.TestBaseFormatter.formatter.<locals>.ConcreteFormatter object at 0x7f14c81a3c90>
+
+    def test_format_table_row_empty_columns(self, formatter):
+        """Тест форматирования строки таблицы с пустыми колонками"""
+        data = {"name": "Test"}
+        columns = []
+        if not BASE_FORMATTER_AVAILABLE:
+            # Mocking the method if BaseFormatter is not available
+            formatter.format_table_row.return_value = ""
+>       result = formatter.format_table_row(data, columns)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteFormatter' object has no attribute 'format_table_row'
+
+tests/test_base_formatter.py:217: AttributeError
+________________ TestBaseFormatter.test_format_item_complex_object _________________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7f14c9b4ef10>
+formatter = <tests.test_base_formatter.TestBaseFormatter.formatter.<locals>.ConcreteFormatter object at 0x7f14c9b4c610>
+
+    def test_format_item_complex_object(self, formatter):
+        """Тест форматирования сложного объекта"""
+        obj = {"key": "value", "nested": {"inner": "data"}}
+        if not BASE_FORMATTER_AVAILABLE:
+            # Mocking the method if BaseFormatter is not available
+            formatter.format_item.return_value = "1. " + str(obj)
+>       result = formatter.format_item(obj, 1)
+                 ^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteFormatter' object has no attribute 'format_item'
+
+tests/test_base_formatter.py:226: AttributeError
+____________ TestBaseFormatterComplete.test_format_company_name_object _____________
+
+self = <tests.test_base_formatter_complete.TestBaseFormatterComplete object at 0x7f14c9b6e5d0>
+formatter = <tests.test_base_formatter_complete.ConcreteFormatter object at 0x7f14c8289d10>
+
+    def test_format_company_name_object(self, formatter):
+        """Тест форматирования названия компании из объекта"""
+        company = Mock()
+        company.name = "Test Company"
+        result = formatter.format_company_name(company)
+>       assert result == "Test Company"
+E       AssertionError: assert <Mock name='mock.get()' id='139727234177872'> == 'Test Company'
+
+tests/test_base_formatter_complete.py:300: AssertionError
+_______________ TestCachedAPIComplete.test_get_vacancies_from_cache ________________
+
+args = (<tests.test_cached_api_complete.TestCachedAPIComplete object at 0x7f14c99da810>,)
+keywargs = {'cached_api': <tests.test_cached_api_complete.ConcreteCachedAPI object at 0x7f14c9337290>}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f14c99c6090>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'tests.test_cached_api_complete.ConcreteCachedAPI'> does not have the attribute '_load_from_cache'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+________________ TestCachedAPIComplete.test_get_vacancies_from_api _________________
+
+args = (<tests.test_cached_api_complete.TestCachedAPIComplete object at 0x7f14c99dae90>,)
+keywargs = {'cached_api': <tests.test_cached_api_complete.ConcreteCachedAPI object at 0x7f14c88e0550>}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f14c99c6290>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'tests.test_cached_api_complete.ConcreteCachedAPI'> does not have the attribute '_save_to_cache'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+________________ TestCachedAPIComplete.test_get_vacancies_api_error ________________
+
+args = (<tests.test_cached_api_complete.TestCachedAPIComplete object at 0x7f14c99d66d0>,)
+keywargs = {'cached_api': <tests.test_cached_api_complete.ConcreteCachedAPI object at 0x7f14c88e2c50>}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f14c99c6490>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'tests.test_cached_api_complete.ConcreteCachedAPI'> does not have the attribute '_load_from_cache'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_______________ TestMainApplicationInterface.test_interface_creation _______________
+
+self = <tests.test_interfaces.TestMainApplicationInterface object at 0x7f14c97d0490>
+mock_dependencies = {'api': <Mock id='139727232737680'>, 'storage': <Mock id='139727232743248'>, 'ui': <Mock id='139727232743504'>}
+
+    def test_interface_creation(self, mock_dependencies):
+        """Тест создания интерфейса"""
+        if not INTERFACES_AVAILABLE:
+            pytest.skip("Interfaces not available")
+    
+        try:
+>           interface = MainApplicationInterface(**mock_dependencies)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: Can't instantiate abstract class MainApplicationInterface with abstract method run_application
+
+tests/test_interfaces.py:38: TypeError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_interfaces.TestMainApplicationInterface object at 0x7f14c97d0490>
+mock_dependencies = {'api': <Mock id='139727232737680'>, 'storage': <Mock id='139727232743248'>, 'ui': <Mock id='139727232743504'>}
+
+    def test_interface_creation(self, mock_dependencies):
+        """Тест создания интерфейса"""
+        if not INTERFACES_AVAILABLE:
+            pytest.skip("Interfaces not available")
+    
+        try:
+            interface = MainApplicationInterface(**mock_dependencies)
+            assert interface is not None
+        except TypeError:
+            # Если требуются другие аргументы
+>           interface = MainApplicationInterface()
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: Can't instantiate abstract class MainApplicationInterface with abstract method run_application
+
+tests/test_interfaces.py:42: TypeError
+________ TestMainApplicationInterface.test_main_application_interface_init _________
+
+self = <tests.test_main_application_interface.TestMainApplicationInterface object at 0x7f14c97de850>
+
+    def test_main_application_interface_init(self):
+        """Тест инициализации главного интерфейса приложения"""
+        if not INTERFACE_AVAILABLE:
+            pytest.skip("MainApplicationInterface not available")
+    
+        # Создаем конкретную реализацию абстрактного класса
+        class ConcreteMainApplication(MainApplicationInterface):
+            def run_application(self):
+                pass
+    
+>       interface = ConcreteMainApplication()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: MainApplicationInterface.__init__() missing 3 required positional arguments: 'provider', 'processor', and 'storage'
+
+tests/test_main_application_interface.py:33: TypeError
+_ TestMainApplicationInterface.test_main_application_interface_concrete_implementation _
+
+self = <tests.test_main_application_interface.TestMainApplicationInterface object at 0x7f14c97df1d0>
+
+    def test_main_application_interface_concrete_implementation(self):
+        """Тест конкретной реализации"""
+        if not INTERFACE_AVAILABLE:
+            pytest.skip("MainApplicationInterface not available")
+    
+        class TestApplication(MainApplicationInterface):
+            def run_application(self):
+                return "Application started"
+    
+>       app = TestApplication()
+              ^^^^^^^^^^^^^^^^^
+E       TypeError: MainApplicationInterface.__init__() missing 3 required positional arguments: 'provider', 'processor', and 'storage'
+
+tests/test_main_application_interface.py:53: TypeError
+_________ TestMainApplicationInterfaceComplete.test_init_with_dependencies _________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c97f2510>
+mock_provider = <Mock id='139727232654096'>
+mock_processor = <Mock id='139727232650128'>
+mock_storage = <Mock id='139727232657232'>
+
+    def test_init_with_dependencies(self, mock_provider, mock_processor, mock_storage):
+        """Тест инициализации с зависимостями"""
+        app = ConcreteMainApp(mock_provider, mock_processor, mock_storage)
+>       assert app.data_provider == mock_provider
+               ^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'data_provider'
+
+tests/test_main_application_interface_complete.py:59: AttributeError
+____________ TestMainApplicationInterfaceComplete.test_get_data_sources ____________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c97f3890>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c80f3d50>
+
+    def test_get_data_sources(self, app_interface):
+        """Тест получения источников данных"""
+        mock_sources = ["hh", "sj"]
+>       app_interface.data_provider.get_available_sources.return_value = mock_sources
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'data_provider'
+
+tests/test_main_application_interface_complete.py:78: AttributeError
+_________ TestMainApplicationInterfaceComplete.test_get_data_sources_error _________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c97f3f10>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c8116b90>
+
+    def test_get_data_sources_error(self, app_interface):
+        """Тест обработки ошибок при получении источников"""
+>       app_interface.data_provider.get_available_sources.side_effect = Exception("Provider error")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'data_provider'
+
+tests/test_main_application_interface_complete.py:85: AttributeError
+____________ TestMainApplicationInterfaceComplete.test_validate_sources ____________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c97fc5d0>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c81920d0>
+
+    def test_validate_sources(self, app_interface):
+        """Тест валидации источников"""
+        sources = ["hh", "sj"]
+>       app_interface.data_provider.validate_sources.return_value = sources
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'data_provider'
+
+tests/test_main_application_interface_complete.py:93: AttributeError
+_________ TestMainApplicationInterfaceComplete.test_validate_sources_error _________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c97dea50>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c81756d0>
+
+    def test_validate_sources_error(self, app_interface):
+        """Тест обработки ошибок валидации источников"""
+>       app_interface.data_provider.validate_sources.side_effect = Exception("Validation error")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'data_provider'
+
+tests/test_main_application_interface_complete.py:100: AttributeError
+______________ TestMainApplicationInterfaceComplete.test_process_data ______________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c97fc8d0>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c849b0d0>
+
+    def test_process_data(self, app_interface):
+        """Тест обработки данных"""
+        mock_data = [{"id": "1", "title": "Test Job"}]
+        processed_data = [{"id": "1", "title": "Processed Job"}]
+    
+        app_interface.processor.process.return_value = processed_data
+    
+>       result = app_interface.process_data(mock_data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'process_data'
+
+tests/test_main_application_interface_complete.py:112: AttributeError
+___________ TestMainApplicationInterfaceComplete.test_process_data_empty ___________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c97fcc90>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c815c410>
+
+    def test_process_data_empty(self, app_interface):
+        """Тест обработки пустых данных"""
+>       result = app_interface.process_data([])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'process_data'
+
+tests/test_main_application_interface_complete.py:118: AttributeError
+___________ TestMainApplicationInterfaceComplete.test_process_data_none ____________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c97fd010>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c8100990>
+
+    def test_process_data_none(self, app_interface):
+        """Тест обработки None данных"""
+>       result = app_interface.process_data(None)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'process_data'
+
+tests/test_main_application_interface_complete.py:123: AttributeError
+___________ TestMainApplicationInterfaceComplete.test_process_data_error ___________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c97fd3d0>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c80b90d0>
+
+    def test_process_data_error(self, app_interface):
+        """Тест обработки ошибок при обработке данных"""
+        app_interface.processor.process.side_effect = Exception("Processing error")
+    
+>       result = app_interface.process_data([{"id": "1"}])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'process_data'
+
+tests/test_main_application_interface_complete.py:130: AttributeError
+_______________ TestMainApplicationInterfaceComplete.test_store_data _______________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c97fd950>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c8191c50>
+
+    def test_store_data(self, app_interface):
+        """Тест сохранения данных"""
+        mock_data = [{"id": "1", "title": "Test Job"}]
+        app_interface.storage.save.return_value = True
+    
+>       result = app_interface.store_data(mock_data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'store_data'
+
+tests/test_main_application_interface_complete.py:138: AttributeError
+____________ TestMainApplicationInterfaceComplete.test_store_data_empty ____________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c97fdfd0>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c80bda50>
+
+    def test_store_data_empty(self, app_interface):
+        """Тест сохранения пустых данных"""
+>       result = app_interface.store_data([])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'store_data'
+
+tests/test_main_application_interface_complete.py:144: AttributeError
+____________ TestMainApplicationInterfaceComplete.test_store_data_none _____________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c97fe650>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c812d490>
+
+    def test_store_data_none(self, app_interface):
+        """Тест сохранения None данных"""
+>       result = app_interface.store_data(None)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'store_data'
+
+tests/test_main_application_interface_complete.py:149: AttributeError
+____________ TestMainApplicationInterfaceComplete.test_store_data_error ____________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c97fecd0>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c80b6bd0>
+
+    def test_store_data_error(self, app_interface):
+        """Тест обработки ошибок при сохранении данных"""
+        app_interface.storage.save.side_effect = Exception("Storage error")
+    
+>       result = app_interface.store_data([{"id": "1"}])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'store_data'
+
+tests/test_main_application_interface_complete.py:156: AttributeError
+______________ TestMainApplicationInterfaceComplete.test_search_data _______________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c97ff350>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c815d850>
+
+    def test_search_data(self, app_interface):
+        """Тест поиска данных"""
+        mock_results = [{"id": "1", "title": "Python Job"}]
+>       app_interface.data_provider.search.return_value = mock_results
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'data_provider'
+
+tests/test_main_application_interface_complete.py:162: AttributeError
+_________ TestMainApplicationInterfaceComplete.test_search_data_no_sources _________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c97ff9d0>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c8101ad0>
+
+    def test_search_data_no_sources(self, app_interface):
+        """Тест поиска данных без указания источников"""
+        mock_results = [{"id": "1", "title": "Python Job"}]
+        available_sources = ["hh", "sj"]
+    
+>       app_interface.data_provider.get_available_sources.return_value = available_sources
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'data_provider'
+
+tests/test_main_application_interface_complete.py:173: AttributeError
+________ TestMainApplicationInterfaceComplete.test_search_data_empty_query _________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c9804090>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c8190b10>
+
+    def test_search_data_empty_query(self, app_interface):
+        """Тест поиска с пустым запросом"""
+>       result = app_interface.search_data("")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'search_data'
+
+tests/test_main_application_interface_complete.py:182: AttributeError
+_________ TestMainApplicationInterfaceComplete.test_search_data_none_query _________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c9804790>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c80ba4d0>
+
+    def test_search_data_none_query(self, app_interface):
+        """Тест поиска с None запросом"""
+>       result = app_interface.search_data(None)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'search_data'
+
+tests/test_main_application_interface_complete.py:187: AttributeError
+___________ TestMainApplicationInterfaceComplete.test_search_data_error ____________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c9804ed0>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c826f710>
+
+    def test_search_data_error(self, app_interface):
+        """Тест обработки ошибок при поиске"""
+>       app_interface.data_provider.search.side_effect = Exception("Search error")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'data_provider'
+
+tests/test_main_application_interface_complete.py:192: AttributeError
+___________ TestMainApplicationInterfaceComplete.test_get_storage_stats ____________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c9805610>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c812dcd0>
+
+    def test_get_storage_stats(self, app_interface):
+        """Тест получения статистики хранилища"""
+        mock_stats = {"total": 100, "sources": {"hh": 60, "sj": 40}}
+        app_interface.storage.get_stats.return_value = mock_stats
+    
+>       result = app_interface.get_storage_stats()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'get_storage_stats'
+
+tests/test_main_application_interface_complete.py:202: AttributeError
+________ TestMainApplicationInterfaceComplete.test_get_storage_stats_error _________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c9805d50>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c81ec210>
+
+    def test_get_storage_stats_error(self, app_interface):
+        """Тест обработки ошибок при получении статистики"""
+        app_interface.storage.get_stats.side_effect = Exception("Stats error")
+    
+>       result = app_interface.get_storage_stats()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'get_storage_stats'
+
+tests/test_main_application_interface_complete.py:210: AttributeError
+___________ TestMainApplicationInterfaceComplete.test_clear_storage_data ___________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c9806490>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c80cbf90>
+
+    def test_clear_storage_data(self, app_interface):
+        """Тест очистки данных хранилища"""
+        app_interface.storage.clear.return_value = True
+    
+>       result = app_interface.clear_storage_data()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'clear_storage_data'
+
+tests/test_main_application_interface_complete.py:217: AttributeError
+________ TestMainApplicationInterfaceComplete.test_clear_storage_data_error ________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c9806c10>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c8102a90>
+
+    def test_clear_storage_data_error(self, app_interface):
+        """Тест обработки ошибок при очистке хранилища"""
+        app_interface.storage.clear.side_effect = Exception("Clear error")
+    
+>       result = app_interface.clear_storage_data()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'clear_storage_data'
+
+tests/test_main_application_interface_complete.py:225: AttributeError
+____________ TestMainApplicationInterfaceComplete.test_get_cached_data _____________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c9807350>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c80b8790>
+
+    def test_get_cached_data(self, app_interface):
+        """Тест получения кэшированных данных"""
+        mock_cached_data = [{"id": "1", "title": "Cached Job"}]
+>       app_interface.data_provider.get_cached_data.return_value = mock_cached_data
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'data_provider'
+
+tests/test_main_application_interface_complete.py:231: AttributeError
+_________ TestMainApplicationInterfaceComplete.test_get_cached_data_error __________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c9807a90>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c84be410>
+
+    def test_get_cached_data_error(self, app_interface):
+        """Тест обработки ошибок при получении кэшированных данных"""
+>       app_interface.data_provider.get_cached_data.side_effect = Exception("Cache error")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'data_provider'
+
+tests/test_main_application_interface_complete.py:239: AttributeError
+____________ TestMainApplicationInterfaceComplete.test_clear_cache_data ____________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c97fd490>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c84db6d0>
+
+    def test_clear_cache_data(self, app_interface):
+        """Тест очистки кэшированных данных"""
+        sources = {"hh": True, "sj": False}
+>       app_interface.data_provider.clear_cache.return_value = True
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'data_provider'
+
+tests/test_main_application_interface_complete.py:247: AttributeError
+_________ TestMainApplicationInterfaceComplete.test_clear_cache_data_error _________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c98075d0>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c812cdd0>
+
+    def test_clear_cache_data_error(self, app_interface):
+        """Тест обработки ошибок при очистке кэша"""
+>       app_interface.data_provider.clear_cache.side_effect = Exception("Cache clear error")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'data_provider'
+
+tests/test_main_application_interface_complete.py:255: AttributeError
+______________ TestMainApplicationInterfaceComplete.test_export_data _______________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c9806190>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c84c6f10>
+
+    def test_export_data(self, app_interface):
+        """Тест экспорта данных"""
+        mock_data = [{"id": "1", "title": "Export Job"}]
+        app_interface.storage.export.return_value = "/path/to/export.json"
+    
+>       result = app_interface.export_data(mock_data, "json", "/tmp/export.json")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'export_data'
+
+tests/test_main_application_interface_complete.py:265: AttributeError
+___________ TestMainApplicationInterfaceComplete.test_export_data_empty ____________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c9807c10>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c812c9d0>
+
+    def test_export_data_empty(self, app_interface):
+        """Тест экспорта пустых данных"""
+>       result = app_interface.export_data([], "json", "/tmp/export.json")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'export_data'
+
+tests/test_main_application_interface_complete.py:271: AttributeError
+___________ TestMainApplicationInterfaceComplete.test_export_data_error ____________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c9807fd0>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c8565d10>
+
+    def test_export_data_error(self, app_interface):
+        """Тест обработки ошибок при экспорте"""
+        app_interface.storage.export.side_effect = Exception("Export error")
+    
+>       result = app_interface.export_data([{"id": "1"}], "json", "/tmp/export.json")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'export_data'
+
+tests/test_main_application_interface_complete.py:278: AttributeError
+______________ TestMainApplicationInterfaceComplete.test_import_data _______________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c98083d0>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c8101a10>
+
+    def test_import_data(self, app_interface):
+        """Тест импорта данных"""
+        mock_imported_data = [{"id": "1", "title": "Imported Job"}]
+        app_interface.storage.import_data.return_value = mock_imported_data
+    
+>       result = app_interface.import_data("/path/to/import.json", "json")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'import_data'
+
+tests/test_main_application_interface_complete.py:286: AttributeError
+___________ TestMainApplicationInterfaceComplete.test_import_data_error ____________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c98088d0>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c80b5b10>
+
+    def test_import_data_error(self, app_interface):
+        """Тест обработки ошибок при импорте"""
+        app_interface.storage.import_data.side_effect = Exception("Import error")
+    
+>       result = app_interface.import_data("/path/to/import.json", "json")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'import_data'
+
+tests/test_main_application_interface_complete.py:294: AttributeError
+_____________ TestMainApplicationInterfaceComplete.test_setup_logging ______________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c9808f50>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c84dbc10>
+
+    def test_setup_logging(self, app_interface):
+        """Тест настройки логирования"""
+        with patch('logging.basicConfig') as mock_config:
+>           app_interface.setup_logging("DEBUG")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'ConcreteMainApp' object has no attribute 'setup_logging'
+
+tests/test_main_application_interface_complete.py:300: AttributeError
+__________ TestMainApplicationInterfaceComplete.test_setup_logging_error ___________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c98095d0>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c815d010>
+
+    def test_setup_logging_error(self, app_interface):
+        """Тест обработки ошибок настройки логирования"""
+        with patch('logging.basicConfig', side_effect=Exception("Logging error")):
+            # Не должно падать
+>           app_interface.setup_logging("DEBUG")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'ConcreteMainApp' object has no attribute 'setup_logging'
+
+tests/test_main_application_interface_complete.py:307: AttributeError
+_________ TestMainApplicationInterfaceComplete.test_validate_configuration _________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c9809c50>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c851bf90>
+
+    def test_validate_configuration(self, app_interface):
+        """Тест валидации конфигурации"""
+        mock_config = {"api_key": "test", "db_url": "postgres://test"}
+    
+>       with patch.object(app_interface, '_check_api_keys', return_value=True), \
+             patch.object(app_interface, '_check_database_connection', return_value=True):
+
+tests/test_main_application_interface_complete.py:313: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f14c8519e90>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c851bf90> does not have the attribute '_check_api_keys'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_____ TestMainApplicationInterfaceComplete.test_validate_configuration_invalid _____
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c980a2d0>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c93261d0>
+
+    def test_validate_configuration_invalid(self, app_interface):
+        """Тест валидации некорректной конфигурации"""
+        mock_config = {"invalid": "config"}
+    
+>       with patch.object(app_interface, '_check_api_keys', return_value=False):
+
+tests/test_main_application_interface_complete.py:322: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f14c9327050>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c93261d0> does not have the attribute '_check_api_keys'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_____________ TestMainApplicationInterfaceComplete.test_check_api_keys _____________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c980a950>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c824e5d0>
+
+    def test_check_api_keys(self, app_interface):
+        """Тест проверки API ключей"""
+        config = {"hh_api_key": "test_hh", "sj_api_key": "test_sj"}
+>       result = app_interface._check_api_keys(config)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute '_check_api_keys'
+
+tests/test_main_application_interface_complete.py:329: AttributeError
+_________ TestMainApplicationInterfaceComplete.test_check_api_keys_missing _________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c980afd0>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c81c3190>
+
+    def test_check_api_keys_missing(self, app_interface):
+        """Тест проверки отсутствующих API ключей"""
+        config = {}
+>       result = app_interface._check_api_keys(config)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute '_check_api_keys'
+
+tests/test_main_application_interface_complete.py:335: AttributeError
+_______ TestMainApplicationInterfaceComplete.test_check_database_connection ________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c980b650>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c8555790>
+
+    def test_check_database_connection(self, app_interface):
+        """Тест проверки соединения с БД"""
+        config = {"db_url": "postgresql://test"}
+    
+        with patch.object(app_interface.storage, 'test_connection', return_value=True):
+>           result = app_interface._check_database_connection(config)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'ConcreteMainApp' object has no attribute '_check_database_connection'
+
+tests/test_main_application_interface_complete.py:343: AttributeError
+_____ TestMainApplicationInterfaceComplete.test_check_database_connection_fail _____
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceComplete object at 0x7f14c980bcd0>
+app_interface = <tests.test_main_application_interface_complete.ConcreteMainApp object at 0x7f14c9915950>
+
+    def test_check_database_connection_fail(self, app_interface):
+        """Тест неудачной проверки соединения с БД"""
+        config = {"db_url": "postgresql://invalid"}
+    
+        with patch.object(app_interface.storage, 'test_connection', return_value=False):
+>           result = app_interface._check_database_connection(config)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'ConcreteMainApp' object has no attribute '_check_database_connection'
+
+tests/test_main_application_interface_complete.py:351: AttributeError
+____________ TestMainApplicationInterfaceIntegration.test_full_workflow ____________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceIntegration object at 0x7f14c9818590>
+
+    def test_full_workflow(self):
+        """Тест полного рабочего процесса"""
+        mock_provider = Mock()
+        mock_processor = Mock()
+        mock_storage = Mock()
+    
+        # Настройка моков
+        mock_provider.search.return_value = [{"id": "1", "title": "Test Job"}]
+        mock_processor.process.return_value = [{"id": "1", "title": "Processed Job"}]
+        mock_storage.save.return_value = True
+    
+        app = ConcreteMainApp(mock_provider, mock_processor, mock_storage)
+    
+        # Выполняем полный цикл
+>       search_results = app.search_data("python")
+                         ^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'search_data'
+
+tests/test_main_application_interface_complete.py:373: AttributeError
+___________ TestMainApplicationInterfaceIntegration.test_error_recovery ____________
+
+self = <tests.test_main_application_interface_complete.TestMainApplicationInterfaceIntegration object at 0x7f14c9818b90>
+
+    def test_error_recovery(self):
+        """Тест восстановления после ошибок"""
+        mock_provider = Mock()
+        mock_processor = Mock()
+        mock_storage = Mock()
+    
+        # Настройка ошибок
+        mock_provider.search.side_effect = Exception("Search error")
+    
+        app = ConcreteMainApp(mock_provider, mock_processor, mock_storage)
+    
+        # Приложение должно справляться с ошибками
+>       search_results = app.search_data("python")
+                         ^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteMainApp' object has no attribute 'search_data'
+
+tests/test_main_application_interface_complete.py:393: AttributeError
+________ TestLowCoverageComponents.test_cached_api_concrete_implementation _________
+
+self = <tests.test_missing_coverage_components.TestLowCoverageComponents object at 0x7f14c9866890>
+
+    def test_cached_api_concrete_implementation(self):
+        """Тест конкретной реализации кэшированного API"""
+        try:
+            from src.api_modules.cached_api import CachedAPI
+    
+            class ConcreteCachedAPI(CachedAPI):
+                def _get_empty_response(self):
+                    return []
+    
+                def _validate_vacancy(self, vacancy):
+                    return bool(vacancy.get('id'))
+    
+                def get_vacancies(self, query, **kwargs):
+                    return [{"id": "1", "title": "Test"}]
+    
+                def get_vacancies_page(self, query, page=0, per_page=20, **kwargs):
+                    return {"items": [], "found": 0}
+    
+            base_api = Mock()
+            with patch('src.utils.cache.FileCache'):
+>               api = ConcreteCachedAPI(base_api)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_missing_coverage_components.py:293: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/api_modules/cached_api.py:41: in __init__
+    self.cache_dir = Path(cache_dir)
+                     ^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/pathlib.py:871: in __new__
+    self = cls._from_parts(args)
+           ^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/pathlib.py:509: in _from_parts
+    drv, root, parts = self._parse_args(args)
+                       ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+cls = <class 'pathlib.PosixPath'>, args = (<Mock id='139727264484432'>,)
+
+    @classmethod
+    def _parse_args(cls, args):
+        # This is useful when you don't want to create an instance, just
+        # canonicalize some constructor arguments.
+        parts = []
+        for a in args:
+            if isinstance(a, PurePath):
+                parts += a._parts
+            else:
+>               a = os.fspath(a)
+                    ^^^^^^^^^^^^
+E               TypeError: expected str, bytes or os.PathLike object, not Mock
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/pathlib.py:493: TypeError
+______ TestLowCoverageComponents.test_base_formatter_concrete_implementation _______
+
+self = <tests.test_missing_coverage_components.TestLowCoverageComponents object at 0x7f14c9866bd0>
+
+    def test_base_formatter_concrete_implementation(self):
+        """Тест конкретной реализации базового форматтера"""
+        try:
+            from src.utils.base_formatter import BaseFormatter
+    
+            class ConcreteFormatter(BaseFormatter):
+                def clean_html_tags(self, text):
+                    return str(text)
+    
+                def format_company_name(self, company):
+                    return str(company)
+    
+                def format_currency(self, currency):
+                    return str(currency)
+    
+                def format_date(self, date):
+                    return str(date)
+    
+                def format_employment_type(self, employment):
+                    return str(employment)
+    
+                def format_experience(self, experience):
+                    return str(experience)
+    
+                def format_number(self, number):
+                    return str(number)
+    
+                def format_salary(self, salary):
+                    return str(salary)
+    
+                def format_schedule(self, schedule):
+                    return str(schedule)
+    
+                def format_text(self, text):
+                    return str(text)
+    
+                def format_vacancy_info(self, vacancy):
+                    return str(vacancy)
+    
+            formatter = ConcreteFormatter()
+            assert formatter is not None
+>           result = formatter.format("test")
+                     ^^^^^^^^^^^^^^^^
+E           AttributeError: 'ConcreteFormatter' object has no attribute 'format'
+
+tests/test_missing_coverage_components.py:340: AttributeError
+_______________ TestLowCoverageComponents.test_api_methods_coverage ________________
+
+self = <tests.test_missing_coverage_components.TestLowCoverageComponents object at 0x7f14c9866f50>
+mock_get = <MagicMock name='get' id='139727234059344'>
+
+    @patch('requests.get')
+    def test_api_methods_coverage(self, mock_get):
+        """Тест покрытия методов API"""
+        try:
+            from src.api_modules.hh_api import HeadHunterAPI
+            from src.api_modules.sj_api import SuperJobAPI
+    
+            # Тестируем HeadHunter API
+            mock_response = Mock()
+            mock_response.status_code = 200
+            mock_response.json.return_value = {"items": [], "found": 0}
+            mock_get.return_value = mock_response
+    
+            hh_api = HeadHunterAPI()
+            if hasattr(hh_api, 'get_vacancies_page'):
+                result = hh_api.get_vacancies_page("Python")
+>               assert isinstance(result, dict)
+E               assert False
+E                +  where False = isinstance([], dict)
+
+tests/test_missing_coverage_components.py:362: AssertionError
+_______ TestSearchUtilsComplete.test_filter_vacancies_by_keyword_title_match _______
+
+self = <tests.test_search_utils_complete.TestSearchUtilsComplete object at 0x7f14c96efdd0>
+
+    def test_filter_vacancies_by_keyword_title_match(self):
+        """Тест фильтрации по совпадению в заголовке"""
+        vacancies = [
+            MockVacancy(title="Python Developer"),
+            MockVacancy(title="Java Developer")
+        ]
+    
+        result = filter_vacancies_by_keyword(vacancies, "Python")
+>       assert len(result) == 1
+E       assert 2 == 1
+E        +  where 2 = len([<tests.test_search_utils_complete.MockVacancy object at 0x7f14c9804310>, <tests.test_search_utils_complete.MockVacancy object at 0x7f14c9806e90>])
+
+tests/test_search_utils_complete.py:199: AssertionError
+________ TestSearchUtilsComplete.test_filter_vacancies_by_keyword_id_match _________
+
+self = <tests.test_search_utils_complete.TestSearchUtilsComplete object at 0x7f14c96f0410>
+
+    def test_filter_vacancies_by_keyword_id_match(self):
+        """Тест фильтрации по совпадению в ID"""
+        vacancies = [
+            MockVacancy(vacancy_id="python123"),
+            MockVacancy(vacancy_id="java456")
+        ]
+    
+        result = filter_vacancies_by_keyword(vacancies, "python")
+>       assert len(result) == 1
+E       assert 2 == 1
+E        +  where 2 = len([<tests.test_search_utils_complete.MockVacancy object at 0x7f14c979e0d0>, <tests.test_search_utils_complete.MockVacancy object at 0x7f14c979d1d0>])
+
+tests/test_search_utils_complete.py:210: AssertionError
+_ TestSearchUtilsComplete.test_filter_vacancies_by_keyword_responsibilities_match __
+
+self = <tests.test_search_utils_complete.TestSearchUtilsComplete object at 0x7f14c96f1010>
+
+    def test_filter_vacancies_by_keyword_responsibilities_match(self):
+        """Тест фильтрации по совпадению в обязанностях"""
+        vacancies = [
+            MockVacancy(responsibilities="Develop Python applications"),
+            MockVacancy(responsibilities="Develop Java applications")
+        ]
+    
+        result = filter_vacancies_by_keyword(vacancies, "Python")
+>       assert len(result) == 1
+E       assert 2 == 1
+E        +  where 2 = len([<tests.test_search_utils_complete.MockVacancy object at 0x7f14c92e3b90>, <tests.test_search_utils_complete.MockVacancy object at 0x7f14c92e39d0>])
+
+tests/test_search_utils_complete.py:231: AssertionError
+____ TestSearchUtilsComplete.test_filter_vacancies_by_keyword_description_match ____
+
+self = <tests.test_search_utils_complete.TestSearchUtilsComplete object at 0x7f14c96f1610>
+
+    def test_filter_vacancies_by_keyword_description_match(self):
+        """Тест фильтрации по совпадению в описании"""
+        vacancies = [
+            MockVacancy(description="Backend Python development"),
+            MockVacancy(description="Frontend React development")
+        ]
+    
+        result = filter_vacancies_by_keyword(vacancies, "Python")
+>       assert len(result) == 1
+E       assert 2 == 1
+E        +  where 2 = len([<tests.test_search_utils_complete.MockVacancy object at 0x7f14c81a7e10>, <tests.test_search_utils_complete.MockVacancy object at 0x7f14c81a5b50>])
+
+tests/test_search_utils_complete.py:241: AssertionError
+_ TestSearchUtilsComplete.test_filter_vacancies_by_keyword_detailed_description_match _
+
+self = <tests.test_search_utils_complete.TestSearchUtilsComplete object at 0x7f14c96f1c10>
+
+    def test_filter_vacancies_by_keyword_detailed_description_match(self):
+        """Тест фильтрации по совпадению в детальном описании"""
+        vacancies = [
+            MockVacancy(detailed_description="Detailed Python job description"),
+            MockVacancy(detailed_description="Detailed Java job description")
+        ]
+    
+        result = filter_vacancies_by_keyword(vacancies, "Python")
+>       assert len(result) == 1
+E       assert 2 == 1
+E        +  where 2 = len([<tests.test_search_utils_complete.MockVacancy object at 0x7f14c979cf90>, <tests.test_search_utils_complete.MockVacancy object at 0x7f14c979d390>])
+
+tests/test_search_utils_complete.py:251: AssertionError
+______ TestSearchUtilsComplete.test_filter_vacancies_by_keyword_skills_match _______
+
+self = <tests.test_search_utils_complete.TestSearchUtilsComplete object at 0x7f14c96f2250>
+
+    def test_filter_vacancies_by_keyword_skills_match(self):
+        """Тест фильтрации по совпадению в навыках"""
+        vacancies = [
+            MockVacancy(skills=[{"name": "Python"}, {"name": "Django"}]),
+            MockVacancy(skills=["Java", "Spring"])
+        ]
+    
+        result = filter_vacancies_by_keyword(vacancies, "Python")
+>       assert len(result) == 1
+E       assert 2 == 1
+E        +  where 2 = len([<tests.test_search_utils_complete.MockVacancy object at 0x7f14c979e190>, <tests.test_search_utils_complete.MockVacancy object at 0x7f14c81032d0>])
+
+tests/test_search_utils_complete.py:261: AssertionError
+_____ TestSearchUtilsComplete.test_filter_vacancies_by_keyword_employer_match ______
+
+self = <tests.test_search_utils_complete.TestSearchUtilsComplete object at 0x7f14c96f2850>
+
+    def test_filter_vacancies_by_keyword_employer_match(self):
+        """Тест фильтрации по совпадению в работодателе"""
+        vacancies = [
+            MockVacancy(employer={"name": "Python Solutions"}),
+            MockVacancy(employer={"name": "Java Corp"})
+        ]
+    
+        result = filter_vacancies_by_keyword(vacancies, "Python")
+>       assert len(result) == 1
+E       assert 2 == 1
+E        +  where 2 = len([<tests.test_search_utils_complete.MockVacancy object at 0x7f14c851b150>, <tests.test_search_utils_complete.MockVacancy object at 0x7f14c851bfd0>])
+
+tests/test_search_utils_complete.py:271: AssertionError
+____ TestSearchUtilsComplete.test_filter_vacancies_by_keyword_profession_match _____
+
+self = <tests.test_search_utils_complete.TestSearchUtilsComplete object at 0x7f14c96f2e50>
+
+    def test_filter_vacancies_by_keyword_profession_match(self):
+        """Тест фильтрации по совпадению в профессии (SuperJob)"""
