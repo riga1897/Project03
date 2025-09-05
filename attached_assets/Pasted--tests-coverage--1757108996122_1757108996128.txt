@@ -1,0 +1,128 @@
+================================== tests coverage ==================================
+_________________ coverage: platform linux, python 3.11.13-final-0 _________________
+
+Name                                                     Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------------------------
+src/__init__.py                                              0      0   100%
+src/api_modules/__init__.py                                  0      0   100%
+src/api_modules/base_api.py                                 23      0   100%
+src/api_modules/cached_api.py                              168     62    63%   86-87, 114-115, 120-122, 132-133, 144-147, 157, 166-168, 177-187, 203, 215-238, 247, 267-269, 289, 298-299, 303-304, 308-310, 325, 329, 334-336, 340-342
+src/api_modules/get_api.py                                  53     19    64%   46-54, 64, 73-74, 102-103, 116-118, 124, 126-132, 134, 136
+src/api_modules/hh_api.py                                  142     95    33%   77-85, 111-113, 117-119, 151-180, 194, 207-235, 249-295, 310-331, 340
+src/api_modules/sj_api.py                                  128     76    41%   61, 99-106, 132-136, 170-210, 222, 235-236, 249-308, 317
+src/api_modules/unified_api.py                             270    178    34%   124, 133, 140-145, 149-184, 193-250, 266-322, 327-337, 379-396, 400-417, 421-431, 435-457
+src/config/__init__.py                                       0      0   100%
+src/config/api_config.py                                    13      0   100%
+src/config/app_config.py                                    17      0   100%
+src/config/db_config.py                                     61     27    56%   24, 44-48, 85-88, 96-99, 104, 107, 115, 133-136, 156-172
+src/config/hh_api_config.py                                 21      2    90%   31, 37
+src/config/sj_api_config.py                                 49     18    63%   39, 59, 62, 68-75, 79-87
+src/config/target_companies.py                              61     27    56%   109, 114, 119, 124-130, 135-138, 143-146, 151, 156-162, 167, 185, 190
+src/config/ui_config.py                                     27      8    70%   36-42, 54-58, 79
+src/interfaces/__init__.py                                   0      0   100%
+src/interfaces/main_application_interface.py               121     88    27%   76, 89-98, 109-136, 140-152, 156-161, 166-180, 184-214, 224-225, 230, 234-236
+src/storage/__init__.py                                      6      0   100%
+src/storage/abstract.py                                     14      0   100%
+src/storage/abstract_db_manager.py                          21      6    71%   16, 26, 36, 46, 59, 69
+src/storage/components/__init__.py                           0      0   100%
+src/storage/components/database_connection.py               53     15    72%   14-16, 19-20, 72-78, 88-89, 97-98
+src/storage/components/vacancy_repository.py               113     97    14%   49-98, 110-156, 165-178, 190-209, 221-291
+src/storage/components/vacancy_validator.py                 65     39    40%   61-67, 73-74, 78-79, 90-103, 108-122, 138-152
+src/storage/db_manager.py                                  348    224    36%   17-24, 63, 83-139, 223-228, 246-247, 262-272, 282-338, 348-361, 376-405, 419-451, 519-522, 525-528, 533-535, 574-576, 590-651, 665, 671-728, 741-813, 818-820, 832, 844-845, 857-859, 871-877, 892-1022
+src/storage/interfaces/typed_data_processor.py              46     25    46%   32, 45, 64, 78, 94, 100, 106-117, 124, 130-133, 139-148
+src/storage/postgres_saver.py                              790    557    29%   10-13, 72-74, 109-111, 124-125, 133-140, 145-146, 148-151, 176-183, 188-194, 199-200, 202-205, 263-265, 280-281, 295-305, 310-317, 322-323, 325-328, 338, 342-343, 346, 374-380, 389-390, 399-400, 404-409, 417-419, 427-428, 442-445, 452, 455-458, 473, 480, 487, 594-598, 603-606, 627-634, 655, 662-664, 678, 690-692, 704-708, 721-779, 783-895, 918-958, 961, 968-970, 974-992, 996-1020, 1024-1048, 1055, 1067-1098, 1102-1113, 1125-1180, 1184-1196, 1208-1251, 1264-1303, 1323-1574, 1587-1601, 1611, 1614, 1617-1635
+src/storage/services/__init__.py                             4      0   100%
+src/storage/services/abstract_filter_service.py             30      7    77%   34, 44, 64, 88, 101, 114, 127
+src/storage/services/abstract_storage_service.py            25      6    76%   34, 47, 60, 73, 83, 93
+src/storage/services/company_id_filter_service.py           94     62    34%   49, 62, 68-76, 85-135, 141-202, 206-214, 223
+src/storage/services/deduplication_service.py               64     43    33%   15-16, 20-21, 43, 56-129, 133-142, 146-154, 183, 192
+src/storage/services/filtering_service.py                  105     66    37%   15-16, 20-21, 25-26, 48, 76-88, 95-132, 143-155, 159-170, 189-199, 228, 237
+src/storage/services/sql_deduplication_service.py           64     49    23%   44-64, 68-111, 116-148, 152-160, 173-182
+src/storage/services/sql_filter_service.py                  89     63    29%   47, 59-78, 82-146, 152-191, 195-202, 207-209, 218-247
+src/storage/services/vacancy_processing_coordinator.py      44      0   100%
+src/storage/services/vacancy_storage_service.py            334    245    27%   15-16, 20-21, 25-26, 31-32, 37-38, 42-43, 47-48, 52-53, 57-58, 93-94, 119-146, 150-170, 176-194, 211-215, 220-222, 226-238, 244-320, 334, 338-339, 360-362, 366-395, 402-404, 417-469, 499, 511-535, 539-590, 594-601, 606, 610, 614, 618
+src/storage/simple_db_adapter.py                           142    116    18%   21, 25, 29, 33, 37-43, 50-51, 54, 57, 61-101, 105-117, 121, 125-165, 169-202, 206-210, 219
+src/storage/storage_factory.py                              13      0   100%
+src/ui_interfaces/__init__.py                                0      0   100%
+src/ui_interfaces/console_interface.py                     394    306    22%   23-25, 69, 82, 84, 86, 88, 90, 92, 94, 97, 100, 102-110, 116-127, 157, 161, 165, 169, 173-224, 228-301, 305, 309, 319-355, 359, 370-371, 382-385, 395-544, 548-579, 584-604
+src/ui_interfaces/source_selector.py                        44     30    32%   25-51, 64, 74-79
+src/ui_interfaces/vacancy_display_handler.py                72     58    19%   32-70, 74-107, 111-141
+src/ui_interfaces/vacancy_operations_coordinator.py        194    105    46%   68-79, 100, 102, 104, 108, 116-122, 126-165, 169-192, 196-198, 211, 248-273, 302-322
+src/ui_interfaces/vacancy_search_handler.py                152    127    16%   38-76, 90-114, 124, 135-170, 180-197, 209-232, 248-262, 272-308
+src/user_interface.py                                       55     47    15%   26-94, 98
+src/utils/__init__.py                                        0      0   100%
+src/utils/abstract_filter.py                                26     14    46%   30, 47, 61, 75, 88-102
+src/utils/api_data_filter.py                               166     99    40%   9-10, 25, 55-56, 71-83, 96-108, 122, 130-131, 148-160, 173-185, 191-196, 206, 212, 215, 217, 223-241, 245, 256, 269, 275-284, 289, 297-298, 303-322
+src/utils/base_formatter.py                                 38     11    71%   14, 19, 24, 29, 34, 39, 44, 49, 54, 59, 64
+src/utils/cache.py                                         135     59    56%   45-46, 61-62, 78, 93-94, 98-100, 113-139, 163-176, 199-210, 221-224, 227, 236-238, 244
+src/utils/data_normalizers.py                               75     13    83%   77-80, 107, 113-121, 154-162
+src/utils/db_manager_demo.py                               236    218     8%   32, 38-64, 73-81, 85-103, 107-155, 159-211, 215-224, 228-272, 276-315, 319-370, 377-382, 386
+src/utils/decorators.py                                     73     53    27%   24-52, 56-57, 61, 77-91, 97-106, 112-121
+src/utils/description_parser.py                             70     55    21%   41-64, 77-103, 116-135, 141-177
+src/utils/env_loader.py                                     59     34    42%   32-33, 41-76, 104-111
+src/utils/file_handlers.py                                  38     25    34%   36-48, 57-76
+src/utils/menu_manager.py                                   49      8    84%   38, 52-56, 77, 93
+src/utils/paginator.py                                      28     21    25%   39-65
+src/utils/salary.py                                        113     18    84%   35-36, 55-61, 71-72, 78, 94, 152, 157, 164, 181, 207
+src/utils/search_utils.py                                  156     28    82%   31, 47, 81, 87, 90, 93, 96, 99, 136, 142, 175, 187, 204, 211, 215, 219, 223, 227, 259, 263, 271, 275, 279-282, 328, 342
+src/utils/source_manager.py                                 60     38    37%   65, 77-80, 92-95, 108-119, 131-134, 146, 158-161, 173-176, 188-191, 198-200
+src/utils/ui_helpers.py                                    161      4    98%   135, 225-226, 325
+src/utils/ui_navigation.py                                  99      0   100%
+src/utils/vacancy_formatter.py                             167     59    65%   122, 129, 148, 154, 159-164, 170-171, 176, 182, 188-201, 206, 213, 218, 225, 229-231, 235-241, 246, 259-262, 273-304
+src/utils/vacancy_operations.py                            165     99    40%   43, 64, 75-87, 111, 122-134, 159, 170-182, 220-244, 248-261, 264-265, 268-269, 290-310, 320-339, 346-370
+src/utils/vacancy_stats.py                                  86     53    38%   57-60, 83-91, 95-100, 110-158, 163-165
+src/vacancies/__init__.py                                    0      0   100%
+src/vacancies/abstract.py                                   10      0   100%
+src/vacancies/abstract_models.py                            99     28    72%   18, 23, 28, 33, 38, 44, 53, 58, 63, 69, 75, 84, 89, 94, 100, 106, 115, 120, 125, 130, 135, 140, 146, 155, 160, 165, 171, 177
+src/vacancies/models.py                                    390    212    46%   40, 44, 48, 64, 77, 81, 89, 91, 93, 98-102, 106, 122, 126, 131-133, 141, 144, 149, 153, 169, 173, 178-180, 188, 191, 196, 200, 299, 317, 329-332, 344, 348, 352, 358, 370, 374, 378, 384, 404-438, 443-451, 456-651, 670, 686, 701-706, 720, 725-727, 731-733, 737-739, 743-745, 749
+src/vacancies/parsers/__init__.py                           55     11    80%   16, 21, 26, 31, 36, 88, 97, 106, 111, 116, 121
+src/vacancies/parsers/base_parser.py                         9      2    78%   19, 32
+src/vacancies/parsers/hh_parser.py                          55     10    82%   21, 32-33, 55-57, 96-98, 119
+src/vacancies/parsers/sj_parser.py                          57     47    18%   24-43, 57-65, 98-147
+--------------------------------------------------------------------------------------
+TOTAL                                                     7204   4112    43%
+============================= short test summary info ==============================
+FAILED tests/test_api_complete.py::TestHeadHunterAPI::test_get_vacancies - AttributeError: <src.api_modules.hh_api.HeadHunterAPI object at 0x7fa046028190>...
+FAILED tests/test_api_complete.py::TestHeadHunterAPI::test_validate_vacancy - AssertionError: assert False == True
+FAILED tests/test_api_complete.py::TestSuperJobAPI::test_get_vacancies - AttributeError: <src.api_modules.sj_api.SuperJobAPI object at 0x7fa045c12390> d...
+FAILED tests/test_api_complete.py::TestSuperJobAPI::test_validate_vacancy - AssertionError: assert False == True
+FAILED tests/test_api_complete.py::TestUnifiedAPI::test_get_vacancies_from_all_sources - TypeError: src.api_modules.unified_api.UnifiedAPI.get_vacancies_from_sources() ...
+FAILED tests/test_api_fixes.py::TestAPIFixes::test_unified_api_target_companies_filter - AttributeError: <src.api_modules.unified_api.UnifiedAPI object at 0x7fa04585621...
+FAILED tests/test_base_formatter.py::TestBaseFormatter::test_format_item_with_index - AttributeError: 'ConcreteFormatter' object has no attribute 'format_item'
+FAILED tests/test_base_formatter.py::TestBaseFormatter::test_format_item_without_index - AttributeError: 'ConcreteFormatter' object has no attribute 'format_item'
+FAILED tests/test_base_formatter.py::TestBaseFormatter::test_format_item_none_index - AttributeError: 'ConcreteFormatter' object has no attribute 'format_item'
+FAILED tests/test_base_formatter.py::TestBaseFormatter::test_format_list_basic - AttributeError: 'ConcreteFormatter' object has no attribute 'format_list'
+FAILED tests/test_base_formatter.py::TestBaseFormatter::test_format_list_custom_start_index - AttributeError: 'ConcreteFormatter' object has no attribute 'format_list'
+FAILED tests/test_base_formatter.py::TestBaseFormatter::test_format_list_empty - AttributeError: 'ConcreteFormatter' object has no attribute 'format_list'
+FAILED tests/test_base_formatter.py::TestBaseFormatter::test_format_table_row_basic - AttributeError: 'ConcreteFormatter' object has no attribute 'format_table_row'
+FAILED tests/test_base_formatter.py::TestBaseFormatter::test_format_table_row_missing_column - AttributeError: 'ConcreteFormatter' object has no attribute 'format_table_row'
+FAILED tests/test_base_formatter.py::TestBaseFormatter::test_format_table_row_empty_columns - AttributeError: 'ConcreteFormatter' object has no attribute 'format_table_row'
+FAILED tests/test_base_formatter.py::TestBaseFormatter::test_format_item_complex_object - AttributeError: 'ConcreteFormatter' object has no attribute 'format_item'
+FAILED tests/test_interfaces.py::TestMainApplicationInterface::test_interface_creation - TypeError: Can't instantiate abstract class MainApplicationInterface with abstr...
+FAILED tests/test_main_application_interface.py::TestMainApplicationInterface::test_main_application_interface_init - TypeError: MainApplicationInterface.__init__() missing 3 required positional ar...
+FAILED tests/test_main_application_interface.py::TestMainApplicationInterface::test_main_application_interface_concrete_implementation - TypeError: MainApplicationInterface.__init__() missing 3 required positional ar...
+FAILED tests/test_missing_coverage_components.py::TestLowCoverageComponents::test_cached_api_concrete_implementation - TypeError: expected str, bytes or os.PathLike object, not Mock
+FAILED tests/test_missing_coverage_components.py::TestLowCoverageComponents::test_base_formatter_concrete_implementation - AttributeError: 'ConcreteFormatter' object has no attribute 'format'
+FAILED tests/test_missing_coverage_components.py::TestLowCoverageComponents::test_api_methods_coverage - assert False
+FAILED tests/test_simple_db_adapter.py::TestSimpleDBAdapter::test_error_handling - Failed: DID NOT RAISE <class 'Exception'>
+FAILED tests/test_storage_modules_consolidated.py::TestStorageModulesConsolidated::test_vacancy_repository - TypeError: VacancyRepository.__init__() missing 2 required positional arguments...
+FAILED tests/test_ui_components_extended.py::TestMenuManagerExtended::test_menu_manager_get_user_choice - AssertionError: assert False
+FAILED tests/test_ui_navigation_extended.py::TestUINavigationExtended::test_paginate_display_custom_actions - AssertionError: Expected 'mock' to have been called once. Called 0 times.
+FAILED tests/test_ui_navigation_extended.py::TestUINavigationExtended::test_paginate_display_custom_action_error - AssertionError: assert 'Ошибка при выполнении действия' in '\n\nError Test ====...
+FAILED tests/test_unified_api.py::TestUnifiedAPI::test_filter_by_target_companies - assert 0 == 3
+FAILED tests/test_unified_api.py::TestUnifiedAPI::test_filter_by_target_companies_mixed_sources - assert 0 == 3
+FAILED tests/test_user_interface_consolidated.py::TestUserInterfaceConsolidated::test_main_interface_complete - AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests...
+FAILED tests/test_user_interface_consolidated.py::TestUserInterfaceConsolidated::test_interface_components_integration - TypeError: MainApplicationInterface.__init__() missing 3 required positional ar...
+FAILED tests/test_vacancy_display_handler.py::TestVacancyDisplayHandler::test_vacancy_display_handler_init - TypeError: VacancyDisplayHandler.__init__() missing 1 required positional argum...
+FAILED tests/test_vacancy_models_complete.py::TestVacancyModelsComplete::test_base_vacancy_model - assert None is not None
+FAILED tests/test_vacancy_models_consolidated.py::TestVacancyModelsConsolidated::test_employer_model_complete - NameError: name 'employer_data' is not defined
+FAILED tests/test_vacancy_operations_coordinator_complete.py::TestVacancyOperationsCoordinatorComplete::test_coordinator_init - TypeError: VacancyOperationsCoordinator.__init__() missing 2 required positiona...
+FAILED tests/test_vacancy_repository.py::TestVacancyRepository::test_repository_init - AttributeError: 'VacancyRepository' object has no attribute 'validator'
+ERROR tests/test_api_complete.py::TestCachedAPI::test_init - TypeError: Can't instantiate abstract class CachedAPI with abstract methods _ge...
+ERROR tests/test_api_complete.py::TestCachedAPI::test_get_vacancies_cached - TypeError: Can't instantiate abstract class CachedAPI with abstract methods _ge...
+ERROR tests/test_missing_coverage_components.py::TestVacancyRepositoryFixed::test_repository_init_with_dependencies - AttributeError: __enter__
+ERROR tests/test_missing_coverage_components.py::TestVacancyRepositoryFixed::test_save_vacancy - AttributeError: __enter__
+ERROR tests/test_missing_coverage_components.py::TestVacancyRepositoryFixed::test_get_all_vacancies - AttributeError: __enter__
+ERROR tests/test_missing_coverage_components.py::TestVacancyRepositoryFixed::test_find_by_keyword - AttributeError: __enter__
+=============== 36 failed, 921 passed, 42 skipped, 6 errors in 9.16s ===============
+~/workspace$ 

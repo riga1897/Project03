@@ -298,21 +298,6 @@ class APIDataFilter(AbstractDataFilter):
                 continue
         return filtered
 
-    def filter_by_experience(self, data: List[Dict[str, Any]], experience_levels: List[str]) -> List[Dict[str, Any]]:
-        """Реализация абстрактного метода фильтрации по опыту"""
-        if not data or not experience_levels:
-            return data
-
-        filtered = []
-        for item in data:
-            try:
-                item_experience = self._extract_experience(item)
-                if item_experience and any(exp.lower() in item_experience.lower() for exp in experience_levels):
-                    filtered.append(item)
-            except (KeyError, TypeError):
-                continue
-        return filtered
-
     def _extract_company_name(self, item: Dict[str, Any]) -> Optional[str]:
         """Извлечение названия компании"""
         try:
