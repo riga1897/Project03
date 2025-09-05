@@ -112,7 +112,7 @@ class TestVacancyModelsConsolidated:
 
             if hasattr(employer, 'get_name'):
                 name = employer.get_name()
-                assert name == employer_data['name']
+                assert name == "Тест Компания"
 
         except ImportError:
             @dataclass

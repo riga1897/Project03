@@ -37,6 +37,24 @@ class ConcreteDataFilter(AbstractDataFilter if ABSTRACT_FILTER_AVAILABLE else ob
             filtered.append(item)
         return filtered
 
+    def filter_by_company(self, data, companies):
+        """Реализация фильтрации по компании"""
+        if not data or not companies:
+            return data
+        return [item for item in data if item.get("company") in companies]
+
+    def filter_by_experience(self, data, experience_levels):
+        """Реализация фильтрации по опыту"""
+        if not data or not experience_levels:
+            return data
+        return [item for item in data if item.get("experience") in experience_levels]
+
+    def filter_by_location(self, data, locations):
+        """Реализация фильтрации по локации"""
+        if not data or not locations:
+            return data
+        return [item for item in data if item.get("location") in locations]
+
 
 class TestAbstractDataFilter:
     """Тесты для абстрактного фильтра данных"""

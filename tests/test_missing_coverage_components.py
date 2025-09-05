@@ -1,4 +1,3 @@
-
 """
 Тесты для компонентов с низким покрытием
 """
@@ -59,7 +58,7 @@ class TestVacancyDisplayHandlerFixed:
         """Тест инициализации с хранилищем"""
         if not VACANCY_DISPLAY_HANDLER_AVAILABLE:
             pytest.skip("VacancyDisplayHandler not available")
-        
+
         handler = VacancyDisplayHandler(mock_storage)
         assert handler is not None
         assert handler.storage == mock_storage
@@ -73,7 +72,7 @@ class TestVacancyDisplayHandlerFixed:
         test_vacancies = [
             {"id": "1", "title": "Python Developer", "company": "Test Co"}
         ]
-        
+
         if hasattr(display_handler, 'display_vacancies'):
             display_handler.display_vacancies(test_vacancies)
             assert mock_print.called
@@ -90,7 +89,7 @@ class TestVacancyDisplayHandlerFixed:
             "company": "Test Co",
             "salary": {"from": 100000, "to": 150000}
         }
-        
+
         if hasattr(display_handler, 'display_vacancy_details'):
             display_handler.display_vacancy_details(vacancy)
             assert mock_print.called
@@ -124,7 +123,7 @@ class TestVacancyOperationsCoordinatorFixed:
         """Тест инициализации с зависимостями"""
         if not VACANCY_OPERATIONS_COORDINATOR_AVAILABLE:
             pytest.skip("VacancyOperationsCoordinator not available")
-        
+
         coordinator = VacancyOperationsCoordinator(mock_unified_api, mock_storage)
         assert coordinator is not None
         assert coordinator.unified_api == mock_unified_api
@@ -158,7 +157,13 @@ class TestVacancyRepositoryFixed:
         cursor = Mock()
         cursor.fetchall.return_value = []
         cursor.fetchone.return_value = None
-        connection.cursor.return_value.__enter__.return_value = cursor
+
+        # Правильная настройка контекстного менеджера
+        cursor_context = Mock()
+        cursor_context.__enter__ = Mock(return_value=cursor)
+        cursor_context.__exit__ = Mock(return_value=None)
+        connection.cursor.return_value = cursor_context
+
         return connection
 
     @pytest.fixture
@@ -179,7 +184,7 @@ class TestVacancyRepositoryFixed:
         """Тест инициализации с зависимостями"""
         if not VACANCY_REPOSITORY_AVAILABLE:
             pytest.skip("VacancyRepository not available")
-        
+
         repo = VacancyRepository(mock_db_connection, mock_validator)
         assert repo is not None
         assert repo.db_connection == mock_db_connection
@@ -194,7 +199,7 @@ class TestVacancyRepositoryFixed:
             "title": "Python Developer",
             "company": "Test Co"
         }
-        
+
         if hasattr(repository, 'save_vacancy'):
             result = repository.save_vacancy(test_vacancy)
             assert isinstance(result, (bool, int, type(None)))
@@ -376,7 +381,7 @@ class TestLowCoverageComponents:
             from src.api_modules.unified_api import UnifiedAPI
 
             api = UnifiedAPI()
-            
+
             # Тест пустого списка
             if hasattr(api, '_filter_by_target_companies'):
                 result = api._filter_by_target_companies([])
@@ -386,7 +391,7 @@ class TestLowCoverageComponents:
             with patch('src.config.target_companies.TargetCompanies') as mock_target:
                 mock_target.return_value.get_hh_ids.return_value = []
                 mock_target.return_value.get_sj_ids.return_value = []
-                
+
                 test_vacancies = [{"id": "1", "employer": {"id": "test"}}]
                 if hasattr(api, '_filter_by_target_companies'):
                     result = api._filter_by_target_companies(test_vacancies)
@@ -404,7 +409,7 @@ class TestLowCoverageComponents:
 
             navigator = UINavigation()
             test_items = ["Item 1", "Item 2", "Item 3"]
-            
+
             def formatter(item, index):
                 return f"{index}: {item}"
 

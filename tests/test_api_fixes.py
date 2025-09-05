@@ -119,8 +119,8 @@ class TestAPIFixes:
             ]
             
             if hasattr(api, '_filter_by_target_companies'):
-                # Мокаем создание объекта TargetCompanies в методе
-                with patch.object(api, '_get_target_companies', return_value=instance):
+                # Мокаем метод с create=True для несуществующего атрибута  
+                with patch.object(api, '_get_target_companies', return_value=instance, create=True):
                     result = api._filter_by_target_companies(test_vacancies)
                     assert isinstance(result, list)
 
