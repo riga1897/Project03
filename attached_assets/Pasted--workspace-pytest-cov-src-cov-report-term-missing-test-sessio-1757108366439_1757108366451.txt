@@ -1,0 +1,1031 @@
+~/workspace$ pytest --cov=src --cov-report=term-missing
+=============================== test session starts ================================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 981 items                                                                
+
+tests/test_abstract.py ........                                              [  0%]
+tests/test_abstract_db_manager.py ....                                       [  1%]
+tests/test_api_complete.py ...FFFF.FEE..                                     [  2%]
+tests/test_api_config.py ....                                                [  2%]
+tests/test_api_data_filter.py ......                                         [  3%]
+tests/test_api_modules.py .............................                      [  6%]
+tests/test_api_modules_consolidated.py ....                                  [  6%]
+tests/test_app_config.py .........                                           [  7%]
+tests/test_base_api.py ...............                                       [  9%]
+tests/test_base_formatter.py .F..EEEEEEEEEE                                  [ 10%]
+tests/test_base_parser.py ......                                             [ 11%]
+tests/test_cache.py ......................                                   [ 13%]
+tests/test_cached_api.py ....                                                [ 14%]
+tests/test_components_fixed.py ...                                           [ 14%]
+tests/test_comprehensive_fixed.py s....                                      [ 14%]
+tests/test_config_consolidated.py .....                                      [ 15%]
+tests/test_config_modules_consolidated.py ......                             [ 16%]
+tests/test_console_interface.py ......                                       [ 16%]
+tests/test_core_functionality_consolidated.py .....                          [ 17%]
+tests/test_core_modules_comprehensive.py ........                            [ 17%]
+tests/test_data_normalizers_comprehensive.py ............................    [ 20%]
+tests/test_database_connection.py ........                                   [ 21%]
+tests/test_db_config.py .....                                                [ 22%]
+tests/test_db_manager.py .................                                   [ 23%]
+tests/test_decorators.py .......                                             [ 24%]
+tests/test_description_parser.py ..........                                  [ 25%]
+tests/test_env_loader.py ................                                    [ 27%]
+tests/test_filter_utils.py ssssss                                            [ 27%]
+tests/test_hh_api_config.py .....                                            [ 28%]
+tests/test_hh_parser.py ........                                             [ 29%]
+tests/test_integration.py .............                                      [ 30%]
+tests/test_interfaces.py Fss                                                 [ 30%]
+tests/test_main_application_interface.py F.F                                 [ 31%]
+tests/test_main_consolidated.py .........                                    [ 32%]
+tests/test_menu_manager.py ..........                                        [ 33%]
+tests/test_missing_components.py .........                                   [ 33%]
+tests/test_models_fixed.py ...                                               [ 34%]
+tests/test_paginator.py ......                                               [ 34%]
+tests/test_parsers_complete.py sss.sss.ssss                                  [ 36%]
+tests/test_repository_fixed.py ..                                            [ 36%]
+tests/test_salary_fixed.py ...........                                       [ 37%]
+tests/test_salary_utils.py ......................                            [ 39%]
+tests/test_search_utils.py ............................                      [ 42%]
+tests/test_services_consolidated.py ....                                     [ 42%]
+tests/test_services_storage_consolidated.py ..........                       [ 43%]
+tests/test_simple_db_adapter.py ........F                                    [ 44%]
+tests/test_sj_api.py ..............                                          [ 46%]
+tests/test_sj_api_config.py .....                                            [ 46%]
+tests/test_sj_parser.py ........                                             [ 47%]
+tests/test_sj_parser_complete.py ssssssssssssss                              [ 49%]
+tests/test_source_manager.py .................                               [ 50%]
+tests/test_source_selector.py .................                              [ 52%]
+tests/test_storage_abstractions.py ssssssss                                  [ 53%]
+tests/test_storage_complete.py .............                                 [ 54%]
+tests/test_storage_factory.py ........                                       [ 55%]
+tests/test_storage_modules_consolidated.py .F..                              [ 55%]
+tests/test_target_companies.py .....                                         [ 56%]
+tests/test_typed_data_processor.py ................                          [ 58%]
+tests/test_ui_components_extended.py .F................                      [ 59%]
+tests/test_ui_config.py .......................                              [ 62%]
+tests/test_ui_helpers_comprehensive.py ..................................... [ 65%]
+..                                                                           [ 66%]
+tests/test_ui_helpers_extended.py ........................................   [ 70%]
+tests/test_ui_modules_consolidated.py .....                                  [ 70%]
+tests/test_ui_navigation.py ......................                           [ 72%]
+tests/test_ui_navigation_complete.py ..s..                                   [ 73%]
+tests/test_ui_navigation_comprehensive.py ......                             [ 74%]
+tests/test_ui_navigation_extended.py .......FF..........................     [ 77%]
+tests/test_unified_api.py ................F...F.                             [ 79%]
+tests/test_unified_api_fixed.py ...                                          [ 80%]
+tests/test_user_interface.py ...............                                 [ 81%]
+tests/test_user_interface_consolidated.py F.F                                [ 82%]
+tests/test_user_interface_fixed.py ...                                       [ 82%]
+tests/test_utils_consolidated.py .....                                       [ 82%]
+tests/test_utils_ui_consolidated.py ......                                   [ 83%]
+tests/test_vacancy_abstractions.py .................                         [ 85%]
+tests/test_vacancy_display_handler.py F..................                    [ 87%]
+tests/test_vacancy_formatter.py ........                                     [ 87%]
+tests/test_vacancy_models_complete.py F...                                   [ 88%]
+tests/test_vacancy_models_consolidated.py ..F.                               [ 88%]
+tests/test_vacancy_operations.py ......                                      [ 89%]
+tests/test_vacancy_operations_coordinator.py ...........................     [ 92%]
+tests/test_vacancy_operations_coordinator_complete.py F..................... [ 94%]
+                                                                             [ 94%]
+tests/test_vacancy_processing_coordinator.py .............                   [ 95%]
+tests/test_vacancy_repository.py F........                                   [ 96%]
+tests/test_vacancy_stats.py ............                                     [ 97%]
+tests/test_vacancy_stats_fixed.py .........                                  [ 98%]
+tests/test_vacancy_validator.py ............                                 [100%]
+
+====================================== ERRORS ======================================
+____________________ ERROR at setup of TestCachedAPI.test_init _____________________
+
+self = <tests.test_api_complete.TestCachedAPI object at 0x7fa46a20b290>
+
+    @pytest.fixture
+    def cached_api(self):
+        """Фикстура кэшированного API"""
+        if not API_MODULES_AVAILABLE:
+            return Mock()
+    
+        base_api = Mock()
+        base_api.get_vacancies.return_value = [{"id": "1", "title": "Test"}]
+    
+        with patch('src.utils.cache.FileCache'):
+>           return CachedAPI(base_api)
+                   ^^^^^^^^^^^^^^^^^^^
+E           TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_response, _validate_vacancy, get_vacancies, get_vacancies_page
+
+tests/test_api_complete.py:227: TypeError
+____________ ERROR at setup of TestCachedAPI.test_get_vacancies_cached _____________
+
+self = <tests.test_api_complete.TestCachedAPI object at 0x7fa46a20b9d0>
+
+    @pytest.fixture
+    def cached_api(self):
+        """Фикстура кэшированного API"""
+        if not API_MODULES_AVAILABLE:
+            return Mock()
+    
+        base_api = Mock()
+        base_api.get_vacancies.return_value = [{"id": "1", "title": "Test"}]
+    
+        with patch('src.utils.cache.FileCache'):
+>           return CachedAPI(base_api)
+                   ^^^^^^^^^^^^^^^^^^^
+E           TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_response, _validate_vacancy, get_vacancies, get_vacancies_page
+
+tests/test_api_complete.py:227: TypeError
+_________ ERROR at setup of TestBaseFormatter.test_format_item_with_index __________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7fa46a0fd850>
+
+    @pytest.fixture
+    def formatter(self):
+        """Фикстура форматтера"""
+        if not BASE_FORMATTER_AVAILABLE:
+            return Mock() # Return a mock if BaseFormatter is not available
+>       return BaseFormatter()
+               ^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class BaseFormatter with abstract methods clean_html_tags, format_company_name, format_currency, format_date, format_employment_type, format_experience, format_number, format_salary, format_schedule, format_text, format_vacancy_info
+
+tests/test_base_formatter.py:68: TypeError
+________ ERROR at setup of TestBaseFormatter.test_format_item_without_index ________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7fa46a0fe590>
+
+    @pytest.fixture
+    def formatter(self):
+        """Фикстура форматтера"""
+        if not BASE_FORMATTER_AVAILABLE:
+            return Mock() # Return a mock if BaseFormatter is not available
+>       return BaseFormatter()
+               ^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class BaseFormatter with abstract methods clean_html_tags, format_company_name, format_currency, format_date, format_employment_type, format_experience, format_number, format_salary, format_schedule, format_text, format_vacancy_info
+
+tests/test_base_formatter.py:68: TypeError
+_________ ERROR at setup of TestBaseFormatter.test_format_item_none_index __________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7fa46a0feed0>
+
+    @pytest.fixture
+    def formatter(self):
+        """Фикстура форматтера"""
+        if not BASE_FORMATTER_AVAILABLE:
+            return Mock() # Return a mock if BaseFormatter is not available
+>       return BaseFormatter()
+               ^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class BaseFormatter with abstract methods clean_html_tags, format_company_name, format_currency, format_date, format_employment_type, format_experience, format_number, format_salary, format_schedule, format_text, format_vacancy_info
+
+tests/test_base_formatter.py:68: TypeError
+____________ ERROR at setup of TestBaseFormatter.test_format_list_basic ____________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7fa46a0fc8d0>
+
+    @pytest.fixture
+    def formatter(self):
+        """Фикстура форматтера"""
+        if not BASE_FORMATTER_AVAILABLE:
+            return Mock() # Return a mock if BaseFormatter is not available
+>       return BaseFormatter()
+               ^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class BaseFormatter with abstract methods clean_html_tags, format_company_name, format_currency, format_date, format_employment_type, format_experience, format_number, format_salary, format_schedule, format_text, format_vacancy_info
+
+tests/test_base_formatter.py:68: TypeError
+_____ ERROR at setup of TestBaseFormatter.test_format_list_custom_start_index ______
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7fa46a0fcbd0>
+
+    @pytest.fixture
+    def formatter(self):
+        """Фикстура форматтера"""
+        if not BASE_FORMATTER_AVAILABLE:
+            return Mock() # Return a mock if BaseFormatter is not available
+>       return BaseFormatter()
+               ^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class BaseFormatter with abstract methods clean_html_tags, format_company_name, format_currency, format_date, format_employment_type, format_experience, format_number, format_salary, format_schedule, format_text, format_vacancy_info
+
+tests/test_base_formatter.py:68: TypeError
+____________ ERROR at setup of TestBaseFormatter.test_format_list_empty ____________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7fa46a0fce90>
+
+    @pytest.fixture
+    def formatter(self):
+        """Фикстура форматтера"""
+        if not BASE_FORMATTER_AVAILABLE:
+            return Mock() # Return a mock if BaseFormatter is not available
+>       return BaseFormatter()
+               ^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class BaseFormatter with abstract methods clean_html_tags, format_company_name, format_currency, format_date, format_employment_type, format_experience, format_number, format_salary, format_schedule, format_text, format_vacancy_info
+
+tests/test_base_formatter.py:68: TypeError
+_________ ERROR at setup of TestBaseFormatter.test_format_table_row_basic __________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7fa46a0fd4d0>
+
+    @pytest.fixture
+    def formatter(self):
+        """Фикстура форматтера"""
+        if not BASE_FORMATTER_AVAILABLE:
+            return Mock() # Return a mock if BaseFormatter is not available
+>       return BaseFormatter()
+               ^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class BaseFormatter with abstract methods clean_html_tags, format_company_name, format_currency, format_date, format_employment_type, format_experience, format_number, format_salary, format_schedule, format_text, format_vacancy_info
+
+tests/test_base_formatter.py:68: TypeError
+_____ ERROR at setup of TestBaseFormatter.test_format_table_row_missing_column _____
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7fa46a2eaf50>
+
+    @pytest.fixture
+    def formatter(self):
+        """Фикстура форматтера"""
+        if not BASE_FORMATTER_AVAILABLE:
+            return Mock() # Return a mock if BaseFormatter is not available
+>       return BaseFormatter()
+               ^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class BaseFormatter with abstract methods clean_html_tags, format_company_name, format_currency, format_date, format_employment_type, format_experience, format_number, format_salary, format_schedule, format_text, format_vacancy_info
+
+tests/test_base_formatter.py:68: TypeError
+_____ ERROR at setup of TestBaseFormatter.test_format_table_row_empty_columns ______
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7fa46a2ea2d0>
+
+    @pytest.fixture
+    def formatter(self):
+        """Фикстура форматтера"""
+        if not BASE_FORMATTER_AVAILABLE:
+            return Mock() # Return a mock if BaseFormatter is not available
+>       return BaseFormatter()
+               ^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class BaseFormatter with abstract methods clean_html_tags, format_company_name, format_currency, format_date, format_employment_type, format_experience, format_number, format_salary, format_schedule, format_text, format_vacancy_info
+
+tests/test_base_formatter.py:68: TypeError
+_______ ERROR at setup of TestBaseFormatter.test_format_item_complex_object ________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7fa46a2eaa50>
+
+    @pytest.fixture
+    def formatter(self):
+        """Фикстура форматтера"""
+        if not BASE_FORMATTER_AVAILABLE:
+            return Mock() # Return a mock if BaseFormatter is not available
+>       return BaseFormatter()
+               ^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class BaseFormatter with abstract methods clean_html_tags, format_company_name, format_currency, format_date, format_employment_type, format_experience, format_number, format_salary, format_schedule, format_text, format_vacancy_info
+
+tests/test_base_formatter.py:68: TypeError
+===================================== FAILURES =====================================
+_______________________ TestHeadHunterAPI.test_get_vacancies _______________________
+
+self = <tests.test_api_complete.TestHeadHunterAPI object at 0x7fa46a2082d0>
+mock_get = <MagicMock name='get' id='140344131891408'>
+hh_api = <src.api_modules.hh_api.HeadHunterAPI object at 0x7fa46a208cd0>
+
+    @patch('requests.get')
+    def test_get_vacancies(self, mock_get, hh_api):
+        """Тест получения вакансий"""
+        if not API_MODULES_AVAILABLE:
+            pytest.skip("API modules not available")
+    
+        # Мокаем ответ API
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            "items": [{"id": "123", "name": "Python Developer"}],
+            "found": 1
+        }
+        mock_response.status_code = 200
+        mock_get.return_value = mock_response
+    
+>       with patch.object(hh_api, '_parse_vacancy_response', return_value={"id": "123"}):
+
+tests/test_api_complete.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7fa46a699c50>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <src.api_modules.hh_api.HeadHunterAPI object at 0x7fa46a208cd0> does not have the attribute '_parse_vacancy_response'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_____________________ TestHeadHunterAPI.test_validate_vacancy ______________________
+
+self = <tests.test_api_complete.TestHeadHunterAPI object at 0x7fa46a208a10>
+hh_api = <src.api_modules.hh_api.HeadHunterAPI object at 0x7fa46a109150>
+
+    def test_validate_vacancy(self, hh_api):
+        """Тест валидации вакансии"""
+        if not API_MODULES_AVAILABLE:
+            pytest.skip("API modules not available")
+    
+        valid_vacancy = {"id": "123", "name": "Test", "employer": {"name": "Company"}}
+        invalid_vacancy = {"id": "123"}
+    
+>       assert hh_api._validate_vacancy(valid_vacancy) == True
+E       AssertionError: assert False == True
+E        +  where False = _validate_vacancy({'employer': {'name': 'Company'}, 'id': '123', 'name': 'Test'})
+E        +    where _validate_vacancy = <src.api_modules.hh_api.HeadHunterAPI object at 0x7fa46a109150>._validate_vacancy
+
+tests/test_api_complete.py:124: AssertionError
+________________________ TestSuperJobAPI.test_get_vacancies ________________________
+
+self = <tests.test_api_complete.TestSuperJobAPI object at 0x7fa46a209250>
+mock_get = <MagicMock name='get' id='140344136668176'>
+sj_api = <src.api_modules.sj_api.SuperJobAPI object at 0x7fa46a263f50>
+
+    @patch('requests.get')
+    def test_get_vacancies(self, mock_get, sj_api):
+        """Тест получения вакансий"""
+        if not API_MODULES_AVAILABLE:
+            pytest.skip("API modules not available")
+    
+        # Мокаем ответ API
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            "objects": [{"id": 123, "profession": "Python Developer"}],
+            "total": 1
+        }
+        mock_response.status_code = 200
+        mock_get.return_value = mock_response
+    
+>       with patch.object(sj_api, '_parse_vacancy_response', return_value={"id": "123"}):
+
+tests/test_api_complete.py:157: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7fa46a6c8710>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <src.api_modules.sj_api.SuperJobAPI object at 0x7fa46a263f50> does not have the attribute '_parse_vacancy_response'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+-------------------------------- Captured log setup --------------------------------
+WARNING  src.api_modules.sj_api:sj_api.py:55 Используется тестовый API ключ SuperJob.                 Для полной функциональности добавьте реальный ключ                 в переменную окружения SUPERJOB_API_KEY
+______________________ TestSuperJobAPI.test_validate_vacancy _______________________
+
+self = <tests.test_api_complete.TestSuperJobAPI object at 0x7fa46a209990>
+sj_api = <src.api_modules.sj_api.SuperJobAPI object at 0x7fa46a238750>
+
+    def test_validate_vacancy(self, sj_api):
+        """Тест валидации вакансии"""
+        if not API_MODULES_AVAILABLE:
+            pytest.skip("API modules not available")
+    
+        valid_vacancy = {"id": 123, "profession": "Test", "firm_name": "Company"}
+        invalid_vacancy = {"id": 123}
+    
+>       assert sj_api._validate_vacancy(valid_vacancy) == True
+E       AssertionError: assert False == True
+E        +  where False = _validate_vacancy({'firm_name': 'Company', 'id': 123, 'profession': 'Test'})
+E        +    where _validate_vacancy = <src.api_modules.sj_api.SuperJobAPI object at 0x7fa46a238750>._validate_vacancy
+
+tests/test_api_complete.py:169: AssertionError
+-------------------------------- Captured log setup --------------------------------
+WARNING  src.api_modules.sj_api:sj_api.py:55 Используется тестовый API ключ SuperJob.                 Для полной функциональности добавьте реальный ключ                 в переменную окружения SUPERJOB_API_KEY
+________________ TestUnifiedAPI.test_get_vacancies_from_all_sources ________________
+
+self = <tests.test_api_complete.TestUnifiedAPI object at 0x7fa46a20a950>
+mock_sj = <MagicMock name='SuperJobAPI' id='140344123520272'>
+mock_hh = <MagicMock name='HeadHunterAPI' id='140344123516880'>
+unified_api = <src.api_modules.unified_api.UnifiedAPI object at 0x7fa469f84510>
+
+    @patch('src.api_modules.hh_api.HeadHunterAPI')
+    @patch('src.api_modules.sj_api.SuperJobAPI')
+    def test_get_vacancies_from_all_sources(self, mock_sj, mock_hh, unified_api):
+        """Тест получения вакансий из всех источников"""
+        if not API_MODULES_AVAILABLE:
+            pytest.skip("API modules not available")
+    
+        # Мокаем ответы API
+        mock_hh_instance = Mock()
+        mock_hh_instance.get_vacancies.return_value = [{"id": "hh1", "source": "hh"}]
+        mock_hh.return_value = mock_hh_instance
+    
+        mock_sj_instance = Mock()
+        mock_sj_instance.get_vacancies.return_value = [{"id": "sj1", "source": "sj"}]
+        mock_sj.return_value = mock_sj_instance
+    
+        unified_api.hh_api = mock_hh_instance
+        unified_api.sj_api = mock_sj_instance
+    
+        with patch.object(unified_api, '_filter_by_target_companies', side_effect=lambda x: x):
+>           result = unified_api.get_vacancies_from_all_sources("Python")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_api_complete.py:210: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/api_modules/unified_api.py:362: in get_vacancies_from_all_sources
+    return self.get_all_vacancies(query, sources=["hh", "sj"], **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.api_modules.unified_api.UnifiedAPI object at 0x7fa469f84510>
+query = 'Python', kwargs = {'sources': ['hh', 'sj']}, sources = ['hh', 'sj']
+
+    def get_all_vacancies(self, query: str, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:
+        """Получение всех вакансий из всех доступных источников"""
+        sources = self.get_available_sources()
+>       return self.get_vacancies_from_sources(query, sources=sources, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: src.api_modules.unified_api.UnifiedAPI.get_vacancies_from_sources() got multiple values for keyword argument 'sources'
+
+src/api_modules/unified_api.py:358: TypeError
+-------------------------------- Captured log setup --------------------------------
+WARNING  src.api_modules.sj_api:sj_api.py:55 Используется тестовый API ключ SuperJob.                 Для полной функциональности добавьте реальный ключ                 в переменную окружения SUPERJOB_API_KEY
+_______________ TestBaseFormatter.test_concrete_implementation_works _______________
+
+self = <tests.test_base_formatter.TestBaseFormatter object at 0x7fa46a0ff9d0>
+
+    def test_concrete_implementation_works(self):
+        """Тест что конкретная реализация работает"""
+        if not BASE_FORMATTER_AVAILABLE:
+            pytest.skip("BaseFormatter not available")
+    
+        formatter = ConcreteFormatter()
+        result = formatter.format("test data")
+>       assert result == "Formatted: test data"
+E       AssertionError: assert 'test data' == 'Formatted: test data'
+E         
+E         - Formatted: test data
+E         + test data
+
+tests/test_base_formatter.py:85: AssertionError
+_______________ TestMainApplicationInterface.test_interface_creation _______________
+
+self = <tests.test_interfaces.TestMainApplicationInterface object at 0x7fa46a0807d0>
+mock_dependencies = {'api': <Mock id='140344122439056'>, 'storage': <Mock id='140344122439504'>, 'ui': <Mock id='140344122439760'>}
+
+    def test_interface_creation(self, mock_dependencies):
+        """Тест создания интерфейса"""
+        if not INTERFACES_AVAILABLE:
+            pytest.skip("Interfaces not available")
+    
+        try:
+>           interface = MainApplicationInterface(**mock_dependencies)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: Can't instantiate abstract class MainApplicationInterface with abstract method run_application
+
+tests/test_interfaces.py:38: TypeError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_interfaces.TestMainApplicationInterface object at 0x7fa46a0807d0>
+mock_dependencies = {'api': <Mock id='140344122439056'>, 'storage': <Mock id='140344122439504'>, 'ui': <Mock id='140344122439760'>}
+
+    def test_interface_creation(self, mock_dependencies):
+        """Тест создания интерфейса"""
+        if not INTERFACES_AVAILABLE:
+            pytest.skip("Interfaces not available")
+    
+        try:
+            interface = MainApplicationInterface(**mock_dependencies)
+            assert interface is not None
+        except TypeError:
+            # Если требуются другие аргументы
+>           interface = MainApplicationInterface()
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: Can't instantiate abstract class MainApplicationInterface with abstract method run_application
+
+tests/test_interfaces.py:42: TypeError
+________ TestMainApplicationInterface.test_main_application_interface_init _________
+
+self = <tests.test_main_application_interface.TestMainApplicationInterface object at 0x7fa46a081b50>
+
+    def test_main_application_interface_init(self):
+        """Тест инициализации главного интерфейса приложения"""
+        if not INTERFACE_AVAILABLE:
+            pytest.skip("MainApplicationInterface not available")
+    
+        # Создаем конкретную реализацию абстрактного класса
+        class ConcreteMainApplication(MainApplicationInterface):
+            def run_application(self):
+                pass
+    
+>       interface = ConcreteMainApplication()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: MainApplicationInterface.__init__() missing 3 required positional arguments: 'provider', 'processor', and 'storage'
+
+tests/test_main_application_interface.py:33: TypeError
+_ TestMainApplicationInterface.test_main_application_interface_concrete_implementation _
+
+self = <tests.test_main_application_interface.TestMainApplicationInterface object at 0x7fa46a082750>
+
+    def test_main_application_interface_concrete_implementation(self):
+        """Тест конкретной реализации"""
+        if not INTERFACE_AVAILABLE:
+            pytest.skip("MainApplicationInterface not available")
+    
+        class TestApplication(MainApplicationInterface):
+            def run_application(self):
+                return "Application started"
+    
+>       app = TestApplication()
+              ^^^^^^^^^^^^^^^^^
+E       TypeError: MainApplicationInterface.__init__() missing 3 required positional arguments: 'provider', 'processor', and 'storage'
+
+tests/test_main_application_interface.py:53: TypeError
+_____________________ TestSimpleDBAdapter.test_error_handling ______________________
+
+self = <tests.test_simple_db_adapter.TestSimpleDBAdapter object at 0x7fa469ef9650>
+mock_connection = <Mock id='140344122788752'>
+
+    def test_error_handling(self, mock_connection):
+        """Тест обработки ошибок"""
+        if not SIMPLE_DB_ADAPTER_AVAILABLE:
+            pytest.skip("SimpleDBAdapter not available")
+    
+        mock_connection.cursor.side_effect = Exception("Database error")
+    
+        with patch('psycopg2.connect', return_value=mock_connection):
+>           with pytest.raises(Exception):
+E           Failed: DID NOT RAISE <class 'Exception'>
+
+tests/test_simple_db_adapter.py:109: Failed
+______________ TestStorageModulesConsolidated.test_vacancy_repository ______________
+
+self = <tests.test_storage_modules_consolidated.TestStorageModulesConsolidated object at 0x7fa469d26210>
+mock_connect = <MagicMock name='connect' id='140344125060368'>
+storage_mocks = <tests.test_storage_modules_consolidated.ConsolidatedStorageMocks object at 0x7fa469907650>
+
+    @patch('psycopg2.connect')
+    def test_vacancy_repository(self, mock_connect, storage_mocks):
+        """Тестирование репозитория вакансий"""
+        mock_connect.return_value = storage_mocks.connection
+    
+        try:
+            from src.storage.components.vacancy_repository import VacancyRepository
+            from src.vacancies.models import Vacancy
+    
+>           repo = VacancyRepository()
+                   ^^^^^^^^^^^^^^^^^^^
+E           TypeError: VacancyRepository.__init__() missing 2 required positional arguments: 'db_connection' and 'validator'
+
+tests/test_storage_modules_consolidated.py:80: TypeError
+____________ TestMenuManagerExtended.test_menu_manager_get_user_choice _____________
+
+self = <tests.test_ui_components_extended.TestMenuManagerExtended object at 0x7fa469ec24d0>
+mock_input = <MagicMock name='input' id='140344122212112'>
+
+    @patch('builtins.input', return_value='1')
+    def test_menu_manager_get_user_choice(self, mock_input):
+        """Тестирование получения пользовательского выбора"""
+        if not SRC_AVAILABLE:
+            pytest.skip("Source code not available")
+    
+        if hasattr(self.menu_manager, 'get_user_choice'):
+            choice = self.menu_manager.get_user_choice()
+            assert choice == '1' or choice == 1
+        else:
+>           assert mock_input.called
+E           AssertionError: assert False
+E            +  where False = <MagicMock name='input' id='140344122212112'>.called
+
+tests/test_ui_components_extended.py:62: AssertionError
+__________ TestUINavigationExtended.test_paginate_display_custom_actions ___________
+
+self = <Mock id='140344100832912'>
+
+    def assert_called_once(self):
+        """assert that the mock was called only once.
+        """
+        if not self.call_count == 1:
+            msg = ("Expected '%s' to have been called once. Called %s times.%s"
+                   % (self._mock_name or 'mock',
+                      self.call_count,
+                      self._calls_repr()))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'mock' to have been called once. Called 0 times.
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:918: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_ui_navigation_extended.TestUINavigationExtended object at 0x7fa469e95ad0>
+mock_print = <MagicMock name='print' id='140344100833552'>
+mock_input = <MagicMock name='input' id='140344100850064'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_paginate_display_custom_actions(self, mock_print, mock_input):
+        """Тестирование кастомных действий"""
+        mock_action = Mock()
+        mock_action.__doc__ = "Кастомное действие"
+    
+        custom_actions = {"c": mock_action}
+        mock_input.side_effect = ["c", "q"]
+    
+        def formatter(item, number):
+            return f"{number}: {item}"
+    
+        self.navigator.paginate_display(
+            self.test_items[:5],
+            formatter,
+            "Custom Actions",
+            custom_actions=custom_actions
+        )
+    
+>       mock_action.assert_called_once()
+E       AssertionError: Expected 'mock' to have been called once. Called 0 times.
+
+tests/test_ui_navigation_extended.py:136: AssertionError
+________ TestUINavigationExtended.test_paginate_display_custom_action_error ________
+
+self = <tests.test_ui_navigation_extended.TestUINavigationExtended object at 0x7fa469e96010>
+mock_print = <MagicMock name='print' id='140344102740176'>
+mock_input = <MagicMock name='input' id='140344102740368'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_paginate_display_custom_action_error(self, mock_print, mock_input):
+        """Тестирование ошибки в кастомном действии"""
+        def error_action():
+            raise ValueError("Test error")
+    
+        custom_actions = {"e": error_action}
+        mock_input.side_effect = ["e", "q"]
+    
+        def formatter(item, number):
+            return f"{number}: {item}"
+    
+        self.navigator.paginate_display(
+            self.test_items[:5],
+            formatter,
+            "Error Test",
+            custom_actions=custom_actions
+        )
+    
+        calls = [call.args[0] for call in mock_print.call_args_list]
+        output = " ".join(calls)
+>       assert "Ошибка при выполнении действия" in output
+E       AssertionError: assert 'Ошибка при выполнении действия' in '\n\nError Test ========== 1: Item 0 2: Item 1 3: Item 2 4: Item 3 5: Item 4 \n==================== Навигация: Страница 1 из 1 Показано элементов: 1-5 из 5 --------------------'
+
+tests/test_ui_navigation_extended.py:160: AssertionError
+__________________ TestUnifiedAPI.test_filter_by_target_companies __________________
+
+self = <tests.test_unified_api.TestUnifiedAPI object at 0x7fa469d198d0>
+unified_api = <src.api_modules.unified_api.UnifiedAPI object at 0x7fa469a4ae50>
+
+    def test_filter_by_target_companies(self, unified_api):
+        """Тест фильтрации по целевым компаниям"""
+        # Мокаем TargetCompanies
+        with patch('src.config.target_companies.TargetCompanies') as mock_target_companies:
+            mock_target_companies.get_hh_ids.return_value = ["company1", "company2"]
+            mock_target_companies.get_sj_ids.return_value = ["company3"]
+    
+            # Тестовые вакансии
+            test_vacancies = [
+                {"id": "1", "employer": {"id": "company1"}, "source": "hh"},
+                {"id": "2", "employer": {"id": "company2"}, "source": "hh"},
+                {"id": "3", "employer": {"id": "company3"}, "source": "sj"},
+                {"id": "4", "employer": {"id": "unknown"}, "source": "hh"},
+            ]
+    
+            result = unified_api._filter_by_target_companies(test_vacancies)
+    
+            # Должны остаться только вакансии от целевых компаний
+>           assert len(result) == 3
+E           assert 0 == 3
+E            +  where 0 = len([])
+
+tests/test_unified_api.py:282: AssertionError
+___________ TestUnifiedAPI.test_filter_by_target_companies_mixed_sources ___________
+
+self = <tests.test_unified_api.TestUnifiedAPI object at 0x7fa469d79c50>
+unified_api = <src.api_modules.unified_api.UnifiedAPI object at 0x7fa469bbf090>
+
+    def test_filter_by_target_companies_mixed_sources(self, unified_api):
+        """Тест фильтрации вакансий из разных источников"""
+        with patch('src.config.target_companies.TargetCompanies') as mock_target_companies:
+            mock_target_companies.get_hh_ids.return_value = ["hh_company1", "hh_company2"]
+            mock_target_companies.get_sj_ids.return_value = ["sj_company1"]
+    
+            # Вакансии из разных источников
+            test_vacancies = [
+                {"id": "1", "employer": {"id": "hh_company1"}, "source": "hh"},
+                {"id": "2", "employer": {"id": "hh_company2"}, "source": "hh"},
+                {"id": "3", "employer": {"id": "sj_company1"}, "source": "sj"},
+                {"id": "4", "employer": {"id": "other_company"}, "source": "hh"},
+            ]
+    
+            result = unified_api._filter_by_target_companies(test_vacancies)
+    
+            # Должны остаться вакансии от целевых компаний обоих источников
+>           assert len(result) == 3
+E           assert 0 == 3
+E            +  where 0 = len([])
+
+tests/test_unified_api.py:348: AssertionError
+____________ TestUserInterfaceConsolidated.test_main_interface_complete ____________
+
+args = (<tests.test_user_interface_consolidated.TestUserInterfaceConsolidated object at 0x7fa469d91910>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7fa469d91250>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests/../src/user_interface.py'> does not have the attribute 'DBManager'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_______ TestUserInterfaceConsolidated.test_interface_components_integration ________
+
+self = <tests.test_user_interface_consolidated.TestUserInterfaceConsolidated object at 0x7fa469d91fd0>
+
+    def test_interface_components_integration(self):
+        """Тестирование интеграции компонентов интерфейса"""
+        try:
+            from src.interfaces.main_application_interface import MainApplicationInterface
+    
+            # Создаем конкретную реализацию абстрактного класса
+            class ConcreteMainApplication(MainApplicationInterface):
+                def run_application(self):
+                    pass
+    
+>           interface = ConcreteMainApplication()
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: MainApplicationInterface.__init__() missing 3 required positional arguments: 'provider', 'processor', and 'storage'
+
+tests/test_user_interface_consolidated.py:96: TypeError
+___________ TestVacancyDisplayHandler.test_vacancy_display_handler_init ____________
+
+self = <tests.test_vacancy_display_handler.TestVacancyDisplayHandler object at 0x7fa469dd6650>
+
+    def test_vacancy_display_handler_init(self):
+        """Тест инициализации обработчика отображения вакансий"""
+>       handler = VacancyDisplayHandler()
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancyDisplayHandler.__init__() missing 1 required positional argument: 'storage'
+
+tests/test_vacancy_display_handler.py:43: TypeError
+________________ TestVacancyModelsComplete.test_base_vacancy_model _________________
+
+self = <tests.test_vacancy_models_complete.TestVacancyModelsComplete object at 0x7fa469dec5d0>
+
+    def test_base_vacancy_model(self):
+        """Тест базовой модели вакансии"""
+        employer = Employer("Test Company", "123")
+        vacancy = Vacancy("Python Developer", "https://test.com", employer)
+    
+        assert vacancy.title == "Python Developer"
+        assert vacancy.url == "https://test.com"
+>       assert vacancy.employer is not None
+E       assert None is not None
+E        +  where None = <src.vacancies.models.Vacancy object at 0x7fa468613ba0>.employer
+
+tests/test_vacancy_models_complete.py:27: AssertionError
+____________ TestVacancyModelsConsolidated.test_employer_model_complete ____________
+
+self = <tests.test_vacancy_models_consolidated.TestVacancyModelsConsolidated object at 0x7fa469c02350>
+
+    def test_employer_model_complete(self):
+        """Полное тестирование модели работодателя"""
+        try:
+            from src.vacancies.models import Employer
+    
+            # Используем правильный конструктор
+            employer = Employer("Тест Компания", "emp_123")
+            assert employer is not None
+    
+            if hasattr(employer, 'get_name'):
+                name = employer.get_name()
+>               assert name == employer_data['name']
+                               ^^^^^^^^^^^^^
+E               NameError: name 'employer_data' is not defined
+
+tests/test_vacancy_models_consolidated.py:115: NameError
+__________ TestVacancyOperationsCoordinatorComplete.test_coordinator_init __________
+
+self = <tests.test_vacancy_operations_coordinator_complete.TestVacancyOperationsCoordinatorComplete object at 0x7fa469c3e2d0>
+
+    def test_coordinator_init(self):
+        """Тест инициализации координатора операций с вакансиями"""
+>       coordinator = VacancyOperationsCoordinator()
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: VacancyOperationsCoordinator.__init__() missing 2 required positional arguments: 'unified_api' and 'storage'
+
+tests/test_vacancy_operations_coordinator_complete.py:50: TypeError
+____________________ TestVacancyRepository.test_repository_init ____________________
+
+self = <tests.test_vacancy_repository.TestVacancyRepository object at 0x7fa469c6df10>
+
+    def test_repository_init(self):
+        """Тест инициализации репозитория"""
+        assert self.repository is not None
+        # Проверяем, что репозиторий имеет необходимые атрибуты
+        assert hasattr(self.repository, 'db_connection') or hasattr(self.repository, '_db_connection')
+>       assert self.repository.validator == self.mock_validator
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'VacancyRepository' object has no attribute 'validator'
+
+tests/test_vacancy_repository.py:37: AttributeError
+================================== tests coverage ==================================
+_________________ coverage: platform linux, python 3.11.13-final-0 _________________
+
+Name                                                     Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------------------------
+src/__init__.py                                              0      0   100%
+src/api_modules/__init__.py                                  0      0   100%
+src/api_modules/base_api.py                                 23      0   100%
+src/api_modules/cached_api.py                              168     88    48%   80-87, 113-115, 120-122, 132-133, 144-147, 152-157, 163-168, 177-187, 203, 215-238, 247, 267-269, 288-310, 322-342
+src/api_modules/get_api.py                                  53     19    64%   46-54, 64, 73-74, 102-103, 116-118, 124, 126-132, 134, 136
+src/api_modules/hh_api.py                                  142    103    27%   77-85, 99-119, 151-180, 194, 207-235, 249-295, 310-331, 340
+src/api_modules/sj_api.py                                  128     76    41%   61, 99-106, 132-136, 170-210, 222, 235-236, 249-308, 317
+src/api_modules/unified_api.py                             270    178    34%   124, 133, 140-145, 149-184, 193-250, 266-322, 327-337, 379-396, 400-417, 421-431, 435-457
+src/config/__init__.py                                       0      0   100%
+src/config/api_config.py                                    13      0   100%
+src/config/app_config.py                                    17      0   100%
+src/config/db_config.py                                     61     27    56%   24, 44-48, 85-88, 96-99, 104, 107, 115, 133-136, 156-172
+src/config/hh_api_config.py                                 21      2    90%   31, 37
+src/config/sj_api_config.py                                 49     18    63%   39, 59, 62, 68-75, 79-87
+src/config/target_companies.py                              61     27    56%   109, 114, 119, 124-130, 135-138, 143-146, 151, 156-162, 167, 185, 190
+src/config/ui_config.py                                     27      8    70%   36-42, 54-58, 79
+src/interfaces/__init__.py                                   0      0   100%
+src/interfaces/main_application_interface.py               121     91    25%   69-71, 76, 89-98, 109-136, 140-152, 156-161, 166-180, 184-214, 224-225, 230, 234-236
+src/storage/__init__.py                                      6      0   100%
+src/storage/abstract.py                                     14      0   100%
+src/storage/abstract_db_manager.py                          21      6    71%   16, 26, 36, 46, 59, 69
+src/storage/components/__init__.py                           0      0   100%
+src/storage/components/database_connection.py               53     15    72%   14-16, 19-20, 72-78, 88-89, 97-98
+src/storage/components/vacancy_repository.py               113     97    14%   49-98, 110-156, 165-178, 190-209, 221-291
+src/storage/components/vacancy_validator.py                 65     39    40%   61-67, 73-74, 78-79, 90-103, 108-122, 138-152
+src/storage/db_manager.py                                  348    224    36%   17-24, 63, 83-139, 223-228, 246-247, 262-272, 282-338, 348-361, 376-405, 419-451, 519-522, 525-528, 533-535, 574-576, 590-651, 665, 671-728, 741-813, 818-820, 832, 844-845, 857-859, 871-877, 892-1022
+src/storage/interfaces/typed_data_processor.py              46     25    46%   32, 45, 64, 78, 94, 100, 106-117, 124, 130-133, 139-148
+src/storage/postgres_saver.py                              790    557    29%   10-13, 72-74, 109-111, 124-125, 133-140, 145-146, 148-151, 176-183, 188-194, 199-200, 202-205, 263-265, 280-281, 295-305, 310-317, 322-323, 325-328, 338, 342-343, 346, 374-380, 389-390, 399-400, 404-409, 417-419, 427-428, 442-445, 452, 455-458, 473, 480, 487, 594-598, 603-606, 627-634, 655, 662-664, 678, 690-692, 704-708, 721-779, 783-895, 918-958, 961, 968-970, 974-992, 996-1020, 1024-1048, 1055, 1067-1098, 1102-1113, 1125-1180, 1184-1196, 1208-1251, 1264-1303, 1323-1574, 1587-1601, 1611, 1614, 1617-1635
+src/storage/services/__init__.py                             4      0   100%
+src/storage/services/abstract_filter_service.py             30      7    77%   34, 44, 64, 88, 101, 114, 127
+src/storage/services/abstract_storage_service.py            25      6    76%   34, 47, 60, 73, 83, 93
+src/storage/services/company_id_filter_service.py           94     62    34%   49, 62, 68-76, 85-135, 141-202, 206-214, 223
+src/storage/services/deduplication_service.py               64     43    33%   15-16, 20-21, 43, 56-129, 133-142, 146-154, 183, 192
+src/storage/services/filtering_service.py                  105     66    37%   15-16, 20-21, 25-26, 48, 76-88, 95-132, 143-155, 159-170, 189-199, 228, 237
+src/storage/services/sql_deduplication_service.py           64     49    23%   44-64, 68-111, 116-148, 152-160, 173-182
+src/storage/services/sql_filter_service.py                  89     63    29%   47, 59-78, 82-146, 152-191, 195-202, 207-209, 218-247
+src/storage/services/vacancy_processing_coordinator.py      44      0   100%
+src/storage/services/vacancy_storage_service.py            334    245    27%   15-16, 20-21, 25-26, 31-32, 37-38, 42-43, 47-48, 52-53, 57-58, 93-94, 119-146, 150-170, 176-194, 211-215, 220-222, 226-238, 244-320, 334, 338-339, 360-362, 366-395, 402-404, 417-469, 499, 511-535, 539-590, 594-601, 606, 610, 614, 618
+src/storage/simple_db_adapter.py                           142    116    18%   21, 25, 29, 33, 37-43, 50-51, 54, 57, 61-101, 105-117, 121, 125-165, 169-202, 206-210, 219
+src/storage/storage_factory.py                              13      0   100%
+src/ui_interfaces/__init__.py                                0      0   100%
+src/ui_interfaces/console_interface.py                     394    306    22%   23-25, 69, 82, 84, 86, 88, 90, 92, 94, 97, 100, 102-110, 116-127, 157, 161, 165, 169, 173-224, 228-301, 305, 309, 319-355, 359, 370-371, 382-385, 395-544, 548-579, 584-604
+src/ui_interfaces/source_selector.py                        44     30    32%   25-51, 64, 74-79
+src/ui_interfaces/vacancy_display_handler.py                72     58    19%   32-70, 74-107, 111-141
+src/ui_interfaces/vacancy_operations_coordinator.py        194    105    46%   68-79, 100, 102, 104, 108, 116-122, 126-165, 169-192, 196-198, 211, 248-273, 302-322
+src/ui_interfaces/vacancy_search_handler.py                152    127    16%   38-76, 90-114, 124, 135-170, 180-197, 209-232, 248-262, 272-308
+src/user_interface.py                                       55     47    15%   26-94, 98
+src/utils/__init__.py                                        0      0   100%
+src/utils/abstract_filter.py                                26     14    46%   30, 47, 61, 75, 88-102
+src/utils/api_data_filter.py                               178    110    38%   9-10, 25, 55-56, 71-83, 96-108, 121-133, 148-160, 173-185, 191-196, 206, 212, 215, 217, 223-241, 245, 256, 269, 275-284, 289, 297-298, 304, 312-313, 318-337
+src/utils/base_formatter.py                                 38     11    71%   14, 19, 24, 29, 34, 39, 44, 49, 54, 59, 64
+src/utils/cache.py                                         135     59    56%   45-46, 61-62, 78, 93-94, 98-100, 113-139, 163-176, 199-210, 221-224, 227, 236-238, 244
+src/utils/data_normalizers.py                               75     13    83%   77-80, 107, 113-121, 154-162
+src/utils/db_manager_demo.py                               236    218     8%   32, 38-64, 73-81, 85-103, 107-155, 159-211, 215-224, 228-272, 276-315, 319-370, 377-382, 386
+src/utils/decorators.py                                     73     53    27%   24-52, 56-57, 61, 77-91, 97-106, 112-121
+src/utils/description_parser.py                             70     55    21%   41-64, 77-103, 116-135, 141-177
+src/utils/env_loader.py                                     59     34    42%   32-33, 41-76, 104-111
+src/utils/file_handlers.py                                  38     25    34%   36-48, 57-76
+src/utils/menu_manager.py                                   49      8    84%   38, 52-56, 77, 93
+src/utils/paginator.py                                      28     21    25%   39-65
+src/utils/salary.py                                        113     18    84%   35-36, 55-61, 71-72, 78, 94, 152, 157, 164, 181, 207
+src/utils/search_utils.py                                  156     28    82%   31, 47, 81, 87, 90, 93, 96, 99, 136, 142, 175, 187, 204, 211, 215, 219, 223, 227, 259, 263, 271, 275, 279-282, 328, 342
+src/utils/source_manager.py                                 60     38    37%   65, 77-80, 92-95, 108-119, 131-134, 146, 158-161, 173-176, 188-191, 198-200
+src/utils/ui_helpers.py                                    161      4    98%   135, 225-226, 325
+src/utils/ui_navigation.py                                  99      0   100%
+src/utils/vacancy_formatter.py                             167     59    65%   122, 129, 148, 154, 159-164, 170-171, 176, 182, 188-201, 206, 213, 218, 225, 229-231, 235-241, 246, 259-262, 273-304
+src/utils/vacancy_operations.py                            165     99    40%   43, 64, 75-87, 111, 122-134, 159, 170-182, 220-244, 248-261, 264-265, 268-269, 290-310, 320-339, 346-370
+src/utils/vacancy_stats.py                                  86     53    38%   57-60, 83-91, 95-100, 110-158, 163-165
+src/vacancies/__init__.py                                    0      0   100%
+src/vacancies/abstract.py                                   10      0   100%
+src/vacancies/abstract_models.py                            99     28    72%   18, 23, 28, 33, 38, 44, 53, 58, 63, 69, 75, 84, 89, 94, 100, 106, 115, 120, 125, 130, 135, 140, 146, 155, 160, 165, 171, 177
+src/vacancies/models.py                                    390    212    46%   40, 44, 48, 64, 77, 81, 89, 91, 93, 98-102, 106, 122, 126, 131-133, 141, 144, 149, 153, 169, 173, 178-180, 188, 191, 196, 200, 299, 317, 329-332, 344, 348, 352, 358, 370, 374, 378, 384, 404-438, 443-451, 456-651, 670, 686, 701-706, 720, 725-727, 731-733, 737-739, 743-745, 749
+src/vacancies/parsers/__init__.py                           55     11    80%   16, 21, 26, 31, 36, 88, 97, 106, 111, 116, 121
+src/vacancies/parsers/base_parser.py                         9      2    78%   19, 32
+src/vacancies/parsers/hh_parser.py                          55     10    82%   21, 32-33, 55-57, 96-98, 119
+src/vacancies/parsers/sj_parser.py                          57     47    18%   24-43, 57-65, 98-147
+--------------------------------------------------------------------------------------
+TOTAL                                                     7216   4160    42%
+============================= short test summary info ==============================
+FAILED tests/test_api_complete.py::TestHeadHunterAPI::test_get_vacancies - AttributeError: <src.api_modules.hh_api.HeadHunterAPI object at 0x7fa46a208cd0>...
+FAILED tests/test_api_complete.py::TestHeadHunterAPI::test_validate_vacancy - AssertionError: assert False == True
+FAILED tests/test_api_complete.py::TestSuperJobAPI::test_get_vacancies - AttributeError: <src.api_modules.sj_api.SuperJobAPI object at 0x7fa46a263f50> d...
+FAILED tests/test_api_complete.py::TestSuperJobAPI::test_validate_vacancy - AssertionError: assert False == True
+FAILED tests/test_api_complete.py::TestUnifiedAPI::test_get_vacancies_from_all_sources - TypeError: src.api_modules.unified_api.UnifiedAPI.get_vacancies_from_sources() ...
+FAILED tests/test_base_formatter.py::TestBaseFormatter::test_concrete_implementation_works - AssertionError: assert 'test data' == 'Formatted: test data'
+FAILED tests/test_interfaces.py::TestMainApplicationInterface::test_interface_creation - TypeError: Can't instantiate abstract class MainApplicationInterface with abstr...
+FAILED tests/test_main_application_interface.py::TestMainApplicationInterface::test_main_application_interface_init - TypeError: MainApplicationInterface.__init__() missing 3 required positional ar...
+FAILED tests/test_main_application_interface.py::TestMainApplicationInterface::test_main_application_interface_concrete_implementation - TypeError: MainApplicationInterface.__init__() missing 3 required positional ar...
+FAILED tests/test_simple_db_adapter.py::TestSimpleDBAdapter::test_error_handling - Failed: DID NOT RAISE <class 'Exception'>
+FAILED tests/test_storage_modules_consolidated.py::TestStorageModulesConsolidated::test_vacancy_repository - TypeError: VacancyRepository.__init__() missing 2 required positional arguments...
+FAILED tests/test_ui_components_extended.py::TestMenuManagerExtended::test_menu_manager_get_user_choice - AssertionError: assert False
+FAILED tests/test_ui_navigation_extended.py::TestUINavigationExtended::test_paginate_display_custom_actions - AssertionError: Expected 'mock' to have been called once. Called 0 times.
+FAILED tests/test_ui_navigation_extended.py::TestUINavigationExtended::test_paginate_display_custom_action_error - AssertionError: assert 'Ошибка при выполнении действия' in '\n\nError Test ====...
+FAILED tests/test_unified_api.py::TestUnifiedAPI::test_filter_by_target_companies - assert 0 == 3
+FAILED tests/test_unified_api.py::TestUnifiedAPI::test_filter_by_target_companies_mixed_sources - assert 0 == 3
+FAILED tests/test_user_interface_consolidated.py::TestUserInterfaceConsolidated::test_main_interface_complete - AttributeError: <module 'src.user_interface' from '/home/runner/workspace/tests...
+FAILED tests/test_user_interface_consolidated.py::TestUserInterfaceConsolidated::test_interface_components_integration - TypeError: MainApplicationInterface.__init__() missing 3 required positional ar...
+FAILED tests/test_vacancy_display_handler.py::TestVacancyDisplayHandler::test_vacancy_display_handler_init - TypeError: VacancyDisplayHandler.__init__() missing 1 required positional argum...
+FAILED tests/test_vacancy_models_complete.py::TestVacancyModelsComplete::test_base_vacancy_model - assert None is not None
+FAILED tests/test_vacancy_models_consolidated.py::TestVacancyModelsConsolidated::test_employer_model_complete - NameError: name 'employer_data' is not defined
+FAILED tests/test_vacancy_operations_coordinator_complete.py::TestVacancyOperationsCoordinatorComplete::test_coordinator_init - TypeError: VacancyOperationsCoordinator.__init__() missing 2 required positiona...
+FAILED tests/test_vacancy_repository.py::TestVacancyRepository::test_repository_init - AttributeError: 'VacancyRepository' object has no attribute 'validator'
+ERROR tests/test_api_complete.py::TestCachedAPI::test_init - TypeError: Can't instantiate abstract class CachedAPI with abstract methods _ge...
+ERROR tests/test_api_complete.py::TestCachedAPI::test_get_vacancies_cached - TypeError: Can't instantiate abstract class CachedAPI with abstract methods _ge...
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_item_with_index - TypeError: Can't instantiate abstract class BaseFormatter with abstract methods...
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_item_without_index - TypeError: Can't instantiate abstract class BaseFormatter with abstract methods...
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_item_none_index - TypeError: Can't instantiate abstract class BaseFormatter with abstract methods...
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_list_basic - TypeError: Can't instantiate abstract class BaseFormatter with abstract methods...
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_list_custom_start_index - TypeError: Can't instantiate abstract class BaseFormatter with abstract methods...
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_list_empty - TypeError: Can't instantiate abstract class BaseFormatter with abstract methods...
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_table_row_basic - TypeError: Can't instantiate abstract class BaseFormatter with abstract methods...
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_table_row_missing_column - TypeError: Can't instantiate abstract class BaseFormatter with abstract methods...
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_table_row_empty_columns - TypeError: Can't instantiate abstract class BaseFormatter with abstract methods...
+ERROR tests/test_base_formatter.py::TestBaseFormatter::test_format_item_complex_object - TypeError: Can't instantiate abstract class BaseFormatter with abstract methods...
+============== 23 failed, 904 passed, 42 skipped, 12 errors in 9.72s ===============
+~/workspace$ ^C
+~/workspace$ 
