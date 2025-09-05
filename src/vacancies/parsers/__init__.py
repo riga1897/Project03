@@ -2,6 +2,7 @@ import abc
 
 
 class AbstractVacancy(abc.ABC):
+
     @abc.abstractmethod
     def get_title(self) -> str:
         pass
@@ -24,7 +25,9 @@ class AbstractVacancy(abc.ABC):
 
 
 class Vacancy(AbstractVacancy):
-    def __init__(self, title: str, salary: str, url: str, description: str, city: str):
+
+    def __init__(self, title: str, salary: str, url: str, description: str,
+                 city: str):
         self.title = title
         self.salary = salary
         self.url = url
@@ -48,18 +51,21 @@ class Vacancy(AbstractVacancy):
 
 
 class BaseJobAPI(abc.ABC):
+
     @abc.abstractmethod
     def get_jobs(self, search_query: str) -> list[AbstractVacancy]:
         pass
 
 
 class BaseParser(abc.ABC):
+
     @abc.abstractmethod
     def parse(self, html_content: str) -> list[AbstractVacancy]:
         pass
 
 
 class BaseDBManager(abc.ABC):
+
     @abc.abstractmethod
     def save_vacancy(self, vacancy: AbstractVacancy) -> None:
         pass
