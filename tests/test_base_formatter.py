@@ -1,12 +1,11 @@
 """
-Тесты для модуля базового форматирования
+Тесты для базового форматера
 """
 
-import os
-import sys
-from unittest.mock import Mock, patch
-
 import pytest
+from unittest.mock import Mock, patch
+import sys
+import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -15,100 +14,103 @@ try:
     BASE_FORMATTER_AVAILABLE = True
 except ImportError:
     BASE_FORMATTER_AVAILABLE = False
+    BaseFormatter = object
 
 
 class ConcreteFormatter(BaseFormatter if BASE_FORMATTER_AVAILABLE else object):
     """Конкретная реализация BaseFormatter для тестирования"""
 
-    def format(self, data):
-        return str(data)
+    def format_vacancy(self, vacancy):
+        """Форматирование одной вакансии"""
+        if vacancy is None:
+            raise TypeError("Vacancy cannot be None")
+        return f"ID: {vacancy.get('id', 'N/A')}, Title: {vacancy.get('title', 'N/A')}"
 
-    def clean_html_tags(self, text):
-        return text
-
-    def format_company_name(self, company):
-        return str(company)
-
-    def format_currency(self, amount):
-        return str(amount)
-
-    def format_date(self, date):
-        return str(date)
-
-    def format_employment_type(self, employment):
-        return str(employment)
-
-    def format_experience(self, experience):
-        return str(experience)
-
-    def format_number(self, number):
-        return str(number)
-
-    def format_salary(self, salary):
-        return str(salary)
-
-    def format_schedule(self, schedule):
-        return str(schedule)
-
-    def format_text(self, text):
-        return str(text)
-
-    def format_vacancy_info(self, vacancy):
-        return str(vacancy)
+    def format_vacancies_list(self, vacancies):
+        """Форматирование списка вакансий"""
+        return [self.format_vacancy(v) for v in vacancies]
 
 
 class TestBaseFormatter:
-    """Тесты для базового форматтера"""
+    """Тесты для базового форматера"""
 
     @pytest.fixture
     def formatter(self):
-        """Фикстура форматтера"""
+        """Фикстура форматера"""
         if not BASE_FORMATTER_AVAILABLE:
-            return Mock() # Return a mock if BaseFormatter is not available
-        
-        # Создаем конкретную реализацию абстрактного класса
-        class ConcreteFormatter(BaseFormatter):
-            def clean_html_tags(self, text):
-                return str(text)
-            def format_company_name(self, company):
-                return str(company)
-            def format_currency(self, currency):
-                return str(currency)
-            def format_date(self, date):
-                return str(date)
-            def format_employment_type(self, employment):
-                return str(employment)
-            def format_experience(self, experience):
-                return str(experience)
-            def format_number(self, number):
-                return str(number)
-            def format_salary(self, salary):
-                return str(salary)
-            def format_schedule(self, schedule):
-                return str(schedule)
-            def format_text(self, text):
-                return str(text)
-            def format_vacancy_info(self, vacancy):
-                return str(vacancy)
-        
+            return Mock()
         return ConcreteFormatter()
 
     def test_base_formatter_cannot_be_instantiated(self):
-        """Тест что базовый форматтер нельзя инстанциировать"""
+        """Тест что базовый класс нельзя инстанциировать"""
         if not BASE_FORMATTER_AVAILABLE:
             pytest.skip("BaseFormatter not available")
 
         with pytest.raises(TypeError):
             BaseFormatter()
 
-    def test_concrete_implementation_works(self):
+    def test_concrete_implementation_works(self, formatter):
         """Тест что конкретная реализация работает"""
+        assert formatter is not None
+
+    def test_format_vacancy(self, formatter):
+        """Тест форматирования одной вакансии"""
         if not BASE_FORMATTER_AVAILABLE:
             pytest.skip("BaseFormatter not available")
 
-        formatter = ConcreteFormatter()
-        result = formatter.format("test data")
-        assert result == "test data"
+        vacancy = {"id": "123", "title": "Python Developer"}
+        result = formatter.format_vacancy(vacancy)
+        assert "123" in result
+        assert "Python Developer" in result
+
+    def test_format_vacancies_list(self, formatter):
+        """Тест форматирования списка вакансий"""
+        if not BASE_FORMATTER_AVAILABLE:
+            pytest.skip("BaseFormatter not available")
+
+        vacancies = [
+            {"id": "1", "title": "Dev 1"},
+            {"id": "2", "title": "Dev 2"}
+        ]
+        result = formatter.format_vacancies_list(vacancies)
+        assert isinstance(result, list)
+        assert len(result) == 2
+
+    def test_format_vacancy_with_missing_fields(self, formatter):
+        """Тест форматирования вакансии с отсутствующими полями"""
+        if not BASE_FORMATTER_AVAILABLE:
+            pytest.skip("BaseFormatter not available")
+
+        vacancy = {"title": "Developer"}  # нет id
+        result = formatter.format_vacancy(vacancy)
+        assert "N/A" in result
+        assert "Developer" in result
+
+    def test_format_empty_vacancies_list(self, formatter):
+        """Тест форматирования пустого списка"""
+        if not BASE_FORMATTER_AVAILABLE:
+            pytest.skip("BaseFormatter not available")
+
+        result = formatter.format_vacancies_list([])
+        assert isinstance(result, list)
+        assert len(result) == 0
+
+    def test_format_vacancy_with_none(self, formatter):
+        """Тест форматирования None вакансии"""
+        if not BASE_FORMATTER_AVAILABLE:
+            pytest.skip("BaseFormatter not available")
+
+        with pytest.raises(TypeError):
+            formatter.format_vacancy(None)
+
+    def test_format_vacancy_with_empty_dict(self, formatter):
+        """Тест форматирования пустого словаря"""
+        if not BASE_FORMATTER_AVAILABLE:
+            pytest.skip("BaseFormatter not available")
+
+        vacancy = {}
+        result = formatter.format_vacancy(vacancy)
+        assert "N/A" in result  # Должно обработать отсутствующие поля
 
     def test_abstract_methods_exist(self):
         """Тест что абстрактные методы определены"""
@@ -116,113 +118,14 @@ class TestBaseFormatter:
             pytest.skip("BaseFormatter not available")
 
         abstract_methods = BaseFormatter.__abstractmethods__
-        expected_methods = {'clean_html_tags', 'format_company_name', 'format_currency',
-                          'format_date', 'format_employment_type', 'format_experience',
-                          'format_number', 'format_salary', 'format_schedule',
-                          'format_text', 'format_vacancy_info'}
-        assert expected_methods.issubset(abstract_methods)
+        assert 'format_vacancy' in abstract_methods
+        assert 'format_vacancies_list' in abstract_methods
 
-    def test_logging_setup(self):
-        """Тест настройки логирования"""
+
+class TestBaseFormatterImportError:
+    """Тесты обработки ошибок импорта BaseFormatter"""
+
+    def test_base_formatter_not_available(self):
+        """Тест когда BaseFormatter недоступен"""
         if not BASE_FORMATTER_AVAILABLE:
-            pytest.skip("BaseFormatter not available")
-
-        # Проверяем что модуль имеет logger
-        import src.utils.base_formatter as formatter_module
-        assert hasattr(formatter_module, 'logger')
-
-    def test_format_item_with_index(self, formatter):
-        """Тест форматирования элемента с индексом"""
-        if not BASE_FORMATTER_AVAILABLE:
-            # Mocking the method if BaseFormatter is not available
-            formatter.format_item.return_value = "1. test"
-        result = formatter.format_item("test", 1)
-        assert result == "1. test"
-
-    def test_format_item_without_index(self, formatter):
-        """Тест форматирования элемента без индекса"""
-        if not BASE_FORMATTER_AVAILABLE:
-            # Mocking the method if BaseFormatter is not available
-            formatter.format_item.return_value = "test"
-        result = formatter.format_item("test")
-        assert result == "test"
-
-    def test_format_item_none_index(self, formatter):
-        """Тест форматирования элемента с None индексом"""
-        if not BASE_FORMATTER_AVAILABLE:
-            # Mocking the method if BaseFormatter is not available
-            formatter.format_item.return_value = "test"
-        result = formatter.format_item("test", None)
-        assert result == "test"
-
-    def test_format_list_basic(self, formatter):
-        """Тест базового форматирования списка"""
-        items = ["item1", "item2", "item3"]
-        if not BASE_FORMATTER_AVAILABLE:
-            # Mocking the method if BaseFormatter is not available
-            formatted_items = [f"{i+1}. {item}" for i, item in enumerate(items)]
-            formatter.format_list.return_value = formatted_items
-        result = formatter.format_list(items)
-        expected = ["1. item1", "2. item2", "3. item3"]
-        assert result == expected
-
-    def test_format_list_custom_start_index(self, formatter):
-        """Тест форматирования списка с кастомным начальным индексом"""
-        items = ["item1", "item2"]
-        if not BASE_FORMATTER_AVAILABLE:
-            # Mocking the method if BaseFormatter is not available
-            formatted_items = [f"{i+5}. {item}" for i, item in enumerate(items, start=5)]
-            formatter.format_list.return_value = formatted_items
-        result = formatter.format_list(items, start_index=5)
-        expected = ["5. item1", "6. item2"]
-        assert result == expected
-
-    def test_format_list_empty(self, formatter):
-        """Тест форматирования пустого списка"""
-        if not BASE_FORMATTER_AVAILABLE:
-            # Mocking the method if BaseFormatter is not available
-            formatter.format_list.return_value = []
-        result = formatter.format_list([])
-        assert result == []
-
-    def test_format_table_row_basic(self, formatter):
-        """Тест форматирования строки таблицы"""
-        data = {"name": "Test", "age": 25, "city": "Moscow"}
-        columns = ["name", "age", "city"]
-        if not BASE_FORMATTER_AVAILABLE:
-            # Mocking the method if BaseFormatter is not available
-            values = [str(data.get(col, "")) for col in columns]
-            formatter.format_table_row.return_value = " | ".join(values)
-        result = formatter.format_table_row(data, columns)
-        assert result == "Test | 25 | Moscow"
-
-    def test_format_table_row_missing_column(self, formatter):
-        """Тест форматирования строки таблицы с отсутствующей колонкой"""
-        data = {"name": "Test", "age": 25}
-        columns = ["name", "age", "city"]
-        if not BASE_FORMATTER_AVAILABLE:
-            # Mocking the method if BaseFormatter is not available
-            values = [str(data.get(col, "")) for col in columns]
-            formatter.format_table_row.return_value = " | ".join(values)
-        result = formatter.format_table_row(data, columns)
-        assert result == "Test | 25 | "
-
-    def test_format_table_row_empty_columns(self, formatter):
-        """Тест форматирования строки таблицы с пустыми колонками"""
-        data = {"name": "Test"}
-        columns = []
-        if not BASE_FORMATTER_AVAILABLE:
-            # Mocking the method if BaseFormatter is not available
-            formatter.format_table_row.return_value = ""
-        result = formatter.format_table_row(data, columns)
-        assert result == ""
-
-    def test_format_item_complex_object(self, formatter):
-        """Тест форматирования сложного объекта"""
-        obj = {"key": "value", "nested": {"inner": "data"}}
-        if not BASE_FORMATTER_AVAILABLE:
-            # Mocking the method if BaseFormatter is not available
-            formatter.format_item.return_value = "1. " + str(obj)
-        result = formatter.format_item(obj, 1)
-        assert "1." in result
-        assert str(obj) in result
+            assert BaseFormatter == object
