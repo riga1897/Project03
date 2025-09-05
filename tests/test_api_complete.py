@@ -130,7 +130,7 @@ def test_validate_vacancy(self, hh_api):
         assert hh_api._validate_vacancy(valid_vacancy) == True
         assert hh_api._validate_vacancy(invalid_vacancy) == False
 
-    def test_get_vacancies_page(self, hh_api):
+def test_get_vacancies_page(self, hh_api):
         """Тест получения одной страницы вакансий"""
         if not API_MODULES_AVAILABLE:
             pytest.skip("API modules not available")
@@ -146,7 +146,7 @@ def test_validate_vacancy(self, hh_api):
             assert len(result) == 1
             assert result[0]["source"] == "hh.ru"
 
-    def test_get_empty_response(self, hh_api):
+def test_get_empty_response(self, hh_api):
         """Тест получения пустого ответа"""
         if not API_MODULES_AVAILABLE:
             pytest.skip("API modules not available")
@@ -156,7 +156,7 @@ def test_validate_vacancy(self, hh_api):
         assert "items" in result
         assert result["items"] == []
 
-    def test_clear_cache(self, hh_api):
+def test_clear_cache(self, hh_api):
         """Тест очистки кэша"""
         if not API_MODULES_AVAILABLE:
             pytest.skip("API modules not available")
