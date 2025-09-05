@@ -16,7 +16,7 @@ try:
     from src.api_modules.unified_api import UnifiedAPI
     from src.api_modules.hh_api import HeadHunterAPI
     from src.api_modules.sj_api import SuperJobAPI
-    from src.api_modules.base_api import BaseAPI
+    from src.api_modules.base_api import BaseJobAPI
     from src.api_modules.cached_api import CachedAPI
     SRC_AVAILABLE = True
 except ImportError:
@@ -236,7 +236,7 @@ class TestAPIModules:
     """Комплексные тесты для модулей API"""
 
     @pytest.fixture
-    def base_api(self) -> BaseAPI:
+    def base_api(self) -> BaseJobAPI:
         """Фикстура базового API"""
         return BaseAPI()
 

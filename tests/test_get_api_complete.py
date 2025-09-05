@@ -13,13 +13,13 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 try:
-    from src.api_modules.get_api import GetAPI
-    from src.api_modules.base_api import BaseAPI
+    from src.api_modules.get_api import APIConnector
+    from src.api_modules.base_api import BaseJobAPI
     GET_API_AVAILABLE = True
 except ImportError:
     GET_API_AVAILABLE = False
     GetAPI = object
-    BaseAPI = object
+    BaseJobAPI = object
 
 
 class TestGetAPIComplete:
@@ -37,7 +37,7 @@ class TestGetAPIComplete:
         if not GET_API_AVAILABLE:
             pytest.skip("GetAPI not available")
         
-        assert issubclass(GetAPI, BaseAPI)
+        assert issubclass(GetAPI, BaseJobAPI)
 
     def test_init_default_values(self, get_api):
         """Тест инициализации с значениями по умолчанию"""

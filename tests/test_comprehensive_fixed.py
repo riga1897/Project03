@@ -53,9 +53,9 @@ class TestCoreModulesBasic:
     def test_import_api_modules(self):
         """Тестирование импорта API модулей"""
         try:
-            from src.api_modules.base_api import BaseAPI
+            from src.api_modules.base_api import BaseJobAPI
             from src.api_modules.hh_api import HeadHunterAPI
-            assert BaseAPI is not None
+            assert BaseJobAPI is not None
             assert HeadHunterAPI is not None
         except ImportError:
             pytest.skip("API modules not available")
