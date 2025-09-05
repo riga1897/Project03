@@ -32,6 +32,14 @@ def main() -> None:
         logger.info("Инициализация базы данных...")
         db_manager = DBManager()
 
+        # Создаем базу данных если она не существует
+        logger.info("Проверка и создание базы данных...")
+        try:
+            db_manager._ensure_database_exists()
+        except Exception as db_create_error:
+            logger.error(f"Ошибка при создании базы данных: {db_create_error}")
+            raise Exception(f"Не удалось создать базу данных: {db_create_error}")
+
         # Проверяем подключение к БД
         logger.info("Проверка подключения к базе данных...")
         if not db_manager.check_connection():
@@ -58,6 +66,7 @@ def main() -> None:
         app_config = AppConfig()
 
         # Создаем хранилище согласно конфигурации
+        # PostgresSaver больше не создает базу данных - это делает DBManager
         storage = StorageFactory.create_storage(app_config.default_storage_type)
         logger.info(f"Используется хранилище: {type(storage).__name__}")
 

@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional, Union
 from src.utils.salary import Salary
 
 from .abstract import AbstractVacancy
-from .abstract_models import AbstractEmployer, AbstractEmployment, AbstractExperience, AbstractSalary, AbstractSchedule
+from .abstract_models import AbstractEmployer, AbstractEmployment, AbstractExperience, AbstractSalary
 
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)

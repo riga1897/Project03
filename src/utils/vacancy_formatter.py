@@ -2,11 +2,6 @@ import logging
 import re
 from typing import Any, List, Optional
 
-try:
-    from ..vacancies.models import Vacancy
-except ImportError:
-    from vacancies.models import Vacancy
-from .base_formatter import BaseFormatter
 
 logger = logging.getLogger(__name__)
 
@@ -200,7 +195,7 @@ class VacancyFormatter:
                 parts = date_part.split("-")
                 if len(parts) == 3:
                     return f"{parts[2]}.{parts[1]}.{parts[0]}"
-        except:
+        except BaseException:
             pass
 
         return date_str

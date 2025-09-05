@@ -10,10 +10,22 @@ logger = logging.getLogger(__name__)
 
 
 class VacancyStats:
-    """Класс для подсчета статистики по вакансиям"""
+    """
+    Класс для сбора и отображения статистики по вакансиям
+
+    Предоставляет методы для:
+    - Подсчета статистики по зарплатам
+    - Анализа распределения по компаниям
+    - Отображения статистики по источникам
+    - Анализа маппинга компаний
+    """
 
     def __init__(self):
-        """Инициализация статистики"""
+        """
+        Инициализация статистики
+
+        Создает экземпляр для работы со статистикой вакансий.
+        """
         pass
 
     def calculate_salary_statistics(self, vacancies):
@@ -156,7 +168,6 @@ def calculate_statistics(vacancies):
         "source_distribution": stats.get_source_distribution(vacancies),
         "total_count": len(vacancies),
     }
-    """Класс для сбора и отображения статистики по вакансиям"""
 
     @staticmethod
     def get_company_distribution(vacancies: List[Dict[str, Any]]) -> Dict[str, int]:

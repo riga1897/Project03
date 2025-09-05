@@ -50,7 +50,8 @@ class PostgresSaver(AbstractVacancyStorage):
             self.username = EnvLoader.get_env_var("PGUSER", "postgres")
             self.password = EnvLoader.get_env_var("PGPASSWORD", "")
 
-        self._ensure_database_exists()
+        # Создание базы данных теперь делегируется DBManager
+        # self._ensure_database_exists()  # Удалено - теперь используется DBManager
         self._ensure_tables_exist()
 
     def _get_connection(self, database=None):
@@ -72,54 +73,6 @@ class PostgresSaver(AbstractVacancyStorage):
             logger.error(f"Ошибка подключения к БД {db_name}: {e}")
             raise
 
-    def _ensure_database_exists(self):
-        """Создает базу данных Project03 если она не существует"""
-        # Подключаемся к системной БД postgres для создания новой БД
-        try:
-            connection = self._get_connection("postgres")
-            connection.autocommit = True
-        except PsycopgError as e:
-            logger.error(f"Не удается подключиться к системной БД postgres: {e}")
-            logger.info("Пытаемся подключиться к целевой БД напрямую...")
-            try:
-                # Если не можем подключиться к postgres, пробуем сразу к целевой БД
-                test_connection = self._get_connection()
-                test_connection.close()
-                logger.info(f"✓ База данных {self.database} уже доступна")
-                return
-            except PsycopgError:
-                logger.error(f"База данных {self.database} недоступна и не может быть создана")
-                raise
-
-        try:
-            cursor = connection.cursor()
-
-            # Проверяем существование базы данных Project03
-            cursor.execute("SELECT 1 FROM pg_database WHERE datname = %s", (self.database,))
-
-            db_exists = cursor.fetchone() is not None
-
-            if db_exists:
-                logger.info(f"✓ База данных {self.database} уже существует")
-            else:
-                # Создаем новую базу данных только если её нет
-                logger.info(f"Создаём базу данных {self.database}...")
-                cursor.execute(f'CREATE DATABASE "{self.database}"')
-                logger.info(f"✓ База данных {self.database} успешно создана")
-
-        except PsycopgError as e:
-            logger.error(f"Ошибка при создании базы данных {self.database}: {e}")
-            # Пытаемся подключиться к целевой БД - возможно она уже существует
-            try:
-                test_connection = self._get_connection()
-                test_connection.close()
-                logger.info(f"✓ База данных {self.database} доступна (возможно уже существовала)")
-            except PsycopgError:
-                raise e
-        finally:
-            if "cursor" in locals():
-                cursor.close()
-            connection.close()
 
     def _ensure_companies_table_exists(self):
         """Создает таблицу companies если она не существует"""

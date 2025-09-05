@@ -9,20 +9,20 @@ logger = logging.getLogger(__name__)
 
 
 class FileOperations:
-    """Класс для файловых операций"""
-
-    def __init__(self):
-        """Инициализация файловых операций"""
-        pass
-
-    # Неиспользуемые методы file_exists, create_directory, delete_file, copy_file удалены
-
     """
     Обработчик JSON-файлов с улучшенной обработкой ошибок
 
     Предоставляет методы для безопасного чтения и записи JSON-файлов
     с кэшированием, атомарными операциями и обработкой ошибок.
     """
+
+    def __init__(self):
+        """
+        Инициализация обработчика файловых операций
+
+        Создает экземпляр для работы с JSON-файлами.
+        """
+        pass
 
     @simple_cache(ttl=60)
     def read_json(self, file_path: Path) -> List[Dict[str, Any]]:

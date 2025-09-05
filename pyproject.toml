@@ -15,7 +15,9 @@ python = "^3.11"
 requests = "^2.32.4"
 tqdm = "^4.67.1"
 stubs = "^1.0.0"
-psycopg2-binary = "^2.9.10"
+pydocstyle = "^6.3.0"
+autopep8 = "^2.3.2"
+psycopg2 = "^2.9.10"
 
 [tool.poetry.group.lint.dependencies]
 flake8 = "^7.3.0"
