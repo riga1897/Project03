@@ -223,6 +223,7 @@ class Vacancy(BaseModel):
     
     # Метаинформация
     source: Optional[str] = Field(None, description="Источник вакансии")
+    company_id: Optional[int] = Field(None, description="ID компании в БД (для связи с таблицей companies)")
     
     @field_validator('id', mode='before')
     @classmethod
@@ -246,6 +247,32 @@ class Vacancy(BaseModel):
         if not (v.startswith('http://') or v.startswith('https://')):
             return f"https://{v}"
         return v
+    
+    @field_validator('area', mode='before')
+    @classmethod
+    def validate_area(cls, v):
+        """Валидация и нормализация поля area из API ответов"""
+        if v is None:
+            return None
+        
+        # Если пришел объект из API (например, {'id': '1', 'name': 'Москва'})
+        if isinstance(v, dict):
+            # Приоритет: name > title > id
+            if 'name' in v:
+                return str(v['name']).strip()
+            elif 'title' in v:
+                return str(v['title']).strip()
+            elif 'id' in v:
+                return str(v['id']).strip()
+            else:
+                return str(v).strip() if str(v).strip() != "{}" else None
+        
+        # Если уже строка
+        if isinstance(v, str):
+            return v.strip() if v.strip() else None
+            
+        # Для остальных типов
+        return str(v).strip() if str(v).strip() else None
     
     @field_validator('published_at', mode='before')
     @classmethod
