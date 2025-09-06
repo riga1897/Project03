@@ -30,9 +30,9 @@ class ConcreteDataFilter(AbstractDataFilter if ABSTRACT_FILTER_AVAILABLE else ob
             salary = item.get("salary")
             if salary:
                 amount = salary.get("from") or salary.get("to") or 0
-                if min_salary and amount < min_salary:
+                if min_salary is not None and amount < min_salary:
                     continue
-                if max_salary and amount > max_salary:
+                if max_salary is not None and amount > max_salary:
                     continue
             filtered.append(item)
         return filtered
