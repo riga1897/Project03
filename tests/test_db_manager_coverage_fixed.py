@@ -65,7 +65,7 @@ class TestDBManagerCoverageFixed:
             mock.employer.name = "Test Company"
             return mock
         
-        employer = Employer(name="Test Company", employer_id="comp123")
+        employer = Employer(name="Test Company")
         return Vacancy(
             vacancy_id="test123",
             title="Python Developer",
