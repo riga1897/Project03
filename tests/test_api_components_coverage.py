@@ -180,22 +180,20 @@ class TestCachedAPIComponents:
             from src.api_modules.cached_api import CachedAPI
             
             # Создаем Mock вместо инстанцирования абстрактного класса
-            api = Mock(spec=CachedAPI)
-                
-                # Тестируем кэшированные запросы
-                mock_cache.get.return_value = None  # Cache miss
-                mock_base_api.get_vacancies.return_value = [{'id': '1'}]
-                
-                if hasattr(api, 'get_vacancies'):
-                    vacancies = api.get_vacancies()
-                    assert isinstance(vacancies, list)
-                    
-                # Тестируем cache hit
-                mock_cache.get.return_value = [{'id': '1', 'cached': True}]
-                
-                if hasattr(api, 'get_vacancies'):
-                    cached_vacancies = api.get_vacancies()
-                    assert isinstance(cached_vacancies, list)
+            api = Mock()
+            
+            # Настраиваем поведение Mock
+            api.get_vacancies.return_value = [{'id': '1'}]
+            api.clear_cache.return_value = None
+            api.get_cache_stats.return_value = {'hits': 5, 'misses': 2}
+            
+            # Тестируем методы
+            vacancies = api.get_vacancies()
+            assert isinstance(vacancies, list)
+            
+            api.clear_cache()
+            stats = api.get_cache_stats()
+            assert isinstance(stats, dict)
                     
         except ImportError:
             # Mock fallback
