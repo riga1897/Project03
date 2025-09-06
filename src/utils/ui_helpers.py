@@ -214,9 +214,7 @@ def _build_searchable_text(vacancy: Vacancy) -> str:
     if vacancy.responsibilities:
         searchable_text.append(str(vacancy.responsibilities))
 
-    # Проверяем детальное описание
-    if vacancy.detailed_description:
-        searchable_text.append(str(vacancy.detailed_description))
+    # Удалена проверка detailed_description - поле не существует в новой модели
 
     # Проверяем тип занятости - безопасно преобразуем в строку
     if vacancy.employment:
@@ -225,8 +223,8 @@ def _build_searchable_text(vacancy: Vacancy) -> str:
         elif hasattr(vacancy.employment, "name"):
             searchable_text.append(str(vacancy.employment.name))
 
-    # Проверяем навыки
-    if vacancy.skills:
+    # Проверяем навыки (если поле существует)
+    if hasattr(vacancy, 'skills') and vacancy.skills:
         for skill in vacancy.skills:
             if isinstance(skill, dict) and "name" in skill:
                 searchable_text.append(str(skill["name"]))

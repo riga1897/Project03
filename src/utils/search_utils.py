@@ -190,12 +190,11 @@ def filter_vacancies_by_keyword(vacancies: List[Vacancy], keyword: str) -> List[
         if vacancy.description and keyword_lower in vacancy.description.lower():
             relevance_score += 3
 
-        # Проверяем в детальном описании (для SuperJob часто основное описание)
-        if vacancy.detailed_description and keyword_lower in vacancy.detailed_description.lower():
-            relevance_score += 4  # Повышаем приоритет для detailed_description
+        # Дополнительная проверка в описании (используем основное поле description)
+        # Удалена проверка detailed_description - поле не существует в новой модели
 
-        # Проверяем в навыках
-        if vacancy.skills:
+        # Проверяем в навыках (если поле существует)
+        if hasattr(vacancy, 'skills') and vacancy.skills:
             for skill in vacancy.skills:
                 if isinstance(skill, dict) and "name" in skill:
                     if keyword_lower in skill["name"].lower():
@@ -205,25 +204,38 @@ def filter_vacancies_by_keyword(vacancies: List[Vacancy], keyword: str) -> List[
 
         # Дополнительные проверки для улучшения поиска.
         # Проверяем в информации о работодателе.
-        if vacancy.employer and isinstance(vacancy.employer, dict):
-            employer_name = vacancy.employer.get("name", "")
-            if employer_name and keyword_lower in employer_name.lower():
-                relevance_score += 4
+        if vacancy.employer:
+            if isinstance(vacancy.employer, dict):
+                employer_name = vacancy.employer.get("name", "")
+                if employer_name and keyword_lower in employer_name.lower():
+                    relevance_score += 4
+            elif hasattr(vacancy.employer, "name"):
+                if keyword_lower in vacancy.employer.name.lower():
+                    relevance_score += 4
 
-        # Проверяем в типе занятости
-        if vacancy.employment and keyword_lower in vacancy.employment.lower():
-            relevance_score += 3
+        # Проверяем в типе занятости (объект Pydantic)
+        if vacancy.employment:
+            if hasattr(vacancy.employment, "name") and keyword_lower in vacancy.employment.name.lower():
+                relevance_score += 3
+            elif isinstance(vacancy.employment, str) and keyword_lower in vacancy.employment.lower():
+                relevance_score += 3
 
-        # Проверяем в графике работы
-        if vacancy.schedule and keyword_lower in vacancy.schedule.lower():
-            relevance_score += 3
+        # Проверяем в графике работы (объект Pydantic)
+        if vacancy.schedule:
+            if hasattr(vacancy.schedule, "name") and keyword_lower in vacancy.schedule.name.lower():
+                relevance_score += 3
+            elif isinstance(vacancy.schedule, str) and keyword_lower in vacancy.schedule.lower():
+                relevance_score += 3
 
-        # Проверяем в опыте работы
-        if vacancy.experience and keyword_lower in vacancy.experience.lower():
-            relevance_score += 3
+        # Проверяем в опыте работы (объект Pydantic)
+        if vacancy.experience:
+            if hasattr(vacancy.experience, "name") and keyword_lower in vacancy.experience.name.lower():
+                relevance_score += 3
+            elif isinstance(vacancy.experience, str) and keyword_lower in vacancy.experience.lower():
+                relevance_score += 3
 
-        # Проверяем в бонусах/льготах
-        if vacancy.benefits and keyword_lower in vacancy.benefits.lower():
+        # Проверяем в бонусах/льготах (если поле существует)
+        if hasattr(vacancy, 'benefits') and vacancy.benefits and keyword_lower in vacancy.benefits.lower():
             relevance_score += 2
 
         if relevance_score > 0:
@@ -266,16 +278,14 @@ def vacancy_contains_keyword(vacancy: Vacancy, keyword: str) -> bool:
     if vacancy.description and keyword_lower in vacancy.description.lower():
         return True
 
-    # Проверяем в детальном описании (важно для SuperJob)
-    if vacancy.detailed_description and keyword_lower in vacancy.detailed_description.lower():
-        return True
+    # Удалена проверка detailed_description - поле не существует в новой модели
 
     # Дополнительная проверка для SuperJob - проверяем все текстовые поля
     if hasattr(vacancy, "profession") and vacancy.profession and keyword_lower in vacancy.profession.lower():
         return True
 
-    # Проверяем в навыках
-    if vacancy.skills:
+    # Проверяем в навыках (если поле существует)
+    if hasattr(vacancy, 'skills') and vacancy.skills:
         for skill in vacancy.skills:
             if isinstance(skill, dict) and "name" in skill:
                 if keyword_lower in skill["name"].lower():
