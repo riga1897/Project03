@@ -40,7 +40,8 @@ class TestVacancyDisplayHandler:
 
     def test_vacancy_display_handler_init(self):
         """Тест инициализации обработчика отображения вакансий"""
-        handler = VacancyDisplayHandler()
+        mock_storage = Mock()
+        handler = VacancyDisplayHandler(mock_storage)  # Добавляем требуемый параметр
         assert handler is not None
 
     @patch('builtins.print')

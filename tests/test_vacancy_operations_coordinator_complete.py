@@ -47,7 +47,9 @@ class TestVacancyOperationsCoordinatorComplete:
 
     def test_coordinator_init(self):
         """Тест инициализации координатора операций с вакансиями"""
-        coordinator = VacancyOperationsCoordinator()
+        mock_unified_api = Mock()
+        mock_storage = Mock()
+        coordinator = VacancyOperationsCoordinator(mock_unified_api, mock_storage)  # Добавляем параметры
         assert coordinator is not None
 
     @patch('src.api_modules.unified_api.UnifiedAPI')
