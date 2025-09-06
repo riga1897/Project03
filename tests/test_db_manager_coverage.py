@@ -59,12 +59,10 @@ class TestDBManagerCoverage:
             
         mock_conn, mock_cursor = mock_connection
         
-        # Тест подключения
+        # Тест получения подключения (реальный метод)
         with patch('psycopg2.connect', return_value=mock_conn):
-            db_manager.connect()
-            
-        # Тест отключения
-        db_manager.disconnect()
+            connection = db_manager._get_connection()
+            assert connection is not None
 
     def test_create_database_schema(self, db_manager, mock_connection):
         """Тест создания схемы базы данных"""
