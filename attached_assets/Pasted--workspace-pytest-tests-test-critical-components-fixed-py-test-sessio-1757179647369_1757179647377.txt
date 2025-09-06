@@ -1,0 +1,112 @@
+~/workspace$ pytest tests/test_critical_components_fixed.py
+=========================== test session starts ============================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 22 items                                                         
+
+tests/test_critical_components_fixed.py ....FF................       [100%]
+
+================================= FAILURES =================================
+____ TestPostgresSaverFixed.test_save_vacancies_with_real_object_fixed _____
+
+self = <tests.test_critical_components_fixed.TestPostgresSaverFixed object at 0x7f561e7c94d0>
+mock_connect = <MagicMock name='connect' id='140007856078160'>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7f561e7f9d10>
+mock_real_vacancy = <src.vacancies.models.Vacancy object at 0x7f562092aa90>
+mock_postgres_connection = (<MagicMock name='connect()' id='140007856030864'>, <MagicMock id='140007856030480'>)
+
+    @patch('psycopg2.connect')
+    def test_save_vacancies_with_real_object_fixed(self, mock_connect, postgres_saver, mock_real_vacancy, mock_postgres_connection):
+        """Исправленный тест сохранения реального объекта вакансии"""
+        if not POSTGRES_SAVER_AVAILABLE:
+            return
+    
+        mock_conn, mock_cursor = mock_postgres_connection
+        mock_connect.return_value = mock_conn
+    
+        # Мокаем execute_values из правильного модуля
+>       with patch('src.storage.postgres_saver.execute_values') as mock_execute_values, \
+             patch.object(postgres_saver, '_get_connection', return_value=mock_conn):
+
+tests/test_critical_components_fixed.py:229: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f561e86fa10>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.storage.postgres_saver' from '/home/runner/workspace/tests/../src/storage/postgres_saver.py'> does not have the attribute 'execute_values'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+__________ TestPostgresSaverFixed.test_delete_vacancy_by_id_fixed __________
+
+self = <tests.test_critical_components_fixed.TestPostgresSaverFixed object at 0x7f561e7c9b50>
+mock_connect = <MagicMock name='connect' id='140007854593040'>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7f561e82e750>
+mock_postgres_connection = (<MagicMock name='connect()' id='140007854483856'>, <MagicMock id='140007854488912'>)
+
+    @patch('psycopg2.connect')
+    def test_delete_vacancy_by_id_fixed(self, mock_connect, postgres_saver, mock_postgres_connection):
+        """Исправленный тест удаления вакансии по ID"""
+        if not POSTGRES_SAVER_AVAILABLE:
+            return
+    
+        mock_conn, mock_cursor = mock_postgres_connection
+        mock_connect.return_value = mock_conn
+    
+        # Устанавливаем rowcount как целое число, а не Mock
+        mock_cursor.rowcount = 1
+    
+        with patch.object(postgres_saver, '_get_connection', return_value=mock_conn):
+            if hasattr(postgres_saver, 'delete_vacancy_by_id'):
+>               result = postgres_saver.delete_vacancy_by_id('test123')
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_critical_components_fixed.py:250: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7f561e82e750>
+vacancy_id = 'test123'
+
+    def delete_vacancy_by_id(self, vacancy_id: str) -> bool:
+        """Удаляет вакансию по ID"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+            cursor.execute("DELETE FROM vacancies WHERE vacancy_id = %s", (vacancy_id,))
+    
+>           if cursor.rowcount > 0:
+               ^^^^^^^^^^^^^^^^^^^
+E           TypeError: '>' not supported between instances of 'MagicMock' and 'int'
+
+src/storage/postgres_saver.py:1001: TypeError
+========================= short test summary info ==========================
+FAILED tests/test_critical_components_fixed.py::TestPostgresSaverFixed::test_save_vacancies_with_real_object_fixed - AttributeError: <module 'src.storage.postgres_saver' from '/home/runner...
+FAILED tests/test_critical_components_fixed.py::TestPostgresSaverFixed::test_delete_vacancy_by_id_fixed - TypeError: '>' not supported between instances of 'MagicMock' and 'int'
+======================= 2 failed, 20 passed in 0.39s =======================
+~/workspace$ 
