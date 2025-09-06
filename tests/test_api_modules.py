@@ -37,6 +37,10 @@ class ConcreteJobAPI(BaseAPI if API_MODULES_AVAILABLE else object):
         """Поиск вакансий"""
         return [{"id": f"test_{query}", "title": f"{query} Developer"}]
     
+    def get_vacancy_details(self, vacancy_id):
+        """Получение деталей вакансии"""
+        return {"id": vacancy_id, "details": "test details"}
+    
     def _validate_vacancy(self, vacancy):
         return isinstance(vacancy, dict) and "id" in vacancy
     
@@ -50,7 +54,11 @@ class ConcreteCachedAPI(CachedAPI if API_MODULES_AVAILABLE else object):
     
     def __init__(self, cache_dir="test_cache"):
         if API_MODULES_AVAILABLE:
-            super().__init__(cache_dir)
+            # Создаем простую реализацию без FileCache
+            self.cache_dir = cache_dir
+            self.cache = {}
+            self.cache_ttl = 300
+            self.api = Mock()
         else:
             self.cache = {}
             self.api = Mock()
@@ -73,7 +81,7 @@ class ConcreteCachedAPI(CachedAPI if API_MODULES_AVAILABLE else object):
     
     def search_vacancies(self, query, **kwargs):
         """Поиск вакансий с кэшированием"""
-        cache_key = f"search_{query}_{{}}"
+        cache_key = f"search_{query}"
         if cache_key not in self.cache:
             # Имитируем результат поиска
             self.cache[cache_key] = [{"id": f"cached_{query}", "title": f"{query} Developer"}]

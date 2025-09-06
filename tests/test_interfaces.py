@@ -1,4 +1,3 @@
-
 """
 Тесты для интерфейсов приложения
 """
@@ -33,14 +32,19 @@ class TestMainApplicationInterface:
         """Тест создания интерфейса"""
         if not INTERFACES_AVAILABLE:
             pytest.skip("Interfaces not available")
-        
-        try:
-            interface = MainApplicationInterface(**mock_dependencies)
-            assert interface is not None
-        except TypeError:
-            # Если требуются другие аргументы
-            interface = MainApplicationInterface()
-            assert interface is not None
+
+        # Создаем конкретную реализацию абстрактного класса
+        class ConcreteInterface(MainApplicationInterface):
+            def run_application(self):
+                return "Application running"
+
+        # Создаем с правильными аргументами
+        interface = ConcreteInterface(
+            provider=mock_dependencies['api'],
+            processor=mock_dependencies['storage'], 
+            storage=mock_dependencies['ui']
+        )
+        assert interface is not None
 
     @patch('builtins.input')
     @patch('builtins.print')
@@ -48,15 +52,15 @@ class TestMainApplicationInterface:
         """Тест что методы интерфейса существуют"""
         if not INTERFACES_AVAILABLE:
             pytest.skip("Interfaces not available")
-        
+
         try:
             interface = MainApplicationInterface()
         except TypeError:
             pytest.skip("Cannot instantiate interface")
-        
+
         # Проверяем наличие основных методов
         expected_methods = ['run', 'start', 'main', 'execute']
-        
+
         for method_name in expected_methods:
             if hasattr(interface, method_name):
                 method = getattr(interface, method_name)
@@ -72,25 +76,25 @@ class TestMainApplicationInterface:
         """Тест выполнения интерфейса"""
         if not INTERFACES_AVAILABLE:
             pytest.skip("Interfaces not available")
-        
+
         try:
             interface = MainApplicationInterface()
         except TypeError:
             pytest.skip("Cannot instantiate interface")
-        
+
         # Пытаемся выполнить интерфейс
         if hasattr(interface, 'run'):
             try:
                 interface.run()
             except Exception:
                 pass  # Ожидаем что может быть исключение
-        
+
         if hasattr(interface, 'start'):
             try:
                 interface.start()
             except Exception:
                 pass
-        
+
         if hasattr(interface, 'main'):
             try:
                 interface.main()

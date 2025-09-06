@@ -30,7 +30,11 @@ class TestMainApplicationInterface:
             def run_application(self):
                 pass
 
-        interface = ConcreteMainApplication()
+        interface = ConcreteMainApplication(
+            provider=Mock(),
+            processor=Mock(), 
+            storage=Mock()
+        )
         assert interface is not None
 
     def test_main_application_interface_abstract_methods(self):
@@ -50,6 +54,10 @@ class TestMainApplicationInterface:
             def run_application(self):
                 return "Application started"
 
-        app = TestApplication()
+        app = TestApplication(
+            provider=Mock(),
+            processor=Mock(),
+            storage=Mock()
+        )
         result = app.run_application()
         assert result == "Application started"
