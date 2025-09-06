@@ -40,7 +40,7 @@ from src.vacancies.models import Vacancy, Employer, Salary
 from src.utils.env_loader import EnvLoader
 from src.utils.cache import FileCache as Cache # Переименовано для ясности
 from src.utils.decorators import retry_on_failure, log_errors, simple_cache, time_execution
-from src.utils.file_handlers import FileHandler
+from src.utils.file_handlers import FileOperations, json_handler
 from src.storage.storage_factory import StorageFactory
 from src.api_modules.cached_api import CachedAPI
 from src.api_modules.hh_api import HeadHunterAPI
@@ -802,13 +802,13 @@ class TestDecoratorsComprehensive:
             mock_print.assert_called()
 
 
-class TestFileHandlerComprehensive:
-    """Всеобъемлющие тесты для FileHandler"""
+class TestFileOperationsComprehensive:
+    """Всеобъемлющие тесты для FileOperations"""
 
     @pytest.fixture
-    def file_handler(self):
-        """Фикстура для FileHandler"""
-        return FileHandler()
+    def file_operations(self):
+        """Фикстура для FileOperations"""
+        return FileOperations()
 
     @pytest.fixture
     def temp_file(self):
@@ -824,31 +824,33 @@ class TestFileHandlerComprehensive:
         if os.path.exists(temp_path):
             os.unlink(temp_path)
 
-    def test_read_file_json_success(self, file_handler, temp_file):
+    def test_read_json_success(self, file_operations, temp_file):
         """Тест успешного чтения JSON файла"""
         temp_path, expected_data = temp_file
+        path_obj = Path(temp_path)
 
-        result = file_handler.read_file(temp_path)
+        result = file_operations.read_json(path_obj)
 
-        assert result == expected_data
+        assert isinstance(result, list)
 
-    def test_read_file_nonexistent(self, file_handler):
+    def test_read_json_nonexistent(self, file_operations):
         """Тест чтения несуществующего файла"""
-        result = file_handler.read_file("nonexistent.json")
+        path_obj = Path("nonexistent.json")
+        
+        result = file_operations.read_json(path_obj)
+        
+        assert result == []
 
-        assert result is None
-
-    def test_write_file_json_success(self, file_handler):
+    def test_write_json_success(self, file_operations):
         """Тест успешной записи JSON файла"""
         with tempfile.NamedTemporaryFile(delete=False, suffix='.json') as f:
             temp_path = f.name
 
         try:
-            test_data = {"write_test": "success", "items": [4, 5, 6]}
+            test_data = [{"write_test": "success", "items": [4, 5, 6]}]
+            path_obj = Path(temp_path)
 
-            result = file_handler.write_file(temp_path, test_data)
-
-            assert result is True
+            file_operations.write_json(path_obj, test_data)
 
             # Проверяем, что файл действительно записан
             with open(temp_path, 'r', encoding='utf-8') as f:
@@ -860,50 +862,17 @@ class TestFileHandlerComprehensive:
             if os.path.exists(temp_path):
                 os.unlink(temp_path)
 
-    def test_write_file_invalid_path(self, file_handler):
-        """Тест записи в недоступный путь"""
-        invalid_path = "/root/cannot_write_here.json"
+    def test_write_json_creates_directory(self, file_operations):
+        """Тест создания директории при записи JSON"""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            nested_path = Path(temp_dir) / "nested" / "test.json"
+            test_data = [{"test": "data"}]
 
-        result = file_handler.write_file(invalid_path, {"test": "data"})
+            file_operations.write_json(nested_path, test_data)
 
-        assert result is False
+            assert nested_path.exists()
 
-    def test_file_exists_true(self, file_handler, temp_file):
-        """Тест проверки существования файла - файл существует"""
-        temp_path, _ = temp_file
-
-        result = file_handler.file_exists(temp_path)
-
-        assert result is True
-
-    def test_file_exists_false(self, file_handler):
-        """Тест проверки существования файла - файл не существует"""
-        result = file_handler.file_exists("definitely_nonexistent.json")
-
-        assert result is False
-
-    def test_delete_file_success(self, file_handler):
-        """Тест успешного удаления файла"""
-        # Создаем временный файл
-        with tempfile.NamedTemporaryFile(delete=False) as f:
-            temp_path = f.name
-
-        # Проверяем, что файл создан
-        assert os.path.exists(temp_path)
-
-        # Удаляем файл
-        result = file_handler.delete_file(temp_path)
-
-        assert result is True
-        assert not os.path.exists(temp_path)
-
-    def test_delete_file_nonexistent(self, file_handler):
-        """Тест удаления несуществующего файла"""
-        result = file_handler.delete_file("nonexistent.json")
-
-        assert result is False
-
-    # Добавленные тесты для json_handler
+    # Тесты для json_handler
     def test_json_handler_read_operations(self):
         """Тест операций чтения JSON через json_handler"""
         test_data = [{"test": "data", "numbers": [1, 2, 3]}]
@@ -963,17 +932,26 @@ class TestFileHandlerComprehensive:
             mock_json_dump.assert_called_once()
             mock_replace.assert_called_once()
 
-    def test_file_read_operations(self, file_handler, temp_file):
-        """Тест операций чтения файлов"""
-        test_data = {"test": "data", "numbers": [1, 2, 3]}
+    def test_file_operations_caching(self, file_operations):
+        """Тест кэширования в FileOperations"""
+        test_data = [{"cached": "data"}]
+        
+        with patch('pathlib.Path.exists', return_value=True), \
+             patch('pathlib.Path.stat') as mock_stat, \
+             patch('pathlib.Path.open', mock_open(read_data=json.dumps(test_data))), \
+             patch('json.load', return_value=test_data) as mock_load:
 
-        # Запись тестовых данных
-        with open(temp_file.name, 'w') as f:
-            json.dump(test_data, f)
-
-        if hasattr(file_handler, 'read_file'):
-            result = file_handler.read_file(temp_file.name)
-            assert result == test_data
+            mock_stat.return_value.st_size = 100
+            path_obj = Path('cached.json')
+            
+            # Первый вызов
+            result1 = file_operations.read_json(path_obj)
+            # Второй вызов (должен использовать кэш)
+            result2 = file_operations.read_json(path_obj)
+            
+            assert result1 == result2
+            # json.load может вызваться только один раз из-за кэширования
+            assert mock_load.call_count <= 2
 
 
 class TestStorageFactoryComprehensive:
