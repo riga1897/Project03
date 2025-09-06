@@ -445,7 +445,10 @@ class TestStorageModules:
         with patch('psycopg2.connect') as mock_connect:
             mock_conn = Mock()
             mock_cursor = Mock()
-            mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+            # Правильное мокирование контекстного менеджера
+            mock_conn.cursor.return_value = Mock()
+            mock_conn.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+            mock_conn.cursor.return_value.__exit__ = Mock(return_value=None)
             mock_connect.return_value = mock_conn
 
             try:
@@ -667,7 +670,10 @@ class TestIntegrationCoverage:
 
             mock_conn = Mock()
             mock_cursor = Mock()
-            mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+            # Правильное мокирование контекстного менеджера для интеграционного теста
+            mock_conn.cursor.return_value = Mock()
+            mock_conn.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+            mock_conn.cursor.return_value.__exit__ = Mock(return_value=None)
             mock_connect.return_value = mock_conn
 
             # Тестируем каждый этап
