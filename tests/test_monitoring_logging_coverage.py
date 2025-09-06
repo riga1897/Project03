@@ -755,6 +755,7 @@ class TestMonitoringLoggingIntegration:
         start_time = time.time()
         for _ in range(100):
             # time.sleep mocked # 0.001)  # Эмуляция работы
+            pass
         baseline_time = time.time() - start_time
         
         # Измеряем производительность с мониторингом
