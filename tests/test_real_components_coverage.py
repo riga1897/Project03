@@ -231,7 +231,8 @@ class TestFileCacheRealMethods:
         """Фикстура для FileCache"""
         if not CACHE_AVAILABLE:
             return Mock()
-        return FileCache(cache_dir=temp_cache_dir, ttl_seconds=3600)
+        # FileCache не принимает ttl_seconds в конструкторе
+        return FileCache(cache_dir=temp_cache_dir)
 
     def test_cache_key_generation(self, cache):
         """Тест генерации ключей кэша"""
@@ -269,8 +270,8 @@ class TestFileCacheRealMethods:
         if not CACHE_AVAILABLE:
             return
 
-        # Создаем кэш с очень коротким TTL
-        cache = FileCache(cache_dir=temp_cache_dir, ttl_seconds=0.1)
+        # Создаем кэш для тестирования истечения срока действия
+        cache = FileCache(cache_dir=temp_cache_dir)
         
         source = "test"
         params = {"query": "test"}
