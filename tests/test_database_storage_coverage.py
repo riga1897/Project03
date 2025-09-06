@@ -312,12 +312,12 @@ class TestStorageServiceComponents:
             
             # Создаем Mock сохранителя вместо импорта
             saver = Mock()
+            
+            if hasattr(saver, 'save_vacancies'):
+                mock_db_manager.add_vacancy_batch_optimized.return_value = None
+                saver.save_vacancies([])
                 
-                if hasattr(saver, 'save_vacancies'):
-                    mock_db_manager.add_vacancy_batch_optimized.return_value = None
-                    saver.save_vacancies([])
-                    
-                if hasattr(saver, 'get_saved_count'):
+            if hasattr(saver, 'get_saved_count'):
                     mock_db_manager.get_database_stats.return_value = {'total_vacancies': 100}
                     count = saver.get_saved_count()
                     assert isinstance(count, (int, type(None)))
@@ -342,12 +342,12 @@ class TestStorageServiceComponents:
             
             # Создаем Mock сервиса вместо инстанцирования абстрактного класса
             service = Mock()
+            
+            if hasattr(service, 'store_vacancies'):
+                mock_db_manager.add_vacancy_batch_optimized.return_value = None
+                service.store_vacancies([])
                 
-                if hasattr(service, 'store_vacancies'):
-                    mock_db_manager.add_vacancy_batch_optimized.return_value = None
-                    service.store_vacancies([])
-                    
-                if hasattr(service, 'retrieve_vacancies'):
+            if hasattr(service, 'retrieve_vacancies'):
                     mock_db_manager.get_all_vacancies.return_value = []
                     vacancies = service.retrieve_vacancies()
                     assert isinstance(vacancies, list)
