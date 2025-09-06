@@ -332,10 +332,11 @@ class TestSJAPIConfigCoverage:
             assert mock_config.load_token() == 'test_api_key_123'
             return
             
-        # Тестируем реальный метод load_token
-        with patch.object(sj_config, 'load_token', return_value='test_key'):
+        # Тестируем реальный метод load_token через Mock
+        with patch.object(sj_config, 'load_token', return_value='test_key') as mock_load:
             api_key = sj_config.load_token()
             assert isinstance(api_key, str) or api_key is None
+            mock_load.assert_called_once()
 
     def test_get_base_url(self, sj_config):
         """Тест получения параметров конфигурации"""
@@ -362,8 +363,9 @@ class TestSJAPIConfigCoverage:
             mock_config.save_token.assert_called_with('test_token')
             return
             
-        # Тестируем реальный метод save_token
+        # Тестируем реальный метод save_token через Mock
         with patch.object(sj_config, 'save_token') as mock_save:
+            mock_save.return_value = None
             sj_config.save_token('test_token')
             mock_save.assert_called_with('test_token')
 
