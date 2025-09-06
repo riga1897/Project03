@@ -126,7 +126,7 @@ class TestStorageServicesConsolidated:
                             result.append(item)
                     return result
 
-            service = DeduplicationService()
+            service = DeduplicationService("by_id")
             test_data = [{'id': '1'}, {'id': '1'}, {'id': '2'}]
             result = service.remove_duplicates(test_data)
             assert len(result) == 2

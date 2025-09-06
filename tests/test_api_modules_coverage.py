@@ -54,15 +54,18 @@ class TestUnifiedAPICoverage:
             return
             
         # Настраиваем моки для возврата данных
-        unified_api.hh_api.get_vacancies.return_value = [
-            {'id': '1', 'title': 'Python Dev', 'source': 'hh'},
-            {'id': '2', 'title': 'Java Dev', 'source': 'hh'}
-        ]
-        unified_api.sj_api.get_vacancies.return_value = [
-            {'id': '3', 'title': 'JS Dev', 'source': 'sj'}
-        ]
-        
-        result = unified_api.get_vacancies_from_all_sources('developer')
+        with patch.object(unified_api.hh_api, 'get_vacancies') as mock_hh, \
+             patch.object(unified_api.sj_api, 'get_vacancies') as mock_sj:
+            
+            mock_hh.return_value = [
+                {'id': '1', 'title': 'Python Dev', 'source': 'hh'},
+                {'id': '2', 'title': 'Java Dev', 'source': 'hh'}
+            ]
+            mock_sj.return_value = [
+                {'id': '3', 'title': 'JS Dev', 'source': 'sj'}
+            ]
+            
+            result = unified_api.get_vacancies_from_all_sources('developer')
         assert isinstance(result, list)
 
     def test_search_with_filters(self, unified_api):
@@ -77,10 +80,13 @@ class TestUnifiedAPICoverage:
             'area': '1'  # Москва
         }
         
-        unified_api.hh_api.get_vacancies.return_value = []
-        unified_api.sj_api.get_vacancies.return_value = []
-        
-        result = unified_api.search_with_filters(search_params)
+        with patch.object(unified_api.hh_api, 'get_vacancies') as mock_hh, \
+             patch.object(unified_api.sj_api, 'get_vacancies') as mock_sj:
+            
+            mock_hh.return_value = []
+            mock_sj.return_value = []
+            
+            result = unified_api.search_with_filters(search_params)
         assert isinstance(result, list)
 
     def test_normalize_vacancy_data(self, unified_api):

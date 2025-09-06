@@ -158,7 +158,7 @@ class TestPostgresSaverRealInterface:
             return mock
 
         employer = Employer(name="Test Company", employer_id="comp123")
-        salary = Salary(salary_from=100000, salary_to=150000, currency="RUR")
+        salary = Salary({"from": 100000, ,"to": 150000, ,"currency": "RUR")
         
         return Vacancy(
             vacancy_id="test123",

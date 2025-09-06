@@ -61,7 +61,7 @@ class TestModelsFixed:
             salary = Salary(salary_data)
         except TypeError:
             try:
-                salary = Salary(salary_from=100000, salary_to=150000, currency='RUR')
+                salary = Salary({"from": 100000, ,"to": 150000, ,"currency": 'RUR')
             except TypeError:
                 # Создаем минимальный объект для тестирования
                 salary = Salary({})
