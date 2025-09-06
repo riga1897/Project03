@@ -58,7 +58,7 @@ class TestMainConsolidated:
             # Создаем заглушку для тестирования
             def main_function():
                 print("Welcome to Job Vacancy Search App")
-                choice = input("Enter your choice: ")
+                choice = "0"  # Мокируем ввод пользователя
                 return choice
             
             result = main_function()
@@ -90,7 +90,7 @@ class TestMainConsolidated:
         # Создаем простую логику меню
         def menu_logic():
             while True:
-                choice = input("Menu choice: ")
+                choice = mock_input()  # Используем мок вместо прямого вызова
                 if choice == '0':
                     print("Exiting...")
                     break
@@ -191,7 +191,7 @@ class TestMainConsolidated:
         mock_input.return_value = '0'  # Выход
         
         def shutdown_sequence():
-            choice = input("Enter choice (0 to exit): ")
+            choice = mock_input()  # Используем мок вместо прямого вызова
             if choice == '0':
                 print("Shutting down gracefully...")
                 # Имитируем очистку ресурсов
