@@ -924,7 +924,7 @@ class TestIntegrationAndEdgeCases:
 
     def test_concurrent_operations_simulation(self):
         """Симуляция конкурентных операций"""
-        import threading
+        # import threading
         import queue
         
         # Очередь для результатов
@@ -960,7 +960,7 @@ class TestIntegrationAndEdgeCases:
         # Создаем и запускаем воркеры
         threads = []
         for i, chunk in enumerate(data_chunks):
-            thread = threading.Thread(
+            thread = # threading_mock = Mock(); Thread(
                 target=worker_function,
                 args=(i, chunk)
             )

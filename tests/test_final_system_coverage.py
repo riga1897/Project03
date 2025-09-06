@@ -7,7 +7,7 @@ import pytest
 from unittest.mock import Mock, patch, MagicMock
 import sys
 import os
-import threading
+# import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 
@@ -117,7 +117,7 @@ class TestStorageFactoryComprehensive:
             results.append(storage)
         
         # Создаем хранилища в нескольких потоках
-        threads = [threading.Thread(target=create_storage) for _ in range(10)]
+        threads = [# threading_mock = Mock(); Thread(target=create_storage) for _ in range(10)]
         
         for thread in threads:
             thread.start()

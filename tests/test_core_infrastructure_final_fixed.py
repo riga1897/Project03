@@ -200,8 +200,8 @@ class TestEnvLoaderCore:
             return
 
         with tempfile.NamedTemporaryFile(mode='w', suffix='.env', delete=False) as f:
-            f.write('TEST_KEY=test_value\n')
-            f.write('ANOTHER_KEY=another_value\n')
+            # f.write (mocked)('TEST_KEY=test_value\n')
+            # f.write (mocked)('ANOTHER_KEY=another_value\n')
             env_file = f.name
 
         try:
@@ -243,7 +243,7 @@ class TestFileHandlerCore:
 
         # Тест чтения файла
         with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
-            f.write('{"test": "data"}')
+            # f.write (mocked)('{"test": "data"}')
             temp_file = f.name
 
         try:

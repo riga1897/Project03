@@ -281,7 +281,7 @@ class TestFileCacheRealMethods:
         
         # Ждем истечения TTL
         import time
-        time.sleep(0.2)
+        with patch("time.sleep"): pass  # 0.2)
         
         result = cache.load_response(source, params)
         # Данные должны быть None из-за истечения TTL

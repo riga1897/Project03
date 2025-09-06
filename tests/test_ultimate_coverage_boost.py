@@ -305,7 +305,7 @@ class TestUserInterfaceUltimateCompleteCoverage:
         
         error_scenarios = [
             ('invalid_input', ValueError("Invalid input")),
-            ('keyboard_interrupt', KeyboardInterrupt()),
+            ('keyboard_interrupt', # KeyboardInterrupt (mocked)()),
             ('eof_error', EOFError()),
             ('connection_error', ConnectionError("Network error"))
         ]

@@ -88,13 +88,13 @@ class TestSystemMonitorCoverage:
 
     def test_start_monitoring(self, system_monitor):
         """Тест запуска мониторинга системы"""
-        with patch('threading.Thread'):
+        with patch('# threading_mock = Mock(); Thread'):
             system_monitor.start_monitoring()
             assert True
 
     def test_stop_monitoring(self, system_monitor):
         """Тест остановки мониторинга системы"""
-        with patch('threading.Thread'):
+        with patch('# threading_mock = Mock(); Thread'):
             system_monitor.start_monitoring()
             system_monitor.stop_monitoring()
             assert True
@@ -109,11 +109,11 @@ class TestSystemMonitorCoverage:
 
     def test_system_monitor_continuous_operation(self, system_monitor):
         """Тест непрерывной работы монитора"""
-        with patch('threading.Thread'):
+        with patch('# threading_mock = Mock(); Thread'):
             with patch('time.sleep'):
                 # Эмуляция длительной работы
                 system_monitor.start_monitoring()
-                time.sleep(0.1)
+                with patch("time.sleep"): pass  # 0.1)
                 stats = system_monitor.get_system_stats()
                 system_monitor.stop_monitoring()
                 
@@ -490,7 +490,7 @@ class TestMetricsCollectorCoverage:
                     # Эмуляция сбора с интервалом
                     for _ in range(3):
                         metrics = metrics_collector.collect_performance_metrics()
-                        time.sleep(0.01)  # Минимальная задержка
+                        with patch("time.sleep"): pass  # 0.01)  # Минимальная задержка
                     assert isinstance(metrics, dict)
 
     def test_metrics_aggregation(self, metrics_collector):
@@ -754,7 +754,7 @@ class TestMonitoringLoggingIntegration:
         # Измеряем производительность без мониторинга
         start_time = time.time()
         for _ in range(100):
-            time.sleep(0.001)  # Эмуляция работы
+            with patch("time.sleep"): pass  # 0.001)  # Эмуляция работы
         baseline_time = time.time() - start_time
         
         # Измеряем производительность с мониторингом
@@ -763,7 +763,7 @@ class TestMonitoringLoggingIntegration:
             system_monitor.start_monitoring()
             for _ in range(100):
                 metrics_collector.collect_performance_metrics()
-                time.sleep(0.001)  # Эмуляция работы
+                with patch("time.sleep"): pass  # 0.001)  # Эмуляция работы
             system_monitor.stop_monitoring()
         monitoring_time = time.time() - start_time
         

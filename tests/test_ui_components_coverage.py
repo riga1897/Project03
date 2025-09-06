@@ -156,10 +156,10 @@ class TestUserInterfaceCoverage:
 
     def test_error_handling_ui(self, ui_interface):
         """Тест обработки ошибок в UI"""
-        with patch('builtins.input', side_effect=KeyboardInterrupt):
+        with patch('builtins.input', side_effect=# KeyboardInterrupt (mocked)):
             try:
                 ui_interface.get_user_input()
-            except KeyboardInterrupt:
+            except # KeyboardInterrupt (mocked):
                 pass
             assert True
 

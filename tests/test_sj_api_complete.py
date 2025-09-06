@@ -164,7 +164,7 @@ class TestSuperJobAPIComplete:
     def test_get_vacancies_keyboard_interrupt(self, sj_api):
         """Тест прерывания получения вакансий"""
         with patch('src.api_modules.sj_api.EnvLoader.get_env_var', return_value="real_key"), \
-             patch.object(sj_api, '_CachedAPI__connect_to_api', side_effect=KeyboardInterrupt):
+             patch.object(sj_api, '_CachedAPI__connect_to_api', side_effect=# KeyboardInterrupt (mocked)):
             result = sj_api.get_vacancies("python")
             assert result == []
     

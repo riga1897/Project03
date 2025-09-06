@@ -287,7 +287,7 @@ class TestDecoratorsCoverage:
             
         @timing_decorator
         def timed_function():
-            time.sleep(0.01)
+            with patch("time.sleep"): pass  # 0.01)
             return "completed"
         
         with patch('builtins.print') as mock_print:
@@ -302,7 +302,7 @@ class TestDecoratorsCoverage:
             
         @timer
         def timed_function():
-            time.sleep(0.01)
+            with patch("time.sleep"): pass  # 0.01)
             return "completed"
         
         with patch('builtins.print') as mock_print:

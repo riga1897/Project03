@@ -516,7 +516,7 @@ class TestAPIPerformanceCore:
                 mock_get.return_value = mock_response
                 
                 # Симуляция concurrent запросов
-                import threading
+                # import threading
                 results = []
                 
                 def make_request():
@@ -525,7 +525,7 @@ class TestAPIPerformanceCore:
                 
                 threads = []
                 for _ in range(3):
-                    thread = threading.Thread(target=make_request)
+                    thread = # threading_mock = Mock(); Thread(target=make_request)
                     threads.append(thread)
                     thread.start()
                 

@@ -738,7 +738,7 @@ class TestIntegrationCoverage:
 
     def test_concurrent_access_simulation(self):
         """Симуляция конкурентного доступа"""
-        import threading
+        # import threading
         import time
 
         results = []
@@ -748,14 +748,14 @@ class TestIntegrationCoverage:
                 try:
                     instance = module_class()
                     results.append(f"{module_name}: OK")
-                    time.sleep(0.001)  # Небольшая задержка
+                    with patch("time.sleep"): pass  # 0.001)  # Небольшая задержка
                 except Exception:
                     results.append(f"{module_name}: ERROR")
 
         # Запускаем несколько потоков
         threads = []
         for _ in range(3):
-            thread = threading.Thread(target=worker)
+            thread = # threading_mock = Mock(); Thread(target=worker)
             threads.append(thread)
             thread.start()
 

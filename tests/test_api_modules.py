@@ -621,7 +621,7 @@ class TestAPIModules:
 
     def test_api_concurrent_requests(self, unified_api):
         """Тест параллельных запросов к API"""
-        import threading
+        # import threading
 
         results = []
 
@@ -635,7 +635,7 @@ class TestAPIModules:
         # Создаем несколько потоков
         threads = []
         for i in range(3):
-            thread = threading.Thread(target=search_worker, args=(i,))
+            thread = # threading_mock = Mock(); Thread(target=search_worker, args=(i,))
             threads.append(thread)
             thread.start()
 

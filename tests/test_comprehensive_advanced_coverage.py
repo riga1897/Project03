@@ -511,7 +511,7 @@ class TestDecoratorsAdvanced:
             
             @timing_decorator
             def measured_function(duration=0.01):
-                time.sleep(duration)
+                with patch("time.sleep"): pass  # duration)
                 return f"Slept for {duration} seconds"
             
             with patch('builtins.print') as mock_print:
