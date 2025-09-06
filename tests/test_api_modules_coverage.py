@@ -86,7 +86,8 @@ class TestUnifiedAPICoverage:
             mock_hh.return_value = []
             mock_sj.return_value = []
             
-            result = unified_api.search_with_filters(search_params)
+            # Используем доступный метод get_vacancies_from_sources с параметрами как **kwargs
+            result = unified_api.get_vacancies_from_sources('python', **search_params)
         assert isinstance(result, list)
 
     def test_normalize_vacancy_data(self, unified_api):
@@ -158,17 +159,17 @@ class TestUnifiedAPICoverage:
         if not UNIFIED_API_AVAILABLE:
             return
             
-        # Симулируем ошибку в одном из API
-        unified_api.hh_api.get_vacancies.side_effect = Exception("HH API Error")
-        unified_api.sj_api.get_vacancies.return_value = [{'id': '1', 'title': 'Job'}]
-        
-        try:
-            result = unified_api.get_vacancies_from_all_sources('test')
-            # API должен продолжать работать с оставшимися источниками
-            assert isinstance(result, list) or result is None
-        except Exception:
-            # Или корректно обработать ошибку
-            pass
+        # Симулируем ошибку в одном из API через patch
+        with patch.object(unified_api.hh_api, 'get_vacancies', side_effect=Exception("HH API Error")), \
+             patch.object(unified_api.sj_api, 'get_vacancies', return_value=[{'id': '1', 'title': 'Job'}]):
+            
+            try:
+                result = unified_api.get_vacancies_from_sources('test')
+                # API должен продолжать работать с оставшимися источниками
+                assert isinstance(result, list) or result is None
+            except Exception:
+                # Или корректно обработать ошибку
+                pass
 
 
 class TestSJAPICoverage:

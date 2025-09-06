@@ -1,0 +1,83 @@
+~/workspace$ pytest tests/test_api_modules_coverage.py -v
+============================== test session starts ==============================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0 -- /nix/store/2lcqw1d28vklbk8ikiwad28iq2smwndv-python-wrapped-0.1.0/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 19 items                                                              
+
+tests/test_api_modules_coverage.py::TestUnifiedAPICoverage::test_unified_api_initialization PASSED [  5%]
+tests/test_api_modules_coverage.py::TestUnifiedAPICoverage::test_get_vacancies_from_all_sources PASSED [ 10%]
+tests/test_api_modules_coverage.py::TestUnifiedAPICoverage::test_search_with_filters FAILED [ 15%]
+tests/test_api_modules_coverage.py::TestUnifiedAPICoverage::test_normalize_vacancy_data PASSED [ 21%]
+tests/test_api_modules_coverage.py::TestUnifiedAPICoverage::test_merge_results_from_sources PASSED [ 26%]
+tests/test_api_modules_coverage.py::TestUnifiedAPICoverage::test_filter_by_target_companies PASSED [ 31%]
+tests/test_api_modules_coverage.py::TestUnifiedAPICoverage::test_error_handling_api_failures FAILED [ 36%]
+tests/test_api_modules_coverage.py::TestSJAPICoverage::test_sj_api_initialization PASSED [ 42%]
+tests/test_api_modules_coverage.py::TestSJAPICoverage::test_get_vacancies_with_pagination PASSED [ 47%]
+tests/test_api_modules_coverage.py::TestSJAPICoverage::test_search_with_salary_filter PASSED [ 52%]
+tests/test_api_modules_coverage.py::TestSJAPICoverage::test_get_vacancy_details PASSED [ 57%]
+tests/test_api_modules_coverage.py::TestSJAPICoverage::test_handle_api_rate_limits PASSED [ 63%]
+tests/test_api_modules_coverage.py::TestSJAPICoverage::test_authentication_with_api_key PASSED [ 68%]
+tests/test_api_modules_coverage.py::TestGetAPICoverage::test_get_api_initialization PASSED [ 73%]
+tests/test_api_modules_coverage.py::TestGetAPICoverage::test_make_request_with_retry PASSED [ 78%]
+tests/test_api_modules_coverage.py::TestGetAPICoverage::test_handle_different_response_formats PASSED [ 84%]
+tests/test_api_modules_coverage.py::TestGetAPICoverage::test_request_caching_mechanism PASSED [ 89%]
+tests/test_api_modules_coverage.py::TestGetAPICoverage::test_error_handling_and_logging PASSED [ 94%]
+tests/test_api_modules_coverage.py::TestGetAPICoverage::test_custom_headers_and_authentication PASSED [100%]
+
+=================================== FAILURES ====================================
+________________ TestUnifiedAPICoverage.test_search_with_filters ________________
+
+self = <tests.test_api_modules_coverage.TestUnifiedAPICoverage object at 0x7fbf3a900790>
+unified_api = <src.api_modules.unified_api.UnifiedAPI object at 0x7fbf3a902810>
+
+    def test_search_with_filters(self, unified_api):
+        """Тест поиска с фильтрами"""
+        if not UNIFIED_API_AVAILABLE:
+            return
+    
+        search_params = {
+            'text': 'python',
+            'salary': 100000,
+            'experience': 'between1And3',
+            'area': '1'  # Москва
+        }
+    
+        with patch.object(unified_api.hh_api, 'get_vacancies') as mock_hh, \
+             patch.object(unified_api.sj_api, 'get_vacancies') as mock_sj:
+    
+            mock_hh.return_value = []
+            mock_sj.return_value = []
+    
+>           result = unified_api.search_with_filters(search_params)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'UnifiedAPI' object has no attribute 'search_with_filters'
+
+tests/test_api_modules_coverage.py:89: AttributeError
+------------------------------ Captured log setup -------------------------------
+WARNING  src.api_modules.sj_api:sj_api.py:55 Используется тестовый API ключ SuperJob.                 Для полной функциональности добавьте реальный ключ                 в переменную окружения SUPERJOB_API_KEY
+____________ TestUnifiedAPICoverage.test_error_handling_api_failures ____________
+
+self = <tests.test_api_modules_coverage.TestUnifiedAPICoverage object at 0x7fbf3a902150>
+unified_api = <src.api_modules.unified_api.UnifiedAPI object at 0x7fbf3a90de90>
+
+    def test_error_handling_api_failures(self, unified_api):
+        """Тест обработки ошибок API"""
+        if not UNIFIED_API_AVAILABLE:
+            return
+    
+        # Симулируем ошибку в одном из API
+>       unified_api.hh_api.get_vacancies.side_effect = Exception("HH API Error")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'method' object has no attribute 'side_effect'
+
+tests/test_api_modules_coverage.py:162: AttributeError
+------------------------------ Captured log setup -------------------------------
+WARNING  src.api_modules.sj_api:sj_api.py:55 Используется тестовый API ключ SuperJob.                 Для полной функциональности добавьте реальный ключ                 в переменную окружения SUPERJOB_API_KEY
+============================ short test summary info ============================
+FAILED tests/test_api_modules_coverage.py::TestUnifiedAPICoverage::test_search_with_filters - AttributeError: 'UnifiedAPI' object has no attribute 'search_with_filters'
+FAILED tests/test_api_modules_coverage.py::TestUnifiedAPICoverage::test_error_handling_api_failures - AttributeError: 'method' object has no attribute 'side_effect'
+========================= 2 failed, 17 passed in 0.43s ==========================
+~/workspace$ 
