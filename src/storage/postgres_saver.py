@@ -517,7 +517,7 @@ class PostgresSaver(AbstractVacancyStorage):
             execute_values(
                 cursor,
                 """INSERT INTO temp_new_vacancies (
-                    vacancy_id, name, url, salary_from, salary_to, salary_currency,
+                    vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
                     employment, schedule, area, source, published_at, company_id, search_query
                 ) VALUES %s""",
@@ -530,11 +530,11 @@ class PostgresSaver(AbstractVacancyStorage):
             cursor.execute(
                 """
                 INSERT INTO vacancies (
-                    vacancy_id, name, url, salary_from, salary_to, salary_currency,
+                    vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
                     employment, schedule, area, source, published_at, company_id, search_query
                 )
-                SELECT t.vacancy_id, t.name, t.url, t.salary_from, t.salary_to, t.salary_currency,
+                SELECT t.vacancy_id, t.title, t.url, t.salary_from, t.salary_to, t.salary_currency,
                        t.description, t.requirements, t.responsibilities, t.experience,
                        t.employment, t.schedule, t.area, t.source, t.published_at, t.company_id, t.search_query
                 FROM temp_new_vacancies t
@@ -549,7 +549,7 @@ class PostgresSaver(AbstractVacancyStorage):
             cursor.execute(
                 """
                 UPDATE vacancies v SET
-                    name = t.name,
+                    title = t.title,
                     url = t.url,
                     description = t.description,
                     experience = t.experience,
@@ -563,7 +563,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 FROM temp_new_vacancies t
                 WHERE v.vacancy_id = t.vacancy_id
                 AND (
-                    v.name != t.name OR
+                    v.title != t.title OR
                     v.url != t.url OR
                     v.description != t.description OR
                     COALESCE(v.salary_from, 0) != COALESCE(t.salary_from, 0) OR
@@ -579,7 +579,7 @@ class PostgresSaver(AbstractVacancyStorage):
             # Получаем информацию о добавленных и обновленных вакансиях для сообщений
             cursor.execute(
                 """
-                SELECT t.vacancy_id, t.name,
+                SELECT t.vacancy_id, t.title,
                        CASE WHEN v.vacancy_id IS NULL THEN 'new' ELSE 'updated' END as action
                 FROM temp_new_vacancies t
                 LEFT JOIN vacancies v ON t.vacancy_id = v.vacancy_id
@@ -928,7 +928,7 @@ class PostgresSaver(AbstractVacancyStorage):
                             # Создаем объект Vacancy напрямую с новой Pydantic структурой
                             vacancy_data = {
                                 "id": row["vacancy_id"],
-                                "name": row["name"],  # Теперь используем правильное поле name
+                                "name": row["title"],  # Используем поле title из БД
                                 "url": row["url"] or "",  # Теперь url обязательное поле
                                 "salary": salary_dict,
                                 # ИСПРАВЛЕНО: Используем прямые поля из БД, а не snippet
