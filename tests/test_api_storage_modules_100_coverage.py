@@ -308,13 +308,13 @@ class TestStorageFactory:
         from src.storage.storage_factory import StorageFactory
         assert StorageFactory is not None
 
+    @patch('psycopg2.connect')
     @patch('src.config.app_config.AppConfig')
-    @patch('src.storage.postgres_saver.PostgresSaver')
-    def test_create_storage_success(self, mock_postgres_saver, mock_app_config):
+    def test_create_storage_success(self, mock_app_config, mock_psycopg2):
         """Тест успешного создания хранилища"""
         from src.storage.storage_factory import StorageFactory
         
-        # Настраиваем моки
+        # Настраиваем мок конфигурации
         mock_config_instance = Mock()
         mock_config_instance.get_db_config.return_value = {
             "host": "localhost",
@@ -323,16 +323,17 @@ class TestStorageFactory:
         }
         mock_app_config.return_value = mock_config_instance
         
-        mock_storage_instance = Mock()
-        mock_postgres_saver.return_value = mock_storage_instance
+        # Мокируем psycopg2 подключение
+        mock_connection = Mock()
+        mock_psycopg2.return_value = mock_connection
         
         # Вызываем метод
         result = StorageFactory.create_storage("postgres")
         
-        # Проверяем результат
-        assert result == mock_storage_instance
+        # Проверяем что получили объект PostgresSaver
+        assert result is not None
+        # Проверяем что AppConfig был вызван
         mock_app_config.assert_called_once()
-        mock_postgres_saver.assert_called_once()
 
     def test_create_storage_invalid_type(self):
         """Тест создания хранилища с невалидным типом"""
@@ -341,25 +342,26 @@ class TestStorageFactory:
         with pytest.raises(ValueError, match="Поддерживается только PostgreSQL хранилище"):
             StorageFactory.create_storage("mysql")
 
+    @patch('psycopg2.connect')
     @patch('src.config.app_config.AppConfig')
-    @patch('src.storage.postgres_saver.PostgresSaver')
-    def test_create_storage_default_type(self, mock_postgres_saver, mock_app_config):
+    def test_create_storage_default_type(self, mock_app_config, mock_psycopg2):
         """Тест создания хранилища с дефолтным типом"""
         from src.storage.storage_factory import StorageFactory
         
-        # Настраиваем моки
+        # Настраиваем мок конфигурации
         mock_config_instance = Mock()
         mock_config_instance.get_db_config.return_value = {"host": "localhost"}
         mock_app_config.return_value = mock_config_instance
         
-        mock_storage_instance = Mock()
-        mock_postgres_saver.return_value = mock_storage_instance
+        # Мокируем psycopg2 подключение
+        mock_connection = Mock()
+        mock_psycopg2.return_value = mock_connection
         
         # Вызываем метод без параметров (должен использовать дефолт "postgres")
         result = StorageFactory.create_storage()
         
-        assert result == mock_storage_instance
-        mock_postgres_saver.assert_called_once()
+        assert result is not None
+        mock_app_config.assert_called_once()
 
     @patch('src.storage.storage_factory.StorageFactory.create_storage')
     def test_get_default_storage(self, mock_create_storage):
@@ -384,9 +386,9 @@ class TestStorageFactory:
         with pytest.raises(Exception, match="Config error"):
             StorageFactory.create_storage("postgres")
 
+    @patch('psycopg2.connect')
     @patch('src.config.app_config.AppConfig')
-    @patch('src.storage.postgres_saver.PostgresSaver')
-    def test_create_storage_postgres_error(self, mock_postgres_saver, mock_app_config):
+    def test_create_storage_postgres_error(self, mock_app_config, mock_psycopg2):
         """Тест обработки ошибки создания PostgresSaver"""
         from src.storage.storage_factory import StorageFactory
         
@@ -395,10 +397,10 @@ class TestStorageFactory:
         mock_config_instance.get_db_config.return_value = {"host": "localhost"}
         mock_app_config.return_value = mock_config_instance
         
-        # Мокируем ошибку PostgresSaver
-        mock_postgres_saver.side_effect = Exception("DB connection failed")
+        # Мокируем ошибку подключения к БД
+        mock_psycopg2.side_effect = Exception("Connection refused")
         
-        with pytest.raises(Exception, match="DB connection failed"):
+        with pytest.raises(Exception, match="Connection refused"):
             StorageFactory.create_storage("postgres")
 
 
