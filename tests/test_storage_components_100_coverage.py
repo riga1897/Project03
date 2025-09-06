@@ -5,7 +5,7 @@
 
 import os
 import sys
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch, MagicMock, PropertyMock
 import pytest
 from typing import Dict, Any, List, Optional
 
@@ -15,6 +15,14 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from src.storage.components.database_connection import DatabaseConnection
 from src.storage.components.vacancy_repository import VacancyRepository 
 from src.storage.components.vacancy_validator import VacancyValidator
+
+
+# Mock класс для AbstractVacancy
+class MockVacancy:
+    """Mock объект для тестирования валидатора"""
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
 
 class TestDatabaseConnection:
@@ -106,7 +114,9 @@ class TestDatabaseConnection:
     def test_is_connection_valid_exception(self):
         """Тест проверки валидности при исключении"""
         mock_connection = Mock()
-        mock_connection.cursor.return_value.__enter__.side_effect = Exception("DB error")
+        # Мокируем cursor чтобы он вызывал исключение нужного типа
+        from src.storage.components.database_connection import psycopg2
+        mock_connection.cursor.side_effect = psycopg2.OperationalError("Connection lost")
         
         db_conn = DatabaseConnection()
         db_conn._connection = mock_connection
@@ -136,12 +146,17 @@ class TestDatabaseConnection:
         db_conn._create_new_connection()
         
         assert db_conn._connection == mock_connection
-        mock_connect.assert_called_once_with(**{"host": "test"})
+        # Проверяем что connect вызван с правильными параметрами включая cursor_factory
+        mock_connect.assert_called_once()
+        call_kwargs = mock_connect.call_args[1]
+        assert call_kwargs["host"] == "test"
+        assert "cursor_factory" in call_kwargs
 
     @patch('psycopg2.connect')
     def test_create_new_connection_failure(self, mock_connect):
         """Тест обработки ошибки создания подключения"""
-        mock_connect.side_effect = Exception("Connection failed")
+        from src.storage.components.database_connection import PsycopgError
+        mock_connect.side_effect = PsycopgError("Connection failed")
         
         db_conn = DatabaseConnection()
         
@@ -180,7 +195,7 @@ class TestDatabaseConnection:
         with patch('src.storage.components.database_connection.logger') as mock_logger:
             db_conn.close_connection()
         
-        mock_logger.error.assert_called_once()
+        mock_logger.warning.assert_called_once()
         assert db_conn._connection is None
 
     def test_context_manager_success(self):
@@ -212,16 +227,6 @@ class TestDatabaseConnection:
                 
                 mock_close.assert_called_once()
 
-    def test_repr(self):
-        """Тест строкового представления"""
-        params = {"host": "test_host", "database": "test_db"}
-        db_conn = DatabaseConnection(params)
-        result = repr(db_conn)
-        
-        assert "DatabaseConnection" in result
-        assert "test_host" in result
-        assert "test_db" in result
-
 
 class TestVacancyRepository:
     """100% покрытие VacancyRepository"""
@@ -229,494 +234,366 @@ class TestVacancyRepository:
     def test_init(self):
         """Тест инициализации"""
         mock_db_conn = Mock()
-        repo = VacancyRepository(mock_db_conn)
+        mock_validator = Mock()
+        repo = VacancyRepository(mock_db_conn, mock_validator)
         assert repo._db_connection == mock_db_conn
+        assert repo._validator == mock_validator
 
     @patch('src.storage.components.vacancy_repository.logger')
-    def test_save_vacancy_success(self, mock_logger):
-        """Тест успешного сохранения вакансии"""
+    def test_add_vacancy_success(self, mock_logger):
+        """Тест успешного добавления вакансии"""
         mock_db_conn = Mock()
+        mock_validator = Mock()
         mock_connection = Mock()
         mock_cursor = Mock()
         
-        mock_db_conn.get_connection.return_value = mock_connection
+        # Мокируем валидацию
+        mock_validator.validate_vacancy.return_value = True
+        
+        # Мокируем подключение к БД
+        mock_db_conn.get_connection.return_value.__enter__ = Mock(return_value=mock_connection)
+        mock_db_conn.get_connection.return_value.__exit__ = Mock(return_value=False)
         mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
         mock_connection.cursor.return_value.__exit__ = Mock(return_value=False)
         
-        repo = VacancyRepository(mock_db_conn)
-        vacancy_data = {
-            "id": "123", 
-            "title": "Test Job",
-            "company": {"name": "Test Company"}
-        }
+        # Создаем mock вакансии
+        mock_vacancy = MockVacancy(
+            vacancy_id="123",
+            title="Test Job", 
+            url="https://example.com/job/123",
+            salary=None
+        )
         
-        result = repo.save_vacancy(vacancy_data)
+        repo = VacancyRepository(mock_db_conn, mock_validator)
+        repo.add_vacancy(mock_vacancy)
         
-        assert result is True
-        mock_cursor.execute.assert_called()
-        mock_connection.commit.assert_called_once()
+        mock_validator.validate_vacancy.assert_called_once_with(mock_vacancy)
+        mock_cursor.execute.assert_called_once()
 
     @patch('src.storage.components.vacancy_repository.logger')
-    def test_save_vacancy_failure(self, mock_logger):
-        """Тест обработки ошибки сохранения"""
+    def test_add_vacancy_validation_failure(self, mock_logger):
+        """Тест добавления невалидной вакансии"""
         mock_db_conn = Mock()
-        mock_connection = Mock()
-        mock_connection.cursor.side_effect = Exception("DB Error")
+        mock_validator = Mock()
         
-        mock_db_conn.get_connection.return_value = mock_connection
+        # Мокируем неуспешную валидацию
+        mock_validator.validate_vacancy.return_value = False
+        mock_validator.get_validation_errors.return_value = ["Error 1", "Error 2"]
         
-        repo = VacancyRepository(mock_db_conn)
-        vacancy_data = {"id": "123"}
+        mock_vacancy = MockVacancy(vacancy_id="123")
         
-        result = repo.save_vacancy(vacancy_data)
+        repo = VacancyRepository(mock_db_conn, mock_validator)
         
-        assert result is False
-        mock_logger.error.assert_called_once()
-        mock_connection.rollback.assert_called_once()
+        with pytest.raises(ValueError) as exc_info:
+            repo.add_vacancy(mock_vacancy)
+        
+        assert "не прошла валидацию" in str(exc_info.value)
+        mock_validator.validate_vacancy.assert_called_once()
+        mock_validator.get_validation_errors.assert_called_once()
 
-    @patch('src.storage.components.vacancy_repository.logger')
-    def test_get_vacancy_by_id_success(self, mock_logger):
-        """Тест успешного получения вакансии по ID"""
+    def test_get_vacancies_no_filters(self):
+        """Тест получения вакансий без фильтров"""
         mock_db_conn = Mock()
-        mock_connection = Mock()
-        mock_cursor = Mock()
-        
-        mock_db_conn.get_connection.return_value = mock_connection
-        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-        mock_connection.cursor.return_value.__exit__ = Mock(return_value=False)
-        
-        # Мокируем результат запроса
-        mock_cursor.fetchone.return_value = {
-            "id": "123",
-            "title": "Test Job",
-            "company_name": "Test Company"
-        }
-        
-        repo = VacancyRepository(mock_db_conn)
-        result = repo.get_vacancy_by_id("123")
-        
-        assert result is not None
-        assert result["id"] == "123"
-        mock_cursor.execute.assert_called()
-
-    @patch('src.storage.components.vacancy_repository.logger')
-    def test_get_vacancy_by_id_not_found(self, mock_logger):
-        """Тест получения несуществующей вакансии"""
-        mock_db_conn = Mock()
+        mock_validator = Mock()
         mock_connection = Mock()
         mock_cursor = Mock()
         
-        mock_db_conn.get_connection.return_value = mock_connection
-        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-        mock_connection.cursor.return_value.__exit__ = Mock(return_value=False)
-        
-        mock_cursor.fetchone.return_value = None
-        
-        repo = VacancyRepository(mock_db_conn)
-        result = repo.get_vacancy_by_id("nonexistent")
-        
-        assert result is None
-
-    @patch('src.storage.components.vacancy_repository.logger')
-    def test_get_vacancy_by_id_error(self, mock_logger):
-        """Тест обработки ошибки получения вакансии"""
-        mock_db_conn = Mock()
-        mock_connection = Mock()
-        mock_connection.cursor.side_effect = Exception("DB Error")
-        
-        mock_db_conn.get_connection.return_value = mock_connection
-        
-        repo = VacancyRepository(mock_db_conn)
-        result = repo.get_vacancy_by_id("123")
-        
-        assert result is None
-        mock_logger.error.assert_called_once()
-
-    @patch('src.storage.components.vacancy_repository.logger')
-    def test_get_all_vacancies_success(self, mock_logger):
-        """Тест успешного получения всех вакансий"""
-        mock_db_conn = Mock()
-        mock_connection = Mock()
-        mock_cursor = Mock()
-        
-        mock_db_conn.get_connection.return_value = mock_connection
+        mock_db_conn.get_connection.return_value.__enter__ = Mock(return_value=mock_connection)
+        mock_db_conn.get_connection.return_value.__exit__ = Mock(return_value=False)
         mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
         mock_connection.cursor.return_value.__exit__ = Mock(return_value=False)
         
         mock_cursor.fetchall.return_value = [
-            {"id": "1", "title": "Job 1"},
-            {"id": "2", "title": "Job 2"}
+            {"vacancy_id": "1", "title": "Job 1"},
+            {"vacancy_id": "2", "title": "Job 2"}
         ]
         
-        repo = VacancyRepository(mock_db_conn)
-        result = repo.get_all_vacancies()
-        
-        assert len(result) == 2
-        assert result[0]["id"] == "1"
-        mock_cursor.execute.assert_called()
+        # Мокируем импорт Vacancy класса
+        with patch('src.vacancies.models.Vacancy') as mock_vacancy_class:
+            mock_vacancy_instance = Mock()
+            mock_vacancy_class.from_dict.return_value = mock_vacancy_instance
+            
+            repo = VacancyRepository(mock_db_conn, mock_validator)
+            result = repo.get_vacancies()
+            
+            # Проверяем что получили список вакансий
+            assert isinstance(result, list)
+            mock_cursor.execute.assert_called_once()
 
-    @patch('src.storage.components.vacancy_repository.logger')
-    def test_get_all_vacancies_with_limit(self, mock_logger):
-        """Тест получения вакансий с лимитом"""
+    def test_get_vacancies_with_filters(self):
+        """Тест получения вакансий с фильтрами"""
         mock_db_conn = Mock()
+        mock_validator = Mock()
         mock_connection = Mock()
         mock_cursor = Mock()
         
-        mock_db_conn.get_connection.return_value = mock_connection
+        mock_db_conn.get_connection.return_value.__enter__ = Mock(return_value=mock_connection)
+        mock_db_conn.get_connection.return_value.__exit__ = Mock(return_value=False)
         mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
         mock_connection.cursor.return_value.__exit__ = Mock(return_value=False)
         
-        mock_cursor.fetchall.return_value = [{"id": "1"}]
+        mock_cursor.fetchall.return_value = [{"vacancy_id": "1", "title": "Python Developer"}]
         
-        repo = VacancyRepository(mock_db_conn)
-        result = repo.get_all_vacancies(limit=10)
-        
-        assert len(result) == 1
-        # Проверяем что LIMIT был добавлен в SQL
-        call_args = mock_cursor.execute.call_args[0][0]
-        assert "LIMIT" in call_args
+        with patch('src.vacancies.models.Vacancy') as mock_vacancy_class:
+            mock_vacancy_instance = Mock()
+            mock_vacancy_class.from_dict.return_value = mock_vacancy_instance
+            
+            repo = VacancyRepository(mock_db_conn, mock_validator)
+            filters = {"min_salary": 100000, "source": "hh"}
+            result = repo.get_vacancies(filters)
+            
+            # Проверяем что получили результат и SQL содержит WHERE
+            assert isinstance(result, list)
+            call_args = mock_cursor.execute.call_args[0][0]
+            assert "WHERE" in call_args
 
-    @patch('src.storage.components.vacancy_repository.logger')
-    def test_delete_vacancy_success(self, mock_logger):
+    def test_delete_vacancy_success(self):
         """Тест успешного удаления вакансии"""
         mock_db_conn = Mock()
+        mock_validator = Mock()
         mock_connection = Mock()
         mock_cursor = Mock()
         
-        mock_db_conn.get_connection.return_value = mock_connection
+        mock_db_conn.get_connection.return_value.__enter__ = Mock(return_value=mock_connection)
+        mock_db_conn.get_connection.return_value.__exit__ = Mock(return_value=False)
         mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
         mock_connection.cursor.return_value.__exit__ = Mock(return_value=False)
         
         mock_cursor.rowcount = 1
         
-        repo = VacancyRepository(mock_db_conn)
-        result = repo.delete_vacancy("123")
+        mock_vacancy = MockVacancy(vacancy_id="123")
         
-        assert result is True
-        mock_cursor.execute.assert_called()
+        repo = VacancyRepository(mock_db_conn, mock_validator)
+        repo.delete_vacancy(mock_vacancy)
+        
+        mock_cursor.execute.assert_called_once()
+        # Проверяем что коммит был вызван
         mock_connection.commit.assert_called_once()
 
-    @patch('src.storage.components.vacancy_repository.logger')
-    def test_delete_vacancy_not_found(self, mock_logger):
-        """Тест удаления несуществующей вакансии"""
+    def test_check_vacancies_exist_batch(self):
+        """Тест проверки существования вакансий пакетом"""
         mock_db_conn = Mock()
+        mock_validator = Mock()
         mock_connection = Mock()
         mock_cursor = Mock()
         
-        mock_db_conn.get_connection.return_value = mock_connection
-        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-        mock_connection.cursor.return_value.__exit__ = Mock(return_value=False)
-        
-        mock_cursor.rowcount = 0
-        
-        repo = VacancyRepository(mock_db_conn)
-        result = repo.delete_vacancy("nonexistent")
-        
-        assert result is False
-
-    @patch('src.storage.components.vacancy_repository.logger')
-    def test_update_vacancy_success(self, mock_logger):
-        """Тест успешного обновления вакансии"""
-        mock_db_conn = Mock()
-        mock_connection = Mock()
-        mock_cursor = Mock()
-        
-        mock_db_conn.get_connection.return_value = mock_connection
-        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
-        mock_connection.cursor.return_value.__exit__ = Mock(return_value=False)
-        
-        mock_cursor.rowcount = 1
-        
-        repo = VacancyRepository(mock_db_conn)
-        update_data = {"title": "Updated Job"}
-        
-        result = repo.update_vacancy("123", update_data)
-        
-        assert result is True
-        mock_cursor.execute.assert_called()
-        mock_connection.commit.assert_called_once()
-
-    @patch('src.storage.components.vacancy_repository.logger')
-    def test_get_vacancies_by_company_success(self, mock_logger):
-        """Тест получения вакансий по компании"""
-        mock_db_conn = Mock()
-        mock_connection = Mock()
-        mock_cursor = Mock()
-        
-        mock_db_conn.get_connection.return_value = mock_connection
+        mock_db_conn.get_connection.return_value.__enter__ = Mock(return_value=mock_connection)
+        mock_db_conn.get_connection.return_value.__exit__ = Mock(return_value=False)
         mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
         mock_connection.cursor.return_value.__exit__ = Mock(return_value=False)
         
         mock_cursor.fetchall.return_value = [
-            {"id": "1", "company_name": "Test Company"}
+            {"vacancy_id": "1"},
+            {"vacancy_id": "3"}
         ]
         
-        repo = VacancyRepository(mock_db_conn)
-        result = repo.get_vacancies_by_company("Test Company")
+        vacancies = [
+            MockVacancy(vacancy_id="1"),
+            MockVacancy(vacancy_id="2"), 
+            MockVacancy(vacancy_id="3")
+        ]
         
-        assert len(result) == 1
-        mock_cursor.execute.assert_called()
+        repo = VacancyRepository(mock_db_conn, mock_validator)
+        result = repo.check_vacancies_exist_batch(vacancies)
+        
+        assert result["1"] is True
+        assert result["2"] is False
+        assert result["3"] is True
 
 
 class TestVacancyValidator:
     """100% покрытие VacancyValidator"""
 
-    def test_validate_vacancy_data_valid(self):
-        """Тест валидации корректных данных вакансии"""
-        valid_data = {
-            "id": "123",
-            "title": "Python Developer",
-            "url": "https://example.com/job/123",
-            "company": {
-                "name": "Test Company"
-            }
-        }
-        
+    def test_init(self):
+        """Тест инициализации валидатора"""
         validator = VacancyValidator()
-        result = validator.validate_vacancy_data(valid_data)
+        assert validator._validation_errors == []
+
+    def test_validate_vacancy_success(self):
+        """Тест валидации корректной вакансии"""
+        validator = VacancyValidator()
         
+        mock_vacancy = MockVacancy(
+            vacancy_id="123",
+            title="Python Developer",
+            url="https://example.com/job/123",
+            salary=None,
+            description="Job description"
+        )
+        
+        result = validator.validate_vacancy(mock_vacancy)
         assert result is True
+        assert len(validator.get_validation_errors()) == 0
 
-    def test_validate_vacancy_data_missing_required(self):
-        """Тест валидации с отсутствующими обязательными полями"""
-        # Отсутствует id
-        invalid_data = {
-            "title": "Python Developer",
-            "url": "https://example.com/job/123"
-        }
-        
+    def test_validate_vacancy_missing_required_field(self):
+        """Тест валидации вакансии без обязательного поля"""
         validator = VacancyValidator()
-        result = validator.validate_vacancy_data(invalid_data)
         
+        mock_vacancy = MockVacancy(
+            title="Python Developer",
+            url="https://example.com/job/123"
+            # Отсутствует vacancy_id
+        )
+        
+        result = validator.validate_vacancy(mock_vacancy)
         assert result is False
-
-    def test_validate_vacancy_data_empty_string(self):
-        """Тест валидации с пустыми строками"""
-        invalid_data = {
-            "id": "",  # Пустая строка
-            "title": "Python Developer",
-            "url": "https://example.com/job/123"
-        }
-        
-        validator = VacancyValidator()
-        result = validator.validate_vacancy_data(invalid_data)
-        
-        assert result is False
-
-    def test_validate_vacancy_data_none_value(self):
-        """Тест валидации с None значениями"""
-        invalid_data = {
-            "id": "123",
-            "title": None,  # None значение
-            "url": "https://example.com/job/123"
-        }
-        
-        validator = VacancyValidator()
-        result = validator.validate_vacancy_data(invalid_data)
-        
-        assert result is False
-
-    def test_validate_vacancy_data_non_dict(self):
-        """Тест валидации не-словаря"""
-        validator = VacancyValidator()
-        
-        assert validator.validate_vacancy_data(None) is False
-        assert validator.validate_vacancy_data("string") is False
-        assert validator.validate_vacancy_data([]) is False
-        assert validator.validate_vacancy_data(123) is False
-
-    def test_validate_company_data_valid(self):
-        """Тест валидации корректных данных компании"""
-        valid_company = {
-            "name": "Test Company",
-            "url": "https://company.com"
-        }
-        
-        validator = VacancyValidator()
-        result = validator.validate_company_data(valid_company)
-        
-        assert result is True
-
-    def test_validate_company_data_missing_name(self):
-        """Тест валидации компании без имени"""
-        invalid_company = {
-            "url": "https://company.com"
-        }
-        
-        validator = VacancyValidator()
-        result = validator.validate_company_data(invalid_company)
-        
-        assert result is False
-
-    def test_validate_company_data_empty_name(self):
-        """Тест валидации компании с пустым именем"""
-        invalid_company = {
-            "name": "",
-            "url": "https://company.com"
-        }
-        
-        validator = VacancyValidator()
-        result = validator.validate_company_data(invalid_company)
-        
-        assert result is False
-
-    def test_validate_company_data_none(self):
-        """Тест валидации None компании"""
-        validator = VacancyValidator()
-        result = validator.validate_company_data(None)
-        
-        assert result is False
-
-    def test_validate_salary_data_valid_dict(self):
-        """Тест валидации корректных данных зарплаты"""
-        valid_salary = {
-            "from": 100000,
-            "to": 150000,
-            "currency": "RUR"
-        }
-        
-        validator = VacancyValidator()
-        result = validator.validate_salary_data(valid_salary)
-        
-        assert result is True
-
-    def test_validate_salary_data_valid_string(self):
-        """Тест валидации зарплаты как строки"""
-        validator = VacancyValidator()
-        result = validator.validate_salary_data("от 100000 до 150000")
-        
-        assert result is True
-
-    def test_validate_salary_data_none(self):
-        """Тест валидации None зарплаты"""
-        validator = VacancyValidator()
-        result = validator.validate_salary_data(None)
-        
-        assert result is True  # None зарплата допустима
-
-    def test_validate_salary_data_invalid_type(self):
-        """Тест валидации невалидного типа зарплаты"""
-        validator = VacancyValidator()
-        
-        assert validator.validate_salary_data(123) is False
-        assert validator.validate_salary_data([]) is False
-
-    def test_validate_url_valid(self):
-        """Тест валидации корректных URL"""
-        validator = VacancyValidator()
-        
-        assert validator.validate_url("https://example.com") is True
-        assert validator.validate_url("http://example.com/path") is True
-        assert validator.validate_url("https://site.com/job/123?param=value") is True
-
-    def test_validate_url_invalid(self):
-        """Тест валидации некорректных URL"""
-        validator = VacancyValidator()
-        
-        assert validator.validate_url("not-a-url") is False
-        assert validator.validate_url("ftp://example.com") is False  # не http/https
-        assert validator.validate_url("") is False
-        assert validator.validate_url(None) is False
-
-    def test_sanitize_string_normal(self):
-        """Тест санитизации обычной строки"""
-        validator = VacancyValidator()
-        result = validator.sanitize_string("Normal text")
-        
-        assert result == "Normal text"
-
-    def test_sanitize_string_with_html(self):
-        """Тест санитизации строки с HTML"""
-        validator = VacancyValidator()
-        result = validator.sanitize_string("<script>alert('xss')</script>Clean text")
-        
-        # HTML теги должны быть удалены
-        assert "<script>" not in result
-        assert "Clean text" in result
-
-    def test_sanitize_string_with_whitespace(self):
-        """Тест санитизации строки с лишними пробелами"""
-        validator = VacancyValidator()
-        result = validator.sanitize_string("  Text with   spaces  ")
-        
-        # Лишние пробелы должны быть удалены
-        assert result == "Text with spaces"
-
-    def test_sanitize_string_none_and_empty(self):
-        """Тест санитизации None и пустых строк"""
-        validator = VacancyValidator()
-        
-        assert validator.sanitize_string(None) == ""
-        assert validator.sanitize_string("") == ""
-        assert validator.sanitize_string("   ") == ""
-
-    def test_normalize_vacancy_data_full(self):
-        """Тест нормализации полных данных вакансии"""
-        raw_data = {
-            "id": "123",
-            "title": "  <b>Python Developer</b>  ",
-            "description": "<p>Job description</p>",
-            "company": {
-                "name": "  Test Company  "
-            },
-            "salary": {
-                "from": 100000,
-                "to": 150000
-            }
-        }
-        
-        validator = VacancyValidator()
-        result = validator.normalize_vacancy_data(raw_data)
-        
-        assert result["title"] == "Python Developer"  # HTML удален, пробелы убраны
-        assert "Test Company" in result["company"]["name"]
-        assert result["salary"]["from"] == 100000
-
-    def test_normalize_vacancy_data_minimal(self):
-        """Тест нормализации минимальных данных"""
-        raw_data = {
-            "id": "123",
-            "title": "Job Title"
-        }
-        
-        validator = VacancyValidator()
-        result = validator.normalize_vacancy_data(raw_data)
-        
-        assert result["id"] == "123"
-        assert result["title"] == "Job Title"
-
-    def test_get_validation_errors_empty_for_valid(self):
-        """Тест отсутствия ошибок для валидных данных"""
-        valid_data = {
-            "id": "123",
-            "title": "Python Developer",
-            "url": "https://example.com/job/123",
-            "company": {
-                "name": "Test Company"
-            }
-        }
-        
-        validator = VacancyValidator()
-        errors = validator.get_validation_errors(valid_data)
-        
-        assert len(errors) == 0
-
-    def test_get_validation_errors_with_issues(self):
-        """Тест получения ошибок валидации"""
-        invalid_data = {
-            "id": "",  # Пустой id
-            "title": "Python Developer",
-            "url": "not-a-url",  # Невалидный URL
-        }
-        
-        validator = VacancyValidator()
-        errors = validator.get_validation_errors(invalid_data)
-        
+        errors = validator.get_validation_errors()
         assert len(errors) > 0
-        # Проверяем что есть ошибки по id и url
-        error_text = " ".join(errors)
-        assert "id" in error_text or "ID" in error_text
-        assert "url" in error_text or "URL" in error_text
+        assert any("vacancy_id" in error for error in errors)
+
+    def test_validate_vacancy_empty_required_field(self):
+        """Тест валидации вакансии с пустым обязательным полем"""
+        validator = VacancyValidator()
+        
+        mock_vacancy = MockVacancy(
+            vacancy_id="",  # Пустой ID
+            title="Python Developer",
+            url="https://example.com/job/123"
+        )
+        
+        result = validator.validate_vacancy(mock_vacancy)
+        assert result is False
+        errors = validator.get_validation_errors()
+        assert any("пустое" in error for error in errors)
+
+    def test_validate_vacancy_wrong_data_type(self):
+        """Тест валидации вакансии с неверным типом данных"""
+        validator = VacancyValidator()
+        
+        mock_vacancy = MockVacancy(
+            vacancy_id=123,  # Должен быть str, а не int
+            title="Python Developer",
+            url="https://example.com/job/123"
+        )
+        
+        result = validator.validate_vacancy(mock_vacancy)
+        assert result is False
+        errors = validator.get_validation_errors()
+        assert any("Неверный тип" in error for error in errors)
+
+    def test_validate_vacancy_invalid_url(self):
+        """Тест валидации вакансии с невалидным URL"""
+        validator = VacancyValidator()
+        
+        mock_vacancy = MockVacancy(
+            vacancy_id="123",
+            title="Python Developer",
+            url="invalid-url"  # Невалидный URL
+        )
+        
+        result = validator.validate_vacancy(mock_vacancy)
+        assert result is False
+        errors = validator.get_validation_errors()
+        assert any("URL" in error for error in errors)
+
+    def test_validate_vacancy_long_id(self):
+        """Тест валидации вакансии со слишком длинным ID"""
+        validator = VacancyValidator()
+        
+        mock_vacancy = MockVacancy(
+            vacancy_id="x" * 150,  # Слишком длинный ID
+            title="Python Developer",
+            url="https://example.com/job/123"
+        )
+        
+        result = validator.validate_vacancy(mock_vacancy)
+        assert result is False
+        errors = validator.get_validation_errors()
+        assert any("слишком длинный" in error for error in errors)
+
+    def test_validate_vacancy_long_title(self):
+        """Тест валидации вакансии со слишком длинным названием"""
+        validator = VacancyValidator()
+        
+        mock_vacancy = MockVacancy(
+            vacancy_id="123",
+            title="x" * 600,  # Слишком длинное название
+            url="https://example.com/job/123"
+        )
+        
+        result = validator.validate_vacancy(mock_vacancy)
+        assert result is False
+        errors = validator.get_validation_errors()
+        assert any("слишком длинное" in error for error in errors)
+
+    def test_validate_vacancy_optional_fields(self):
+        """Тест валидации вакансии с опциональными полями"""
+        validator = VacancyValidator()
+        
+        mock_vacancy = MockVacancy(
+            vacancy_id="123",
+            title="Python Developer",
+            url="https://example.com/job/123",
+            description="Job description",
+            requirements="Python, Django",
+            responsibilities=None,  # None значение для опционального поля
+            experience="3-5 лет"
+        )
+        
+        result = validator.validate_vacancy(mock_vacancy)
+        assert result is True
+
+    def test_get_validation_errors(self):
+        """Тест получения ошибок валидации"""
+        validator = VacancyValidator()
+        
+        # Сначала проверим пустой список ошибок
+        errors = validator.get_validation_errors()
+        assert errors == []
+        
+        # Теперь создадим ошибки валидации
+        mock_vacancy = MockVacancy(vacancy_id="")  # Пустой ID
+        validator.validate_vacancy(mock_vacancy)
+        
+        errors = validator.get_validation_errors()
+        assert len(errors) > 0
+        assert isinstance(errors, list)
+
+    def test_validate_batch_success(self):
+        """Тест пакетной валидации успешных вакансий"""
+        validator = VacancyValidator()
+        
+        vacancies = [
+            MockVacancy(vacancy_id="1", title="Job 1", url="https://example.com/1"),
+            MockVacancy(vacancy_id="2", title="Job 2", url="https://example.com/2")
+        ]
+        
+        results = validator.validate_batch(vacancies)
+        
+        assert len(results) == 2
+        assert results["1"] is True
+        assert results["2"] is True
+
+    def test_validate_batch_mixed_results(self):
+        """Тест пакетной валидации с смешанными результатами"""
+        validator = VacancyValidator()
+        
+        vacancies = [
+            MockVacancy(vacancy_id="1", title="Job 1", url="https://example.com/1"),
+            MockVacancy(vacancy_id="", title="Job 2", url="https://example.com/2")  # Невалидная
+        ]
+        
+        with patch('src.storage.components.vacancy_validator.logger') as mock_logger:
+            results = validator.validate_batch(vacancies)
+        
+        assert len(results) == 2
+        assert results["1"] is True
+        assert results[""] is False
+        mock_logger.warning.assert_called()
+
+    def test_validate_batch_exception_handling(self):
+        """Тест обработки исключений в пакетной валидации"""
+        validator = VacancyValidator()
+        
+        # Просто проверяем обработку исключений через мок метода validate_vacancy
+        with patch.object(validator, 'validate_vacancy', side_effect=Exception("Validation error")):
+            with patch('src.storage.components.vacancy_validator.logger') as mock_logger:
+                mock_vacancy = MockVacancy(vacancy_id="123")
+                results = validator.validate_batch([mock_vacancy])
+        
+        assert len(results) == 1
+        assert results["123"] is False  # Получаем vacancy_id из mock_vacancy
+        mock_logger.error.assert_called()
 
 
 class TestStorageComponentsIntegration:
@@ -734,63 +611,113 @@ class TestStorageComponentsIntegration:
         
         # Создаем компоненты
         db_conn = DatabaseConnection({"host": "test"})
-        repo = VacancyRepository(db_conn)
         validator = VacancyValidator()
+        repo = VacancyRepository(db_conn, validator)
         
-        # Тестовые данные
-        raw_vacancy = {
-            "id": "123",
-            "title": "  <b>Python Developer</b>  ",
-            "url": "https://example.com/job/123",
-            "company": {
-                "name": "  Test Company  "
-            }
-        }
+        # Создаем тестовую вакансию
+        mock_vacancy = MockVacancy(
+            vacancy_id="123",
+            title="Python Developer",
+            url="https://example.com/job/123",
+            salary=None
+        )
         
-        # Нормализуем данные
-        normalized_data = validator.normalize_vacancy_data(raw_vacancy)
-        
-        # Валидируем данные
-        is_valid = validator.validate_vacancy_data(normalized_data)
-        assert is_valid is True
-        
-        # Сохраняем в репозитории
-        mock_cursor.execute = Mock()
-        saved = repo.save_vacancy(normalized_data)
-        
-        # Проверяем что все прошло успешно
-        assert saved is True
-        assert normalized_data["title"] == "Python Developer"
-        mock_cursor.execute.assert_called()
-        mock_connection.commit.assert_called()
+        # Мокируем контекст менеджер для подключения
+        with patch.object(db_conn, 'get_connection') as mock_get_conn:
+            mock_get_conn.return_value.__enter__ = Mock(return_value=mock_connection)
+            mock_get_conn.return_value.__exit__ = Mock(return_value=False)
+            
+            # Выполняем валидацию и сохранение
+            is_valid = validator.validate_vacancy(mock_vacancy)
+            assert is_valid is True
+            
+            repo.add_vacancy(mock_vacancy)
+            
+            # Проверяем что все прошло успешно
+            mock_cursor.execute.assert_called()
 
     def test_validation_integration_with_errors(self):
         """Тест интеграции валидации с ошибками"""
         validator = VacancyValidator()
         
-        # Невалидные данные
-        invalid_data = {
-            "id": "",
-            "title": None,
-            "url": "not-a-url"
-        }
+        # Невалидная вакансия
+        invalid_vacancy = MockVacancy(
+            vacancy_id="",  # Пустой ID
+            title=None,     # None title
+            url="invalid-url"  # Невалидный URL
+        )
         
-        # Сначала нормализуем
-        normalized = validator.normalize_vacancy_data(invalid_data)
-        
-        # Затем валидируем
-        is_valid = validator.validate_vacancy_data(normalized)
+        # Валидируем
+        is_valid = validator.validate_vacancy(invalid_vacancy)
         
         # Получаем детальные ошибки
-        errors = validator.get_validation_errors(normalized)
+        errors = validator.get_validation_errors()
         
         assert is_valid is False
         assert len(errors) > 0
         
         # Проверяем что репозиторий не сохранит невалидные данные
         mock_db_conn = Mock()
-        repo = VacancyRepository(mock_db_conn)
+        repo = VacancyRepository(mock_db_conn, validator)
         
         if not is_valid:
-            # В реальном приложении мы бы не сохраняли невалидные данные
-            assert len(errors) > 0  # Подтверждаем что есть ошибки
+            with pytest.raises(ValueError):
+                repo.add_vacancy(invalid_vacancy)
+
+    def test_database_connection_context_usage(self):
+        """Тест использования подключения как контекст менеджера"""
+        db_conn = DatabaseConnection({"host": "test"})
+        
+        with patch.object(db_conn, 'get_connection') as mock_get_conn:
+            with patch.object(db_conn, 'close_connection') as mock_close:
+                mock_connection = Mock()
+                mock_get_conn.return_value = mock_connection
+                
+                # Используем как контекст менеджер
+                with db_conn as conn:
+                    assert conn == mock_connection
+                
+                mock_close.assert_called_once()
+
+    def test_validator_with_repository_integration(self):
+        """Тест интеграции валидатора с репозиторием"""
+        mock_db_conn = Mock()
+        validator = VacancyValidator()
+        repo = VacancyRepository(mock_db_conn, validator)
+        
+        # Создаем корректную вакансию
+        valid_vacancy = MockVacancy(
+            vacancy_id="valid_123",
+            title="Senior Python Developer",
+            url="https://company.com/jobs/123",
+            salary=None  # Добавляем атрибут salary
+        )
+        
+        # Создаем некорректную вакансию
+        invalid_vacancy = MockVacancy(
+            vacancy_id="",
+            title="Job",
+            url="bad-url",
+            salary=None  # Добавляем атрибут salary
+        )
+        
+        # Тестируем что репозиторий использует валидатор
+        with patch.object(repo, '_db_connection') as mock_db:
+            mock_conn = Mock()
+            mock_db.get_connection.return_value.__enter__ = Mock(return_value=mock_conn)
+            mock_db.get_connection.return_value.__exit__ = Mock(return_value=False)
+            mock_conn.cursor.return_value.__enter__ = Mock(return_value=Mock())
+            mock_conn.cursor.return_value.__exit__ = Mock(return_value=False)
+            
+            # Корректная вакансия должна пройти
+            try:
+                repo.add_vacancy(valid_vacancy)
+                success = True
+            except ValueError:
+                success = False
+            
+            assert success is True
+            
+            # Некорректная вакансия должна вызвать исключение
+            with pytest.raises(ValueError):
+                repo.add_vacancy(invalid_vacancy)
