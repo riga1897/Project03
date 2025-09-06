@@ -1,0 +1,65 @@
+Ищем вакансии от целевых компаний по запросу: 'python' за последние 1 дней...
+Поиск вакансий только от целевых компаний...
+Fetching pages: 100%|█████████| 1/1 [00:00<00:00, 2173.21page/s, vacancies=1]
+Fetching pages: 100%|█████████| 1/1 [00:00<00:00, 2502.57page/s, vacancies=5]
+Fetching pages: 100%|█████████| 1/1 [00:00<00:00, 3575.71page/s, vacancies=0]
+Fetching pages: 100%|█████████| 1/1 [00:00<00:00, 3527.59page/s, vacancies=1]
+Fetching pages: 100%|█████████| 1/1 [00:00<00:00, 3795.75page/s, vacancies=0]
+Fetching pages: 100%|█████████| 1/1 [00:00<00:00, 2890.63page/s, vacancies=2]
+Fetching pages: 100%|█████████| 1/1 [00:00<00:00, 4405.78page/s, vacancies=0]
+Статистика по компаниям (HH.ru - Целевые компании): 9 вакансий
+
+Топ компаний по количеству вакансий:
+  Т-Банк: 5 вакансий
+  билайн: 2 вакансий
+  Яндекс: 1 вакансий
+  Ozon: 1 вакансий
+API вернул 9 записей о вакансиях
+Успешно конвертировано 9 вакансий в объекты Vacancy
+Найдено 9 вакансий от целевых компаний
+
+Всего найдено 9 вакансий
+Проверка 9 вакансий на дубликаты...
+ERROR:src.ui_interfaces.vacancy_search_handler:Ошибка поиска вакансий: 'Vacancy' object has no attribute 'vacancy_id'
+Traceback (most recent call last):
+  File "/home/runner/workspace/src/ui_interfaces/vacancy_search_handler.py", line 67, in search_vacancies
+    self._handle_search_results(all_vacancies, query)
+  File "/home/runner/workspace/src/ui_interfaces/vacancy_search_handler.py", line 124, in _handle_search_results
+    self._handle_vacancies_preview_and_save(vacancies, query)
+  File "/home/runner/workspace/src/ui_interfaces/vacancy_search_handler.py", line 135, in _handle_vacancies_preview_and_save
+    duplicate_info = self._check_existing_vacancies(vacancies)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/src/ui_interfaces/vacancy_search_handler.py", line 215, in _check_existing_vacancies
+    existence_map = self.storage.check_vacancies_exist_batch(vacancies)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/src/storage/postgres_saver.py", line 1143, in check_vacancies_exist_batch
+    vacancy_ids = [(v.vacancy_id,) for v in vacancies]
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/src/storage/postgres_saver.py", line 1143, in <listcomp>
+    vacancy_ids = [(v.vacancy_id,) for v in vacancies]
+                    ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pydantic/main.py", line 991, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'Vacancy' object has no attribute 'vacancy_id'
+Произошла ошибка при поиске: 'Vacancy' object has no attribute 'vacancy_id'
+Тип ошибки: AttributeError
+Traceback (most recent call last):
+  File "/home/runner/workspace/src/ui_interfaces/vacancy_search_handler.py", line 67, in search_vacancies
+    self._handle_search_results(all_vacancies, query)
+  File "/home/runner/workspace/src/ui_interfaces/vacancy_search_handler.py", line 124, in _handle_search_results
+    self._handle_vacancies_preview_and_save(vacancies, query)
+  File "/home/runner/workspace/src/ui_interfaces/vacancy_search_handler.py", line 135, in _handle_vacancies_preview_and_save
+    duplicate_info = self._check_existing_vacancies(vacancies)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/src/ui_interfaces/vacancy_search_handler.py", line 215, in _check_existing_vacancies
+    existence_map = self.storage.check_vacancies_exist_batch(vacancies)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/src/storage/postgres_saver.py", line 1143, in check_vacancies_exist_batch
+    vacancy_ids = [(v.vacancy_id,) for v in vacancies]
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/src/storage/postgres_saver.py", line 1143, in <listcomp>
+    vacancy_ids = [(v.vacancy_id,) for v in vacancies]
+                    ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pydantic/main.py", line 991, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'Vacancy' object has no attribute 'vacancy_id'

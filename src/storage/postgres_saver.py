@@ -1140,7 +1140,7 @@ class PostgresSaver(AbstractVacancyStorage):
             )
 
             # Вставляем все ID для проверки
-            vacancy_ids = [(v.vacancy_id,) for v in vacancies]
+            vacancy_ids = [(v.id,) for v in vacancies]
             from psycopg2.extras import execute_values
 
             execute_values(
