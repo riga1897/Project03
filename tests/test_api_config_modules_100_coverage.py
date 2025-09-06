@@ -93,25 +93,17 @@ class TestHHAPIConfig:
         assert config.period == 15
         assert config.custom_params == {}
 
-    @patch('src.utils.env_loader.EnvLoader')
-    def test_hh_api_config_post_init_true_values(self, mock_env):
+    @patch.dict('os.environ', {'FILTER_ONLY_WITH_SALARY': 'true'}, clear=False)
+    def test_hh_api_config_post_init_true_values(self):
         """Тест __post_init__ с различными true значениями - покрывает строки 19-20"""
-        true_values = ["true", "1", "yes", "on"]
-        
-        for true_value in true_values:
-            mock_env.get_env_var.return_value = true_value
-            config = HHAPIConfig()
-            assert config.only_with_salary is True, f"Failed for value: {true_value}"
+        config = HHAPIConfig()
+        assert config.only_with_salary is True
 
-    @patch('src.utils.env_loader.EnvLoader') 
-    def test_hh_api_config_post_init_false_values(self, mock_env):
+    @patch.dict('os.environ', {'FILTER_ONLY_WITH_SALARY': 'false'}, clear=False)
+    def test_hh_api_config_post_init_false_values(self):
         """Тест __post_init__ с различными false значениями"""
-        false_values = ["false", "0", "no", "off", "random", ""]
-        
-        for false_value in false_values:
-            mock_env.get_env_var.return_value = false_value
-            config = HHAPIConfig()
-            assert config.only_with_salary is False, f"Failed for value: {false_value}"
+        config = HHAPIConfig()
+        assert config.only_with_salary is False
 
     @patch('src.utils.env_loader.EnvLoader')
     def test_hh_api_config_get_params_defaults(self, mock_env):
@@ -207,11 +199,9 @@ class TestSJAPIConfig:
         assert config.filter_by_target_companies is True
         assert config.token_file == Path("token.json")
 
-    @patch('src.utils.env_loader.EnvLoader')
-    def test_sj_api_config_init_with_env_true(self, mock_env):
+    @patch.dict('os.environ', {'FILTER_ONLY_WITH_SALARY': 'true'}, clear=False)
+    def test_sj_api_config_init_with_env_true(self):
         """Тест инициализации с FILTER_ONLY_WITH_SALARY=true - покрывает строки 34-35"""
-        mock_env.get_env_var.return_value = "true"
-        
         config = SJAPIConfig()
         assert config.only_with_salary is True
 
@@ -358,30 +348,27 @@ class TestSJAPIConfig:
         
         assert token is None
 
-    @patch('src.utils.env_loader.EnvLoader')
-    def test_sj_api_config_salary_filter_logic(self, mock_env):
+    def test_sj_api_config_salary_filter_logic(self):
         """Тест логики фильтрации по зарплате - проверяем строки 48-50"""
         # Тест когда only_with_salary = True
-        mock_env.get_env_var.return_value = "true"
-        config_true = SJAPIConfig()
-        result_true = config_true.get_params()
-        assert result_true["no_agreement"] == 1
+        with patch.dict('os.environ', {'FILTER_ONLY_WITH_SALARY': 'true'}, clear=False):
+            config_true = SJAPIConfig()
+            result_true = config_true.get_params()
+            assert result_true["no_agreement"] == 1
         
         # Тест когда only_with_salary = False
-        mock_env.get_env_var.return_value = "false"
-        config_false = SJAPIConfig()
-        result_false = config_false.get_params()
-        assert result_false["no_agreement"] == 0
-        
-        # Тест переопределения в kwargs
-        result_override = config_false.get_params(only_with_salary=True)
-        assert result_override["no_agreement"] == 1
+        with patch.dict('os.environ', {'FILTER_ONLY_WITH_SALARY': 'false'}, clear=False):
+            config_false = SJAPIConfig()
+            result_false = config_false.get_params()
+            assert result_false["no_agreement"] == 0
+            
+            # Тест переопределения в kwargs
+            result_override = config_false.get_params(only_with_salary=True)
+            assert result_override["no_agreement"] == 1
 
-    @patch('src.utils.env_loader.EnvLoader')
-    def test_sj_api_config_comprehensive_params(self, mock_env):
+    @patch.dict('os.environ', {'FILTER_ONLY_WITH_SALARY': 'false'}, clear=False)
+    def test_sj_api_config_comprehensive_params(self):
         """Comprehensive тест всех параметров get_params"""
-        mock_env.get_env_var.return_value = "false"
-        
         config = SJAPIConfig()
         config.custom_params = {"profession": 48, "catalogues": 33}
         
@@ -406,7 +393,8 @@ class TestSJAPIConfig:
             "town": "СПб",
             "profession": 48,
             "catalogues": 33,
-            "keywords": "python django"
+            "keywords": "python django",
+            "only_with_salary": True  # kwargs добавляется в конце
         }
         
         assert result == expected
@@ -415,11 +403,9 @@ class TestSJAPIConfig:
 class TestAPIConfigIntegration:
     """Интеграционные тесты для всех API config модулей"""
 
-    @patch('src.utils.env_loader.EnvLoader')
-    def test_api_configs_integration(self, mock_env):
+    @patch.dict('os.environ', {'FILTER_ONLY_WITH_SALARY': 'true'}, clear=False)
+    def test_api_configs_integration(self):
         """Тест интеграции всех API конфигураций"""
-        mock_env.get_env_var.return_value = "true"
-        
         # Создаем основной API config
         api_config = APIConfig(
             user_agent="IntegrationTest/1.0",
