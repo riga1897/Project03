@@ -22,7 +22,7 @@ from src.config.ui_config import UIConfig, UIPaginationConfig
 from src.vacancies.models import Vacancy, Employer, Salary
 from src.utils.env_loader import EnvLoader
 from src.utils.cache import FileCache
-from src.utils.decorators import exception_handler, retry
+from src.utils.decorators import retry_on_failure, log_errors
 from src.utils.file_handlers import FileHandler
 from src.storage.storage_factory import StorageFactory
 from src.api_modules.cached_api import CachedAPI
@@ -679,38 +679,29 @@ class TestCacheComprehensive:
 class TestDecoratorsComprehensive:
     """Всеобъемлющие тесты для декораторов"""
 
-    def test_exception_handler_success(self):
-        """Тест обработки исключений - успешное выполнение"""
-        @exception_handler(default_return="error")
+    def test_log_errors_decorator_success(self):
+        """Тест декоратора логирования ошибок - успешное выполнение"""
+        @log_errors
         def successful_function():
             return "success"
         
         result = successful_function()
         assert result == "success"
 
-    def test_exception_handler_with_exception(self):
-        """Тест обработки исключений - с исключением"""
-        @exception_handler(default_return="error")
+    def test_log_errors_decorator_with_exception(self):
+        """Тест декоратора логирования ошибок - с исключением"""
+        @log_errors
         def failing_function():
             raise ValueError("Test error")
         
-        result = failing_function()
-        assert result == "error"
+        with pytest.raises(ValueError, match="Test error"):
+            failing_function()
 
-    def test_exception_handler_custom_default(self):
-        """Тест обработки исключений с пользовательским значением по умолчанию"""
-        @exception_handler(default_return=None)
-        def failing_function():
-            raise RuntimeError("Test error")
-        
-        result = failing_function()
-        assert result is None
-
-    def test_retry_decorator_success_first_try(self):
-        """Тест retry декоратора - успех с первой попытки"""
+    def test_retry_on_failure_success_first_try(self):
+        """Тест retry_on_failure декоратора - успех с первой попытки"""
         call_count = 0
         
-        @retry(max_attempts=3, delay=0.1)
+        @retry_on_failure(max_attempts=3, delay=0.1)
         def successful_function():
             nonlocal call_count
             call_count += 1
@@ -720,11 +711,11 @@ class TestDecoratorsComprehensive:
         assert result == "success"
         assert call_count == 1
 
-    def test_retry_decorator_success_after_retries(self):
-        """Тест retry декоратора - успех после нескольких попыток"""
+    def test_retry_on_failure_success_after_retries(self):
+        """Тест retry_on_failure декоратора - успех после нескольких попыток"""
         call_count = 0
         
-        @retry(max_attempts=3, delay=0.01)
+        @retry_on_failure(max_attempts=3, delay=0.01)
         def eventually_successful_function():
             nonlocal call_count
             call_count += 1
@@ -736,11 +727,11 @@ class TestDecoratorsComprehensive:
         assert result == "success"
         assert call_count == 3
 
-    def test_retry_decorator_max_attempts_exceeded(self):
-        """Тест retry декоратора - превышение максимального количества попыток"""
+    def test_retry_on_failure_max_attempts_exceeded(self):
+        """Тест retry_on_failure декоратора - превышение максимального количества попыток"""
         call_count = 0
         
-        @retry(max_attempts=2, delay=0.01)
+        @retry_on_failure(max_attempts=2, delay=0.01)
         def always_failing_function():
             nonlocal call_count
             call_count += 1
@@ -750,6 +741,52 @@ class TestDecoratorsComprehensive:
             always_failing_function()
         
         assert call_count == 2
+
+    def test_simple_cache_decorator_functionality(self):
+        """Тест декоратора simple_cache"""
+        from src.utils.decorators import simple_cache
+        
+        call_count = 0
+        
+        @simple_cache(ttl=60, max_size=100)
+        def cached_function(x):
+            nonlocal call_count
+            call_count += 1
+            return x * x
+        
+        # Первый вызов
+        result1 = cached_function(5)
+        assert result1 == 25
+        assert call_count == 1
+        
+        # Второй вызов - должен использовать кэш
+        result2 = cached_function(5)
+        assert result2 == 25
+        assert call_count == 1  # Функция не должна вызываться повторно
+        
+        # Проверяем информацию о кэше
+        if hasattr(cached_function, 'cache_info'):
+            info = cached_function.cache_info()
+            assert isinstance(info, dict)
+        
+        # Очищаем кэш
+        if hasattr(cached_function, 'clear_cache'):
+            cached_function.clear_cache()
+
+    def test_time_execution_decorator(self):
+        """Тест декоратора time_execution"""
+        from src.utils.decorators import time_execution
+        
+        @time_execution
+        def timed_function():
+            import time
+            time.sleep(0.01)
+            return "completed"
+        
+        with patch('builtins.print') as mock_print:
+            result = timed_function()
+            assert result == "completed"
+            mock_print.assert_called()
 
 
 class TestFileHandlerComprehensive:
@@ -1228,13 +1265,17 @@ class TestIntegrationComprehensive:
 
     def test_error_handling_integration(self):
         """Тест интеграции обработки ошибок между компонентами"""
-        @exception_handler(default_return=[])
+        @log_errors
         def failing_operation():
             raise ValueError("Integration test error")
         
-        @retry(max_attempts=2, delay=0.01)
+        @retry_on_failure(max_attempts=2, delay=0.01)
         def retrying_operation():
-            return failing_operation()
+            try:
+                failing_operation()
+                return "success"
+            except ValueError:
+                return []
         
         # Декораторы должны работать вместе
         result = retrying_operation()
