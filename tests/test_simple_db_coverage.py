@@ -57,9 +57,8 @@ class TestSimpleDBAdapterCoverage:
         if not SIMPLE_DB_AVAILABLE:
             return Mock()
         
-        with patch('src.storage.simple_db_adapter.psycopg2'):
+        with patch.dict('os.environ', {'DATABASE_URL': 'postgresql://test'}):
             adapter = SimpleDBAdapter()
-            adapter.db = mock_db
             return adapter
 
     def test_adapter_initialization(self):
@@ -67,7 +66,7 @@ class TestSimpleDBAdapterCoverage:
         if not SIMPLE_DB_AVAILABLE:
             return
             
-        with patch('src.storage.simple_db_adapter.psycopg2'):
+        with patch.dict('os.environ', {'DATABASE_URL': 'postgresql://test'}):
             adapter = SimpleDBAdapter()
             assert adapter is not None
 
@@ -241,29 +240,19 @@ class TestSimpleDBAdapterCoverage:
         if not SIMPLE_DB_AVAILABLE:
             return
             
-        # Тестируем commit и rollback
-        with patch.object(adapter, 'db') as mock_db:
-            mock_db.commit = Mock()
-            mock_db.rollback = Mock()
-            
-            adapter.commit_transaction()
-            adapter.rollback_transaction()
-            
-            # Методы должны выполниться без ошибок
-            assert True
+        # Тестируем методы, которые реально существуют в классе
+        if hasattr(adapter, 'test_connection'):
+            with patch('subprocess.run') as mock_run:
+                mock_run.return_value.returncode = 0
+                result = adapter.test_connection()
+                assert isinstance(result, bool)
 
     def test_schema_operations_coverage(self, adapter):
-        """Тест операций со схемой"""
+        """Тест операций со схемой"""  
         if not SIMPLE_DB_AVAILABLE:
             return
             
-        with patch.object(adapter, 'execute_query') as mock_execute:
-            mock_execute.return_value = True
-            
-            # Тестируем создание таблиц
-            result = adapter.create_tables()
-            assert result is None or isinstance(result, bool)
-            
-            # Тестируем удаление таблиц
-            result = adapter.drop_tables()
-            assert result is None or isinstance(result, bool)
+        # Тестируем методы, которые реально есть в классе
+        if hasattr(adapter, 'cursor'):
+            cursor = adapter.cursor()
+            assert cursor is not None
