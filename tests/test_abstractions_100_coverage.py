@@ -114,6 +114,10 @@ class TestAbstractExperience:
             @classmethod
             def from_dict(cls, data):
                 return cls()
+            
+            @classmethod
+            def from_string(cls, data):
+                return cls()
         
         experience = ConcreteExperience()
         assert experience.get_name() == "От 1 года до 3 лет"
@@ -146,6 +150,10 @@ class TestAbstractEmployment:
             
             @classmethod
             def from_dict(cls, data):
+                return cls()
+            
+            @classmethod
+            def from_string(cls, data):
                 return cls()
         
         employment = ConcreteEmployment()
@@ -192,6 +200,18 @@ class TestAbstractSalary:
             
             def compare(self, other):
                 return 0
+            
+            def get_from_amount(self):
+                return 100000
+            
+            def get_to_amount(self):
+                return 150000
+            
+            def get_average(self):
+                return 125000
+            
+            def is_specified(self):
+                return True
         
         salary = ConcreteSalary()
         assert salary.get_from() == 100000
@@ -275,6 +295,24 @@ class TestAbstractDBManager:
             
             def execute_query(self, query, params=None):
                 return []
+            
+            def get_companies_and_vacancies_count(self):
+                return [("Company A", 5), ("Company B", 3)]
+            
+            def get_all_vacancies(self):
+                return [{"id": "1", "title": "Test"}]
+            
+            def get_avg_salary(self):
+                return 120000.0
+            
+            def get_vacancies_with_higher_salary(self):
+                return [{"id": "2", "salary": 150000}]
+            
+            def get_vacancies_with_keyword(self, keyword):
+                return [{"id": "3", "title": f"Job with {keyword}"}]
+            
+            def get_database_stats(self):
+                return {"total_vacancies": 10, "total_companies": 2}
         
         db_manager = ConcreteDBManager()
         
@@ -355,6 +393,12 @@ class TestAbstractDataFilter:
                             continue
                     filtered.append(item)
                 return filtered
+            
+            def filter_by_location(self, data, locations):
+                return [item for item in data if any(loc.lower() in str(item).lower() for loc in locations)]
+            
+            def filter_by_experience(self, data, experience_levels):
+                return [item for item in data if any(exp.lower() in str(item).lower() for exp in experience_levels)]
         
         filter_obj = ConcreteDataFilter()
         
@@ -414,6 +458,10 @@ class TestAbstractClassIntegration:
             @classmethod
             def from_dict(cls, data): return cls()
             def compare(self, other): return 0
+            def get_from_amount(self): return 100000
+            def get_to_amount(self): return 150000
+            def get_average(self): return 125000
+            def is_specified(self): return True
         
         # Тестируем композицию
         vacancy = TestVacancy()
