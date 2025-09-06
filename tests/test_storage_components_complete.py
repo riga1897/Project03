@@ -87,10 +87,15 @@ class TestDBManager:
         if not STORAGE_COMPONENTS_AVAILABLE:
             pytest.skip("Storage components not available")
 
-        mock_cursor = Mock()
+        mock_cursor = MagicMock()
         mock_cursor.fetchall.return_value = [('test',)]
-        mock_connection = Mock()
-        mock_connection.cursor.return_value.__enter__.return_value = mock_cursor
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
+        
+        mock_connection = MagicMock()
+        mock_connection.cursor.return_value = mock_cursor
+        mock_connection.__enter__ = Mock(return_value=mock_connection)
+        mock_connection.__exit__ = Mock(return_value=None)
         mock_connect.return_value = mock_connection
 
         if hasattr(db_manager, 'execute_query'):
@@ -123,9 +128,14 @@ class TestPostgresSaver:
         if not STORAGE_COMPONENTS_AVAILABLE:
             pytest.skip("Storage components not available")
 
-        mock_cursor = Mock()
-        mock_connection = Mock()
-        mock_connection.cursor.return_value.__enter__.return_value = mock_cursor
+        mock_cursor = MagicMock()
+        mock_cursor.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor.__exit__ = Mock(return_value=None)
+        
+        mock_connection = MagicMock()
+        mock_connection.cursor.return_value = mock_cursor
+        mock_connection.__enter__ = Mock(return_value=mock_connection)
+        mock_connection.__exit__ = Mock(return_value=None)
         mock_connect.return_value = mock_connection
 
         vacancy_data = {
