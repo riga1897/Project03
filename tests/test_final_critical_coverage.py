@@ -15,9 +15,10 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 # Импорты для компонентов с низким покрытием из отчета
 try:
-    PostgresSaver = Mock
+    from src.storage.postgres_saver import PostgresSaver
     POSTGRES_SAVER_AVAILABLE = True
 except ImportError:
+    PostgresSaver = Mock
     POSTGRES_SAVER_AVAILABLE = False
 
 try:
@@ -27,9 +28,10 @@ except ImportError:
     SIMPLE_DB_ADAPTER_AVAILABLE = False
 
 try:
-    DBManager = Mock
+    from src.storage.db_manager import DBManager
     DB_MANAGER_AVAILABLE = True
 except ImportError:
+    DBManager = Mock
     DB_MANAGER_AVAILABLE = False
 
 try:

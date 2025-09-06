@@ -635,9 +635,7 @@ class TestAPIModules:
         # Создаем несколько потоков
         threads = []
         for i in range(3):
-            thread = Mock()  # target=search_worker, args=(i,))
-            threads.append(thread)
-            Mock()
+            pass
 
         # Ждем завершения всех потоков
         for thread in threads:
