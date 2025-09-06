@@ -1,0 +1,500 @@
+
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 27 items                                                         
+
+tests/test_advanced_integration_coverage.py .FF..F.FFF.F...FF....... [ 88%]
+FFF                                                                  [100%]
+
+================================= FAILURES =================================
+_______ TestPostgresSaverAdvancedCoverage.test_save_vacancies_method _______
+
+self = <tests.test_advanced_integration_coverage.TestPostgresSaverAdvancedCoverage object at 0x7fbd3544d310>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7fbd3532fa10>
+mock_db_connection = (<Mock id='140450618101648'>, <Mock id='140450619245200'>)
+
+    def test_save_vacancies_method(self, postgres_saver, mock_db_connection):
+        """Тест метода сохранения вакансий"""
+        mock_conn, mock_cursor = mock_db_connection
+    
+        test_vacancies = [
+            {'id': 'pg1', 'title': 'Python Developer', 'company': 'TechCorp'},
+            {'id': 'pg2', 'title': 'Java Developer', 'company': 'DevCorp'}
+        ]
+    
+        with patch.object(postgres_saver, '_get_connection', return_value=mock_conn):
+>           result = postgres_saver.save_vacancies(test_vacancies)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/home/runner/workspace/tests/test_advanced_integration_coverage.py:156: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/home/runner/workspace/tests/../src/storage/postgres_saver.py:707: in save_vacancies
+    update_messages = self.add_vacancy_batch_optimized(vacancies)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7fbd3532fa10>
+vacancies = [{'company': 'TechCorp', 'id': 'pg1', 'title': 'Python Developer'}, {'company': 'DevCorp', 'id': 'pg2', 'title': 'Java Developer'}]
+search_query = None
+
+    def add_vacancy_batch_optimized(
+        self, vacancies: Union[Vacancy, List[Vacancy]], search_query: str = None
+    ) -> List[str]:
+        """
+        Максимально оптимизированное batch-добавление вакансий через временные таблицы.
+        Использует SQL для всех операций, минимизирует количество запросов.
+        """
+        if not isinstance(vacancies, list):
+            vacancies = [vacancies]
+    
+        # Исправляем двойную вложенность списков
+        if len(vacancies) == 1 and isinstance(vacancies[0], list):
+            vacancies = vacancies[0]
+            logger.debug(f"Исправлена двойная вложенность списка: получено {len(vacancies)} вакансий")
+    
+        if not vacancies:
+            return []
+    
+        connection = self._get_connection()
+        update_messages: List[str] = []
+    
+        try:
+            cursor = connection.cursor()
+    
+            # Создаем временную таблицу с такой же структурой как основная таблица vacancies
+            cursor.execute(
+                """
+                CREATE TEMP TABLE temp_new_vacancies AS
+                SELECT * FROM vacancies WHERE 1=0
+            """
+            )
+    
+            # Получаем сопоставление компаний только по ID
+            cursor.execute(
+                """
+                SELECT id, name, hh_id, sj_id
+                FROM companies
+            """
+            )
+    
+            company_id_mapping = {}  # hh_id/sj_id -> company_id
+    
+            results = cursor.fetchall()
+>           for row in results:
+E           TypeError: 'Mock' object is not iterable
+
+/home/runner/workspace/tests/../src/storage/postgres_saver.py:373: TypeError
+______ TestPostgresSaverAdvancedCoverage.test_batch_optimized_method _______
+
+self = <tests.test_advanced_integration_coverage.TestPostgresSaverAdvancedCoverage object at 0x7fbd3544d950>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7fbd353d5f10>
+mock_db_connection = (<Mock id='140450641704400'>, <Mock id='140450619020304'>)
+
+    def test_batch_optimized_method(self, postgres_saver, mock_db_connection):
+        """Тест оптимизированного batch метода"""
+        mock_conn, mock_cursor = mock_db_connection
+    
+        batch_vacancies = [
+            {'id': f'batch_{i}', 'title': f'Job {i}', 'company': f'Company {i}'}
+            for i in range(10)
+        ]
+    
+        with patch.object(postgres_saver, '_get_connection', return_value=mock_conn):
+            if hasattr(postgres_saver, 'add_vacancy_batch_optimized'):
+>               result = postgres_saver.add_vacancy_batch_optimized(batch_vacancies)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/home/runner/workspace/tests/test_advanced_integration_coverage.py:170: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7fbd353d5f10>
+vacancies = [{'company': 'Company 0', 'id': 'batch_0', 'title': 'Job 0'}, {'company': 'Company 1', 'id': 'batch_1', 'title': 'Job ...ny': 'Company 4', 'id': 'batch_4', 'title': 'Job 4'}, {'company': 'Company 5', 'id': 'batch_5', 'title': 'Job 5'}, ...]
+search_query = None
+
+    def add_vacancy_batch_optimized(
+        self, vacancies: Union[Vacancy, List[Vacancy]], search_query: str = None
+    ) -> List[str]:
+        """
+        Максимально оптимизированное batch-добавление вакансий через временные таблицы.
+        Использует SQL для всех операций, минимизирует количество запросов.
+        """
+        if not isinstance(vacancies, list):
+            vacancies = [vacancies]
+    
+        # Исправляем двойную вложенность списков
+        if len(vacancies) == 1 and isinstance(vacancies[0], list):
+            vacancies = vacancies[0]
+            logger.debug(f"Исправлена двойная вложенность списка: получено {len(vacancies)} вакансий")
+    
+        if not vacancies:
+            return []
+    
+        connection = self._get_connection()
+        update_messages: List[str] = []
+    
+        try:
+            cursor = connection.cursor()
+    
+            # Создаем временную таблицу с такой же структурой как основная таблица vacancies
+            cursor.execute(
+                """
+                CREATE TEMP TABLE temp_new_vacancies AS
+                SELECT * FROM vacancies WHERE 1=0
+            """
+            )
+    
+            # Получаем сопоставление компаний только по ID
+            cursor.execute(
+                """
+                SELECT id, name, hh_id, sj_id
+                FROM companies
+            """
+            )
+    
+            company_id_mapping = {}  # hh_id/sj_id -> company_id
+    
+            results = cursor.fetchall()
+>           for row in results:
+E           TypeError: 'Mock' object is not iterable
+
+/home/runner/workspace/tests/../src/storage/postgres_saver.py:373: TypeError
+__ TestPostgresSaverAdvancedCoverage.test_postgres_large_batch_operations __
+
+self = <tests.test_advanced_integration_coverage.TestPostgresSaverAdvancedCoverage object at 0x7fbd3544ee10>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7fbd3503bc90>
+mock_db_connection = (<Mock id='140450615038480'>, <Mock id='140450615490640'>)
+
+    def test_postgres_large_batch_operations(self, postgres_saver, mock_db_connection):
+        """Тест обработки больших пакетов данных"""
+        mock_conn, mock_cursor = mock_db_connection
+    
+        large_batch = [
+            {'id': f'large_{i}', 'title': f'Large Job {i}'}
+            for i in range(100)  # Уменьшил размер для быстроты
+        ]
+    
+        with patch.object(postgres_saver, '_get_connection', return_value=mock_conn):
+>           result = postgres_saver.save_vacancies(large_batch)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/home/runner/workspace/tests/test_advanced_integration_coverage.py:208: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/home/runner/workspace/tests/../src/storage/postgres_saver.py:707: in save_vacancies
+    update_messages = self.add_vacancy_batch_optimized(vacancies)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7fbd3503bc90>
+vacancies = [{'id': 'large_0', 'title': 'Large Job 0'}, {'id': 'large_1', 'title': 'Large Job 1'}, {'id': 'large_2', 'title': 'Lar...3', 'title': 'Large Job 3'}, {'id': 'large_4', 'title': 'Large Job 4'}, {'id': 'large_5', 'title': 'Large Job 5'}, ...]
+search_query = None
+
+    def add_vacancy_batch_optimized(
+        self, vacancies: Union[Vacancy, List[Vacancy]], search_query: str = None
+    ) -> List[str]:
+        """
+        Максимально оптимизированное batch-добавление вакансий через временные таблицы.
+        Использует SQL для всех операций, минимизирует количество запросов.
+        """
+        if not isinstance(vacancies, list):
+            vacancies = [vacancies]
+    
+        # Исправляем двойную вложенность списков
+        if len(vacancies) == 1 and isinstance(vacancies[0], list):
+            vacancies = vacancies[0]
+            logger.debug(f"Исправлена двойная вложенность списка: получено {len(vacancies)} вакансий")
+    
+        if not vacancies:
+            return []
+    
+        connection = self._get_connection()
+        update_messages: List[str] = []
+    
+        try:
+            cursor = connection.cursor()
+    
+            # Создаем временную таблицу с такой же структурой как основная таблица vacancies
+            cursor.execute(
+                """
+                CREATE TEMP TABLE temp_new_vacancies AS
+                SELECT * FROM vacancies WHERE 1=0
+            """
+            )
+    
+            # Получаем сопоставление компаний только по ID
+            cursor.execute(
+                """
+                SELECT id, name, hh_id, sj_id
+                FROM companies
+            """
+            )
+    
+            company_id_mapping = {}  # hh_id/sj_id -> company_id
+    
+            results = cursor.fetchall()
+>           for row in results:
+E           TypeError: 'Mock' object is not iterable
+
+/home/runner/workspace/tests/../src/storage/postgres_saver.py:373: TypeError
+__________ TestEnvLoaderAdvancedCoverage.test_env_loader_get_var ___________
+
+self = <tests.test_advanced_integration_coverage.TestEnvLoaderAdvancedCoverage object at 0x7fbd3544fdd0>
+
+    def test_env_loader_get_var(self):
+        """Тест получения переменных окружения"""
+        if not ENV_LOADER_AVAILABLE:
+            env_loader = EnvLoader()
+        else:
+            env_loader = EnvLoader()
+    
+        test_vars = [
+            ('DATABASE_URL', 'postgresql://localhost/test'),
+            ('API_KEY', 'test_key_123'),
+            ('DEBUG', 'True'),
+            ('NONEXISTENT_VAR', None)
+        ]
+    
+        for var_name, expected in test_vars:
+            with patch.dict(os.environ, {var_name: expected} if expected else {}, clear=False):
+>               result = env_loader.get_var(var_name, 'default_value')
+                         ^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'EnvLoader' object has no attribute 'get_var'
+
+/home/runner/workspace/tests/test_advanced_integration_coverage.py:250: AttributeError
+________ TestEnvLoaderAdvancedCoverage.test_env_loader_load_dotenv _________
+
+self = <tests.test_advanced_integration_coverage.TestEnvLoaderAdvancedCoverage object at 0x7fbd35454490>
+
+    def test_env_loader_load_dotenv(self):
+        """Тест загрузки .env файла"""
+        if not ENV_LOADER_AVAILABLE:
+            env_loader = EnvLoader()
+        else:
+            env_loader = EnvLoader()
+    
+        with patch('dotenv.load_dotenv', return_value=True):
+>           env_loader.load_dotenv()
+            ^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'EnvLoader' object has no attribute 'load_dotenv'
+
+/home/runner/workspace/tests/test_advanced_integration_coverage.py:261: AttributeError
+_______ TestEnvLoaderAdvancedCoverage.test_env_loader_with_defaults ________
+
+self = <tests.test_advanced_integration_coverage.TestEnvLoaderAdvancedCoverage object at 0x7fbd35454b50>
+
+    def test_env_loader_with_defaults(self):
+        """Тест EnvLoader с значениями по умолчанию"""
+        if not ENV_LOADER_AVAILABLE:
+            env_loader = EnvLoader()
+        else:
+            env_loader = EnvLoader()
+    
+        test_cases = [
+            ('MISSING_VAR', 'default_value', 'default_value'),
+            ('EMPTY_VAR', '', ''),
+            ('NONE_VAR', None, None)
+        ]
+    
+        for var_name, env_value, default in test_cases:
+            env_dict = {var_name: env_value} if env_value is not None else {}
+            with patch.dict(os.environ, env_dict, clear=False):
+>               result = env_loader.get_var(var_name, default)
+                         ^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'EnvLoader' object has no attribute 'get_var'
+
+/home/runner/workspace/tests/test_advanced_integration_coverage.py:280: AttributeError
+_______ TestFileHandlerAdvancedCoverage.test_file_handler_read_json ________
+
+self = <tests.test_advanced_integration_coverage.TestFileHandlerAdvancedCoverage object at 0x7fbd35455990>
+
+    def test_file_handler_read_json(self):
+        """Тест чтения JSON файлов"""
+        if not FILE_HANDLER_AVAILABLE:
+            file_handler = FileHandler()
+        else:
+            file_handler = FileHandler()
+    
+        test_data = {'key': 'value', 'number': 123}
+    
+        with patch('builtins.open', mock_open(read_data=json.dumps(test_data))):
+            with patch('json.load', return_value=test_data):
+                result = file_handler.read_json('test.json')
+>               assert result == test_data
+E               AssertionError: assert {} == {'key': 'valu...'number': 123}
+E                 
+E                 Right contains 2 more items:
+E                 {'key': 'value', 'number': 123}
+E                 Use -v to get more diff
+
+/home/runner/workspace/tests/test_advanced_integration_coverage.py:312: AssertionError
+______ TestVacancyStatsAdvancedCoverage.test_calculate_average_salary ______
+
+self = <tests.test_advanced_integration_coverage.TestVacancyStatsAdvancedCoverage object at 0x7fbd354568d0>
+sample_vacancies_for_stats = [{'id': 'stat1', 'location': 'Москва', 'salary_from': 80000, 'salary_to': 120000}, {'id': 'stat2', 'location': 'СПб', ...alary_from': 60000, 'salary_to': 90000}, {'id': 'stat4', 'location': 'Казань', 'salary_from': None, 'salary_to': None}]
+
+    def test_calculate_average_salary(self, sample_vacancies_for_stats):
+        """Тест расчета средней зарплаты"""
+        if not VACANCY_STATS_AVAILABLE:
+            stats = VacancyStats()
+        else:
+            stats = VacancyStats()
+    
+>       avg_salary = stats.calculate_average_salary(sample_vacancies_for_stats)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'VacancyStats' object has no attribute 'calculate_average_salary'
+
+/home/runner/workspace/tests/test_advanced_integration_coverage.py:388: AttributeError
+______ TestVacancyStatsAdvancedCoverage.test_get_salary_distribution _______
+
+self = <tests.test_advanced_integration_coverage.TestVacancyStatsAdvancedCoverage object at 0x7fbd35456c50>
+sample_vacancies_for_stats = [{'id': 'stat1', 'location': 'Москва', 'salary_from': 80000, 'salary_to': 120000}, {'id': 'stat2', 'location': 'СПб', ...alary_from': 60000, 'salary_to': 90000}, {'id': 'stat4', 'location': 'Казань', 'salary_from': None, 'salary_to': None}]
+
+    def test_get_salary_distribution(self, sample_vacancies_for_stats):
+        """Тест получения распределения зарплат"""
+        if not VACANCY_STATS_AVAILABLE:
+            stats = VacancyStats()
+        else:
+            stats = VacancyStats()
+    
+>       distribution = stats.get_salary_distribution(sample_vacancies_for_stats)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'VacancyStats' object has no attribute 'get_salary_distribution'
+
+/home/runner/workspace/tests/test_advanced_integration_coverage.py:398: AttributeError
+________ TestCompleteSystemIntegration.test_complete_data_pipeline _________
+
+self = <tests.test_advanced_integration_coverage.TestCompleteSystemIntegration object at 0x7fbd35465b90>
+
+    def test_complete_data_pipeline(self):
+        """Тест полного конвейера обработки данных"""
+        # Инициализация всех компонентов с мокированием
+        if POSTGRES_SAVER_AVAILABLE:
+            with patch('psycopg2.connect'):
+                postgres_saver = PostgresSaver()
+        else:
+            postgres_saver = PostgresSaver()
+    
+        env_loader = EnvLoader() if ENV_LOADER_AVAILABLE else EnvLoader()
+        file_handler = FileHandler() if FILE_HANDLER_AVAILABLE else FileHandler()
+        vacancy_stats = VacancyStats() if VACANCY_STATS_AVAILABLE else VacancyStats()
+    
+        if HH_API_AVAILABLE:
+            with patch('requests.get'):
+                hh_api = HHAPI()
+        else:
+            hh_api = HHAPI()
+    
+        # Полный конвейер обработки данных
+        with patch.dict(os.environ, {'API_KEY': 'test_key'}):
+            with patch('builtins.open', mock_open()):
+                with patch('json.load', return_value={}):
+                    with patch('json.dump'):
+                        # 1. Загружаем конфигурацию
+>                       env_loader.load_dotenv()
+                        ^^^^^^^^^^^^^^^^^^^^^^
+E                       AttributeError: 'EnvLoader' object has no attribute 'load_dotenv'
+
+/home/runner/workspace/tests/test_advanced_integration_coverage.py:543: AttributeError
+___________ TestCompleteSystemIntegration.test_system_resilience ___________
+
+self = <tests.test_advanced_integration_coverage.TestCompleteSystemIntegration object at 0x7fbd35466190>
+
+    def test_system_resilience(self):
+        """Тест устойчивости системы к ошибкам"""
+        # Инициализация компонентов
+        if POSTGRES_SAVER_AVAILABLE:
+            with patch('psycopg2.connect'):
+                postgres_saver = PostgresSaver()
+        else:
+            postgres_saver = PostgresSaver()
+    
+        env_loader = EnvLoader() if ENV_LOADER_AVAILABLE else EnvLoader()
+        file_handler = FileHandler() if FILE_HANDLER_AVAILABLE else FileHandler()
+    
+        # Сценарий с множественными ошибками
+>       with patch.object(env_loader, 'load_dotenv', side_effect=Exception("Env error")):
+
+/home/runner/workspace/tests/test_advanced_integration_coverage.py:581: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7fbd3595ae10>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <src.utils.env_loader.EnvLoader object at 0x7fbd3595b3d0> does not have the attribute 'load_dotenv'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+__ TestCompleteSystemIntegration.test_data_consistency_across_components ___
+
+self = <tests.test_advanced_integration_coverage.TestCompleteSystemIntegration object at 0x7fbd35466790>
+
+    def test_data_consistency_across_components(self):
+        """Тест консистентности данных между компонентами"""
+        test_data = [
+            {'id': 'cons1', 'title': 'Consistency Test 1', 'salary_from': 100000},
+            {'id': 'cons2', 'title': 'Consistency Test 2', 'salary_from': 120000}
+        ]
+    
+        if POSTGRES_SAVER_AVAILABLE:
+            with patch('psycopg2.connect'):
+                postgres_saver = PostgresSaver()
+        else:
+            postgres_saver = PostgresSaver()
+    
+        file_handler = FileHandler() if FILE_HANDLER_AVAILABLE else FileHandler()
+        vacancy_stats = VacancyStats() if VACANCY_STATS_AVAILABLE else VacancyStats()
+    
+        with patch('builtins.open', mock_open()):
+            with patch('json.dump'):
+                with patch('json.load', return_value=test_data):
+                    with patch.object(postgres_saver, 'save_vacancies', return_value=[]):
+                        # Сохраняем в файл
+                        file_handler.write_json('consistency_test.json', test_data)
+    
+                        # Читаем из файла
+                        file_data = file_handler.read_json('consistency_test.json')
+    
+                        # Рассчитываем статистику
+>                       avg_salary = vacancy_stats.calculate_average_salary(file_data)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                       AttributeError: 'VacancyStats' object has no attribute 'calculate_average_salary'
+
+/home/runner/workspace/tests/test_advanced_integration_coverage.py:621: AttributeError
+========================= short test summary info ==========================
+FAILED tests/test_advanced_integration_coverage.py::TestPostgresSaverAdvancedCoverage::test_save_vacancies_method - TypeError: 'Mock' object is not iterable
+FAILED tests/test_advanced_integration_coverage.py::TestPostgresSaverAdvancedCoverage::test_batch_optimized_method - TypeError: 'Mock' object is not iterable
+FAILED tests/test_advanced_integration_coverage.py::TestPostgresSaverAdvancedCoverage::test_postgres_large_batch_operations - TypeError: 'Mock' object is not iterable
+FAILED tests/test_advanced_integration_coverage.py::TestEnvLoaderAdvancedCoverage::test_env_loader_get_var - AttributeError: 'EnvLoader' object has no attribute 'get_var'
+FAILED tests/test_advanced_integration_coverage.py::TestEnvLoaderAdvancedCoverage::test_env_loader_load_dotenv - AttributeError: 'EnvLoader' object has no attribute 'load_dotenv'
+FAILED tests/test_advanced_integration_coverage.py::TestEnvLoaderAdvancedCoverage::test_env_loader_with_defaults - AttributeError: 'EnvLoader' object has no attribute 'get_var'
+FAILED tests/test_advanced_integration_coverage.py::TestFileHandlerAdvancedCoverage::test_file_handler_read_json - AssertionError: assert {} == {'key': 'valu...'number': 123}
+FAILED tests/test_advanced_integration_coverage.py::TestVacancyStatsAdvancedCoverage::test_calculate_average_salary - AttributeError: 'VacancyStats' object has no attribute 'calculate_avera...
+FAILED tests/test_advanced_integration_coverage.py::TestVacancyStatsAdvancedCoverage::test_get_salary_distribution - AttributeError: 'VacancyStats' object has no attribute 'get_salary_dist...
+FAILED tests/test_advanced_integration_coverage.py::TestCompleteSystemIntegration::test_complete_data_pipeline - AttributeError: 'EnvLoader' object has no attribute 'load_dotenv'
+FAILED tests/test_advanced_integration_coverage.py::TestCompleteSystemIntegration::test_system_resilience - AttributeError: <src.utils.env_loader.EnvLoader object at 0x7fbd3595b3d...
+FAILED tests/test_advanced_integration_coverage.py::TestCompleteSystemIntegration::test_data_consistency_across_components - AttributeError: 'VacancyStats' object has no attribute 'calculate_avera...
+====================== 12 failed, 15 passed in 0.72s =======================
+~/workspace$ 
