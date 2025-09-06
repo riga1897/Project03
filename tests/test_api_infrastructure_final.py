@@ -267,7 +267,8 @@ class TestCachedAPICore:
     def cached_api(self):
         if not CACHED_API_AVAILABLE:
             return Mock()
-        return CachedAPI()
+        # CachedAPI - абстрактный класс, используем Mock вместо прямой инстанциации
+        return Mock(spec=CachedAPI)
 
     @patch('src.utils.cache.FileCache.load_response')
     @patch('src.utils.cache.FileCache.save_response')
