@@ -471,6 +471,44 @@ class TestVacancyValidator:
         errors = validator.get_validation_errors()
         assert any("Неверный тип" in error for error in errors)
 
+    def test_validate_data_types_optional_wrong_type(self):
+        """Тест валидации опциональных полей с неверным типом"""
+        validator = VacancyValidator()
+        
+        mock_vacancy = MockVacancy(
+            vacancy_id="123",
+            title="Python Developer", 
+            url="https://example.com/job/123",
+            requirements=123  # Должен быть str или None, а не int
+        )
+        
+        # Вызываем _validate_data_types напрямую для покрытия строки 99
+        result = validator._validate_data_types(mock_vacancy)
+        assert result is False
+        errors = validator.get_validation_errors()
+        assert any("requirements" in error and "Неверный тип" in error for error in errors)
+
+    def test_validate_data_types_early_return(self):
+        """Тест досрочного возврата в _validate_data_types при первой ошибке"""
+        validator = VacancyValidator()
+        
+        # Создаем вакансию с несколькими неверными типами опциональных полей
+        mock_vacancy = MockVacancy(
+            vacancy_id="123",
+            title="Python Developer",
+            url="https://example.com/job/123", 
+            requirements=123,  # Неверный тип - int вместо str/None
+            responsibilities=456  # Тоже неверный тип
+        )
+        
+        # Вызываем напрямую для покрытия строки 62 (return False)
+        result = validator._validate_data_types(mock_vacancy)
+        assert result is False
+        
+        # Проверяем что есть ошибки валидации
+        errors = validator.get_validation_errors()
+        assert len(errors) > 0
+
     def test_validate_vacancy_invalid_url(self):
         """Тест валидации вакансии с невалидным URL"""
         validator = VacancyValidator()
