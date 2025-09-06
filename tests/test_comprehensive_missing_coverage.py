@@ -21,7 +21,7 @@ from src.storage.simple_db_adapter import SimpleDBAdapter
 from src.config.ui_config import UIConfig, UIPaginationConfig
 from src.vacancies.models import Vacancy, Employer, Salary
 from src.utils.env_loader import EnvLoader
-from src.utils.cache import Cache
+from src.utils.cache import FileCache
 from src.utils.decorators import exception_handler, retry
 from src.utils.file_handlers import FileHandler
 from src.storage.storage_factory import StorageFactory
@@ -541,7 +541,7 @@ class TestUIConfigComprehensive:
 
 
 class TestCacheComprehensive:
-    """Всеобъемлющие тесты для Cache"""
+    """Всеобъемлющие тесты для FileCache"""
 
     @pytest.fixture
     def cache_dir(self):
@@ -551,55 +551,65 @@ class TestCacheComprehensive:
 
     @pytest.fixture
     def cache(self, cache_dir):
-        """Фикстура для Cache"""
-        return Cache(cache_dir)
+        """Фикстура для FileCache"""
+        return FileCache(cache_dir)
 
     def test_cache_initialization(self, cache_dir):
         """Тест инициализации кэша"""
-        cache = Cache(cache_dir)
+        cache = FileCache(cache_dir)
         
-        assert cache.cache_dir == cache_dir
+        assert cache.cache_dir.name == os.path.basename(cache_dir)
         assert os.path.exists(cache_dir)
 
     def test_cache_initialization_creates_directory(self):
         """Тест создания директории при инициализации"""
         with tempfile.TemporaryDirectory() as temp_dir:
             cache_path = os.path.join(temp_dir, "new_cache")
-            cache = Cache(cache_path)
+            cache = FileCache(cache_path)
             
             assert os.path.exists(cache_path)
 
-    def test_get_cache_key(self, cache):
-        """Тест генерации ключа кэша"""
-        key1 = cache.get_cache_key("test_query", page=1)
-        key2 = cache.get_cache_key("test_query", page=2)
-        key3 = cache.get_cache_key("test_query", page=1)
+    def test_generate_params_hash(self, cache):
+        """Тест генерации хеша параметров"""
+        params1 = {"query": "python", "page": 1}
+        params2 = {"query": "python", "page": 2}
+        params3 = {"query": "python", "page": 1}
         
-        assert isinstance(key1, str)
-        assert len(key1) > 0
-        assert key1 != key2  # Разные параметры должны давать разные ключи
-        assert key1 == key3  # Одинаковые параметры должны давать одинаковые ключи
+        hash1 = cache._generate_params_hash(params1)
+        hash2 = cache._generate_params_hash(params2)
+        hash3 = cache._generate_params_hash(params3)
+        
+        assert isinstance(hash1, str)
+        assert len(hash1) > 0
+        assert hash1 != hash2  # Разные параметры должны давать разные хеши
+        assert hash1 == hash3  # Одинаковые параметры должны давать одинаковые хеши
 
-    def test_save_to_cache(self, cache):
-        """Тест сохранения в кэш"""
-        data = {"test": "data", "items": [1, 2, 3]}
-        key = "test_key"
+    def test_save_response(self, cache):
+        """Тест сохранения ответа в кэш"""
+        data = {"items": [{"id": "1", "name": "Test"}], "found": 1}
+        params = {"query": "python", "page": 0}
         
-        cache.save_to_cache(key, data)
+        cache.save_response("hh", params, data)
         
         # Проверяем, что файл создан
-        cache_file = os.path.join(cache.cache_dir, f"{key}.json")
-        assert os.path.exists(cache_file)
-        
-        # Проверяем содержимое
-        with open(cache_file, 'r', encoding='utf-8') as f:
-            saved_data = json.load(f)
-        
-        assert saved_data == data
+        hash_key = cache._generate_params_hash(params)
+        cache_file = cache.cache_dir / f"hh_{hash_key}.json"
+        assert cache_file.exists()
 
-    def test_load_from_cache_existing(self, cache):
+    def test_load_response_existing(self, cache):
         """Тест загрузки существующих данных из кэша"""
-        data = {"test": "cached_data"}
+        data = {"items": [{"id": "1", "name": "Test"}], "found": 1}
+        params = {"query": "python", "page": 0}
+        
+        # Сначала сохраняем данные
+        cache.save_response("hh", params, data)
+        
+        # Затем загружаем
+        loaded_data = cache.load_response("hh", params)
+        
+        assert loaded_data is not None
+        assert "data" in loaded_data
+        assert loaded_data["data"]["items"] == data["items"]
         key = "existing_key"
         
         # Сначала сохраняем
