@@ -305,7 +305,8 @@ class TestSimpleDBAdapterCoverage:
         """Фикстура для SimpleDBAdapter"""
         if not SIMPLE_DB_ADAPTER_AVAILABLE:
             return Mock()
-        return SimpleDBAdapter("postgresql://test:test@localhost/test")
+        # SimpleDBAdapter не принимает параметры в конструкторе
+        return SimpleDBAdapter()
 
     def test_adapter_initialization_with_different_urls(self):
         """Тест инициализации адаптера с разными URL"""
