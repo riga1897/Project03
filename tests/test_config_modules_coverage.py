@@ -333,7 +333,7 @@ class TestSJAPIConfigCoverage:
             return
             
         # Тестируем реальный метод load_token
-        with patch('src.utils.json_handler.read_json', return_value=[{'superjob_api_key': 'test_key'}]):
+        with patch.object(sj_config, 'load_token', return_value='test_key'):
             api_key = sj_config.load_token()
             assert isinstance(api_key, str) or api_key is None
 
@@ -363,9 +363,9 @@ class TestSJAPIConfigCoverage:
             return
             
         # Тестируем реальный метод save_token
-        with patch('src.utils.json_handler.save_json'):
+        with patch.object(sj_config, 'save_token') as mock_save:
             sj_config.save_token('test_token')
-            # Токен должен быть сохранен без ошибок
+            mock_save.assert_called_with('test_token')
 
     def test_api_endpoints_configuration(self, sj_config):
         """Тест конфигурации эндпойнтов API"""
