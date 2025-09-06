@@ -414,8 +414,8 @@ class TestVacancyRepository:
             
             if hasattr(vacancy_repository, 'delete_vacancy'):
                 result = vacancy_repository.delete_vacancy(vacancy)
-        else:
-            assert vacancy_repository is not None
+            else:
+                assert vacancy_repository is not None
 
 
 class TestVacancyValidator:
