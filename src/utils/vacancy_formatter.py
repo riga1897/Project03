@@ -88,6 +88,12 @@ class VacancyFormatter:
         if url:
             lines.append(f"Ссылка: {url}")
 
+        # Описание
+        description = self._extract_description(vacancy)
+        if description:
+            desc_text = self.format_text(str(description), 200)
+            lines.append(f"Описание: {desc_text}")
+
         # Обязанности
         responsibilities = self._extract_responsibilities(vacancy)
         if responsibilities:
@@ -114,9 +120,13 @@ class VacancyFormatter:
         if not employer:
             return "Не указана"
 
-        # В объектной архитектуре employer всегда объект с методом get_name()
+        # В новой Pydantic архитектуре employer - объект с методом get_name()
         if hasattr(employer, "get_name"):
             return employer.get_name()
+        
+        # Если это Pydantic объект с атрибутом name
+        if hasattr(employer, "name"):
+            return employer.name
 
         # Fallback для обратной совместимости
         return str(employer) if employer else "Не указана"
@@ -129,6 +139,10 @@ class VacancyFormatter:
             return "Не указана"
 
         return self.format_salary(salary)
+
+    def _extract_description(self, vacancy: Any) -> Optional[str]:
+        """Извлечение описания вакансии"""
+        return getattr(vacancy, "description", None)
 
     def _extract_responsibilities(self, vacancy: Any) -> Optional[str]:
         """Извлечение обязанностей"""
@@ -224,10 +238,20 @@ class VacancyFormatter:
         # Fallback для обратной совместимости
         return str(employment)
 
-    def format_schedule(self, schedule: str) -> str:
+    def format_schedule(self, schedule: Any) -> str:
         """Форматирование графика работы"""
         if not schedule:
             return "Не указан"
+        
+        # В новой Pydantic архитектуре schedule - это объект с методом get_name()
+        if hasattr(schedule, "get_name"):
+            return schedule.get_name()
+        
+        # Если это объект с атрибутом name
+        if hasattr(schedule, "name"):
+            return schedule.name
+        
+        # Fallback для строк и остального
         return str(schedule)
 
     def format_company_name(self, company: Any) -> str:
