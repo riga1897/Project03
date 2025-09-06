@@ -414,7 +414,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
                 # Сохраняем соответствие и устанавливаем company_id
                 if mapped_company_id:
-                    vacancy_company_mapping[vacancy.vacancy_id] = mapped_company_id
+                    vacancy_company_mapping[vacancy.id] = mapped_company_id
                     vacancy.company_id = mapped_company_id
                     logger.debug(
                         f"Сопоставлено: '{employer_name}' (ID: {employer_id}) -> company_id: {mapped_company_id}"
@@ -427,7 +427,7 @@ class PostgresSaver(AbstractVacancyStorage):
                     logger.error(f"Объект не является Vacancy во втором цикле: {type(vacancy)}")
                     continue
 
-                mapped_company_id = vacancy_company_mapping.get(vacancy.vacancy_id, None)
+                mapped_company_id = vacancy_company_mapping.get(vacancy.id, None)
 
                 # Безопасная обработка salary
                 salary_from = None
@@ -491,8 +491,8 @@ class PostgresSaver(AbstractVacancyStorage):
 
                 insert_data.append(
                     (
-                        vacancy.vacancy_id,
-                        vacancy.title,
+                        vacancy.id,
+                        vacancy.name,
                         vacancy.url,
                         salary_from,
                         salary_to,
@@ -517,7 +517,7 @@ class PostgresSaver(AbstractVacancyStorage):
             execute_values(
                 cursor,
                 """INSERT INTO temp_new_vacancies (
-                    vacancy_id, title, url, salary_from, salary_to, salary_currency,
+                    vacancy_id, name, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
                     employment, schedule, area, source, published_at, company_id, search_query
                 ) VALUES %s""",
@@ -530,11 +530,11 @@ class PostgresSaver(AbstractVacancyStorage):
             cursor.execute(
                 """
                 INSERT INTO vacancies (
-                    vacancy_id, title, url, salary_from, salary_to, salary_currency,
+                    vacancy_id, name, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
                     employment, schedule, area, source, published_at, company_id, search_query
                 )
-                SELECT t.vacancy_id, t.title, t.url, t.salary_from, t.salary_to, t.salary_currency,
+                SELECT t.vacancy_id, t.name, t.url, t.salary_from, t.salary_to, t.salary_currency,
                        t.description, t.requirements, t.responsibilities, t.experience,
                        t.employment, t.schedule, t.area, t.source, t.published_at, t.company_id, t.search_query
                 FROM temp_new_vacancies t
@@ -549,7 +549,7 @@ class PostgresSaver(AbstractVacancyStorage):
             cursor.execute(
                 """
                 UPDATE vacancies v SET
-                    title = t.title,
+                    name = t.name,
                     url = t.url,
                     description = t.description,
                     experience = t.experience,
@@ -563,7 +563,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 FROM temp_new_vacancies t
                 WHERE v.vacancy_id = t.vacancy_id
                 AND (
-                    v.title != t.title OR
+                    v.name != t.name OR
                     v.url != t.url OR
                     v.description != t.description OR
                     COALESCE(v.salary_from, 0) != COALESCE(t.salary_from, 0) OR
@@ -579,7 +579,7 @@ class PostgresSaver(AbstractVacancyStorage):
             # Получаем информацию о добавленных и обновленных вакансиях для сообщений
             cursor.execute(
                 """
-                SELECT t.vacancy_id, t.title,
+                SELECT t.vacancy_id, t.name,
                        CASE WHEN v.vacancy_id IS NULL THEN 'new' ELSE 'updated' END as action
                 FROM temp_new_vacancies t
                 LEFT JOIN vacancies v ON t.vacancy_id = v.vacancy_id
@@ -925,18 +925,18 @@ class PostgresSaver(AbstractVacancyStorage):
                                     "currency": row["salary_currency"] or "RUR",
                                 }
 
-                            # Создаем объект Vacancy через from_dict для правильной инициализации
+                            # Создаем объект Vacancy напрямую с новой Pydantic структурой
                             vacancy_data = {
                                 "id": row["vacancy_id"],
-                                "name": row["title"],
-                                "alternate_url": row["url"] or "",
+                                "name": row["name"],  # Теперь используем правильное поле name
+                                "url": row["url"] or "",  # Теперь url обязательное поле
                                 "salary": salary_dict,
                                 "snippet": {
                                     "requirement": row["requirements"] or "",
                                     "responsibility": row["responsibilities"] or "",
                                 },
                                 "employer": {"name": row["company_name"] or "Неизвестная компания"},
-                                "area": {"name": row["area"] or ""},
+                                "area": row["area"] or "",  # Теперь area - это строка, не объект
                                 "experience": {"name": row["experience"] or ""},
                                 "employment": {"name": row["employment"] or ""},
                                 "schedule": {"name": row["schedule"] or ""},
@@ -1173,7 +1173,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 except Exception:
                     pass
             # В случае ошибки возвращаем словарь с False для всех
-            return {v.vacancy_id: False for v in vacancies}
+            return {v.id: False for v in vacancies}
         finally:
             if "cursor" in locals():
                 cursor.close()
@@ -1448,8 +1448,8 @@ class PostgresSaver(AbstractVacancyStorage):
                 insert_data.append(
                     (
                         idx,
-                        vacancy.vacancy_id,
-                        vacancy.title,
+                        vacancy.id,
+                        vacancy.name,
                         vacancy.url,
                         salary_from,
                         salary_to,
