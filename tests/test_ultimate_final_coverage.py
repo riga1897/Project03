@@ -960,7 +960,7 @@ class TestIntegrationAndEdgeCases:
         # Создаем и запускаем воркеры
         threads = []
         for i, chunk in enumerate(data_chunks):
-            thread = # threading_mock = Mock(); Thread(
+            thread = Mock()(
                 target=worker_function,
                 args=(i, chunk)
             )

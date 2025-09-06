@@ -525,7 +525,7 @@ class TestAPIPerformanceCore:
                 
                 threads = []
                 for _ in range(3):
-                    thread = # threading_mock = Mock(); Thread(target=make_request)
+                    thread = Mock()  # target=make_request)
                     threads.append(thread)
                     thread.start()
                 

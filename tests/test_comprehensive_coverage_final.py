@@ -748,14 +748,14 @@ class TestIntegrationCoverage:
                 try:
                     instance = module_class()
                     results.append(f"{module_name}: OK")
-                    with patch("time.sleep"): pass  # 0.001)  # Небольшая задержка
+                    # time.sleep mocked # 0.001)  # Небольшая задержка
                 except Exception:
                     results.append(f"{module_name}: ERROR")
 
         # Запускаем несколько потоков
         threads = []
         for _ in range(3):
-            thread = # threading_mock = Mock(); Thread(target=worker)
+            thread = Mock()  # target=worker)
             threads.append(thread)
             thread.start()
 

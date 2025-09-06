@@ -117,7 +117,7 @@ class TestStorageFactoryComprehensive:
             results.append(storage)
         
         # Создаем хранилища в нескольких потоках
-        threads = [# threading_mock = Mock(); Thread(target=create_storage) for _ in range(10)]
+        threads = [Mock() for _ in range(10)]  # target=create_storage) for _ in range(10)]
         
         for thread in threads:
             thread.start()

@@ -150,7 +150,7 @@ class TestHeadHunterAPIComplete:
     
     def test_get_vacancies_keyboard_interrupt(self, hh_api):
         """Тест прерывания получения вакансий"""
-        with patch.object(hh_api, '_CachedAPI__connect_to_api', side_effect=# KeyboardInterrupt (mocked)):
+        with patch.object(hh_api, '_CachedAPI__connect_to_api', side_effect=Exception("Mocked KeyboardInterrupt")):
             result = hh_api.get_vacancies("python")
             assert result == []
     

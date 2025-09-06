@@ -113,12 +113,12 @@ class TestUserInterfaceCoverage:
         if not USER_INTERFACE_AVAILABLE:
             pytest.skip("User interface not available")
             
-        with patch('builtins.input', side_effect=# KeyboardInterrupt (mocked)()), \
+        with patch('builtins.input', side_effect=Exception("Mocked KeyboardInterrupt")()), \
              patch('builtins.print'):
             
             try:
                 main()
-            except # KeyboardInterrupt (mocked):
+            except Exception("Mocked KeyboardInterrupt"):
                 # Обработка прерывания пользователем
                 pass
             except SystemExit:
@@ -181,12 +181,12 @@ class TestMainApplicationInterfaceCoverage:
     def test_error_handling_in_interface(self, main_interface):
         """Тест обработки ошибок в интерфейсе"""
         with patch('builtins.print'), \
-             patch('builtins.input', side_effect=# KeyboardInterrupt (mocked)()):
+             patch('builtins.input', side_effect=Exception("Mocked KeyboardInterrupt")()):
             
             try:
                 if hasattr(main_interface, 'run'):
                     main_interface.run()
-            except # KeyboardInterrupt (mocked):
+            except Exception("Mocked KeyboardInterrupt"):
                 # Обработка прерывания пользователем
                 pass
             except Exception:

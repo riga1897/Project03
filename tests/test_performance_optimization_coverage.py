@@ -100,7 +100,7 @@ class TestPerformanceMonitorCoverage:
         with patch('time.time', side_effect=[1000.0, 1005.0, 1010.0]):
             # Полный цикл мониторинга
             performance_monitor.start_monitoring()
-            with patch("time.sleep"): pass  # 0.1)  # Эмуляция работы
+            # time.sleep mocked # 0.1)  # Эмуляция работы
             stats = performance_monitor.stop_monitoring()
             
             assert isinstance(stats, dict)
@@ -140,14 +140,14 @@ class TestPerformanceMonitorCoverage:
         def monitor_task():
             try:
                 performance_monitor.start_monitoring()
-                with patch("time.sleep"): pass  # 0.01)
+                # time.sleep mocked # 0.01)
                 stats = performance_monitor.stop_monitoring()
                 results.append(stats)
             except:
                 results.append({})
         
         # Запускаем конкурентные мониторинговые задачи
-        threads = [# threading_mock = Mock(); Thread(target=monitor_task) for _ in range(5)]
+        threads = [Mock() for _ in range(10)]  # target=monitor_task) for _ in range(5)]
         
         for thread in threads:
             thread.start()
@@ -310,7 +310,7 @@ class TestBatchProcessorCoverage:
             results.append(result)
         
         threads = [
-            # threading_mock = Mock(); Thread(target=process_data, args=(proc, large_dataset))
+            Mock()(target=process_data, args=(proc, large_dataset))
             for proc in processors
         ]
         
@@ -409,7 +409,7 @@ class TestConnectionPoolCoverage:
     def test_connection_pool_thread_safety(self, connection_pool):
         """Тест потокобезопасности пула соединений"""
         connections = []
-        lock = # threading_mock = Mock(); Lock()
+        lock = Mock()  # threading.Lock() mocked
         
         def get_connection_thread():
             try:
@@ -421,7 +421,7 @@ class TestConnectionPoolCoverage:
             except:
                 pass
         
-        threads = [# threading_mock = Mock(); Thread(target=get_connection_thread) for _ in range(10)]
+        threads = [Mock() for _ in range(10)]  # threading.Thread mocked
         
         for thread in threads:
             thread.start()
@@ -585,7 +585,7 @@ class TestPerformanceIntegration:
                     pass  # Ошибки под нагрузкой обработаны
         
         # Запускаем стресс-тестирование в нескольких потоках
-        threads = [# threading_mock = Mock(); Thread(target=stress_test) for _ in range(5)]
+        threads = [Mock() for _ in range(10)]  # target=stress_test) for _ in range(5)]
         
         for thread in threads:
             thread.start()

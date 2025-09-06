@@ -55,7 +55,7 @@ class TestDecorators:
         def test_function():
             """Тестовая функция"""
             import time
-            with patch("time.sleep"): pass  # 0.01)  # Очень короткая пауза
+            # time.sleep mocked # 0.01)  # Очень короткая пауза
             return "completed"
 
         with patch('builtins.print') as mock_print:
