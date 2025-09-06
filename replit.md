@@ -47,11 +47,18 @@ Preferred communication style: Simple, everyday language.
 - **Exception handling**: Centralized error handling with user-friendly error messages
 - **Graceful degradation**: Application continues to function even when some services are unavailable
 
+### Data Models and Validation
+- **Pydantic Integration**: Complete migration to Pydantic v2 for all data models with automatic validation
+- **Type Safety**: Enhanced type checking and runtime validation for all data structures
+- **Automatic Serialization**: Built-in JSON serialization/deserialization with proper type conversion
+- **Schema Validation**: Comprehensive input validation with detailed error messages
+
 ### Testing Infrastructure
-- **Extensive test coverage**: Over 1300 test cases covering all major components
+- **Extensive test coverage**: Over 615+ test cases covering all major components
 - **Mocking strategy**: Comprehensive mocking of external dependencies (database, APIs)
 - **Integration tests**: End-to-end testing of complete workflows
 - **Coverage reporting**: Detailed test coverage analysis and reporting
+- **Note**: Test suite requires updates after Pydantic migration for full compatibility
 
 ## External Dependencies
 
