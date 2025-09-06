@@ -112,13 +112,15 @@ class TestPostgresSaverFixed:
         
         mock_conn.cursor.return_value = mock_cursor
         
+        # Создаем итерируемый мок результат
+        mock_result = Mock()
+        mock_result.__iter__ = Mock(return_value=iter([]))
+        mock_result.__len__ = Mock(return_value=0)
+        
         # Правильная настройка итерируемых результатов
-        mock_cursor.fetchall.return_value = []
+        mock_cursor.fetchall.return_value = mock_result
         mock_cursor.fetchone.return_value = None
         mock_cursor.rowcount = 0
-        
-        # Важно: делаем результат итерируемым
-        mock_cursor.fetchall.return_value.__iter__ = Mock(return_value=iter([]))
         
         return mock_conn, mock_cursor
 
