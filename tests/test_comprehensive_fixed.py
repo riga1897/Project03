@@ -5,7 +5,7 @@
 import os
 import sys
 import pytest
-from unittest.mock import Mock, patch, MagicMock, mock_open
+from unittest.mock import Mock, patch, MagicMock, mock_open, mock_open
 from pathlib import Path
 import json
 
