@@ -157,7 +157,8 @@ class TestDeduplicationServiceCoverage:
     def deduplication_service(self):
         if not DEDUPLICATION_SERVICE_AVAILABLE:
             return Mock()
-        return DeduplicationService()
+        mock_strategy = Mock()
+        return DeduplicationService(mock_strategy)
 
     @pytest.fixture
     def duplicate_vacancies(self):
@@ -187,7 +188,8 @@ class TestDeduplicationServiceCoverage:
         if not DEDUPLICATION_SERVICE_AVAILABLE:
             return
             
-        service = DeduplicationService()
+        mock_strategy = Mock()
+        service = DeduplicationService(mock_strategy)
         assert service is not None
 
     def test_remove_duplicates_by_url(self, deduplication_service, duplicate_vacancies):
