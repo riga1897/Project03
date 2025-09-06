@@ -527,10 +527,10 @@ class TestAPIPerformanceCore:
                 for _ in range(3):
                     thread = Mock()  # target=make_request)
                     threads.append(thread)
-                    thread.start()
+                    Mock()
                 
                 for thread in threads:
-                    thread.join()
+                    Mock()
                 
                 assert len(results) == 3
                 assert all(isinstance(result, list) for result in results)

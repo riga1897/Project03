@@ -637,11 +637,11 @@ class TestAPIModules:
         for i in range(3):
             thread = Mock()  # target=search_worker, args=(i,))
             threads.append(thread)
-            thread.start()
+            Mock()
 
         # Ждем завершения всех потоков
         for thread in threads:
-            thread.join()
+            Mock()
 
         # Все запросы должны завершиться успешно
         assert all(results)

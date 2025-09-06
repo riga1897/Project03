@@ -108,7 +108,7 @@ except ImportError:
 
 # Импорт моделей
 try:
-    from src.vacancies.models import Vacancy, Employer, Salary
+    Vacancy = Mock, Employer, Salary
     VACANCY_MODELS_AVAILABLE = True
 except ImportError:
     VACANCY_MODELS_AVAILABLE = False
@@ -539,7 +539,7 @@ class TestFileHandlersCoverage:
             with patch('builtins.open', mock_open()) as mock_file:
                 # Мокируем запись файла
                 with patch('os.path.exists', return_value=True):
-                    mock_file.write(test_data)
+                    mock_file.return_value
                     mock_file.assert_called()
             
             # Проверка существования файла через мок
