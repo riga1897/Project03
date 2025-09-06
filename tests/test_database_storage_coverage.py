@@ -186,7 +186,7 @@ class TestDatabaseManagerImplementation:
                 mock_connection.__exit__.return_value = None
                 
                 if hasattr(db_manager, 'add_vacancy_batch_optimized'):
-                    db_manager.add_vacancy_batch_optimized(test_vacancies)
+                    getattr(db_manager, "add_vacancy_batch_optimized", Mock())(test_vacancies)
                     assert mock_cursor.execute.called
                     
         except ImportError:
