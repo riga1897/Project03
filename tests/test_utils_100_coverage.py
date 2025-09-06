@@ -117,7 +117,9 @@ class TestFileOperations:
         file_ops = FileOperations()
         
         with patch('pathlib.Path.with_suffix', return_value=mock_temp_file):
-            with patch('src.utils.decorators.simple_cache.clear_cache') as mock_clear:
+            # Мокируем метод clear_cache напрямую у экземпляра
+            with patch.object(file_ops, 'read_json') as mock_read_json:
+                mock_read_json.clear_cache = Mock()
                 file_ops.write_json(Path("test.json"), [{"data": "test"}])
         
         mock_parent.mkdir.assert_called_once_with(parents=True, exist_ok=True)
@@ -161,7 +163,9 @@ class TestFileOperations:
         file_ops = FileOperations()
         
         with patch('pathlib.Path.with_suffix', return_value=mock_temp_file):
-            with patch('src.utils.decorators.simple_cache.clear_cache'):
+            # Мокируем метод clear_cache напрямую у экземпляра  
+            with patch.object(file_ops, 'read_json') as mock_read_json:
+                mock_read_json.clear_cache = Mock()
                 file_ops.write_json(Path("test.json"), [{"data": "test"}])
         
         # Проверяем что temporary файл был удален в finally
