@@ -306,3 +306,17 @@ class TestDatabaseConfig:
             user="custom_user",
             password="custom_pass"
         )
+    def test_parse_database_url_no_database_name(self):
+        """Тест парсинга URL без имени базы данных - покрывает строку 104"""
+        # URL без "/" после хоста - должно использовать else ветку в строке 104
+        config = DatabaseConfig()
+        
+        url = "postgresql://user:pass@localhost:5432"
+        result = config._parse_database_url(url)
+        
+        # Должен использовать пустое имя базы данных (строка 104)
+        assert result["host"] == "localhost"
+        assert result["port"] == "5432"
+        assert result["database"] == ""  # Пустая строка для database_part
+        assert result["username"] == "user"
+        assert result["password"] == "pass"
