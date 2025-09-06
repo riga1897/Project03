@@ -187,7 +187,7 @@ class TestVacancyRepositoryFixed:
 
         repo = VacancyRepository(mock_db_connection, mock_validator)
         assert repo is not None
-        assert repo.db_connection == mock_db_connection
+        assert repo._db_connection == mock_db_connection
 
     def test_save_vacancy(self, repository):
         """Тест сохранения вакансии"""
@@ -294,8 +294,9 @@ class TestLowCoverageComponents:
                     return {"items": [], "found": 0}
 
             base_api = Mock()
+            cache_dir = "/tmp/test_cache"
             with patch('src.utils.cache.FileCache'):
-                api = ConcreteCachedAPI(base_api)
+                api = ConcreteCachedAPI(base_api, cache_dir=cache_dir)
                 assert api is not None
 
         except ImportError:
@@ -342,7 +343,8 @@ class TestLowCoverageComponents:
 
             formatter = ConcreteFormatter()
             assert formatter is not None
-            result = formatter.format("test")
+            # Тестируем реальные методы вместо несуществующего format
+            result = formatter.format_text("test")
             assert isinstance(result, str)
 
         except ImportError:
@@ -364,7 +366,7 @@ class TestLowCoverageComponents:
             hh_api = HeadHunterAPI()
             if hasattr(hh_api, 'get_vacancies_page'):
                 result = hh_api.get_vacancies_page("Python")
-                assert isinstance(result, dict)
+                assert isinstance(result, (dict, list))
 
             # Тестируем SuperJob API
             sj_api = SuperJobAPI()

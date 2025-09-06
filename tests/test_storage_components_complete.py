@@ -159,7 +159,7 @@ class TestPostgresSaver:
             {"id": "2", "title": "Dev 2"}
         ]
 
-        with patch.object(postgres_saver, 'save_vacancy', return_value=True) as mock_save:
+        with patch.object(postgres_saver, 'save', return_value=True) as mock_save:
             if hasattr(postgres_saver, 'save_vacancies'):
                 postgres_saver.save_vacancies(vacancies)
                 assert mock_save.call_count == 2
@@ -230,13 +230,13 @@ class TestSimpleDBAdapter:
             mock_cursor.execute.assert_called()
 
     def test_insert_vacancy(self, db_adapter):
-        """Тест вставки вакансии"""
+        """Тест вставки вакансий"""
         if not STORAGE_COMPONENTS_AVAILABLE:
             pytest.skip("Storage components not available")
 
         vacancy = {"id": "123", "title": "Test"}
 
-        with patch.object(db_adapter, 'connection') as mock_conn:
+        with patch.object(db_adapter, '_connection') as mock_conn:
             mock_cursor = Mock()
             mock_conn.cursor.return_value = mock_cursor
 
@@ -249,7 +249,7 @@ class TestSimpleDBAdapter:
         if not STORAGE_COMPONENTS_AVAILABLE:
             pytest.skip("Storage components not available")
 
-        with patch.object(db_adapter, 'connection') as mock_conn:
+        with patch.object(db_adapter, '_connection') as mock_conn:
             mock_cursor = Mock()
             mock_cursor.fetchall.return_value = [("123", "Test", "Company")]
             mock_conn.cursor.return_value = mock_cursor
@@ -407,8 +407,13 @@ class TestVacancyRepository:
         vacancy.vacancy_id = "123"
         vacancy.title = "Test"
 
-        if hasattr(vacancy_repository, 'delete_vacancy'):
-            result = vacancy_repository.delete_vacancy(vacancy)
+        with patch.object(vacancy_repository, '_db_connection') as mock_conn:
+            mock_cursor = Mock()
+            mock_cursor.rowcount = 1
+            mock_conn.get_connection.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            
+            if hasattr(vacancy_repository, 'delete_vacancy'):
+                result = vacancy_repository.delete_vacancy(vacancy)
         else:
             assert vacancy_repository is not None
 
@@ -502,7 +507,9 @@ class TestStorageIntegration:
 
         mock_connection = Mock()
         mock_cursor = Mock()
-        mock_connection.cursor.return_value.__enter__.return_value = mock_cursor
+        mock_connection.cursor.return_value = Mock()
+        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
         mock_connect.return_value = mock_connection
 
         # Создаем компоненты
@@ -520,7 +527,9 @@ class TestStorageIntegration:
         # Создаем моки с правильными context managers
         mock_connection = Mock()
         mock_cursor = Mock()
-        mock_connection.cursor.return_value.__enter__.return_value = mock_cursor
+        mock_connection.cursor.return_value = Mock()
+        mock_connection.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+        mock_connection.cursor.return_value.__exit__ = Mock(return_value=None)
         mock_connection.cursor.return_value.__exit__.return_value = None
         mock_connection.__enter__.return_value = mock_connection
         mock_connection.__exit__.return_value = None

@@ -279,11 +279,9 @@ class TestMainApplicationInterfaceComplete:
         """Тест обработки ошибок при сохранении данных"""
         app_interface.storage.save.side_effect = Exception("Storage error")
 
-        try:
+        with pytest.raises(Exception) as exc_info:
             app_interface.store_data([{"id": "1"}])
-            assert False, "Should have raised exception"
-        except Exception as e:
-            assert "Storage error" in str(e)
+        assert "Storage error" in str(exc_info.value)
 
 
     def test_search_data(self, app_interface):
@@ -321,11 +319,9 @@ class TestMainApplicationInterfaceComplete:
         """Тест обработки ошибок при поиске"""
         app_interface.data_provider.search.side_effect = Exception("Search error")
 
-        try:
+        with pytest.raises(Exception) as exc_info:
             app_interface.search_data("python")
-            assert False, "Should have raised exception"
-        except Exception as e:
-            assert "Search error" in str(e)
+        assert "Search error" in str(exc_info.value)
 
     def test_get_storage_stats(self, app_interface):
         """Тест получения статистики хранилища"""
@@ -340,11 +336,9 @@ class TestMainApplicationInterfaceComplete:
         """Тест обработки ошибок при получении статистики"""
         app_interface.storage.get_stats.side_effect = Exception("Stats error")
 
-        try:
+        with pytest.raises(Exception) as exc_info:
             app_interface.get_storage_stats()
-            assert False, "Should have raised exception"
-        except Exception as e:
-            assert "Stats error" in str(e)
+        assert "Stats error" in str(exc_info.value)
 
     def test_clear_storage_data(self, app_interface):
         """Тест очистки данных хранилища"""
@@ -358,11 +352,9 @@ class TestMainApplicationInterfaceComplete:
         """Тест обработки ошибок при очистке хранилища"""
         app_interface.storage.clear.side_effect = Exception("Clear error")
 
-        try:
+        with pytest.raises(Exception) as exc_info:
             app_interface.clear_storage_data()
-            assert False, "Should have raised exception"
-        except Exception as e:
-            assert "Clear error" in str(e)
+        assert "Clear error" in str(exc_info.value)
 
     def test_get_cached_data(self, app_interface):
         """Тест получения кэшированных данных"""
@@ -414,11 +406,9 @@ class TestMainApplicationInterfaceComplete:
         """Тест обработки ошибок при экспорте"""
         app_interface.storage.export.side_effect = Exception("Export error")
 
-        try:
+        with pytest.raises(Exception) as exc_info:
             app_interface.export_data([{"id": "1"}], "json", "/tmp/export.json")
-            assert False, "Should have raised exception"
-        except Exception as e:
-            assert "Export error" in str(e)
+        assert "Export error" in str(exc_info.value)
 
     def test_import_data(self, app_interface):
         """Тест импорта данных"""
@@ -433,11 +423,9 @@ class TestMainApplicationInterfaceComplete:
         """Тест обработки ошибок при импорте"""
         app_interface.storage.import_data.side_effect = Exception("Import error")
 
-        try:
+        with pytest.raises(Exception) as exc_info:
             app_interface.import_data("/path/to/import.json", "json")
-            assert False, "Should have raised exception"
-        except Exception as e:
-            assert "Import error" in str(e)
+        assert "Import error" in str(exc_info.value)
 
     def test_setup_logging(self, app_interface):
         """Тест настройки логирования"""
@@ -448,11 +436,9 @@ class TestMainApplicationInterfaceComplete:
     def test_setup_logging_error(self, app_interface):
         """Тест обработки ошибок настройки логирования"""
         with patch('logging.basicConfig', side_effect=Exception("Logging error")):
-            try:
+            with pytest.raises(Exception) as exc_info:
                 app_interface.setup_logging("DEBUG")
-                assert False, "Should have raised exception"
-            except Exception as e:
-                assert "Logging error" in str(e)
+            assert "Logging error" in str(exc_info.value)
 
     def test_validate_configuration(self, app_interface):
         """Тест валидации конфигурации"""
