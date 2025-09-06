@@ -323,11 +323,11 @@ class TestFilteringServices:
             mock_service = Mock()
             mock_service.filter_by_company_ids.return_value = []
             mock_service.get_target_company_stats.return_value = (set(['123']), set(['456']))
-                    
-                    # Создаем mock вакансии
-                    mock_vacancy = Mock()
-                    mock_vacancy.employer_id = '123'
-                    mock_vacancy.source = 'hh'
+            
+            # Создаем mock вакансии
+            mock_vacancy = Mock()
+            mock_vacancy.employer_id = '123'
+            mock_vacancy.source = 'hh'
                     
             # Тестируем фильтрацию
             filtered = mock_service.filter_by_company_ids([])
