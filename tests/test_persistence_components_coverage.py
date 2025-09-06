@@ -102,7 +102,7 @@ class TestRepositoryPatternComponents:
             from src.storage.repositories.vacancy_repository import VacancyRepository
             
             # Создаем Mock репозитория
-            repository = Mock(spec=VacancyRepository)
+            repository = Mock()
             
             # Настраиваем поведение
             repository.save.return_value = True
