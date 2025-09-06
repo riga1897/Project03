@@ -1,5 +1,3 @@
-
-```python
 """
 Исправленные тесты для устранения критических ошибок
 Фокус на правильной настройке моков и использовании реальных интерфейсов
@@ -485,15 +483,24 @@ class TestErrorHandlingFixes:
     def test_attribute_error_handling(self):
         """Тест обработки ошибок атрибутов"""
         
-        mock_obj = Mock()
+        # Используем обычный объект вместо Mock для корректного тестирования getattr
+        class TestObject:
+            def __init__(self):
+                self.existing_attr = "exists"
+        
+        test_obj = TestObject()
         
         # Безопасная проверка атрибутов
-        has_attr = hasattr(mock_obj, 'nonexistent_attr')
-        assert isinstance(has_attr, bool)
+        has_existing = hasattr(test_obj, 'existing_attr')
+        has_nonexistent = hasattr(test_obj, 'nonexistent_attr')
+        assert has_existing is True
+        assert has_nonexistent is False
         
         # Безопасное получение атрибута
-        attr_value = getattr(mock_obj, 'nonexistent_attr', 'default')
-        assert attr_value == 'default'
+        existing_value = getattr(test_obj, 'existing_attr', 'default')
+        nonexistent_value = getattr(test_obj, 'nonexistent_attr', 'default')
+        assert existing_value == 'exists'
+        assert nonexistent_value == 'default'
 
 
 class TestPerformanceFixes:
@@ -532,4 +539,3 @@ class TestPerformanceFixes:
         assert large_size > small_size
         assert small_size > 0
         assert large_size > 0
-```
