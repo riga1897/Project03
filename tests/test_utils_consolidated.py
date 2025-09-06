@@ -22,7 +22,7 @@ class TestUtilsConsolidated:
             from src.utils.salary import Salary, SalaryAnalyzer
 
             # Тестируем Salary
-            salary = Salary({"from": 100000, ,"to": 150000, ,"currency": "RUR")
+            salary = Salary({"from": 100000, "to": 150000, "currency": "RUR"})
             assert salary is not None
 
             if hasattr(salary, 'get_average'):
