@@ -1,0 +1,286 @@
+
+            return
+    
+        mock_conn, mock_cursor = mock_postgres_connection
+        mock_connect.return_value = mock_conn
+    
+        with patch.object(postgres_saver, '_get_connection', return_value=mock_conn):
+>           result = postgres_saver.save_vacancies([mock_real_vacancy])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_critical_components_fixed.py:229: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/storage/postgres_saver.py:707: in save_vacancies
+    update_messages = self.add_vacancy_batch_optimized(vacancies)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7f2615b05350>
+vacancies = [<src.vacancies.models.Vacancy object at 0x7f2615dab930>]
+search_query = None
+
+    def add_vacancy_batch_optimized(
+        self, vacancies: Union[Vacancy, List[Vacancy]], search_query: str = None
+    ) -> List[str]:
+        """
+        Максимально оптимизированное batch-добавление вакансий через временные таблицы.
+        Использует SQL для всех операций, минимизирует количество запросов.
+        """
+        if not isinstance(vacancies, list):
+            vacancies = [vacancies]
+    
+        # Исправляем двойную вложенность списков
+        if len(vacancies) == 1 and isinstance(vacancies[0], list):
+            vacancies = vacancies[0]
+            logger.debug(f"Исправлена двойная вложенность списка: получено {len(vacancies)} вакансий")
+    
+        if not vacancies:
+            return []
+    
+        connection = self._get_connection()
+        update_messages: List[str] = []
+    
+        try:
+            cursor = connection.cursor()
+    
+            # Создаем временную таблицу с такой же структурой как основная таблица vacancies
+            cursor.execute(
+                """
+                CREATE TEMP TABLE temp_new_vacancies AS
+                SELECT * FROM vacancies WHERE 1=0
+            """
+            )
+    
+            # Получаем сопоставление компаний только по ID
+            cursor.execute(
+                """
+                SELECT id, name, hh_id, sj_id
+                FROM companies
+            """
+            )
+    
+            company_id_mapping = {}  # hh_id/sj_id -> company_id
+    
+            results = cursor.fetchall()
+            for row in results:
+                comp_id, name, hh_id, sj_id = row
+    
+                # Добавляем только ID-маппинги с приведением к строке
+                if hh_id:
+                    company_id_mapping[str(hh_id)] = comp_id
+                if sj_id:
+                    company_id_mapping[str(sj_id)] = comp_id
+    
+            # Подготавливаем данные для вставки/обновления (все переданные вакансии)
+            insert_data = []
+            vacancy_company_mapping = {}  # Словарь для сохранения соответствия vacancy_id -> company_id
+    
+            for vacancy in vacancies:
+                # Проверяем, что vacancy действительно объект Vacancy
+                if not hasattr(vacancy, "employer"):
+                    logger.error(f"Объект не является Vacancy: {type(vacancy)} - {vacancy}")
+                    continue
+    
+                # Определяем company_id для связи с таблицей companies
+                mapped_company_id = None
+                employer_name = None
+                employer_id = None
+    
+                if vacancy.employer:
+                    if isinstance(vacancy.employer, dict):
+                        employer_name = vacancy.employer.get("name", "").strip()
+                        employer_id = vacancy.employer.get("id", "").strip()
+                    elif hasattr(vacancy.employer, "get_name"):
+                        employer_name = vacancy.employer.get_name().strip()
+                        employer_id = getattr(vacancy.employer, "id", "").strip()
+                    elif hasattr(vacancy.employer, "name"):
+                        employer_name = str(getattr(vacancy.employer, "name", "")).strip()
+                        employer_id = str(getattr(vacancy.employer, "id", "")).strip()
+                    else:
+                        employer_name = str(vacancy.employer).strip()
+                        employer_id = ""
+    
+                # Фильтруем ТОЛЬКО по ID компаний (hh_id и sj_id)
+                if employer_id:
+                    mapped_company_id = company_id_mapping.get(str(employer_id))
+    
+                # Сохраняем соответствие и устанавливаем company_id
+                if mapped_company_id:
+                    vacancy_company_mapping[vacancy.vacancy_id] = mapped_company_id
+                    vacancy.company_id = mapped_company_id
+                    logger.debug(
+                        f"Сопоставлено: '{employer_name}' (ID: {employer_id}) -> company_id: {mapped_company_id}"
+                    )
+    
+            # Обрабатываем ВСЕ переданные вакансии
+            for vacancy in vacancies:
+                # Проверяем, что vacancy действительно объект Vacancy
+                if not hasattr(vacancy, "employer"):
+                    logger.error(f"Объект не является Vacancy во втором цикле: {type(vacancy)}")
+                    continue
+    
+                mapped_company_id = vacancy_company_mapping.get(vacancy.vacancy_id, None)
+    
+                # Безопасная обработка salary
+                salary_from = None
+                salary_to = None
+                salary_currency = None
+    
+                if vacancy.salary:
+                    if hasattr(vacancy.salary, "salary_from"):
+                        salary_from = vacancy.salary.salary_from
+                        salary_to = vacancy.salary.salary_to
+                        salary_currency = vacancy.salary.currency
+                    elif isinstance(vacancy.salary, dict):
+                        salary_from = vacancy.salary.get("from")
+                        salary_to = vacancy.salary.get("to")
+                        salary_currency = vacancy.salary.get("currency")
+                    # Если salary - boolean или что-то другое, оставляем None
+    
+                # Конвертируем employer в строку для сохранения в БД
+                employer_str = None
+                if vacancy.employer:
+                    if isinstance(vacancy.employer, dict):
+                        employer_str = vacancy.employer.get("name", str(vacancy.employer))
+                    elif hasattr(vacancy.employer, "get_name"):
+                        employer_str = vacancy.employer.get_name()
+                    elif hasattr(vacancy.employer, "name"):
+                        employer_str = str(getattr(vacancy.employer, "name", ""))
+                    else:
+                        employer_str = str(vacancy.employer)
+    
+                # Унифицированная обработка area для сохранения в БД
+                try:
+                    from utils.data_normalizers import normalize_area_data
+                except ImportError:
+                    from src.utils.data_normalizers import normalize_area_data
+                area_str = normalize_area_data(vacancy.area)
+    
+                # Обработка полей объектов в строки для БД
+                experience_str = None
+                if vacancy.experience:
+                    if hasattr(vacancy.experience, "get_name"):
+                        experience_str = vacancy.experience.get_name()
+                    else:
+                        experience_str = str(vacancy.experience)
+    
+                employment_str = None
+                if vacancy.employment:
+                    if hasattr(vacancy.employment, "get_name"):
+                        employment_str = vacancy.employment.get_name()
+                    else:
+                        employment_str = str(vacancy.employment)
+    
+                schedule_str = None
+                if vacancy.schedule:
+                    if hasattr(vacancy.schedule, "get_name"):
+                        schedule_str = vacancy.schedule.get_name()
+                    else:
+                        schedule_str = str(vacancy.schedule)
+    
+                # Обработка даты published_at
+                published_date = self._normalize_published_date(vacancy.published_at)
+    
+                insert_data.append(
+                    (
+                        vacancy.vacancy_id,
+                        vacancy.title,
+                        vacancy.url,
+                        salary_from,
+                        salary_to,
+                        salary_currency,
+                        vacancy.description,
+                        vacancy.requirements,
+                        vacancy.responsibilities,
+                        experience_str,
+                        employment_str,
+                        schedule_str,
+                        area_str,
+                        vacancy.source,
+                        published_date,
+                        mapped_company_id,  # Всегда будет не None для целевых компаний
+                        search_query,
+                    )
+                )
+    
+            # Bulk insert во временную таблицу
+>           from psycopg2.extras import execute_values
+E           ImportError: cannot import name 'execute_values' from '<unknown module name>' (unknown location)
+
+src/storage/postgres_saver.py:515: ImportError
+__________ TestPostgresSaverFixed.test_delete_vacancy_by_id_fixed __________
+
+self = <tests.test_critical_components_fixed.TestPostgresSaverFixed object at 0x7f2615c36010>
+mock_connect = <MagicMock name='connect' id='139801550154960'>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7f2615cc8cd0>
+mock_postgres_connection = (<MagicMock name='connect()' id='139801548401872'>, <MagicMock id='139801549733072'>)
+
+    @patch('psycopg2.connect')
+    def test_delete_vacancy_by_id_fixed(self, mock_connect, postgres_saver, mock_postgres_connection):
+        """Исправленный тест удаления вакансии по ID"""
+        if not POSTGRES_SAVER_AVAILABLE:
+            return
+    
+        mock_conn, mock_cursor = mock_postgres_connection
+        mock_connect.return_value = mock_conn
+        mock_cursor.rowcount = 1  # Устанавливаем как integer
+    
+        with patch.object(postgres_saver, '_get_connection', return_value=mock_conn):
+            if hasattr(postgres_saver, 'delete_vacancy_by_id'):
+>               result = postgres_saver.delete_vacancy_by_id('test123')
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_critical_components_fixed.py:246: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7f2615cc8cd0>
+vacancy_id = 'test123'
+
+    def delete_vacancy_by_id(self, vacancy_id: str) -> bool:
+        """Удаляет вакансию по ID"""
+        connection = self._get_connection()
+        try:
+            cursor = connection.cursor()
+            cursor.execute("DELETE FROM vacancies WHERE vacancy_id = %s", (vacancy_id,))
+    
+>           if cursor.rowcount > 0:
+               ^^^^^^^^^^^^^^^^^^^
+E           TypeError: '>' not supported between instances of 'MagicMock' and 'int'
+
+src/storage/postgres_saver.py:1001: TypeError
+________ TestIntegrationFixed.test_cache_integration_with_api_fixed ________
+
+self = <tests.test_critical_components_fixed.TestIntegrationFixed object at 0x7f2615c41d10>
+
+    def test_cache_integration_with_api_fixed(self):
+        """Исправленный тест интеграции кэша с API"""
+        if not (CACHE_AVAILABLE and HH_API_AVAILABLE):
+            return
+    
+        with tempfile.TemporaryDirectory() as temp_dir:
+            cache = FileCache(cache_dir=temp_dir)
+            hh_api = HeadHunterAPI()
+    
+            # Проверяем базовую совместимость
+            assert cache is not None
+            assert hh_api is not None
+    
+            # Тестируем сохранение ответа API в кэш
+            api_response = {"items": [], "found": 0}
+            cache.save_response("hh", {"text": "developer"}, api_response)
+    
+            # Загружаем из кэша
+            cached_response = cache.load_response("hh", {"text": "developer"})
+    
+            if cached_response is not None:
+>               assert cached_response["found"] == 0
+                       ^^^^^^^^^^^^^^^^^^^^^^^^
+E               KeyError: 'found'
+
+tests/test_critical_components_fixed.py:449: KeyError
+========================= short test summary info ==========================
+FAILED tests/test_critical_components_fixed.py::TestPostgresSaverFixed::test_save_vacancies_with_real_object_fixed - ImportError: cannot import name 'execute_values' from '<unknown module ...
+FAILED tests/test_critical_components_fixed.py::TestPostgresSaverFixed::test_delete_vacancy_by_id_fixed - TypeError: '>' not supported between instances of 'MagicMock' and 'int'
+FAILED tests/test_critical_components_fixed.py::TestIntegrationFixed::test_cache_integration_with_api_fixed - KeyError: 'found'
+======================= 3 failed, 19 passed in 0.67s =======================
+~/workspace$ 
