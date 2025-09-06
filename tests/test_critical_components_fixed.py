@@ -217,8 +217,7 @@ class TestPostgresSaverFixed:
         return mock_conn, mock_cursor
 
     @patch('psycopg2.connect')
-    @patch('psycopg2.extras.execute_values')
-    def test_save_vacancies_with_real_object_fixed(self, mock_execute_values, mock_connect, postgres_saver, mock_real_vacancy, mock_postgres_connection):
+    def test_save_vacancies_with_real_object_fixed(self, mock_connect, postgres_saver, mock_real_vacancy, mock_postgres_connection):
         """Исправленный тест сохранения реального объекта вакансии"""
         if not POSTGRES_SAVER_AVAILABLE:
             return
@@ -226,9 +225,10 @@ class TestPostgresSaverFixed:
         mock_conn, mock_cursor = mock_postgres_connection
         mock_connect.return_value = mock_conn
 
-        with patch.object(postgres_saver, '_get_connection', return_value=mock_conn):
-            with patch('src.storage.postgres_saver.execute_values', mock_execute_values):
-                result = postgres_saver.save_vacancies([mock_real_vacancy])
+        # Мокаем execute_values из правильного модуля
+        with patch('src.storage.postgres_saver.execute_values') as mock_execute_values, \
+             patch.object(postgres_saver, '_get_connection', return_value=mock_conn):
+            result = postgres_saver.save_vacancies([mock_real_vacancy])
 
         # Проверяем что метод возвращает результат
         assert isinstance(result, (int, list))
@@ -242,8 +242,7 @@ class TestPostgresSaverFixed:
         mock_conn, mock_cursor = mock_postgres_connection
         mock_connect.return_value = mock_conn
         
-        # Правильно настраиваем rowcount как свойство
-        type(mock_cursor).rowcount = Mock(return_value=1)
+        # Устанавливаем rowcount как целое число, а не Mock
         mock_cursor.rowcount = 1
 
         with patch.object(postgres_saver, '_get_connection', return_value=mock_conn):
