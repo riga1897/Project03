@@ -1,0 +1,256 @@
+{
+  "timestamp": 1757171019.2682936,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 50,
+      "only_with_salary": false,
+      "period": 15,
+      "text": "python developer",
+      "page": 14
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "124964211",
+        "premium": false,
+        "name": "DevOps-инженер в команду User Storage & PolicyStorage",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T19:00:35+0300",
+        "created_at": "2025-09-05T19:00:35+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124964211",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124964211?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124964211",
+        "relations": [],
+        "employer": {
+          "id": "87021",
+          "name": "WILDBERRIES",
+          "url": "https://api.hh.ru/employers/87021",
+          "alternate_url": "https://hh.ru/employer/87021",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1395401.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7201387.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7201388.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=87021",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Понимание основ сетевых технологий (стек TCP/IP). Навыки писания на Bash и <highlighttext>Python</highlighttext> (развитый скриптинг). Опыт конфигурирования мониторинга на основе...",
+          "responsibility": "Развивать практики DevOps в организации процессов <highlighttext>разработки</highlighttext> и CI/CD. Тесно взаимодействовать с командой <highlighttext>разработки</highlighttext> при оперативном решении задач. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124882275",
+        "premium": false,
+        "name": "Инженер-программист",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "77",
+          "name": "Рязань",
+          "url": "https://api.hh.ru/areas/77"
+        },
+        "salary": {
+          "from": 100000,
+          "to": 140000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 100000,
+          "to": 140000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Рязань",
+          "street": "улица Маяковского",
+          "building": "1А",
+          "lat": 54.615157,
+          "lng": 39.752365,
+          "description": null,
+          "raw": "Рязань, улица Маяковского, 1А",
+          "metro": null,
+          "metro_stations": [],
+          "id": "14184118"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T15:09:27+0300",
+        "created_at": "2025-09-04T15:09:27+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124882275",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124882275?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124882275",
+        "relations": [],
+        "employer": {
+          "id": "5159018",
+          "name": "Спецпромстрой",
+          "url": "https://api.hh.ru/employers/5159018",
+          "alternate_url": "https://hh.ru/employer/5159018",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1269662.jpeg",
+            "90": "https://img.hhcdn.ru/employer-logo/6698958.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/6698959.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=5159018",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Среднее профессиональное или высшее образование. Опыт программирования не менее 1 года. Аналитический склад ума, внимательность к деталям и системный подход. ",
+          "responsibility": "<highlighttext>Разработка</highlighttext> отчетных форм, дашбордов и отчетов в MS Excel. <highlighttext>Разработка</highlighttext> макросов для автоматизации рутинных задач в MS Excel. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 3973,
+    "pages": 40,
+    "page": 14,
+    "per_page": 50,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&enable_snippets=true&items_on_page=50&page=14&search_period=15&text=python+developer"
+  }
+}

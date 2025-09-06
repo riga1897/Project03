@@ -1,0 +1,351 @@
+
+                                  ^^^^^^^^^
+E                   TypeError: 'Mock' object is not subscriptable
+
+src/storage/db_manager.py:203: TypeError
+------------------------------- Captured log call -------------------------------
+ERROR    src.storage.db_manager:db_manager.py:277 Ошибка при создании таблиц: 'Mock' object is not subscriptable
+_____________ TestDBManagerCoverage.test_save_vacancy_comprehensive _____________
+
+self = <tests.test_db_manager_coverage.TestDBManagerCoverage object at 0x7ff071ff9790>
+db_manager = <src.storage.db_manager.DBManager object at 0x7ff072178850>
+mock_connection = (<Mock id='140670682735312'>, <Mock id='140670682737488'>)
+
+    def test_save_vacancy_comprehensive(self, db_manager, mock_connection):
+        """Тест сохранения вакансии"""
+        # Тест выполняется независимо от доступности модуля
+    
+        mock_conn, mock_cursor = mock_connection
+    
+        vacancy_data = {
+            'id': 'test_vac_123',
+            'title': 'Python Developer',
+            'description': 'Отличная работа',
+            'company_id': 'comp_456',
+            'salary_from': 100000,
+            'salary_to': 150000,
+            'currency': 'RUR',
+            'url': 'https://example.com/vacancy/123'
+        }
+    
+        # Мокируем сохранение вакансии
+        with patch.object(db_manager, '_get_connection', return_value=mock_conn):
+            mock_conn.__enter__ = Mock(return_value=mock_conn)
+            mock_conn.__exit__ = Mock(return_value=None)
+            mock_conn.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+            mock_conn.cursor.return_value.__exit__ = Mock(return_value=None)
+    
+>           db_manager.save_vacancy(vacancy_data)
+            ^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'DBManager' object has no attribute 'save_vacancy'
+
+tests/test_db_manager_coverage.py:114: AttributeError
+_________________ TestDBManagerCoverage.test_company_operations _________________
+
+self = <tests.test_db_manager_coverage.TestDBManagerCoverage object at 0x7ff071ff9f10>
+db_manager = <src.storage.db_manager.DBManager object at 0x7ff072007d50>
+mock_connection = (<Mock id='140670681512336'>, <Mock id='140670681506320'>)
+
+    def test_company_operations(self, db_manager, mock_connection):
+        """Тест операций с компаниями"""
+        # Тест выполняется независимо от доступности модуля
+    
+        mock_conn, mock_cursor = mock_connection
+    
+        company_data = {
+            'id': 'comp_789',
+            'name': 'ТехКорп',
+            'description': 'Технологическая компания',
+            'url': 'https://techcorp.ru'
+        }
+    
+        # Мокируем сохранение компании
+        with patch.object(db_manager, '_get_connection', return_value=mock_conn):
+            mock_conn.__enter__ = Mock(return_value=mock_conn)
+            mock_conn.__exit__ = Mock(return_value=None)
+            mock_conn.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+            mock_conn.cursor.return_value.__exit__ = Mock(return_value=None)
+    
+>           db_manager.save_company(company_data)
+            ^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'DBManager' object has no attribute 'save_company'
+
+tests/test_db_manager_coverage.py:137: AttributeError
+________________ TestDBManagerCoverage.test_bulk_save_operations ________________
+
+self = <tests.test_db_manager_coverage.TestDBManagerCoverage object at 0x7ff071ffa690>
+db_manager = <src.storage.db_manager.DBManager object at 0x7ff071ec1bd0>
+mock_connection = (<Mock id='140670680173904'>, <Mock id='140670680172624'>)
+
+    def test_bulk_save_operations(self, db_manager, mock_connection):
+        """Тест массового сохранения данных"""
+        # Тест выполняется независимо от доступности модуля
+    
+        mock_conn, mock_cursor = mock_connection
+    
+        # Массовое сохранение компаний
+        companies = [
+            {'id': 'comp1', 'name': 'Company 1'},
+            {'id': 'comp2', 'name': 'Company 2'},
+            {'id': 'comp3', 'name': 'Company 3'}
+        ]
+    
+        # Используем реальный метод populate_companies_table
+        with patch.object(db_manager, '_get_connection', return_value=mock_conn):
+            mock_conn.__enter__ = Mock(return_value=mock_conn)
+            mock_conn.__exit__ = Mock(return_value=None)
+            mock_conn.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+            mock_conn.cursor.return_value.__exit__ = Mock(return_value=None)
+    
+>           db_manager.populate_companies_table()
+
+tests/test_db_manager_coverage.py:160: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.db_manager.DBManager object at 0x7ff071ec1bd0>
+
+    def populate_companies_table(self):
+        """Заполняет таблицу companies целевыми компаниями"""
+        try:
+            # Используем контекстный менеджер для безопасной работы с подключением
+            with self._get_connection() as connection:
+                with connection.cursor() as cursor:
+                    # Устанавливаем кодировку сессии
+                    cursor.execute("SET client_encoding TO 'UTF8'")
+    
+                    # Проверяем, существует ли таблица companies
+                    cursor.execute(
+                        """
+                        SELECT EXISTS (
+                            SELECT FROM information_schema.tables
+                            WHERE table_schema = 'public'
+                            AND table_name = 'companies'
+                        );
+                    """
+                    )
+    
+>                   table_exists = cursor.fetchone()[0]
+                                   ^^^^^^^^^^^^^^^^^^^^
+E                   TypeError: 'Mock' object is not subscriptable
+
+src/storage/db_manager.py:300: TypeError
+------------------------------- Captured log call -------------------------------
+ERROR    src.storage.db_manager:db_manager.py:337 Ошибка при заполнении таблицы companies: 'Mock' object is not subscriptable
+_________________ TestDBManagerCoverage.test_delete_operations __________________
+
+self = <tests.test_db_manager_coverage.TestDBManagerCoverage object at 0x7ff072001510>
+db_manager = <src.storage.db_manager.DBManager object at 0x7ff072002ad0>
+mock_connection = (<Mock id='140670680558288'>, <Mock id='140670680559952'>)
+
+    def test_delete_operations(self, db_manager, mock_connection):
+        """Тест операций удаления"""
+        # Тест выполняется независимо от доступности модуля
+    
+        mock_conn, mock_cursor = mock_connection
+    
+        # Тестируем создание таблиц как операцию с БД
+        with patch.object(db_manager, '_get_connection', return_value=mock_conn):
+            mock_conn.__enter__ = Mock(return_value=mock_conn)
+            mock_conn.__exit__ = Mock(return_value=None)
+            mock_conn.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+            mock_conn.cursor.return_value.__exit__ = Mock(return_value=None)
+    
+>           db_manager.create_tables()
+
+tests/test_db_manager_coverage.py:278: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.db_manager.DBManager object at 0x7ff072002ad0>
+
+    def create_tables(self):
+        """
+        Создает таблицы компаний и вакансий в базе данных, если они не существуют
+        Автоматически добавляет недостающие поля в существующие таблицы
+        """
+        try:
+            with self._get_connection() as conn:
+                with conn.cursor() as cursor:
+                    # Устанавливаем кодировку сессии
+                    cursor.execute("SET client_encoding TO 'UTF8'")
+    
+                    # Создаем упрощенную таблицу компаний для целевых компаний
+                    cursor.execute(
+                        """
+                        CREATE TABLE IF NOT EXISTS companies (
+                            id SERIAL PRIMARY KEY,
+                            name VARCHAR(255) NOT NULL UNIQUE,
+                            hh_id VARCHAR(50),
+                            sj_id VARCHAR(50)
+                        );
+                    """
+                    )
+                    logger.info("✓ Таблица companies создана/проверена")
+    
+                    # Создаем полную таблицу вакансий сразу с правильными типами
+                    cursor.execute(
+                        """
+                        CREATE TABLE IF NOT EXISTS vacancies (
+                            id SERIAL PRIMARY KEY,
+                            vacancy_id VARCHAR(255) UNIQUE NOT NULL,
+                            title TEXT NOT NULL,
+                            url TEXT,
+                            salary_from INTEGER,
+                            salary_to INTEGER,
+                            salary_currency VARCHAR(10),
+                            description TEXT,
+                            requirements TEXT,
+                            responsibilities TEXT,
+                            experience VARCHAR(100),
+                            employment VARCHAR(100),
+                            schedule VARCHAR(100),
+                            area TEXT,
+                            source VARCHAR(50),
+                            published_at TIMESTAMP,
+                            company_id INTEGER,
+                            search_query TEXT,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        );
+                    """
+                    )
+    
+                    # Проверяем и исправляем тип company_id если нужно
+                    cursor.execute(
+                        """
+                        SELECT data_type
+                        FROM information_schema.columns
+                        WHERE table_name = 'vacancies' AND column_name = 'company_id'
+                    """
+                    )
+    
+                    result = cursor.fetchone()
+>                   if result and result[0] not in ("integer", "bigint"):
+                                  ^^^^^^^^^
+E                   TypeError: 'Mock' object is not subscriptable
+
+src/storage/db_manager.py:203: TypeError
+------------------------------- Captured log call -------------------------------
+ERROR    src.storage.db_manager:db_manager.py:277 Ошибка при создании таблиц: 'Mock' object is not subscriptable
+_______________ TestDBManagerCoverage.test_configuration_methods ________________
+
+self = <tests.test_db_manager_coverage.TestDBManagerCoverage object at 0x7ff072003350>
+db_manager = <src.storage.db_manager.DBManager object at 0x7ff071ec3710>
+
+    def test_configuration_methods(self, db_manager):
+        """Тест методов конфигурации"""
+        # Тест выполняется независимо от доступности модуля
+    
+        # Тестируем атрибуты конфигурации
+>       assert hasattr(db_manager, 'connection') or hasattr(db_manager, '_connection')
+E       AssertionError: assert (False or False)
+E        +  where False = hasattr(<src.storage.db_manager.DBManager object at 0x7ff071ec3710>, 'connection')
+E        +  and   False = hasattr(<src.storage.db_manager.DBManager object at 0x7ff071ec3710>, '_connection')
+
+tests/test_db_manager_coverage.py:344: AssertionError
+_______________ TestDBManagerCoverage.test_integration_scenarios ________________
+
+self = <tests.test_db_manager_coverage.TestDBManagerCoverage object at 0x7ff072004210>
+db_manager = <src.storage.db_manager.DBManager object at 0x7ff07201bdd0>
+mock_connection = (<Mock id='140670681590096'>, <Mock id='140670681590608'>)
+
+    def test_integration_scenarios(self, db_manager, mock_connection):
+        """Тест интеграционных сценариев"""
+        # Тест выполняется независимо от доступности модуля
+    
+        mock_conn, mock_cursor = mock_connection
+    
+        # Полный цикл работы с данными
+        with patch.object(db_manager, '_get_connection', return_value=mock_conn):
+            mock_conn.__enter__ = Mock(return_value=mock_conn)
+            mock_conn.__exit__ = Mock(return_value=None)
+            mock_conn.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+            mock_conn.cursor.return_value.__exit__ = Mock(return_value=None)
+            mock_cursor.fetchall.return_value = []
+    
+            # 1. Создание таблиц
+>           db_manager.create_tables()
+
+tests/test_db_manager_coverage.py:381: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.storage.db_manager.DBManager object at 0x7ff07201bdd0>
+
+    def create_tables(self):
+        """
+        Создает таблицы компаний и вакансий в базе данных, если они не существуют
+        Автоматически добавляет недостающие поля в существующие таблицы
+        """
+        try:
+            with self._get_connection() as conn:
+                with conn.cursor() as cursor:
+                    # Устанавливаем кодировку сессии
+                    cursor.execute("SET client_encoding TO 'UTF8'")
+    
+                    # Создаем упрощенную таблицу компаний для целевых компаний
+                    cursor.execute(
+                        """
+                        CREATE TABLE IF NOT EXISTS companies (
+                            id SERIAL PRIMARY KEY,
+                            name VARCHAR(255) NOT NULL UNIQUE,
+                            hh_id VARCHAR(50),
+                            sj_id VARCHAR(50)
+                        );
+                    """
+                    )
+                    logger.info("✓ Таблица companies создана/проверена")
+    
+                    # Создаем полную таблицу вакансий сразу с правильными типами
+                    cursor.execute(
+                        """
+                        CREATE TABLE IF NOT EXISTS vacancies (
+                            id SERIAL PRIMARY KEY,
+                            vacancy_id VARCHAR(255) UNIQUE NOT NULL,
+                            title TEXT NOT NULL,
+                            url TEXT,
+                            salary_from INTEGER,
+                            salary_to INTEGER,
+                            salary_currency VARCHAR(10),
+                            description TEXT,
+                            requirements TEXT,
+                            responsibilities TEXT,
+                            experience VARCHAR(100),
+                            employment VARCHAR(100),
+                            schedule VARCHAR(100),
+                            area TEXT,
+                            source VARCHAR(50),
+                            published_at TIMESTAMP,
+                            company_id INTEGER,
+                            search_query TEXT,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        );
+                    """
+                    )
+    
+                    # Проверяем и исправляем тип company_id если нужно
+                    cursor.execute(
+                        """
+                        SELECT data_type
+                        FROM information_schema.columns
+                        WHERE table_name = 'vacancies' AND column_name = 'company_id'
+                    """
+                    )
+    
+                    result = cursor.fetchone()
+>                   if result and result[0] not in ("integer", "bigint"):
+                                  ^^^^^^^^^
+E                   TypeError: 'Mock' object is not subscriptable
+
+src/storage/db_manager.py:203: TypeError
+------------------------------- Captured log call -------------------------------
+ERROR    src.storage.db_manager:db_manager.py:277 Ошибка при создании таблиц: 'Mock' object is not subscriptable
+============================ short test summary info ============================
+FAILED tests/test_db_manager_coverage.py::TestDBManagerCoverage::test_table_creation - TypeError: 'Mock' object is not subscriptable
+FAILED tests/test_db_manager_coverage.py::TestDBManagerCoverage::test_save_vacancy_comprehensive - AttributeError: 'DBManager' object has no attribute 'save_vacancy'
+FAILED tests/test_db_manager_coverage.py::TestDBManagerCoverage::test_company_operations - AttributeError: 'DBManager' object has no attribute 'save_company'
+FAILED tests/test_db_manager_coverage.py::TestDBManagerCoverage::test_bulk_save_operations - TypeError: 'Mock' object is not subscriptable
+FAILED tests/test_db_manager_coverage.py::TestDBManagerCoverage::test_delete_operations - TypeError: 'Mock' object is not subscriptable
+FAILED tests/test_db_manager_coverage.py::TestDBManagerCoverage::test_configuration_methods - AssertionError: assert (False or False)
+FAILED tests/test_db_manager_coverage.py::TestDBManagerCoverage::test_integration_scenarios - TypeError: 'Mock' object is not subscriptable
+========================= 7 failed, 10 passed in 0.33s ==========================
+~/workspace$ 

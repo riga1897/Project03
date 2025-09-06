@@ -1,0 +1,4977 @@
+{
+  "timestamp": 1757171026.6030774,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 50,
+      "only_with_salary": false,
+      "period": 15,
+      "text": "java programmer",
+      "page": 0
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "124892472",
+        "premium": false,
+        "name": "Manual QA Engineer",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T18:32:35+0300",
+        "created_at": "2025-09-04T18:32:35+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124892472",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124892472?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124892472",
+        "relations": [],
+        "employer": {
+          "id": "872178",
+          "name": "ИЦ АЙ-ТЕКО",
+          "url": "https://api.hh.ru/employers/872178",
+          "alternate_url": "https://hh.ru/employer/872178",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/529414.png",
+            "90": "https://img.hhcdn.ru/employer-logo/2559133.png",
+            "240": "https://img.hhcdn.ru/employer-logo/2559134.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=872178",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Высшее техническое образование. Знание SQL на уровне написания простых запросов (SELECT, INSERT, UPDATE). Опыт тестирования API (Postman, Insomnia и пр.). ",
+          "responsibility": "Работа с Jira и Zephyr (ведение тестовой документации, тест-планы и прогоны). Взаимодействие с <highlighttext>разработчиками</highlighttext> и аналитиками. Анализ логов в..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "124",
+            "name": "Тестировщик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124788635",
+        "premium": false,
+        "name": "Backend-разработчик на Java",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "улица Станиславского",
+          "building": "21с2",
+          "lat": 55.745716,
+          "lng": 37.663539,
+          "description": null,
+          "raw": "Москва, улица Станиславского, 21с2",
+          "metro": null,
+          "metro_stations": [],
+          "id": "5565574"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-02T18:08:30+0300",
+        "created_at": "2025-09-02T18:08:30+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124788635",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124788635?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124788635",
+        "relations": [],
+        "employer": {
+          "id": "2942396",
+          "name": "СтандартПроект",
+          "url": "https://api.hh.ru/employers/2942396",
+          "alternate_url": "https://hh.ru/employer/2942396",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/964785.png",
+            "90": "https://img.hhcdn.ru/employer-logo/5393160.png",
+            "240": "https://img.hhcdn.ru/employer-logo/5393161.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2942396",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Автономность: умение решать поставленные задачи самостоятельно. Уверенные знания <highlighttext>Java</highlighttext> и SQL. Знание средств коллективной разработки и сборки проектов (Git, Maven...",
+          "responsibility": "Разработка сервисов высоконагруженной системы с петабайтным хранилищем и кластером PostgreSQL. Интеграция приложений с микросервисами и функциональными узлами системы. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124908723",
+        "premium": false,
+        "name": "Java разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T09:43:57+0300",
+        "created_at": "2025-09-05T09:43:57+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124908723",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124908723?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124908723",
+        "relations": [],
+        "employer": {
+          "id": "859839",
+          "name": "Techno Diasoft",
+          "url": "https://api.hh.ru/employers/859839",
+          "alternate_url": "https://hh.ru/employer/859839",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/126735.gif",
+            "90": "https://img.hhcdn.ru/employer-logo/589370.png",
+            "240": "https://img.hhcdn.ru/employer-logo/589371.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=859839",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт командной разработки коммерческих приложений на <highlighttext>Java</highlighttext> на основе принципов agile от 3-х лет. Желателен опыт проектирования и разработки...",
+          "responsibility": "Простой и быстрый процесс собеседований: беседа с HR, одно техническое интервью (примерно 1 час), предложение о работе."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124559033",
+        "premium": false,
+        "name": "Java-разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "2-я Брестская улица",
+          "building": "5",
+          "lat": 55.770335,
+          "lng": 37.590847,
+          "description": null,
+          "raw": "Москва, 2-я Брестская улица, 5",
+          "metro": null,
+          "metro_stations": [],
+          "id": "17852661"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-27T17:06:49+0300",
+        "created_at": "2025-08-27T17:06:49+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124559033",
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124559033?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124559033",
+        "relations": [],
+        "employer": {
+          "id": "11858800",
+          "name": "Цифролаб",
+          "url": "https://api.hh.ru/employers/11858800",
+          "alternate_url": "https://hh.ru/employer/11858800",
+          "logo_urls": null,
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=11858800",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт коммерческой разработки на <highlighttext>Java</highlighttext>. Отличное знание принципов ООП и популярных паттернов проектирования. Опыт работы с системами контроля версий (Git). ",
+          "responsibility": "Разработка и поддержка корпоративных приложений на <highlighttext>Java</highlighttext>. Проектирование, реализация и рефакторинг backend-решений с применением принципов ООП и паттернов проектирования. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124923619",
+        "premium": false,
+        "name": "Middle Java-разработчик",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 200000,
+          "to": 300000,
+          "currency": "RUR",
+          "gross": true
+        },
+        "salary_range": {
+          "from": 200000,
+          "to": 300000,
+          "currency": "RUR",
+          "gross": true,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Профсоюзная улица",
+          "building": "125А",
+          "lat": 55.62331,
+          "lng": 37.511032,
+          "description": null,
+          "raw": "Москва, Профсоюзная улица, 125А",
+          "metro": {
+            "station_name": "Теплый Стан",
+            "line_name": "Калужско-Рижская",
+            "station_id": "6.140",
+            "line_id": "6",
+            "lat": 55.61873,
+            "lng": 37.505912
+          },
+          "metro_stations": [
+            {
+              "station_name": "Теплый Стан",
+              "line_name": "Калужско-Рижская",
+              "station_id": "6.140",
+              "line_id": "6",
+              "lat": 55.61873,
+              "lng": 37.505912
+            }
+          ],
+          "id": "4233525"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T11:16:06+0300",
+        "created_at": "2025-09-05T11:16:06+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124923619",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124923619?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124923619",
+        "relations": [],
+        "employer": {
+          "id": "3131901",
+          "name": "РСХБ-Интех",
+          "url": "https://api.hh.ru/employers/3131901",
+          "alternate_url": "https://hh.ru/employer/3131901",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1413640.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7274220.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7274221.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3131901",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт не менее 3 лет. Отличное знание <highlighttext>Java</highlighttext> 17, Spring, Kafka, PostgreSQL, Maven. Работа с GIT. Опыт работы с микросервисной...",
+          "responsibility": "Оценка трудоемкости задач. Взаимодействие с другими командами: backend-<highlighttext>разработчиками</highlighttext>; тестировщиками, аналитиками. Разработка микросервисов и их API. Участие в формировании программной..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124789400",
+        "premium": false,
+        "name": "Java-разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Новомосковский административный округ",
+          "street": "Киевское шоссе, 22-й километр",
+          "building": "6с1",
+          "lat": 55.63506623866136,
+          "lng": 37.431635592590304,
+          "description": null,
+          "raw": "Новомосковский административный округ, Киевское шоссе, 22-й километр, 6с1",
+          "metro": {
+            "station_name": "Румянцево",
+            "line_name": "Сокольническая",
+            "station_id": "1.513",
+            "line_id": "1",
+            "lat": 55.633,
+            "lng": 37.4419
+          },
+          "metro_stations": [
+            {
+              "station_name": "Румянцево",
+              "line_name": "Сокольническая",
+              "station_id": "1.513",
+              "line_id": "1",
+              "lat": 55.633,
+              "lng": 37.4419
+            }
+          ],
+          "id": "610356"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T21:49:26+0300",
+        "created_at": "2025-09-05T21:49:26+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124789400",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124789400?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124789400",
+        "relations": [],
+        "employer": {
+          "id": "2168579",
+          "name": "СТЭП ЛОДЖИК (STEP LOGIC)",
+          "url": "https://api.hh.ru/employers/2168579",
+          "alternate_url": "https://hh.ru/employer/2168579",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/929198.png",
+            "90": "https://img.hhcdn.ru/employer-logo/4157352.png",
+            "240": "https://img.hhcdn.ru/employer-logo/4157353.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2168579",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Высшее техническое образование. Опыт работы <highlighttext>разработчиком</highlighttext> ПО от 1,5 лет. Опыт разработки на языке <highlighttext>Java</highlighttext> от 1,5 лет. ",
+          "responsibility": "Проектирование и разработка программного обеспечения для контакт-центров и унифицированных коммуникаций с использованием языка <highlighttext>Java</highlighttext>, Фреймворк Spring очень желателен. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124771009",
+        "premium": false,
+        "name": "Java-разработчик (Служебные расследования)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": null,
+          "to": 230000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": null,
+          "to": 230000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Кутузовский проспект",
+          "building": "36с23",
+          "lat": 55.742823,
+          "lng": 37.527561,
+          "description": null,
+          "raw": "Москва, Кутузовский проспект, 36с23",
+          "metro": {
+            "station_name": "Кутузовская",
+            "line_name": "Филевская",
+            "station_id": "4.73",
+            "line_id": "4",
+            "lat": 55.740544,
+            "lng": 37.5341
+          },
+          "metro_stations": [
+            {
+              "station_name": "Кутузовская",
+              "line_name": "Филевская",
+              "station_id": "4.73",
+              "line_id": "4",
+              "lat": 55.740544,
+              "lng": 37.5341
+            }
+          ],
+          "id": "6270612"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T13:37:20+0300",
+        "created_at": "2025-09-05T13:37:20+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124771009",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124771009?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124771009",
+        "relations": [],
+        "employer": {
+          "id": "4913210",
+          "name": "Datanomica",
+          "url": "https://api.hh.ru/employers/4913210",
+          "alternate_url": "https://hh.ru/employer/4913210",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/894710.png",
+            "90": "https://img.hhcdn.ru/employer-logo/4019527.png",
+            "240": "https://img.hhcdn.ru/employer-logo/4019528.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4913210",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Наличие технического образования. Промышленный опыт разработки от 3 лет. Знание <highlighttext>Java</highlighttext> не ниже версии 1.8 (Fork Join, Stream, Future...",
+          "responsibility": "Доработкой продукта и выпуском новых фич. Сode review. Проектированием архитектуры разрабатываемых фич."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124933660",
+        "premium": false,
+        "name": "Middle Java разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "2",
+          "name": "Санкт-Петербург",
+          "url": "https://api.hh.ru/areas/2"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Санкт-Петербург",
+          "street": "Конногвардейский бульвар",
+          "building": "4",
+          "lat": 59.932703,
+          "lng": 30.29818,
+          "description": null,
+          "raw": "Санкт-Петербург, Конногвардейский бульвар, 4",
+          "metro": {
+            "station_name": "Адмиралтейская",
+            "line_name": "Фрунзенско-Приморская",
+            "station_id": "18.258",
+            "line_id": "18",
+            "lat": 59.935867,
+            "lng": 30.31523
+          },
+          "metro_stations": [
+            {
+              "station_name": "Адмиралтейская",
+              "line_name": "Фрунзенско-Приморская",
+              "station_id": "18.258",
+              "line_id": "18",
+              "lat": 59.935867,
+              "lng": 30.31523
+            }
+          ],
+          "id": "17015841"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T13:12:51+0300",
+        "created_at": "2025-09-05T13:12:51+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124933660",
+        "branding": {
+          "type": "CONSTRUCTOR",
+          "tariff": "BASIC"
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124933660?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124933660",
+        "relations": [],
+        "employer": {
+          "id": "3686105",
+          "name": "АНТ-Цифровые Сервисы",
+          "url": "https://api.hh.ru/employers/3686105",
+          "alternate_url": "https://hh.ru/employer/3686105",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1371081.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7104226.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7104227.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3686105",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "3+ лет в области создания ПО по специальности. Знания <highlighttext>Java</highlighttext> 17, Spring Framework, Spring Boot. SQL, навыки работы с...",
+          "responsibility": "Разработка компонентов по подготовленным техническим требованиям. Участие в разработке требований. Разработка и доработка библиотек компонентов. Участие в разработке, тестировании и..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124932642",
+        "premium": false,
+        "name": "Frontend Developer (TS, React) Junior+/Middle",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T12:59:44+0300",
+        "created_at": "2025-09-05T12:59:44+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124932642",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124932642?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124932642",
+        "relations": [],
+        "employer": {
+          "id": "231166",
+          "name": "Отраслевой центр разработки и внедрения информационных систем / ОЦРВ",
+          "url": "https://api.hh.ru/employers/231166",
+          "alternate_url": "https://hh.ru/employer/231166",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1413734.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7274596.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7274597.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=231166",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы front-end <highlighttext>разработчиком</highlighttext> от 2-х лет. Высшее техническое или физико-математическое образование. Знание HTML5, CSS3...",
+          "responsibility": "Работа в команде (руководитель проекта, дизайнеры, аналитики, frontend- и backend-<highlighttext>разработчики</highlighttext>, тестировщики). Тестирование результатов работы. Участие в митингах, Code Review."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124943702",
+        "premium": false,
+        "name": "Java-разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T15:58:00+0300",
+        "created_at": "2025-09-05T15:58:00+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124943702",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124943702?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124943702",
+        "relations": [],
+        "employer": {
+          "id": "24209",
+          "name": "СберЛизинг",
+          "url": "https://api.hh.ru/employers/24209",
+          "alternate_url": "https://hh.ru/employer/24209",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1409957.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7259488.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7259489.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=24209",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Уверенное знание <highlighttext>Java</highlighttext> Core: Collections, Concurrency, JDBC, опыт работы с <highlighttext>Java</highlighttext> 8+. Опыт работы с микросервисной архитектурой. ",
+          "responsibility": "Реализация задач по переходу системы на микросервисную архитектуру. Разработка функционала согласно поставленным требованиям. Написание unit, интеграционных тестов. Участие в планировании..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124874169",
+        "premium": false,
+        "name": "QA Manual",
+        "department": {
+          "id": "mag-49357-it",
+          "name": "МАГНИТ, Розничная сеть. IT"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T13:12:36+0300",
+        "created_at": "2025-09-04T13:12:36+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124874169",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124874169?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124874169",
+        "relations": [],
+        "employer": {
+          "id": "49357",
+          "name": "МАГНИТ, Розничная сеть",
+          "url": "https://api.hh.ru/employers/49357",
+          "alternate_url": "https://hh.ru/employer/49357",
+          "logo_urls": {
+            "90": "https://img.hhcdn.ru/ichameleon/310823.png",
+            "240": "https://img.hhcdn.ru/ichameleon/310823.png",
+            "original": "https://img.hhcdn.ru/ichameleon/310823.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=49357",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы с различными СУБД. Написание SQL запросов. Опыт работы с одной из систем bug-tracking, task-tracking. ",
+          "responsibility": "Подготовка отчетов о проведении тестирования. Описание найденных ошибок и контроль их исправления. Составление тест-карты. Кросс-функциональное взаимодействие с <highlighttext>разработчиками</highlighttext>..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "124",
+            "name": "Тестировщик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124882801",
+        "premium": false,
+        "name": "Java-разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "2734",
+          "name": "Иннополис",
+          "url": "https://api.hh.ru/areas/2734"
+        },
+        "salary": {
+          "from": null,
+          "to": 230000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": null,
+          "to": 230000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T15:16:01+0300",
+        "created_at": "2025-09-04T15:16:01+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124882801",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124882801?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124882801",
+        "relations": [],
+        "employer": {
+          "id": "4770322",
+          "name": "DCloud",
+          "url": "https://api.hh.ru/employers/4770322",
+          "alternate_url": "https://hh.ru/employer/4770322",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/853705.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/3855695.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/3855696.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4770322",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Spring Framework (Core, MVC, Data, Batch, Cloud). Знание Spring Boot 2.0 и выше. Опыт работы с JPA, Hibernate. ",
+          "responsibility": null
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124815414",
+        "premium": false,
+        "name": "Java-разработчик",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "23",
+          "name": "Владимир",
+          "url": "https://api.hh.ru/areas/23"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T12:07:05+0300",
+        "created_at": "2025-09-03T12:07:05+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124815414",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124815414?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124815414",
+        "relations": [],
+        "employer": {
+          "id": "113313",
+          "name": "Инрэко ЛАН",
+          "url": "https://api.hh.ru/employers/113313",
+          "alternate_url": "https://hh.ru/employer/113313",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1391747.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7186771.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7186772.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=113313",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы в проектах разработки ПО на <highlighttext>Java</highlighttext>. Знание архитектуры современных <highlighttext>Java</highlighttext>-приложений. Знание Spring Framework, Spring Boot. ",
+          "responsibility": "Разработка под <highlighttext>Java</highlighttext>, обычно Spring Framework. Разработка новых модулей и компонентов для приложений, решение интеграционных задач, а также поддержание существующего..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124887499",
+        "premium": false,
+        "name": "Java-разработчик",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "улица Вавилова",
+          "building": "19",
+          "lat": 55.700182,
+          "lng": 37.580158,
+          "description": null,
+          "raw": "Москва, улица Вавилова, 19",
+          "metro": {
+            "station_name": "Академическая",
+            "line_name": "Калужско-Рижская",
+            "station_id": "6.3",
+            "line_id": "6",
+            "lat": 55.687147,
+            "lng": 37.5723
+          },
+          "metro_stations": [
+            {
+              "station_name": "Академическая",
+              "line_name": "Калужско-Рижская",
+              "station_id": "6.3",
+              "line_id": "6",
+              "lat": 55.687147,
+              "lng": 37.5723
+            },
+            {
+              "station_name": "Ленинский проспект",
+              "line_name": "Калужско-Рижская",
+              "station_id": "6.74",
+              "line_id": "6",
+              "lat": 55.70678,
+              "lng": 37.58499
+            },
+            {
+              "station_name": "Площадь Гагарина",
+              "line_name": "МЦК",
+              "station_id": "95.534",
+              "line_id": "95",
+              "lat": 55.706944,
+              "lng": 37.585833
+            }
+          ],
+          "id": "14463573"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T16:30:11+0300",
+        "created_at": "2025-09-04T16:30:11+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124887499",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124887499?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124887499",
+        "relations": [],
+        "employer": {
+          "id": "3513136",
+          "name": "ТЕХНОЛОГИИ ОТРАСЛЕВОЙ ТРАНСФОРМАЦИИ",
+          "url": "https://api.hh.ru/employers/3513136",
+          "alternate_url": "https://hh.ru/employer/3513136",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1135973.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6164477.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6164478.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3513136",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Хорошие знания <highlighttext>Java</highlighttext> Core, включая <highlighttext>Java</highlighttext> Collection Framework, Stream API. Опыт многопоточной и асинхронной разработки. Опыт разработки приложений с применением...",
+          "responsibility": "Разработка и поддержка приложений на <highlighttext>Java</highlighttext>, включая архитектурное проектирование. Написание тестового кода для проверки функциональности приложений. Участие в оптимизации и..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124866626",
+        "premium": false,
+        "name": "Senior Java Developer (Spring Boot)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 350000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 350000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Пресненская набережная",
+          "building": "12",
+          "lat": 55.749633,
+          "lng": 37.537434,
+          "description": null,
+          "raw": "Москва, Пресненская набережная, 12",
+          "metro": {
+            "station_name": "Деловой центр",
+            "line_name": "Большая кольцевая линия",
+            "station_id": "97.603",
+            "line_id": "97",
+            "lat": 55.7491,
+            "lng": 37.5395
+          },
+          "metro_stations": [
+            {
+              "station_name": "Деловой центр",
+              "line_name": "Большая кольцевая линия",
+              "station_id": "97.603",
+              "line_id": "97",
+              "lat": 55.7491,
+              "lng": 37.5395
+            },
+            {
+              "station_name": "Деловой центр",
+              "line_name": "Солнцевская",
+              "station_id": "133.468",
+              "line_id": "133",
+              "lat": 55.7491,
+              "lng": 37.5395
+            },
+            {
+              "station_name": "Деловой центр (Выставочная)",
+              "line_name": "Филевская",
+              "station_id": "4.172",
+              "line_id": "4",
+              "lat": 55.750243,
+              "lng": 37.542641
+            },
+            {
+              "station_name": "Москва-Сити",
+              "line_name": "Филевская",
+              "station_id": "4.179",
+              "line_id": "4",
+              "lat": 55.748056,
+              "lng": 37.532778
+            }
+          ],
+          "id": "19363089"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T11:24:34+0300",
+        "created_at": "2025-09-04T11:24:34+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124866626",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124866626?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124866626",
+        "relations": [],
+        "employer": {
+          "id": "11936525",
+          "name": "Кай Надежда Александровна",
+          "url": "https://api.hh.ru/employers/11936525",
+          "alternate_url": "https://hh.ru/employer/11936525",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1412386.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7269204.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7269205.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=11936525",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт важнее диплома. Сертификации Oracle <highlighttext>Java</highlighttext>, Spring, AWS будут плюсом. Обязательно: Глубокое знание <highlighttext>Java</highlighttext> 17+, Spring Boot 3, Spring...",
+          "responsibility": "Code review, участие в планировании задач (Agile/Scrum). Взаимодействие с фронтенд-<highlighttext>разработчиками</highlighttext> для согласования контрактов API. Ведение отчетности: ежедневные стендапы. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124941600",
+        "premium": false,
+        "name": "Java разработчик Middle+/Senior",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "88",
+          "name": "Казань",
+          "url": "https://api.hh.ru/areas/88"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T15:20:33+0300",
+        "created_at": "2025-09-05T15:20:33+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124941600",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124941600?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124941600",
+        "relations": [],
+        "employer": {
+          "id": "24155",
+          "name": "DZ Systems",
+          "url": "https://api.hh.ru/employers/24155",
+          "alternate_url": "https://hh.ru/employer/24155",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/850200.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/3841675.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/3841676.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=24155",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы <highlighttext>разработчиком</highlighttext> <highlighttext>Java</highlighttext> от 2-х лет. - Уверенное владение <highlighttext>Java</highlighttext> версии 17+, понимание принципов работы JVM. - ",
+          "responsibility": null
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124940367",
+        "premium": false,
+        "name": "Старший Java разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "67",
+          "name": "Великий Новгород",
+          "url": "https://api.hh.ru/areas/67"
+        },
+        "salary": {
+          "from": 180000,
+          "to": 250000,
+          "currency": "RUR",
+          "gross": true
+        },
+        "salary_range": {
+          "from": 180000,
+          "to": 250000,
+          "currency": "RUR",
+          "gross": true,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T15:02:20+0300",
+        "created_at": "2025-09-05T15:02:20+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124940367",
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124940367?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124940367",
+        "relations": [],
+        "employer": {
+          "id": "1787552",
+          "name": "ТулаСофт",
+          "url": "https://api.hh.ru/employers/1787552",
+          "alternate_url": "https://hh.ru/employer/1787552",
+          "logo_urls": null,
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=1787552",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Понимание современных принципов проектирования и разработки систем, практический опыт самостоятельной разработки систем/подсистем. Уверенное знание языка <highlighttext>Java</highlighttext> и фреймворка Spring...",
+          "responsibility": null
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124905926",
+        "premium": false,
+        "name": "Android-разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "улица Кузнецкий Мост",
+          "building": "19с2",
+          "lat": 55.762824,
+          "lng": 37.625657,
+          "description": null,
+          "raw": "Москва, улица Кузнецкий Мост, 19с2",
+          "metro": null,
+          "metro_stations": [],
+          "id": "16412210"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T09:28:14+0300",
+        "created_at": "2025-09-05T09:28:14+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124905926",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124905926?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124905926",
+        "relations": [],
+        "employer": {
+          "id": "2875859",
+          "name": "Домиленд",
+          "url": "https://api.hh.ru/employers/2875859",
+          "alternate_url": "https://hh.ru/employer/2875859",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1284097.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6756686.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6756687.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2875859",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Уверенно владеешь <highlighttext>Java</highlighttext> и Kotlin, хорошо знаешь Android SDK (API 16+), работал с Moxy и Dagger. Интересуешься Flutter или...",
+          "responsibility": "Выполнять задачи в установленные сроки. Проектировать архитектуру мобильного приложения. Участвовать в груминге и обсуждении задач. Проводить code review коллег. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124838768",
+        "premium": false,
+        "name": "Java-разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": null,
+          "to": 150000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": null,
+          "to": 150000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T17:47:25+0300",
+        "created_at": "2025-09-03T17:47:25+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124838768",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124838768?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124838768",
+        "relations": [],
+        "employer": {
+          "id": "4737",
+          "name": "Razio Group",
+          "url": "https://api.hh.ru/employers/4737",
+          "alternate_url": "https://hh.ru/employer/4737",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/231359.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/814352.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/814353.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4737",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы с <highlighttext>Java</highlighttext> от 2 лет. Знание Spring, SQL, PostgreSQL. Умение работать с JPA, Hibernate. Опыт использования Maven и...",
+          "responsibility": "Разрабатывать и поддерживать текущий функционал и принимать участие в создании нового."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123256918",
+        "premium": false,
+        "name": "Младший разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "88",
+          "name": "Казань",
+          "url": "https://api.hh.ru/areas/88"
+        },
+        "salary": {
+          "from": 60000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T13:57:25+0300",
+        "created_at": "2025-09-05T13:57:25+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123256918",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123256918?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123256918",
+        "relations": [],
+        "employer": {
+          "id": "14809",
+          "name": "Бизнес Технологии",
+          "url": "https://api.hh.ru/employers/14809",
+          "alternate_url": "https://hh.ru/employer/14809",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1237495.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6570413.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6570414.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=14809",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Понимания принципов объектно-ориентированного программирования, знание одного или нескольких языков высокого уровня (C++, <highlighttext>java</highlighttext>, pascal). Ответственность, самостоятельность, инициативность. ",
+          "responsibility": null
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124868370",
+        "premium": false,
+        "name": "Java-разработчик",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "2",
+          "name": "Санкт-Петербург",
+          "url": "https://api.hh.ru/areas/2"
+        },
+        "salary": {
+          "from": 90000,
+          "to": 120000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 90000,
+          "to": 120000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Санкт-Петербург",
+          "street": "площадь Александра Невского",
+          "building": "2",
+          "lat": 59.924402,
+          "lng": 30.385784,
+          "description": null,
+          "raw": "Санкт-Петербург, площадь Александра Невского, 2",
+          "metro": null,
+          "metro_stations": [],
+          "id": "5046754"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T11:49:47+0300",
+        "created_at": "2025-09-04T11:49:47+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124868370",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124868370?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124868370",
+        "relations": [],
+        "employer": {
+          "id": "1046892",
+          "name": "Тимлид",
+          "url": "https://api.hh.ru/employers/1046892",
+          "alternate_url": "https://hh.ru/employer/1046892",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/439506.png",
+            "90": "https://img.hhcdn.ru/employer-logo/2199991.png",
+            "240": "https://img.hhcdn.ru/employer-logo/2199992.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=1046892",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "<highlighttext>Java</highlighttext> (используем Atlassian SDK, Active objects). MySQL/PostgreSQL. REST/JSON. Git. Понимание принципов ООП и SOLID. Технический английский (чтение/письмо...",
+          "responsibility": "Поддерживать и развивать плагины для Data Center (Jira/Confluence). Разбираться в Atlassian SDK и API. Оптимизировать код под крупные инсталляции..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124810523",
+        "premium": false,
+        "name": "Стажер JavaScript разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "улица Коровий Вал",
+          "building": "5",
+          "lat": 55.728849,
+          "lng": 37.620321,
+          "description": null,
+          "raw": "Москва, улица Коровий Вал, 5",
+          "metro": {
+            "station_name": "Добрынинская",
+            "line_name": "Кольцевая",
+            "station_id": "5.36",
+            "line_id": "5",
+            "lat": 55.728994,
+            "lng": 37.622533
+          },
+          "metro_stations": [
+            {
+              "station_name": "Добрынинская",
+              "line_name": "Кольцевая",
+              "station_id": "5.36",
+              "line_id": "5",
+              "lat": 55.728994,
+              "lng": 37.622533
+            }
+          ],
+          "id": "12442477"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T11:05:04+0300",
+        "created_at": "2025-09-03T11:05:04+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124810523",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124810523?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124810523",
+        "relations": [],
+        "employer": {
+          "id": "9352463",
+          "name": "X5 Tech",
+          "url": "https://api.hh.ru/employers/9352463",
+          "alternate_url": "https://hh.ru/employer/9352463",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1076836.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/5927973.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/5927974.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=9352463",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Являешься так же студентом IT-специальности. Имеешь базовые знания JavaScript / TypeScript и опыт работы с React (личные проекты или учебные...",
+          "responsibility": "Принимать участие в создании функционала от идеи до релиза — от проработки UI до оптимизации кода. Реализовывать задачи на ЯП JavaScript..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": true,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124455794",
+        "premium": false,
+        "name": "Java-разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "2-я Брестская улица",
+          "building": "8",
+          "lat": 55.77119,
+          "lng": 37.590749,
+          "description": null,
+          "raw": "Москва, 2-я Брестская улица, 8",
+          "metro": null,
+          "metro_stations": [],
+          "id": "407194"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-25T17:34:48+0300",
+        "created_at": "2025-08-25T17:34:48+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124455794",
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124455794?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124455794",
+        "relations": [],
+        "employer": {
+          "id": "1594275",
+          "name": "Мосгосэкспертиза",
+          "url": "https://api.hh.ru/employers/1594275",
+          "alternate_url": "https://hh.ru/employer/1594275",
+          "logo_urls": null,
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=1594275",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт разработки на Oracle от 2-х лет. Знания <highlighttext>Java</highlighttext> Spring, Hibernate (ORM), REST API. Хорошие знания, RabbitMQ, Kafka. ",
+          "responsibility": "Проектирование и разработка высоконагруженных web-приложения реализованных на микросервисной архитектуре на базе <highlighttext>Java</highlighttext>. Разработка программных интерфейсов для взаимодействия между клиентской..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124560263",
+        "premium": false,
+        "name": "Backend разработчик (Java/Kotlin)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-27T17:25:44+0300",
+        "created_at": "2025-08-27T17:25:44+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124560263",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124560263?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124560263",
+        "relations": [],
+        "employer": {
+          "id": "3125",
+          "name": "QIWI",
+          "url": "https://api.hh.ru/employers/3125",
+          "alternate_url": "https://hh.ru/employer/3125",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/489291.png",
+            "90": "https://img.hhcdn.ru/employer-logo/2398917.png",
+            "240": "https://img.hhcdn.ru/employer-logo/2398918.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3125",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Имеешь опыт работы с <highlighttext>Java</highlighttext> и Spring Boot, особенно круто если еще и с Kotlin. Умеешь писать тесты на свой...",
+          "responsibility": "Ищем в команду Middle\\Senior <highlighttext>разработчика</highlighttext> Kotlin\\<highlighttext>Java</highlighttext> на поддержку существующих сервисов и написание новых. Работать над задачами разной сложности..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124788216",
+        "premium": false,
+        "name": "Java-разработчик (Junior+)",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "2",
+          "name": "Санкт-Петербург",
+          "url": "https://api.hh.ru/areas/2"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Санкт-Петербург",
+          "street": "набережная Обводного канала",
+          "building": "60",
+          "lat": 59.9154,
+          "lng": 30.342072,
+          "description": null,
+          "raw": "Санкт-Петербург, набережная Обводного канала, 60",
+          "metro": {
+            "station_name": "Обводный Канал",
+            "line_name": "Фрунзенско-Приморская",
+            "station_id": "18.252",
+            "line_id": "18",
+            "lat": 59.914686,
+            "lng": 30.34815
+          },
+          "metro_stations": [
+            {
+              "station_name": "Обводный Канал",
+              "line_name": "Фрунзенско-Приморская",
+              "station_id": "18.252",
+              "line_id": "18",
+              "lat": 59.914686,
+              "lng": 30.34815
+            }
+          ],
+          "id": "5852764"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-02T17:57:22+0300",
+        "created_at": "2025-09-02T17:57:22+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124788216",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124788216?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124788216",
+        "relations": [],
+        "employer": {
+          "id": "946607",
+          "name": "СБЕРКОРУС",
+          "url": "https://api.hh.ru/employers/946607",
+          "alternate_url": "https://hh.ru/employer/946607",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1396585.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7206123.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7206124.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=946607",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Есть коммерческий опыт работы с <highlighttext>Java</highlighttext> и Spring Framework от 1 года. Понимаешь основные структуры данных, алгоритмы и паттерны проектирования...",
+          "responsibility": "Разработка нового функционала под руководством старших коллег. Исправление ошибок в существующем коде. Написание unit-тестов. Активное обучение и участие в..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_5",
+            "name": "5 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124940685",
+        "premium": false,
+        "name": "Java разработчик / Java Developer",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 300000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 300000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "улица Коровий Вал",
+          "building": "5",
+          "lat": 55.728854,
+          "lng": 37.62033,
+          "description": null,
+          "raw": "Москва, улица Коровий Вал, 5",
+          "metro": {
+            "station_name": "Добрынинская",
+            "line_name": "Кольцевая",
+            "station_id": "5.36",
+            "line_id": "5",
+            "lat": 55.728994,
+            "lng": 37.622533
+          },
+          "metro_stations": [
+            {
+              "station_name": "Добрынинская",
+              "line_name": "Кольцевая",
+              "station_id": "5.36",
+              "line_id": "5",
+              "lat": 55.728994,
+              "lng": 37.622533
+            },
+            {
+              "station_name": "Октябрьская",
+              "line_name": "Кольцевая",
+              "station_id": "5.93",
+              "line_id": "5",
+              "lat": 55.729264,
+              "lng": 37.611049
+            },
+            {
+              "station_name": "Октябрьская",
+              "line_name": "Калужско-Рижская",
+              "station_id": "6.94",
+              "line_id": "6",
+              "lat": 55.731232,
+              "lng": 37.612851
+            },
+            {
+              "station_name": "Серпуховская",
+              "line_name": "Серпуховско-Тимирязевская",
+              "station_id": "9.37",
+              "line_id": "9",
+              "lat": 55.726548,
+              "lng": 37.624792
+            }
+          ],
+          "id": "19381293"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T15:09:02+0300",
+        "created_at": "2025-09-05T15:09:02+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124940685",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124940685?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124940685",
+        "relations": [],
+        "employer": {
+          "id": "11774774",
+          "name": "Кадровое агентство HireWay",
+          "url": "https://api.hh.ru/employers/11774774",
+          "alternate_url": "https://hh.ru/employer/11774774",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1387298.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7168979.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7168980.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=11774774",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Базовое понимание архитектуры клиент-серверных приложений. - Знание основных принципов ООП и паттернов проектирования. - Опыт работы с REST API. - ",
+          "responsibility": "Участие в код-ревью и совместной разработке с более опытными <highlighttext>разработчиками</highlighttext>. - Тестирование и устранение ошибок в коде. - Обновление и поддержка..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124804013",
+        "premium": false,
+        "name": "Java разработчик (middle)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "72",
+          "name": "Пермь",
+          "url": "https://api.hh.ru/areas/72"
+        },
+        "salary": {
+          "from": 150000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 150000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Пермь",
+          "street": "улица Газеты Звезда",
+          "building": "24А",
+          "lat": 58.011251,
+          "lng": 56.24493,
+          "description": null,
+          "raw": "Пермь, улица Газеты Звезда, 24А",
+          "metro": null,
+          "metro_stations": [],
+          "id": "5847887"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T09:49:41+0300",
+        "created_at": "2025-09-03T09:49:41+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124804013",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124804013?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124804013",
+        "relations": [],
+        "employer": {
+          "id": "5235122",
+          "name": "Stroki",
+          "url": "https://api.hh.ru/employers/5235122",
+          "alternate_url": "https://hh.ru/employer/5235122",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1393081.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7192107.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7192108.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=5235122",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Коммерческий опыт на <highlighttext>Java</highlighttext> от 3 лет. Знание <highlighttext>Java</highlighttext> Core. Опыт работы с ORM (Hibernate/Jooq). Умение писать и оптимизировать...",
+          "responsibility": "Разработка серверных приложений на <highlighttext>Java</highlighttext>. Разработка новой функциональности. Разработка архитектуры. Написание unit-тестов. Оптимизация и рефакторинг кода. Ревью кода."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124765230",
+        "premium": false,
+        "name": "Java-разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-02T12:15:05+0300",
+        "created_at": "2025-09-02T12:15:05+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124765230",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124765230?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124765230",
+        "relations": [],
+        "employer": {
+          "id": "24209",
+          "name": "СберЛизинг",
+          "url": "https://api.hh.ru/employers/24209",
+          "alternate_url": "https://hh.ru/employer/24209",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1409957.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7259488.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7259489.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=24209",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Уверенное знание <highlighttext>Java</highlighttext> Core: Collections, Concurrency, JDBC, опыт работы с <highlighttext>Java</highlighttext> 8+. Опыт работы с микросервисной архитектурой. ",
+          "responsibility": "Реализация задач по переходу системы на микросервисную архитектуру. Разработка функционала согласно поставленным требованиям. Написание unit, интеграционных тестов. Участие в планировании..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124832393",
+        "premium": false,
+        "name": "Middle Java developer (to Montenegro)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "2",
+          "name": "Санкт-Петербург",
+          "url": "https://api.hh.ru/areas/2"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T16:05:40+0300",
+        "created_at": "2025-09-03T16:05:40+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124832393",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124832393?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124832393",
+        "relations": [],
+        "employer": {
+          "id": "10371334",
+          "name": "Tungsten Montenegro DOO Podgorica",
+          "url": "https://api.hh.ru/employers/10371334",
+          "alternate_url": "https://hh.ru/employer/10371334",
+          "logo_urls": null,
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=10371334",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Experience in working with <highlighttext>Java</highlighttext>. Experience in working with Cloud platforms, such as Azure or AWS. Experience in working with...",
+          "responsibility": "Well-established and well-organized software <highlighttext>development</highlighttext> process."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123614712",
+        "premium": false,
+        "name": "Системный Java-разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": null,
+          "street": null,
+          "building": null,
+          "lat": 55.755452040594356,
+          "lng": 37.61748849999993,
+          "description": null,
+          "raw": "Москва, Дмитровское ш. (5 минут пешком от метро Тимирязевская)",
+          "metro": null,
+          "metro_stations": [],
+          "id": "323145"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-02T16:57:26+0300",
+        "created_at": "2025-09-02T16:57:26+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123614712",
+        "branding": {
+          "type": "CONSTRUCTOR",
+          "tariff": "BASIC"
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123614712?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123614712",
+        "relations": [],
+        "employer": {
+          "id": "882",
+          "name": "1С",
+          "url": "https://api.hh.ru/employers/882",
+          "alternate_url": "https://hh.ru/employer/882",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/233296.bmp",
+            "90": "https://img.hhcdn.ru/employer-logo/308587.png",
+            "240": "https://img.hhcdn.ru/employer-logo/381444.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=882",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Знание <highlighttext>Java</highlighttext>, но можно и хороший опыт на C# или C++ и желание переучиться на <highlighttext>Java</highlighttext>. Понимание и применение на...",
+          "responsibility": "Содержание работы: Изучать новое и решать нестандартные задачи от программирования, поиска ошибок до проектирования по возрастающей сложности."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "117391993",
+        "premium": false,
+        "name": "Middle Java Developer",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": null,
+          "to": 220000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": null,
+          "to": 220000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-30T11:58:37+0300",
+        "created_at": "2025-08-30T11:58:37+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=117391993",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/117391993?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/117391993",
+        "relations": [],
+        "employer": {
+          "id": "872178",
+          "name": "ИЦ АЙ-ТЕКО",
+          "url": "https://api.hh.ru/employers/872178",
+          "alternate_url": "https://hh.ru/employer/872178",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/529414.png",
+            "90": "https://img.hhcdn.ru/employer-logo/2559133.png",
+            "240": "https://img.hhcdn.ru/employer-logo/2559134.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=872178",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Законченное ВО (профиль математика/информатика). Опыт промышленной разработки на <highlighttext>Java</highlighttext> >=8 от 3 лет. Опыт работы со Spring 4.5...",
+          "responsibility": null
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124760521",
+        "premium": false,
+        "name": "Java-разработчик (Middle/Senior)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 250000,
+          "to": 350000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 250000,
+          "to": 350000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Иваново",
+          "street": "улица Кузнецова",
+          "building": "12",
+          "lat": 56.999122,
+          "lng": 40.965513,
+          "description": null,
+          "raw": "Иваново, улица Кузнецова, 12",
+          "metro": null,
+          "metro_stations": [],
+          "id": "19329954"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-02T11:46:13+0300",
+        "created_at": "2025-09-02T11:46:13+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124760521",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124760521?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124760521",
+        "relations": [],
+        "employer": {
+          "id": "10726435",
+          "name": "MIA Dev",
+          "url": "https://api.hh.ru/employers/10726435",
+          "alternate_url": "https://hh.ru/employer/10726435",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1223322.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/6513729.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/6513730.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=10726435",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт разработки на <highlighttext>Java</highlighttext> от 4-х лет, глубокое понимание <highlighttext>Java</highlighttext> Core. Уверенное знание Spring (Boot, MVC, Data, Security, Cloud...",
+          "responsibility": "Разработка и поддержка высоконагруженных и распределенных систем. Участие во всем жизненном цикле проекта: от проектирования архитектуры и код-ревью до..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124335156",
+        "premium": false,
+        "name": "Разработчик (junior)",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 60000,
+          "to": 100000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": 100000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Колодезный переулок",
+          "building": "2Ас1",
+          "lat": 55.799047,
+          "lng": 37.695402,
+          "description": null,
+          "raw": "Москва, Колодезный переулок, 2Ас1",
+          "metro": {
+            "station_name": "Преображенская площадь",
+            "line_name": "Сокольническая",
+            "station_id": "1.117",
+            "line_id": "1",
+            "lat": 55.796322,
+            "lng": 37.713582
+          },
+          "metro_stations": [
+            {
+              "station_name": "Преображенская площадь",
+              "line_name": "Сокольническая",
+              "station_id": "1.117",
+              "line_id": "1",
+              "lat": 55.796322,
+              "lng": 37.713582
+            },
+            {
+              "station_name": "Сокольники",
+              "line_name": "Сокольническая",
+              "station_id": "1.134",
+              "line_id": "1",
+              "lat": 55.789282,
+              "lng": 37.679895
+            },
+            {
+              "station_name": "Сокольники",
+              "line_name": "Большая кольцевая линия",
+              "station_id": "97.823",
+              "line_id": "97",
+              "lat": 55.791111,
+              "lng": 37.678889
+            },
+            {
+              "station_name": "Электрозаводская",
+              "line_name": "Арбатско-Покровская",
+              "station_id": "3.161",
+              "line_id": "3",
+              "lat": 55.782057,
+              "lng": 37.7053
+            }
+          ],
+          "id": "19191478"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T16:01:29+0300",
+        "created_at": "2025-09-05T16:01:29+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124335156",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124335156?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124335156",
+        "relations": [],
+        "employer": {
+          "id": "4865",
+          "name": "ЕМЕ",
+          "url": "https://api.hh.ru/employers/4865",
+          "alternate_url": "https://hh.ru/employer/4865",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1399752.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7218779.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7218780.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4865",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Понимание методологии программирования на объектно-ориентированных языках. Знание принципов построения и функционирования баз данных. Ответственность, желание профессионально развиваться, нацеленность на...",
+          "responsibility": "Разработка и сопровождение ПО. Участие во внедрениях ПО."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124618534",
+        "premium": false,
+        "name": "Middle Java разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "4",
+          "name": "Новосибирск",
+          "url": "https://api.hh.ru/areas/4"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Новосибирск",
+          "street": "Советский район, микрорайон Академгородок, улица Гнесиных",
+          "building": "10/1",
+          "lat": 54.87043,
+          "lng": 83.087786,
+          "description": null,
+          "raw": "Новосибирск, Советский район, микрорайон Академгородок, улица Гнесиных, 10/1",
+          "metro": null,
+          "metro_stations": [],
+          "id": "11687642"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T08:26:37+0300",
+        "created_at": "2025-09-04T08:26:37+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124618534",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124618534?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124618534",
+        "relations": [],
+        "employer": {
+          "id": "922044",
+          "name": "МКК СМСФИНАНС",
+          "url": "https://api.hh.ru/employers/922044",
+          "alternate_url": "https://hh.ru/employer/922044",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1385384.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7161323.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7161324.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=922044",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Знание <highlighttext>Java</highlighttext> 8+, опыт работы с легаси кодом. Sping (Spring Boot, Spring Data). SQL (MySQL, Postgres). Git, в том...",
+          "responsibility": "Поэтому чаще всего ограничиваемся одной встречей в составе: HR, руководитель отдела разработки и ведущий <highlighttext>разработчик</highlighttext>, а также проверкой службы безопасности. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124755977",
+        "premium": false,
+        "name": "Senior Java Developer (Backend)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": true,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Раменский бульвар",
+          "building": "1с1",
+          "lat": 55.693612,
+          "lng": 37.513997,
+          "description": null,
+          "raw": "Москва, Раменский бульвар, 1с1",
+          "metro": {
+            "station_name": "Ломоносовский проспект",
+            "line_name": "Солнцевская",
+            "station_id": "133.556",
+            "line_id": "133",
+            "lat": 55.7055,
+            "lng": 37.5225
+          },
+          "metro_stations": [
+            {
+              "station_name": "Ломоносовский проспект",
+              "line_name": "Солнцевская",
+              "station_id": "133.556",
+              "line_id": "133",
+              "lat": 55.7055,
+              "lng": 37.5225
+            },
+            {
+              "station_name": "Проспект Вернадского",
+              "line_name": "Большая кольцевая линия",
+              "station_id": "97.814",
+              "line_id": "97",
+              "lat": 55.677778,
+              "lng": 37.505
+            },
+            {
+              "station_name": "Раменки",
+              "line_name": "Солнцевская",
+              "station_id": "133.557",
+              "line_id": "133",
+              "lat": 55.6961,
+              "lng": 37.505
+            },
+            {
+              "station_name": "Университет",
+              "line_name": "Сокольническая",
+              "station_id": "1.149",
+              "line_id": "1",
+              "lat": 55.69329,
+              "lng": 37.534511
+            }
+          ],
+          "id": "18562031"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-02T10:51:59+0300",
+        "created_at": "2025-09-02T10:51:59+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124755977",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124755977?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124755977",
+        "relations": [],
+        "employer": {
+          "id": "1994",
+          "name": "АДВ",
+          "url": "https://api.hh.ru/employers/1994",
+          "alternate_url": "https://hh.ru/employer/1994",
+          "logo_urls": null,
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=1994",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Умение работать с реляционными и NoSQL базами данных. Углубленное знание <highlighttext>Java</highlighttext> SE, Spring Framework, Hibernate, JPA. Понимание принципов Agile. ",
+          "responsibility": "Проектировать архитектуру приложений и выбирать технологические решения. Оптимизировать производительность и масштабируемость существующих систем. Разрабатывать и поддерживать серверную часть приложений и..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124810147",
+        "premium": false,
+        "name": "Senior Java Developer",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "71",
+          "name": "Пенза",
+          "url": "https://api.hh.ru/areas/71"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T11:01:02+0300",
+        "created_at": "2025-09-03T11:01:02+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124810147",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124810147?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124810147",
+        "relations": [],
+        "employer": {
+          "id": "625615",
+          "name": "Открытые решения",
+          "url": "https://api.hh.ru/employers/625615",
+          "alternate_url": "https://hh.ru/employer/625615",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1279836.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6739642.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6739643.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=625615",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт коммерческой разработки на <highlighttext>Java</highlighttext> от 5 лет. Знание Spring/Spring Boot, RabbitMQ/BizTalk, Vault, Helm, Gitlab, Jira/Confluence. ",
+          "responsibility": "Разработка программного обеспечения на базе <highlighttext>Java</highlighttext> и Web-технологий. Участие в code-review."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124692975",
+        "premium": false,
+        "name": "Java-разработчик (продукт Korona)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "4",
+          "name": "Новосибирск",
+          "url": "https://api.hh.ru/areas/4"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-01T09:38:06+0300",
+        "created_at": "2025-09-01T09:38:06+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124692975",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124692975?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124692975",
+        "relations": [],
+        "employer": {
+          "id": "11810694",
+          "name": "Koronatech",
+          "url": "https://api.hh.ru/employers/11810694",
+          "alternate_url": "https://hh.ru/employer/11810694",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1394139.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7196339.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7196340.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=11810694",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт разработки приложений на языке <highlighttext>Java</highlighttext> от 3-х лет. Уверенные глубокие знания <highlighttext>Java</highlighttext> Core, Spring Framework. Знания основных алгоритмов...",
+          "responsibility": "Развивать сервисы и создавать новые по мере необходимости. ​​​​​участвовать в ревью кода других <highlighttext>разработчиков</highlighttext>. Предлагать и внедрять решения для улучшения..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124317859",
+        "premium": false,
+        "name": "Java разработчик / Backend Java Developer (Middle)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 170000,
+          "to": 300000,
+          "currency": "RUR",
+          "gross": true
+        },
+        "salary_range": {
+          "from": 170000,
+          "to": 300000,
+          "currency": "RUR",
+          "gross": true,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Большая Новодмитровская улица",
+          "building": "36с12",
+          "lat": 55.804375,
+          "lng": 37.586059,
+          "description": null,
+          "raw": "Москва, Большая Новодмитровская улица, 36с12",
+          "metro": {
+            "station_name": "Дмитровская",
+            "line_name": "МЦД-2",
+            "station_id": "132.723",
+            "line_id": "132",
+            "lat": 55.808056,
+            "lng": 37.581734
+          },
+          "metro_stations": [
+            {
+              "station_name": "Дмитровская",
+              "line_name": "МЦД-2",
+              "station_id": "132.723",
+              "line_id": "132",
+              "lat": 55.808056,
+              "lng": 37.581734
+            }
+          ],
+          "id": "7551430"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T11:27:07+0300",
+        "created_at": "2025-09-05T11:27:07+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124317859",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124317859?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124317859",
+        "relations": [],
+        "employer": {
+          "id": "5016812",
+          "name": "Теории от практиков",
+          "url": "https://api.hh.ru/employers/5016812",
+          "alternate_url": "https://hh.ru/employer/5016812",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1234937.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6560189.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6560190.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=5016812",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт коммерческой разработки от 3 лет. Уверенное владение стеком (<highlighttext>Java</highlighttext> 17, Spring Boot 3+, Hibernate, Liquibase). Готовность разбираться с...",
+          "responsibility": "Реализация новых микросервисов на <highlighttext>Java</highlighttext> и участие во внедрении Node.js-сервисов (совместно с другими <highlighttext>разработчиками</highlighttext>). Взаимодействие с командой разработки для..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124839709",
+        "premium": false,
+        "name": "Разработчик на кредитный конвейер",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T18:16:07+0300",
+        "created_at": "2025-09-03T18:16:07+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124839709",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124839709?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124839709",
+        "relations": [],
+        "employer": {
+          "id": "89",
+          "name": "БАНК УРАЛСИБ",
+          "url": "https://api.hh.ru/employers/89",
+          "alternate_url": "https://hh.ru/employer/89",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1027184.png",
+            "90": "https://img.hhcdn.ru/employer-logo/5729504.png",
+            "240": "https://img.hhcdn.ru/employer-logo/5729505.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=89",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Писать код на <highlighttext>Java</highlighttext> или C#. Писать SQL запросы разной степени сложности (MS SQL, Oracle). Работать в инструментах Postman, SOAPUI. ",
+          "responsibility": "Реализация задач развития функционала розничного кредитного конвейера на платформе CRIF, включая системы CreditFlow, CreditBility, CrifDelivery и другие компоненты кредитного конвейера . "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "156",
+            "name": "BI-аналитик, аналитик данных"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124403758",
+        "premium": false,
+        "name": "Java-разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 150000,
+          "to": 250000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 150000,
+          "to": 250000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-24T11:47:51+0300",
+        "created_at": "2025-08-24T11:47:51+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124403758",
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124403758?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124403758",
+        "relations": [],
+        "employer": {
+          "id": "12196197",
+          "name": "Константинов Павел Андреевич",
+          "url": "https://api.hh.ru/employers/12196197",
+          "alternate_url": "https://hh.ru/employer/12196197",
+          "logo_urls": null,
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=12196197",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы с <highlighttext>Java</highlighttext> от 1 до 3 лет. Знание Spring Framework и Hibernate. Умение работать с базами данных (SQL...",
+          "responsibility": "Разработка и поддержка backend решений на <highlighttext>Java</highlighttext>. Участие в проектировании архитектуры приложений. Интеграция с внешними API и сервисами. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 1029,
+    "pages": 21,
+    "page": 0,
+    "per_page": 50,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&enable_snippets=true&items_on_page=50&search_period=15&text=java+programmer"
+  }
+}

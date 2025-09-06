@@ -1,0 +1,5845 @@
+{
+  "timestamp": 1757171055.4408646,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 50,
+      "only_with_salary": false,
+      "period": 15,
+      "text": "devops engineer",
+      "page": 7
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "123949131",
+        "premium": false,
+        "name": "DevOps-инженер",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T18:17:18+0300",
+        "created_at": "2025-09-03T18:17:18+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123949131",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123949131?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123949131",
+        "relations": [],
+        "employer": {
+          "id": "10683206",
+          "name": "VS Robotics (ООО АБТ)",
+          "url": "https://api.hh.ru/employers/10683206",
+          "alternate_url": "https://hh.ru/employer/10683206",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1444532.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7397752.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7397753.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=10683206",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Понимание CI/CD-процессов, опыт настройки пайплайнов и использование инструментов (Jenkins, GitLab CI, GitHub Actions). Владение системой контроля версий (Git...",
+          "responsibility": "Поддерживать стабильную работу Kubernetes-кластера и обеспечивать высокую доступность сервисов. Проектировать и внедрять решения по управлению инфраструктурой (IaaC, Ansible, Terraform). "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_9",
+            "name": "9 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124607497",
+        "premium": false,
+        "name": "DevOps-инженер",
+        "department": {
+          "id": "4649269-4649269-innoteh",
+          "name": "Т1 Иннотех"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "66",
+          "name": "Нижний Новгород",
+          "url": "https://api.hh.ru/areas/66"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-28T19:24:34+0300",
+        "created_at": "2025-08-28T19:24:34+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124607497",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124607497?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124607497",
+        "relations": [],
+        "employer": {
+          "id": "4649269",
+          "name": "Т1",
+          "url": "https://api.hh.ru/employers/4649269",
+          "alternate_url": "https://hh.ru/employer/4649269",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1334956.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6959834.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6959835.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4649269",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Высшее образование. Фундаментальные знания устройства Linux-систем. Фундаментальные знания сетевых технологий TCP/IP, HTTP, DNS и т.д.. ",
+          "responsibility": "Настройка мониторинга и логирования. Управление контейнерами. Поддержка инфраструктуры CI\\CD. Настройка Gitlab CI. Управление конфигурациями."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124459890",
+        "premium": false,
+        "name": "Инженер эксплуатации",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-25T17:59:19+0300",
+        "created_at": "2025-08-25T17:59:19+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124459890",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124459890?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124459890",
+        "relations": [],
+        "employer": {
+          "id": "2682",
+          "name": "ФИНАМ",
+          "url": "https://api.hh.ru/employers/2682",
+          "alternate_url": "https://hh.ru/employer/2682",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1383298.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7152979.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7152980.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2682",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы от 3 лет в должности администратора/<highlighttext>инженера</highlighttext> сопровождения и поддержки информационных систем или <highlighttext>DevOps</highlighttext> <highlighttext>инженера</highlighttext>, отвечающего в том...",
+          "responsibility": "Модернизация и разработка CI/CD процессов для повышения скорости и надежности доставки. Применение практик SRE для обеспечения отказоустойчивости и надежности..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "46",
+            "name": "Инженер по эксплуатации"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124450247",
+        "premium": false,
+        "name": "DevOps-инженер",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-25T16:08:20+0300",
+        "created_at": "2025-08-25T16:08:20+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124450247",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124450247?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124450247",
+        "relations": [],
+        "employer": {
+          "id": "852361",
+          "name": "РТК-ЦОД",
+          "url": "https://api.hh.ru/employers/852361",
+          "alternate_url": "https://hh.ru/employer/852361",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1406234.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7244604.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7244605.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=852361",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Высшее образование. Опыт работы на аналогичной должности от 3-х лет. Уверенное знание Linux. Опыт работы с Kubernetes. ",
+          "responsibility": "Написание и поддержка pipeline по сборке подсистем на базе Gitlab CE. Сборка Docker образов. Написание Helm Charts."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "121768716",
+        "premium": false,
+        "name": "Системный администратор",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "95",
+          "name": "Тюмень",
+          "url": "https://api.hh.ru/areas/95"
+        },
+        "salary": {
+          "from": 85000,
+          "to": 105000,
+          "currency": "RUR",
+          "gross": true
+        },
+        "salary_range": {
+          "from": 85000,
+          "to": 105000,
+          "currency": "RUR",
+          "gross": true,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Тюмень",
+          "street": "Коммунистическая улица",
+          "building": "70к3с1",
+          "lat": 57.178895,
+          "lng": 65.510675,
+          "description": null,
+          "raw": "Тюмень, Коммунистическая улица, 70к3с1",
+          "metro": null,
+          "metro_stations": [],
+          "id": "1482951"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-25T11:39:22+0300",
+        "created_at": "2025-08-25T11:39:22+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=121768716",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/121768716?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/121768716",
+        "relations": [],
+        "employer": {
+          "id": "2387361",
+          "name": "Мартин Урал",
+          "url": "https://api.hh.ru/employers/2387361",
+          "alternate_url": "https://hh.ru/employer/2387361",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1293255.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6793314.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6793315.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2387361",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы ИТ специалистом (системным администратором, ИТ-<highlighttext>инженером</highlighttext>, <highlighttext>DevOps</highlighttext>-<highlighttext>инженером</highlighttext>) от 3 х лет. Системные практические знания ИТ. Soft skills. ",
+          "responsibility": "Оптимизация и модернизация IT-инфраструктуры компании. Администрирование и поддержка серверов. Настройка и обслуживание сетевого оборудования (маршрутизаторы, коммутаторы, VPN). "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "113",
+            "name": "Системный администратор"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124584332",
+        "premium": false,
+        "name": "QA automation engineer (Python)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "улица Радио",
+          "building": "24к1",
+          "lat": 55.761831,
+          "lng": 37.683221,
+          "description": null,
+          "raw": "Москва, улица Радио, 24к1",
+          "metro": {
+            "station_name": "Бауманская",
+            "line_name": "Арбатско-Покровская",
+            "station_id": "3.17",
+            "line_id": "3",
+            "lat": 55.772405,
+            "lng": 37.67904
+          },
+          "metro_stations": [
+            {
+              "station_name": "Бауманская",
+              "line_name": "Арбатско-Покровская",
+              "station_id": "3.17",
+              "line_id": "3",
+              "lat": 55.772405,
+              "lng": 37.67904
+            },
+            {
+              "station_name": "Курская",
+              "line_name": "Арбатско-Покровская",
+              "station_id": "3.70",
+              "line_id": "3",
+              "lat": 55.758564,
+              "lng": 37.659039
+            }
+          ],
+          "id": "756570"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-28T11:20:32+0300",
+        "created_at": "2025-08-28T11:20:32+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124584332",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124584332?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124584332",
+        "relations": [],
+        "employer": {
+          "id": "2679520",
+          "name": "Сервисный центр Транстелематика",
+          "url": "https://api.hh.ru/employers/2679520",
+          "alternate_url": "https://hh.ru/employer/2679520",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/474700.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/2340652.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/2340653.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2679520",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Знание языка разработки: Python 3.х. Умение составлять сценарии тестирования в нотации Gherkin. Знание инструментария: Selenium, Postman. Опыт работы с...",
+          "responsibility": "Разработка автоматизированных функциональных тестов, а также backend, api, ui тестов с использованием Python 3.х. Поддержка и развитие архитектуры проекта..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "124",
+            "name": "Тестировщик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "121415911",
+        "premium": false,
+        "name": "DevOps инженер",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "2",
+          "name": "Санкт-Петербург",
+          "url": "https://api.hh.ru/areas/2"
+        },
+        "salary": {
+          "from": 350000,
+          "to": 350000,
+          "currency": "RUR",
+          "gross": true
+        },
+        "salary_range": {
+          "from": 350000,
+          "to": 350000,
+          "currency": "RUR",
+          "gross": true,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Санкт-Петербург",
+          "street": "улица Красного Курсанта",
+          "building": null,
+          "lat": 59.95857,
+          "lng": 30.28377,
+          "description": null,
+          "raw": "Санкт-Петербург, улица Красного Курсанта",
+          "metro": {
+            "station_name": "Василеостровская",
+            "line_name": "Невско-Василеостровская",
+            "station_id": "16.228",
+            "line_id": "16",
+            "lat": 59.942577,
+            "lng": 30.278254
+          },
+          "metro_stations": [
+            {
+              "station_name": "Василеостровская",
+              "line_name": "Невско-Василеостровская",
+              "station_id": "16.228",
+              "line_id": "16",
+              "lat": 59.942577,
+              "lng": 30.278254
+            },
+            {
+              "station_name": "Петроградская",
+              "line_name": "Московско-Петроградская",
+              "station_id": "15.215",
+              "line_id": "15",
+              "lat": 59.966389,
+              "lng": 30.311293
+            },
+            {
+              "station_name": "Спортивная",
+              "line_name": "Фрунзенско-Приморская",
+              "station_id": "18.249",
+              "line_id": "18",
+              "lat": 59.952026,
+              "lng": 30.291338
+            },
+            {
+              "station_name": "Чкаловская",
+              "line_name": "Фрунзенско-Приморская",
+              "station_id": "18.248",
+              "line_id": "18",
+              "lat": 59.961033,
+              "lng": 30.292006
+            }
+          ],
+          "id": "19105406"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T17:31:34+0300",
+        "created_at": "2025-09-04T17:31:34+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=121415911",
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/121415911?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/121415911",
+        "relations": [],
+        "employer": {
+          "id": "10684958",
+          "name": "Myrtle",
+          "url": "https://api.hh.ru/employers/10684958",
+          "alternate_url": "https://hh.ru/employer/10684958",
+          "logo_urls": null,
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=10684958",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт построения CI/CD с использованием GitLab CI/CD. Опыт работы с системами Linux. Уверенные знания Python. Знание основных принципов...",
+          "responsibility": "Поддерживать и настраивать CI/CD в полном цикле разработки. Помогать разработчикам с созданием дистрибутивов. Заниматься защитой кода."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "122484942",
+        "premium": false,
+        "name": "DevOps-инженер",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "98",
+          "name": "Ульяновск",
+          "url": "https://api.hh.ru/areas/98"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T15:14:58+0300",
+        "created_at": "2025-09-05T15:14:58+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=122484942",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/122484942?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/122484942",
+        "relations": [],
+        "employer": {
+          "id": "625615",
+          "name": "Открытые решения",
+          "url": "https://api.hh.ru/employers/625615",
+          "alternate_url": "https://hh.ru/employer/625615",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1279836.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6739642.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6739643.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=625615",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы по специальности от 3 лет. Опыт работы с такими инструментами, как Git, Terraform, Kubernetes, Prometheus, Ansible и Docker. ",
+          "responsibility": "Администрирование серверов на Linux. Установка и настройка новых серверов и сервисов. Участие в проектах по настройке серверного ПО, конфигурирование CI..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "122540453",
+        "premium": false,
+        "name": "DevOps-инженер",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "2",
+          "name": "Санкт-Петербург",
+          "url": "https://api.hh.ru/areas/2"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Санкт-Петербург",
+          "street": "Выборгская набережная",
+          "building": "47",
+          "lat": 59.973473,
+          "lng": 30.334023,
+          "description": null,
+          "raw": "Санкт-Петербург, Выборгская набережная, 47",
+          "metro": {
+            "station_name": "Выборгская",
+            "line_name": "Кировско-Выборгская",
+            "station_id": "14.196",
+            "line_id": "14",
+            "lat": 59.970925,
+            "lng": 30.347408
+          },
+          "metro_stations": [
+            {
+              "station_name": "Выборгская",
+              "line_name": "Кировско-Выборгская",
+              "station_id": "14.196",
+              "line_id": "14",
+              "lat": 59.970925,
+              "lng": 30.347408
+            }
+          ],
+          "id": "4870967"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T11:51:18+0300",
+        "created_at": "2025-09-04T11:51:18+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=122540453",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/122540453?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/122540453",
+        "relations": [],
+        "employer": {
+          "id": "22863",
+          "name": "Протей, НТЦ",
+          "url": "https://api.hh.ru/employers/22863",
+          "alternate_url": "https://hh.ru/employer/22863",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/627345.png",
+            "90": "https://img.hhcdn.ru/employer-logo/2950532.png",
+            "240": "https://img.hhcdn.ru/employer-logo/2950533.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=22863",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Глубокое знание ОС Linux. Понимание основ виртуализации. Опыт работы с Cloud решениями. Опыт работы с Ansible. Опыт работы с Terraform. ",
+          "responsibility": "Написание сценариев Terraform. Написание ролей Ansible. Проведение работы с облачными системами виртуализации. Автоматизация типичных задач по управлению стеком."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123685127",
+        "premium": false,
+        "name": "Middle DevOps Engineer",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "88",
+          "name": "Казань",
+          "url": "https://api.hh.ru/areas/88"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-25T10:32:31+0300",
+        "created_at": "2025-08-25T10:32:31+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123685127",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123685127?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123685127",
+        "relations": [],
+        "employer": {
+          "id": "967045",
+          "name": "Eqwile",
+          "url": "https://api.hh.ru/employers/967045",
+          "alternate_url": "https://hh.ru/employer/967045",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1393727.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7194691.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7194692.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=967045",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы от 2 лет в <highlighttext>DevOps</highlighttext> или системном администрировании. Уверенное знание Linux. Опыт работы с CI/CD. ",
+          "responsibility": "Администрировать linux сервера. Обеспечивать бесперебойную работу сервисов и их высокую доступность. Автоматизировать процессы развертывания (CI/CD). Настраивать и поддерживать мониторинг..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124215672",
+        "premium": false,
+        "name": "Middle DevOps Engineer / SRE (Site Reliability Engineer)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 300000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 300000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Минская улица",
+          "building": "2Ж",
+          "lat": 55.72414,
+          "lng": 37.504663,
+          "description": null,
+          "raw": "Москва, Минская улица, 2Ж",
+          "metro": {
+            "station_name": "Минская",
+            "line_name": "Солнцевская",
+            "station_id": "133.555",
+            "line_id": "133",
+            "lat": 55.7232,
+            "lng": 37.5038
+          },
+          "metro_stations": [
+            {
+              "station_name": "Минская",
+              "line_name": "Солнцевская",
+              "station_id": "133.555",
+              "line_id": "133",
+              "lat": 55.7232,
+              "lng": 37.5038
+            },
+            {
+              "station_name": "Парк Победы",
+              "line_name": "Арбатско-Покровская",
+              "station_id": "3.173",
+              "line_id": "3",
+              "lat": 55.735679,
+              "lng": 37.516865
+            },
+            {
+              "station_name": "Парк Победы",
+              "line_name": "Солнцевская",
+              "station_id": "133.470",
+              "line_id": "133",
+              "lat": 55.736478,
+              "lng": 37.514401
+            }
+          ],
+          "id": "14427625"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-06T10:52:05+0300",
+        "created_at": "2025-09-06T10:52:05+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124215672",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124215672?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124215672",
+        "relations": [],
+        "employer": {
+          "id": "851764",
+          "name": "Кубик Медиа",
+          "url": "https://api.hh.ru/employers/851764",
+          "alternate_url": "https://hh.ru/employer/851764",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/712133.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/3289648.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/3289649.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=851764",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы с Docker и Kubernetes от 2 лет. * Глубокие знания Linux и сетевых протоколов. * Опыт работы с Prometheus и...",
+          "responsibility": "Написание Dockerfiles. * Оптимизация размера и скорости сборки образов. * Поддержка docker-compose сервисов. Инфраструктура и оркестрация: * Настройка и поддержка Kubernetes-кластера. * "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124725931",
+        "premium": false,
+        "name": "NetOps-специалист",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T16:39:08+0300",
+        "created_at": "2025-09-04T16:39:08+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124725931",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124725931?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124725931",
+        "relations": [],
+        "employer": {
+          "id": "1588798",
+          "name": "StormWall™",
+          "url": "https://api.hh.ru/employers/1588798",
+          "alternate_url": "https://hh.ru/employer/1588798",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1328247.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6933010.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6933011.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=1588798",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Ansible. Python. Bash. Kubernetes. Terraform. GitLab. Jenkins.",
+          "responsibility": "Взаимодействие с другими командами: Совместная работа с <highlighttext>DevOps</highlighttext>, сетевыми <highlighttext>инженерами</highlighttext> и системными администраторами. Дополнительные требования: Сертификации, желательно (CCNA/CCNP, JNCIA..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "112",
+            "name": "Сетевой инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "122217332",
+        "premium": false,
+        "name": "Начальник отдела QA (офис)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Новодмитровская улица",
+          "building": "2Б",
+          "lat": 55.805756,
+          "lng": 37.588979,
+          "description": null,
+          "raw": "Москва, Новодмитровская улица, 2Б",
+          "metro": null,
+          "metro_stations": [],
+          "id": "7353280"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-25T17:12:23+0300",
+        "created_at": "2025-08-25T17:12:23+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=122217332",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/122217332?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/122217332",
+        "relations": [],
+        "employer": {
+          "id": "3452582",
+          "name": "ТехАргос",
+          "url": "https://api.hh.ru/employers/3452582",
+          "alternate_url": "https://hh.ru/employer/3452582",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/536239.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/2586429.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/2586430.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3452582",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Понимание <highlighttext>DevOps</highlighttext> пайплайна, включая CI-, CD-практики, и сопутствующих инструментов: GitLab, Aptly, K8S, Git, Nexus, Connan, Docker, Terraform...",
+          "responsibility": "Формирование и развитие QA-команды. Формирование требований, подбор, обучение и адаптация сотрудников. Создание команды, способной работать над проектами различной сложности. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "124",
+            "name": "Тестировщик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123668115",
+        "premium": true,
+        "name": "Site Reliability Engineer (SRE)/Sysadmin junior",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": true,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 220000,
+          "to": null,
+          "currency": "RUR",
+          "gross": true
+        },
+        "salary_range": {
+          "from": 220000,
+          "to": null,
+          "currency": "RUR",
+          "gross": true,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-01T23:31:51+0300",
+        "created_at": "2025-09-01T23:31:51+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123668115",
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123668115?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123668115",
+        "relations": [],
+        "employer": {
+          "id": "561525",
+          "name": "ABCP",
+          "url": "https://api.hh.ru/employers/561525",
+          "alternate_url": "https://hh.ru/employer/561525",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1203196.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6433233.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6433234.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=561525",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы SRE/<highlighttext>DevOps</highlighttext>, системным/сетевым администратором, <highlighttext>инженером</highlighttext> IT-эксплуатации от 3-х лет. Знание ОС Linux: диагностика, настройка, тюнинг...",
+          "responsibility": "Работа в команде SRE. Обеспечение непрерывной работы кластера внутренних сервисов (стек: LXC, MySQL, nginx, Redis, RabbitMQ, golang). Автоматизация рутинных задач..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "113",
+            "name": "Системный администратор"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124716567",
+        "premium": false,
+        "name": "Корпоративный архитектор (ИТ)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "212",
+          "name": "Тольятти",
+          "url": "https://api.hh.ru/areas/212"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Тольятти",
+          "street": "Южное шоссе",
+          "building": "121",
+          "lat": 53.552367,
+          "lng": 49.272153,
+          "description": null,
+          "raw": "Тольятти, Южное шоссе, 121",
+          "metro": null,
+          "metro_stations": [],
+          "id": "17749329"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T14:40:33+0300",
+        "created_at": "2025-09-04T14:40:33+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124716567",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124716567?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124716567",
+        "relations": [],
+        "employer": {
+          "id": "2377577",
+          "name": "ВАЗСИСТЕМ",
+          "url": "https://api.hh.ru/employers/2377577",
+          "alternate_url": "https://hh.ru/employer/2377577",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1398110.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7212211.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7212212.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2377577",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы с AI/ML, Big Data или Data <highlighttext>Engineering</highlighttext>. Опыт работы с Low-Code/No-Code платформами и BPMS.",
+          "responsibility": "Разработка и управление корпоративной архитектурой компании, включая технические, бизнес- и информационные слои. Проектирование архитектуры ИТ-ландшафта компании, определение стратегических направлений..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124886624",
+        "premium": false,
+        "name": "DevOps-инженер",
+        "department": {
+          "id": "4649269-4649269-innoteh",
+          "name": "Т1 Иннотех"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "3",
+          "name": "Екатеринбург",
+          "url": "https://api.hh.ru/areas/3"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Пресненская набережная",
+          "building": "10",
+          "lat": 55.746593,
+          "lng": 37.53738,
+          "description": null,
+          "raw": "Москва, Пресненская набережная, 10",
+          "metro": null,
+          "metro_stations": [],
+          "id": "14979157"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T16:15:22+0300",
+        "created_at": "2025-09-04T16:15:22+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124886624",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124886624?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124886624",
+        "relations": [],
+        "employer": {
+          "id": "4649269",
+          "name": "Т1",
+          "url": "https://api.hh.ru/employers/4649269",
+          "alternate_url": "https://hh.ru/employer/4649269",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1334956.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6959834.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6959835.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4649269",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Знание систем управления версиями (например, Git). Опыт работы с CI/CD-инструментами (например, Jenkins, GitLab CI/CD). Знание контейнеризации и...",
+          "responsibility": "Настройка CI/CD-пайплайнов для автоматической сборки и развёртывания кода. Автоматизация настройки сетевого оборудования — написание сценариев для автоматической настройки маршрутизаторов..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123940633",
+        "premium": false,
+        "name": "DBA",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 3000,
+          "to": 5000,
+          "currency": "USD",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 3000,
+          "to": 5000,
+          "currency": "USD",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Минская улица",
+          "building": "2Гк1",
+          "lat": 55.718035,
+          "lng": 37.502857,
+          "description": null,
+          "raw": "Москва, Минская улица, 2Гк1",
+          "metro": {
+            "station_name": "Минская",
+            "line_name": "Солнцевская",
+            "station_id": "133.555",
+            "line_id": "133",
+            "lat": 55.7232,
+            "lng": 37.5038
+          },
+          "metro_stations": [
+            {
+              "station_name": "Минская",
+              "line_name": "Солнцевская",
+              "station_id": "133.555",
+              "line_id": "133",
+              "lat": 55.7232,
+              "lng": 37.5038
+            }
+          ],
+          "id": "13010953"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T11:21:47+0300",
+        "created_at": "2025-09-05T11:21:47+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123940633",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123940633?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123940633",
+        "relations": [],
+        "employer": {
+          "id": "9677399",
+          "name": "GloryTech",
+          "url": "https://api.hh.ru/employers/9677399",
+          "alternate_url": "https://hh.ru/employer/9677399",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1331549.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/6946214.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/6946215.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=9677399",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Уверенные знания PostgreSQL (репликация, backup/restore, tuning, pg_stat_statements, pgBouncer, ACL, patroni). Опыт работы с ClickHouse (материализованные представления, TTL, MergeTree, кластер...",
+          "responsibility": "...архитектуре и миграциях (например, миграция данных между системами, переезд на новые сервера). Работа в связке с разработчиками и <highlighttext>DevOps</highlighttext>-<highlighttext>инженерами</highlighttext>."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "113",
+            "name": "Системный администратор"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123978223",
+        "premium": false,
+        "name": "Системный инженер-эксперт Linux (3 линия)",
+        "department": {
+          "id": "4649269-4649269-servion",
+          "name": "Т1 Сервионика"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "3",
+          "name": "Екатеринбург",
+          "url": "https://api.hh.ru/areas/3"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-22T20:32:25+0300",
+        "created_at": "2025-08-22T20:32:25+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123978223",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123978223?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123978223",
+        "relations": [],
+        "employer": {
+          "id": "4649269",
+          "name": "Т1",
+          "url": "https://api.hh.ru/employers/4649269",
+          "alternate_url": "https://hh.ru/employer/4649269",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1334956.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6959834.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6959835.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4649269",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Понимание принципов <highlighttext>DevOps</highlighttext> и опыт совместной работы с разработчиками и <highlighttext>инженерами</highlighttext>. Знания принципов работы базовых инфраструктурных сервисов (DNS NTP LDAP...",
+          "responsibility": "Конфигурация, настройка и администрирование серверов под управлением ОС семейства Linux, в том числе с технологиями оркестрации и контейнеризации. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "114",
+            "name": "Системный инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124743786",
+        "premium": false,
+        "name": "Middle инженер виртуализации",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": true,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Мясницкая улица",
+          "building": "16",
+          "lat": 55.760894,
+          "lng": 37.632475,
+          "description": null,
+          "raw": "Москва, Мясницкая улица, 16",
+          "metro": {
+            "station_name": "Лубянка",
+            "line_name": "Сокольническая",
+            "station_id": "1.66",
+            "line_id": "1",
+            "lat": 55.759889,
+            "lng": 37.625336
+          },
+          "metro_stations": [
+            {
+              "station_name": "Лубянка",
+              "line_name": "Сокольническая",
+              "station_id": "1.66",
+              "line_id": "1",
+              "lat": 55.759889,
+              "lng": 37.625336
+            }
+          ],
+          "id": "19244181"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-02T08:55:22+0300",
+        "created_at": "2025-09-02T08:55:22+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124743786",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124743786?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124743786",
+        "relations": [],
+        "employer": {
+          "id": "2795070",
+          "name": "ДиБиЭс Технологии",
+          "url": "https://api.hh.ru/employers/2795070",
+          "alternate_url": "https://hh.ru/employer/2795070",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1116346.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6085981.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6085982.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2795070",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Каких навыков мы ожидаем от успешного кандидата: Знание серверной номенклатуры, умение подбирать комплектующие. Управление серверным ЗИП (запасными частями). ",
+          "responsibility": "Диагностика и устранение неисправностей в кластерах виртуализации. Оптимизация производительности виртуализированной среды. Взаимодействие с командой <highlighttext>DevOps</highlighttext> и системными администраторами."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "40",
+            "name": "Другое"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124717235",
+        "premium": false,
+        "name": "Network security engineer",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "2",
+          "name": "Санкт-Петербург",
+          "url": "https://api.hh.ru/areas/2"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-01T14:46:18+0300",
+        "created_at": "2025-09-01T14:46:18+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124717235",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124717235?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124717235",
+        "relations": [],
+        "employer": {
+          "id": "1111058",
+          "name": "Hi, Rockits!",
+          "url": "https://api.hh.ru/employers/1111058",
+          "alternate_url": "https://hh.ru/employer/1111058",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/857842.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/3872243.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/3872244.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=1111058",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт в сетевой безопасности от 3 лет. Образование в ИБ (высшее или курсы переквалификации). Опыт/Навыки: Проактивная позиция, опыт предложения...",
+          "responsibility": "Внедрение с нуля, настройка, администрирование Next Generation Firewall (система предотвращения вторжений, потоковый антивирус, анти-бот, ssl-инспекция, правила межсетевого экранирования..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "116",
+            "name": "Специалист по информационной безопасности"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124593511",
+        "premium": false,
+        "name": "Технический директор (CTO)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-06T13:58:53+0300",
+        "created_at": "2025-09-06T13:58:53+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124593511",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124593511?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124593511",
+        "relations": [],
+        "employer": {
+          "id": "5217124",
+          "name": "Yudaev.School",
+          "url": "https://api.hh.ru/employers/5217124",
+          "alternate_url": "https://hh.ru/employer/5217124",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1454528.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7437733.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7437734.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=5217124",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Практический опыт разработки финансовых платформ (рассрочка). Глубокие знания в архитектуре систем, <highlighttext>DevOps</highlighttext>, CI/CD, облачных сервисах (AWS/GCP/Azure), микросервисах. ",
+          "responsibility": "Формировать технологическую стратегию в связке с бизнес-целями компании. Управлять процессами проектных команд (разработка, <highlighttext>DevOps</highlighttext>, аналитики). Выбирать и внедрять современные..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "125",
+            "name": "Технический директор (CTO)"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124537074",
+        "premium": false,
+        "name": "SRE/DevOps-инженер",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Варшавское шоссе",
+          "building": "1с6",
+          "lat": 55.703875,
+          "lng": 37.623905,
+          "description": null,
+          "raw": "Москва, Варшавское шоссе, 1с6",
+          "metro": null,
+          "metro_stations": [],
+          "id": "353740"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-27T11:23:12+0300",
+        "created_at": "2025-08-27T11:23:12+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124537074",
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124537074?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124537074",
+        "relations": [],
+        "employer": {
+          "id": "1075289",
+          "name": "Клик Групп",
+          "url": "https://api.hh.ru/employers/1075289",
+          "alternate_url": "https://hh.ru/employer/1075289",
+          "logo_urls": null,
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=1075289",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "От 3 лет в должности <highlighttext>DevOps</highlighttext> или SRE. - Глубокие знания и опыт работы с системами контейнеризации Docker, Docker Compose, k...",
+          "responsibility": "Технологический стек проекта: Backend: Java - Spring Boot. Frontend: React. <highlighttext>DevOps</highlighttext>: Docker, Kubernetes, GitLab CI/CD. Сервисы и инструменты: Solr, Camunda..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124609468",
+        "premium": false,
+        "name": "Бизнес Аналитик / Business Analyst (Senior/Middle)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Михайловский проезд",
+          "building": "1с1",
+          "lat": 55.731754,
+          "lng": 37.686437,
+          "description": null,
+          "raw": "Москва, Михайловский проезд, 1с1",
+          "metro": {
+            "station_name": "Волгоградский проспект",
+            "line_name": "Таганско-Краснопресненская",
+            "station_id": "7.31",
+            "line_id": "7",
+            "lat": 55.725546,
+            "lng": 37.685197
+          },
+          "metro_stations": [
+            {
+              "station_name": "Волгоградский проспект",
+              "line_name": "Таганско-Краснопресненская",
+              "station_id": "7.31",
+              "line_id": "7",
+              "lat": 55.725546,
+              "lng": 37.685197
+            }
+          ],
+          "id": "3291386"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T01:51:28+0300",
+        "created_at": "2025-09-04T01:51:28+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124609468",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124609468?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124609468",
+        "relations": [],
+        "employer": {
+          "id": "4380296",
+          "name": "Нью ривер",
+          "url": "https://api.hh.ru/employers/4380296",
+          "alternate_url": "https://hh.ru/employer/4380296",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/895986.jpeg",
+            "90": "https://img.hhcdn.ru/employer-logo/4024631.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/4024632.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4380296",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт в автоматизации тестирования (Selenium, Python). Знание <highlighttext>DevOps</highlighttext>-практик (CI/CD). Опыт работы с инструментами нагрузочного тестирования. Опыт составления диаграмм...",
+          "responsibility": "IT компания, имеющая аккредитацию в Минцифры. Управляем ценами крупнейших компаний и селлеров на маркетплейсах. НЕОБХОДИМО: общаться с бизнесом, собирать и..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "150",
+            "name": "Бизнес-аналитик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124699846",
+        "premium": false,
+        "name": "Системный администратор",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T10:46:44+0300",
+        "created_at": "2025-09-04T10:46:44+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124699846",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124699846?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124699846",
+        "relations": [],
+        "employer": {
+          "id": "5306601",
+          "name": "Эдельвейс",
+          "url": "https://api.hh.ru/employers/5306601",
+          "alternate_url": "https://hh.ru/employer/5306601",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/841100.png",
+            "90": "https://img.hhcdn.ru/employer-logo/3805279.png",
+            "240": "https://img.hhcdn.ru/employer-logo/3805280.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=5306601",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "опыт работы от 3 лет в качестве администратора/эксперта/архитектора. - навыки диагностики технических неисправностей в ОС и на стыках инфраструктурных...",
+          "responsibility": "резервное копирование и мониторинг компонентов инфраструктуры. - участие в проектных командах в качестве <highlighttext>инженера</highlighttext> <highlighttext>DevOps</highlighttext>. - обеспечение информационной безопасности внедряемых и поддерживаемых..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "113",
+            "name": "Системный администратор"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124885491",
+        "premium": false,
+        "name": "DevOps Engineer \\ Системный инженер (Web Development)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Ленинградское шоссе",
+          "building": "39Ас3",
+          "lat": 55.836438,
+          "lng": 37.48172,
+          "description": null,
+          "raw": "Москва, Ленинградское шоссе, 39Ас3",
+          "metro": {
+            "station_name": "Водный стадион",
+            "line_name": "Замоскворецкая",
+            "station_id": "2.29",
+            "line_id": "2",
+            "lat": 55.838978,
+            "lng": 37.487515
+          },
+          "metro_stations": [
+            {
+              "station_name": "Водный стадион",
+              "line_name": "Замоскворецкая",
+              "station_id": "2.29",
+              "line_id": "2",
+              "lat": 55.838978,
+              "lng": 37.487515
+            }
+          ],
+          "id": "232078"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T15:57:07+0300",
+        "created_at": "2025-09-04T15:57:07+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124885491",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124885491?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124885491",
+        "relations": [],
+        "employer": {
+          "id": "1057",
+          "name": "Лаборатория Касперского",
+          "url": "https://api.hh.ru/employers/1057",
+          "alternate_url": "https://hh.ru/employer/1057",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1391729.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7186699.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7186700.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=1057",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Глубокие знания Linux и сетевого стека ОС. Опыт работы с Docker, Kubernetes (в том числе Managed-версии). Навыки настройки CI...",
+          "responsibility": "Проектирование, развертывание и управление масштабируемой и безопасной облачной инфраструктурой. Администрирование виртуальных машин (ВМ) внутренней виртуализации и внешней облачной инфраструктуры (Yandex..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "OTHER",
+            "name": "Другое"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "OTHER",
+            "name": "Другое"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124463354",
+        "premium": false,
+        "name": "Senior Site Reliability Engineer (SRE)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "2",
+          "name": "Санкт-Петербург",
+          "url": "https://api.hh.ru/areas/2"
+        },
+        "salary": {
+          "from": null,
+          "to": 500000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": null,
+          "to": 500000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T00:07:38+0300",
+        "created_at": "2025-09-04T00:07:38+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124463354",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124463354?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124463354",
+        "relations": [],
+        "employer": {
+          "id": "1136961",
+          "name": "TravelLine",
+          "url": "https://api.hh.ru/employers/1136961",
+          "alternate_url": "https://hh.ru/employer/1136961",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1370529.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7102018.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7102019.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=1136961",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "5+ лет опыта в <highlighttext>DevOps</highlighttext>/SRE или смежных областях. Глубокие знания Kubernetes (архитектура, операторы, Helm, CRD). Опыт работы с...",
+          "responsibility": "Обеспечение надежности: Проектирование и внедрение совместно с командами разработки отказоустойчивой и высокодоступной конфигурации проектов на проде. Разработка, внедрение и контроль..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "119275566",
+        "premium": false,
+        "name": "Middle+ / Senior DevOps-инженер",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "4",
+          "name": "Новосибирск",
+          "url": "https://api.hh.ru/areas/4"
+        },
+        "salary": {
+          "from": 200000,
+          "to": 350000,
+          "currency": "RUR",
+          "gross": true
+        },
+        "salary_range": {
+          "from": 200000,
+          "to": 350000,
+          "currency": "RUR",
+          "gross": true,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T11:22:16+0300",
+        "created_at": "2025-09-05T11:22:16+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=119275566",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/119275566?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/119275566",
+        "relations": [],
+        "employer": {
+          "id": "11511190",
+          "name": "Линсофтверпродакшн",
+          "url": "https://api.hh.ru/employers/11511190",
+          "alternate_url": "https://hh.ru/employer/11511190",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1371340.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7105262.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7105263.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=11511190",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Хорошие знания ОС Linux (процессы, файловая система, инструменты отладки, сети). Опыт работы с реляционными и нереляционными БД (желательно с 2...",
+          "responsibility": "Этапы отбора: Анкета. Первичное интервью. Техническое интервью. Оффер."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123554663",
+        "premium": false,
+        "name": "Системный администратор",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "90",
+          "name": "Томск",
+          "url": "https://api.hh.ru/areas/90"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Томск",
+          "street": "проспект Кирова",
+          "building": "58",
+          "lat": 56.46451,
+          "lng": 84.984812,
+          "description": null,
+          "raw": "Томск, проспект Кирова, 58",
+          "metro": null,
+          "metro_stations": [],
+          "id": "1182543"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-26T13:20:21+0300",
+        "created_at": "2025-08-26T13:20:21+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123554663",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123554663?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123554663",
+        "relations": [],
+        "employer": {
+          "id": "3288469",
+          "name": "ilink",
+          "url": "https://api.hh.ru/employers/3288469",
+          "alternate_url": "https://hh.ru/employer/3288469",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/884331.png",
+            "90": "https://img.hhcdn.ru/employer-logo/3978023.png",
+            "240": "https://img.hhcdn.ru/employer-logo/3978024.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3288469",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Хорошие знания в \"железе\", делал свои сборки или для кого-то. Глубокие знания Linux (Ubuntu, CentOS, Debian, Amazon Linux), Windows...",
+          "responsibility": "Установка и настройка рабочих мест, серверов и периферийного оборудования."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "flexible",
+          "name": "Гибкий график"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_2",
+            "name": "2 часа"
+          },
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "По договорённости"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "113",
+            "name": "Системный администратор"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124718880",
+        "premium": false,
+        "name": "DevOps engineer (middle/senior)",
+        "department": {
+          "id": "4496-4496-it",
+          "name": "МТС Банк. IT"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-01T15:11:20+0300",
+        "created_at": "2025-09-01T15:11:20+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124718880",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124718880?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124718880",
+        "relations": [],
+        "employer": {
+          "id": "4496",
+          "name": "МТС Финтех",
+          "url": "https://api.hh.ru/employers/4496",
+          "alternate_url": "https://hh.ru/employer/4496",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1417383.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7289181.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7289182.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4496",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Ты будешь: Опыт работы в качестве <highlighttext>DevOps</highlighttext> <highlighttext>инженера</highlighttext> от 3-лет c использованием контейнеров и оркестратора Kubernetes. Глубокое понимание принципов...",
+          "responsibility": "Управлять процессами эксплуатации и поддержки ИТ-инфраструктуры. Создавать и внедрять практики <highlighttext>DevOps</highlighttext> в продуктовые команды. Вести документацию инфраструктуры и соответствующих..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124812120",
+        "premium": false,
+        "name": "DevOps-инженер (SRE) в Вертикали",
+        "department": {
+          "id": "yandex-1740-yandex",
+          "name": "Яндекс"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T11:23:36+0300",
+        "created_at": "2025-09-03T11:23:36+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124812120",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124812120?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124812120",
+        "relations": [],
+        "employer": {
+          "id": "1740",
+          "name": "Яндекс",
+          "url": "https://api.hh.ru/employers/1740",
+          "alternate_url": "https://hh.ru/employer/1740",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/837491.png",
+            "90": "https://img.hhcdn.ru/employer-logo/3790847.png",
+            "240": "https://img.hhcdn.ru/employer-logo/3790848.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=1740",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Ansible, Terraform, Packer. Golang и Bash. Понимаете принципы работы веб-сервисов. Любите работать в команде, при этом способны действовать самостоятельно.",
+          "responsibility": "Docker-контейнеры для дистрибуции сервисов. Планировать, развивать и поддерживать инфраструктуру для наших сервисов, писать решения, которые упростят её эксплуатацию. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124541323",
+        "premium": false,
+        "name": "DevOps инженер",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "2",
+          "name": "Санкт-Петербург",
+          "url": "https://api.hh.ru/areas/2"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Санкт-Петербург",
+          "street": "Аптекарская набережная",
+          "building": "8",
+          "lat": 59.973748,
+          "lng": 30.326504,
+          "description": null,
+          "raw": "Санкт-Петербург, Аптекарская набережная, 8",
+          "metro": null,
+          "metro_stations": [],
+          "id": "15566851"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T12:18:27+0300",
+        "created_at": "2025-09-05T12:18:27+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124541323",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124541323?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124541323",
+        "relations": [],
+        "employer": {
+          "id": "10883672",
+          "name": "ЦКТ",
+          "url": "https://api.hh.ru/employers/10883672",
+          "alternate_url": "https://hh.ru/employer/10883672",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1389905.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7179407.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7179408.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=10883672",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "1. Высшее техническое образование. 2. Опыт работы <highlighttext>Devops</highlighttext> <highlighttext>инженер</highlighttext> не менее 3х лет. 3. Знание Linux-based ОС (Ubuntu...",
+          "responsibility": "О продуктах: Axioma - Система предиктивного мониторинга эмиссий (выбросов загрязняющих веществ), предназначенная для контроля и учета эмиссий на объектах, оказывающих негативное..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124805173",
+        "premium": false,
+        "name": "Администратор IT-систем / SRE (GigaChat)",
+        "department": {
+          "id": "3529-3529-prof",
+          "name": "Сбер для экспертов"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T10:03:20+0300",
+        "created_at": "2025-09-03T10:03:20+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124805173",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124805173?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124805173",
+        "relations": [],
+        "employer": {
+          "id": "3529",
+          "name": "СБЕР",
+          "url": "https://api.hh.ru/employers/3529",
+          "alternate_url": "https://hh.ru/employer/3529",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1311252.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/6865266.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/6865267.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3529",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт автоматизации на Python / Bash. Опыт работы и понимание методологии <highlighttext>DevOps</highlighttext>. Оптимизация работы GPU серверов. Промышленная разработка на Python. ",
+          "responsibility": "Решение инцидентов, анализ причин их возникновения. Применение методологии и инструментов <highlighttext>DevOps</highlighttext> в работе (BitBucket, Ansible, Jenkins, GitLab). Настройка, развитие систем..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "121",
+            "name": "Специалист технической поддержки"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123371350",
+        "premium": false,
+        "name": "System Engineer (Linux Administration / DevOps)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "26",
+          "name": "Воронеж",
+          "url": "https://api.hh.ru/areas/26"
+        },
+        "salary": {
+          "from": 140000,
+          "to": 190000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 140000,
+          "to": 190000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-28T13:30:43+0300",
+        "created_at": "2025-08-28T13:30:43+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123371350",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123371350?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123371350",
+        "relations": [],
+        "employer": {
+          "id": "2661787",
+          "name": "SoftMaster",
+          "url": "https://api.hh.ru/employers/2661787",
+          "alternate_url": "https://hh.ru/employer/2661787",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1342807.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6991170.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6991171.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2661787",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт администрирования серверов на базе ОС семейства Linux (Debian, Ubuntu). Базовые навыки работы с сетями в Linux (понимание работы сетевых...",
+          "responsibility": "Развертывание и обслуживание сервисов для обслуживания работы продуктов компании и для внутренних нужд: написание и выполнение плейбуков, проверка качества кода..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124649750",
+        "premium": false,
+        "name": "Senior",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 150000,
+          "to": 220000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 150000,
+          "to": 220000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "MONTHLY",
+            "name": "Раз в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-04T17:43:46+0300",
+        "created_at": "2025-09-04T17:43:46+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124649750",
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124649750?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124649750",
+        "relations": [],
+        "employer": {
+          "id": "12258685",
+          "name": "It Sokol",
+          "url": "https://api.hh.ru/employers/12258685",
+          "alternate_url": "https://hh.ru/employer/12258685",
+          "logo_urls": null,
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=12258685",
+          "accredited_it_employer": false,
+          "trusted": false
+        },
+        "snippet": {
+          "requirement": "Навыки проектирования API и распределённых систем. Будет плюсом: опыт с ML/анализом временных рядов, <highlighttext>DevOps</highlighttext> (Docker, Kubernetes). Лидерские качества: умение...",
+          "responsibility": "Интеграции с 1С / ERP. Взаимодействие с ML-<highlighttext>инженером</highlighttext> для интеграции алгоритмов аномалистики и предиктивного обслуживания. Участие в пилотах на..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "40",
+            "name": "Другое"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124531480",
+        "premium": false,
+        "name": "Менеджер IT-проектов",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "3",
+          "name": "Екатеринбург",
+          "url": "https://api.hh.ru/areas/3"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-27T10:16:28+0300",
+        "created_at": "2025-08-27T10:16:28+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124531480",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124531480?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124531480",
+        "relations": [],
+        "employer": {
+          "id": "52511",
+          "name": "ХОСТ, Группа компаний",
+          "url": "https://api.hh.ru/employers/52511",
+          "alternate_url": "https://hh.ru/employer/52511",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/374427.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/1939966.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/1939967.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=52511",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Аналогичный опыт работы от 2 лет. Профильное образование по управлению проектами (MBA, IPMA, PMI, PMBOK) - желательно, но не является обязательным...",
+          "responsibility": "Участие в переговорах с Владельцем продукта, выяснение его первоначальных потребностей. Расчет длительности работ, оценка потребности в ресурсах. Разработка документации по..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "107",
+            "name": "Руководитель проектов"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124784868",
+        "premium": false,
+        "name": "Senior Devops Engineer [Интернет магазин, МТС Веб Сервисы]",
+        "department": {
+          "id": "mts-3776-inIT",
+          "name": "\"МТС\", Работа в IT"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-02T16:51:16+0300",
+        "created_at": "2025-09-02T16:51:16+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124784868",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124784868?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124784868",
+        "relations": [],
+        "employer": {
+          "id": "3776",
+          "name": "МТС",
+          "url": "https://api.hh.ru/employers/3776",
+          "alternate_url": "https://hh.ru/employer/3776",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1389236.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7176731.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7176732.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3776",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Экспертные знания, навыки и опыт системного администрирования Linux не менее 5 лет. Владение bash или иным скриптовым языком, умение с...",
+          "responsibility": "Интернет магазин - универсальная витрина для покупки различных товаров, как посредством онлайн заказа, так и с возможностью самовывоза в салоне РТК. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124168093",
+        "premium": false,
+        "name": "Специалист службы поддержки клиентов",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "70",
+          "name": "Оренбург",
+          "url": "https://api.hh.ru/areas/70"
+        },
+        "salary": {
+          "from": 55000,
+          "to": 75000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 55000,
+          "to": 75000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Оренбург",
+          "street": "улица Аксакова",
+          "building": "17",
+          "lat": 51.773728,
+          "lng": 55.117015,
+          "description": null,
+          "raw": "Оренбург, улица Аксакова, 17",
+          "metro": null,
+          "metro_stations": [],
+          "id": "444065"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-25T13:22:24+0300",
+        "created_at": "2025-08-25T13:22:24+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124168093",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124168093?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124168093",
+        "relations": [],
+        "employer": {
+          "id": "668351",
+          "name": "Уфанет",
+          "url": "https://api.hh.ru/employers/668351",
+          "alternate_url": "https://hh.ru/employer/668351",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1287606.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6770722.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6770723.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=668351",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Свободное владение ПК, умение работать с программами. - Технический склад ума. - Способность быстро искать нужную информацию. - Умение грамотно и четко выражать...",
+          "responsibility": "Приемом входящих звонков от клиентов в офисе компании. - Консультированием по услугам. - Помощью в решении технических вопросов клиентов."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FOUR_ON_TWO_OFF",
+            "name": "4/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "121",
+            "name": "Специалист технической поддержки"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124506328",
+        "premium": false,
+        "name": "Битрикс разработчик",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": true,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 130000,
+          "to": 180000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 130000,
+          "to": 180000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-26T16:15:04+0300",
+        "created_at": "2025-08-26T16:15:04+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124506328",
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124506328?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124506328",
+        "relations": [],
+        "employer": {
+          "id": "11788859",
+          "name": "Айти Прагма",
+          "url": "https://api.hh.ru/employers/11788859",
+          "alternate_url": "https://hh.ru/employer/11788859",
+          "logo_urls": null,
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=11788859",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт коммерческой разработки на 1С-Битрикс от 2-х лет. Понимание архитектуры и ядра Битрикс (D7, ORM, работа...",
+          "responsibility": "Разработка и доработка коммерческих сайтов на платформе 1С-Битрикс: Управление сайтом (в большей степени). Доработки коробочных версий порталов Битрикс..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124900353",
+        "premium": false,
+        "name": "Главный SRE-Инженер",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "79",
+          "name": "Саратов",
+          "url": "https://api.hh.ru/areas/79"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Саратов",
+          "street": "Рабочая улица",
+          "building": "145А",
+          "lat": 51.534027,
+          "lng": 45.999725,
+          "description": null,
+          "raw": "Саратов, Рабочая улица, 145А",
+          "metro": null,
+          "metro_stations": [],
+          "id": "18589432"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T08:27:52+0300",
+        "created_at": "2025-09-05T08:27:52+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124900353",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124900353?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124900353",
+        "relations": [],
+        "employer": {
+          "id": "5390761",
+          "name": "Совкомбанк Технологии",
+          "url": "https://api.hh.ru/employers/5390761",
+          "alternate_url": "https://hh.ru/employer/5390761",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1310092.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6860626.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6860627.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=5390761",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт внедрения практик и инструментов SRE и <highlighttext>DevOps</highlighttext>. Опыт в работе с распределённой инфраструктурой, микросервисной архитектурой в контейнеризованных средах. ",
+          "responsibility": "Внедрение SLO / SLI для информационных систем Misson Critical банка (ДБО ФЛ / ЮР, Кредитный ковейер, интеграционный слой и т.п.). "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124825876",
+        "premium": false,
+        "name": "DevOps инженер",
+        "department": {
+          "id": "gpn-39305-it",
+          "name": "ПАО «Газпром нефть» ИТ"
+        },
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "2",
+          "name": "Санкт-Петербург",
+          "url": "https://api.hh.ru/areas/2"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Санкт-Петербург",
+          "street": "Киевская улица",
+          "building": "5",
+          "lat": 59.902492,
+          "lng": 30.32725,
+          "description": null,
+          "raw": "Санкт-Петербург, Киевская улица, 5",
+          "metro": {
+            "station_name": "Фрунзенская",
+            "line_name": "Московско-Петроградская",
+            "station_id": "15.220",
+            "line_id": "15",
+            "lat": 59.906273,
+            "lng": 30.31745
+          },
+          "metro_stations": [
+            {
+              "station_name": "Фрунзенская",
+              "line_name": "Московско-Петроградская",
+              "station_id": "15.220",
+              "line_id": "15",
+              "lat": 59.906273,
+              "lng": 30.31745
+            }
+          ],
+          "id": "772304"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T14:27:32+0300",
+        "created_at": "2025-09-03T14:27:32+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124825876",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124825876?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124825876",
+        "relations": [],
+        "employer": {
+          "id": "39305",
+          "name": "Газпром нефть",
+          "url": "https://api.hh.ru/employers/39305",
+          "alternate_url": "https://hh.ru/employer/39305",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1448441.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7413385.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7413386.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=39305",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Имеешь высшее техническое образование. Имеешь опыт работы с : Kubernetes (Deckhouse, OKD),Jenkins CI/CD, Helm, Nexus Repository, Clickhouse ,Kafka MS...",
+          "responsibility": "Выполнение работ в изолированном контуре, без доступа в Интернет. Администрирование виртуальных одмашин под Linux. Администрирование Kubernetes. Администрирование баз данных. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124605983",
+        "premium": false,
+        "name": "Senior Go Engineer / Solution Architect",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "2",
+          "name": "Санкт-Петербург",
+          "url": "https://api.hh.ru/areas/2"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-28T17:57:55+0300",
+        "created_at": "2025-08-28T17:57:55+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124605983",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124605983?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124605983",
+        "relations": [],
+        "employer": {
+          "id": "2569275",
+          "name": "Emphasoft",
+          "url": "https://api.hh.ru/employers/2569275",
+          "alternate_url": "https://hh.ru/employer/2569275",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/655892.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/3064716.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/3064717.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2569275",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Минимум 5 лет коммерческого опыта работы с Go (Golang). Глубокое понимание микросервисной архитектуры и распределённых систем. Понимание продуктового подхода к...",
+          "responsibility": "Обеспечивать надёжность, безопасность и производительность системы с использованием современных практик <highlighttext>DevOps</highlighttext>. Сотрудничать с фронтенд-разработчиками, <highlighttext>DevOps</highlighttext> и продуктовыми командами при..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "122369148",
+        "premium": false,
+        "name": "DevOps-инженер",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Нижняя Красносельская улица",
+          "building": null,
+          "lat": 55.775864,
+          "lng": 37.671013,
+          "description": null,
+          "raw": "Москва, Нижняя Красносельская улица",
+          "metro": {
+            "station_name": "Бауманская",
+            "line_name": "Арбатско-Покровская",
+            "station_id": "3.17",
+            "line_id": "3",
+            "lat": 55.772405,
+            "lng": 37.67904
+          },
+          "metro_stations": [
+            {
+              "station_name": "Бауманская",
+              "line_name": "Арбатско-Покровская",
+              "station_id": "3.17",
+              "line_id": "3",
+              "lat": 55.772405,
+              "lng": 37.67904
+            },
+            {
+              "station_name": "Красносельская",
+              "line_name": "Сокольническая",
+              "station_id": "1.60",
+              "line_id": "1",
+              "lat": 55.780014,
+              "lng": 37.666097
+            }
+          ],
+          "id": "770993"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-01T10:52:11+0300",
+        "created_at": "2025-09-01T10:52:11+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=122369148",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/122369148?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/122369148",
+        "relations": [],
+        "employer": {
+          "id": "109654",
+          "name": "STONE",
+          "url": "https://api.hh.ru/employers/109654",
+          "alternate_url": "https://hh.ru/employer/109654",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1133975.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/6156489.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/6156490.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=109654",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Инструменты <highlighttext>DevOps</highlighttext>: Docker, Kubernetes, Ansible.",
+          "responsibility": "Автоматизация всех окружений с помощью Ansible и Terraform. Развертывание и поддержка микросервисной архитектуры в Kubernetes. Автоматизация и развертывание Docker-контейнеров. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124522801",
+        "premium": false,
+        "name": "Senior DevOps-инженер",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 250000,
+          "to": 300000,
+          "currency": "RUR",
+          "gross": true
+        },
+        "salary_range": {
+          "from": 250000,
+          "to": 300000,
+          "currency": "RUR",
+          "gross": true,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-27T08:00:55+0300",
+        "created_at": "2025-08-27T08:00:55+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124522801",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124522801?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124522801",
+        "relations": [],
+        "employer": {
+          "id": "1929475",
+          "name": "Live Typing",
+          "url": "https://api.hh.ru/employers/1929475",
+          "alternate_url": "https://hh.ru/employer/1929475",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1409915.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7259320.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7259321.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=1929475",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Имеешь опыт работы с сервисами аутентификации/авторизации (Keycloak, ory, okta, auth0). Хорошо понимаешь стандарта OIDC и Oauth2. ",
+          "responsibility": "Работал с API gateways (Gravitee, Kong)."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "160",
+            "name": "DevOps-инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "project",
+          "name": "Проектная работа"
+        },
+        "employment_form": {
+          "id": "PROJECT",
+          "name": "Проект или разовое задание"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124542158",
+        "premium": false,
+        "name": "Менеджер по продажам (IT решения)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Новодмитровская улица",
+          "building": "2Б",
+          "lat": 55.805756,
+          "lng": 37.588979,
+          "description": null,
+          "raw": "Москва, Новодмитровская улица, 2Б",
+          "metro": null,
+          "metro_stations": [],
+          "id": "15753940"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T12:31:32+0300",
+        "created_at": "2025-09-05T12:31:32+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124542158",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124542158?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124542158",
+        "relations": [],
+        "employer": {
+          "id": "5895148",
+          "name": "Концепт Разработка",
+          "url": "https://api.hh.ru/employers/5895148",
+          "alternate_url": "https://hh.ru/employer/5895148",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1438384.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7373168.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7373169.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=5895148",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Мы комплексно подходим к решению поставленных задач и готовы интегрировать их в ИТ-ландшафт предприятий любого уровня. Предпочтение кандидатам из...",
+          "responsibility": "Концепт Разработка аккредитованная IT компания. Мы в поиске мотивированного и опытного менеджера для развития продаж в новых заказчиках. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "70",
+            "name": "Менеджер по продажам, менеджер по работе с клиентами"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "122057492",
+        "premium": false,
+        "name": "ИТ-инженер сопровождения и прикладного администрирования систем (Mission critical/Business critical)",
+        "department": {
+          "id": "4649269-4649269-innoteh",
+          "name": "Т1 Иннотех"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "78",
+          "name": "Самара",
+          "url": "https://api.hh.ru/areas/78"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-01T14:32:05+0300",
+        "created_at": "2025-09-01T14:32:05+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=122057492",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/122057492?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/122057492",
+        "relations": [],
+        "employer": {
+          "id": "4649269",
+          "name": "Т1",
+          "url": "https://api.hh.ru/employers/4649269",
+          "alternate_url": "https://hh.ru/employer/4649269",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1334956.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6959834.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6959835.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4649269",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "...json, менеджеры очередей RabbitMQ, IBM MQ, Kafka). Опыт работы с системами мониторинга и агрегации логов. Понимание методологий <highlighttext>Devops</highlighttext>, Agile, ITIL.",
+          "responsibility": "Ввод в эксплуатацию и оптимизация работы информационных систем построенных на микросервисной архитектуре. Сопровождение контуров ПРОМ и ПСИ. Планирование и установка..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "121",
+            "name": "Специалист технической поддержки"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124439680",
+        "premium": false,
+        "name": "Инженер-программист C#",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "90",
+          "name": "Томск",
+          "url": "https://api.hh.ru/areas/90"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-25T13:43:50+0300",
+        "created_at": "2025-08-25T13:43:50+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124439680",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124439680?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124439680",
+        "relations": [],
+        "employer": {
+          "id": "8550",
+          "name": "Центр финансовых технологий",
+          "url": "https://api.hh.ru/employers/8550",
+          "alternate_url": "https://hh.ru/employer/8550",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1390863.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7183239.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7183240.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=8550",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы с системами контроля версий (TFS, Git, MS <highlighttext>DevOps</highlighttext>). Желателен опыт разработки под DocsVision и электронный документооборот. ",
+          "responsibility": "Создание нового, модификация существующего (доработки/исправления), программного обеспечения. Разработка технической документации."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124703965",
+        "premium": false,
+        "name": "DevOps инженер",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Шумкина",
+          "building": "20, стр. 1",
+          "lat": 55.78714827237705,
+          "lng": 37.67078855748225,
+          "description": null,
+          "raw": "Москва, Шумкина, 20, стр. 1",
+          "metro": {
+            "station_name": "Митьково",
+            "line_name": "МЦД-3",
+            "station_id": "135.852",
+            "line_id": "135",
+            "lat": 55.786389,
+            "lng": 37.6675
+          },
+          "metro_stations": [
+            {
+              "station_name": "Митьково",
+              "line_name": "МЦД-3",
+              "station_id": "135.852",
+              "line_id": "135",
+              "lat": 55.786389,
+              "lng": 37.6675
+            },
+            {
+              "station_name": "Сокольники",
+              "line_name": "Сокольническая",
+              "station_id": "1.134",
+              "line_id": "1",
+              "lat": 55.789282,
+              "lng": 37.679895
+            },
+            {
+              "station_name": "Сокольники",
+              "line_name": "Большая кольцевая линия",
+              "station_id": "97.823",
+              "line_id": "97",
+              "lat": 55.791111,
+              "lng": 37.678889
+            }
+          ],
+          "id": "19313890"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-01T11:36:41+0300",
+        "created_at": "2025-09-01T11:36:41+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124703965",
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124703965?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124703965",
+        "relations": [],
+        "employer": {
+          "id": "17688",
+          "name": "ЭЛЕКТРОННЫЕ ОФИСНЫЕ СИСТЕМЫ",
+          "url": "https://api.hh.ru/employers/17688",
+          "alternate_url": "https://hh.ru/employer/17688",
+          "logo_urls": null,
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=17688",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы с ALM системами, такими как Azure <highlighttext>DevOps</highlighttext> и/или TFS, GitLab, GitHub, Jira/Bitbucket/Bamboo. Приветствуется умение создания...",
+          "responsibility": "...разработки и тестирования. Участие в администрировании локального экземпляра сервера Azure <highlighttext>DevOps</highlighttext>. Внедрение контейнерных технологий развертывания решений для существующей линейки продуктов..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "114",
+            "name": "Системный инженер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123529615",
+        "premium": false,
+        "name": "Прикладной администратор (микросервисы)",
+        "department": {
+          "id": "vtb-4181-teh",
+          "name": "ПАО ВТБ, Технологический блок"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Пресненская набережная",
+          "building": "10",
+          "lat": 55.746963,
+          "lng": 37.536356,
+          "description": null,
+          "raw": "Москва, Пресненская набережная, 10",
+          "metro": {
+            "station_name": "Деловой центр",
+            "line_name": "Солнцевская",
+            "station_id": "133.468",
+            "line_id": "133",
+            "lat": 55.7491,
+            "lng": 37.5395
+          },
+          "metro_stations": [
+            {
+              "station_name": "Деловой центр",
+              "line_name": "Солнцевская",
+              "station_id": "133.468",
+              "line_id": "133",
+              "lat": 55.7491,
+              "lng": 37.5395
+            },
+            {
+              "station_name": "Деловой центр (Выставочная)",
+              "line_name": "Филевская",
+              "station_id": "4.172",
+              "line_id": "4",
+              "lat": 55.750243,
+              "lng": 37.542641
+            },
+            {
+              "station_name": "Москва-Сити",
+              "line_name": "Филевская",
+              "station_id": "4.179",
+              "line_id": "4",
+              "lat": 55.748056,
+              "lng": 37.532778
+            }
+          ],
+          "id": "690692"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T10:12:04+0300",
+        "created_at": "2025-09-03T10:12:04+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123529615",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123529615?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123529615",
+        "relations": [],
+        "employer": {
+          "id": "4181",
+          "name": "Банк ВТБ (ПАО)",
+          "url": "https://api.hh.ru/employers/4181",
+          "alternate_url": "https://hh.ru/employer/4181",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/482009.png",
+            "90": "https://img.hhcdn.ru/employer-logo/2369888.png",
+            "240": "https://img.hhcdn.ru/employer-logo/2369889.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=4181",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Высшее техническое образование. Понимание процессов CI/CD, опыт работы с Git. Понимание микросервисной архитектуры и принципов функционирования современных web-приложений. ",
+          "responsibility": "Участие в работе над проектами: анализ требований, взаимодействие с <highlighttext>DevOps</highlighttext>-<highlighttext>инженерами</highlighttext> из развития, при необходимости выполнение самостоятельных доработок, реализация. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "113",
+            "name": "Системный администратор"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124452147",
+        "premium": false,
+        "name": "DataOps engineer",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-08-25T16:37:31+0300",
+        "created_at": "2025-08-25T16:37:31+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124452147",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124452147?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124452147",
+        "relations": [],
+        "employer": {
+          "id": "53368",
+          "name": "Innovative People",
+          "url": "https://api.hh.ru/employers/53368",
+          "alternate_url": "https://hh.ru/employer/53368",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/359281.png",
+            "90": "https://img.hhcdn.ru/employer-logo/1879386.png",
+            "240": "https://img.hhcdn.ru/employer-logo/1879387.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=53368",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы с Kubernetes: деплой через GitOps-инструменты (ArgoCD, FluxCD), сопровождение сервисов, работа с операторами, HPA, CRD, балансировщиками нагрузки. ",
+          "responsibility": "Постановка сервисов на мониторинг, рефакторинг и оптимизация работы платформы. Обеспечение подразделений Data Science, Data <highlighttext>Engineering</highlighttext>, Data Analytics необходимыми IT-ресурсами. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "165",
+            "name": "Дата-сайентист"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 958,
+    "pages": 20,
+    "page": 7,
+    "per_page": 50,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&enable_snippets=true&items_on_page=50&page=7&search_period=15&text=devops+engineer"
+  }
+}
