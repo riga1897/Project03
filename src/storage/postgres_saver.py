@@ -1052,7 +1052,7 @@ class PostgresSaver(AbstractVacancyStorage):
         Удаляет вакансию из PostgreSQL хранилища
         :param vacancy: Объект вакансии для удаления
         """
-        self.delete_vacancy_by_id(vacancy.vacancy_id)
+        self.delete_vacancy_by_id(vacancy.id)
 
     def delete_vacancies_batch(self, vacancy_ids: List[str]) -> int:
         """
@@ -1102,7 +1102,7 @@ class PostgresSaver(AbstractVacancyStorage):
         connection = self._get_connection()
         try:
             cursor = connection.cursor()
-            cursor.execute("SELECT 1 FROM vacancies WHERE vacancy_id = %s", (vacancy.vacancy_id,))
+            cursor.execute("SELECT 1 FROM vacancies WHERE vacancy_id = %s", (vacancy.id,))
             return cursor.fetchone() is not None
         except PsycopgError as e:
             logger.error(f"Ошибка проверки существования вакансии: {e}")

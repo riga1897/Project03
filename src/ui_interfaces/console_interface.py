@@ -408,8 +408,8 @@ class UserInterface:
 
             # Отображаем вакансии с номерами
             for i, vacancy in enumerate(current_vacancies, start_idx + 1):
-                print(f"{i}. ID: {vacancy.vacancy_id}")
-                print(f"   Название: {vacancy.title or 'Не указано'}")
+                print(f"{i}. ID: {vacancy.id}")
+                print(f"   Название: {vacancy.name or 'Не указано'}")
                 if vacancy.employer:
                     print(f"   Компания: {vacancy.employer.get('name', 'Не указана')}")
                 salary_display = str(vacancy.salary) if vacancy.salary else "Не указана"
@@ -469,8 +469,8 @@ class UserInterface:
 
                         print(f"\nВакансии для удаления (номера {start_num}-{end_num}):")
                         for i, vacancy in enumerate(vacancies_to_delete, start_num):
-                            print(f"{i}. ID: {vacancy.vacancy_id}")
-                            print(f"   Название: {vacancy.title or 'Не указано'}")
+                            print(f"{i}. ID: {vacancy.id}")
+                            print(f"   Название: {vacancy.name or 'Не указано'}")
                             if vacancy.employer:
                                 print(f"   Компания: {vacancy.employer.get('name', 'Не указана')}")
                             print(f"   Ссылка: {vacancy.url}")
@@ -481,7 +481,7 @@ class UserInterface:
                             for vacancy in vacancies_to_delete:
                                 # Используем storage для удаления
                                 if self.storage.delete_vacancy_by_id(
-                                    vacancy.vacancy_id
+                                    vacancy.id
                                 ):  # Изменено: используется storage
                                     vacancies.remove(vacancy)
                                     deleted_count += 1
@@ -508,7 +508,7 @@ class UserInterface:
                 if 1 <= vacancy_num <= len(vacancies):
                     vacancy_to_delete = vacancies[vacancy_num - 1]
                     print("\nВакансия для удаления:")
-                    print(f"ID: {vacancy_to_delete.vacancy_id}")
+                    print(f"ID: {vacancy_to_delete.id}")
                     print(f"Название: {vacancy_to_delete.title or 'Не указано'}")
                     if vacancy_to_delete.employer:
                         print(f"Компания: {vacancy_to_delete.employer.get('name', 'Не указана')}")
@@ -522,7 +522,7 @@ class UserInterface:
                     if confirm_action("Удалить эту вакансию?"):
                         # Используем storage для удаления
                         if self.storage.delete_vacancy_by_id(
-                            vacancy_to_delete.vacancy_id
+                            vacancy_to_delete.id
                         ):  # Изменено: используется storage
                             print("Вакансия успешно удалена.")
                             # Удаляем из локального списка и обновляем отображение

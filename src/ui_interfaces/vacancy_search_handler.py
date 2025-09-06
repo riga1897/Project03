@@ -224,7 +224,7 @@ class VacancySearchHandler:
         new_vacancies = []
 
         for vacancy in vacancies:
-            if existence_map.get(vacancy.vacancy_id, False):
+            if existence_map.get(vacancy.id, False):
                 duplicates.append(vacancy)
             else:
                 new_vacancies.append(vacancy)

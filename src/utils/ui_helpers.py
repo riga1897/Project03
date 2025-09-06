@@ -199,8 +199,8 @@ def _build_searchable_text(vacancy: Vacancy) -> str:
     searchable_text = []
 
     # Проверяем названия
-    if vacancy.title:
-        searchable_text.append(str(vacancy.title))
+    if vacancy.name:
+        searchable_text.append(str(vacancy.name))
 
     # Проверяем описание
     if vacancy.description:
@@ -297,9 +297,9 @@ def debug_vacancy_search(vacancy: Vacancy, keyword: str) -> None:
         vacancy: Вакансия для отладки
         keyword: Ключевое слово для поиска
     """
-    print(f"\n=== Отладка вакансии: {vacancy.title} ===")
-    print(f"ID: {vacancy.vacancy_id}")
-    print(f"Заголовок: {vacancy.title}")
+    print(f"\n=== Отладка вакансии: {vacancy.name} ===")
+    print(f"ID: {vacancy.id}")
+    print(f"Заголовок: {vacancy.name}")
     print(f"Описание: {vacancy.description[:200] if vacancy.description else 'Нет'}...")
     print(f"Требования: {vacancy.requirements[:200] if vacancy.requirements else 'Нет'}...")
     print(f"Обязанности: {vacancy.responsibilities[:200] if vacancy.responsibilities else 'Нет'}...")
@@ -315,7 +315,7 @@ def debug_vacancy_search(vacancy: Vacancy, keyword: str) -> None:
     keyword_lower = keyword.lower()
     found_in = []
 
-    if vacancy.title and keyword_lower in vacancy.title.lower():
+    if vacancy.name and keyword_lower in vacancy.name.lower():
         found_in.append("заголовок")
     if vacancy.description and keyword_lower in vacancy.description.lower():
         found_in.append("описание")
