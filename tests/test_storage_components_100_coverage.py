@@ -573,6 +573,25 @@ class TestVacancyValidator:
         errors = validator.get_validation_errors()
         assert len(errors) > 0
 
+    def test_validate_vacancy_data_types_fail_main_method(self):
+        """Тест покрытия строки 62 через основной метод validate_vacancy"""
+        validator = VacancyValidator()
+        
+        # Создаем вакансию с валидными required полями, но неверными optional
+        mock_vacancy = MockVacancy(
+            vacancy_id="123",
+            title="Python Developer", 
+            url="https://example.com/job/123",
+            requirements=999  # Неверный тип для опционального поля
+        )
+        
+        # Этот вызов должен покрыть строку 62 при возврате False из _validate_data_types
+        result = validator.validate_vacancy(mock_vacancy)
+        assert result is False
+        
+        errors = validator.get_validation_errors()
+        assert any("requirements" in error and "Неверный тип" in error for error in errors)
+
     def test_validate_vacancy_invalid_url(self):
         """Тест валидации вакансии с невалидным URL"""
         validator = VacancyValidator()
