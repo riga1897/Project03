@@ -21,7 +21,10 @@ class VacancyOperations:
         Returns:
             List[Vacancy]: Список вакансий с указанной зарплатой
         """
-        return [v for v in vacancies if v.salary and (v.salary.salary_from or v.salary.salary_to)]
+        return [v for v in vacancies if v.salary and (
+            (isinstance(v.salary, dict) and (v.salary.get('from') or v.salary.get('to'))) or
+            (hasattr(v.salary, 'salary_from') and (v.salary.salary_from or v.salary.salary_to))
+        )]
 
     @staticmethod
     def sort_vacancies_by_salary(vacancies: List[Vacancy], reverse: bool = True) -> List[Vacancy]:
@@ -37,9 +40,19 @@ class VacancyOperations:
         """
 
         def get_sort_key(vacancy: Vacancy) -> int:
-            if vacancy.salary and hasattr(vacancy.salary, "get_max_salary"):
-                max_sal = vacancy.salary.get_max_salary()
-                return max_sal if max_sal is not None else 0
+            if vacancy.salary:
+                # Обработка нового формата (словарь)
+                if isinstance(vacancy.salary, dict):
+                    salary_from = vacancy.salary.get('from', 0) or 0
+                    salary_to = vacancy.salary.get('to', 0) or 0
+                    # Возвращаем максимальное из from/to или среднее
+                    if salary_from and salary_to:
+                        return max(salary_from, salary_to)
+                    return salary_from or salary_to
+                # Обработка старого формата (объект Salary)
+                elif hasattr(vacancy.salary, "get_max_salary"):
+                    max_sal = vacancy.salary.get_max_salary()
+                    return max_sal if max_sal is not None else 0
             return 0
 
         return sorted(vacancies, key=get_sort_key, reverse=reverse)
@@ -63,9 +76,13 @@ class VacancyOperations:
             if not vacancy.salary:
                 continue
 
-            # Получаем значения зарплаты
-            salary_from = vacancy.salary.salary_from
-            salary_to = vacancy.salary.salary_to
+            # Получаем значения зарплаты (поддержка нового и старого формата)
+            if isinstance(vacancy.salary, dict):
+                salary_from = vacancy.salary.get('from')
+                salary_to = vacancy.salary.get('to')
+            else:
+                salary_from = getattr(vacancy.salary, 'salary_from', None)
+                salary_to = getattr(vacancy.salary, 'salary_to', None)
 
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:
@@ -110,9 +127,13 @@ class VacancyOperations:
             if not vacancy.salary:
                 continue
 
-            # Получаем значения зарплаты
-            salary_from = vacancy.salary.salary_from
-            salary_to = vacancy.salary.salary_to
+            # Получаем значения зарплаты (поддержка нового и старого формата)
+            if isinstance(vacancy.salary, dict):
+                salary_from = vacancy.salary.get('from')
+                salary_to = vacancy.salary.get('to')
+            else:
+                salary_from = getattr(vacancy.salary, 'salary_from', None)
+                salary_to = getattr(vacancy.salary, 'salary_to', None)
 
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:
@@ -158,9 +179,13 @@ class VacancyOperations:
             if not vacancy.salary:
                 continue
 
-            # Получаем значения зарплаты
-            salary_from = vacancy.salary.salary_from
-            salary_to = vacancy.salary.salary_to
+            # Получаем значения зарплаты (поддержка нового и старого формата)
+            if isinstance(vacancy.salary, dict):
+                salary_from = vacancy.salary.get('from')
+                salary_to = vacancy.salary.get('to')
+            else:
+                salary_from = getattr(vacancy.salary, 'salary_from', None)
+                salary_to = getattr(vacancy.salary, 'salary_to', None)
 
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:

@@ -1,0 +1,167 @@
+{
+  "timestamp": 1757201102.6695175,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 1,
+      "only_with_salary": false,
+      "period": 3,
+      "text": "python",
+      "page": 0,
+      "employer_id": "15478"
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "124964192",
+        "premium": false,
+        "name": "Senior Python Developer",
+        "department": {
+          "id": "mailru-15478-tehdep",
+          "name": "VK, Технический департамент"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Ленинградский проспект",
+          "building": "39с79",
+          "lat": 55.796931,
+          "lng": 37.537847,
+          "description": null,
+          "raw": "Москва, Ленинградский проспект, 39с79",
+          "metro": {
+            "station_name": "Аэропорт",
+            "line_name": "Замоскворецкая",
+            "station_id": "2.12",
+            "line_id": "2",
+            "lat": 55.800441,
+            "lng": 37.530477
+          },
+          "metro_stations": [
+            {
+              "station_name": "Аэропорт",
+              "line_name": "Замоскворецкая",
+              "station_id": "2.12",
+              "line_id": "2",
+              "lat": 55.800441,
+              "lng": 37.530477
+            }
+          ],
+          "id": "1926935"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T22:22:19+0300",
+        "created_at": "2025-09-05T22:22:19+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124964192",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124964192?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124964192",
+        "relations": [],
+        "employer": {
+          "id": "15478",
+          "name": "VK",
+          "url": "https://api.hh.ru/employers/15478",
+          "alternate_url": "https://hh.ru/employer/15478",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1297111.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6808730.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6808731.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=15478",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт работы от 5 лет и уверенное владение: <highlighttext>Python</highlighttext>, PostgreSQL. Опыт взаимодействия с крупными операторскими сетями или сетями дата-центров...",
+          "responsibility": "Перед командой стоят задачи развития и масштабирования, повышения надёжности, разработки внутренних инструментов и онбординг новых проектов. Ключевая цель — стать самым..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 11,
+    "pages": 11,
+    "page": 0,
+    "per_page": 1,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&employer_id=15478&enable_snippets=true&items_on_page=1&search_period=3&text=python"
+  }
+}
