@@ -1,0 +1,56 @@
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7f2ba6f01910>
+vacancies = [{'id': 'error_test', 'title': 'Error Job'}]
+search_query = None
+
+    def add_vacancy_batch_optimized(
+        self, vacancies: Union[Vacancy, List[Vacancy]], search_query: str = None
+    ) -> List[str]:
+        """
+        Максимально оптимизированное batch-добавление вакансий через временные таблицы.
+        Использует SQL для всех операций, минимизирует количество запросов.
+        """
+        if not isinstance(vacancies, list):
+            vacancies = [vacancies]
+    
+        # Исправляем двойную вложенность списков
+        if len(vacancies) == 1 and isinstance(vacancies[0], list):
+            vacancies = vacancies[0]
+            logger.debug(f"Исправлена двойная вложенность списка: получено {len(vacancies)} вакансий")
+    
+        if not vacancies:
+            return []
+    
+        connection = self._get_connection()
+        update_messages: List[str] = []
+    
+        try:
+            cursor = connection.cursor()
+    
+            # Создаем временную таблицу с такой же структурой как основная таблица vacancies
+            cursor.execute(
+                """
+                CREATE TEMP TABLE temp_new_vacancies AS
+                SELECT * FROM vacancies WHERE 1=0
+            """
+            )
+    
+            # Получаем сопоставление компаний только по ID
+            cursor.execute(
+                """
+                SELECT id, name, hh_id, sj_id
+                FROM companies
+            """
+            )
+    
+            company_id_mapping = {}  # hh_id/sj_id -> company_id
+    
+            results = cursor.fetchall()
+>           for row in results:
+E           TypeError: 'Mock' object is not iterable
+
+src/storage/postgres_saver.py:373: TypeError
+========================= short test summary info ==========================
+FAILED tests/test_critical_missing_coverage.py::TestPostgresSaverCriticalCoverage::test_transaction_rollback - TypeError: 'Mock' object is not iterable
+======================= 1 failed, 29 passed in 0.63s =======================
+~/workspace$ 
