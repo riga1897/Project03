@@ -1,0 +1,107 @@
+~/workspace$ pytest tests/test_api_infrastructure_final.py -v
+============================== test session starts ==============================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0 -- /nix/store/2lcqw1d28vklbk8ikiwad28iq2smwndv-python-wrapped-0.1.0/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 23 items                                                              
+
+tests/test_api_infrastructure_final.py::TestHeadHunterAPICore::test_hh_api_get_vacancies_success PASSED [  4%]
+tests/test_api_infrastructure_final.py::TestHeadHunterAPICore::test_hh_api_error_handling PASSED [  8%]
+tests/test_api_infrastructure_final.py::TestHeadHunterAPICore::test_hh_api_rate_limiting PASSED [ 13%]
+tests/test_api_infrastructure_final.py::TestHeadHunterAPICore::test_hh_api_build_params PASSED [ 17%]
+tests/test_api_infrastructure_final.py::TestHeadHunterAPICore::test_hh_api_pagination PASSED [ 21%]
+tests/test_api_infrastructure_final.py::TestSuperJobAPICore::test_sj_api_with_auth_header PASSED [ 26%]
+tests/test_api_infrastructure_final.py::TestSuperJobAPICore::test_sj_api_authentication_error PASSED [ 30%]
+tests/test_api_infrastructure_final.py::TestSuperJobAPICore::test_sj_api_build_search_params PASSED [ 34%]
+tests/test_api_infrastructure_final.py::TestUnifiedAPICore::test_unified_api_aggregation PASSED [ 39%]
+tests/test_api_infrastructure_final.py::TestUnifiedAPICore::test_unified_api_error_resilience PASSED [ 43%]
+tests/test_api_infrastructure_final.py::TestUnifiedAPICore::test_unified_api_source_filtering PASSED [ 47%]
+tests/test_api_infrastructure_final.py::TestCachedAPICore::test_cached_api_cache_hit PASSED [ 52%]
+tests/test_api_infrastructure_final.py::TestCachedAPICore::test_cached_api_cache_miss PASSED [ 56%]
+tests/test_api_infrastructure_final.py::TestCachedAPICore::test_cached_api_cache_expiration PASSED [ 60%]
+tests/test_api_infrastructure_final.py::TestAPIConfigurationCore::test_hh_api_config PASSED [ 65%]
+tests/test_api_infrastructure_final.py::TestAPIConfigurationCore::test_sj_api_config PASSED [ 69%]
+tests/test_api_infrastructure_final.py::TestAPIConfigurationCore::test_api_config_environment_variables PASSED [ 73%]
+tests/test_api_infrastructure_final.py::TestAPIErrorHandlingCore::test_network_timeout_handling PASSED [ 78%]
+tests/test_api_infrastructure_final.py::TestAPIErrorHandlingCore::test_invalid_json_response_handling PASSED [ 82%]
+tests/test_api_infrastructure_final.py::TestAPIErrorHandlingCore::test_http_error_codes_handling PASSED [ 86%]
+tests/test_api_infrastructure_final.py::TestAPIPerformanceCore::test_api_request_batching FAILED [ 91%]
+tests/test_api_infrastructure_final.py::TestAPIPerformanceCore::test_api_concurrent_requests PASSED [ 95%]
+tests/test_api_infrastructure_final.py::TestAPIIntegrationCore::test_full_api_pipeline FAILED [100%]
+
+=================================== FAILURES ====================================
+_______________ TestAPIPerformanceCore.test_api_request_batching ________________
+
+self = <tests.test_api_infrastructure_final.TestAPIPerformanceCore object at 0x7fa804cbddd0>
+
+    def test_api_request_batching(self):
+        """Тест батчинга запросов"""
+        if UNIFIED_API_AVAILABLE:
+            unified_api = UnifiedAPI()
+    
+            # Мокируем множественные запросы
+            with patch('src.api_modules.hh_api.HeadHunterAPI.get_vacancies', return_value=[]) as mock_hh:
+                queries = ["python", "java", "javascript"]
+    
+                if hasattr(unified_api, 'get_vacancies_batch'):
+                    results = unified_api.get_vacancies_batch(queries)
+                    assert isinstance(results, dict)
+                else:
+                    # Если батчинг не поддерживается, тестируем последовательные запросы
+                    for query in queries:
+>                       result = unified_api.get_vacancies(query)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E                       AttributeError: 'UnifiedAPI' object has no attribute 'get_vacancies'
+
+tests/test_api_infrastructure_final.py:497: AttributeError
+------------------------------- Captured log call -------------------------------
+WARNING  src.api_modules.sj_api:sj_api.py:55 Используется тестовый API ключ SuperJob.                 Для полной функциональности добавьте реальный ключ                 в переменную окружения SUPERJOB_API_KEY
+_________________ TestAPIIntegrationCore.test_full_api_pipeline _________________
+
+self = <tests.test_api_infrastructure_final.TestAPIIntegrationCore object at 0x7fa804cbeb90>
+mock_get = <MagicMock name='get' id='140359599584080'>
+
+    @patch('requests.get')
+    def test_full_api_pipeline(self, mock_get):
+        """Тест полного пайплайна API"""
+        if not (HH_API_AVAILABLE and UNIFIED_API_AVAILABLE):
+            return
+    
+        # Мокируем весь пайплайн
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "items": [
+                {
+                    "id": "test123",
+                    "name": "Full Stack Developer",
+                    "alternate_url": "https://hh.ru/vacancy/test123",
+                    "employer": {"name": "Integration Corp"},
+                    "salary": {"from": 120000, "to": 180000, "currency": "RUR"},
+                    "snippet": {
+                        "requirement": "Python, Django",
+                        "responsibility": "Development"
+                    },
+                    "area": {"name": "Moscow"},
+                    "published_at": "2025-01-20T10:30:00+0300"
+                }
+            ],
+            "found": 1
+        }
+        mock_get.return_value = mock_response
+    
+        unified_api = UnifiedAPI()
+>       vacancies = unified_api.get_vacancies("python")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'UnifiedAPI' object has no attribute 'get_vacancies'
+
+tests/test_api_infrastructure_final.py:565: AttributeError
+------------------------------- Captured log call -------------------------------
+WARNING  src.api_modules.sj_api:sj_api.py:55 Используется тестовый API ключ SuperJob.                 Для полной функциональности добавьте реальный ключ                 в переменную окружения SUPERJOB_API_KEY
+============================ short test summary info ============================
+FAILED tests/test_api_infrastructure_final.py::TestAPIPerformanceCore::test_api_request_batching - AttributeError: 'UnifiedAPI' object has no attribute 'get_vacancies'
+FAILED tests/test_api_infrastructure_final.py::TestAPIIntegrationCore::test_full_api_pipeline - AttributeError: 'UnifiedAPI' object has no attribute 'get_vacancies'
+========================= 2 failed, 21 passed in 1.00s ==========================
+~/workspace$ 
