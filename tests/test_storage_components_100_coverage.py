@@ -25,6 +25,70 @@ class MockVacancy:
             setattr(self, key, value)
 
 
+class TestDatabaseConnectionImports:
+    """Тесты для покрытия import error блоков в database_connection.py"""
+    
+    def test_psycopg2_import_error(self):
+        """Тест обработки ImportError для psycopg2"""
+        # Мокируем отсутствие psycopg2 модуля при импорте
+        import sys
+        original_modules = sys.modules.copy()
+        
+        # Убираем psycopg2 из импортированных модулей если он есть
+        if 'psycopg2' in sys.modules:
+            del sys.modules['psycopg2']
+        
+        # Мокируем ImportError
+        import builtins
+        original_import = builtins.__import__
+        
+        def mock_import(name, *args, **kwargs):
+            if name == 'psycopg2':
+                raise ImportError("No module named 'psycopg2'")
+            return original_import(name, *args, **kwargs)
+        
+        builtins.__import__ = mock_import
+        
+        try:
+            # Заново импортируем модуль для покрытия строк 14-16
+            import importlib
+            import src.storage.components.database_connection
+            importlib.reload(src.storage.components.database_connection)
+            
+            # Проверяем что fallback работает
+            assert src.storage.components.database_connection.psycopg2 is None
+            assert src.storage.components.database_connection.PsycopgError == Exception
+        finally:
+            # Восстанавливаем оригинальную функцию импорта
+            builtins.__import__ = original_import
+            sys.modules.clear()
+            sys.modules.update(original_modules)
+
+    def test_realdict_cursor_import_error(self):
+        """Тест обработки ImportError для RealDictCursor"""
+        import sys
+        import builtins
+        
+        original_import = builtins.__import__
+        
+        def mock_import(name, *args, **kwargs):
+            if name == 'psycopg2.extras':
+                raise ImportError("Cannot import RealDictCursor")
+            return original_import(name, *args, **kwargs)
+        
+        builtins.__import__ = mock_import
+        
+        try:
+            import importlib
+            import src.storage.components.database_connection
+            importlib.reload(src.storage.components.database_connection)
+            
+            # Проверяем что fallback работает для строк 19-20
+            assert src.storage.components.database_connection.RealDictCursor is None
+        finally:
+            builtins.__import__ = original_import
+
+
 class TestDatabaseConnection:
     """100% покрытие DatabaseConnection"""
 
