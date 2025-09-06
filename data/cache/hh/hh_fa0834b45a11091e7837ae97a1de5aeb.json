@@ -1,0 +1,155 @@
+{
+  "timestamp": 1757171767.3582854,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 1,
+      "only_with_salary": false,
+      "period": 15,
+      "text": "query_0",
+      "page": 0
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "124971528",
+        "premium": false,
+        "name": "Frontend Developer (Middle/Middle+) — React / Next.js",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": true,
+        "area": {
+          "id": "29",
+          "name": "Махачкала",
+          "url": "https://api.hh.ru/areas/29"
+        },
+        "salary": {
+          "from": 100000,
+          "to": 150000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 100000,
+          "to": 150000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "MONTHLY",
+            "name": "Раз в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Махачкала",
+          "street": "улица Ермошкина",
+          "building": "17А",
+          "lat": 42.978601,
+          "lng": 47.506272,
+          "description": null,
+          "raw": "Махачкала, улица Ермошкина, 17А",
+          "metro": null,
+          "metro_stations": [],
+          "id": "14514642"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-06T14:00:35+0300",
+        "created_at": "2025-09-06T14:00:35+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124971528",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124971528?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124971528",
+        "relations": [],
+        "employer": {
+          "id": "10457584",
+          "name": "mediann.dev",
+          "url": "https://api.hh.ru/employers/10457584",
+          "alternate_url": "https://hh.ru/employer/10457584",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1187807.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6371650.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6371651.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=10457584",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Отличное знание TypeScript и Next.js. Уверенная работа с React-<highlighttext>query</highlighttext>. Опыт адаптивной/кроссбраузерной верстки. Понимание принципов построения REST API. ",
+          "responsibility": "Разработка frontend-части новых проектов на Next.js. Поддержка и развитие текущего функционала. Адаптивная верстка по макетам Figma. Оценка и планирование..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 687,
+    "pages": 687,
+    "page": 0,
+    "per_page": 1,
+    "clusters": null,
+    "arguments": null,
+    "fixes": {
+      "original": "query_0",
+      "fixed": "query"
+    },
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&enable_snippets=true&items_on_page=1&search_period=15&text=query"
+  }
+}

@@ -1,0 +1,348 @@
+~/workspace$ pytest tests/test_core_infrastructure_final.py  -v
+=========================== test session starts ============================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0 -- /nix/store/2lcqw1d28vklbk8ikiwad28iq2smwndv-python-wrapped-0.1.0/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 26 items                                                         
+
+tests/test_core_infrastructure_final.py::TestVacancyModelsCore::test_vacancy_creation_with_real_data PASSED [  3%]
+tests/test_core_infrastructure_final.py::TestVacancyModelsCore::test_vacancy_from_dict_construction PASSED [  7%]
+tests/test_core_infrastructure_final.py::TestVacancyModelsCore::test_employer_functionality FAILED [ 11%]
+tests/test_core_infrastructure_final.py::TestVacancyModelsCore::test_salary_calculations PASSED [ 15%]
+tests/test_core_infrastructure_final.py::TestDataNormalizersCore::test_normalize_area_data_coverage PASSED [ 19%]
+tests/test_core_infrastructure_final.py::TestDataNormalizersCore::test_normalize_text_functionality PASSED [ 23%]
+tests/test_core_infrastructure_final.py::TestEnvLoaderCore::test_env_loader_get_var PASSED [ 26%]
+tests/test_core_infrastructure_final.py::TestEnvLoaderCore::test_env_loader_load_dotenv PASSED [ 30%]
+tests/test_core_infrastructure_final.py::TestFileHandlerCore::test_file_handler_operations PASSED [ 34%]
+tests/test_core_infrastructure_final.py::TestFileHandlerCore::test_file_handler_write_operations PASSED [ 38%]
+tests/test_core_infrastructure_final.py::TestPostgresSaverCoreFixed::test_postgres_saver_with_real_vacancy FAILED [ 42%]
+tests/test_core_infrastructure_final.py::TestPostgresSaverCoreFixed::test_postgres_type_validation_fix FAILED [ 46%]
+tests/test_core_infrastructure_final.py::TestPostgresSaverCoreFixed::test_postgres_normalize_published_date PASSED [ 50%]
+tests/test_core_infrastructure_final.py::TestPostgresSaverCoreFixed::test_postgres_normalize_text_functionality PASSED [ 53%]
+tests/test_core_infrastructure_final.py::TestStorageIntegrationCore::test_database_connection_handling PASSED [ 57%]
+tests/test_core_infrastructure_final.py::TestStorageIntegrationCore::test_storage_error_handling PASSED [ 61%]
+tests/test_core_infrastructure_final.py::TestUtilsCoreFunctionality::test_menu_manager_functionality FAILED [ 65%]
+tests/test_core_infrastructure_final.py::TestUtilsCoreFunctionality::test_ui_helpers_core PASSED [ 69%]
+tests/test_core_infrastructure_final.py::TestUtilsCoreFunctionality::test_vacancy_stats_calculations PASSED [ 73%]
+tests/test_core_infrastructure_final.py::TestCacheCoreFunctionality::test_file_cache_core_operations FAILED [ 76%]
+tests/test_core_infrastructure_final.py::TestCacheCoreFunctionality::test_cache_error_handling FAILED [ 80%]
+tests/test_core_infrastructure_final.py::TestConfigurationCore::test_api_config_initialization PASSED [ 84%]
+tests/test_core_infrastructure_final.py::TestConfigurationCore::test_app_config_core PASSED [ 88%]
+tests/test_core_infrastructure_final.py::TestEdgeCasesCoreFinal::test_none_and_empty_data_handling FAILED [ 92%]
+tests/test_core_infrastructure_final.py::TestEdgeCasesCoreFinal::test_invalid_input_resilience PASSED [ 96%]
+tests/test_core_infrastructure_final.py::TestEdgeCasesCoreFinal::test_concurrent_operations_safety PASSED [100%]
+
+================================= FAILURES =================================
+____________ TestVacancyModelsCore.test_employer_functionality _____________
+
+self = <tests.test_core_infrastructure_final.TestVacancyModelsCore object at 0x7f19385bb050>
+
+    def test_employer_functionality(self):
+        """Тест функциональности Employer"""
+        if not VACANCY_MODELS_AVAILABLE:
+            return
+    
+        employer = Employer(name="Tech Corp", employer_id="emp123")
+        assert employer.name == "Tech Corp"
+>       assert employer.employer_id == "emp123"
+               ^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'Employer' object has no attribute 'employer_id'
+
+tests/test_core_infrastructure_final.py:105: AttributeError
+_____ TestPostgresSaverCoreFixed.test_postgres_saver_with_real_vacancy _____
+
+self = <tests.test_core_infrastructure_final.TestPostgresSaverCoreFixed object at 0x7f19385c2110>
+mock_connect = <MagicMock name='connect' id='139746295473616'>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7f19385cf3d0>
+real_vacancy_object = <src.vacancies.models.Vacancy object at 0x7f193855e750>
+
+    @patch('psycopg2.connect')
+    def test_postgres_saver_with_real_vacancy(self, mock_connect, postgres_saver, real_vacancy_object):
+        """Тест сохранения реального объекта вакансии"""
+        if not POSTGRES_SAVER_AVAILABLE or not VACANCY_MODELS_AVAILABLE:
+            return
+    
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_conn.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+        mock_conn.cursor.return_value.__exit__ = Mock(return_value=None)
+        mock_cursor.fetchall.return_value = []
+        mock_cursor.rowcount = 1
+        mock_connect.return_value = mock_conn
+    
+        with patch.object(postgres_saver, '_get_connection', return_value=mock_conn):
+            # Тестируем с реальным объектом Vacancy
+>           result = postgres_saver.save_vacancies([real_vacancy_object])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_core_infrastructure_final.py:301: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/storage/postgres_saver.py:707: in save_vacancies
+    update_messages = self.add_vacancy_batch_optimized(vacancies)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7f19385cf3d0>
+vacancies = [<src.vacancies.models.Vacancy object at 0x7f193855e750>]
+search_query = None
+
+    def add_vacancy_batch_optimized(
+        self, vacancies: Union[Vacancy, List[Vacancy]], search_query: str = None
+    ) -> List[str]:
+        """
+        Максимально оптимизированное batch-добавление вакансий через временные таблицы.
+        Использует SQL для всех операций, минимизирует количество запросов.
+        """
+        if not isinstance(vacancies, list):
+            vacancies = [vacancies]
+    
+        # Исправляем двойную вложенность списков
+        if len(vacancies) == 1 and isinstance(vacancies[0], list):
+            vacancies = vacancies[0]
+            logger.debug(f"Исправлена двойная вложенность списка: получено {len(vacancies)} вакансий")
+    
+        if not vacancies:
+            return []
+    
+        connection = self._get_connection()
+        update_messages: List[str] = []
+    
+        try:
+            cursor = connection.cursor()
+    
+            # Создаем временную таблицу с такой же структурой как основная таблица vacancies
+            cursor.execute(
+                """
+                CREATE TEMP TABLE temp_new_vacancies AS
+                SELECT * FROM vacancies WHERE 1=0
+            """
+            )
+    
+            # Получаем сопоставление компаний только по ID
+            cursor.execute(
+                """
+                SELECT id, name, hh_id, sj_id
+                FROM companies
+            """
+            )
+    
+            company_id_mapping = {}  # hh_id/sj_id -> company_id
+    
+            results = cursor.fetchall()
+>           for row in results:
+E           TypeError: 'Mock' object is not iterable
+
+src/storage/postgres_saver.py:373: TypeError
+_______ TestPostgresSaverCoreFixed.test_postgres_type_validation_fix _______
+
+self = <tests.test_core_infrastructure_final.TestPostgresSaverCoreFixed object at 0x7f19385c2490>
+mock_connect = <MagicMock name='connect' id='139746295434960'>
+postgres_saver = <src.storage.postgres_saver.PostgresSaver object at 0x7f1938711d90>
+
+    @patch('psycopg2.connect')
+    def test_postgres_type_validation_fix(self, mock_connect, postgres_saver):
+        """Тест исправления валидации типов"""
+        if not POSTGRES_SAVER_AVAILABLE:
+            return
+    
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_conn.cursor.return_value.__enter__ = Mock(return_value=mock_cursor)
+        mock_conn.cursor.return_value.__exit__ = Mock(return_value=None)
+        mock_cursor.fetchall.return_value = []
+        mock_cursor.rowcount = 0
+        mock_connect.return_value = mock_conn
+    
+        # Тест с невалидными данными (словари вместо объектов Vacancy)
+        invalid_data = [
+            {"id": "1", "title": "Job 1", "company_name": "Company 1"},
+            {"id": "2", "title": "Job 2", "company_name": "Company 2"}
+        ]
+    
+        with patch.object(postgres_saver, '_get_connection', return_value=mock_conn):
+            # Метод должен корректно обрабатывать невалидные типы
+>           result = postgres_saver.save_vacancies(invalid_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_core_infrastructure_final.py:326: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/storage/postgres_saver.py:707: in save_vacancies
+    update_messages = self.add_vacancy_batch_optimized(vacancies)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.storage.postgres_saver.PostgresSaver object at 0x7f1938711d90>
+vacancies = [{'company_name': 'Company 1', 'id': '1', 'title': 'Job 1'}, {'company_name': 'Company 2', 'id': '2', 'title': 'Job 2'}]
+search_query = None
+
+    def add_vacancy_batch_optimized(
+        self, vacancies: Union[Vacancy, List[Vacancy]], search_query: str = None
+    ) -> List[str]:
+        """
+        Максимально оптимизированное batch-добавление вакансий через временные таблицы.
+        Использует SQL для всех операций, минимизирует количество запросов.
+        """
+        if not isinstance(vacancies, list):
+            vacancies = [vacancies]
+    
+        # Исправляем двойную вложенность списков
+        if len(vacancies) == 1 and isinstance(vacancies[0], list):
+            vacancies = vacancies[0]
+            logger.debug(f"Исправлена двойная вложенность списка: получено {len(vacancies)} вакансий")
+    
+        if not vacancies:
+            return []
+    
+        connection = self._get_connection()
+        update_messages: List[str] = []
+    
+        try:
+            cursor = connection.cursor()
+    
+            # Создаем временную таблицу с такой же структурой как основная таблица vacancies
+            cursor.execute(
+                """
+                CREATE TEMP TABLE temp_new_vacancies AS
+                SELECT * FROM vacancies WHERE 1=0
+            """
+            )
+    
+            # Получаем сопоставление компаний только по ID
+            cursor.execute(
+                """
+                SELECT id, name, hh_id, sj_id
+                FROM companies
+            """
+            )
+    
+            company_id_mapping = {}  # hh_id/sj_id -> company_id
+    
+            results = cursor.fetchall()
+>           for row in results:
+E           TypeError: 'Mock' object is not iterable
+
+src/storage/postgres_saver.py:373: TypeError
+________ TestUtilsCoreFunctionality.test_menu_manager_functionality ________
+
+self = <tests.test_core_infrastructure_final.TestUtilsCoreFunctionality object at 0x7f19385cc150>
+
+    def test_menu_manager_functionality(self):
+        """Тест функциональности менеджера меню"""
+        try:
+            from src.utils.menu_manager import MenuManager
+    
+            menu_manager = MenuManager()
+    
+            if hasattr(menu_manager, 'display_menu'):
+                with patch('builtins.print'):
+                    menu_items = ['Option 1', 'Option 2', 'Exit']
+>                   menu_manager.display_menu(menu_items)
+E                   TypeError: MenuManager.display_menu() takes 1 positional argument but 2 were given
+
+tests/test_core_infrastructure_final.py:428: TypeError
+________ TestCacheCoreFunctionality.test_file_cache_core_operations ________
+
+self = <tests.test_core_infrastructure_final.TestCacheCoreFunctionality object at 0x7f19385cd510>
+
+    def test_file_cache_core_operations(self):
+        """Тест основных операций файлового кэша"""
+        try:
+            from src.utils.cache import FileCache
+    
+            with tempfile.TemporaryDirectory() as temp_dir:
+                cache = FileCache(cache_dir=temp_dir)
+    
+                test_data = {"test": "data", "items": [1, 2, 3]}
+                test_params = {"query": "python", "page": 1}
+    
+                # Тест сохранения
+                cache.save_response("test_source", test_params, test_data)
+    
+                # Тест загрузки
+                loaded_data = cache.load_response("test_source", test_params)
+    
+                # Тест валидации
+>               is_valid = cache.is_valid_response(test_data)
+                           ^^^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'FileCache' object has no attribute 'is_valid_response'
+
+tests/test_core_infrastructure_final.py:498: AttributeError
+___________ TestCacheCoreFunctionality.test_cache_error_handling ___________
+
+self = PosixPath('/invalid/path'), mode = 511, parents = True
+exist_ok = True
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/invalid/path'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/pathlib.py:1116: FileNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_core_infrastructure_final.TestCacheCoreFunctionality object at 0x7f19385cdb10>
+
+    def test_cache_error_handling(self):
+        """Тест обработки ошибок кэша"""
+        try:
+            from src.utils.cache import FileCache
+    
+            # Тест с недоступной директорией
+>           cache = FileCache(cache_dir="/invalid/path")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_core_infrastructure_final.py:513: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/utils/cache.py:17: in __init__
+    self._ensure_dir_exists()
+src/utils/cache.py:21: in _ensure_dir_exists
+    self.cache_dir.mkdir(parents=True, exist_ok=True)
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/pathlib.py:1120: in mkdir
+    self.parent.mkdir(parents=True, exist_ok=True)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/invalid'), mode = 511, parents = True, exist_ok = True
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           OSError: [Errno 30] Read-only file system: '/invalid'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/pathlib.py:1116: OSError
+_________ TestEdgeCasesCoreFinal.test_none_and_empty_data_handling _________
+
+self = <tests.test_core_infrastructure_final.TestEdgeCasesCoreFinal object at 0x7f19385cf110>
+
+    def test_none_and_empty_data_handling(self):
+        """Тест обработки None и пустых данных"""
+        test_modules = [
+            ('src.utils.data_normalizers', 'normalize_area_data'),
+            ('src.utils.file_handlers', 'FileHandler'),
+            ('src.utils.cache', 'FileCache')
+        ]
+    
+        for module_name, class_or_func_name in test_modules:
+            try:
+                module = __import__(module_name, fromlist=[class_or_func_name])
+>               target = getattr(module, class_or_func_name)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: module 'src.utils.file_handlers' has no attribute 'FileHandler'
+
+tests/test_core_infrastructure_final.py:577: AttributeError
+========================= short test summary info ==========================
+FAILED tests/test_core_infrastructure_final.py::TestVacancyModelsCore::test_employer_functionality - AttributeError: 'Employer' object has no attribute 'employer_id'
+FAILED tests/test_core_infrastructure_final.py::TestPostgresSaverCoreFixed::test_postgres_saver_with_real_vacancy - TypeError: 'Mock' object is not iterable
+FAILED tests/test_core_infrastructure_final.py::TestPostgresSaverCoreFixed::test_postgres_type_validation_fix - TypeError: 'Mock' object is not iterable
+FAILED tests/test_core_infrastructure_final.py::TestUtilsCoreFunctionality::test_menu_manager_functionality - TypeError: MenuManager.display_menu() takes 1 positional argument but 2...
+FAILED tests/test_core_infrastructure_final.py::TestCacheCoreFunctionality::test_file_cache_core_operations - AttributeError: 'FileCache' object has no attribute 'is_valid_response'
+FAILED tests/test_core_infrastructure_final.py::TestCacheCoreFunctionality::test_cache_error_handling - OSError: [Errno 30] Read-only file system: '/invalid'
+FAILED tests/test_core_infrastructure_final.py::TestEdgeCasesCoreFinal::test_none_and_empty_data_handling - AttributeError: module 'src.utils.file_handlers' has no attribute 'File...

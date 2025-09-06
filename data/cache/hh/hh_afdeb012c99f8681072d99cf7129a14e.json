@@ -1,0 +1,142 @@
+{
+  "timestamp": 1757171794.5298145,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 50,
+      "only_with_salary": false,
+      "period": 15,
+      "text": "query_1",
+      "page": 6
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "124962542",
+        "premium": false,
+        "name": "Финансовый менеджер",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "3-й проезд Перова Поля",
+          "building": "3А",
+          "lat": 55.753767,
+          "lng": 37.773798,
+          "description": null,
+          "raw": "Москва, 3-й проезд Перова Поля, 3А",
+          "metro": null,
+          "metro_stations": [],
+          "id": "14680580"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-05T18:18:45+0300",
+        "created_at": "2025-09-05T18:18:45+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124962542",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124962542?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124962542",
+        "relations": [],
+        "employer": {
+          "id": "3344320",
+          "name": "АПТЕКИ ВАША № 1",
+          "url": "https://api.hh.ru/employers/3344320",
+          "alternate_url": "https://hh.ru/employer/3344320",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1429298.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7336841.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7336842.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3344320",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Высшее экономическое/финансовое образование. Продвинутый Excel: сводные таблицы, Power <highlighttext>Query</highlighttext>/Power Pivot, массивы, сложные формулы. 1С на уровне уверенного...",
+          "responsibility": "ЗАДАЧИ И ЗОНА ОТВЕТСТВЕННОСТИ: Ежемесячное закрытие управленческой отчётности: P&L, BS, CF; контроль полноты и корректности. Согласование платежей: проверка обоснованности..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "137",
+            "name": "Финансовый менеджер"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 688,
+    "pages": 14,
+    "page": 6,
+    "per_page": 50,
+    "clusters": null,
+    "arguments": null,
+    "fixes": {
+      "original": "query_1",
+      "fixed": "query"
+    },
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&enable_snippets=true&items_on_page=50&page=6&search_period=15&text=query"
+  }
+}
