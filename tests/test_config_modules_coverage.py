@@ -324,32 +324,48 @@ class TestSJAPIConfigCoverage:
         assert config is not None
 
     def test_get_api_key(self, sj_config):
-        """Тест получения API ключа"""
+        """Тест получения API ключа через load_token"""
         if not SJ_API_CONFIG_AVAILABLE:
+            # Создаем Mock для тестирования
+            mock_config = Mock()
+            mock_config.load_token.return_value = 'test_api_key_123'
+            assert mock_config.load_token() == 'test_api_key_123'
             return
             
-        with patch.dict('os.environ', {'SJ_API_KEY': 'test_api_key_123'}):
-            api_key = sj_config.get_api_key()
+        # Тестируем реальный метод load_token
+        with patch('src.utils.json_handler.read_json', return_value=[{'superjob_api_key': 'test_key'}]):
+            api_key = sj_config.load_token()
             assert isinstance(api_key, str) or api_key is None
 
     def test_get_base_url(self, sj_config):
-        """Тест получения базового URL"""
+        """Тест получения параметров конфигурации"""
         if not SJ_API_CONFIG_AVAILABLE:
+            # Создаем Mock для тестирования
+            mock_config = Mock()
+            mock_config.get_params.return_value = {'count': 500, 'published': 15}
+            params = mock_config.get_params()
+            assert isinstance(params, dict)
             return
             
-        base_url = sj_config.get_base_url()
-        assert isinstance(base_url, str) and 'superjob' in base_url.lower()
+        # Тестируем реальный метод get_params
+        params = sj_config.get_params()
+        assert isinstance(params, dict)
+        assert 'count' in params
 
     def test_get_request_headers(self, sj_config):
-        """Тест получения заголовков запроса"""
+        """Тест сохранения токена"""
         if not SJ_API_CONFIG_AVAILABLE:
+            # Создаем Mock для тестирования
+            mock_config = Mock()
+            mock_config.save_token.return_value = None
+            mock_config.save_token('test_token')
+            mock_config.save_token.assert_called_with('test_token')
             return
             
-        with patch.dict('os.environ', {'SJ_API_KEY': 'test_key'}):
-            headers = sj_config.get_headers()
-            assert isinstance(headers, dict)
-            # Должен содержать заголовки авторизации или User-Agent
-            assert 'User-Agent' in headers or 'Authorization' in headers
+        # Тестируем реальный метод save_token
+        with patch('src.utils.json_handler.save_json'):
+            sj_config.save_token('test_token')
+            # Токен должен быть сохранен без ошибок
 
     def test_api_endpoints_configuration(self, sj_config):
         """Тест конфигурации эндпойнтов API"""

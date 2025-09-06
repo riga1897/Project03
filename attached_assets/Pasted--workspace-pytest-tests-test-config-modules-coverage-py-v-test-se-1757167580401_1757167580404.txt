@@ -1,0 +1,251 @@
+~/workspace$ pytest tests/test_config_modules_coverage.py -v
+============================== test session starts ==============================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0 -- /nix/store/2lcqw1d28vklbk8ikiwad28iq2smwndv-python-wrapped-0.1.0/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 32 items                                                              
+
+tests/test_config_modules_coverage.py::TestDatabaseConfigCoverage::test_database_config_initialization PASSED [  3%]
+tests/test_config_modules_coverage.py::TestDatabaseConfigCoverage::test_get_connection_params PASSED [  6%]
+tests/test_config_modules_coverage.py::TestDatabaseConfigCoverage::test_parse_database_url PASSED [  9%]
+tests/test_config_modules_coverage.py::TestDatabaseConfigCoverage::test_validate_connection_parameters PASSED [ 12%]
+tests/test_config_modules_coverage.py::TestDatabaseConfigCoverage::test_connection_string_formats PASSED [ 15%]
+tests/test_config_modules_coverage.py::TestDatabaseConfigCoverage::test_environment_variables_priority PASSED [ 18%]
+tests/test_config_modules_coverage.py::TestDatabaseConfigCoverage::test_ssl_configuration PASSED [ 21%]
+tests/test_config_modules_coverage.py::TestDatabaseConfigCoverage::test_connection_pooling_settings PASSED [ 25%]
+tests/test_config_modules_coverage.py::TestDatabaseConfigCoverage::test_error_handling_invalid_config PASSED [ 28%]
+tests/test_config_modules_coverage.py::TestTargetCompaniesCoverage::test_target_companies_initialization PASSED [ 31%]
+tests/test_config_modules_coverage.py::TestTargetCompaniesCoverage::test_get_all_companies PASSED [ 34%]
+tests/test_config_modules_coverage.py::TestTargetCompaniesCoverage::test_get_hh_company_ids PASSED [ 37%]
+tests/test_config_modules_coverage.py::TestTargetCompaniesCoverage::test_get_sj_company_ids PASSED [ 40%]
+tests/test_config_modules_coverage.py::TestTargetCompaniesCoverage::test_company_mapping_consistency PASSED [ 43%]
+tests/test_config_modules_coverage.py::TestTargetCompaniesCoverage::test_company_filtering_by_source PASSED [ 46%]
+tests/test_config_modules_coverage.py::TestTargetCompaniesCoverage::test_company_name_resolution PASSED [ 50%]
+tests/test_config_modules_coverage.py::TestTargetCompaniesCoverage::test_dynamic_company_loading PASSED [ 53%]
+tests/test_config_modules_coverage.py::TestTargetCompaniesCoverage::test_company_validation PASSED [ 56%]
+tests/test_config_modules_coverage.py::TestSJAPIConfigCoverage::test_sj_api_config_initialization PASSED [ 59%]
+tests/test_config_modules_coverage.py::TestSJAPIConfigCoverage::test_get_api_key FAILED [ 62%]
+tests/test_config_modules_coverage.py::TestSJAPIConfigCoverage::test_get_base_url PASSED [ 65%]
+tests/test_config_modules_coverage.py::TestSJAPIConfigCoverage::test_get_request_headers FAILED [ 68%]
+tests/test_config_modules_coverage.py::TestSJAPIConfigCoverage::test_api_endpoints_configuration PASSED [ 71%]
+tests/test_config_modules_coverage.py::TestSJAPIConfigCoverage::test_request_limits_configuration PASSED [ 75%]
+tests/test_config_modules_coverage.py::TestSJAPIConfigCoverage::test_authentication_validation PASSED [ 78%]
+tests/test_config_modules_coverage.py::TestSJAPIConfigCoverage::test_error_handling_missing_credentials PASSED [ 81%]
+tests/test_config_modules_coverage.py::TestUIConfigCoverage::test_ui_config_initialization PASSED [ 84%]
+tests/test_config_modules_coverage.py::TestUIConfigCoverage::test_get_menu_options PASSED [ 87%]
+tests/test_config_modules_coverage.py::TestUIConfigCoverage::test_get_display_settings PASSED [ 90%]
+tests/test_config_modules_coverage.py::TestUIConfigCoverage::test_pagination_configuration PASSED [ 93%]
+tests/test_config_modules_coverage.py::TestUIConfigCoverage::test_color_theme_settings PASSED [ 96%]
+tests/test_config_modules_coverage.py::TestUIConfigCoverage::test_language_localization PASSED [100%]
+
+=================================== FAILURES ====================================
+___________________ TestSJAPIConfigCoverage.test_get_api_key ____________________
+
+self = <tests.test_config_modules_coverage.TestSJAPIConfigCoverage object at 0x7fc1c192d4d0>
+sj_config = SJAPIConfig(count=500, published=15, only_with_salary=False, custom_params=None)
+
+    def test_get_api_key(self, sj_config):
+        """Тест получения API ключа через load_token"""
+        if not SJ_API_CONFIG_AVAILABLE:
+            # Создаем Mock для тестирования
+            mock_config = Mock()
+            mock_config.load_token.return_value = 'test_api_key_123'
+            assert mock_config.load_token() == 'test_api_key_123'
+            return
+    
+        # Тестируем реальный метод load_token
+>       with patch('src.utils.json_handler.read_json', return_value=[{'superjob_api_key': 'test_key'}]):
+
+tests/test_config_modules_coverage.py:336: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1430: in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'src.utils.json_handler'
+
+    def resolve_name(name):
+        """
+        Resolve a name to an object.
+    
+        It is expected that `name` will be a string in one of the following
+        formats, where W is shorthand for a valid Python identifier and dot stands
+        for a literal period in these pseudo-regexes:
+    
+        W(.W)*
+        W(.W)*:(W(.W)*)?
+    
+        The first form is intended for backward compatibility only. It assumes that
+        some part of the dotted name is a package, and the rest is an object
+        somewhere within that package, possibly nested inside other objects.
+        Because the place where the package stops and the object hierarchy starts
+        can't be inferred by inspection, repeated attempts to import must be done
+        with this form.
+    
+        In the second form, the caller makes the division point clear through the
+        provision of a single colon: the dotted name to the left of the colon is a
+        package to be imported, and the dotted name to the right is the object
+        hierarchy within that package. Only one import is needed in this form. If
+        it ends with the colon, then a module object is returned.
+    
+        The function will return an object (which might be a module), or raise one
+        of the following exceptions:
+    
+        ValueError - if `name` isn't in a recognised format
+        ImportError - if an import failed when it shouldn't have
+        AttributeError - if a failure occurred when traversing the object hierarchy
+                         within the imported package to get to the desired object.
+        """
+        global _NAME_PATTERN
+        if _NAME_PATTERN is None:
+            # Lazy import to speedup Python startup time
+            import re
+            dotted_words = r'(?!\d)(\w+)(\.(?!\d)(\w+))*'
+            _NAME_PATTERN = re.compile(f'^(?P<pkg>{dotted_words})'
+                                       f'(?P<cln>:(?P<obj>{dotted_words})?)?$',
+                                       re.UNICODE)
+    
+        m = _NAME_PATTERN.match(name)
+        if not m:
+            raise ValueError(f'invalid format: {name!r}')
+        gd = m.groupdict()
+        if gd.get('cln'):
+            # there is a colon - a one-step import is all that's needed
+            mod = importlib.import_module(gd['pkg'])
+            parts = gd.get('obj')
+            parts = parts.split('.') if parts else []
+        else:
+            # no colon - have to iterate to find the package boundary
+            parts = name.split('.')
+            modname = parts.pop(0)
+            # first part *must* be a module/package.
+            mod = importlib.import_module(modname)
+            while parts:
+                p = parts[0]
+                s = f'{modname}.{p}'
+                try:
+                    mod = importlib.import_module(s)
+                    parts.pop(0)
+                    modname = s
+                except ImportError:
+                    break
+        # if we reach this point, mod is the module, already imported, and
+        # parts is the list of parts in the object hierarchy to be traversed, or
+        # an empty list if just the module is wanted.
+        result = mod
+        for p in parts:
+>           result = getattr(result, p)
+                     ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'src.utils' has no attribute 'json_handler'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/pkgutil.py:715: AttributeError
+_______________ TestSJAPIConfigCoverage.test_get_request_headers ________________
+
+self = <tests.test_config_modules_coverage.TestSJAPIConfigCoverage object at 0x7fc1c192ef10>
+sj_config = SJAPIConfig(count=500, published=15, only_with_salary=False, custom_params=None)
+
+    def test_get_request_headers(self, sj_config):
+        """Тест сохранения токена"""
+        if not SJ_API_CONFIG_AVAILABLE:
+            # Создаем Mock для тестирования
+            mock_config = Mock()
+            mock_config.save_token.return_value = None
+            mock_config.save_token('test_token')
+            mock_config.save_token.assert_called_with('test_token')
+            return
+    
+        # Тестируем реальный метод save_token
+>       with patch('src.utils.json_handler.save_json'):
+
+tests/test_config_modules_coverage.py:366: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1430: in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'src.utils.json_handler'
+
+    def resolve_name(name):
+        """
+        Resolve a name to an object.
+    
+        It is expected that `name` will be a string in one of the following
+        formats, where W is shorthand for a valid Python identifier and dot stands
+        for a literal period in these pseudo-regexes:
+    
+        W(.W)*
+        W(.W)*:(W(.W)*)?
+    
+        The first form is intended for backward compatibility only. It assumes that
+        some part of the dotted name is a package, and the rest is an object
+        somewhere within that package, possibly nested inside other objects.
+        Because the place where the package stops and the object hierarchy starts
+        can't be inferred by inspection, repeated attempts to import must be done
+        with this form.
+    
+        In the second form, the caller makes the division point clear through the
+        provision of a single colon: the dotted name to the left of the colon is a
+        package to be imported, and the dotted name to the right is the object
+        hierarchy within that package. Only one import is needed in this form. If
+        it ends with the colon, then a module object is returned.
+    
+        The function will return an object (which might be a module), or raise one
+        of the following exceptions:
+    
+        ValueError - if `name` isn't in a recognised format
+        ImportError - if an import failed when it shouldn't have
+        AttributeError - if a failure occurred when traversing the object hierarchy
+                         within the imported package to get to the desired object.
+        """
+        global _NAME_PATTERN
+        if _NAME_PATTERN is None:
+            # Lazy import to speedup Python startup time
+            import re
+            dotted_words = r'(?!\d)(\w+)(\.(?!\d)(\w+))*'
+            _NAME_PATTERN = re.compile(f'^(?P<pkg>{dotted_words})'
+                                       f'(?P<cln>:(?P<obj>{dotted_words})?)?$',
+                                       re.UNICODE)
+    
+        m = _NAME_PATTERN.match(name)
+        if not m:
+            raise ValueError(f'invalid format: {name!r}')
+        gd = m.groupdict()
+        if gd.get('cln'):
+            # there is a colon - a one-step import is all that's needed
+            mod = importlib.import_module(gd['pkg'])
+            parts = gd.get('obj')
+            parts = parts.split('.') if parts else []
+        else:
+            # no colon - have to iterate to find the package boundary
+            parts = name.split('.')
+            modname = parts.pop(0)
+            # first part *must* be a module/package.
+            mod = importlib.import_module(modname)
+            while parts:
+                p = parts[0]
+                s = f'{modname}.{p}'
+                try:
+                    mod = importlib.import_module(s)
+                    parts.pop(0)
+                    modname = s
+                except ImportError:
+                    break
+        # if we reach this point, mod is the module, already imported, and
+        # parts is the list of parts in the object hierarchy to be traversed, or
+        # an empty list if just the module is wanted.
+        result = mod
+        for p in parts:
+>           result = getattr(result, p)
+                     ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'src.utils' has no attribute 'json_handler'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/pkgutil.py:715: AttributeError
+============================ short test summary info ============================
+FAILED tests/test_config_modules_coverage.py::TestSJAPIConfigCoverage::test_get_api_key - AttributeError: module 'src.utils' has no attribute 'json_handler'
+FAILED tests/test_config_modules_coverage.py::TestSJAPIConfigCoverage::test_get_request_headers - AttributeError: module 'src.utils' has no attribute 'json_handler'
+========================= 2 failed, 30 passed in 0.43s ==========================
+~/workspace$ 
