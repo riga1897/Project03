@@ -931,10 +931,10 @@ class PostgresSaver(AbstractVacancyStorage):
                                 "name": row["name"],  # Теперь используем правильное поле name
                                 "url": row["url"] or "",  # Теперь url обязательное поле
                                 "salary": salary_dict,
-                                "snippet": {
-                                    "requirement": row["requirements"] or "",
-                                    "responsibility": row["responsibilities"] or "",
-                                },
+                                # ИСПРАВЛЕНО: Используем прямые поля из БД, а не snippet
+                                "requirements": row["requirements"] or "",
+                                "responsibilities": row["responsibilities"] or "",
+                                "description": row["description"] or "",
                                 "employer": {"name": row["company_name"] or "Неизвестная компания"},
                                 "area": row["area"] or "",  # Теперь area - это строка, не объект
                                 "experience": {"name": row["experience"] or ""},
@@ -943,10 +943,6 @@ class PostgresSaver(AbstractVacancyStorage):
                                 "published_at": row["published_at"].isoformat() if row["published_at"] else None,
                                 "source": row["source"] or "database",
                             }
-
-                            # Добавляем description если есть
-                            if row["description"]:
-                                vacancy_data["description"] = row["description"]
 
                             vacancy = Vacancy.from_dict(vacancy_data)
                             vacancies.append(vacancy)
