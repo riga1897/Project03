@@ -15,11 +15,13 @@ def simple_cache(ttl: Optional[int] = None, max_size: int = 1000) -> Callable:
     """
 
     def decorator(func: Callable) -> Callable:
+        """Внутренняя функция-декоратор для кэширования."""
         cache: Dict[Tuple, Tuple[float, Any]] = {}
         access_times: Dict[Tuple, float] = {}  # Для LRU очистки
 
         @wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
+            """Обёртка для кэширования результатов функций в памяти."""
             # Получаем TTL из переменных окружения или используем переданное значение
             actual_ttl = ttl if ttl is not None else EnvLoader.get_env_var_int("CACHE_TTL", 3600)
             current_time = time.time()
@@ -93,6 +95,7 @@ def retry_on_failure(max_attempts: int = 3, delay: float = 1.0) -> Callable:
         """
         @wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
+            """Обёртка для повторных попыток при ошибках."""
             for attempt in range(max_attempts):
                 try:
                     return func(*args, **kwargs)
@@ -119,6 +122,7 @@ def time_execution(func: Callable) -> Callable:
 
     @wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
+        """Обёртка для измерения времени выполнения."""
         start_time = time.time()
         result = func(*args, **kwargs)
         end_time = time.time()
@@ -141,6 +145,7 @@ def log_errors(func: Callable) -> Callable:
 
     @wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
+        """Обёртка для обработки и логирования ошибок."""
         try:
             return func(*args, **kwargs)
         except Exception as e:
