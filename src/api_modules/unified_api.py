@@ -15,7 +15,12 @@ logger = logging.getLogger(__name__)
 class UnifiedAPI:
     """Унифицированный API для работы с несколькими источниками вакансий"""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Инициализация унифицированного API.
+        
+        Создает экземпляры HeadHunter и SuperJob API, а также настраивает
+        парсер и словарь источников для удобного доступа к API.
+        """
         self.hh_api = HeadHunterAPI()
         self.sj_api = SuperJobAPI()
         self.parser = SuperJobParser()
