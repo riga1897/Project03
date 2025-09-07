@@ -1,0 +1,94 @@
+~/workspace$ pytest tests/test_17_real_business_logic_coverage.py
+=================================== test session starts ====================================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 22 items                                                                         
+
+tests/test_17_real_business_logic_coverage.py ............F.FF......                 [100%]
+
+========================================= FAILURES =========================================
+_______ TestVacancyStorageServiceBusinessLogic.test_should_filter_by_salary_enabled ________
+
+self = <tests.test_17_real_business_logic_coverage.TestVacancyStorageServiceBusinessLogic object at 0x7fe95ed31dd0>
+mock_coordinator = <MagicMock name='VacancyProcessingCoordinator' id='140640291366032'>
+mock_db_manager = <MagicMock name='DBManager' id='140640291371792'>
+
+    @patch('src.storage.services.vacancy_storage_service.DBManager')
+    @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
+    def test_should_filter_by_salary_enabled(self, mock_coordinator, mock_db_manager):
+        """Покрытие проверки фильтра по зарплате (включен)"""
+        with patch.dict('os.environ', {'ENABLE_SALARY_FILTER': 'true'}):
+            service = ConcreteVacancyStorageService()
+            result = service._should_filter_by_salary()
+    
+>           assert result is True
+E           assert False is True
+
+tests/test_17_real_business_logic_coverage.py:256: AssertionError
+______ TestVacancyStorageServiceBusinessLogic.test_process_and_save_vacancies_success ______
+
+self = <tests.test_17_real_business_logic_coverage.TestVacancyStorageServiceBusinessLogic object at 0x7fe95ed32ad0>
+mock_coordinator = <MagicMock name='VacancyProcessingCoordinator' id='140640290642128'>
+mock_db_manager = <MagicMock name='DBManager' id='140640290637456'>
+mock_logger = <MagicMock name='logger' id='140640290646992'>
+
+    @patch('src.storage.services.vacancy_storage_service.logger')
+    @patch('src.storage.services.vacancy_storage_service.DBManager')
+    @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
+    def test_process_and_save_vacancies_success(self, mock_coordinator, mock_db_manager, mock_logger):
+        """Покрытие успешной обработки и сохранения вакансий"""
+        # Создаем тестовые данные
+        raw_vacancies = [
+            {"id": "1", "name": "Test Job", "employer": {"name": "Test Company"}}
+        ]
+    
+        # Мокаем зависимости
+        mock_coordinator_instance = Mock()
+        mock_coordinator_instance.process_and_save_raw_vacancy_data.return_value = ["vacancy1"]
+        mock_coordinator.return_value = mock_coordinator_instance
+    
+        service = ConcreteVacancyStorageService()
+    
+        # Мокаем внутренние методы
+        with patch.object(service, '_enrich_with_company_data') as mock_enrich:
+            mock_enrich.return_value = ["enriched_vacancy1"]
+    
+>           result = service.process_and_save_vacancies(raw_vacancies)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'ConcreteVacancyStorageService' object has no attribute 'process_and_save_vacancies'
+
+tests/test_17_real_business_logic_coverage.py:289: AttributeError
+_______ TestVacancyStorageServiceBusinessLogic.test_process_and_save_vacancies_error _______
+
+self = <tests.test_17_real_business_logic_coverage.TestVacancyStorageServiceBusinessLogic object at 0x7fe95ed33110>
+mock_coordinator = <MagicMock name='VacancyProcessingCoordinator' id='140640295079760'>
+mock_db_manager = <MagicMock name='DBManager' id='140640295084496'>
+mock_logger = <MagicMock name='logger' id='140640295006864'>
+
+    @patch('src.storage.services.vacancy_storage_service.logger')
+    @patch('src.storage.services.vacancy_storage_service.DBManager')
+    @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
+    def test_process_and_save_vacancies_error(self, mock_coordinator, mock_db_manager, mock_logger):
+        """Покрытие обработки ошибок при сохранении вакансий"""
+        raw_vacancies = [{"id": "1", "name": "Test Job"}]
+    
+        # Мокаем ошибку в координаторе
+        mock_coordinator_instance = Mock()
+        mock_coordinator_instance.process_and_save_raw_vacancy_data.side_effect = Exception("DB Error")
+        mock_coordinator.return_value = mock_coordinator_instance
+    
+        service = ConcreteVacancyStorageService()
+    
+>       result = service.process_and_save_vacancies(raw_vacancies)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ConcreteVacancyStorageService' object has no attribute 'process_and_save_vacancies'
+
+tests/test_17_real_business_logic_coverage.py:308: AttributeError
+================================= short test summary info ==================================
+FAILED tests/test_17_real_business_logic_coverage.py::TestVacancyStorageServiceBusinessLogic::test_should_filter_by_salary_enabled - assert False is True
+FAILED tests/test_17_real_business_logic_coverage.py::TestVacancyStorageServiceBusinessLogic::test_process_and_save_vacancies_success - AttributeError: 'ConcreteVacancyStorageService' object has no attribute 'process_and_sa...
+FAILED tests/test_17_real_business_logic_coverage.py::TestVacancyStorageServiceBusinessLogic::test_process_and_save_vacancies_error - AttributeError: 'ConcreteVacancyStorageService' object has no attribute 'process_and_sa...
+=============================== 3 failed, 19 passed in 0.56s ===============================
+~/workspace$ 
