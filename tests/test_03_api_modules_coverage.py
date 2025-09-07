@@ -99,9 +99,9 @@ class TestCachedAPI:
         """Покрытие инициализации кэша."""
         api = ConcreteCachedAPI("test_cache")
         
-        # mkdir может вызываться несколько раз для создания родительских директорий
+        # mkdir может вызываться несколько раз (для родительских директорий и самой директории)
         assert mock_mkdir.call_count >= 1
-        mock_file_cache.assert_called_once()
+        mock_file_cache.assert_called_once_with("test_cache")
 
     @patch('src.api_modules.cached_api.FileCache')
     @patch('pathlib.Path.mkdir')
@@ -109,8 +109,9 @@ class TestCachedAPI:
         """Покрытие кэшированного запроса."""
         api = ConcreteCachedAPI("test_cache")
         
-        # Тестируем метод через декоратор с простыми типами для кэша
-        result = api._cached_api_request("http://test.com", None, "test")
+        # Тестируем метод через декоратор, используя простые типы для кэш-ключа
+        # Передаем простые hashable параметры
+        result = api._cached_api_request("http://test.com", "test_params", "test")
         # Метод возвращает None если данных в кэше нет
         assert result is None
 

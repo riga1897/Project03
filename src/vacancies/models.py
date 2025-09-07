@@ -19,7 +19,7 @@ import uuid
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import BaseModel, Field, field_validator, model_validator, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from src.utils.salary import Salary
 
@@ -105,10 +105,7 @@ class Employer(BaseModel):
         """Dictionary-like access для обратной совместимости"""
         return getattr(self, key, default)
 
-    model_config = ConfigDict(
-        validate_assignment=True,
-        use_attribute_docstrings=True
-    )
+    model_config = ConfigDict(validate_assignment=True, use_attribute_docstrings=True)
 
 
 class Experience(BaseModel):
@@ -413,11 +410,7 @@ class Vacancy(BaseModel):
     def __repr__(self) -> str:
         return f"Vacancy(id='{self.id}', title='{self.title}')"
 
-    model_config = ConfigDict(
-        extra="ignore",
-        use_enum_values=True,
-        validate_assignment=True
-    )
+    model_config = ConfigDict(extra="ignore", use_enum_values=True, validate_assignment=True)
 
 
 # Фабричные методы для создания объектов из API
