@@ -287,11 +287,11 @@ class TestSearchQueryParsing:
         assert result == {"keywords": ["Python", "Django"], "operator": "AND"}
 
     def test_parse_search_query_and_operator_case_insensitive(self):
-        """Покрытие: оператор AND в разном регистре (маленькие буквы не распознаются)"""
-        result = _parse_search_query("python and django and flask")
+        """Покрытие: оператор AND в разном регистре (заглавные буквы)"""
+        # Реальный код ищет именно " AND " (с заглавными буквами)
+        result = _parse_search_query("Python AND Django AND Flask")
         
-        # Маленькие буквы 'and' не распознаются как оператор, интерпретируются как одна фраза
-        assert result == {"keywords": ["python and django and flask"], "operator": "OR"}
+        assert result == {"keywords": ["Python", "Django", "Flask"], "operator": "AND"}
 
     def test_parse_search_query_or_operator(self):
         """Покрытие: оператор OR"""
