@@ -346,6 +346,15 @@ class Vacancy(BaseModel):
         # Обрабатываем вложенные объекты
         processed_data = data.copy()
 
+        # ИСПРАВЛЕНО: Маппинг полей API на поля модели с учетом alias
+        # Маппим поля API на alias полей модели
+        if 'id' in processed_data:
+            processed_data['vacancy_id'] = processed_data.pop('id')
+        if 'name' in processed_data and 'title' not in processed_data:
+            processed_data['title'] = processed_data.pop('name')  
+        if 'alternate_url' in processed_data and 'url' not in processed_data:
+            processed_data['url'] = processed_data.pop('alternate_url')
+
         # Employer
         if 'employer' in processed_data and isinstance(processed_data['employer'], dict):
             processed_data['employer'] = Employer(**processed_data['employer'])
@@ -399,7 +408,7 @@ class VacancyFactory:
         schedule_data = data.get('schedule', {})
 
         return Vacancy(
-            id=str(data.get('id', str(uuid.uuid4()))),
+            vacancy_id=str(data.get('id', str(uuid.uuid4()))),
             name=data.get('name', ''),
             alternate_url=data.get('alternate_url', ''),
             employer=Employer(**employer_data) if employer_data else None,
@@ -428,7 +437,7 @@ class VacancyFactory:
             }
 
         return Vacancy(
-            id=str(data.get('id', str(uuid.uuid4()))),
+            vacancy_id=str(data.get('id', str(uuid.uuid4()))),
             name=data.get('profession', ''),
             alternate_url=data.get('link', ''),
             employer=Employer(
