@@ -371,17 +371,6 @@ class Vacancy(BaseModel):
 
     def __repr__(self) -> str:
         return f"Vacancy(id='{self.id}', title='{self.title}')"
-    
-    # Методы обратной совместимости для старого кода
-    @property 
-    def name(self) -> str:
-        """Обратная совместимость: возвращает title как name"""
-        return self.title
-    
-    @property
-    def vacancy_id(self) -> str:
-        """Обратная совместимость: возвращает id как vacancy_id"""
-        return self.id
 
     class Config:
         # Позволяем дополнительные поля для гибкости при миграции
