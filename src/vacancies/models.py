@@ -199,6 +199,7 @@ class Vacancy(BaseModel):
     """Основная модель вакансии с Pydantic валидацией"""
 
     # Основная информация
+    id: str = Field(alias="vacancy_id", description="Идентификатор вакансии")
     title: str = Field(alias="name", description="Название вакансии")
     url: str = Field(alias="alternate_url", description="Ссылка на вакансии")
 
@@ -366,10 +367,21 @@ class Vacancy(BaseModel):
     # Дополнительные методы для удобства
     def __str__(self) -> str:
         employer_name = self.employer.name if self.employer else "Не указан"
-        return f"{self.name} - {employer_name}"
+        return f"{self.title} - {employer_name}"
 
     def __repr__(self) -> str:
-        return f"Vacancy(id='{self.id}', name='{self.name}')"
+        return f"Vacancy(id='{self.id}', title='{self.title}')"
+    
+    # Методы обратной совместимости для старого кода
+    @property 
+    def name(self) -> str:
+        """Обратная совместимость: возвращает title как name"""
+        return self.title
+    
+    @property
+    def vacancy_id(self) -> str:
+        """Обратная совместимость: возвращает id как vacancy_id"""
+        return self.id
 
     class Config:
         # Позволяем дополнительные поля для гибкости при миграции
