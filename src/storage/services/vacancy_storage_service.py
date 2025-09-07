@@ -237,7 +237,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
 
         return None
 
-    def _log_salary_diagnostics(self, stage: str, vacancies: List[Vacancy]):
+    def _log_salary_diagnostics(self, stage: str, vacancies: List[Vacancy]) -> None:
         """
         Подробная диагностика зарплат на каждом этапе
         """
@@ -601,18 +601,18 @@ class VacancyStorageService(AbstractVacancyStorageService):
             return 0
 
     # Делегируем остальные методы к DBManager
-    def create_tables(self):
+    def create_tables(self) -> bool:
         """Создает таблицы"""
         return self.db_manager.create_tables()
 
-    def populate_companies_table(self):
+    def populate_companies_table(self) -> bool:
         """Заполняет таблицу компаний"""
         return self.db_manager.populate_companies_table()
 
-    def get_companies_and_vacancies_count(self):
+    def get_companies_and_vacancies_count(self) -> tuple[int, int]:
         """Получает статистику по компаниям"""
         return self.db_manager.get_companies_and_vacancies_count()
 
-    def check_connection(self):
+    def check_connection(self) -> bool:
         """Проверяет подключение к БД"""
         return self.db_manager.check_connection()

@@ -5,7 +5,7 @@
 
 import logging
 import os
-from typing import Optional
+from typing import Any, Optional
 
 try:
     import psycopg2
@@ -49,7 +49,7 @@ class DatabaseConnection:
             "password": os.getenv("PGPASSWORD", ""),
         }
 
-    def get_connection(self):
+    def get_connection(self) -> Any:
         """
         Получение подключения к базе данных
 
@@ -77,7 +77,7 @@ class DatabaseConnection:
         except (psycopg2.OperationalError, psycopg2.InterfaceError):
             return False
 
-    def _create_new_connection(self):
+    def _create_new_connection(self) -> None:
         """Создание нового подключения к базе данных"""
         try:
             self._connection = psycopg2.connect(**self._connection_params, cursor_factory=RealDictCursor)
@@ -88,7 +88,7 @@ class DatabaseConnection:
             logger.error(f"Ошибка подключения к базе данных: {e}")
             raise ConnectionError(f"Не удалось подключиться к базе данных: {e}")
 
-    def close_connection(self):
+    def close_connection(self) -> None:
         """Закрытие подключения к базе данных"""
         if self._connection:
             try:
@@ -99,10 +99,10 @@ class DatabaseConnection:
             finally:
                 self._connection = None
 
-    def __enter__(self):
+    def __enter__(self) -> Any:
         """Контекстный менеджер - вход"""
         return self.get_connection()
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         """Контекстный менеджер - выход"""
         self.close_connection()
