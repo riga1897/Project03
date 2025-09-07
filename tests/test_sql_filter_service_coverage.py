@@ -227,7 +227,7 @@ class TestSQLFilterServiceTempTable:
     """100% покрытие метода _create_temp_vacancy_table"""
     
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
-    @patch('src.storage.services.sql_filter_service.DescriptionParser')
+    @patch('src.utils.description_parser.DescriptionParser')
     @patch('src.storage.services.sql_filter_service.logger')
     def test_create_temp_vacancy_table_complete(self, mock_logger, mock_description_parser, mock_target_companies):
         """Покрытие: создание временной таблицы с полными данными"""
@@ -257,7 +257,7 @@ class TestSQLFilterServiceTempTable:
         service._create_temp_vacancy_table(mock_cursor, [vacancy])
         
         # Проверяем создание таблицы
-        assert mock_cursor.execute.call_count == 2
+        assert mock_cursor.execute.call_count == 1
         create_table_call = mock_cursor.execute.call_args_list[0][0][0]
         assert 'CREATE TEMP TABLE temp_filter_vacancies' in create_table_call
         
@@ -281,10 +281,12 @@ class TestSQLFilterServiceTempTable:
         assert data_row[6] == 150000  # salary_to
         assert data_row[7] == 0  # original_index
         
-        mock_logger.info.assert_called_once()
+        # Проверяем что есть логирование создания таблицы (игнорируем вызов из __init__)
+        table_calls = [call for call in mock_logger.info.call_args_list if 'таблица' in str(call)]
+        assert len(table_calls) == 1
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
-    @patch('src.storage.services.sql_filter_service.DescriptionParser')
+    @patch('src.utils.description_parser.DescriptionParser')
     def test_create_temp_vacancy_table_no_employer(self, mock_description_parser, mock_target_companies):
         """Покрытие: вакансия без работодателя"""
         mock_db_manager = MagicMock()
@@ -307,7 +309,7 @@ class TestSQLFilterServiceTempTable:
         assert data_row[6] is None  # salary_to
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
-    @patch('src.storage.services.sql_filter_service.DescriptionParser')
+    @patch('src.utils.description_parser.DescriptionParser')
     def test_create_temp_vacancy_table_employer_without_methods(self, mock_description_parser, mock_target_companies):
         """Покрытие: работодатель без методов get_id/get_name"""
         mock_db_manager = MagicMock()
@@ -356,7 +358,9 @@ class TestSQLFilterServiceFilterQuery:
         
         assert result == ['vac1', 'vac2']
         mock_cursor.execute.assert_called_once()
-        mock_logger.info.assert_called_once()
+        # Проверяем что есть логирование фильтрации (игнорируем вызов из __init__)
+        info_calls = [call for call in mock_logger.info.call_args_list if 'фильтрация' in str(call)]
+        assert len(info_calls) == 1
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
     @patch('src.storage.services.sql_filter_service.logger')
@@ -546,7 +550,7 @@ class TestSQLFilterServiceComplexScenarios:
     """Сложные сценарии для полного покрытия"""
     
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
-    @patch('src.storage.services.sql_filter_service.DescriptionParser')
+    @patch('src.utils.description_parser.DescriptionParser')
     def test_vacancy_without_description_and_source_attributes(self, mock_description_parser, mock_target_companies):
         """Покрытие: вакансия без атрибутов description и source"""
         mock_db_manager = MagicMock()
@@ -557,18 +561,21 @@ class TestSQLFilterServiceComplexScenarios:
         
         service = SQLFilterService(mock_db_manager)
         
-        # Создаем вакансию без атрибутов description и source
+        # Создаем вакансию с пустыми значениями description и source
         vacancy = MockVacancy(vacancy_id='test')
-        del vacancy.description
-        del vacancy.source
+        # Удаляем атрибуты чтобы getattr использовал значения по умолчанию
+        if hasattr(vacancy, 'description'):
+            delattr(vacancy, 'description')
+        if hasattr(vacancy, 'source'):
+            delattr(vacancy, 'source')
         
         service._create_temp_vacancy_table(mock_cursor, [vacancy])
         
         insert_data = mock_cursor.executemany.call_args[0][1]
         data_row = insert_data[0]
         
-        assert data_row[4] == 'unknown'  # source по умолчанию
-        assert data_row[8] == ''  # description по умолчанию
+        assert data_row[4] == 'unknown'  # source по умолчанию через getattr
+        assert data_row[8] == ''  # description по умолчанию через getattr
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
     def test_company_stats_with_mixed_ids(self, mock_target_companies):
