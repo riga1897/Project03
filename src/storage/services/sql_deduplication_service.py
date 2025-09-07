@@ -72,6 +72,9 @@ class SQLDeduplicationService(AbstractDeduplicationService):
                 title_normalized TEXT,
                 employer_normalized TEXT,
                 employer_id VARCHAR(50),
+                salary_normalized TEXT,
+                area_normalized TEXT,
+                source_priority INTEGER,
                 original_index INTEGER
             )
         """
@@ -107,14 +110,50 @@ class SQLDeduplicationService(AbstractDeduplicationService):
 
             employer_normalized = self._normalize_text(employer_name)
             
-            dedup_data.append((vacancy.vacancy_id, title_normalized, employer_normalized, employer_id, idx))
+            # Извлекаем и нормализуем зарплату
+            salary_normalized = "не_указана"
+            if vacancy.salary:
+                if isinstance(vacancy.salary, dict):
+                    salary_from = vacancy.salary.get("from") or 0
+                    salary_to = vacancy.salary.get("to") or 0
+                    currency = vacancy.salary.get("currency", "RUR")
+                    # Создаем ключ для группировки похожих зарплат
+                    if salary_from or salary_to:
+                        salary_normalized = f"{salary_from}-{salary_to}_{currency}"
+                else:
+                    salary_normalized = self._normalize_text(str(vacancy.salary))
+            
+            # Извлекаем и нормализуем город/регион
+            area_normalized = "не_указан"
+            if vacancy.area:
+                area_normalized = self._normalize_text(str(vacancy.area))
+            
+            # Определяем приоритет источника (HH = 1, SJ = 2, остальные = 3)
+            source = getattr(vacancy, "source", "").lower()
+            if "hh" in source:
+                source_priority = 1  # HH имеет высший приоритет
+            elif "sj" in source or "superjob" in source:
+                source_priority = 2  # SJ второй приоритет
+            else:
+                source_priority = 3  # Остальные источники
+            
+            dedup_data.append((
+                vacancy.vacancy_id, 
+                title_normalized, 
+                employer_normalized, 
+                employer_id, 
+                salary_normalized,
+                area_normalized,
+                source_priority,
+                idx
+            ))
 
         # Вставляем данные
         cursor.executemany(
             """
             INSERT INTO temp_deduplication 
-            (vacancy_id, title_normalized, employer_normalized, employer_id, original_index)
-            VALUES (%s, %s, %s, %s, %s)
+            (vacancy_id, title_normalized, employer_normalized, employer_id, salary_normalized, area_normalized, source_priority, original_index)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """,
             dedup_data,
         )
@@ -130,8 +169,8 @@ class SQLDeduplicationService(AbstractDeduplicationService):
                 vacancy_id,
                 original_index,
                 ROW_NUMBER() OVER (
-                    PARTITION BY title_normalized, employer_normalized, COALESCE(employer_id, 'unknown')
-                    ORDER BY original_index
+                    PARTITION BY title_normalized, employer_normalized, salary_normalized, area_normalized
+                    ORDER BY source_priority ASC, original_index ASC
                 ) as row_num
             FROM temp_deduplication
         )
