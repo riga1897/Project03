@@ -158,7 +158,7 @@ class SQLDeduplicationService(AbstractDeduplicationService):
             """
             INSERT INTO temp_deduplication 
             (vacancy_id, title_normalized, employer_normalized, employer_id, salary_normalized, area_normalized, source_priority, original_index)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """,
             dedup_data,
         )
