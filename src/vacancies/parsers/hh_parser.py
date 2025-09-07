@@ -62,9 +62,13 @@ class HHParser(BaseParser):
                             item["description"] = " ".join(desc_parts)
 
                 # ИСПРАВЛЕНО: Маппинг полей для совместимости с моделью Vacancy
-                # Преобразуем alternate_url в url для соответствия модели
+                # Преобразуем поля API в поля модели с учетом alias
                 if "alternate_url" in item:
                     item["url"] = item["alternate_url"]
+                if "id" in item:
+                    item["vacancy_id"] = item["id"]
+                if "name" in item:
+                    item["title"] = item["name"]
                 
                 # Создаем объект вакансии из данных API
                 vacancy = Vacancy.from_dict(item)
