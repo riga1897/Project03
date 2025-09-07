@@ -1,0 +1,281 @@
+~/workspace$ pytest tests/test_12_user_interface_coverage.py
+=================================== test session starts ====================================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 15 items                                                                         
+
+tests/test_12_user_interface_coverage.py ....FF..F.F..F.                             [100%]
+
+========================================= FAILURES =========================================
+___________________ TestUserInterface.test_main_populate_companies_error ___________________
+
+self = <tests.test_12_user_interface_coverage.TestUserInterface object at 0x7f6b35dbaf90>
+mock_logger = <MagicMock name='logger' id='140098437092816'>
+mock_db_manager_class = <MagicMock name='DBManager' id='140098437098640'>
+mock_logging_config = <MagicMock name='basicConfig' id='140098437104272'>
+
+    @patch('src.user_interface.logging.basicConfig')
+    @patch('src.storage.db_manager.DBManager')
+    @patch('src.user_interface.logger')
+    def test_main_populate_companies_error(self, mock_logger, mock_db_manager_class, mock_logging_config):
+        """Покрытие ошибки заполнения таблицы компаний."""
+        # Настраиваем мок для ошибки заполнения компаний
+        mock_db_manager = Mock()
+        mock_db_manager._ensure_database_exists.return_value = None
+        mock_db_manager.check_connection.return_value = True
+        mock_db_manager.create_tables.return_value = None
+        mock_db_manager.populate_companies_table.side_effect = Exception("Populate Error")
+        mock_db_manager_class.return_value = mock_db_manager
+    
+        # Выполняем функцию и ожидаем исключение
+>       with pytest.raises(Exception, match="Не удалось инициализировать структуру базы данных"):
+E       Failed: DID NOT RAISE <class 'Exception'>
+
+tests/test_12_user_interface_coverage.py:134: Failed
+----------------------------------- Captured stdout call -----------------------------------
+
+Критическая ошибка: Не удалось инициализировать структуру базы данных: Populate Error
+Программа не может работать без базы данных. Завершение работы.
+Проверьте:
+1. Настройки подключения в файле .env
+2. Что PostgreSQL сервер запущен и доступен
+3. Правильность параметров подключения
+_______________________ TestUserInterface.test_main_validation_error _______________________
+
+self = <tests.test_12_user_interface_coverage.TestUserInterface object at 0x7f6b35dbb5d0>
+mock_logger = <MagicMock name='logger' id='140098437062416'>
+mock_db_manager_class = <MagicMock name='DBManager' id='140098437056976'>
+mock_logging_config = <MagicMock name='basicConfig' id='140098437067856'>
+
+    @patch('src.user_interface.logging.basicConfig')
+    @patch('src.storage.db_manager.DBManager')
+    @patch('src.user_interface.logger')
+    def test_main_validation_error(self, mock_logger, mock_db_manager_class, mock_logging_config):
+        """Покрытие ошибки валидации инициализации БД."""
+        # Настраиваем мок для ошибки валидации
+        mock_db_manager = Mock()
+        mock_db_manager._ensure_database_exists.return_value = None
+        mock_db_manager.check_connection.return_value = True
+        mock_db_manager.create_tables.return_value = None
+        mock_db_manager.populate_companies_table.return_value = None
+        mock_db_manager.get_companies_and_vacancies_count.side_effect = Exception("Validation Error")
+        mock_db_manager_class.return_value = mock_db_manager
+    
+        # Выполняем функцию и ожидаем исключение
+>       with pytest.raises(Exception, match="База данных не была корректно инициализирована"):
+E       Failed: DID NOT RAISE <class 'Exception'>
+
+tests/test_12_user_interface_coverage.py:155: Failed
+----------------------------------- Captured stdout call -----------------------------------
+
+Критическая ошибка: База данных не была корректно инициализирована: Validation Error
+Обратитесь к разработчику для решения проблемы.
+_________________________ TestUserInterface.test_main_ui_run_error _________________________
+
+self = <tests.test_12_user_interface_coverage.TestUserInterface object at 0x7f6b35dcc8d0>
+mock_logger = <MagicMock name='logger' id='140098436878224'>
+mock_ui = <MagicMock name='UserInterface' id='140098436962256'>
+mock_storage_factory = <MagicMock name='StorageFactory' id='140098436962192'>
+mock_app_config = <MagicMock name='AppConfig' id='140098436968144'>
+mock_db_manager_class = <MagicMock name='DBManager' id='140098442010384'>
+mock_logging_config = <MagicMock name='basicConfig' id='140098442006928'>
+
+    @patch('src.user_interface.logging.basicConfig')
+    @patch('src.storage.db_manager.DBManager')
+    @patch('src.user_interface.AppConfig')
+    @patch('src.user_interface.StorageFactory')
+    @patch('src.user_interface.UserInterface')
+    @patch('src.user_interface.logger')
+    def test_main_ui_run_error(self, mock_logger, mock_ui, mock_storage_factory,
+                              mock_app_config, mock_db_manager_class, mock_logging_config):
+        """Покрытие ошибки запуска пользовательского интерфейса."""
+        # Настраиваем моки для успешного выполнения до запуска UI
+        mock_db_manager = Mock()
+        mock_db_manager._ensure_database_exists.return_value = None
+        mock_db_manager.check_connection.return_value = True
+        mock_db_manager.create_tables.return_value = None
+        mock_db_manager.populate_companies_table.return_value = None
+        mock_db_manager.get_companies_and_vacancies_count.return_value = [("Company1", 10)]
+        mock_db_manager_class.return_value = mock_db_manager
+    
+        mock_config = Mock()
+        mock_app_config.return_value = mock_config
+    
+        mock_storage = Mock()
+        mock_storage_factory.create_storage.return_value = mock_storage
+    
+        mock_ui_instance = Mock()
+        mock_ui_instance.run.side_effect = Exception("UI Run Error")
+        mock_ui.return_value = mock_ui_instance
+    
+        # Выполняем функцию и ожидаем исключение
+>       with pytest.raises(Exception, match="Ошибка при запуске интерфейса"):
+E       Failed: DID NOT RAISE <class 'Exception'>
+
+tests/test_12_user_interface_coverage.py:255: Failed
+----------------------------------- Captured stdout call -----------------------------------
+
+Критическая ошибка: UI Run Error
+Обратитесь к разработчику для решения проблемы.
+______________________ TestUserInterface.test_main_general_exception _______________________
+
+self = <tests.test_12_user_interface_coverage.TestUserInterface object at 0x7f6b35dcd5d0>
+mock_logger = <MagicMock name='logger' id='140098437110288'>
+mock_logging_config = <MagicMock name='basicConfig' id='140098437611216'>
+
+    @patch('src.user_interface.logging.basicConfig')
+    @patch('src.user_interface.logger')
+    def test_main_general_exception(self, mock_logger, mock_logging_config):
+        """Покрытие общего исключения в try-except блоке main()."""
+        # Мокаем чтобы вызвать общее исключение в начале функции
+        with patch('src.storage.db_manager.DBManager') as mock_db_manager:
+            mock_db_manager.side_effect = Exception("General Error")
+    
+            # Выполняем функцию и ожидаем исключение
+>           with pytest.raises(Exception, match="General Error"):
+E           Failed: DID NOT RAISE <class 'Exception'>
+
+tests/test_12_user_interface_coverage.py:277: Failed
+----------------------------------- Captured stdout call -----------------------------------
+
+Критическая ошибка: General Error
+Обратитесь к разработчику для решения проблемы.
+_________________ TestUserInterfaceIntegration.test_full_integration_flow __________________
+
+self = <MagicMock name='StorageFactory.create_storage' id='140098437726480'>
+args = (<Mock name='AppConfig()' id='140098441922832'>,), kwargs = {}
+expected = call(<Mock name='AppConfig()' id='140098441922832'>)
+actual = call(<Mock name='AppConfig().default_storage_type' id='140098437763216'>)
+_error_message = <function NonCallableMock.assert_called_with.<locals>._error_message at 0x7f6b35db62a0>
+cause = None
+
+    def assert_called_with(self, /, *args, **kwargs):
+        """assert that the last call was made with the specified arguments.
+    
+        Raises an AssertionError if the args and keyword args passed in are
+        different to the last call to the mock."""
+        if self.call_args is None:
+            expected = self._format_mock_call_signature(args, kwargs)
+            actual = 'not called.'
+            error_message = ('expected call not found.\nExpected: %s\n  Actual: %s'
+                    % (expected, actual))
+            raise AssertionError(error_message)
+    
+        def _error_message():
+            msg = self._format_mock_failure_message(args, kwargs)
+            return msg
+        expected = self._call_matcher(_Call((args, kwargs), two=True))
+        actual = self._call_matcher(self.call_args)
+        if actual != expected:
+            cause = expected if isinstance(expected, Exception) else None
+>           raise AssertionError(_error_message()) from cause
+E           AssertionError: expected call not found.
+E           Expected: create_storage(<Mock name='AppConfig()' id='140098441922832'>)
+E             Actual: create_storage(<Mock name='AppConfig().default_storage_type' id='140098437763216'>)
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:939: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <MagicMock name='StorageFactory.create_storage' id='140098437726480'>
+args = (<Mock name='AppConfig()' id='140098441922832'>,), kwargs = {}
+
+    def assert_called_once_with(self, /, *args, **kwargs):
+        """assert that the mock was called exactly once and that that call was
+        with the specified arguments."""
+        if not self.call_count == 1:
+            msg = ("Expected '%s' to be called once. Called %s times.%s"
+                   % (self._mock_name or 'mock',
+                      self.call_count,
+                      self._calls_repr()))
+            raise AssertionError(msg)
+>       return self.assert_called_with(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: expected call not found.
+E       Expected: create_storage(<Mock name='AppConfig()' id='140098441922832'>)
+E         Actual: create_storage(<Mock name='AppConfig().default_storage_type' id='140098437763216'>)
+E       
+E       pytest introspection follows:
+E       
+E       Args:
+E       assert (<Mock name='...8437763216'>,) == (<Mock name='...8441922832'>,)
+E         
+E         At index 0 diff: <Mock name='AppConfig().default_storage_type' id='140098437763216'> != <Mock name='AppConfig()' id='140098441922832'>
+E         Use -v to get more diff
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:951: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_12_user_interface_coverage.TestUserInterfaceIntegration object at 0x7f6b35dcec50>
+mock_logger = <MagicMock name='logger' id='140098437298960'>
+mock_ui = <MagicMock name='UserInterface' id='140098437697872'>
+mock_storage_factory = <MagicMock name='StorageFactory' id='140098437703056'>
+mock_app_config = <MagicMock name='AppConfig' id='140098437708496'>
+mock_db_manager_class = <MagicMock name='DBManager' id='140098437402704'>
+mock_logging_config = <MagicMock name='basicConfig' id='140098441962704'>
+
+    @patch('src.user_interface.logging.basicConfig')
+    @patch('src.storage.db_manager.DBManager')
+    @patch('src.user_interface.AppConfig')
+    @patch('src.user_interface.StorageFactory')
+    @patch('src.user_interface.UserInterface')
+    @patch('src.user_interface.logger')
+    def test_full_integration_flow(self, mock_logger, mock_ui, mock_storage_factory,
+                                  mock_app_config, mock_db_manager_class, mock_logging_config):
+        """Покрытие полного потока интеграции компонентов."""
+        # Настраиваем все моки для успешного сценария
+        mock_db_manager = Mock()
+        mock_db_manager._ensure_database_exists.return_value = None
+        mock_db_manager.check_connection.return_value = True
+        mock_db_manager.create_tables.return_value = None
+        mock_db_manager.populate_companies_table.return_value = None
+        mock_db_manager.get_companies_and_vacancies_count.return_value = [
+            ("Company1", 10), ("Company2", 5), ("Company3", 3)
+        ]
+        mock_db_manager_class.return_value = mock_db_manager
+    
+        mock_config = Mock()
+        mock_config.storage_type = "postgres"
+        mock_app_config.return_value = mock_config
+    
+        mock_storage = Mock()
+        mock_storage_factory.create_storage.return_value = mock_storage
+    
+        mock_ui_instance = Mock()
+        mock_ui.return_value = mock_ui_instance
+    
+        # Выполняем функцию
+        src.user_interface.main()
+    
+        # Проверяем порядок вызовов
+        mock_logger.info.assert_called()
+        mock_db_manager._ensure_database_exists.assert_called_once()
+        mock_db_manager.check_connection.assert_called_once()
+        mock_db_manager.create_tables.assert_called_once()
+        mock_db_manager.populate_companies_table.assert_called_once()
+        mock_db_manager.get_companies_and_vacancies_count.assert_called_once()
+>       mock_storage_factory.create_storage.assert_called_once_with(mock_config)
+E       AssertionError: expected call not found.
+E       Expected: create_storage(<Mock name='AppConfig()' id='140098441922832'>)
+E         Actual: create_storage(<Mock name='AppConfig().default_storage_type' id='140098437763216'>)
+E       
+E       pytest introspection follows:
+E       
+E       Args:
+E       assert (<Mock name='...8437763216'>,) == (<Mock name='...8441922832'>,)
+E         
+E         At index 0 diff: <Mock name='AppConfig().default_storage_type' id='140098437763216'> != <Mock name='AppConfig()' id='140098441922832'>
+E         Use -v to get more diff
+
+tests/test_12_user_interface_coverage.py:349: AssertionError
+================================= short test summary info ==================================
+FAILED tests/test_12_user_interface_coverage.py::TestUserInterface::test_main_populate_companies_error - Failed: DID NOT RAISE <class 'Exception'>
+FAILED tests/test_12_user_interface_coverage.py::TestUserInterface::test_main_validation_error - Failed: DID NOT RAISE <class 'Exception'>
+FAILED tests/test_12_user_interface_coverage.py::TestUserInterface::test_main_ui_run_error - Failed: DID NOT RAISE <class 'Exception'>
+FAILED tests/test_12_user_interface_coverage.py::TestUserInterface::test_main_general_exception - Failed: DID NOT RAISE <class 'Exception'>
+FAILED tests/test_12_user_interface_coverage.py::TestUserInterfaceIntegration::test_full_integration_flow - AssertionError: expected call not found.
+=============================== 5 failed, 10 passed in 0.42s ===============================
+~/workspace$ 

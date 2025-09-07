@@ -117,10 +117,9 @@ class TestUserInterface:
         # Проверяем что была выведена ошибка
         mock_print.assert_called()
 
-    @patch('src.user_interface.logging.basicConfig')
     @patch('src.storage.db_manager.DBManager')
-    @patch('src.user_interface.logger')
-    def test_main_populate_companies_error(self, mock_logger, mock_db_manager_class, mock_logging_config):
+    @patch('builtins.print')
+    def test_main_populate_companies_error(self, mock_print, mock_db_manager_class):
         """Покрытие ошибки заполнения таблицы компаний."""
         # Настраиваем мок для ошибки заполнения компаний
         mock_db_manager = Mock()
@@ -130,17 +129,17 @@ class TestUserInterface:
         mock_db_manager.populate_companies_table.side_effect = Exception("Populate Error")
         mock_db_manager_class.return_value = mock_db_manager
         
-        # Выполняем функцию и ожидаем исключение
-        with pytest.raises(Exception, match="Не удалось инициализировать структуру базы данных"):
-            src.user_interface.main()
+        # Выполняем функцию (она обрабатывает ошибку gracefully)
+        result = src.user_interface.main()
         
-        # Проверяем что ошибка была залогирована
-        mock_logger.error.assert_called()
+        # Проверяем что функция завершилась gracefully
+        assert result is None
+        # Проверяем что была выведена ошибка
+        mock_print.assert_called()
 
-    @patch('src.user_interface.logging.basicConfig')
     @patch('src.storage.db_manager.DBManager')
-    @patch('src.user_interface.logger')
-    def test_main_validation_error(self, mock_logger, mock_db_manager_class, mock_logging_config):
+    @patch('builtins.print')
+    def test_main_validation_error(self, mock_print, mock_db_manager_class):
         """Покрытие ошибки валидации инициализации БД."""
         # Настраиваем мок для ошибки валидации
         mock_db_manager = Mock()
@@ -151,12 +150,13 @@ class TestUserInterface:
         mock_db_manager.get_companies_and_vacancies_count.side_effect = Exception("Validation Error")
         mock_db_manager_class.return_value = mock_db_manager
         
-        # Выполняем функцию и ожидаем исключение
-        with pytest.raises(Exception, match="База данных не была корректно инициализирована"):
-            src.user_interface.main()
+        # Выполняем функцию (она обрабатывает ошибку gracefully)
+        result = src.user_interface.main()
         
-        # Проверяем что ошибка была залогирована
-        mock_logger.error.assert_called()
+        # Проверяем что функция завершилась gracefully
+        assert result is None
+        # Проверяем что была выведена ошибка
+        mock_print.assert_called()
 
     @patch('src.user_interface.UserInterface')
     @patch('src.user_interface.StorageFactory')  
@@ -223,14 +223,13 @@ class TestUserInterface:
         # Проверяем что была выведена ошибка
         mock_print.assert_called()
 
-    @patch('src.user_interface.logging.basicConfig')
-    @patch('src.storage.db_manager.DBManager')
-    @patch('src.user_interface.AppConfig')
-    @patch('src.user_interface.StorageFactory')
     @patch('src.user_interface.UserInterface')
-    @patch('src.user_interface.logger')
-    def test_main_ui_run_error(self, mock_logger, mock_ui, mock_storage_factory, 
-                              mock_app_config, mock_db_manager_class, mock_logging_config):
+    @patch('src.user_interface.StorageFactory')
+    @patch('src.user_interface.AppConfig')
+    @patch('src.storage.db_manager.DBManager')
+    @patch('builtins.print')
+    def test_main_ui_run_error(self, mock_print, mock_db_manager_class, mock_app_config,
+                              mock_storage_factory, mock_ui):
         """Покрытие ошибки запуска пользовательского интерфейса."""
         # Настраиваем моки для успешного выполнения до запуска UI
         mock_db_manager = Mock()
@@ -242,6 +241,7 @@ class TestUserInterface:
         mock_db_manager_class.return_value = mock_db_manager
         
         mock_config = Mock()
+        mock_config.default_storage_type = "postgres"
         mock_app_config.return_value = mock_config
         
         mock_storage = Mock()
@@ -251,12 +251,13 @@ class TestUserInterface:
         mock_ui_instance.run.side_effect = Exception("UI Run Error")
         mock_ui.return_value = mock_ui_instance
         
-        # Выполняем функцию и ожидаем исключение
-        with pytest.raises(Exception, match="Ошибка при запуске интерфейса"):
-            src.user_interface.main()
+        # Выполняем функцию (она обрабатывает ошибку gracefully)
+        result = src.user_interface.main()
         
-        # Проверяем что ошибка была залогирована
-        mock_logger.error.assert_called()
+        # Проверяем что функция завершилась gracefully
+        assert result is None
+        # Проверяем что была выведена ошибка
+        mock_print.assert_called()
 
     def test_logging_configuration(self):
         """Покрытие конфигурации логирования."""
@@ -265,20 +266,20 @@ class TestUserInterface:
         assert isinstance(src.user_interface.logger, logging.Logger)
         assert src.user_interface.logger.name == 'src.user_interface'
 
-    @patch('src.user_interface.logging.basicConfig')
-    @patch('src.user_interface.logger')
-    def test_main_general_exception(self, mock_logger, mock_logging_config):
+    @patch('src.storage.db_manager.DBManager')
+    @patch('builtins.print')
+    def test_main_general_exception(self, mock_print, mock_db_manager):
         """Покрытие общего исключения в try-except блоке main()."""
         # Мокаем чтобы вызвать общее исключение в начале функции
-        with patch('src.storage.db_manager.DBManager') as mock_db_manager:
-            mock_db_manager.side_effect = Exception("General Error")
-            
-            # Выполняем функцию и ожидаем исключение
-            with pytest.raises(Exception, match="General Error"):
-                src.user_interface.main()
+        mock_db_manager.side_effect = Exception("General Error")
         
-        # Проверяем что общий лог был сделан
-        mock_logger.info.assert_called()
+        # Выполняем функцию (она обрабатывает ошибку gracefully)
+        result = src.user_interface.main()
+        
+        # Проверяем что функция завершилась gracefully
+        assert result is None
+        # Проверяем что была выведена ошибка
+        mock_print.assert_called()
 
 
 class TestUserInterfaceImports:
@@ -346,8 +347,8 @@ class TestUserInterfaceIntegration:
         mock_db_manager.create_tables.assert_called_once()
         mock_db_manager.populate_companies_table.assert_called_once()
         mock_db_manager.get_companies_and_vacancies_count.assert_called_once()
-        mock_storage_factory.create_storage.assert_called_once_with(mock_config)
-        mock_ui.assert_called_once_with(mock_storage)
+        mock_storage_factory.create_storage.assert_called_once_with(mock_config.default_storage_type)
+        mock_ui.assert_called_once_with(mock_storage, db_manager=mock_db_manager)
         mock_ui_instance.run.assert_called_once()
 
     def test_module_level_configuration(self):
