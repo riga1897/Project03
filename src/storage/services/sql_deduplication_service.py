@@ -187,15 +187,20 @@ class SQLDeduplicationService(AbstractDeduplicationService):
 
         cursor.execute(query)
         results = cursor.fetchall()
+        
+        if results is None:
+            logger.error("SQL запрос вернул None - проблема с курсором")
+            return []
 
         unique_ids = [row[0] for row in results]
 
-        duplicates_count = (
-            len([row for row in cursor.execute("SELECT COUNT(*) FROM temp_deduplication").fetchall()[0]])
-            - len(unique_ids)
-            if cursor.rowcount
-            else 0
-        )
+        # Подсчет дубликатов
+        try:
+            cursor.execute("SELECT COUNT(*) FROM temp_deduplication")
+            total_count = cursor.fetchone()
+            duplicates_count = (total_count[0] if total_count else 0) - len(unique_ids)
+        except Exception:
+            duplicates_count = 0
         logger.info(
             f"SQL-дедупликация: найдено {len(unique_ids)} уникальных вакансий, удалено {duplicates_count} дубликатов"
         )
