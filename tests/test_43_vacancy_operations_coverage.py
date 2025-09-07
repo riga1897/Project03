@@ -627,3 +627,83 @@ class TestVacancyOperationsIntegration:
         assert isinstance(min_result, list)
         assert isinstance(sorted_result, list)
         assert len(sorted_result) == len(vacancies)  # Сортировка сохраняет количество
+
+
+class TestVacancyOperationsUncoveredLines:
+    """100% покрытие непокрытых строк 320-340 в search_vacancies_by_keyword"""
+
+    def test_search_vacancies_by_keyword_empty_keyword(self):
+        """Покрытие строк 320-321: пустое ключевое слово"""
+        vacancies = [MockVacancy(title="Python Developer")]
+        
+        # Тестируем пустую строку
+        result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "")
+        assert result == []
+        
+        # Тестируем строку только с пробелами
+        result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "   ")
+        assert result == []
+        
+        # Тестируем None
+        result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, None)
+        assert result == []
+
+    @patch('src.utils.vacancy_operations.logger')
+    def test_search_vacancies_by_keyword_sql_success(self, mock_logger):
+        """Покрытие строк 324-333: успешный SQL поиск"""
+        vacancies = [MockVacancy(title="Test")]
+        mock_results = [MockVacancy(title="SQL Result")]
+        
+        # Мокируем успешный PostgresSaver
+        with patch('src.storage.postgres_saver.PostgresSaver') as mock_postgres_class:
+            mock_postgres_instance = MagicMock()
+            mock_postgres_instance.search_vacancies_batch.return_value = mock_results
+            mock_postgres_class.return_value = mock_postgres_instance
+            
+            result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "python", use_sql=True)
+            
+            # Должен вернуть результаты SQL поиска
+            assert result == mock_results
+            mock_postgres_instance.search_vacancies_batch.assert_called_once_with(["python"], limit=1000)
+
+    @patch('src.utils.vacancy_operations.logger')
+    def test_search_vacancies_by_keyword_sql_no_results(self, mock_logger):
+        """Покрытие строк 324-340: SQL поиск без результатов"""
+        vacancies = [MockVacancy(title="Test")]
+        
+        # Мокируем PostgresSaver без результатов
+        with patch('src.storage.postgres_saver.PostgresSaver') as mock_postgres_class:
+            mock_postgres_instance = MagicMock()
+            mock_postgres_instance.search_vacancies_batch.return_value = []  # Пустой результат
+            mock_postgres_class.return_value = mock_postgres_instance
+            
+            result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "python", use_sql=True)
+            
+            # Должен вернуть пустой результат через fallback
+            assert result == []
+
+    @patch('src.utils.vacancy_operations.logger')
+    def test_search_vacancies_by_keyword_sql_exception(self, mock_logger):
+        """Покрытие строк 334-337: исключение при SQL поиске"""
+        vacancies = [MockVacancy(title="Test")]
+        
+        # Мокируем PostgresSaver с исключением
+        with patch('src.storage.postgres_saver.PostgresSaver') as mock_postgres_class:
+            mock_postgres_class.side_effect = Exception("Database connection failed")
+            
+            result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "python", use_sql=True)
+            
+            # Должен вернуть пустой результат и залогировать ошибку
+            assert result == []
+            mock_logger.error.assert_called_once()
+            mock_logger.info.assert_called_once_with("Поиск должен выполняться только через PostgresSaver.search_vacancies_batch")
+
+    def test_search_vacancies_by_keyword_sql_disabled(self):
+        """Покрытие строк 339-340: SQL поиск отключен"""
+        vacancies = [MockVacancy(title="Test")]
+        
+        # Отключаем SQL поиск
+        result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "python", use_sql=False)
+        
+        # Должен сразу вернуть пустой результат
+        assert result == []
