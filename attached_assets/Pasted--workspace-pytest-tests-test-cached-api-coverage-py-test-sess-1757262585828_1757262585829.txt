@@ -1,0 +1,85 @@
+~/workspace$ pytest tests/test_cached_api_coverage.py
+=================================== test session starts ====================================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 36 items                                                                         
+
+tests/test_cached_api_coverage.py ..................F.................               [100%]
+
+========================================= FAILURES =========================================
+_______________ TestCachedAPICacheStatus.test_get_cache_status_comprehensive _______________
+
+self = <tests.test_cached_api_coverage.TestCachedAPICacheStatus object at 0x7fdc2ee46ed0>
+mock_time = <MagicMock name='time' id='140583653726672'>
+mock_file_cache = <MagicMock name='FileCache' id='140583653720528'>
+mock_path = <MagicMock name='Path' id='140583653644880'>
+mock_logger = <MagicMock name='logger' id='140583653639376'>
+mock_concrete_api = <class 'tests.test_cached_api_coverage.TestCachedAPICacheStatus.mock_concrete_api.<locals>.ConcreteCachedAPI'>
+
+    @patch('src.api_modules.cached_api.logger')
+    @patch('src.api_modules.cached_api.Path')
+    @patch('src.api_modules.cached_api.FileCache')
+    @patch('src.api_modules.cached_api.time.time')
+    def test_get_cache_status_comprehensive(self, mock_time, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+        """Покрытие: полный статус кэша с файлами"""
+        # Мокируем текущее время
+        mock_time.return_value = 1000000.0
+    
+        # Настраиваем Path и его методы
+        mock_cache_dir = MagicMock()
+        mock_cache_dir.exists.return_value = True
+        mock_path.return_value = mock_cache_dir
+    
+        # Создаем мок файлы кэша
+        mock_file1 = MagicMock()
+        mock_file1.name = "hh_python_page1.json"
+        mock_file1_stat = MagicMock()
+        mock_file1_stat.st_size = 2048  # 2KB
+        mock_file1_stat.st_mtime = 999000.0  # 1000 секунд назад
+        mock_file1.stat.return_value = mock_file1_stat
+    
+        mock_file2 = MagicMock()
+        mock_file2.name = "hh_java_page2.json"
+        mock_file2_stat = MagicMock()
+        mock_file2_stat.st_size = 4096  # 4KB
+        mock_file2_stat.st_mtime = 999500.0  # 500 секунд назад
+        mock_file2.stat.return_value = mock_file2_stat
+    
+        mock_cache_dir.glob.return_value = [mock_file1, mock_file2]
+    
+        # Мокируем содержимое файлов
+        file_content_1 = json.dumps({
+            "data": {"items": [{"id": "1"}]},
+            "meta": {"params": {"text": "python", "page": 0}}
+        })
+        file_content_2 = json.dumps({
+            "data": {"items": [{"id": "2"}]},
+            "meta": {"params": {"text": "python", "page": 1}}  # Тот же запрос
+        })
+    
+        with patch("builtins.open", mock_open()) as mock_file_open:
+            mock_file_open.side_effect = [
+                mock_open(read_data=file_content_1).return_value,
+                mock_open(read_data=file_content_2).return_value
+            ]
+    
+            with patch('src.api_modules.base_api.BaseJobAPI.__init__', return_value=None):
+                api = mock_concrete_api("/cache")
+                api.cache_dir = Path("/cache")  # Устанавливаем явно
+    
+                # Упрощенная проверка статуса кэша
+                result = api.get_cache_status("hh")
+    
+                # Проверяем структуру ответа
+                assert result["cache_dir"] == "/cache"
+                assert result["cache_dir_exists"] is True
+>               assert result["file_cache_count"] == 2
+E               assert 0 == 2
+
+tests/test_cached_api_coverage.py:541: AssertionError
+================================= short test summary info ==================================
+FAILED tests/test_cached_api_coverage.py::TestCachedAPICacheStatus::test_get_cache_status_comprehensive - assert 0 == 2
+=============================== 1 failed, 35 passed in 0.45s ===============================
+~/workspace$ 
