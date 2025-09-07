@@ -71,6 +71,7 @@ class SQLDeduplicationService(AbstractDeduplicationService):
                 vacancy_id VARCHAR(255) PRIMARY KEY,
                 title_normalized TEXT,
                 employer_normalized TEXT,
+                employer_id VARCHAR(50),
                 original_index INTEGER
             )
         """
@@ -84,6 +85,8 @@ class SQLDeduplicationService(AbstractDeduplicationService):
 
             # Извлекаем и нормализуем имя работодателя
             employer_name = "неизвестный"
+            employer_id = None
+            
             if vacancy.employer:
                 if hasattr(vacancy.employer, "get_name"):
                     employer_name = vacancy.employer.get_name()
@@ -93,17 +96,25 @@ class SQLDeduplicationService(AbstractDeduplicationService):
                     employer_name = vacancy.employer.get("name", "неизвестный")
                 else:
                     employer_name = str(vacancy.employer)
+                    
+                # Извлекаем employer.id (hh_id или sj_id)
+                if hasattr(vacancy.employer, "get_id"):
+                    employer_id = vacancy.employer.get_id()
+                elif hasattr(vacancy.employer, "id"):
+                    employer_id = vacancy.employer.id
+                elif isinstance(vacancy.employer, dict):
+                    employer_id = vacancy.employer.get("id")
 
             employer_normalized = self._normalize_text(employer_name)
-
-            dedup_data.append((vacancy.vacancy_id, title_normalized, employer_normalized, idx))
+            
+            dedup_data.append((vacancy.vacancy_id, title_normalized, employer_normalized, employer_id, idx))
 
         # Вставляем данные
         cursor.executemany(
             """
             INSERT INTO temp_deduplication 
-            (vacancy_id, title_normalized, employer_normalized, original_index)
-            VALUES (%s, %s, %s, %s)
+            (vacancy_id, title_normalized, employer_normalized, employer_id, original_index)
+            VALUES (%s, %s, %s, %s, %s)
         """,
             dedup_data,
         )
@@ -119,7 +130,7 @@ class SQLDeduplicationService(AbstractDeduplicationService):
                 vacancy_id,
                 original_index,
                 ROW_NUMBER() OVER (
-                    PARTITION BY title_normalized, employer_normalized 
+                    PARTITION BY title_normalized, employer_normalized, COALESCE(employer_id, 'unknown')
                     ORDER BY original_index
                 ) as row_num
             FROM temp_deduplication
