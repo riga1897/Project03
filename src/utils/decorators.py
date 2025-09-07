@@ -71,12 +71,28 @@ def simple_cache(ttl: Optional[int] = None, max_size: int = 1000) -> Callable:
     return decorator
 
 
-def retry_on_failure(max_attempts=3, delay=1.0):
-    """Декоратор для повторных попыток при ошибке"""
+def retry_on_failure(max_attempts: int = 3, delay: float = 1.0) -> Callable:
+    """Декоратор для повторных попыток при ошибке.
+    
+    Args:
+        max_attempts: Максимальное количество попыток.
+        delay: Задержка между попытками в секундах.
+        
+    Returns:
+        Декорированная функция с логикой повторных попыток.
+    """
 
-    def decorator(func):
+    def decorator(func: Callable) -> Callable:
+        """Внутренний декоратор для обработки повторных попыток.
+        
+        Args:
+            func: Функция для декорирования.
+            
+        Returns:
+            Обернутая функция с логикой повторных попыток.
+        """
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             for attempt in range(max_attempts):
                 try:
                     return func(*args, **kwargs)
@@ -91,11 +107,18 @@ def retry_on_failure(max_attempts=3, delay=1.0):
     return decorator
 
 
-def time_execution(func):
-    """Декоратор для измерения времени выполнения"""
+def time_execution(func: Callable) -> Callable:
+    """Декоратор для измерения времени выполнения.
+    
+    Args:
+        func: Функция для декорирования.
+        
+    Returns:
+        Декорированная функция с измерением времени выполнения.
+    """
 
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         start_time = time.time()
         result = func(*args, **kwargs)
         end_time = time.time()
@@ -106,11 +129,18 @@ def time_execution(func):
     return wrapper
 
 
-def log_errors(func):
-    """Декоратор для логирования ошибок"""
+def log_errors(func: Callable) -> Callable:
+    """Декоратор для логирования ошибок.
+    
+    Args:
+        func: Функция для декорирования.
+        
+    Returns:
+        Декорированная функция с логированием ошибок.
+    """
 
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         try:
             return func(*args, **kwargs)
         except Exception as e:

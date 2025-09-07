@@ -77,32 +77,67 @@ class Employer(BaseModel):
 
     # Методы для обратной совместимости с существующим кодом
     def get_name(self) -> str:
-        """Получить название компании"""
+        """Получить название компании.
+        
+        Returns:
+            Название компании.
+        """
         return self.name
 
     def get_id(self) -> Optional[str]:
-        """Получить ID работодателя"""
+        """Получить ID работодателя.
+        
+        Returns:
+            ID работодателя или None.
+        """
         return self.id
 
     def is_trusted(self) -> Optional[bool]:
-        """Проверить, является ли работодатель проверенным"""
+        """Проверить, является ли работодатель проверенным.
+        
+        Returns:
+            True если работодатель проверен, False или None иначе.
+        """
         return self.trusted
 
     def get_url(self) -> Optional[str]:
-        """Получить URL работодателя"""
+        """Получить URL работодателя.
+        
+        Returns:
+            URL страницы работодателя или None.
+        """
         return self.alternate_url
 
     def to_dict(self) -> Dict[str, Any]:
-        """Преобразование объекта в словарь"""
+        """Преобразование объекта в словарь.
+        
+        Returns:
+            Словарь с данными работодателя.
+        """
         return self.model_dump()
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Employer":
-        """Создание объекта из словаря"""
+        """Создание объекта из словаря.
+        
+        Args:
+            data: Словарь с данными работодателя.
+            
+        Returns:
+            Новый экземпляр Employer.
+        """
         return cls(**data)
 
-    def get(self, key: str, default=None):
-        """Dictionary-like access для обратной совместимости"""
+    def get(self, key: str, default: Any = None) -> Any:
+        """Dictionary-like access для обратной совместимости.
+        
+        Args:
+            key: Ключ для доступа к атрибуту.
+            default: Значение по умолчанию если ключ не найден.
+            
+        Returns:
+            Значение атрибута или значение по умолчанию.
+        """
         return getattr(self, key, default)
 
     model_config = ConfigDict(validate_assignment=True, use_attribute_docstrings=True)
