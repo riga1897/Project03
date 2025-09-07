@@ -492,7 +492,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 insert_data.append(
                     (
                         vacancy.id,
-                        vacancy.name,
+                        vacancy.title,
                         vacancy.url,
                         salary_from,
                         salary_to,
@@ -1445,7 +1445,7 @@ class PostgresSaver(AbstractVacancyStorage):
                     (
                         idx,
                         vacancy.id,
-                        vacancy.name,
+                        vacancy.title,
                         vacancy.url,
                         salary_from,
                         salary_to,
