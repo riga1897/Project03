@@ -1,0 +1,449 @@
+~/workspace$ pytest tests/test_16_models_coverage.py
+=================================== test session starts ====================================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 68 items                                                                         
+
+tests/test_16_models_coverage.py .......................................FFFF..F...FF [ 75%]
+FFFFFFFFFFFF.FF.F                                                                    [100%]
+
+========================================= FAILURES =========================================
+___________________ TestVacancy.test_vacancy_url_validation_add_protocol ___________________
+
+self = <tests.test_16_models_coverage.TestVacancy object at 0x7fcffd632ad0>
+
+    def test_vacancy_url_validation_add_protocol(self):
+        """Покрытие добавления протокола к URL"""
+>       vacancy = Vacancy(
+            title="Test",
+            employer=Employer(name="Test"),
+            url="job-site.com/vacancy/123"
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'title': 'Test', 'employ...b-site.com/vacancy/123'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'title': 'Test', 'employ...b-site.com/vacancy/123'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'title': 'Test', 'employ...b-site.com/vacancy/123'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+tests/test_16_models_coverage.py:388: ValidationError
+________________ TestVacancy.test_vacancy_url_validation_existing_protocol _________________
+
+self = <tests.test_16_models_coverage.TestVacancy object at 0x7fcffd6330d0>
+
+    def test_vacancy_url_validation_existing_protocol(self):
+        """Покрытие URL с существующим протоколом"""
+>       vacancy = Vacancy(
+            title="Test",
+            employer=Employer(name="Test"),
+            url="http://job-site.com/vacancy/123"
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'title': 'Test', 'employ...b-site.com/vacancy/123'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'title': 'Test', 'employ...b-site.com/vacancy/123'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'title': 'Test', 'employ...b-site.com/vacancy/123'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+tests/test_16_models_coverage.py:397: ValidationError
+_______________________ TestVacancy.test_vacancy_url_validation_none _______________________
+
+self = <tests.test_16_models_coverage.TestVacancy object at 0x7fcffd6336d0>
+
+    def test_vacancy_url_validation_none(self):
+        """Покрытие None URL"""
+>       vacancy = Vacancy(
+            title="Test",
+            employer=Employer(name="Test"),
+            url=None
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'title': 'Test', 'employ..._url=None), 'url': None}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'title': 'Test', 'employ..._url=None), 'url': None}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'title': 'Test', 'employ..._url=None), 'url': None}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+tests/test_16_models_coverage.py:406: ValidationError
+______________________ TestVacancy.test_vacancy_compatibility_methods ______________________
+
+self = <tests.test_16_models_coverage.TestVacancy object at 0x7fcffd633cd0>
+
+    def test_vacancy_compatibility_methods(self):
+        """Покрытие методов совместимости"""
+        employer = Employer(name="Test Company")
+>       vacancy = Vacancy(
+            title="Test Job",
+            employer=employer,
+            url="https://test.com",
+            description="Test description",
+            area="Moscow"
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'title': 'Test Job', 'em...tion', 'area': 'Moscow'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'title': 'Test Job', 'em...tion', 'area': 'Moscow'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'title': 'Test Job', 'em...tion', 'area': 'Moscow'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+tests/test_16_models_coverage.py:416: ValidationError
+___________________________ TestVacancy.test_vacancy_get_method ____________________________
+
+self = <tests.test_16_models_coverage.TestVacancy object at 0x7fcffd638ed0>
+
+    def test_vacancy_get_method(self):
+        """Покрытие dictionary-like доступа"""
+        vacancy = Vacancy(
+            vacancy_id="test_get",
+            name="Test",
+            alternate_url="https://test.com",
+            area="SPB"
+        )
+    
+>       assert vacancy.get("title") == "Test"
+               ^^^^^^^^^^^
+
+tests/test_16_models_coverage.py:468: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Vacancy(id='test_get', title='Test'), item = 'get'
+
+    def __getattr__(self, item: str) -> Any:
+        private_attributes = object.__getattribute__(self, '__private_attributes__')
+        if item in private_attributes:
+            attribute = private_attributes[item]
+            if hasattr(attribute, '__get__'):
+                return attribute.__get__(self, type(self))  # type: ignore
+    
+            try:
+                # Note: self.__pydantic_private__ cannot be None if self.__private_attributes__ has items
+                return self.__pydantic_private__[item]  # type: ignore
+            except KeyError as exc:
+                raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}') from exc
+        else:
+            # `__pydantic_extra__` can fail to be set if the model is not yet fully initialized.
+            # See `BaseModel.__repr_args__` for more details
+            try:
+                pydantic_extra = object.__getattribute__(self, '__pydantic_extra__')
+            except AttributeError:
+                pydantic_extra = None
+    
+            if pydantic_extra:
+                try:
+                    return pydantic_extra[item]
+                except KeyError as exc:
+                    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}') from exc
+            else:
+                if hasattr(self.__class__, item):
+                    return super().__getattribute__(item)  # Raises AttributeError if appropriate
+                else:
+                    # this is the current error
+>                   raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+E                   AttributeError: 'Vacancy' object has no attribute 'get'
+
+.pythonlibs/lib/python3.11/site-packages/pydantic/main.py:991: AttributeError
+__________________ TestVacancyFactory.test_factory_create_experience_dict __________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7fcffd7fae90>
+
+    def test_factory_create_experience_dict(self):
+        """Покрытие создания опыта из словаря"""
+        exp_data = {"name": "Middle", "id": "mid"}
+>       experience = VacancyFactory._create_experience(exp_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyFactory' has no attribute '_create_experience'
+
+tests/test_16_models_coverage.py:539: AttributeError
+_________________ TestVacancyFactory.test_factory_create_experience_string _________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7fcffd7f9b50>
+
+    def test_factory_create_experience_string(self):
+        """Покрытие создания опыта из строки"""
+>       experience = VacancyFactory._create_experience("Без опыта")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyFactory' has no attribute '_create_experience'
+
+tests/test_16_models_coverage.py:547: AttributeError
+__________________ TestVacancyFactory.test_factory_create_experience_none __________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7fcffd7fa390>
+
+    def test_factory_create_experience_none(self):
+        """Покрытие создания опыта из None"""
+>       experience = VacancyFactory._create_experience(None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyFactory' has no attribute '_create_experience'
+
+tests/test_16_models_coverage.py:554: AttributeError
+__________________ TestVacancyFactory.test_factory_create_employment_dict __________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7fcffd7f8890>
+
+    def test_factory_create_employment_dict(self):
+        """Покрытие создания типа занятости из словаря"""
+        emp_data = {"name": "Частичная", "id": "part"}
+>       employment = VacancyFactory._create_employment(emp_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyFactory' has no attribute '_create_employment'
+
+tests/test_16_models_coverage.py:561: AttributeError
+_________________ TestVacancyFactory.test_factory_create_employment_string _________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7fcffd7fb910>
+
+    def test_factory_create_employment_string(self):
+        """Покрытие создания типа занятости из строки"""
+>       employment = VacancyFactory._create_employment("Стажировка")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyFactory' has no attribute '_create_employment'
+
+tests/test_16_models_coverage.py:569: AttributeError
+__________________ TestVacancyFactory.test_factory_create_employment_none __________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7fcffd7eb5d0>
+
+    def test_factory_create_employment_none(self):
+        """Покрытие создания типа занятости из None"""
+>       employment = VacancyFactory._create_employment(None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyFactory' has no attribute '_create_employment'
+
+tests/test_16_models_coverage.py:576: AttributeError
+___________________ TestVacancyFactory.test_factory_create_schedule_dict ___________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7fcffd7eb9d0>
+
+    def test_factory_create_schedule_dict(self):
+        """Покрытие создания графика из словаря"""
+        sch_data = {"name": "Удаленно", "id": "remote"}
+>       schedule = VacancyFactory._create_schedule(sch_data)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyFactory' has no attribute '_create_schedule'
+
+tests/test_16_models_coverage.py:583: AttributeError
+__________________ TestVacancyFactory.test_factory_create_schedule_string __________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7fcffd7eacd0>
+
+    def test_factory_create_schedule_string(self):
+        """Покрытие создания графика из строки"""
+>       schedule = VacancyFactory._create_schedule("Вахта")
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyFactory' has no attribute '_create_schedule'
+
+tests/test_16_models_coverage.py:591: AttributeError
+___________________ TestVacancyFactory.test_factory_create_schedule_none ___________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7fcffd7ea110>
+
+    def test_factory_create_schedule_none(self):
+        """Покрытие создания графика из None"""
+>       schedule = VacancyFactory._create_schedule(None)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyFactory' has no attribute '_create_schedule'
+
+tests/test_16_models_coverage.py:598: AttributeError
+___________________ TestVacancyFactory.test_factory_create_salary_valid ____________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7fcffd7e93d0>
+
+    def test_factory_create_salary_valid(self):
+        """Покрытие создания зарплаты из валидного словаря"""
+        salary_data = {"from": 50000, "to": 80000, "currency": "USD"}
+>       salary = VacancyFactory._create_salary(salary_data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyFactory' has no attribute '_create_salary'
+
+tests/test_16_models_coverage.py:605: AttributeError
+__________________ TestVacancyFactory.test_factory_create_salary_invalid ___________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7fcffd7e8790>
+
+    def test_factory_create_salary_invalid(self):
+        """Покрытие создания зарплаты из невалидного словаря"""
+        # Невалидные данные
+>       salary = VacancyFactory._create_salary({"invalid": "data"})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyFactory' has no attribute '_create_salary'
+
+tests/test_16_models_coverage.py:615: AttributeError
+___________________ TestVacancyFactory.test_factory_extract_description ____________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7fcffd7e7c90>
+
+    def test_factory_extract_description(self):
+        """Покрытие извлечения описания"""
+        data_with_snippet = {
+            "snippet": {
+                "requirement": "Python",
+                "responsibility": "Development"
+            }
+        }
+    
+>       description = VacancyFactory._extract_description(data_with_snippet)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyFactory' has no attribute '_extract_description'
+
+tests/test_16_models_coverage.py:635: AttributeError
+_______________________ TestVacancyFactory.test_factory_extract_area _______________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7fcffd7e76d0>
+
+    def test_factory_extract_area(self):
+        """Покрытие извлечения области"""
+        data_with_area = {"area": {"name": "Новосибирск"}}
+>       area = VacancyFactory._extract_area(data_with_area)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyFactory' has no attribute '_extract_area'
+
+tests/test_16_models_coverage.py:646: AttributeError
+_________________ TestVacancyFactory.test_factory_with_exception_handling __________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7fcffd7e5350>
+
+    def test_factory_with_exception_handling(self):
+        """Покрытие обработки исключений в фабрике"""
+        # Данные которые могут вызвать ошибку
+        problematic_data = {
+            "name": "Test",
+            "employer": {"name": "Test"},
+            "salary": {"from": "invalid_number"}  # Невалидная зарплата
+        }
+    
+        # Фабрика должна обработать исключение и создать вакансию
+>       vacancy = VacancyFactory.create_from_dict(problematic_data)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyFactory' has no attribute 'create_from_dict'
+
+tests/test_16_models_coverage.py:663: AttributeError
+___________________ TestModelValidation.test_field_assignment_validation ___________________
+
+self = <tests.test_16_models_coverage.TestModelValidation object at 0x7fcffd7e6a50>
+
+    def test_field_assignment_validation(self):
+        """Покрытие validate_assignment=True"""
+        employer = Employer(name="Test")
+    
+        # Валидное присваивание
+        employer.name = "New Name"
+        assert employer.name == "New Name"
+    
+        # Присваивание пустого имени должно валидироваться
+>       employer.name = ""
+        ^^^^^^^^^^^^^
+
+tests/test_16_models_coverage.py:696: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.pythonlibs/lib/python3.11/site-packages/pydantic/main.py:995: in __setattr__
+    setattr_handler(self, name, value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+model = Employer(name='New Name', id=None, trusted=None, alternate_url=None), name = 'name'
+val = ''
+
+>       'validate_assignment': lambda model, name, val: model.__pydantic_validator__.validate_assignment(model, name, val),  # pyright: ignore[reportAssignmentType]
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'private': _private_setattr_handler,
+        'cached_property': lambda model, name, val: model.__dict__.__setitem__(name, val),
+        'extra_known': lambda model, name, val: _object_setattr(model, name, val),
+    }
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for Employer
+E   name
+E     String should have at least 1 character [type=string_too_short, input_value='', input_type=str]
+E       For further information visit https://errors.pydantic.dev/2.11/v/string_too_short
+
+.pythonlibs/lib/python3.11/site-packages/pydantic/main.py:114: ValidationError
+__________________________ TestEdgeCases.test_large_data_handling __________________________
+
+self = <tests.test_16_models_coverage.TestEdgeCases object at 0x7fcffd7e4ed0>
+
+    def test_large_data_handling(self):
+        """Покрытие обработки больших объемов данных"""
+        large_description = "A" * 10000  # Большое описание
+    
+>       vacancy = Vacancy(
+            title="Large Data Test",
+            employer=Employer(name="Big Company"),
+            description=large_description
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'title': 'Large Data Tes...AAAAAAAAAAAAAAAAAAAAAA'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'title': 'Large Data Tes...AAAAAAAAAAAAAAAAAAAAAA'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'title': 'Large Data Tes...AAAAAAAAAAAAAAAAAAAAAA'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+tests/test_16_models_coverage.py:707: ValidationError
+__________________________ TestEdgeCases.test_nested_dict_access ___________________________
+
+self = <tests.test_16_models_coverage.TestEdgeCases object at 0x7fcffd7eb310>
+
+    def test_nested_dict_access(self):
+        """Покрытие глубокого доступа к вложенным данным"""
+        complex_data = {
+            "name": "Complex Job",
+            "employer": {
+                "name": "Nested Company",
+                "nested": {
+                    "deep": "value"
+                }
+            },
+            "snippet": {
+                "requirement": "Complex requirement",
+                "responsibility": None  # None значение
+            }
+        }
+    
+>       vacancy = VacancyFactory.create_from_dict(complex_data)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: type object 'VacancyFactory' has no attribute 'create_from_dict'
+
+tests/test_16_models_coverage.py:740: AttributeError
+================================= short test summary info ==================================
+FAILED tests/test_16_models_coverage.py::TestVacancy::test_vacancy_url_validation_add_protocol - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestVacancy::test_vacancy_url_validation_existing_protocol - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestVacancy::test_vacancy_url_validation_none - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestVacancy::test_vacancy_compatibility_methods - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestVacancy::test_vacancy_get_method - AttributeError: 'Vacancy' object has no attribute 'get'
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_create_experience_dict - AttributeError: type object 'VacancyFactory' has no attribute '_create_experience'
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_create_experience_string - AttributeError: type object 'VacancyFactory' has no attribute '_create_experience'
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_create_experience_none - AttributeError: type object 'VacancyFactory' has no attribute '_create_experience'
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_create_employment_dict - AttributeError: type object 'VacancyFactory' has no attribute '_create_employment'
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_create_employment_string - AttributeError: type object 'VacancyFactory' has no attribute '_create_employment'
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_create_employment_none - AttributeError: type object 'VacancyFactory' has no attribute '_create_employment'
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_create_schedule_dict - AttributeError: type object 'VacancyFactory' has no attribute '_create_schedule'
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_create_schedule_string - AttributeError: type object 'VacancyFactory' has no attribute '_create_schedule'
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_create_schedule_none - AttributeError: type object 'VacancyFactory' has no attribute '_create_schedule'
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_create_salary_valid - AttributeError: type object 'VacancyFactory' has no attribute '_create_salary'
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_create_salary_invalid - AttributeError: type object 'VacancyFactory' has no attribute '_create_salary'
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_extract_description - AttributeError: type object 'VacancyFactory' has no attribute '_extract_description'
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_extract_area - AttributeError: type object 'VacancyFactory' has no attribute '_extract_area'
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_with_exception_handling - AttributeError: type object 'VacancyFactory' has no attribute 'create_from_dict'
+FAILED tests/test_16_models_coverage.py::TestModelValidation::test_field_assignment_validation - pydantic_core._pydantic_core.ValidationError: 1 validation error for Employer
+FAILED tests/test_16_models_coverage.py::TestEdgeCases::test_large_data_handling - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestEdgeCases::test_nested_dict_access - AttributeError: type object 'VacancyFactory' has no attribute 'create_from_dict'
+============================== 22 failed, 46 passed in 0.84s ===============================
+~/workspace$ 
