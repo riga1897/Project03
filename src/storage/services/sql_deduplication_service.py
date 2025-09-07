@@ -1,12 +1,22 @@
-"""
-Сервис SQL-дедупликации вакансий
+"""Сервис SQL-дедупликации вакансий с использованием временных таблиц PostgreSQL.
 
-Реализует дедупликацию через SQL без фильтрации.
-Принцип Single Responsibility - только дедупликация.
+Этот модуль предоставляет высокопроизводительный механизм дедупликации вакансий
+с использованием SQL-запросов и временных таблиц. Поддерживает межплатформенную 
+дедупликацию с приоритетом HeadHunter над SuperJob.
+
+Features:
+    - Создание временных таблиц в PostgreSQL для изоляции операций
+    - Нормализация данных для точного сравнения
+    - Приоритизация источников (HH > SJ > другие)
+    - Группировка по: название + компания + зарплата + город
+    - Автоматическая очистка временных таблиц
+
+Classes:
+    SQLDeduplicationService: Основной сервис дедупликации
 """
 
 import logging
-from typing import List
+from typing import Any, List
 
 from src.storage.abstract_db_manager import AbstractDBManager
 from src.vacancies.models import Vacancy
@@ -17,29 +27,35 @@ logger = logging.getLogger(__name__)
 
 
 class SQLDeduplicationService(AbstractDeduplicationService):
-    """
-    Сервис SQL-дедупликации вакансий
-    Принцип Single Responsibility - только дедупликация
+    """Сервис SQL-дедупликации вакансий с межплатформенным приоритетом.
+    
+    Реализует высокопроизводительную дедупликацию через SQL с использованием 
+    временных таблиц PostgreSQL. Поддерживает приоритизацию источников для
+    межплатформенной дедупликации.
+    
+    Attributes:
+        db_manager: Менеджер базы данных для выполнения SQL операций.
     """
 
-    def __init__(self, db_manager: AbstractDBManager):
-        """
-        Инициализация сервиса
+    def __init__(self, db_manager: AbstractDBManager) -> None:
+        """Инициализация сервиса дедупликации.
 
         Args:
-            db_manager: Менеджер базы данных
+            db_manager: Менеджер базы данных для выполнения SQL операций.
         """
         self.db_manager = db_manager
 
     def deduplicate_vacancies(self, vacancies: List[Vacancy]) -> List[Vacancy]:
-        """
-        Выполняет дедупликацию вакансий через SQL
+        """Выполняет межплатформенную дедупликацию вакансий через SQL.
+
+        Создает временную таблицу в PostgreSQL, нормализует данные вакансий
+        и применяет алгоритм дедупликации с приоритетом HeadHunter над SuperJob.
 
         Args:
-            vacancies: Список вакансий для дедупликации
+            vacancies: Список вакансий для дедупликации.
 
         Returns:
-            List[Vacancy]: Уникальные вакансии
+            Список уникальных вакансий с применением межплатформенного приоритета.
         """
         if not vacancies:
             return []
@@ -68,8 +84,16 @@ class SQLDeduplicationService(AbstractDeduplicationService):
             # В случае ошибки возвращаем оригинальный список
             return vacancies
 
-    def _create_temp_table(self, cursor, vacancies: List[Vacancy]) -> None:
-        """Создает временную таблицу для дедупликации"""
+    def _create_temp_table(self, cursor: Any, vacancies: List[Vacancy]) -> None:
+        """Создает временную таблицу PostgreSQL для дедупликации.
+        
+        Создает таблицу temp_deduplication с нормализованными данными вакансий
+        включая приоритеты источников для межплатформенной дедупликации.
+        
+        Args:
+            cursor: Курсор базы данных PostgreSQL.
+            vacancies: Список вакансий для обработки.
+        """
         cursor.execute(
             """
             CREATE TEMP TABLE temp_deduplication (

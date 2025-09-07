@@ -1,6 +1,17 @@
-"""
-Модели данных для системы поиска вакансий, основанные на Pydantic.
-Полностью заменяют прежнюю архитектуру с улучшенной валидацией и типобезопасностью.
+"""Модели данных для системы поиска вакансий на основе Pydantic v2.
+
+Этот модуль содержит все модели данных для работы с вакансиями, работодателями
+и связанными объектами. Полностью заменяет прежнюю архитектуру с улучшенной 
+валидацией, типобезопасностью и автоматической сериализацией.
+
+Classes:
+    Employer: Модель работодателя с валидацией
+    Experience: Модель опыта работы
+    Area: Модель географической области
+    Schedule: Модель графика работы
+    Employment: Модель типа занятости
+    KeySkill: Модель ключевых навыков
+    Vacancy: Основная модель вакансии
 """
 
 import logging
@@ -17,7 +28,17 @@ logger = logging.getLogger(__name__)
 
 
 class Employer(BaseModel):
-    """Модель работодателя с Pydantic валидацией"""
+    """Модель работодателя с валидацией данных.
+    
+    Представляет информацию о компании-работодателе с автоматической валидацией
+    и нормализацией данных при создании и обновлении объекта.
+    
+    Attributes:
+        name: Название компании (обязательное поле).
+        id: Уникальный идентификатор работодателя.
+        trusted: Флаг проверенного работодателя.
+        alternate_url: URL страницы работодателя.
+    """
 
     name: str = Field(..., min_length=1, description="Название компании")
     id: Optional[str] = Field(None, description="ID работодателя")
@@ -26,14 +47,30 @@ class Employer(BaseModel):
 
     @field_validator('name')
     @classmethod
-    def validate_name(cls, v):
+    def validate_name(cls, v: str) -> str:
+        """Валидирует и нормализует название компании.
+        
+        Args:
+            v: Входное название компании.
+            
+        Returns:
+            Нормализованное название компании.
+        """
         if not v or v.strip() == "":
             return "Не указана"
         return v.strip()
 
     @field_validator('alternate_url')
     @classmethod
-    def validate_url(cls, v):
+    def validate_url(cls, v: Optional[str]) -> Optional[str]:
+        """Валидирует и нормализует URL.
+        
+        Args:
+            v: Входной URL.
+            
+        Returns:
+            Нормализованный URL с протоколом.
+        """
         if v and not (v.startswith('http://') or v.startswith('https://')):
             return f"https://{v}"
         return v
