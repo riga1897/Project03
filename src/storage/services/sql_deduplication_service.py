@@ -1,7 +1,7 @@
 """Сервис SQL-дедупликации вакансий с использованием временных таблиц PostgreSQL.
 
 Этот модуль предоставляет высокопроизводительный механизм дедупликации вакансий
-с использованием SQL-запросов и временных таблиц. Поддерживает межплатформенную 
+с использованием SQL-запросов и временных таблиц. Поддерживает межплатформенную
 дедупликацию с приоритетом HeadHunter над SuperJob.
 
 Features:
@@ -28,11 +28,11 @@ logger = logging.getLogger(__name__)
 
 class SQLDeduplicationService(AbstractDeduplicationService):
     """Сервис SQL-дедупликации вакансий с межплатформенным приоритетом.
-    
-    Реализует высокопроизводительную дедупликацию через SQL с использованием 
+
+    Реализует высокопроизводительную дедупликацию через SQL с использованием
     временных таблиц PostgreSQL. Поддерживает приоритизацию источников для
     межплатформенной дедупликации.
-    
+
     Attributes:
         db_manager: Менеджер базы данных для выполнения SQL операций.
     """
@@ -65,7 +65,7 @@ class SQLDeduplicationService(AbstractDeduplicationService):
         try:
             conn = self.db_manager._get_connection()
             cursor = conn.cursor()
-            
+
             try:
                 # Создаем временную таблицу для дедупликации
                 self._create_temp_table(cursor, vacancies)
@@ -86,10 +86,10 @@ class SQLDeduplicationService(AbstractDeduplicationService):
 
     def _create_temp_table(self, cursor: Any, vacancies: List[Vacancy]) -> None:
         """Создает временную таблицу PostgreSQL для дедупликации.
-        
+
         Создает таблицу temp_deduplication с нормализованными данными вакансий
         включая приоритеты источников для межплатформенной дедупликации.
-        
+
         Args:
             cursor: Курсор базы данных PostgreSQL.
             vacancies: Список вакансий для обработки.
@@ -118,7 +118,7 @@ class SQLDeduplicationService(AbstractDeduplicationService):
             # Извлекаем и нормализуем имя работодателя
             employer_name = "неизвестный"
             employer_id = None
-            
+
             if vacancy.employer:
                 if hasattr(vacancy.employer, "get_name"):
                     employer_name = vacancy.employer.get_name()
@@ -128,7 +128,7 @@ class SQLDeduplicationService(AbstractDeduplicationService):
                     employer_name = vacancy.employer.get("name", "неизвестный")
                 else:
                     employer_name = str(vacancy.employer)
-                    
+
                 # Извлекаем employer.id (hh_id или sj_id)
                 if hasattr(vacancy.employer, "get_id"):
                     employer_id = vacancy.employer.get_id()
@@ -138,7 +138,7 @@ class SQLDeduplicationService(AbstractDeduplicationService):
                     employer_id = vacancy.employer.get("id")
 
             employer_normalized = self._normalize_text(employer_name)
-            
+
             # Извлекаем и нормализуем зарплату
             salary_normalized = "не_указана"
             if vacancy.salary:
@@ -151,12 +151,12 @@ class SQLDeduplicationService(AbstractDeduplicationService):
                         salary_normalized = f"{salary_from}-{salary_to}_{currency}"
                 else:
                     salary_normalized = self._normalize_text(str(vacancy.salary))
-            
+
             # Извлекаем и нормализуем город/регион
             area_normalized = "не_указан"
             if vacancy.area:
                 area_normalized = self._normalize_text(str(vacancy.area))
-            
+
             # Определяем приоритет источника (HH = 1, SJ = 2, остальные = 3)
             source = getattr(vacancy, "source", "").lower()
             if "hh" in source:
@@ -165,17 +165,19 @@ class SQLDeduplicationService(AbstractDeduplicationService):
                 source_priority = 2  # SJ второй приоритет
             else:
                 source_priority = 3  # Остальные источники
-            
-            dedup_data.append((
-                vacancy.id,  # Исправлено: vacancy.id вместо vacancy.vacancy_id
-                title_normalized, 
-                employer_normalized, 
-                employer_id, 
-                salary_normalized,
-                area_normalized,
-                source_priority,
-                idx
-            ))
+
+            dedup_data.append(
+                (
+                    vacancy.id,  # Исправлено: vacancy.id вместо vacancy.vacancy_id
+                    title_normalized,
+                    employer_normalized,
+                    employer_id,
+                    salary_normalized,
+                    area_normalized,
+                    source_priority,
+                    idx,
+                )
+            )
 
         # Вставляем данные
         cursor.executemany(
@@ -211,7 +213,7 @@ class SQLDeduplicationService(AbstractDeduplicationService):
 
         cursor.execute(query)
         results = cursor.fetchall()
-        
+
         if results is None:
             logger.error("SQL запрос вернул None - проблема с курсором")
             return []

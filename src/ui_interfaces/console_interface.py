@@ -480,9 +480,7 @@ class UserInterface:
                             deleted_count = 0
                             for vacancy in vacancies_to_delete:
                                 # Используем storage для удаления
-                                if self.storage.delete_vacancy_by_id(
-                                    vacancy.id
-                                ):  # Изменено: используется storage
+                                if self.storage.delete_vacancy_by_id(vacancy.id):  # Изменено: используется storage
                                     vacancies.remove(vacancy)
                                     deleted_count += 1
 
@@ -521,9 +519,7 @@ class UserInterface:
 
                     if confirm_action("Удалить эту вакансию?"):
                         # Используем storage для удаления
-                        if self.storage.delete_vacancy_by_id(
-                            vacancy_to_delete.id
-                        ):  # Изменено: используется storage
+                        if self.storage.delete_vacancy_by_id(vacancy_to_delete.id):  # Изменено: используется storage
                             print("Вакансия успешно удалена.")
                             # Удаляем из локального списка и обновляем отображение
                             vacancies.remove(vacancy_to_delete)

@@ -42,15 +42,17 @@ class HHParser(BaseParser):
                     # Устанавливаем отдельные поля requirements и responsibilities
                     requirement = snippet.get("requirement")
                     responsibility = snippet.get("responsibility")
-                    
+
                     if requirement:
                         item["requirements"] = requirement
                         logger.debug(f"Установлены требования для вакансии {item.get('id')}: {requirement[:50]}...")
-                    
+
                     if responsibility:
                         item["responsibilities"] = responsibility
-                        logger.debug(f"Установлены обязанности для вакансии {item.get('id')}: {responsibility[:50]}...")
-                    
+                        logger.debug(
+                            f"Установлены обязанности для вакансии {item.get('id')}: {responsibility[:50]}..."
+                        )
+
                     # Обогащаем description только если его нет
                     if not item.get("description"):
                         desc_parts = []
@@ -68,15 +70,22 @@ class HHParser(BaseParser):
                         # Используем DescriptionParser для извлечения из полного описания
                         try:
                             from src.utils.description_parser import DescriptionParser
+
                             parser = DescriptionParser()
-                            requirements, responsibilities = parser.extract_requirements_and_responsibilities(description)
-                            
+                            requirements, responsibilities = parser.extract_requirements_and_responsibilities(
+                                description
+                            )
+
                             if requirements:
                                 item["requirements"] = requirements
-                                logger.debug(f"Извлечены требования из description для {item.get('id')}: {requirements[:50]}...")
+                                logger.debug(
+                                    f"Извлечены требования из description для {item.get('id')}: {requirements[:50]}..."
+                                )
                             if responsibilities:
                                 item["responsibilities"] = responsibilities
-                                logger.debug(f"Извлечены обязанности из description для {item.get('id')}: {responsibilities[:50]}...")
+                                logger.debug(
+                                    f"Извлечены обязанности из description для {item.get('id')}: {responsibilities[:50]}..."
+                                )
                         except Exception as e:
                             logger.warning(f"Ошибка извлечения из description для {item.get('id')}: {e}")
 
@@ -88,7 +97,7 @@ class HHParser(BaseParser):
                     item["vacancy_id"] = item["id"]
                 if "name" in item:
                     item["title"] = item["name"]
-                
+
                 # Создаем объект вакансии из данных API
                 vacancy = Vacancy.from_dict(item)
 

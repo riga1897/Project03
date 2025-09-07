@@ -224,7 +224,7 @@ def _build_searchable_text(vacancy: Vacancy) -> str:
             searchable_text.append(str(vacancy.employment.name))
 
     # Проверяем навыки (если поле существует)
-    if hasattr(vacancy, 'skills') and vacancy.skills:
+    if hasattr(vacancy, "skills") and vacancy.skills:
         for skill in vacancy.skills:
             if isinstance(skill, dict) and "name" in skill:
                 searchable_text.append(str(skill["name"]))

@@ -39,8 +39,7 @@ class AbstractVacancy(abc.ABC):
 class Vacancy(AbstractVacancy):
     """Конкретная реализация вакансии."""
 
-    def __init__(self, title: str, salary: str, url: str, description: str,
-                 city: str):
+    def __init__(self, title: str, salary: str, url: str, description: str, city: str):
         """
         Инициализировать вакансию.
 

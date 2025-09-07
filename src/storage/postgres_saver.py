@@ -73,7 +73,6 @@ class PostgresSaver(AbstractVacancyStorage):
             logger.error(f"Ошибка подключения к БД {db_name}: {e}")
             raise
 
-
     def _ensure_companies_table_exists(self):
         """Создает таблицу companies если она не существует"""
         connection = self._get_connection()
@@ -327,9 +326,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 except Exception:
                     pass
 
-    def add_vacancy_batch_optimized(
-        self, vacancies: Union[Vacancy, List[Vacancy]]
-    ) -> List[str]:
+    def add_vacancy_batch_optimized(self, vacancies: Union[Vacancy, List[Vacancy]]) -> List[str]:
         """
         Максимально оптимизированное batch-добавление вакансий через временные таблицы.
         Использует SQL для всех операций, минимизирует количество запросов.

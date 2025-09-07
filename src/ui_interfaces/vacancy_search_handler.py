@@ -219,7 +219,7 @@ class VacancySearchHandler:
 
         # Используем batch-метод для проверки дубликатов
         existence_map = self.storage.check_vacancies_exist_batch(vacancies)
-        
+
         # ДОБАВЛЕНО: Логирование результата проверки
         print(f"DEBUG: Результат check_vacancies_exist_batch:")
         print(f"  Тип: {type(existence_map)}")

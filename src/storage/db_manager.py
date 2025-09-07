@@ -35,17 +35,17 @@ TARGET_COMPANIES = TargetCompanies.get_all_companies()
 
 class DBManager(AbstractDBManager):
     """Менеджер базы данных PostgreSQL.
-    
+
     Предоставляет методы для выполнения запросов к PostgreSQL базе данных,
     управления подключениями и специализированные операции с вакансиями.
-    
+
     Attributes:
         db_config: Конфигурация подключения к базе данных
     """
 
     def __init__(self, db_config: Optional[DatabaseConfig] = None) -> None:
         """Инициализация менеджера базы данных.
-        
+
         Args:
             db_config: Конфигурация базы данных. Если None, используется конфигурация по умолчанию.
         """
@@ -79,7 +79,7 @@ class DBManager(AbstractDBManager):
 
     def _ensure_database_exists(self) -> None:
         """Создает базу данных если она не существует.
-        
+
         Подключается к системной БД postgres для создания новой БД.
         """
         if not PSYCOPG2_AVAILABLE:
@@ -89,11 +89,11 @@ class DBManager(AbstractDBManager):
         # Получаем параметры подключения
         connection_params = self.db_config.get_connection_params()
         database_name = connection_params["database"]
-        
+
         # Создаем параметры для подключения к системной БД postgres
         system_params = connection_params.copy()
         system_params["database"] = "postgres"
-        
+
         # Подключаемся к системной БД postgres для создания новой БД
         try:
             connection = psycopg2.connect(**system_params)
@@ -142,7 +142,7 @@ class DBManager(AbstractDBManager):
 
     def create_tables(self) -> None:
         """Создает таблицы компаний и вакансий в базе данных.
-        
+
         Автоматически создает таблицы если они не существуют и добавляет
         недостающие поля в существующие таблицы.
         """
@@ -282,7 +282,7 @@ class DBManager(AbstractDBManager):
 
     def populate_companies_table(self) -> None:
         """Заполняет таблицу companies целевыми компаниями.
-        
+
         Добавляет в таблицу все целевые компании из конфигурации
         с их HH и SuperJob идентификаторами.
         """
@@ -346,7 +346,7 @@ class DBManager(AbstractDBManager):
 
     def get_target_companies_analysis(self) -> List[Tuple[str, int]]:
         """Получает анализ ТОЛЬКО по целевым компаниям.
-        
+
         Этот метод специально предназначен для демонстрации п.10.
 
         Returns:
@@ -369,7 +369,7 @@ class DBManager(AbstractDBManager):
 
     def get_companies_and_vacancies_count(self) -> List[Tuple[str, int]]:
         """Получает список всех компаний и количество вакансий у каждой компании.
-        
+
         ВАЖНО: Метод фильтрует результаты по целевым компаниям из конфигурации.
 
         Returns:

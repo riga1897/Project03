@@ -355,7 +355,7 @@ class UnifiedAPI:
     def get_all_vacancies(self, query: str, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:
         """Получение всех вакансий из всех доступных источников"""
         # Используем переданные sources или все доступные по умолчанию
-        sources = kwargs.pop('sources', None) or self.get_available_sources()
+        sources = kwargs.pop("sources", None) or self.get_available_sources()
         return self.get_vacancies_from_sources(query, sources=sources, **kwargs)
 
     def get_vacancies_from_all_sources(self, query: str, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:

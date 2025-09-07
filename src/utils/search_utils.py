@@ -5,7 +5,7 @@
 
 Functions:
     normalize_query: Нормализация поискового запроса
-    extract_keywords: Извлечение ключевых слов из запроса  
+    extract_keywords: Извлечение ключевых слов из запроса
     build_search_params: Построение параметров для API поиска
     filter_vacancies_by_keywords: Фильтрация вакансий по ключевым словам
     filter_vacancies_by_salary: Фильтрация по зарплате
@@ -211,7 +211,7 @@ def filter_vacancies_by_keyword(vacancies: List[Vacancy], keyword: str) -> List[
         # Удалена проверка detailed_description - поле не существует в новой модели
 
         # Проверяем в навыках (если поле существует)
-        if hasattr(vacancy, 'skills') and vacancy.skills:
+        if hasattr(vacancy, "skills") and vacancy.skills:
             try:
                 for skill in vacancy.skills:
                     if isinstance(skill, dict) and "name" in skill:
@@ -255,7 +255,7 @@ def filter_vacancies_by_keyword(vacancies: List[Vacancy], keyword: str) -> List[
                 relevance_score += 3
 
         # Проверяем в бонусах/льготах (если поле существует)
-        if hasattr(vacancy, 'benefits') and vacancy.benefits:
+        if hasattr(vacancy, "benefits") and vacancy.benefits:
             try:
                 if keyword_lower in str(vacancy.benefits).lower():
                     relevance_score += 2
@@ -317,7 +317,7 @@ def vacancy_contains_keyword(vacancy: Vacancy, keyword: str) -> bool:
             pass  # Поле profession отсутствует или имеет неожиданный тип
 
     # Проверяем в навыках (если поле существует)
-    if hasattr(vacancy, 'skills') and vacancy.skills:
+    if hasattr(vacancy, "skills") and vacancy.skills:
         try:
             for skill in vacancy.skills:
                 if isinstance(skill, dict) and "name" in skill:
@@ -333,7 +333,7 @@ def vacancy_contains_keyword(vacancy: Vacancy, keyword: str) -> bool:
 
 class SearchQueryParser:
     """Класс для парсинга сложных поисковых запросов.
-    
+
     Обрабатывает поисковые запросы с операторами AND, OR, кавычками
     и другими специальными конструкциями для улучшения точности поиска.
     """
@@ -344,10 +344,10 @@ class SearchQueryParser:
 
     def parse(self, query: str) -> Optional[Dict[str, Any]]:
         """Парсинг сложного поискового запроса.
-        
+
         Args:
             query: Строка поискового запроса.
-            
+
         Returns:
             Словарь с разобранными компонентами запроса или None.
         """

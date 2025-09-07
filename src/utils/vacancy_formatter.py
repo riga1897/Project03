@@ -2,7 +2,6 @@ import logging
 import re
 from typing import Any, List, Optional
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -129,7 +128,7 @@ class VacancyFormatter:
         # В новой Pydantic архитектуре employer - объект с методом get_name()
         if hasattr(employer, "get_name"):
             return employer.get_name()
-        
+
         # Если это Pydantic объект с атрибутом name
         if hasattr(employer, "name"):
             return employer.name
@@ -154,7 +153,7 @@ class VacancyFormatter:
         """Извлечение обязанностей"""
         # Сначала пытаемся получить прямое поле
         responsibilities = getattr(vacancy, "responsibilities", None)
-        
+
         # Если поле пустое, проверяем snippet
         if not responsibilities or responsibilities.strip() == "":
             snippet = getattr(vacancy, "snippet", None)
@@ -163,18 +162,18 @@ class VacancyFormatter:
                     responsibilities = snippet.get("responsibility")
                 elif hasattr(snippet, "responsibility"):
                     responsibilities = snippet.responsibility
-        
+
         # Проверяем, что строка не пустая
         if responsibilities and responsibilities.strip():
             return responsibilities.strip()
-        
+
         return None
 
     def _extract_requirements(self, vacancy: Any) -> Optional[str]:
         """Извлечение требований"""
         # Сначала пытаемся получить прямое поле
         requirements = getattr(vacancy, "requirements", None)
-        
+
         # Если поле пустое, проверяем snippet
         if not requirements or requirements.strip() == "":
             snippet = getattr(vacancy, "snippet", None)
@@ -183,11 +182,11 @@ class VacancyFormatter:
                     requirements = snippet.get("requirement")
                 elif hasattr(snippet, "requirement"):
                     requirements = snippet.requirement
-        
+
         # Проверяем, что строка не пустая
         if requirements and requirements.strip():
             return requirements.strip()
-        
+
         return None
 
     def _extract_conditions(self, vacancy: Any) -> Optional[str]:
@@ -280,15 +279,15 @@ class VacancyFormatter:
         """Форматирование графика работы"""
         if not schedule:
             return "Не указан"
-        
+
         # В новой Pydantic архитектуре schedule - это объект с методом get_name()
         if hasattr(schedule, "get_name"):
             return schedule.get_name()
-        
+
         # Если это объект с атрибутом name
         if hasattr(schedule, "name"):
             return schedule.name
-        
+
         # Fallback для строк и остального
         return str(schedule)
 

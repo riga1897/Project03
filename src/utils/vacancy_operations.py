@@ -21,10 +21,15 @@ class VacancyOperations:
         Returns:
             List[Vacancy]: Список вакансий с указанной зарплатой
         """
-        return [v for v in vacancies if v.salary and (
-            (isinstance(v.salary, dict) and (v.salary.get('from') or v.salary.get('to'))) or
-            (hasattr(v.salary, 'salary_from') and (v.salary.salary_from or v.salary.salary_to))
-        )]
+        return [
+            v
+            for v in vacancies
+            if v.salary
+            and (
+                (isinstance(v.salary, dict) and (v.salary.get("from") or v.salary.get("to")))
+                or (hasattr(v.salary, "salary_from") and (v.salary.salary_from or v.salary.salary_to))
+            )
+        ]
 
     @staticmethod
     def sort_vacancies_by_salary(vacancies: List[Vacancy], reverse: bool = True) -> List[Vacancy]:
@@ -43,8 +48,8 @@ class VacancyOperations:
             if vacancy.salary:
                 # Обработка нового формата (словарь)
                 if isinstance(vacancy.salary, dict):
-                    salary_from = vacancy.salary.get('from', 0) or 0
-                    salary_to = vacancy.salary.get('to', 0) or 0
+                    salary_from = vacancy.salary.get("from", 0) or 0
+                    salary_to = vacancy.salary.get("to", 0) or 0
                     # Возвращаем максимальное из from/to или среднее
                     if salary_from and salary_to:
                         return max(salary_from, salary_to)
@@ -78,11 +83,11 @@ class VacancyOperations:
 
             # Получаем значения зарплаты (поддержка нового и старого формата)
             if isinstance(vacancy.salary, dict):
-                salary_from = vacancy.salary.get('from')
-                salary_to = vacancy.salary.get('to')
+                salary_from = vacancy.salary.get("from")
+                salary_to = vacancy.salary.get("to")
             else:
-                salary_from = getattr(vacancy.salary, 'salary_from', None)
-                salary_to = getattr(vacancy.salary, 'salary_to', None)
+                salary_from = getattr(vacancy.salary, "salary_from", None)
+                salary_to = getattr(vacancy.salary, "salary_to", None)
 
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:
@@ -129,11 +134,11 @@ class VacancyOperations:
 
             # Получаем значения зарплаты (поддержка нового и старого формата)
             if isinstance(vacancy.salary, dict):
-                salary_from = vacancy.salary.get('from')
-                salary_to = vacancy.salary.get('to')
+                salary_from = vacancy.salary.get("from")
+                salary_to = vacancy.salary.get("to")
             else:
-                salary_from = getattr(vacancy.salary, 'salary_from', None)
-                salary_to = getattr(vacancy.salary, 'salary_to', None)
+                salary_from = getattr(vacancy.salary, "salary_from", None)
+                salary_to = getattr(vacancy.salary, "salary_to", None)
 
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:
@@ -181,11 +186,11 @@ class VacancyOperations:
 
             # Получаем значения зарплаты (поддержка нового и старого формата)
             if isinstance(vacancy.salary, dict):
-                salary_from = vacancy.salary.get('from')
-                salary_to = vacancy.salary.get('to')
+                salary_from = vacancy.salary.get("from")
+                salary_to = vacancy.salary.get("to")
             else:
-                salary_from = getattr(vacancy.salary, 'salary_from', None)
-                salary_to = getattr(vacancy.salary, 'salary_to', None)
+                salary_from = getattr(vacancy.salary, "salary_from", None)
+                salary_to = getattr(vacancy.salary, "salary_to", None)
 
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:

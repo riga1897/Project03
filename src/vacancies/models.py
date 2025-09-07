@@ -1,7 +1,7 @@
 """Модели данных для системы поиска вакансий на основе Pydantic v2.
 
 Этот модуль содержит все модели данных для работы с вакансиями, работодателями
-и связанными объектами. Полностью заменяет прежнюю архитектуру с улучшенной 
+и связанными объектами. Полностью заменяет прежнюю архитектуру с улучшенной
 валидацией, типобезопасностью и автоматической сериализацией.
 
 Classes:
@@ -29,10 +29,10 @@ logger = logging.getLogger(__name__)
 
 class Employer(BaseModel):
     """Модель работодателя с валидацией данных.
-    
+
     Представляет информацию о компании-работодателе с автоматической валидацией
     и нормализацией данных при создании и обновлении объекта.
-    
+
     Attributes:
         name: Название компании (обязательное поле).
         id: Уникальный идентификатор работодателя.
@@ -45,14 +45,14 @@ class Employer(BaseModel):
     trusted: Optional[bool] = Field(None, description="Проверенный работодатель")
     alternate_url: Optional[str] = Field(None, description="URL работодателя")
 
-    @field_validator('name')
+    @field_validator("name")
     @classmethod
     def validate_name(cls, v: str) -> str:
         """Валидирует и нормализует название компании.
-        
+
         Args:
             v: Входное название компании.
-            
+
         Returns:
             Нормализованное название компании.
         """
@@ -60,18 +60,18 @@ class Employer(BaseModel):
             return "Не указана"
         return v.strip()
 
-    @field_validator('alternate_url')
+    @field_validator("alternate_url")
     @classmethod
     def validate_url(cls, v: Optional[str]) -> Optional[str]:
         """Валидирует и нормализует URL.
-        
+
         Args:
             v: Входной URL.
-            
+
         Returns:
             Нормализованный URL с протоколом.
         """
-        if v and not (v.startswith('http://') or v.startswith('https://')):
+        if v and not (v.startswith("http://") or v.startswith("https://")):
             return f"https://{v}"
         return v
 
@@ -118,7 +118,7 @@ class Experience(BaseModel):
     name: str = Field(..., description="Описание требуемого опыта")
     id: Optional[str] = Field(None, description="ID опыта")
 
-    @field_validator('name')
+    @field_validator("name")
     @classmethod
     def validate_name(cls, v):
         if not v:
@@ -158,7 +158,7 @@ class Employment(BaseModel):
     name: str = Field(..., description="Тип занятости")
     id: Optional[str] = Field(None, description="ID типа занятости")
 
-    @field_validator('name')
+    @field_validator("name")
     @classmethod
     def validate_name(cls, v):
         if not v:
@@ -198,7 +198,7 @@ class Schedule(BaseModel):
     name: str = Field(..., description="Название графика")
     id: Optional[str] = Field(None, description="ID графика")
 
-    @field_validator('name')
+    @field_validator("name")
     @classmethod
     def validate_name(cls, v):
         if not v:
@@ -263,23 +263,23 @@ class Vacancy(BaseModel):
     source: Optional[str] = Field(None, description="Источник вакансии")
     company_id: Optional[int] = Field(None, description="ID компании в БД (для связи с таблицей companies)")
 
-    @field_validator('title', mode='before')
+    @field_validator("title", mode="before")
     @classmethod
     def validate_name_vacancy(cls, v):
         if not v or not v.strip():
-            raise ValueError('Название вакансии не может быть пустым')
+            raise ValueError("Название вакансии не может быть пустым")
         return v.strip()
 
-    @field_validator('url', mode='before')
+    @field_validator("url", mode="before")
     @classmethod
     def validate_url_vacancy(cls, v):
         if not v:
-            raise ValueError('URL вакансии обязателен')
-        if not (v.startswith('http://') or v.startswith('https://')):
+            raise ValueError("URL вакансии обязателен")
+        if not (v.startswith("http://") or v.startswith("https://")):
             return f"https://{v}"
         return v
 
-    @field_validator('area', mode='before')
+    @field_validator("area", mode="before")
     @classmethod
     def validate_area(cls, v):
         """Валидация и нормализация поля area из API ответов"""
@@ -289,12 +289,12 @@ class Vacancy(BaseModel):
         # Если пришел объект из API (например, {'id': '1', 'name': 'Москва'})
         if isinstance(v, dict):
             # Приоритет: name > title > id
-            if 'name' in v:
-                return str(v['name']).strip()
-            elif 'title' in v:
-                return str(v['title']).strip()
-            elif 'id' in v:
-                return str(v['id']).strip()
+            if "name" in v:
+                return str(v["name"]).strip()
+            elif "title" in v:
+                return str(v["title"]).strip()
+            elif "id" in v:
+                return str(v["id"]).strip()
             else:
                 return str(v).strip() if str(v).strip() != "{}" else None
 
@@ -305,7 +305,7 @@ class Vacancy(BaseModel):
         # Для остальных типов
         return str(v).strip() if str(v).strip() else None
 
-    @field_validator('published_at', mode='before')
+    @field_validator("published_at", mode="before")
     @classmethod
     def validate_published_at(cls, v):
         if v is None:
@@ -318,12 +318,12 @@ class Vacancy(BaseModel):
                         return datetime.strptime(v, fmt)
                     except ValueError:
                         continue
-                return datetime.fromisoformat(v.replace('Z', '+00:00'))
+                return datetime.fromisoformat(v.replace("Z", "+00:00"))
             except (ValueError, TypeError):
                 return v  # Возвращаем как есть, если не удалось распарсить
         return v
 
-    @field_validator('salary', mode='before')
+    @field_validator("salary", mode="before")
     @classmethod
     def validate_salary(cls, v):
         if v is None:
@@ -331,15 +331,15 @@ class Vacancy(BaseModel):
         if isinstance(v, dict):
             return v
         # Если передан объект Salary, конвертируем в словарь
-        if hasattr(v, 'to_dict'):
+        if hasattr(v, "to_dict"):
             return v.to_dict()
         return v
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def validate_vacancy_data(self):
         """Комплексная валидация данных вакансии"""
         # Проверяем что ID и URL совместимы с источником
-        if self.source == 'hh.ru' and self.id:
+        if self.source == "hh.ru" and self.id:
             if not str(self.id).isdigit():
                 # Для HeadHunter ID обычно числовой, но оставляем гибкость
                 pass
@@ -369,12 +369,12 @@ class Vacancy(BaseModel):
         """Преобразование в словарь"""
         data = self.model_dump()
         # Преобразуем datetime в строки для JSON совместимости
-        if data.get('published_at') and isinstance(data['published_at'], datetime):
-            data['published_at'] = data['published_at'].isoformat()
-        if data.get('created_at') and isinstance(data['created_at'], datetime):
-            data['created_at'] = data['created_at'].isoformat()
-        if data.get('updated_at') and isinstance(data['updated_at'], datetime):
-            data['updated_at'] = data['updated_at'].isoformat()
+        if data.get("published_at") and isinstance(data["published_at"], datetime):
+            data["published_at"] = data["published_at"].isoformat()
+        if data.get("created_at") and isinstance(data["created_at"], datetime):
+            data["created_at"] = data["created_at"].isoformat()
+        if data.get("updated_at") and isinstance(data["updated_at"], datetime):
+            data["updated_at"] = data["updated_at"].isoformat()
         return data
 
     @classmethod
@@ -386,26 +386,26 @@ class Vacancy(BaseModel):
         # ИСПРАВЛЕНО: Правильный маппинг для Pydantic v2 с alias
         # Если данные приходят с API ключами, сохраняем их в правильных alias именах
         # НЕ удаляем исходные ключи, а добавляем нужные alias ключи
-        if 'id' in processed_data and 'vacancy_id' not in processed_data:
-            processed_data['vacancy_id'] = processed_data['id']
+        if "id" in processed_data and "vacancy_id" not in processed_data:
+            processed_data["vacancy_id"] = processed_data["id"]
         # Для Pydantic v2 с alias="name" нужно оставить данные в ключе 'name'
         # Аналогично для alternate_url
 
         # Employer
-        if 'employer' in processed_data and isinstance(processed_data['employer'], dict):
-            processed_data['employer'] = Employer(**processed_data['employer'])
+        if "employer" in processed_data and isinstance(processed_data["employer"], dict):
+            processed_data["employer"] = Employer(**processed_data["employer"])
 
         # Experience
-        if 'experience' in processed_data and isinstance(processed_data['experience'], dict):
-            processed_data['experience'] = Experience(**processed_data['experience'])
+        if "experience" in processed_data and isinstance(processed_data["experience"], dict):
+            processed_data["experience"] = Experience(**processed_data["experience"])
 
         # Employment
-        if 'employment' in processed_data and isinstance(processed_data['employment'], dict):
-            processed_data['employment'] = Employment(**processed_data['employment'])
+        if "employment" in processed_data and isinstance(processed_data["employment"], dict):
+            processed_data["employment"] = Employment(**processed_data["employment"])
 
         # Schedule
-        if 'schedule' in processed_data and isinstance(processed_data['schedule'], dict):
-            processed_data['schedule'] = Schedule(**processed_data['schedule'])
+        if "schedule" in processed_data and isinstance(processed_data["schedule"], dict):
+            processed_data["schedule"] = Schedule(**processed_data["schedule"])
 
         return cls(**processed_data)
 
@@ -437,64 +437,63 @@ class VacancyFactory:
     @staticmethod
     def from_hh_api(data: Dict[str, Any]) -> Vacancy:
         """Создание вакансии из данных HeadHunter API"""
-        employer_data = data.get('employer', {})
-        salary_data = data.get('salary', {})
-        experience_data = data.get('experience', {})
-        employment_data = data.get('employment', {})
-        schedule_data = data.get('schedule', {})
+        employer_data = data.get("employer", {})
+        salary_data = data.get("salary", {})
+        experience_data = data.get("experience", {})
+        employment_data = data.get("employment", {})
+        schedule_data = data.get("schedule", {})
 
         return Vacancy(
-            vacancy_id=str(data.get('id', str(uuid.uuid4()))),
-            name=data.get('name', ''),
-            alternate_url=data.get('alternate_url', ''),
+            vacancy_id=str(data.get("id", str(uuid.uuid4()))),
+            name=data.get("name", ""),
+            alternate_url=data.get("alternate_url", ""),
             employer=Employer(**employer_data) if employer_data else None,
             salary=salary_data if salary_data else None,
             experience=Experience(**experience_data) if experience_data else None,
             employment=Employment(**employment_data) if employment_data else None,
             schedule=Schedule(**schedule_data) if schedule_data else None,
-            area=data.get('area', {}).get('name') if isinstance(data.get('area'), dict) else data.get('area'),
-            requirements=data.get('snippet', {}).get('requirement') if isinstance(data.get('snippet'), dict) else None,
-            responsibilities=data.get('snippet', {}).get('responsibility') if isinstance(data.get('snippet'), dict) else None,
-            description=data.get('description'),
-            published_at=data.get('published_at'),
-            source='hh.ru'
+            area=data.get("area", {}).get("name") if isinstance(data.get("area"), dict) else data.get("area"),
+            requirements=data.get("snippet", {}).get("requirement") if isinstance(data.get("snippet"), dict) else None,
+            responsibilities=(
+                data.get("snippet", {}).get("responsibility") if isinstance(data.get("snippet"), dict) else None
+            ),
+            description=data.get("description"),
+            published_at=data.get("published_at"),
+            source="hh.ru",
         )
 
     @staticmethod
     def from_superjob_api(data: Dict[str, Any]) -> Vacancy:
         """Создание вакансии из данных SuperJob API"""
         salary_data = None
-        if data.get('payment_from', 0) > 0 or data.get('payment_to', 0) > 0:
+        if data.get("payment_from", 0) > 0 or data.get("payment_to", 0) > 0:
             salary_data = {
-                'from': data.get('payment_from') if data.get('payment_from', 0) > 0 else None,
-                'to': data.get('payment_to') if data.get('payment_to', 0) > 0 else None,
-                'currency': 'RUR',
-                'gross': False
+                "from": data.get("payment_from") if data.get("payment_from", 0) > 0 else None,
+                "to": data.get("payment_to") if data.get("payment_to", 0) > 0 else None,
+                "currency": "RUR",
+                "gross": False,
             }
 
         return Vacancy(
-            vacancy_id=str(data.get('id', str(uuid.uuid4()))),
-            name=data.get('profession', ''),
-            alternate_url=data.get('link', ''),
-            employer=Employer(
-                name=data.get('firm_name', 'Не указана'),
-                id=str(data.get('id_client', '')) if data.get('id_client') else None
-            ) if data.get('firm_name') else None,
+            vacancy_id=str(data.get("id", str(uuid.uuid4()))),
+            name=data.get("profession", ""),
+            alternate_url=data.get("link", ""),
+            employer=(
+                Employer(
+                    name=data.get("firm_name", "Не указана"),
+                    id=str(data.get("id_client", "")) if data.get("id_client") else None,
+                )
+                if data.get("firm_name")
+                else None
+            ),
             salary=salary_data,
-            area=data.get('town', {}).get('title') if isinstance(data.get('town'), dict) else data.get('town'),
-            requirements=data.get('candidat'),
-            responsibilities=data.get('work'),
-            published_at=data.get('date_published'),
-            source='superjob.ru'
+            area=data.get("town", {}).get("title") if isinstance(data.get("town"), dict) else data.get("town"),
+            requirements=data.get("candidat"),
+            responsibilities=data.get("work"),
+            published_at=data.get("date_published"),
+            source="superjob.ru",
         )
 
 
 # Типы для экспорта
-__all__ = [
-    'Employer',
-    'Experience',
-    'Employment',
-    'Schedule',
-    'Vacancy',
-    'VacancyFactory'
-]
+__all__ = ["Employer", "Experience", "Employment", "Schedule", "Vacancy", "VacancyFactory"]
