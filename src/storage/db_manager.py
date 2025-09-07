@@ -77,14 +77,14 @@ class DBManager(AbstractDBManager):
             logger.error(f"Ошибка подключения к базе данных: {e}")
             raise
 
-    def _ensure_database_exists(self) -> None:
+    def _ensure_database_exists(self) -> bool:
         """Создает базу данных если она не существует.
 
         Подключается к системной БД postgres для создания новой БД.
         """
         if not PSYCOPG2_AVAILABLE:
             logger.warning("psycopg2 недоступен, пропускаем создание базы данных")
-            return
+            return True
 
         # Получаем параметры подключения
         connection_params = self.db_config.get_connection_params()
@@ -99,6 +99,10 @@ class DBManager(AbstractDBManager):
             connection = psycopg2.connect(**system_params)  # type: ignore
             connection.autocommit = True
         except PsycopgError as e:
+            error_message = str(e)
+            if "database" in error_message and "already exists" in error_message:
+                logger.info(f"База данных {database_name} уже существует")
+                return True
             logger.error(f"Не удается подключиться к системной БД postgres: {e}")
             logger.info("Пытаемся подключиться к целевой БД напрямую...")
             try:
@@ -109,7 +113,7 @@ class DBManager(AbstractDBManager):
                 return
             except PsycopgError:
                 logger.error(f"База данных {database_name} недоступна и не может быть создана")
-                raise
+                return False
 
         try:
             cursor = connection.cursor()
@@ -136,11 +140,14 @@ class DBManager(AbstractDBManager):
             except PsycopgError:
                 raise e
         finally:
-            if "cursor" in locals():
+            if "cursor" in locals() and cursor is not None:
                 cursor.close()
-            connection.close()
+            if "connection" in locals() and connection is not None:
+                connection.close()
+        
+        return True
 
-    def create_tables(self) -> None:
+    def create_tables(self) -> bool:
         """Создает таблицы компаний и вакансий в базе данных.
 
         Автоматически создает таблицы если они не существуют и добавляет
@@ -278,9 +285,10 @@ class DBManager(AbstractDBManager):
 
         except Exception as e:
             logger.error(f"Ошибка при создании таблиц: {e}")
-            raise
+            return False
+        return True
 
-    def populate_companies_table(self) -> None:
+    def populate_companies_table(self) -> bool:
         """Заполняет таблицу companies целевыми компаниями.
 
         Добавляет в таблицу все целевые компании из конфигурации
@@ -290,24 +298,24 @@ class DBManager(AbstractDBManager):
             # Используем контекстный менеджер для безопасной работы с подключением
             with self._get_connection() as connection:
                 cursor = connection.cursor()
-                    # Устанавливаем кодировку сессии
-                    cursor.execute("SET client_encoding TO 'UTF8'")
+                # Устанавливаем кодировку сессии
+                cursor.execute("SET client_encoding TO 'UTF8'")
 
-                    # Проверяем, существует ли таблица companies
-                    cursor.execute(
-                        """
-                        SELECT EXISTS (
-                            SELECT FROM information_schema.tables
-                            WHERE table_schema = 'public'
-                            AND table_name = 'companies'
-                        );
+                # Проверяем, существует ли таблица companies
+                cursor.execute(
                     """
-                    )
+                    SELECT EXISTS (
+                        SELECT FROM information_schema.tables
+                        WHERE table_schema = 'public'
+                        AND table_name = 'companies'
+                    );
+                """
+                )
 
-                    table_exists = cursor.fetchone()[0]
-                    if not table_exists:
-                        logger.warning("Таблица companies не существует. Таблицы должны быть созданы заранее.")
-                        return
+                table_exists = cursor.fetchone()[0]
+                if not table_exists:
+                    logger.warning("Таблица companies не существует. Таблицы должны быть созданы заранее.")
+                    return False
 
                     # Проверяем, есть ли уже данные в таблице
                     cursor.execute("SELECT COUNT(*) FROM companies")
