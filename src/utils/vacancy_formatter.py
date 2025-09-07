@@ -93,18 +93,24 @@ class VacancyFormatter:
         if requirements:
             req_text = self.format_text(str(requirements), 200)
             lines.append(f"Требования: {req_text}")
+        else:
+            logger.debug(f"Нет требований для вакансии {getattr(vacancy, 'vacancy_id', 'NO_ID')}")
 
         # Обязанности (показываем в предпросмотре)
         responsibilities = self._extract_responsibilities(vacancy)
         if responsibilities:
             resp_text = self.format_text(str(responsibilities), 200)
             lines.append(f"Обязанности: {resp_text}")
+        else:
+            logger.debug(f"Нет обязанностей для вакансии {getattr(vacancy, 'vacancy_id', 'NO_ID')}")
 
         # Описание (показываем в предпросмотре)
         description = self._extract_description(vacancy)
         if description:
             desc_text = self.format_text(str(description), 250)
             lines.append(f"Описание: {desc_text}")
+        else:
+            logger.debug(f"Нет описания для вакансии {getattr(vacancy, 'vacancy_id', 'NO_ID')}")
 
         # Условия
         conditions = self._extract_conditions(vacancy)
@@ -146,27 +152,43 @@ class VacancyFormatter:
 
     def _extract_responsibilities(self, vacancy: Any) -> Optional[str]:
         """Извлечение обязанностей"""
+        # Сначала пытаемся получить прямое поле
         responsibilities = getattr(vacancy, "responsibilities", None)
         
-        # Если нет прямого поля responsibilities, пытаемся извлечь из snippet
-        if not responsibilities:
+        # Если поле пустое, проверяем snippet
+        if not responsibilities or responsibilities.strip() == "":
             snippet = getattr(vacancy, "snippet", None)
-            if snippet and isinstance(snippet, dict):
-                responsibilities = snippet.get("responsibility")
+            if snippet:
+                if isinstance(snippet, dict):
+                    responsibilities = snippet.get("responsibility")
+                elif hasattr(snippet, "responsibility"):
+                    responsibilities = snippet.responsibility
         
-        return responsibilities
+        # Проверяем, что строка не пустая
+        if responsibilities and responsibilities.strip():
+            return responsibilities.strip()
+        
+        return None
 
     def _extract_requirements(self, vacancy: Any) -> Optional[str]:
         """Извлечение требований"""
+        # Сначала пытаемся получить прямое поле
         requirements = getattr(vacancy, "requirements", None)
         
-        # Если нет прямого поля requirements, пытаемся извлечь из snippet
-        if not requirements:
+        # Если поле пустое, проверяем snippet
+        if not requirements or requirements.strip() == "":
             snippet = getattr(vacancy, "snippet", None)
-            if snippet and isinstance(snippet, dict):
-                requirements = snippet.get("requirement")
+            if snippet:
+                if isinstance(snippet, dict):
+                    requirements = snippet.get("requirement")
+                elif hasattr(snippet, "requirement"):
+                    requirements = snippet.requirement
         
-        return requirements
+        # Проверяем, что строка не пустая
+        if requirements and requirements.strip():
+            return requirements.strip()
+        
+        return None
 
     def _extract_conditions(self, vacancy: Any) -> Optional[str]:
         """Извлечение условий"""

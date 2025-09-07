@@ -1,0 +1,31 @@
+Файл .env не найден в следующих местах: ['.env']
+Используются переменные окружения системы.
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 36, in <module>
+    from src.user_interface import main
+  File "/home/runner/workspace/src/user_interface.py", line 9, in <module>
+    from src.storage.storage_factory import StorageFactory
+  File "/home/runner/workspace/src/storage/__init__.py", line 6, in <module>
+    from .postgres_saver import PostgresSaver
+  File "/home/runner/workspace/src/storage/postgres_saver.py", line 17, in <module>
+    from src.vacancies.models import Vacancy
+  File "/home/runner/workspace/src/vacancies/models.py", line 198, in <module>
+    class Vacancy(BaseModel):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pydantic/_internal/_model_construction.py", line 237, in __new__
+    complete_model_class(
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pydantic/_internal/_model_construction.py", line 597, in complete_model_class
+    schema = gen_schema.generate_schema(cls)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 711, in generate_schema
+    schema = self._generate_schema_inner(obj)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 1004, in _generate_schema_inner
+    return self._model_schema(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 775, in _model_schema
+    check_decorator_fields_exist(
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 210, in check_decorator_fields_exist
+    raise PydanticUserError(
+pydantic.errors.PydanticUserError: Decorators defined with incorrect fields: src.vacancies.models.Vacancy:15057888.validate_area (use check_fields=False if you're inheriting from the model and intended this)
+
+For further information visit https://errors.pydantic.dev/2.11/u/decorator-missing-field

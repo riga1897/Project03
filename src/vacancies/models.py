@@ -18,56 +18,56 @@ logger = logging.getLogger(__name__)
 
 class Employer(BaseModel):
     """Модель работодателя с Pydantic валидацией"""
-    
+
     name: str = Field(..., min_length=1, description="Название компании")
     id: Optional[str] = Field(None, description="ID работодателя")
     trusted: Optional[bool] = Field(None, description="Проверенный работодатель")
     alternate_url: Optional[str] = Field(None, description="URL работодателя")
-    
+
     @field_validator('name')
     @classmethod
     def validate_name(cls, v):
         if not v or v.strip() == "":
             return "Не указана"
         return v.strip()
-    
+
     @field_validator('alternate_url')
     @classmethod
     def validate_url(cls, v):
         if v and not (v.startswith('http://') or v.startswith('https://')):
             return f"https://{v}"
         return v
-    
+
     # Методы для обратной совместимости с существующим кодом
     def get_name(self) -> str:
         """Получить название компании"""
         return self.name
-    
+
     def get_id(self) -> Optional[str]:
         """Получить ID работодателя"""
         return self.id
-    
+
     def is_trusted(self) -> Optional[bool]:
         """Проверить, является ли работодатель проверенным"""
         return self.trusted
-    
+
     def get_url(self) -> Optional[str]:
         """Получить URL работодателя"""
         return self.alternate_url
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Преобразование объекта в словарь"""
         return self.model_dump()
-    
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Employer":
         """Создание объекта из словаря"""
         return cls(**data)
-    
+
     def get(self, key: str, default=None):
         """Dictionary-like access для обратной совместимости"""
         return getattr(self, key, default)
-    
+
     class Config:
         # Позволяем использовать свойства как поля
         validate_by_name = True
@@ -77,169 +77,161 @@ class Employer(BaseModel):
 
 class Experience(BaseModel):
     """Модель опыта работы с Pydantic валидацией"""
-    
+
     name: str = Field(..., description="Описание требуемого опыта")
     id: Optional[str] = Field(None, description="ID опыта")
-    
+
     @field_validator('name')
     @classmethod
     def validate_name(cls, v):
         if not v:
             return "Не указан"
         return v.strip()
-    
+
     # Методы для обратной совместимости
     def get_name(self) -> str:
         """Получить описание опыта"""
         return self.name
-    
+
     def get_id(self) -> Optional[str]:
         """Получить ID опыта"""
         return self.id
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
         return self.model_dump()
-    
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Experience":
         """Создать из словаря"""
         return cls(**data)
-    
+
     @classmethod
     def from_string(cls, data: str) -> "Experience":
         """Создать из строки"""
         return cls(name=data)
-    
+
     class Config:
         validate_assignment = True
 
 
 class Employment(BaseModel):
     """Модель типа занятости с Pydantic валидацией"""
-    
+
     name: str = Field(..., description="Тип занятости")
     id: Optional[str] = Field(None, description="ID типа занятости")
-    
+
     @field_validator('name')
     @classmethod
     def validate_name(cls, v):
         if not v:
             return "Не указан"
         return v.strip()
-    
+
     # Методы для обратной совместимости
     def get_name(self) -> str:
         """Получить тип занятости"""
         return self.name
-    
+
     def get_id(self) -> Optional[str]:
         """Получить ID типа занятости"""
         return self.id
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
         return self.model_dump()
-    
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Employment":
         """Создать из словаря"""
         return cls(**data)
-    
+
     @classmethod
     def from_string(cls, data: str) -> "Employment":
         """Создать из строки"""
         return cls(name=data)
-    
+
     class Config:
         validate_assignment = True
 
 
 class Schedule(BaseModel):
     """Модель графика работы с Pydantic валидацией"""
-    
+
     name: str = Field(..., description="Название графика")
     id: Optional[str] = Field(None, description="ID графика")
-    
+
     @field_validator('name')
     @classmethod
     def validate_name(cls, v):
         if not v:
             return "Не указан"
         return v.strip()
-    
+
     # Методы для обратной совместимости
     def get_name(self) -> str:
         """Получить название графика"""
         return self.name
-    
+
     def get_id(self) -> Optional[str]:
         """Получить ID графика"""
         return self.id
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
         return self.model_dump()
-    
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Schedule":
         """Создать из словаря"""
         return cls(**data)
-    
+
     @classmethod
     def from_string(cls, data: str) -> "Schedule":
         """Создать из строки"""
         return cls(name=data)
-    
+
     class Config:
         validate_assignment = True
 
 
 class Vacancy(BaseModel):
     """Основная модель вакансии с Pydantic валидацией"""
-    
-    # Основные поля
-    id: str = Field(..., description="Уникальный ID вакансии")
-    name: str = Field(..., min_length=1, description="Название вакансии")
-    url: str = Field(..., description="URL вакансии")
-    
+
+    # Основная информация
+    title: str = Field(alias="name", description="Название вакансии")
+    url: str = Field(alias="alternate_url", description="Ссылка на вакансии")
+
+    # Описание и требования
+    description: Optional[str] = Field(default=None, description="Описание вакансии")
+    requirements: Optional[str] = Field(default=None, description="Требования к кандидату")
+    responsibilities: Optional[str] = Field(default=None, description="Обязанности")
+    detailed_description: Optional[str] = Field(default=None, description="Подробное описание")
+
     # Связанные объекты
     employer: Optional[Employer] = Field(None, description="Работодатель")
     salary: Optional[Dict[str, Any]] = Field(None, description="Данные о зарплате")
     experience: Optional[Experience] = Field(None, description="Требуемый опыт")
     employment: Optional[Employment] = Field(None, description="Тип занятости")
     schedule: Optional[Schedule] = Field(None, description="График работы")
-    
-    # Дополнительная информация
-    area: Optional[str] = Field(None, description="Город/регион")
-    requirements: Optional[str] = Field(None, description="Требования")
-    responsibilities: Optional[str] = Field(None, description="Обязанности")
-    description: Optional[str] = Field(None, description="Описание вакансии")
-    
+
     # Временные метки
     published_at: Optional[Union[datetime, str]] = Field(None, description="Дата публикации")
     created_at: Optional[datetime] = Field(default_factory=datetime.now, description="Дата создания записи")
     updated_at: Optional[datetime] = Field(None, description="Дата обновления записи")
-    
+
     # Метаинформация
     source: Optional[str] = Field(None, description="Источник вакансии")
     company_id: Optional[int] = Field(None, description="ID компании в БД (для связи с таблицей companies)")
-    
-    @field_validator('id', mode='before')
-    @classmethod
-    def validate_id(cls, v):
-        if not v:
-            return str(uuid.uuid4())
-        return str(v)
-    
-    @field_validator('name')
+
+    @field_validator('title', mode='before')
     @classmethod
     def validate_name_vacancy(cls, v):
         if not v or not v.strip():
             raise ValueError('Название вакансии не может быть пустым')
         return v.strip()
-    
-    @field_validator('url')
+
+    @field_validator('url', mode='before')
     @classmethod
     def validate_url_vacancy(cls, v):
         if not v:
@@ -247,14 +239,14 @@ class Vacancy(BaseModel):
         if not (v.startswith('http://') or v.startswith('https://')):
             return f"https://{v}"
         return v
-    
+
     @field_validator('area', mode='before')
     @classmethod
     def validate_area(cls, v):
         """Валидация и нормализация поля area из API ответов"""
         if v is None:
             return None
-        
+
         # Если пришел объект из API (например, {'id': '1', 'name': 'Москва'})
         if isinstance(v, dict):
             # Приоритет: name > title > id
@@ -266,14 +258,14 @@ class Vacancy(BaseModel):
                 return str(v['id']).strip()
             else:
                 return str(v).strip() if str(v).strip() != "{}" else None
-        
+
         # Если уже строка
         if isinstance(v, str):
             return v.strip() if v.strip() else None
-            
+
         # Для остальных типов
         return str(v).strip() if str(v).strip() else None
-    
+
     @field_validator('published_at', mode='before')
     @classmethod
     def validate_published_at(cls, v):
@@ -291,7 +283,7 @@ class Vacancy(BaseModel):
             except (ValueError, TypeError):
                 return v  # Возвращаем как есть, если не удалось распарсить
         return v
-    
+
     @field_validator('salary', mode='before')
     @classmethod
     def validate_salary(cls, v):
@@ -303,7 +295,7 @@ class Vacancy(BaseModel):
         if hasattr(v, 'to_dict'):
             return v.to_dict()
         return v
-    
+
     @model_validator(mode='after')
     def validate_vacancy_data(self):
         """Комплексная валидация данных вакансии"""
@@ -312,16 +304,16 @@ class Vacancy(BaseModel):
             if not str(self.id).isdigit():
                 # Для HeadHunter ID обычно числовой, но оставляем гибкость
                 pass
-        
+
         return self
-    
+
     # Методы для работы с зарплатой (обратная совместимость)
     def get_salary(self) -> Optional[Salary]:
         """Получить объект зарплаты"""
         if self.salary:
             return Salary(self.salary)
         return None
-    
+
     def set_salary(self, salary_data: Union[Dict[str, Any], Salary, None]):
         """Установить данные о зарплате"""
         if salary_data is None:
@@ -332,7 +324,7 @@ class Vacancy(BaseModel):
             self.salary = salary_data.to_dict()
         else:
             self.salary = None
-    
+
     # Методы для обратной совместимости
     def to_dict(self) -> Dict[str, Any]:
         """Преобразование в словарь"""
@@ -345,39 +337,39 @@ class Vacancy(BaseModel):
         if data.get('updated_at') and isinstance(data['updated_at'], datetime):
             data['updated_at'] = data['updated_at'].isoformat()
         return data
-    
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Vacancy":
         """Создание объекта из словаря"""
         # Обрабатываем вложенные объекты
         processed_data = data.copy()
-        
+
         # Employer
         if 'employer' in processed_data and isinstance(processed_data['employer'], dict):
             processed_data['employer'] = Employer(**processed_data['employer'])
-        
+
         # Experience
         if 'experience' in processed_data and isinstance(processed_data['experience'], dict):
             processed_data['experience'] = Experience(**processed_data['experience'])
-        
+
         # Employment
         if 'employment' in processed_data and isinstance(processed_data['employment'], dict):
             processed_data['employment'] = Employment(**processed_data['employment'])
-        
+
         # Schedule
         if 'schedule' in processed_data and isinstance(processed_data['schedule'], dict):
             processed_data['schedule'] = Schedule(**processed_data['schedule'])
-        
+
         return cls(**processed_data)
-    
+
     # Дополнительные методы для удобства
     def __str__(self) -> str:
         employer_name = self.employer.name if self.employer else "Не указан"
         return f"{self.name} - {employer_name}"
-    
+
     def __repr__(self) -> str:
         return f"Vacancy(id='{self.id}', name='{self.name}')"
-    
+
     class Config:
         # Позволяем дополнительные поля для гибкости при миграции
         extra = "ignore"
@@ -394,7 +386,7 @@ class Vacancy(BaseModel):
 # Фабричные методы для создания объектов из API
 class VacancyFactory:
     """Фабрика для создания вакансий из различных источников данных"""
-    
+
     @staticmethod
     def from_hh_api(data: Dict[str, Any]) -> Vacancy:
         """Создание вакансии из данных HeadHunter API"""
@@ -403,11 +395,11 @@ class VacancyFactory:
         experience_data = data.get('experience', {})
         employment_data = data.get('employment', {})
         schedule_data = data.get('schedule', {})
-        
+
         return Vacancy(
             id=str(data.get('id', str(uuid.uuid4()))),
             name=data.get('name', ''),
-            url=data.get('alternate_url', ''),
+            alternate_url=data.get('alternate_url', ''),
             employer=Employer(**employer_data) if employer_data else None,
             salary=salary_data if salary_data else None,
             experience=Experience(**experience_data) if experience_data else None,
@@ -420,7 +412,7 @@ class VacancyFactory:
             published_at=data.get('published_at'),
             source='hh.ru'
         )
-    
+
     @staticmethod
     def from_superjob_api(data: Dict[str, Any]) -> Vacancy:
         """Создание вакансии из данных SuperJob API"""
@@ -432,11 +424,11 @@ class VacancyFactory:
                 'currency': 'RUR',
                 'gross': False
             }
-        
+
         return Vacancy(
             id=str(data.get('id', str(uuid.uuid4()))),
             name=data.get('profession', ''),
-            url=data.get('link', ''),
+            alternate_url=data.get('link', ''),
             employer=Employer(
                 name=data.get('firm_name', 'Не указана'),
                 id=str(data.get('id_client', '')) if data.get('id_client') else None
@@ -453,7 +445,7 @@ class VacancyFactory:
 # Типы для экспорта
 __all__ = [
     'Employer',
-    'Experience', 
+    'Experience',
     'Employment',
     'Schedule',
     'Vacancy',

@@ -40,10 +40,16 @@ class HHParser(BaseParser):
                 snippet = item.get("snippet", {})
                 if snippet:
                     # Устанавливаем отдельные поля requirements и responsibilities
-                    if snippet.get("requirement"):
-                        item["requirements"] = snippet.get("requirement")
-                    if snippet.get("responsibility"):
-                        item["responsibilities"] = snippet.get("responsibility")
+                    requirement = snippet.get("requirement")
+                    responsibility = snippet.get("responsibility")
+                    
+                    if requirement:
+                        item["requirements"] = requirement
+                        logger.debug(f"Установлены требования для вакансии {item.get('id')}: {requirement[:50]}...")
+                    
+                    if responsibility:
+                        item["responsibilities"] = responsibility
+                        logger.debug(f"Установлены обязанности для вакансии {item.get('id')}: {responsibility[:50]}...")
                     
                     # Обогащаем description только если его нет
                     if not item.get("description"):
