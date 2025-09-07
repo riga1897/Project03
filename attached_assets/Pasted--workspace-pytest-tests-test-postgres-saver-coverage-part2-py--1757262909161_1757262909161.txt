@@ -1,0 +1,112 @@
+~/workspace$ pytest tests/test_postgres_saver_coverage_part2.py 
+=================================== test session starts ====================================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 12 items                                                                         
+
+tests/test_postgres_saver_coverage_part2.py .......FF...                             [100%]
+
+========================================= FAILURES =========================================
+__________ TestPostgresSaverAdvanced.test_filter_and_deduplicate_vacancies_error ___________
+
+self = <MagicMock name='logger.error' id='140568408960336'>
+
+    def assert_called(self):
+        """assert that the mock was called at least once
+        """
+        if self.call_count == 0:
+            msg = ("Expected '%s' to have been called." %
+                   (self._mock_name or 'mock'))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'error' to have been called.
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:908: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_postgres_saver_coverage_part2.TestPostgresSaverAdvanced object at 0x7fd8a2ddb4d0>
+mock_logger = <MagicMock name='logger' id='140568408798672'>
+mock_psycopg2 = <MagicMock name='psycopg2' id='140568408775440'>
+
+    @patch('src.storage.postgres_saver.psycopg2')
+    @patch('src.storage.postgres_saver.logger')
+    def test_filter_and_deduplicate_vacancies_error(self, mock_logger, mock_psycopg2):
+        """Покрытие: ошибка при фильтрации и дедупликации"""
+        mock_connection = MagicMock()
+        mock_connection.closed = False
+    
+        mock_vacancy = MagicMock()
+        mock_vacancy.id = "test_id"
+        mock_vacancy.employer = {"name": "Company"}
+    
+        with patch.object(PostgresSaver, '_ensure_tables_exist'):
+            saver = PostgresSaver({"host": "test"})
+    
+        # Перехватываем исключение, чтобы тест не падал
+        with patch.object(saver, '_get_connection', side_effect=Exception("DB Error")):
+            try:
+                result = saver.filter_and_deduplicate_vacancies([mock_vacancy])
+                # Проверяем что при ошибке возвращается исходный список
+                assert result == [mock_vacancy]
+            except Exception:
+                # Если метод не обрабатывает исключение, то это нормально - просто проверим что логируется
+                pass
+>           mock_logger.error.assert_called()
+E           AssertionError: Expected 'error' to have been called.
+
+tests/test_postgres_saver_coverage_part2.py:291: AssertionError
+________ TestPostgresSaverAdvanced.test_add_vacancy_batch_optimized_error_handling _________
+
+self = <MagicMock name='logger.error' id='140568409420368'>
+
+    def assert_called(self):
+        """assert that the mock was called at least once
+        """
+        if self.call_count == 0:
+            msg = ("Expected '%s' to have been called." %
+                   (self._mock_name or 'mock'))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'error' to have been called.
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:908: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_postgres_saver_coverage_part2.TestPostgresSaverAdvanced object at 0x7fd8a2ddba90>
+mock_logger = <MagicMock name='logger' id='140568408922384'>
+mock_psycopg2 = <MagicMock name='psycopg2' id='140568409591952'>
+
+    @patch('src.storage.postgres_saver.psycopg2')
+    @patch('src.storage.postgres_saver.logger')
+    def test_add_vacancy_batch_optimized_error_handling(self, mock_logger, mock_psycopg2):
+        """Покрытие: обработка ошибок в batch-операциях"""
+        mock_connection = MagicMock()
+        mock_connection.closed = False
+    
+        mock_vacancy = MagicMock()
+        mock_vacancy.id = "test_id"
+        mock_vacancy.employer = {"name": "Company"}
+    
+        with patch.object(PostgresSaver, '_ensure_tables_exist'):
+            saver = PostgresSaver({"host": "test"})
+    
+        # Перехватываем исключение, чтобы тест не падал
+        with patch.object(saver, '_get_connection', side_effect=Exception("Connection failed")):
+            try:
+                result = saver.add_vacancy_batch_optimized([mock_vacancy])
+                # При ошибке возвращается пустой список
+                assert result == []
+            except Exception:
+                # Если метод не обрабатывает исключение, то это нормально
+                pass
+>           mock_logger.error.assert_called()
+E           AssertionError: Expected 'error' to have been called.
+
+tests/test_postgres_saver_coverage_part2.py:316: AssertionError
+================================= short test summary info ==================================
+FAILED tests/test_postgres_saver_coverage_part2.py::TestPostgresSaverAdvanced::test_filter_and_deduplicate_vacancies_error - AssertionError: Expected 'error' to have been called.
+FAILED tests/test_postgres_saver_coverage_part2.py::TestPostgresSaverAdvanced::test_add_vacancy_batch_optimized_error_handling - AssertionError: Expected 'error' to have been called.
+=============================== 2 failed, 10 passed in 0.49s ===============================
+~/workspace$ 
