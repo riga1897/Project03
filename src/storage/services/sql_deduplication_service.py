@@ -47,16 +47,21 @@ class SQLDeduplicationService(AbstractDeduplicationService):
         logger.info(f"Начинаем SQL-дедупликацию: {len(vacancies)} вакансий")
 
         try:
-            with self.db_manager._get_connection() as conn:
-                with conn.cursor() as cursor:
-                    # Создаем временную таблицу для дедупликации
-                    self._create_temp_table(cursor, vacancies)
+            conn = self.db_manager._get_connection()
+            cursor = conn.cursor()
+            
+            try:
+                # Создаем временную таблицу для дедупликации
+                self._create_temp_table(cursor, vacancies)
 
-                    # Выполняем SQL запрос для поиска уникальных вакансий
-                    unique_vacancy_ids = self._execute_deduplication_query(cursor)
+                # Выполняем SQL запрос для поиска уникальных вакансий
+                unique_vacancy_ids = self._execute_deduplication_query(cursor)
 
-                    # Возвращаем уникальные вакансии
-                    return self._build_unique_vacancies(vacancies, unique_vacancy_ids)
+                # Возвращаем уникальные вакансии
+                return self._build_unique_vacancies(vacancies, unique_vacancy_ids)
+            finally:
+                cursor.close()
+                conn.close()
 
         except Exception as e:
             logger.error(f"Ошибка SQL-дедупликации: {e}")
