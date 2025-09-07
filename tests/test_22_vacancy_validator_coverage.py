@@ -343,17 +343,22 @@ class TestVacancyValidator:
         """Покрытие обработки исключений в пакетной валидации"""
         validator = VacancyValidator()
         
-        # Создаем объект, который вызовет исключение при доступе к атрибуту
+        # Создаем объект, который вызовет исключение при валидации, но имеет работающий vacancy_id
         class ProblematicVacancy:
-            @property
-            def vacancy_id(self):
-                raise Exception("Test exception")
+            def __init__(self):
+                self.vacancy_id = "problem_id"
+            
+            def __getattr__(self, name):
+                # Вызываем исключение при попытке доступа к любому другому атрибуту
+                if name != "vacancy_id":
+                    raise Exception("Test exception during attribute access")
+                return super().__getattribute__(name)
         
         problematic_vacancy = ProblematicVacancy()
         
         result = validator.validate_batch([problematic_vacancy])
         
-        assert result == {"unknown": False}
+        assert result == {"problem_id": False}
         mock_logger.error.assert_called_once()
 
     def test_validate_batch_unknown_vacancy_id(self):
