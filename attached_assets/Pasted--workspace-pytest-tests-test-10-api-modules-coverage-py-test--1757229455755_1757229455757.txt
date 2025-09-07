@@ -1,0 +1,306 @@
+~/workspace$ pytest tests/test_10_api_modules_coverage.py
+=================================== test session starts ====================================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 26 items                                                                         
+
+tests/test_10_api_modules_coverage.py ..FFFFF.FFF......FF..FF.F.                     [100%]
+
+========================================= FAILURES =========================================
+____________________________ TestCachedAPI.test_cached_api_init ____________________________
+
+self = <tests.test_10_api_modules_coverage.TestCachedAPI object at 0x7f2d821d3410>
+
+    def test_cached_api_init(self):
+        """Покрытие инициализации CachedAPI."""
+>       api = CachedAPI()
+              ^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_response, _validate_vacancy, get_vacancies, get_vacancies_page
+
+tests/test_10_api_modules_coverage.py:43: TypeError
+______________________ TestCachedAPI.test_cached_api_cache_validation ______________________
+
+self = <tests.test_10_api_modules_coverage.TestCachedAPI object at 0x7f2d821d39d0>
+mock_stat = <MagicMock name='stat' id='139833431403024'>
+mock_exists = <MagicMock name='exists' id='139833431402960'>
+
+    @patch('src.api_modules.cached_api.Path.exists')
+    @patch('src.api_modules.cached_api.Path.stat')
+    def test_cached_api_cache_validation(self, mock_stat, mock_exists):
+        """Покрытие валидации кеша."""
+>       api = CachedAPI()
+              ^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_response, _validate_vacancy, get_vacancies, get_vacancies_page
+
+tests/test_10_api_modules_coverage.py:52: TypeError
+_________________________ TestCachedAPI.test_cached_api_load_cache _________________________
+
+self = <tests.test_10_api_modules_coverage.TestCachedAPI object at 0x7f2d821d3f90>
+mock_exists = <MagicMock name='exists' id='139833431989968'>
+mock_file = <MagicMock name='open' id='139833431379472'>
+
+    @patch('builtins.open', new_callable=mock_open, read_data='{"test": "data"}')
+    @patch('src.api_modules.cached_api.Path.exists')
+    def test_cached_api_load_cache(self, mock_exists, mock_file):
+        """Покрытие загрузки из кеша."""
+>       api = CachedAPI()
+              ^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_response, _validate_vacancy, get_vacancies, get_vacancies_page
+
+tests/test_10_api_modules_coverage.py:63: TypeError
+_________________________ TestCachedAPI.test_cached_api_save_cache _________________________
+
+self = <tests.test_10_api_modules_coverage.TestCachedAPI object at 0x7f2d821dc5d0>
+mock_mkdir = <MagicMock name='mkdir' id='139833431736528'>
+mock_file = <MagicMock name='open' id='139833431650896'>
+
+    @patch('builtins.open', new_callable=mock_open)
+    @patch('src.api_modules.cached_api.Path.mkdir')
+    def test_cached_api_save_cache(self, mock_mkdir, mock_file):
+        """Покрытие сохранения в кеш."""
+>       api = CachedAPI()
+              ^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_response, _validate_vacancy, get_vacancies, get_vacancies_page
+
+tests/test_10_api_modules_coverage.py:73: TypeError
+______________________ TestCachedAPI.test_cached_api_get_cached_data _______________________
+
+args = (<tests.test_10_api_modules_coverage.TestCachedAPI object at 0x7f2d821dcb90>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f2d821bf710>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.api_modules.cached_api.CachedAPI'> does not have the attribute '_is_cache_valid'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_____________________ TestAPIConnector.test_api_connector_make_request _____________________
+
+self = <tests.test_10_api_modules_coverage.TestAPIConnector object at 0x7f2d821dd950>
+mock_get = <MagicMock name='get' id='139833426274960'>
+
+    @patch('src.api_modules.get_api.requests.get')
+    def test_api_connector_make_request(self, mock_get):
+        """Покрытие выполнения запроса."""
+        api = APIConnector()
+    
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"success": True}
+        mock_get.return_value = mock_response
+    
+>       result = api.get_data_with_progress("http://test.com")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'APIConnector' object has no attribute 'get_data_with_progress'
+
+tests/test_10_api_modules_coverage.py:110: AttributeError
+_________________ TestAPIConnector.test_api_connector_basic_functionality __________________
+
+self = <tests.test_10_api_modules_coverage.TestAPIConnector object at 0x7f2d821ddf50>
+
+    def test_api_connector_basic_functionality(self):
+        """Покрытие базовой функциональности."""
+        api = APIConnector()
+    
+        # Проверяем основные атрибуты
+>       assert hasattr(api, 'get_data_with_progress')
+E       AssertionError: assert False
+E        +  where False = hasattr(<src.api_modules.get_api.APIConnector object at 0x7f2d821f61d0>, 'get_data_with_progress')
+
+tests/test_10_api_modules_coverage.py:118: AssertionError
+____________________________ TestHeadHunterAPI.test_hh_api_init ____________________________
+
+self = <tests.test_10_api_modules_coverage.TestHeadHunterAPI object at 0x7f2d821de790>
+
+    def test_hh_api_init(self):
+        """Покрытие инициализации HeadHunterAPI."""
+        api = HeadHunterAPI()
+        assert api is not None
+>       assert hasattr(api, 'config')
+E       AssertionError: assert False
+E        +  where False = hasattr(<src.api_modules.hh_api.HeadHunterAPI object at 0x7f2d81b2dc90>, 'config')
+
+tests/test_10_api_modules_coverage.py:129: AssertionError
+____________________ TestUnifiedAPI.test_unified_api_get_all_vacancies _____________________
+
+self = <tests.test_10_api_modules_coverage.TestUnifiedAPI object at 0x7f2d821e89d0>
+mock_sj = <MagicMock name='get_vacancies' id='139833426851216'>
+mock_hh = <MagicMock name='get_vacancies' id='139833426850192'>
+
+    @patch.object(HeadHunterAPI, 'get_vacancies')
+    @patch.object(SuperJobAPI, 'get_vacancies')
+    def test_unified_api_get_all_vacancies(self, mock_sj, mock_hh):
+        """Покрытие получения всех вакансий."""
+        api = UnifiedAPI()
+    
+        mock_hh.return_value = [{"id": "hh1"}]
+        mock_sj.return_value = [{"id": "sj1"}]
+    
+>       result = api.get_all_vacancies()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: UnifiedAPI.get_all_vacancies() missing 1 required positional argument: 'query'
+
+tests/test_10_api_modules_coverage.py:197: TypeError
+______________________ TestUnifiedAPI.test_unified_api_normalization _______________________
+
+args = (<tests.test_10_api_modules_coverage.TestUnifiedAPI object at 0x7f2d821e8d50>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f2d821d0250>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.api_modules.unified_api.UnifiedAPI'> does not have the attribute '_normalize_vacancy'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_____________________ TestAPIIntegration.test_api_caching_integration ______________________
+
+self = <tests.test_10_api_modules_coverage.TestAPIIntegration object at 0x7f2d821e9890>
+mock_exists = <MagicMock name='exists' id='139833433018256'>
+
+    @patch('src.api_modules.cached_api.Path.exists')
+    def test_api_caching_integration(self, mock_exists):
+        """Покрытие интеграции кеширования."""
+        mock_exists.return_value = False
+    
+        hh_api = HeadHunterAPI()
+    
+        # Проверяем что кеширование интегрировано
+        assert hasattr(hh_api, 'cache_dir')
+>       assert hasattr(hh_api, '_is_cache_valid')
+E       AssertionError: assert False
+E        +  where False = hasattr(<src.api_modules.hh_api.HeadHunterAPI object at 0x7f2d821a7a50>, '_is_cache_valid')
+
+tests/test_10_api_modules_coverage.py:250: AssertionError
+______________________ TestAPIIntegration.test_api_config_integration ______________________
+
+self = <tests.test_10_api_modules_coverage.TestAPIIntegration object at 0x7f2d821e9d10>
+
+    def test_api_config_integration(self):
+        """Покрытие интеграции с конфигурациями."""
+        hh_api = HeadHunterAPI()
+        sj_api = SuperJobAPI()
+    
+        # Проверяем что API используют конфигурации
+>       assert hasattr(hh_api, 'config')
+E       AssertionError: assert False
+E        +  where False = hasattr(<src.api_modules.hh_api.HeadHunterAPI object at 0x7f2d820d71d0>, 'config')
+
+tests/test_10_api_modules_coverage.py:258: AssertionError
+___________________ TestAPIErrorHandling.test_cache_corruption_handling ____________________
+
+self = <tests.test_10_api_modules_coverage.TestAPIErrorHandling object at 0x7f2d821eaa90>
+mock_exists = <MagicMock name='exists' id='139833463831440'>
+mock_file = <MagicMock name='open' id='139833427091984'>
+mock_json = <MagicMock name='load' id='139833431499472'>
+
+    @patch('src.api_modules.cached_api.json.load')
+    @patch('builtins.open', new_callable=mock_open)
+    @patch('src.api_modules.cached_api.Path.exists')
+    def test_cache_corruption_handling(self, mock_exists, mock_file, mock_json):
+        """Покрытие обработки поврежденного кеша."""
+>       api = CachedAPI()
+              ^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_response, _validate_vacancy, get_vacancies, get_vacancies_page
+
+tests/test_10_api_modules_coverage.py:286: TypeError
+================================= short test summary info ==================================
+FAILED tests/test_10_api_modules_coverage.py::TestCachedAPI::test_cached_api_init - TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_...
+FAILED tests/test_10_api_modules_coverage.py::TestCachedAPI::test_cached_api_cache_validation - TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_...
+FAILED tests/test_10_api_modules_coverage.py::TestCachedAPI::test_cached_api_load_cache - TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_...
+FAILED tests/test_10_api_modules_coverage.py::TestCachedAPI::test_cached_api_save_cache - TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_...
+FAILED tests/test_10_api_modules_coverage.py::TestCachedAPI::test_cached_api_get_cached_data - AttributeError: <class 'src.api_modules.cached_api.CachedAPI'> does not have the attrib...
+FAILED tests/test_10_api_modules_coverage.py::TestAPIConnector::test_api_connector_make_request - AttributeError: 'APIConnector' object has no attribute 'get_data_with_progress'
+FAILED tests/test_10_api_modules_coverage.py::TestAPIConnector::test_api_connector_basic_functionality - AssertionError: assert False
+FAILED tests/test_10_api_modules_coverage.py::TestHeadHunterAPI::test_hh_api_init - AssertionError: assert False
+FAILED tests/test_10_api_modules_coverage.py::TestUnifiedAPI::test_unified_api_get_all_vacancies - TypeError: UnifiedAPI.get_all_vacancies() missing 1 required positional argument: 'query'
+FAILED tests/test_10_api_modules_coverage.py::TestUnifiedAPI::test_unified_api_normalization - AttributeError: <class 'src.api_modules.unified_api.UnifiedAPI'> does not have the attr...
+FAILED tests/test_10_api_modules_coverage.py::TestAPIIntegration::test_api_caching_integration - AssertionError: assert False
+FAILED tests/test_10_api_modules_coverage.py::TestAPIIntegration::test_api_config_integration - AssertionError: assert False
+FAILED tests/test_10_api_modules_coverage.py::TestAPIErrorHandling::test_cache_corruption_handling - TypeError: Can't instantiate abstract class CachedAPI with abstract methods _get_empty_...
+============================== 13 failed, 13 passed in 0.66s ===============================
