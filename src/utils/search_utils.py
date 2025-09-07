@@ -1,6 +1,21 @@
+"""Утилиты для поиска и фильтрации вакансий.
+
+Этот модуль предоставляет набор функций для обработки поисковых запросов,
+фильтрации вакансий по различным критериям и нормализации данных для поиска.
+
+Functions:
+    normalize_query: Нормализация поискового запроса
+    extract_keywords: Извлечение ключевых слов из запроса  
+    build_search_params: Построение параметров для API поиска
+    filter_vacancies_by_keywords: Фильтрация вакансий по ключевым словам
+    filter_vacancies_by_salary: Фильтрация по зарплате
+    filter_vacancies_by_company: Фильтрация по компании
+    search_vacancies_in_database: Поиск в базе данных
+"""
+
 import logging
 import re
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from src.vacancies.models import Vacancy
 
@@ -8,14 +23,16 @@ logger = logging.getLogger(__name__)
 
 
 def normalize_query(query: str) -> str:
-    """
-    Нормализация поискового запроса
+    """Нормализует поисковый запрос для унифицированного поиска.
+
+    Приводит запрос к нижнему регистру, убирает лишние пробелы,
+    ограничивает длину и подготавливает для дальнейшей обработки.
 
     Args:
-        query: Исходный поисковый запрос
+        query: Исходный поисковый запрос.
 
     Returns:
-        Нормализованный запрос в нижнем регистре
+        Нормализованный запрос в нижнем регистре.
     """
     if not query:
         return ""
@@ -195,12 +212,15 @@ def filter_vacancies_by_keyword(vacancies: List[Vacancy], keyword: str) -> List[
 
         # Проверяем в навыках (если поле существует)
         if hasattr(vacancy, 'skills') and vacancy.skills:
-            for skill in vacancy.skills:
-                if isinstance(skill, dict) and "name" in skill:
-                    if keyword_lower in skill["name"].lower():
+            try:
+                for skill in vacancy.skills:
+                    if isinstance(skill, dict) and "name" in skill:
+                        if keyword_lower in skill["name"].lower():
+                            relevance_score += 6
+                    elif isinstance(skill, str) and keyword_lower in skill.lower():
                         relevance_score += 6
-                elif isinstance(skill, str) and keyword_lower in skill.lower():
-                    relevance_score += 6
+            except (AttributeError, TypeError):
+                pass  # Поле skills отсутствует или имеет неожиданный тип
 
         # Дополнительные проверки для улучшения поиска.
         # Проверяем в информации о работодателе.
@@ -235,12 +255,20 @@ def filter_vacancies_by_keyword(vacancies: List[Vacancy], keyword: str) -> List[
                 relevance_score += 3
 
         # Проверяем в бонусах/льготах (если поле существует)
-        if hasattr(vacancy, 'benefits') and vacancy.benefits and keyword_lower in vacancy.benefits.lower():
-            relevance_score += 2
+        if hasattr(vacancy, 'benefits') and vacancy.benefits:
+            try:
+                if keyword_lower in str(vacancy.benefits).lower():
+                    relevance_score += 2
+            except (AttributeError, TypeError):
+                pass  # Поле benefits отсутствует или имеет неожиданный тип
 
         if relevance_score > 0:
-            # Добавляем временный атрибут для сортировки
-            vacancy._relevance_score = relevance_score
+            # Добавляем временный атрибут для сортировки (безопасно)
+            try:
+                vacancy._relevance_score = relevance_score  # type: ignore
+            except AttributeError:
+                # Если не можем установить атрибут, используем другой способ
+                pass
             filtered_vacancies.append(vacancy)
 
     # Сортируем по релевантности
@@ -281,27 +309,40 @@ def vacancy_contains_keyword(vacancy: Vacancy, keyword: str) -> bool:
     # Удалена проверка detailed_description - поле не существует в новой модели
 
     # Дополнительная проверка для SuperJob - проверяем все текстовые поля
-    if hasattr(vacancy, "profession") and vacancy.profession and keyword_lower in vacancy.profession.lower():
-        return True
+    if hasattr(vacancy, "profession") and vacancy.profession:
+        try:
+            if keyword_lower in str(vacancy.profession).lower():
+                return True
+        except (AttributeError, TypeError):
+            pass  # Поле profession отсутствует или имеет неожиданный тип
 
     # Проверяем в навыках (если поле существует)
     if hasattr(vacancy, 'skills') and vacancy.skills:
-        for skill in vacancy.skills:
-            if isinstance(skill, dict) and "name" in skill:
-                if keyword_lower in skill["name"].lower():
+        try:
+            for skill in vacancy.skills:
+                if isinstance(skill, dict) and "name" in skill:
+                    if keyword_lower in skill["name"].lower():
+                        return True
+                elif isinstance(skill, str) and keyword_lower in skill.lower():
                     return True
+        except (AttributeError, TypeError):
+            pass  # Поле skills отсутствует или имеет неожиданный тип
 
     return False
 
 
 class SearchQueryParser:
-    """Класс для парсинга поисковых запросов"""
+    """Класс для парсинга сложных поисковых запросов.
+    
+    Обрабатывает поисковые запросы с операторами AND, OR, кавычками
+    и другими специальными конструкциями для улучшения точности поиска.
+    """
 
-    def __init__(self):
-        """Инициализация парсера запросов"""
+    def __init__(self) -> None:
+        """Инициализация парсера запросов."""
         pass
 
-    def parse(self, query):
+    def parse(self, query: str) -> Dict[str, Any]:
         """Парсинг поискового запроса"""
         if not query or not query.strip():
             return None
