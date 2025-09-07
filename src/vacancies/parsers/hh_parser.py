@@ -36,17 +36,30 @@ class HHParser(BaseParser):
                 if "source" not in item:
                     item["source"] = "hh.ru"
 
-                # Обогащаем данные описанием из snippet если основное описание пустое
-                if not item.get("description") and item.get("snippet"):
-                    snippet = item.get("snippet", {})
-                    desc_parts = []
-                    if snippet.get("requirement"):
-                        desc_parts.append(f"Требования: {snippet.get('requirement')}")
-                    if snippet.get("responsibility"):
-                        desc_parts.append(f"Обязанности: {snippet.get('responsibility')}")
-                    if desc_parts:
-                        item["description"] = " ".join(desc_parts)
+                # ИСПРАВЛЕНО: Правильно извлекаем requirements и responsibilities из snippet
+                snippet = item.get("snippet", {})
+                if snippet:
+                    # Устанавливаем отдельные поля requirements и responsibilities
+                    if snippet.get("requirement") and not item.get("requirements"):
+                        item["requirements"] = snippet.get("requirement")
+                    if snippet.get("responsibility") and not item.get("responsibilities"):
+                        item["responsibilities"] = snippet.get("responsibility")
+                    
+                    # Обогащаем description только если его нет
+                    if not item.get("description"):
+                        desc_parts = []
+                        if snippet.get("requirement"):
+                            desc_parts.append(f"Требования: {snippet.get('requirement')}")
+                        if snippet.get("responsibility"):
+                            desc_parts.append(f"Обязанности: {snippet.get('responsibility')}")
+                        if desc_parts:
+                            item["description"] = " ".join(desc_parts)
 
+                # ИСПРАВЛЕНО: Маппинг полей для совместимости с моделью Vacancy
+                # Преобразуем alternate_url в url для соответствия модели
+                if "alternate_url" in item:
+                    item["url"] = item["alternate_url"]
+                
                 # Создаем объект вакансии из данных API
                 vacancy = Vacancy.from_dict(item)
 
