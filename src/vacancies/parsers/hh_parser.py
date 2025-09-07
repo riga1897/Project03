@@ -60,6 +60,25 @@ class HHParser(BaseParser):
                             desc_parts.append(f"Обязанности: {snippet.get('responsibility')}")
                         if desc_parts:
                             item["description"] = " ".join(desc_parts)
+                else:
+                    # НОВОЕ: Если нет snippet, пытаемся извлечь из описания
+                    logger.debug(f"Нет snippet для вакансии {item.get('id')}, пытаемся извлечь из description")
+                    description = item.get("description", "")
+                    if description:
+                        # Используем DescriptionParser для извлечения из полного описания
+                        try:
+                            from src.utils.description_parser import DescriptionParser
+                            parser = DescriptionParser()
+                            requirements, responsibilities = parser.extract_requirements_and_responsibilities(description)
+                            
+                            if requirements:
+                                item["requirements"] = requirements
+                                logger.debug(f"Извлечены требования из description для {item.get('id')}: {requirements[:50]}...")
+                            if responsibilities:
+                                item["responsibilities"] = responsibilities
+                                logger.debug(f"Извлечены обязанности из description для {item.get('id')}: {responsibilities[:50]}...")
+                        except Exception as e:
+                            logger.warning(f"Ошибка извлечения из description для {item.get('id')}: {e}")
 
                 # ИСПРАВЛЕНО: Маппинг полей для совместимости с моделью Vacancy
                 # Преобразуем поля API в поля модели с учетом alias
