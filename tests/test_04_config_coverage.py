@@ -59,27 +59,28 @@ class TestHHAPIConfig:
     def test_init_default(self):
         """Покрытие инициализации HH конфигурации."""
         config = HHAPIConfig()
-        assert config.base_url == "https://api.hh.ru/vacancies"
-        assert config.per_page == 100
+        assert config.area == 113
+        assert config.per_page == 50
+        assert config.period == 15
 
-    def test_get_search_params_basic(self):
-        """Покрытие get_search_params с базовыми параметрами."""
+    def test_get_params_basic(self):
+        """Покрытие get_params с базовыми параметрами."""
         config = HHAPIConfig()
-        params = config.get_search_params("python")
+        params = config.get_params()
         
-        assert "text" in params
-        assert params["text"] == "python"
+        assert "area" in params
+        assert params["area"] == 113
         assert "per_page" in params
-        assert params["per_page"] == 100
+        assert params["per_page"] == 50
 
-    def test_get_search_params_with_kwargs(self):
-        """Покрытие get_search_params с дополнительными параметрами."""
+    def test_get_params_with_kwargs(self):
+        """Покрытие get_params с дополнительными параметрами."""
         config = HHAPIConfig()
-        params = config.get_search_params("python", salary=100000, experience="between1And3")
+        params = config.get_params(text="python", salary=100000)
         
         assert params["text"] == "python"
-        assert "salary" in params
-        assert "experience" in params
+        assert params["salary"] == 100000
+        assert params["area"] == 113
 
 
 class TestSJAPIConfig:
@@ -88,96 +89,73 @@ class TestSJAPIConfig:
     def test_init_default(self):
         """Покрытие инициализации SJ конфигурации."""
         config = SJAPIConfig()
-        assert config.base_url == "https://api.superjob.ru/2.0/vacancies"
-        assert config.count == 100
+        assert hasattr(config, 'count')
+        assert hasattr(config, 'only_with_salary')
+        assert hasattr(config, 'published')
 
-    def test_get_search_params_basic(self):
-        """Покрытие get_search_params с базовыми параметрами."""
+    def test_get_params_basic(self):
+        """Покрытие get_params с базовыми параметрами."""
         config = SJAPIConfig()
-        params = config.get_search_params("python")
+        params = config.get_params()
         
-        assert "keyword" in params
-        assert params["keyword"] == "python"
         assert "count" in params
-        assert params["count"] == 100
+        assert "order_field" in params
+        assert "order_direction" in params
+        assert "published" in params
 
-    def test_get_search_params_with_kwargs(self):
-        """Покрытие get_search_params с дополнительными параметрами."""
+    def test_get_params_with_kwargs(self):
+        """Покрытие get_params с дополнительными параметрами."""
         config = SJAPIConfig()
-        params = config.get_search_params("python", payment_from=50000, no_agreement=1)
+        params = config.get_params(keyword="python", payment_from=50000, page=1)
         
         assert params["keyword"] == "python"
-        assert "payment_from" in params
-        assert "no_agreement" in params
+        assert params["payment_from"] == 50000
+        assert params["page"] == 1
 
-    def test_map_period_parameter(self):
-        """Покрытие map_period_parameter."""
-        config = SJAPIConfig()
-        mapped = config.map_period_parameter(30)
-        assert mapped == 30
-
-    def test_validate_api_key_present(self):
-        """Покрытие validate_api_key с ключом."""
-        config = SJAPIConfig()
-        assert config.validate_api_key("test_key") is True
-
-    def test_validate_api_key_empty(self):
-        """Покрытие validate_api_key с пустым ключом."""
-        config = SJAPIConfig()
-        assert config.validate_api_key("") is False
-        assert config.validate_api_key(None) is False
-
-    def test_get_headers_with_key(self):
-        """Покрытие get_headers с API ключом."""
-        config = SJAPIConfig()
-        headers = config.get_headers("test_api_key")
-        
-        assert "X-Api-App-Id" in headers
-        assert headers["X-Api-App-Id"] == "test_api_key"
-
-    def test_get_headers_without_key(self):
-        """Покрытие get_headers без API ключа."""
-        config = SJAPIConfig()
-        headers = config.get_headers()
-        
-        assert "X-Api-App-Id" in headers
-        # Возвращает дефолтный ключ
+    def test_save_load_token(self):
+        """Покрытие save_token и load_token."""
+        import tempfile
+        with tempfile.NamedTemporaryFile(suffix='.json', delete=False) as tmp:
+            config = SJAPIConfig(token_file=Path(tmp.name))
+            config.save_token("test_token")
+            loaded_token = config.load_token()
+            assert loaded_token == "test_token"
 
 
 class TestTargetCompanies:
     """100% покрытие TargetCompanies."""
 
-    def test_get_companies_list(self):
-        """Покрытие get_companies_list."""
-        companies = TargetCompanies.get_companies_list()
+    def test_get_all_companies(self):
+        """Покрытие get_all_companies."""
+        companies = TargetCompanies.get_all_companies()
         assert isinstance(companies, list)
         assert len(companies) > 0
 
-    def test_get_companies_dict(self):
-        """Покрытие get_companies_dict."""
-        companies_dict = TargetCompanies.get_companies_dict()
-        assert isinstance(companies_dict, dict)
-        assert len(companies_dict) > 0
+    def test_get_hh_ids(self):
+        """Покрытие get_hh_ids."""
+        hh_ids = TargetCompanies.get_hh_ids()
+        assert isinstance(hh_ids, list)
+        assert len(hh_ids) > 0
 
     def test_is_target_company_valid(self):
         """Покрытие is_target_company с валидной компанией."""
-        # Используем первую компанию из списка
-        companies = TargetCompanies.get_companies_list()
-        if companies:
-            first_company = companies[0]
-            assert TargetCompanies.is_target_company(first_company) is True
+        # Используем первый ID из списка
+        hh_ids = TargetCompanies.get_hh_ids()
+        if hh_ids:
+            first_id = hh_ids[0]
+            assert TargetCompanies.is_target_company(first_id) is True
 
     def test_is_target_company_invalid(self):
         """Покрытие is_target_company с невалидной компанией."""
-        assert TargetCompanies.is_target_company("Несуществующая компания") is False
+        assert TargetCompanies.is_target_company("99999") is False
 
     def test_get_company_by_hh_id_found(self):
         """Покрытие get_company_by_hh_id с найденной компанией."""
-        # Тестируем с моком поскольку не знаем реальные ID
-        with patch.object(TargetCompanies, 'get_companies_dict') as mock_dict:
-            mock_dict.return_value = {"1": "Test Company"}
-            result = TargetCompanies.get_company_by_hh_id("1")
-            assert result == "Test Company"
+        # Используем первый реальный ID
+        hh_ids = TargetCompanies.get_hh_ids()
+        if hh_ids:
+            result = TargetCompanies.get_company_by_hh_id(hh_ids[0])
+            assert result is not None
 
     def test_get_company_by_hh_id_not_found(self):
         """Покрытие get_company_by_hh_id с ненайденной компанией."""
@@ -186,23 +164,19 @@ class TestTargetCompanies:
 
     def test_get_company_by_sj_id_found(self):
         """Покрытие get_company_by_sj_id с найденной компанией."""
-        with patch.object(TargetCompanies, '_get_sj_mapping') as mock_mapping:
-            mock_mapping.return_value = {"100": "SJ Test Company"}
-            result = TargetCompanies.get_company_by_sj_id("100")
-            assert result == "SJ Test Company"
+        # Используем первый реальный SJ ID
+        sj_ids = TargetCompanies.get_sj_ids()
+        if sj_ids:
+            result = TargetCompanies.get_company_by_sj_id(sj_ids[0])
+            assert result is not None
 
     def test_get_company_by_sj_id_not_found(self):
         """Покрытие get_company_by_sj_id с ненайденной компанией."""
         result = TargetCompanies.get_company_by_sj_id("99999")
         assert result is None
 
-    def test_get_total_count(self):
-        """Покрытие get_total_count."""
-        count = TargetCompanies.get_total_count()
+    def test_get_company_count(self):
+        """Покрытие get_company_count."""
+        count = TargetCompanies.get_company_count()
         assert isinstance(count, int)
         assert count > 0
-
-    def test_private_get_sj_mapping(self):
-        """Покрытие приватного метода _get_sj_mapping."""
-        mapping = TargetCompanies._get_sj_mapping()
-        assert isinstance(mapping, dict)

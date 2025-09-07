@@ -5,6 +5,7 @@
 """
 
 import pytest
+from typing import Dict, List
 from unittest.mock import patch, MagicMock, Mock
 
 from src.api_modules.base_api import BaseJobAPI
@@ -74,6 +75,12 @@ class TestBaseJobAPI:
 
 class ConcreteCachedAPI(CachedAPI):
     """Конкретная реализация для тестирования CachedAPI."""
+    
+    def _get_empty_response(self) -> Dict:
+        return {"items": [], "found": 0}
+    
+    def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs) -> List[Dict]:
+        return []
     
     def get_vacancies(self, search_query: str, **kwargs):
         return [{"name": "Cached Vacancy"}]
@@ -288,11 +295,11 @@ class TestUnifiedAPI:
         result = api.get_vacancies_from_sources("python", ["hh", "sj"])
         assert len(result) >= 0  # Результат может быть отфильтрован
 
-    def test_clear_all_caches(self):
-        """Покрытие clear_all_caches."""
+    def test_clear_all_cache(self):
+        """Покрытие clear_all_cache."""
         api = UnifiedAPI()
         with patch.object(api.hh_api, 'clear_cache') as mock_hh_clear, \
              patch.object(api.sj_api, 'clear_cache') as mock_sj_clear:
-            api.clear_all_caches()
+            api.clear_all_cache()
             mock_hh_clear.assert_called_once()
             mock_sj_clear.assert_called_once()
