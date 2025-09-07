@@ -151,7 +151,15 @@ class Experience(BaseModel):
 
     @field_validator("name")
     @classmethod
-    def validate_name(cls, v):
+    def validate_name(cls, v: str) -> str:
+        """Валидирует и нормализует описание опыта работы.
+        
+        Args:
+            v: Входное описание опыта.
+            
+        Returns:
+            Нормализованное описание опыта.
+        """
         if not v:
             return "Не указан"
         return v.strip()
@@ -190,7 +198,15 @@ class Employment(BaseModel):
 
     @field_validator("name")
     @classmethod
-    def validate_name(cls, v):
+    def validate_name(cls, v: str) -> str:
+        """Валидирует и нормализует тип занятости.
+        
+        Args:
+            v: Входной тип занятости.
+            
+        Returns:
+            Нормализованный тип занятости.
+        """
         if not v:
             return "Не указан"
         return v.strip()
@@ -229,7 +245,15 @@ class Schedule(BaseModel):
 
     @field_validator("name")
     @classmethod
-    def validate_name(cls, v):
+    def validate_name(cls, v: str) -> str:
+        """Валидирует и нормализует название графика работы.
+        
+        Args:
+            v: Входное название графика.
+            
+        Returns:
+            Нормализованное название графика.
+        """
         if not v:
             return "Не указан"
         return v.strip()
@@ -293,14 +317,36 @@ class Vacancy(BaseModel):
 
     @field_validator("title", mode="before")
     @classmethod
-    def validate_name_vacancy(cls, v):
+    def validate_name_vacancy(cls, v: str) -> str:
+        """Валидирует название вакансии.
+        
+        Args:
+            v: Входное название вакансии.
+            
+        Returns:
+            Нормализованное название вакансии.
+        
+        Raises:
+            ValueError: Когда название пустое.
+        """
         if not v or not v.strip():
             raise ValueError("Название вакансии не может быть пустым")
         return v.strip()
 
     @field_validator("url", mode="before")
     @classmethod
-    def validate_url_vacancy(cls, v):
+    def validate_url_vacancy(cls, v: str) -> str:
+        """Валидирует и нормализует URL вакансии.
+        
+        Args:
+            v: Входной URL.
+            
+        Returns:
+            Нормализованный URL с протоколом.
+        
+        Raises:
+            ValueError: Когда URL пустой.
+        """
         if not v:
             raise ValueError("URL вакансии обязателен")
         if not (v.startswith("http://") or v.startswith("https://")):
@@ -309,8 +355,15 @@ class Vacancy(BaseModel):
 
     @field_validator("area", mode="before")
     @classmethod
-    def validate_area(cls, v):
-        """Валидация и нормализация поля area из API ответов"""
+    def validate_area(cls, v: Any) -> Optional[str]:
+        """Валидация и нормализация поля area из API ответов.
+        
+        Args:
+            v: Входное значение области (может быть dict, str или другим типом).
+            
+        Returns:
+            Нормализованное название области или None.
+        """
         if v is None:
             return None
 
@@ -335,7 +388,15 @@ class Vacancy(BaseModel):
 
     @field_validator("published_at", mode="before")
     @classmethod
-    def validate_published_at(cls, v):
+    def validate_published_at(cls, v: Any) -> Optional[datetime]:
+        """Валидирует и преобразует дату публикации вакансии.
+        
+        Args:
+            v: Входное значение даты (строка, datetime или None).
+            
+        Returns:
+            Объект datetime или None.
+        """
         if v is None:
             return None
         if isinstance(v, str):
@@ -353,7 +414,15 @@ class Vacancy(BaseModel):
 
     @field_validator("salary", mode="before")
     @classmethod
-    def validate_salary(cls, v):
+    def validate_salary(cls, v: Any) -> Optional[Dict[str, Any]]:
+        """Валидирует и нормализует данные о зарплате.
+        
+        Args:
+            v: Входные данные о зарплате.
+            
+        Returns:
+            Нормализованные данные о зарплате или None.
+        """
         if v is None:
             return None
         if isinstance(v, dict):
@@ -364,8 +433,12 @@ class Vacancy(BaseModel):
         return v
 
     @model_validator(mode="after")
-    def validate_vacancy_data(self):
-        """Комплексная валидация данных вакансии"""
+    def validate_vacancy_data(self) -> "Vacancy":
+        """Комплексная валидация данных вакансии.
+        
+        Returns:
+            Проверенные данные вакансии.
+        """
         # Проверяем что ID и URL совместимы с источником
         if self.source == "hh.ru" and self.id:
             if not str(self.id).isdigit():
@@ -381,8 +454,12 @@ class Vacancy(BaseModel):
             return Salary(self.salary)
         return None
 
-    def set_salary(self, salary_data: Union[Dict[str, Any], Salary, None]):
-        """Установить данные о зарплате"""
+    def set_salary(self, salary_data: Union[Dict[str, Any], Salary, None]) -> None:
+        """Установить данные о зарплате.
+        
+        Args:
+            salary_data: Данные о зарплате в виде словаря, объекта Salary или None.
+        """
         if salary_data is None:
             self.salary = None
         elif isinstance(salary_data, dict):
@@ -439,10 +516,20 @@ class Vacancy(BaseModel):
 
     # Дополнительные методы для удобства
     def __str__(self) -> str:
+        """Строковое представление вакансии для пользователей.
+        
+        Returns:
+            Строка в формате "Название - Работодатель".
+        """
         employer_name = self.employer.name if self.employer else "Не указан"
         return f"{self.title} - {employer_name}"
 
     def __repr__(self) -> str:
+        """Строковое представление вакансии для разработчиков.
+        
+        Returns:
+            Строка с ID и названием вакансии.
+        """
         return f"Vacancy(id='{self.id}', title='{self.title}')"
 
     model_config = ConfigDict(extra="ignore", use_enum_values=True, validate_assignment=True)
