@@ -6,7 +6,12 @@ from src.utils.env_loader import EnvLoader
 class DatabaseConfig:
     """Конфигурация подключения к базе данных"""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Инициализация конфигурации базы данных.
+        
+        Загружает конфигурацию подключения к БД из переменных окружения
+        или устанавливает значения по умолчанию.
+        """
         self.default_config = self._get_default_config()
 
     def _get_default_config(self) -> Dict[str, str]:
