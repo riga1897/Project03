@@ -221,6 +221,7 @@ class Vacancy(BaseModel):
     updated_at: Optional[datetime] = Field(None, description="Дата обновления записи")
 
     # Метаинформация
+    area: Optional[str] = Field(None, description="Регион/местоположение вакансии")
     source: Optional[str] = Field(None, description="Источник вакансии")
     company_id: Optional[int] = Field(None, description="ID компании в БД (для связи с таблицей companies)")
 
