@@ -1,0 +1,117 @@
+~/workspace$ pytest tests/test_17_real_business_logic_coverage.py
+=================================== test session starts ====================================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 22 items                                                                         
+
+tests/test_17_real_business_logic_coverage.py ...........FFFFF......                 [100%]
+
+========================================= FAILURES =========================================
+________ TestVacancyStorageServiceBusinessLogic.test_storage_service_initialization ________
+
+self = <tests.test_17_real_business_logic_coverage.TestVacancyStorageServiceBusinessLogic object at 0x7f2e8b1b5a50>
+mock_coordinator = <MagicMock name='VacancyProcessingCoordinator' id='139837874733968'>
+mock_db_manager = <MagicMock name='DBManager' id='139837874739088'>
+
+    @patch('src.storage.services.vacancy_storage_service.DBManager')
+    @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
+    def test_storage_service_initialization(self, mock_coordinator, mock_db_manager):
+        """Покрытие инициализации VacancyStorageService"""
+>       service = ConcreteVacancyStorageService()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class ConcreteVacancyStorageService with abstract methods filter_and_deduplicate_vacancies, get_companies_and_vacancies_count, save_vacancies
+
+tests/test_17_real_business_logic_coverage.py:273: TypeError
+_______ TestVacancyStorageServiceBusinessLogic.test_should_filter_by_salary_enabled ________
+
+self = <tests.test_17_real_business_logic_coverage.TestVacancyStorageServiceBusinessLogic object at 0x7f2e8b1b60d0>
+mock_coordinator = <MagicMock name='VacancyProcessingCoordinator' id='139837874159568'>
+mock_db_manager = <MagicMock name='DBManager' id='139837874761040'>
+
+    @patch('src.storage.services.vacancy_storage_service.DBManager')
+    @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
+    def test_should_filter_by_salary_enabled(self, mock_coordinator, mock_db_manager):
+        """Покрытие проверки фильтра по зарплате (включен)"""
+        with patch.dict('os.environ', {'ENABLE_SALARY_FILTER': 'true'}):
+>           service = ConcreteVacancyStorageService()
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: Can't instantiate abstract class ConcreteVacancyStorageService with abstract methods filter_and_deduplicate_vacancies, get_companies_and_vacancies_count, save_vacancies
+
+tests/test_17_real_business_logic_coverage.py:285: TypeError
+_______ TestVacancyStorageServiceBusinessLogic.test_should_filter_by_salary_disabled _______
+
+self = <tests.test_17_real_business_logic_coverage.TestVacancyStorageServiceBusinessLogic object at 0x7f2e8b1b6750>
+mock_coordinator = <MagicMock name='VacancyProcessingCoordinator' id='139837874415056'>
+mock_db_manager = <MagicMock name='DBManager' id='139837874409616'>
+
+    @patch('src.storage.services.vacancy_storage_service.DBManager')
+    @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
+    def test_should_filter_by_salary_disabled(self, mock_coordinator, mock_db_manager):
+        """Покрытие проверки фильтра по зарплате (отключен)"""
+        with patch.dict('os.environ', {'ENABLE_SALARY_FILTER': 'false'}, clear=True):
+>           service = ConcreteVacancyStorageService()
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: Can't instantiate abstract class ConcreteVacancyStorageService with abstract methods filter_and_deduplicate_vacancies, get_companies_and_vacancies_count, save_vacancies
+
+tests/test_17_real_business_logic_coverage.py:295: TypeError
+______ TestVacancyStorageServiceBusinessLogic.test_process_and_save_vacancies_success ______
+
+self = <tests.test_17_real_business_logic_coverage.TestVacancyStorageServiceBusinessLogic object at 0x7f2e8b1b6dd0>
+mock_coordinator = <MagicMock name='VacancyProcessingCoordinator' id='139837874425168'>
+mock_db_manager = <MagicMock name='DBManager' id='139837874434704'>
+mock_logger = <MagicMock name='logger' id='139837874204432'>
+
+    @patch('src.storage.services.vacancy_storage_service.logger')
+    @patch('src.storage.services.vacancy_storage_service.DBManager')
+    @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
+    def test_process_and_save_vacancies_success(self, mock_coordinator, mock_db_manager, mock_logger):
+        """Покрытие успешной обработки и сохранения вакансий"""
+        # Создаем тестовые данные
+        raw_vacancies = [
+            {"id": "1", "name": "Test Job", "employer": {"name": "Test Company"}}
+        ]
+    
+        # Мокаем зависимости
+        mock_coordinator_instance = Mock()
+        mock_coordinator_instance.process_and_save_raw_vacancy_data.return_value = ["vacancy1"]
+        mock_coordinator.return_value = mock_coordinator_instance
+    
+>       service = ConcreteVacancyStorageService()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class ConcreteVacancyStorageService with abstract methods filter_and_deduplicate_vacancies, get_companies_and_vacancies_count, save_vacancies
+
+tests/test_17_real_business_logic_coverage.py:315: TypeError
+_______ TestVacancyStorageServiceBusinessLogic.test_process_and_save_vacancies_error _______
+
+self = <tests.test_17_real_business_logic_coverage.TestVacancyStorageServiceBusinessLogic object at 0x7f2e8b1b7410>
+mock_coordinator = <MagicMock name='VacancyProcessingCoordinator' id='139837870034256'>
+mock_db_manager = <MagicMock name='DBManager' id='139837870035984'>
+mock_logger = <MagicMock name='logger' id='139837870043536'>
+
+    @patch('src.storage.services.vacancy_storage_service.logger')
+    @patch('src.storage.services.vacancy_storage_service.DBManager')
+    @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
+    def test_process_and_save_vacancies_error(self, mock_coordinator, mock_db_manager, mock_logger):
+        """Покрытие обработки ошибок при сохранении вакансий"""
+        raw_vacancies = [{"id": "1", "name": "Test Job"}]
+    
+        # Мокаем ошибку в координаторе
+        mock_coordinator_instance = Mock()
+        mock_coordinator_instance.process_and_save_raw_vacancy_data.side_effect = Exception("DB Error")
+        mock_coordinator.return_value = mock_coordinator_instance
+    
+>       service = ConcreteVacancyStorageService()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Can't instantiate abstract class ConcreteVacancyStorageService with abstract methods filter_and_deduplicate_vacancies, get_companies_and_vacancies_count, save_vacancies
+
+tests/test_17_real_business_logic_coverage.py:338: TypeError
+================================= short test summary info ==================================
+FAILED tests/test_17_real_business_logic_coverage.py::TestVacancyStorageServiceBusinessLogic::test_storage_service_initialization - TypeError: Can't instantiate abstract class ConcreteVacancyStorageService with abstract...
+FAILED tests/test_17_real_business_logic_coverage.py::TestVacancyStorageServiceBusinessLogic::test_should_filter_by_salary_enabled - TypeError: Can't instantiate abstract class ConcreteVacancyStorageService with abstract...
+FAILED tests/test_17_real_business_logic_coverage.py::TestVacancyStorageServiceBusinessLogic::test_should_filter_by_salary_disabled - TypeError: Can't instantiate abstract class ConcreteVacancyStorageService with abstract...
+FAILED tests/test_17_real_business_logic_coverage.py::TestVacancyStorageServiceBusinessLogic::test_process_and_save_vacancies_success - TypeError: Can't instantiate abstract class ConcreteVacancyStorageService with abstract...
+FAILED tests/test_17_real_business_logic_coverage.py::TestVacancyStorageServiceBusinessLogic::test_process_and_save_vacancies_error - TypeError: Can't instantiate abstract class ConcreteVacancyStorageService with abstract...
+=============================== 5 failed, 17 passed in 0.43s ===============================
+~/workspace$ 
