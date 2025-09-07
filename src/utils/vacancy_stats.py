@@ -169,6 +169,10 @@ def calculate_statistics(vacancies):
         "total_count": len(vacancies),
     }
 
+
+class VacancyStatsExtended:
+    """Расширенные статические методы для работы с вакансиями"""
+    
     @staticmethod
     def get_company_distribution(vacancies: List[Dict[str, Any]]) -> Dict[str, int]:
         """
@@ -184,7 +188,7 @@ def calculate_statistics(vacancies):
 
         for vacancy in vacancies:
             # Получаем название компании из разных источников
-            company_name = VacancyStats._extract_company_name(vacancy)
+            company_name = VacancyStatsExtended._extract_company_name(vacancy)
 
             if company_name:
                 company_stats[company_name] += 1
@@ -258,13 +262,13 @@ def calculate_statistics(vacancies):
             print("Нет вакансий для отображения статистики")
             return
 
-        company_stats = VacancyStats.get_company_distribution(vacancies)
+        company_stats = VacancyStatsExtended.get_company_distribution(vacancies)
 
         if not company_stats:
             print("Не удалось извлечь информацию о компаниях")
             return
 
-        VacancyStats._display_company_distribution(company_stats, len(vacancies), source_name)
+        VacancyStatsExtended._display_company_distribution(company_stats, len(vacancies), source_name)
 
     @staticmethod
     def _display_company_distribution(company_stats: Dict[str, int], total_vacancies: int, source_name: str = ""):
@@ -312,10 +316,10 @@ def calculate_statistics(vacancies):
 
         # Показываем статистику по каждому источнику отдельно
         if hh_vacancies:
-            VacancyStats.display_company_stats(hh_vacancies, "HH.ru")
+            VacancyStatsExtended.display_company_stats(hh_vacancies, "HH.ru")
 
         if sj_vacancies:
-            VacancyStats.display_company_stats(sj_vacancies, "SuperJob")
+            VacancyStatsExtended.display_company_stats(sj_vacancies, "SuperJob")
 
     @staticmethod
     def analyze_company_mapping(vacancies: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -334,7 +338,7 @@ def calculate_statistics(vacancies):
         unique_employers = set()
 
         for vacancy in vacancies:
-            employer_name = VacancyStats._extract_company_name(vacancy)
+            employer_name = VacancyStatsExtended._extract_company_name(vacancy)
 
             if employer_name and employer_name != "Неизвестная компания":
                 with_employer += 1
@@ -359,7 +363,7 @@ def calculate_statistics(vacancies):
         Args:
             vacancies: Список вакансий для анализа
         """
-        analysis = VacancyStats.analyze_company_mapping(vacancies)
+        analysis = VacancyStatsExtended.analyze_company_mapping(vacancies)
 
         print("\nАнализ маппинга компаний:")
         print(f"Всего вакансий: {analysis['total_vacancies']}")
