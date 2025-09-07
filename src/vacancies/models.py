@@ -19,7 +19,7 @@ import uuid
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator, ConfigDict
 
 from src.utils.salary import Salary
 
@@ -105,11 +105,10 @@ class Employer(BaseModel):
         """Dictionary-like access для обратной совместимости"""
         return getattr(self, key, default)
 
-    class Config:
-        # Позволяем использовать свойства как поля
-        validate_by_name = True
-        # Валидация при присваивании
-        validate_assignment = True
+    model_config = ConfigDict(
+        validate_assignment=True,
+        use_attribute_docstrings=True
+    )
 
 
 class Experience(BaseModel):
@@ -148,8 +147,7 @@ class Experience(BaseModel):
         """Создать из строки"""
         return cls(name=data)
 
-    class Config:
-        validate_assignment = True
+    model_config = ConfigDict(validate_assignment=True)
 
 
 class Employment(BaseModel):
@@ -188,8 +186,7 @@ class Employment(BaseModel):
         """Создать из строки"""
         return cls(name=data)
 
-    class Config:
-        validate_assignment = True
+    model_config = ConfigDict(validate_assignment=True)
 
 
 class Schedule(BaseModel):
@@ -228,8 +225,7 @@ class Schedule(BaseModel):
         """Создать из строки"""
         return cls(name=data)
 
-    class Config:
-        validate_assignment = True
+    model_config = ConfigDict(validate_assignment=True)
 
 
 class Vacancy(BaseModel):
@@ -417,17 +413,11 @@ class Vacancy(BaseModel):
     def __repr__(self) -> str:
         return f"Vacancy(id='{self.id}', title='{self.title}')"
 
-    class Config:
-        # Позволяем дополнительные поля для гибкости при миграции
-        extra = "ignore"
-        # Используем enum значения
-        use_enum_values = True
-        # Валидация при присваивании
-        validate_assignment = True
-        # JSON энкодеры для специальных типов
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat() if dt else None,
-        }
+    model_config = ConfigDict(
+        extra="ignore",
+        use_enum_values=True,
+        validate_assignment=True
+    )
 
 
 # Фабричные методы для создания объектов из API

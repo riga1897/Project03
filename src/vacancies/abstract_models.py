@@ -8,7 +8,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class AbstractEmployerMixin(ABC):
@@ -110,9 +110,7 @@ class AbstractSalaryMixin(ABC):
 class AbstractEmployer(BaseModel, AbstractEmployerMixin):
     """Абстрактный базовый класс для работодателя, совместимый с Pydantic"""
 
-    class Config:
-        extra = "ignore"
-        validate_assignment = True
+    model_config = ConfigDict(extra="ignore", validate_assignment=True)
 
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
@@ -127,9 +125,7 @@ class AbstractEmployer(BaseModel, AbstractEmployerMixin):
 class AbstractExperience(BaseModel, AbstractExperienceMixin):
     """Абстрактный базовый класс для опыта работы, совместимый с Pydantic"""
 
-    class Config:
-        extra = "ignore"
-        validate_assignment = True
+    model_config = ConfigDict(extra="ignore", validate_assignment=True)
 
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
@@ -150,9 +146,7 @@ class AbstractExperience(BaseModel, AbstractExperienceMixin):
 class AbstractEmployment(BaseModel, AbstractEmploymentMixin):
     """Абстрактный базовый класс для типа занятости, совместимый с Pydantic"""
 
-    class Config:
-        extra = "ignore"
-        validate_assignment = True
+    model_config = ConfigDict(extra="ignore", validate_assignment=True)
 
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
@@ -173,9 +167,7 @@ class AbstractEmployment(BaseModel, AbstractEmploymentMixin):
 class AbstractSchedule(BaseModel, AbstractScheduleMixin):
     """Абстрактный базовый класс для графика работы, совместимый с Pydantic"""
 
-    class Config:
-        extra = "ignore"
-        validate_assignment = True
+    model_config = ConfigDict(extra="ignore", validate_assignment=True)
 
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
@@ -196,9 +188,7 @@ class AbstractSchedule(BaseModel, AbstractScheduleMixin):
 class AbstractSalary(BaseModel, AbstractSalaryMixin):
     """Абстрактный базовый класс для зарплаты, совместимый с Pydantic"""
 
-    class Config:
-        extra = "ignore"
-        validate_assignment = True
+    model_config = ConfigDict(extra="ignore", validate_assignment=True)
 
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
