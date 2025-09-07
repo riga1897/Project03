@@ -21,6 +21,27 @@ from unittest.mock import patch, MagicMock, Mock
 from src.storage.components.database_connection import DatabaseConnection
 
 
+# Создаем proper exception classes для мокирования psycopg2
+class MockOperationalError(Exception):
+    """Mock для psycopg2.OperationalError"""
+    pass
+
+
+class MockInterfaceError(Exception):
+    """Mock для psycopg2.InterfaceError"""
+    pass
+
+
+class MockError(Exception):
+    """Mock для psycopg2.Error"""
+    pass
+
+
+class MockPsycopgError(Exception):
+    """Mock для PsycopgError"""
+    pass
+
+
 class TestDatabaseConnection:
     """100% покрытие DatabaseConnection класса"""
 
@@ -111,10 +132,14 @@ class TestDatabaseConnection:
     @patch('src.storage.components.database_connection.psycopg2')
     def test_get_connection_recreates_invalid_connection(self, mock_psycopg2):
         """Покрытие пересоздания неисправного подключения"""
+        # Настройка proper exception classes на mock psycopg2
+        mock_psycopg2.OperationalError = MockOperationalError
+        mock_psycopg2.InterfaceError = MockInterfaceError
+        
         # Неисправное существующее подключение
         bad_connection = Mock()
         bad_cursor = Mock()
-        bad_cursor.execute.side_effect = Exception("Connection lost")
+        bad_cursor.execute.side_effect = MockOperationalError("Connection lost")
         bad_cursor_context = Mock()
         bad_cursor_context.__enter__ = Mock(return_value=bad_cursor)
         bad_cursor_context.__exit__ = Mock(return_value=None)
@@ -160,10 +185,14 @@ class TestDatabaseConnection:
     @patch('src.storage.components.database_connection.psycopg2')
     def test_is_connection_valid_broken_connection(self, mock_psycopg2):
         """Покрытие проверки поломанного подключения"""
+        # Настройка proper exception classes на mock psycopg2
+        mock_psycopg2.OperationalError = MockOperationalError
+        mock_psycopg2.InterfaceError = MockInterfaceError
+        
         mock_connection = Mock()
         mock_cursor = Mock()
         # Имитируем psycopg2.OperationalError
-        mock_cursor.execute.side_effect = mock_psycopg2.OperationalError("Database error")
+        mock_cursor.execute.side_effect = MockOperationalError("Database error")
         mock_cursor_context = Mock()
         mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
         mock_cursor_context.__exit__ = Mock(return_value=None)
@@ -179,6 +208,9 @@ class TestDatabaseConnection:
     @patch('src.storage.components.database_connection.logger')
     def test_create_new_connection_success(self, mock_logger, mock_psycopg2):
         """Покрытие успешного создания подключения"""
+        # Настройка proper exception classes на mock psycopg2
+        mock_psycopg2.Error = MockError
+        
         mock_connection = Mock()
         mock_psycopg2.connect.return_value = mock_connection
         
@@ -192,15 +224,17 @@ class TestDatabaseConnection:
         assert 'cursor_factory' in call_kwargs
         mock_logger.debug.assert_called()
 
+    @patch('src.storage.components.database_connection.PsycopgError', MockPsycopgError)
     @patch('src.storage.components.database_connection.psycopg2')
     @patch('src.storage.components.database_connection.logger')
     def test_create_new_connection_failure(self, mock_logger, mock_psycopg2):
         """Покрытие неудачного создания подключения"""
         # Имитируем PsycopgError 
-        mock_psycopg2.connect.side_effect = mock_psycopg2.Error("Connection failed")
+        mock_psycopg2.connect.side_effect = MockPsycopgError("Connection failed")
         
         db_conn = DatabaseConnection()
         
+        # Ожидаем ConnectionError, который должен быть поднят после перехвата PsycopgError
         with pytest.raises(ConnectionError, match="Не удалось подключиться к базе данных"):
             db_conn._create_new_connection()
         
@@ -378,6 +412,10 @@ class TestDatabaseConnectionIntegration:
     @patch('src.storage.components.database_connection.psycopg2')
     def test_connection_recovery_scenario(self, mock_psycopg2):
         """Покрытие сценария восстановления подключения"""
+        # Настройка proper exception classes на mock psycopg2
+        mock_psycopg2.OperationalError = MockOperationalError
+        mock_psycopg2.InterfaceError = MockInterfaceError
+        
         # Первое подключение работает
         good_connection = Mock()
         good_cursor = Mock()
@@ -398,7 +436,7 @@ class TestDatabaseConnectionIntegration:
         assert conn1 == good_connection
         
         # Имитируем поломку подключения
-        good_cursor.execute.side_effect = Exception("Connection lost")
+        good_cursor.execute.side_effect = MockOperationalError("Connection lost")
         
         # Второй вызов должен восстановить подключение
         conn2 = db_conn.get_connection()

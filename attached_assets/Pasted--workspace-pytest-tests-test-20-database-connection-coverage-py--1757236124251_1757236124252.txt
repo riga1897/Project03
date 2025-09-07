@@ -1,0 +1,247 @@
+~/workspace$ pytest tests/test_20_database_connection_coverage.py
+=================================== test session starts ====================================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 25 items                                                                         
+
+tests/test_20_database_connection_coverage.py .....F..F.F.............F              [100%]
+
+========================================= FAILURES =========================================
+_________ TestDatabaseConnection.test_get_connection_recreates_invalid_connection __________
+
+self = <src.storage.components.database_connection.DatabaseConnection object at 0x7efcb774b190>
+
+    def _is_connection_valid(self) -> bool:
+        """Проверка валидности текущего подключения"""
+        if self._connection is None:
+            return False
+    
+        try:
+            # Проверяем подключение простым запросом
+            with self._connection.cursor() as cursor:
+>               cursor.execute("SELECT 1")
+
+src/storage/components/database_connection.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1124: in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1128: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Mock name='mock.execute' id='139623874737232'>, args = ('SELECT 1',), kwargs = {}
+effect = Exception('Connection lost')
+
+    def _execute_mock_call(self, /, *args, **kwargs):
+        # separate from _increment_mock_call so that awaited functions are
+        # executed separately from their call, also AsyncMock overrides this method
+    
+        effect = self.side_effect
+        if effect is not None:
+            if _is_exception(effect):
+>               raise effect
+E               Exception: Connection lost
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1183: Exception
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_20_database_connection_coverage.TestDatabaseConnection object at 0x7efcb83bb0d0>
+mock_psycopg2 = <MagicMock name='psycopg2' id='139623874748880'>
+
+    @patch('src.storage.components.database_connection.psycopg2')
+    def test_get_connection_recreates_invalid_connection(self, mock_psycopg2):
+        """Покрытие пересоздания неисправного подключения"""
+        # Неисправное существующее подключение
+        bad_connection = Mock()
+        bad_cursor = Mock()
+        bad_cursor.execute.side_effect = Exception("Connection lost")
+        bad_cursor_context = Mock()
+        bad_cursor_context.__enter__ = Mock(return_value=bad_cursor)
+        bad_cursor_context.__exit__ = Mock(return_value=None)
+        bad_connection.cursor.return_value = bad_cursor_context
+    
+        # Новое рабочее подключение
+        new_connection = Mock()
+        mock_psycopg2.connect.return_value = new_connection
+    
+        db_conn = DatabaseConnection()
+        db_conn._connection = bad_connection
+    
+>       result = db_conn.get_connection()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_20_database_connection_coverage.py:130: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/storage/components/database_connection.py:62: in get_connection
+    if not self._is_connection_valid():
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.storage.components.database_connection.DatabaseConnection object at 0x7efcb774b190>
+
+    def _is_connection_valid(self) -> bool:
+        """Проверка валидности текущего подключения"""
+        if self._connection is None:
+            return False
+    
+        try:
+            # Проверяем подключение простым запросом
+            with self._connection.cursor() as cursor:
+                cursor.execute("SELECT 1")
+            return True
+>       except (psycopg2.OperationalError, psycopg2.InterfaceError):
+E       TypeError: catching classes that do not inherit from BaseException is not allowed
+
+src/storage/components/database_connection.py:77: TypeError
+____________ TestDatabaseConnection.test_is_connection_valid_broken_connection _____________
+
+self = <tests.test_20_database_connection_coverage.TestDatabaseConnection object at 0x7efcb83c4390>
+mock_psycopg2 = <MagicMock name='psycopg2' id='139623875434320'>
+
+    @patch('src.storage.components.database_connection.psycopg2')
+    def test_is_connection_valid_broken_connection(self, mock_psycopg2):
+        """Покрытие проверки поломанного подключения"""
+        mock_connection = Mock()
+        mock_cursor = Mock()
+        # Имитируем psycopg2.OperationalError
+        mock_cursor.execute.side_effect = mock_psycopg2.OperationalError("Database error")
+        mock_cursor_context = Mock()
+        mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
+        mock_cursor_context.__exit__ = Mock(return_value=None)
+        mock_connection.cursor.return_value = mock_cursor_context
+    
+        db_conn = DatabaseConnection()
+        db_conn._connection = mock_connection
+    
+        result = db_conn._is_connection_valid()
+>       assert result is False
+E       assert True is False
+
+tests/test_20_database_connection_coverage.py:176: AssertionError
+________________ TestDatabaseConnection.test_create_new_connection_failure _________________
+
+self = <tests.test_20_database_connection_coverage.TestDatabaseConnection object at 0x7efcb83c5050>
+mock_logger = <MagicMock name='logger' id='139623875407056'>
+mock_psycopg2 = <MagicMock name='psycopg2' id='139623875334224'>
+
+    @patch('src.storage.components.database_connection.psycopg2')
+    @patch('src.storage.components.database_connection.logger')
+    def test_create_new_connection_failure(self, mock_logger, mock_psycopg2):
+        """Покрытие неудачного создания подключения"""
+        # Имитируем PsycopgError
+        mock_psycopg2.connect.side_effect = mock_psycopg2.Error("Connection failed")
+    
+        db_conn = DatabaseConnection()
+    
+>       with pytest.raises(ConnectionError, match="Не удалось подключиться к базе данных"):
+E       Failed: DID NOT RAISE <class 'ConnectionError'>
+
+tests/test_20_database_connection_coverage.py:204: Failed
+___________ TestDatabaseConnectionIntegration.test_connection_recovery_scenario ____________
+
+self = <src.storage.components.database_connection.DatabaseConnection object at 0x7efcb77d9450>
+
+    def _is_connection_valid(self) -> bool:
+        """Проверка валидности текущего подключения"""
+        if self._connection is None:
+            return False
+    
+        try:
+            # Проверяем подключение простым запросом
+            with self._connection.cursor() as cursor:
+>               cursor.execute("SELECT 1")
+
+src/storage/components/database_connection.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1124: in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1128: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Mock name='mock.execute' id='139623887769808'>, args = ('SELECT 1',), kwargs = {}
+effect = Exception('Connection lost')
+
+    def _execute_mock_call(self, /, *args, **kwargs):
+        # separate from _increment_mock_call so that awaited functions are
+        # executed separately from their call, also AsyncMock overrides this method
+    
+        effect = self.side_effect
+        if effect is not None:
+            if _is_exception(effect):
+>               raise effect
+E               Exception: Connection lost
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1183: Exception
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_20_database_connection_coverage.TestDatabaseConnectionIntegration object at 0x7efcb83d0cd0>
+mock_psycopg2 = <MagicMock name='psycopg2' id='139623870621456'>
+
+    @patch('src.storage.components.database_connection.psycopg2')
+    def test_connection_recovery_scenario(self, mock_psycopg2):
+        """Покрытие сценария восстановления подключения"""
+        # Первое подключение работает
+        good_connection = Mock()
+        good_cursor = Mock()
+        good_cursor_context = Mock()
+        good_cursor_context.__enter__ = Mock(return_value=good_cursor)
+        good_cursor_context.__exit__ = Mock(return_value=None)
+        good_connection.cursor.return_value = good_cursor_context
+    
+        # Второе подключение для восстановления
+        recovery_connection = Mock()
+    
+        mock_psycopg2.connect.side_effect = [good_connection, recovery_connection]
+    
+        db_conn = DatabaseConnection()
+    
+        # Первое подключение работает
+        conn1 = db_conn.get_connection()
+        assert conn1 == good_connection
+    
+        # Имитируем поломку подключения
+        good_cursor.execute.side_effect = Exception("Connection lost")
+    
+        # Второй вызов должен восстановить подключение
+>       conn2 = db_conn.get_connection()
+                ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_20_database_connection_coverage.py:404: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/storage/components/database_connection.py:62: in get_connection
+    if not self._is_connection_valid():
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.storage.components.database_connection.DatabaseConnection object at 0x7efcb77d9450>
+
+    def _is_connection_valid(self) -> bool:
+        """Проверка валидности текущего подключения"""
+        if self._connection is None:
+            return False
+    
+        try:
+            # Проверяем подключение простым запросом
+            with self._connection.cursor() as cursor:
+                cursor.execute("SELECT 1")
+            return True
+>       except (psycopg2.OperationalError, psycopg2.InterfaceError):
+E       TypeError: catching classes that do not inherit from BaseException is not allowed
+
+src/storage/components/database_connection.py:77: TypeError
+================================= short test summary info ==================================
+FAILED tests/test_20_database_connection_coverage.py::TestDatabaseConnection::test_get_connection_recreates_invalid_connection - TypeError: catching classes that do not inherit from BaseException is not allowed
+FAILED tests/test_20_database_connection_coverage.py::TestDatabaseConnection::test_is_connection_valid_broken_connection - assert True is False
+FAILED tests/test_20_database_connection_coverage.py::TestDatabaseConnection::test_create_new_connection_failure - Failed: DID NOT RAISE <class 'ConnectionError'>
+FAILED tests/test_20_database_connection_coverage.py::TestDatabaseConnectionIntegration::test_connection_recovery_scenario - TypeError: catching classes that do not inherit from BaseException is not allowed
+=============================== 4 failed, 21 passed in 0.57s ===============================
+~/workspace$ 
