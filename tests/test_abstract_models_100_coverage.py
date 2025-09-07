@@ -23,29 +23,30 @@ class ConcreteEmployer(AbstractEmployer):
     
     def __init__(self, name: str, employer_id: Optional[str] = None, 
                  trusted: Optional[bool] = None, url: Optional[str] = None):
-        self.name = name
-        self.employer_id = employer_id
-        self.trusted = trusted
-        self.url = url
+        # Инициализируем базовый класс без вызова super().__init__()
+        object.__setattr__(self, '_name', name)
+        object.__setattr__(self, '_employer_id', employer_id)
+        object.__setattr__(self, '_trusted', trusted)
+        object.__setattr__(self, '_url', url)
     
     def get_name(self) -> str:
-        return self.name
+        return self._name
     
     def get_id(self) -> Optional[str]:
-        return self.employer_id
+        return self._employer_id
     
     def is_trusted(self) -> Optional[bool]:
-        return self.trusted
+        return self._trusted
     
     def get_url(self) -> Optional[str]:
-        return self.url
+        return self._url
     
     def to_dict(self) -> Dict[str, Any]:
         return {
-            "name": self.name,
-            "id": self.employer_id,
-            "trusted": self.trusted,
-            "url": self.url
+            "name": self._name,
+            "id": self._employer_id,
+            "trusted": self._trusted,
+            "url": self._url
         }
     
     @classmethod
@@ -62,17 +63,17 @@ class ConcreteExperience(AbstractExperience):
     """Конкретная реализация AbstractExperience для тестирования"""
     
     def __init__(self, name: str, exp_id: Optional[str] = None):
-        self.name = name
-        self.exp_id = exp_id
+        object.__setattr__(self, '_name', name)
+        object.__setattr__(self, '_exp_id', exp_id)
     
     def get_name(self) -> str:
-        return self.name
+        return self._name
     
     def get_id(self) -> Optional[str]:
-        return self.exp_id
+        return self._exp_id
     
     def to_dict(self) -> Dict[str, Any]:
-        return {"name": self.name, "id": self.exp_id}
+        return {"name": self._name, "id": self._exp_id}
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ConcreteExperience":
@@ -87,17 +88,17 @@ class ConcreteEmployment(AbstractEmployment):
     """Конкретная реализация AbstractEmployment для тестирования"""
     
     def __init__(self, name: str, employment_id: Optional[str] = None):
-        self.name = name
-        self.employment_id = employment_id
+        object.__setattr__(self, '_name', name)
+        object.__setattr__(self, '_employment_id', employment_id)
     
     def get_name(self) -> str:
-        return self.name
+        return self._name
     
     def get_id(self) -> Optional[str]:
-        return self.employment_id
+        return self._employment_id
     
     def to_dict(self) -> Dict[str, Any]:
-        return {"name": self.name, "id": self.employment_id}
+        return {"name": self._name, "id": self._employment_id}
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ConcreteEmployment":
@@ -113,36 +114,36 @@ class ConcreteSalary(AbstractSalary):
     
     def __init__(self, from_amount: Optional[int] = None, to_amount: Optional[int] = None, 
                  currency: str = "RUR"):
-        self.from_amount = from_amount
-        self.to_amount = to_amount
-        self.currency = currency
+        object.__setattr__(self, '_from_amount', from_amount)
+        object.__setattr__(self, '_to_amount', to_amount)
+        object.__setattr__(self, '_currency', currency)
     
     def get_from_amount(self) -> Optional[int]:
-        return self.from_amount
+        return self._from_amount
     
     def get_to_amount(self) -> Optional[int]:
-        return self.to_amount
+        return self._to_amount
     
     def get_currency(self) -> str:
-        return self.currency
+        return self._currency
     
     def get_average(self) -> float:
-        if self.from_amount and self.to_amount:
-            return (self.from_amount + self.to_amount) / 2
-        elif self.from_amount:
-            return float(self.from_amount)
-        elif self.to_amount:
-            return float(self.to_amount)
+        if self._from_amount and self._to_amount:
+            return (self._from_amount + self._to_amount) / 2
+        elif self._from_amount:
+            return float(self._from_amount)
+        elif self._to_amount:
+            return float(self._to_amount)
         return 0.0
     
     def is_specified(self) -> bool:
-        return self.from_amount is not None or self.to_amount is not None
+        return self._from_amount is not None or self._to_amount is not None
     
     def to_dict(self) -> Dict[str, Any]:
         return {
-            "from": self.from_amount,
-            "to": self.to_amount,
-            "currency": self.currency
+            "from": self._from_amount,
+            "to": self._to_amount,
+            "currency": self._currency
         }
     
     @classmethod
@@ -158,17 +159,17 @@ class ConcreteSchedule(AbstractSchedule):
     """Конкретная реализация AbstractSchedule для тестирования"""
     
     def __init__(self, name: str, schedule_id: Optional[str] = None):
-        self.name = name
-        self.schedule_id = schedule_id
+        object.__setattr__(self, '_name', name)
+        object.__setattr__(self, '_schedule_id', schedule_id)
     
     def get_name(self) -> str:
-        return self.name
+        return self._name
     
     def get_id(self) -> Optional[str]:
-        return self.schedule_id
+        return self._schedule_id
     
     def to_dict(self) -> Dict[str, Any]:
-        return {"name": self.name, "id": self.schedule_id}
+        return {"name": self._name, "id": self._schedule_id}
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ConcreteSchedule":

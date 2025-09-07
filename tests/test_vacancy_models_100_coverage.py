@@ -24,24 +24,24 @@ class TestEmployer:
         """Тест инициализации Employer со всеми параметрами - покрывает строки 18-28"""
         employer = Employer(
             name="Test Company",
-            employer_id="123",
+            id="123",
             trusted=True,
             alternate_url="https://company.com"
         )
         
-        assert employer._name == "Test Company"
-        assert employer._id == "123"
-        assert employer._trusted == True
-        assert employer._alternate_url == "https://company.com"
+        assert employer.name == "Test Company"
+        assert employer.id == "123"
+        assert employer.trusted == True
+        assert employer.alternate_url == "https://company.com"
 
     def test_employer_init_minimal_params(self):
         """Тест инициализации Employer с минимальными параметрами"""
         employer = Employer(name="Minimal Company")
         
-        assert employer._name == "Minimal Company"
-        assert employer._id is None
-        assert employer._trusted is None
-        assert employer._alternate_url is None
+        assert employer.name == "Minimal Company"
+        assert employer.id is None
+        assert employer.trusted is None
+        assert employer.alternate_url is None
 
     def test_get_name_with_name(self):
         """Тест get_name с установленным именем - покрывает строки 30-32"""
@@ -61,7 +61,7 @@ class TestEmployer:
 
     def test_get_id(self):
         """Тест get_id - покрывает строки 34-36"""
-        employer = Employer(name="Test", employer_id="456")
+        employer = Employer(name="Test", id="456")
         
         result = employer.get_id()
         
@@ -87,7 +87,7 @@ class TestEmployer:
         """Тест to_dict - покрывает строки 46-48"""
         employer = Employer(
             name="Dict Company",
-            employer_id="789",
+            id="789",
             trusted=False,
             alternate_url="https://dict.com"
         )
@@ -139,7 +139,7 @@ class TestEmployer:
 
     def test_repr_method(self):
         """Тест __repr__ метода - покрывает строки 63-64"""
-        employer = Employer(name="Repr Company", employer_id="repr123")
+        employer = Employer(name="Repr Company", id="repr123")
         
         result = repr(employer)
         
@@ -153,7 +153,7 @@ class TestEmployer:
 
     def test_id_property(self):
         """Тест свойства id - покрывает строки 71-73"""
-        employer = Employer(name="Test", employer_id="prop123")
+        employer = Employer(name="Test", id="prop123")
         
         assert employer.id == "prop123"
 
@@ -179,7 +179,7 @@ class TestEmployer:
 
     def test_get_method_id(self):
         """Тест get метода с ключом id - покрывает строки 88-89"""
-        employer = Employer(name="Test", employer_id="get123")
+        employer = Employer(name="Test", id="get123")
         
         result = employer.get("id")
         
@@ -211,15 +211,15 @@ class TestEmployer:
 
     def test_eq_with_dict(self):
         """Тест __eq__ с словарем - покрывает строки 96-99"""
-        employer = Employer(name="Equal Company", employer_id="eq123")
+        employer = Employer(name="Equal Company", id="eq123")
         dict_data = {"name": "Equal Company", "id": "eq123"}
         
         assert employer == dict_data
 
     def test_eq_with_employer(self):
         """Тест __eq__ с другим Employer - покрывает строки 100-101"""
-        employer1 = Employer(name="Same Company", employer_id="same123")
-        employer2 = Employer(name="Same Company", employer_id="same123")
+        employer1 = Employer(name="Same Company", id="same123")
+        employer2 = Employer(name="Same Company", id="same123")
         
         assert employer1 == employer2
 
@@ -232,7 +232,7 @@ class TestEmployer:
 
     def test_hash_method(self):
         """Тест __hash__ метода - покрывает строку 104-105"""
-        employer = Employer(name="Hash Company", employer_id="hash123")
+        employer = Employer(name="Hash Company", id="hash123")
         
         # Должен возвращать хеш без ошибок
         hash_value = hash(employer)
@@ -245,17 +245,17 @@ class TestExperience:
     
     def test_experience_init_with_all_params(self):
         """Тест инициализации Experience со всеми параметрами"""
-        experience = Experience(name="1-3 года", experience_id="exp123")
+        experience = Experience(name="1-3 года", id="exp123")
         
-        assert experience._name == "1-3 года"
-        assert experience._id == "exp123"
+        assert experience.name == "1-3 года"
+        assert experience.id == "exp123"
 
     def test_experience_init_minimal(self):
         """Тест инициализации Experience с минимальными параметрами"""
         experience = Experience(name="Опыт не требуется")
         
-        assert experience._name == "Опыт не требуется"
-        assert experience._id is None
+        assert experience.name == "Опыт не требуется"
+        assert experience.id is None
 
     def test_get_name(self):
         """Тест get_name"""
@@ -267,7 +267,7 @@ class TestExperience:
 
     def test_get_id(self):
         """Тест get_id"""
-        experience = Experience(name="Опыт", experience_id="test_id")
+        experience = Experience(name="Опыт", id="test_id")
         
         result = experience.get_id()
         
@@ -275,7 +275,7 @@ class TestExperience:
 
     def test_to_dict(self):
         """Тест to_dict"""
-        experience = Experience(name="Более 6 лет", experience_id="exp456")
+        experience = Experience(name="Более 6 лет", id="exp456")
         
         result = experience.to_dict()
         
@@ -310,7 +310,7 @@ class TestExperience:
 
     def test_repr_method(self):
         """Тест __repr__"""
-        experience = Experience(name="Большой опыт", experience_id="big_exp")
+        experience = Experience(name="Большой опыт", id="big_exp")
         
         result = repr(experience)
         
@@ -322,17 +322,17 @@ class TestEmployment:
 
     def test_employment_init_with_all_params(self):
         """Тест инициализации Employment со всеми параметрами"""
-        employment = Employment(name="Полная занятость", employment_id="full123")
+        employment = Employment(name="Полная занятость", id="full123")
         
-        assert employment._name == "Полная занятость"
-        assert employment._id == "full123"
+        assert employment.name == "Полная занятость"
+        assert employment.id == "full123"
 
     def test_employment_init_minimal(self):
         """Тест инициализации Employment с минимальными параметрами"""
         employment = Employment(name="Частичная занятость")
         
-        assert employment._name == "Частичная занятость"
-        assert employment._id is None
+        assert employment.name == "Частичная занятость"
+        assert employment.id is None
 
     def test_get_name(self):
         """Тест get_name"""
@@ -344,7 +344,7 @@ class TestEmployment:
 
     def test_get_id(self):
         """Тест get_id"""
-        employment = Employment(name="Стажировка", employment_id="intern123")
+        employment = Employment(name="Стажировка", id="intern123")
         
         result = employment.get_id()
         
@@ -352,7 +352,7 @@ class TestEmployment:
 
     def test_to_dict(self):
         """Тест to_dict"""
-        employment = Employment(name="Волонтерство", employment_id="vol456")
+        employment = Employment(name="Волонтерство", id="vol456")
         
         result = employment.to_dict()
         
@@ -387,7 +387,7 @@ class TestEmployment:
 
     def test_repr_method(self):
         """Тест __repr__"""
-        employment = Employment(name="Вахтовый метод", employment_id="vahta123")
+        employment = Employment(name="Вахтовый метод", id="vahta123")
         
         result = repr(employment)
         
