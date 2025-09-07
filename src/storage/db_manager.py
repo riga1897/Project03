@@ -1,12 +1,12 @@
-"""
-Класс DBManager для работы с данными в БД PostgreSQL
+"""Модуль управления базой данных PostgreSQL.
 
-Реализует специфические методы согласно требованиям проекта по работе с БД.
-Использует библиотеку psycopg2 для подключения к PostgreSQL.
+Обеспечивает интерфейс для работы с PostgreSQL базой данных,
+включая выполнение запросов, управление подключениями и
+специализированные методы для работы с вакансиями.
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 try:
     import psycopg2
@@ -34,33 +34,35 @@ TARGET_COMPANIES = TargetCompanies.get_all_companies()
 
 
 class DBManager(AbstractDBManager):
-    """
-    Класс для работы с базой данных PostgreSQL.
-    Предоставляет методы для выполнения специфических запросов к базе данных.
+    """Менеджер базы данных PostgreSQL.
+    
+    Предоставляет методы для выполнения запросов к PostgreSQL базе данных,
+    управления подключениями и специализированные операции с вакансиями.
+    
+    Attributes:
+        db_config: Конфигурация подключения к базе данных
     """
 
-    def __init__(self, db_config: Optional[DatabaseConfig] = None):
-        """
-        Инициализация DBManager
-
+    def __init__(self, db_config: Optional[DatabaseConfig] = None) -> None:
+        """Инициализация менеджера базы данных.
+        
         Args:
-            db_config: Конфигурация базы данных. Если None, используется по умолчанию
+            db_config: Конфигурация базы данных. Если None, используется конфигурация по умолчанию.
         """
         self.db_config = db_config or DatabaseConfig()
 
-    def _get_connection(self):
-        """
-        Создает подключение к базе данных
+    def _get_connection(self) -> Any:
+        """Создает подключение к базе данных.
 
         Returns:
-            connection: Подключение к БД (psycopg2 или простой адаптер)
+            Подключение к БД (psycopg2.connection или простой адаптер).
 
         Raises:
-            Exception: При ошибке подключения к БД
+            Exception: При ошибке подключения к БД.
         """
         if not PSYCOPG2_AVAILABLE:
             # Возвращаем простой адаптер как "подключение"
-            return get_db_adapter()
+            return get_db_adapter()  # type: ignore
 
         try:
             connection_params = self.db_config.get_connection_params()
@@ -75,9 +77,9 @@ class DBManager(AbstractDBManager):
             logger.error(f"Ошибка подключения к базе данных: {e}")
             raise
 
-    def _ensure_database_exists(self):
-        """
-        Создает базу данных если она не существует.
+    def _ensure_database_exists(self) -> None:
+        """Создает базу данных если она не существует.
+        
         Подключается к системной БД postgres для создания новой БД.
         """
         if not PSYCOPG2_AVAILABLE:
@@ -138,10 +140,11 @@ class DBManager(AbstractDBManager):
                 cursor.close()
             connection.close()
 
-    def create_tables(self):
-        """
-        Создает таблицы компаний и вакансий в базе данных, если они не существуют
-        Автоматически добавляет недостающие поля в существующие таблицы
+    def create_tables(self) -> None:
+        """Создает таблицы компаний и вакансий в базе данных.
+        
+        Автоматически создает таблицы если они не существуют и добавляет
+        недостающие поля в существующие таблицы.
         """
         try:
             with self._get_connection() as conn:
@@ -277,8 +280,12 @@ class DBManager(AbstractDBManager):
             logger.error(f"Ошибка при создании таблиц: {e}")
             raise
 
-    def populate_companies_table(self):
-        """Заполняет таблицу companies целевыми компаниями"""
+    def populate_companies_table(self) -> None:
+        """Заполняет таблицу companies целевыми компаниями.
+        
+        Добавляет в таблицу все целевые компании из конфигурации
+        с их HH и SuperJob идентификаторами.
+        """
         try:
             # Используем контекстный менеджер для безопасной работы с подключением
             with self._get_connection() as connection:
@@ -338,12 +345,12 @@ class DBManager(AbstractDBManager):
             raise
 
     def get_target_companies_analysis(self) -> List[Tuple[str, int]]:
-        """
-        Получает анализ ТОЛЬКО по целевым компаниям
-        Этот метод специально предназначен для демонстрации п.10
+        """Получает анализ ТОЛЬКО по целевым компаниям.
+        
+        Этот метод специально предназначен для демонстрации п.10.
 
         Returns:
-            List[Tuple[str, int]]: Список кортежей (название_целевой_компании, количество_вакансий)
+            Список кортежей (название_целевой_компании, количество_вакансий).
         """
         try:
             # Сначала получаем все данные
@@ -361,12 +368,12 @@ class DBManager(AbstractDBManager):
             return [(company.name, 0) for company in TARGET_COMPANIES]
 
     def get_companies_and_vacancies_count(self) -> List[Tuple[str, int]]:
-        """
-        Получает список всех компаний и количество вакансий у каждой компании
-        ВАЖНО: Метод фильтрует результаты по целевым компаниям из конфигурации
+        """Получает список всех компаний и количество вакансий у каждой компании.
+        
+        ВАЖНО: Метод фильтрует результаты по целевым компаниям из конфигурации.
 
         Returns:
-            List[Tuple[str, int]]: Список кортежей (название_компании, количество_вакансий)
+            Список кортежей (название_компании, количество_вакансий).
         """
         # Проверяем подключение к БД
         if not self.check_connection():
@@ -405,15 +412,14 @@ class DBManager(AbstractDBManager):
             return [(company.name, 0) for company in TARGET_COMPANIES]
 
     def _is_target_company_match(self, target_name: str, db_name: str) -> bool:
-        """
-        Проверяет, соответствует ли название компании из БД целевой компании
+        """Проверяет, соответствует ли название компании из БД целевой компании.
 
         Args:
-            target_name: Название целевой компании
-            db_name: Название компании из БД
+            target_name: Название целевой компании.
+            db_name: Название компании из БД.
 
         Returns:
-            bool: True если названия соответствуют
+            True если названия соответствуют.
         """
         # Словарь сопоставлений
         mappings = {
