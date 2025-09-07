@@ -25,8 +25,7 @@ def mock_io_operations():
          patch('pathlib.Path.mkdir') as mock_mkdir, \
          patch('pathlib.Path.exists') as mock_exists, \
          patch('pathlib.Path.write_text') as mock_write, \
-         patch('pathlib.Path.read_text') as mock_read, \
-         patch('src.utils.env_loader.EnvLoader.get_env_var') as mock_env:
+         patch('pathlib.Path.read_text') as mock_read:
         
         # Настраиваем базовые возвращаемые значения
         mock_input.return_value = "test_input"
@@ -36,7 +35,6 @@ def mock_io_operations():
         mock_post.return_value.status_code = 200
         mock_exists.return_value = True
         mock_read.return_value = "{}"
-        mock_env.return_value = "test_value"
         
         yield {
             'input': mock_input,
@@ -47,8 +45,7 @@ def mock_io_operations():
             'mkdir': mock_mkdir,
             'exists': mock_exists,
             'write': mock_write,
-            'read': mock_read,
-            'env': mock_env
+            'read': mock_read
         }
 
 @pytest.fixture

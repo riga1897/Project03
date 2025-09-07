@@ -215,10 +215,14 @@ class TestEnvLoaderLoadEnvFile:
 
 class TestEnvLoaderGetEnvVar:
     """100% покрытие get_env_var статического метода"""
+    
+    def setup_method(self):
+        """Сброс состояния класса перед каждым тестом"""
+        EnvLoader._loaded = False
 
     def test_get_env_var_with_value(self):
         """Покрытие получения существующей переменной окружения"""
-        with patch.dict('os.environ', {'TEST_KEY': 'test_value'}):
+        with patch.dict('os.environ', {'TEST_KEY': 'test_value'}, clear=True):
             result = EnvLoader.get_env_var("TEST_KEY", "default")
             assert result == "test_value"
 
@@ -337,7 +341,7 @@ class TestEnvLoaderIntegration:
         """Покрытие полного рабочего сценария"""
         mock_exists.return_value = True
         
-        with patch.dict('src.utils.env_loader.os.environ', {}, clear=True) as mock_environ:
+        with patch.dict('os.environ', {}, clear=True) as mock_environ:
             # Загружаем файл
             EnvLoader.load_env_file()
             
@@ -382,7 +386,7 @@ class TestEnvLoaderIntegration:
         mock_exists.return_value = True
         custom_path = "custom.env"
         
-        with patch.dict('src.utils.env_loader.os.environ', {}, clear=True):
+        with patch.dict('os.environ', {}, clear=True):
             EnvLoader.load_env_file(custom_path)
         
         # Должен проверить кастомный путь
@@ -393,7 +397,7 @@ class TestEnvLoaderIntegration:
         # Статические методы должны работать независимо от _loaded флага
         EnvLoader._loaded = False
         
-        with patch.dict('os.environ', {'TEST_KEY': 'test', 'INT_KEY': '42'}):
+        with patch.dict('os.environ', {'TEST_KEY': 'test', 'INT_KEY': '42'}, clear=True):
             result1 = EnvLoader.get_env_var('TEST_KEY')
             assert result1 == 'test'
             
@@ -410,7 +414,7 @@ class TestEnvLoaderIntegration:
         """Покрытие сложного парсинга .env файла с комментариями"""
         mock_exists.return_value = True
         
-        with patch.dict('src.utils.env_loader.os.environ', {}, clear=True) as mock_environ:
+        with patch.dict('os.environ', {}, clear=True) as mock_environ:
             EnvLoader.load_env_file()
             
             # Только переменные должны быть загружены, комментарии пропущены
