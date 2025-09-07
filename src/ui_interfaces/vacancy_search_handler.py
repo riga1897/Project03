@@ -162,26 +162,25 @@ class VacancySearchHandler:
         # Предлагаем сохранить только новые вакансии
         if duplicate_info["new_vacancies"]:
             if confirm_action(f"Сохранить {len(duplicate_info['new_vacancies'])} новых вакансий?"):
-                self._save_vacancies(duplicate_info["new_vacancies"], query)
+                self._save_vacancies(duplicate_info["new_vacancies"])
             else:
                 print("Новые вакансии не сохранены")
         elif duplicate_info["total_count"] > 0:
             # Сообщение уже выведено в _display_duplicate_info
             pass
 
-    def _save_vacancies(self, vacancies: List[Vacancy], search_query: Optional[str] = None) -> None:
+    def _save_vacancies(self, vacancies: List[Vacancy]) -> None:
         """
         Сохранение вакансий в хранилище
 
         Args:
             vacancies: Список вакансий для сохранения
-            search_query: Поисковый запрос, по которому были найдены вакансии
         """
         try:
             print(f"Сохранение {len(vacancies)} вакансий...")
 
-            # Сохраняем новые вакансии оптимизированным методом с поисковым запросом
-            update_messages = self.storage.add_vacancy_batch_optimized(vacancies, search_query)
+            # Сохраняем новые вакансии оптимизированным методом
+            update_messages = self.storage.add_vacancy_batch_optimized(vacancies)
 
             if update_messages:
                 for message in update_messages:

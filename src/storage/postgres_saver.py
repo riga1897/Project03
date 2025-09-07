@@ -328,7 +328,7 @@ class PostgresSaver(AbstractVacancyStorage):
                     pass
 
     def add_vacancy_batch_optimized(
-        self, vacancies: Union[Vacancy, List[Vacancy]], search_query: str = None
+        self, vacancies: Union[Vacancy, List[Vacancy]]
     ) -> List[str]:
         """
         Максимально оптимизированное batch-добавление вакансий через временные таблицы.
@@ -507,7 +507,6 @@ class PostgresSaver(AbstractVacancyStorage):
                         vacancy.source,
                         published_date,
                         mapped_company_id,  # Всегда будет не None для целевых компаний
-                        search_query,
                     )
                 )
 
@@ -519,7 +518,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 """INSERT INTO temp_new_vacancies (
                     vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
-                    employment, schedule, area, source, published_at, company_id, search_query
+                    employment, schedule, area, source, published_at, company_id
                 ) VALUES %s""",
                 insert_data,
                 template=None,
@@ -532,11 +531,11 @@ class PostgresSaver(AbstractVacancyStorage):
                 INSERT INTO vacancies (
                     vacancy_id, title, url, salary_from, salary_to, salary_currency,
                     description, requirements, responsibilities, experience,
-                    employment, schedule, area, source, published_at, company_id, search_query
+                    employment, schedule, area, source, published_at, company_id
                 )
                 SELECT t.vacancy_id, t.title, t.url, t.salary_from, t.salary_to, t.salary_currency,
                        t.description, t.requirements, t.responsibilities, t.experience,
-                       t.employment, t.schedule, t.area, t.source, t.published_at, t.company_id, t.search_query
+                       t.employment, t.schedule, t.area, t.source, t.published_at, t.company_id
                 FROM temp_new_vacancies t
                 LEFT JOIN vacancies v ON t.vacancy_id = v.vacancy_id
                 WHERE v.vacancy_id IS NULL
