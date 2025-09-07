@@ -461,23 +461,25 @@ class TestVacancyOperations:
     def test_search_vacancies_by_keyword_empty_keyword(self):
         """Покрытие: поиск с пустым ключевым словом"""
         vacancies = [MockVacancy()]
+        ops = VacancyOperations()  # Создаем экземпляр
         
         # Пустая строка
-        result1 = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "")
+        result1 = ops.search_vacancies_by_keyword(vacancies, "")
         assert result1 == []
         
         # Только пробелы
-        result2 = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "   ")
+        result2 = ops.search_vacancies_by_keyword(vacancies, "   ")
         assert result2 == []
         
         # None
-        result3 = VacancyOperations.search_vacancies_by_keyword(None, vacancies, None)
+        result3 = ops.search_vacancies_by_keyword(vacancies, None)
         assert result3 == []
 
     @patch('src.utils.vacancy_operations.logger')
     def test_search_vacancies_by_keyword_sql_success(self, mock_logger):
         """Покрытие: успешный SQL поиск"""
         vacancies = []
+        ops = VacancyOperations()
         
         # Мокируем PostgresSaver
         mock_postgres = MagicMock()
@@ -485,7 +487,7 @@ class TestVacancyOperations:
         mock_postgres.search_vacancies_batch.return_value = mock_results
         
         with patch('src.utils.vacancy_operations.PostgresSaver', return_value=mock_postgres):
-            result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "Python", use_sql=True)
+            result = ops.search_vacancies_by_keyword(vacancies, "Python", use_sql=True)
             
             assert result == mock_results
             mock_postgres.search_vacancies_batch.assert_called_once_with(["Python"], limit=1000)
@@ -494,10 +496,11 @@ class TestVacancyOperations:
     def test_search_vacancies_by_keyword_sql_exception(self, mock_logger):
         """Покрытие: исключение при SQL поиске"""
         vacancies = []
+        ops = VacancyOperations()
         
         # Мокируем PostgresSaver чтобы выбросить исключение
         with patch('src.utils.vacancy_operations.PostgresSaver', side_effect=Exception("DB Error")):
-            result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "Python", use_sql=True)
+            result = ops.search_vacancies_by_keyword(vacancies, "Python", use_sql=True)
             
             assert result == []
             mock_logger.error.assert_called_once()
@@ -507,8 +510,9 @@ class TestVacancyOperations:
     def test_search_vacancies_by_keyword_no_sql(self):
         """Покрытие: отключенный SQL поиск"""
         vacancies = [MockVacancy()]
+        ops = VacancyOperations()
         
-        result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "Python", use_sql=False)
+        result = ops.search_vacancies_by_keyword(vacancies, "Python", use_sql=False)
         
         # При отключенном SQL должен возвращать пустой список
         assert result == []
