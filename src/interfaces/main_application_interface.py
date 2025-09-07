@@ -10,9 +10,8 @@
 """
 
 from abc import ABC, abstractmethod
-from typing import List, Optional, Protocol, runtime_checkable
+from typing import List, Protocol, runtime_checkable
 
-from src.config.target_companies import CompanyInfo
 from src.vacancies.models import Vacancy
 
 
