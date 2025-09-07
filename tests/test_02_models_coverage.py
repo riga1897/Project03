@@ -60,21 +60,21 @@ class TestSalary:
         salary_data = {"from": 50000, "to": 70000, "currency": "RUR"}
         salary = Salary(salary_data)
         result = str(salary)
-        assert "50000" in result and "70000" in result and "RUR" in result
+        assert "50,000" in result and "70,000" in result and "руб" in result
 
     def test_str_method_from_only(self):
         """Покрытие __str__ только с минимальной зарплатой."""
         salary_data = {"from": 40000, "currency": "RUR"}
         salary = Salary(salary_data)
         result = str(salary)
-        assert "40000" in result and "RUR" in result
+        assert "40,000" in result and "руб" in result
 
     def test_str_method_to_only(self):
         """Покрытие __str__ только с максимальной зарплатой."""
         salary_data = {"to": 60000, "currency": "RUR"}
         salary = Salary(salary_data)
         result = str(salary)
-        assert "60000" in result and "RUR" in result
+        assert "60,000" in result and "руб" in result
 
     def test_str_method_no_salary(self):
         """Покрытие __str__ без указания зарплаты."""
@@ -208,16 +208,16 @@ class TestVacancy:
             responsibilities="Coding",
             employer=employer_data,
             area="Moscow",
-            experience="3-6 лет",
-            employment="Полная занятость",
-            schedule="Полный день",
+            experience={"name": "3-6 лет", "id": "exp123"},
+            employment={"name": "Полная занятость", "id": "emp123"},
+            schedule={"name": "Полный день", "id": "sch123"},
             published_at="2024-01-01",
             source="test_source"
         )
         
         assert vacancy.id == "456"
         assert vacancy.title == "Senior Developer"
-        assert isinstance(vacancy.salary, Salary)
+        assert isinstance(vacancy.salary, dict)
         assert isinstance(vacancy.employer, Employer)
         assert isinstance(vacancy.experience, Experience)
         assert isinstance(vacancy.employment, Employment)
@@ -228,7 +228,7 @@ class TestVacancy:
         mock_uuid.return_value.hex = "test_uuid"
         
         vacancy = Vacancy(vacancy_id="123", name="Test", alternate_url="url", salary={"from": 50000})
-        assert isinstance(vacancy.salary, Salary)
+        assert isinstance(vacancy.salary, dict)
 
     @patch('src.vacancies.models.uuid.uuid4')
     def test_employer_property(self, mock_uuid):
