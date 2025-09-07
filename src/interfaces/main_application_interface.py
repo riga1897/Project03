@@ -190,10 +190,10 @@ class ConsoleApplicationInterface(MainApplicationInterface):
             if vacancy.salary:
                 try:
                     # Проверяем есть ли метод форматирования
-                    if hasattr(vacancy.salary, "get_formatted_string"):
-                        salary_info = vacancy.salary.get_formatted_string()
+                    if hasattr(vacancy.salary, "get_formatted_string") and callable(getattr(vacancy.salary, "get_formatted_string", None)):
+                        salary_info = vacancy.salary.get_formatted_string()  # type: ignore
                     elif hasattr(vacancy.salary, "salary_info"):
-                        salary_info = vacancy.salary.salary_info or "Не указана"
+                        salary_info = getattr(vacancy.salary, "salary_info", None) or "Не указана"
                     else:
                         # Базовое форматирование
                         from_amount = getattr(vacancy.salary, "salary_from", None)
