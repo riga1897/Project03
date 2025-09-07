@@ -925,11 +925,11 @@ class PostgresSaver(AbstractVacancyStorage):
                                     "currency": row["salary_currency"] or "RUR",
                                 }
 
-                            # Создаем объект Vacancy напрямую с новой Pydantic структурой
+                            # ИСПРАВЛЕНО: Создаем объект Vacancy с правильным маппингом полей для Pydantic alias
                             vacancy_data = {
-                                "id": row["vacancy_id"],
-                                "name": row["title"],  # Используем поле title из БД
-                                "url": row["url"] or "",  # Теперь url обязательное поле
+                                "vacancy_id": row["vacancy_id"],  # Используем alias имя, не поле модели
+                                "name": row["title"],  # Используем alias имя для title
+                                "alternate_url": row["url"] or "",  # Используем alias имя для url
                                 "salary": salary_dict,
                                 # ИСПРАВЛЕНО: Используем прямые поля из БД, а не snippet
                                 "requirements": row["requirements"] or "",
