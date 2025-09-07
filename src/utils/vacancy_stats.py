@@ -28,7 +28,7 @@ class VacancyStats:
         """
         pass
 
-    def calculate_salary_statistics(self, vacancies):
+    def calculate_salary_statistics(self, vacancies: List[Any]) -> Dict[str, int]:
         """Подсчет статистики по зарплатам"""
         salaries = []
         with_salary_count = 0
@@ -78,7 +78,7 @@ class VacancyStats:
             "without_salary_count": without_salary_count,
         }
 
-    def get_top_employers(self, vacancies, top_n=10):
+    def get_top_employers(self, vacancies: List[Any], top_n: int = 10) -> List[tuple[str, int]]:
         """Получение топ работодателей"""
         employer_counts = {}
         for vacancy in vacancies:
@@ -90,7 +90,7 @@ class VacancyStats:
         sorted_employers = sorted(employer_counts.items(), key=lambda x: x[1], reverse=True)
         return sorted_employers[:top_n]
 
-    def get_source_distribution(self, vacancies):
+    def get_source_distribution(self, vacancies: List[Any]) -> Dict[str, int]:
         """Получение распределения по источникам"""
         source_counts = {}
         for vacancy in vacancies:
@@ -99,7 +99,7 @@ class VacancyStats:
 
         return source_counts
 
-    def display_company_stats(self, vacancies, source_name: str = None):
+    def display_company_stats(self, vacancies: List[Any], source_name: str = None) -> None:
         """
         Отображение статистики по компаниям
 
@@ -158,7 +158,7 @@ class VacancyStats:
             print("Не удалось определить статистику по компаниям")
 
 
-def calculate_statistics(vacancies):
+def calculate_statistics(vacancies: List[Any]) -> Dict[str, Any]:
     """Функция для подсчета общей статистики"""
     stats = VacancyStats()
 
@@ -250,7 +250,7 @@ class VacancyStatsExtended:
         return "Неизвестная компания"
 
     @staticmethod
-    def display_company_stats(vacancies: List[Dict[str, Any]], source_name: str = ""):
+    def display_company_stats(vacancies: List[Dict[str, Any]], source_name: str = "") -> None:
         """
         Отобразить статистику по компаниям
 
@@ -271,7 +271,7 @@ class VacancyStatsExtended:
         VacancyStatsExtended._display_company_distribution(company_stats, len(vacancies), source_name)
 
     @staticmethod
-    def _display_company_distribution(company_stats: Dict[str, int], total_vacancies: int, source_name: str = ""):
+    def _display_company_distribution(company_stats: Dict[str, int], total_vacancies: int, source_name: str = "") -> None:
         """
         Отобразить распределение компаний
 
@@ -294,7 +294,7 @@ class VacancyStatsExtended:
         print("-" * 60)
 
     @staticmethod
-    def display_source_stats(hh_vacancies: List[Dict[str, Any]], sj_vacancies: List[Dict[str, Any]]):
+    def display_source_stats(hh_vacancies: List[Dict[str, Any]], sj_vacancies: List[Dict[str, Any]]) -> None:
         """
         Отобразить статистику по каждому источнику отдельно
 
@@ -356,7 +356,7 @@ class VacancyStatsExtended:
         }
 
     @staticmethod
-    def display_company_mapping_analysis(vacancies: List[Dict[str, Any]]):
+    def display_company_mapping_analysis(vacancies: List[Dict[str, Any]]) -> None:
         """
         Отобразить анализ маппинга компаний
 
