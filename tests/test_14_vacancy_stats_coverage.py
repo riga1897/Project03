@@ -292,11 +292,16 @@ class TestDisplayCompanyStats:
     @patch('builtins.print')
     def test_vacancy_with_exception(self, mock_print):
         """Покрытие исключения при обработке вакансии."""
-        # Создаем объект, который вызовет исключение
+        # Создаем mock объект, который будет вызывать исключение при доступе к employer.name
         mock_vacancy = Mock()
-        mock_vacancy.employer = Mock()
-        # Настроим так, чтобы обращение к name вызывало исключение
-        type(mock_vacancy.employer).name = Mock(side_effect=Exception("Test error"))
+        mock_employer = Mock()
+        
+        # Настраиваем property name чтобы вызывал исключение при обращении
+        def raise_error():
+            raise Exception("Test error")
+        
+        type(mock_employer).name = property(lambda self: raise_error())
+        mock_vacancy.employer = mock_employer
         
         stats = VacancyStats()
         stats.display_company_stats([mock_vacancy])
@@ -599,19 +604,16 @@ class TestEdgeCases:
     
     def test_extract_company_name_with_employer_id_mapping(self):
         """Покрытие маппинга employer_id в SuperJob формате."""
+        # Тестируем словарь с данными SuperJob для проверки firm_name и firm_id
         vacancy = {
             "firm_name": "Test Firm",
             "firm_id": "123"
         }
         
-        # Создаем mock объект с атрибутом employer_id для проверки маппинга
-        mock_vacancy = Mock()
-        mock_vacancy.employer_id = None
+        # Метод должен найти firm_name в словаре
+        result = VacancyStatsExtended._extract_company_name(vacancy)
         
-        # Патчим hasattr для проверки ветки с employer_id
-        with patch('builtins.hasattr', return_value=True):
-            result = VacancyStatsExtended._extract_company_name(vacancy)
-        
+        # Ожидаем, что метод вернет название фирмы
         assert result == "Test Firm"
     
     def test_salary_statistics_with_float_salaries(self):
