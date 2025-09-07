@@ -298,11 +298,39 @@ class VacancyOperationsCoordinator:
 
             print(f"API вернул {len(vacancy_data)} записей о вакансиях")
 
-            # Конвертируем в объекты Vacancy с обработкой ошибок
+            # ИСПРАВЛЕНО: Обрабатываем данные через парсеры перед созданием объектов
             vacancies = []
             conversion_errors = 0
 
-            for data in vacancy_data:
+            # Разделяем данные по источникам для правильной обработки
+            hh_data = [item for item in vacancy_data if item.get('source') == 'hh.ru' or 'api.hh.ru' in str(item.get('url', ''))]
+            sj_data = [item for item in vacancy_data if item.get('source') == 'superjob.ru' or 'superjob.ru' in str(item.get('url', ''))]
+            
+            # Обрабатываем HH данные через HHParser
+            if hh_data:
+                try:
+                    from src.vacancies.parsers.hh_parser import HHParser
+                    hh_parser = HHParser()
+                    hh_vacancies = hh_parser.parse_vacancies(hh_data)
+                    vacancies.extend(hh_vacancies)
+                    logger.info(f"Обработано {len(hh_vacancies)} вакансий HH через парсер")
+                except Exception as e:
+                    logger.error(f"Ошибка обработки HH данных через парсер: {e}")
+                    
+            # Обрабатываем SJ данные через SJParser
+            if sj_data:
+                try:
+                    from src.vacancies.parsers.sj_parser import SuperJobParser
+                    sj_parser = SuperJobParser()
+                    sj_vacancies = sj_parser.parse_vacancies(sj_data)
+                    vacancies.extend(sj_vacancies)
+                    logger.info(f"Обработано {len(sj_vacancies)} вакансий SJ через парсер")
+                except Exception as e:
+                    logger.error(f"Ошибка обработки SJ данных через парсер: {e}")
+            
+            # Если остались необработанные данные (другие источники), пытаемся создать через from_dict
+            other_data = [item for item in vacancy_data if item not in hh_data and item not in sj_data]
+            for data in other_data:
                 try:
                     vacancy = Vacancy.from_dict(data)
                     vacancies.append(vacancy)
