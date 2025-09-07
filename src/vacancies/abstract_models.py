@@ -114,7 +114,7 @@ class AbstractEmployer(BaseModel, AbstractEmployerMixin):
 
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
-        return self.dict()
+        return self.model_dump()
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "AbstractEmployer":
@@ -129,7 +129,7 @@ class AbstractExperience(BaseModel, AbstractExperienceMixin):
 
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
-        return self.dict()
+        return self.model_dump()
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "AbstractExperience":
@@ -150,7 +150,7 @@ class AbstractEmployment(BaseModel, AbstractEmploymentMixin):
 
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
-        return self.dict()
+        return self.model_dump()
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "AbstractEmployment":
@@ -171,7 +171,7 @@ class AbstractSchedule(BaseModel, AbstractScheduleMixin):
 
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
-        return self.dict()
+        return self.model_dump()
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "AbstractSchedule":
@@ -192,7 +192,7 @@ class AbstractSalary(BaseModel, AbstractSalaryMixin):
 
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
-        return self.dict()
+        return self.model_dump()
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "AbstractSalary":
