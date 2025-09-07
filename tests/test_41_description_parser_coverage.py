@@ -673,3 +673,96 @@ class TestDescriptionParserMainExecution:
         assert "Python" in req2
         assert "FastAPI" in req2
         assert "микросервисов" in resp2
+
+
+class TestDescriptionParserExceptionCoverage:
+    """100% покрытие строк 100-101: обработка исключений в extract_requirements_and_responsibilities"""
+
+    @patch('src.utils.description_parser.logger')
+    def test_extract_requirements_exception_handling(self, mock_logger):
+        """Покрытие строк 100-101: исключение при парсинге"""
+        
+        # Мокируем re.search чтобы вызвать исключение
+        with patch('re.search', side_effect=Exception("Regex parsing error")):
+            description = "<p><strong>Требования:</strong></p><p>Python, Django</p>"
+            
+            result = DescriptionParser.extract_requirements_and_responsibilities(description)
+            
+            # Должен вернуть None, None из-за исключения
+            assert result == (None, None)
+            
+            # Должен залогировать предупреждение
+            mock_logger.warning.assert_called_once()
+            call_args = mock_logger.warning.call_args[0][0]
+            assert "Ошибка парсинга описания" in call_args
+            assert "Regex parsing error" in call_args
+
+    @patch('src.utils.description_parser.logger')
+    def test_extract_responsibilities_exception_handling(self, mock_logger):
+        """Покрытие строк 100-101: исключение при парсинге обязанностей"""
+        
+        # Создаем описание, которое пройдет первый цикл, но упадет на втором
+        original_search = __import__('re').search
+        call_count = [0]
+        
+        def mock_search_with_counter(*args, **kwargs):
+            call_count[0] += 1
+            if call_count[0] > 6:  # После прохода по REQUIREMENTS_PATTERNS
+                raise Exception("Error in responsibilities parsing")
+            return original_search(*args, **kwargs)
+        
+        with patch('re.search', side_effect=mock_search_with_counter):
+            description = "<p><strong>Требования:</strong></p><p>Python</p><p><strong>Обязанности:</strong></p><p>Coding</p>"
+            
+            result = DescriptionParser.extract_requirements_and_responsibilities(description)
+            
+            # Должен вернуть None, None из-за исключения
+            assert result == (None, None)
+            
+            # Должен залогировать предупреждение
+            mock_logger.warning.assert_called_once()
+
+    @patch('src.utils.description_parser.logger')
+    def test_extract_clean_html_exception_in_parsing(self, mock_logger):
+        """Покрытие строк 100-101: исключение в clean_html при парсинге"""
+        
+        # Мокируем clean_html чтобы вызвать исключение
+        with patch.object(DescriptionParser, 'clean_html', side_effect=Exception("HTML cleaning error")):
+            description = "<p><strong>Требования:</strong></p><p>Python</p>"
+            
+            result = DescriptionParser.extract_requirements_and_responsibilities(description)
+            
+            # Должен вернуть None, None из-за исключения
+            assert result == (None, None)
+            
+            # Должен залогировать предупреждение
+            mock_logger.warning.assert_called_once()
+
+    @patch('src.utils.description_parser.logger')
+    @patch('src.utils.description_parser.unescape')
+    def test_extract_unescape_exception_handling(self, mock_unescape, mock_logger):
+        """Покрытие строк 100-101: исключение в unescape"""
+        
+        # Мокируем unescape чтобы вызвать исключение в clean_html
+        mock_unescape.side_effect = Exception("Unescape error")
+        
+        description = "<p><strong>Требования:</strong></p><p>Python &amp; Django</p>"
+        
+        result = DescriptionParser.extract_requirements_and_responsibilities(description)
+        
+        # Должен вернуть None, None из-за исключения
+        assert result == (None, None)
+        
+        # Должен залогировать предупреждение
+        mock_logger.warning.assert_called_once()
+
+    def test_extract_various_exception_scenarios(self):
+        """Дополнительные сценарии для полного покрытия исключений"""
+        
+        # Проверяем что без исключений все работает
+        description = "<p><strong>Требования:</strong></p><p>Python, Django</p>"
+        result = DescriptionParser.extract_requirements_and_responsibilities(description)
+        
+        # Должен найти требования
+        assert result[0] is not None
+        assert "Python" in result[0]
