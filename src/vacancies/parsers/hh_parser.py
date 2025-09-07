@@ -40,9 +40,9 @@ class HHParser(BaseParser):
                 snippet = item.get("snippet", {})
                 if snippet:
                     # Устанавливаем отдельные поля requirements и responsibilities
-                    if snippet.get("requirement") and not item.get("requirements"):
+                    if snippet.get("requirement"):
                         item["requirements"] = snippet.get("requirement")
-                    if snippet.get("responsibility") and not item.get("responsibilities"):
+                    if snippet.get("responsibility"):
                         item["responsibilities"] = snippet.get("responsibility")
                     
                     # Обогащаем description только если его нет
