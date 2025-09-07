@@ -175,7 +175,7 @@ def filter_vacancies_by_keyword(vacancies: List[Vacancy], keyword: str) -> List[
             relevance_score += 15
 
         # Проверяем в заголовке (высокий приоритет)
-        if vacancy.name and keyword_lower in vacancy.name.lower():
+        if vacancy.title and keyword_lower in vacancy.title.lower():
             relevance_score += 10
 
         # Проверяем в требованиях (средний приоритет)
@@ -263,7 +263,7 @@ def vacancy_contains_keyword(vacancy: Vacancy, keyword: str) -> bool:
     keyword_lower = keyword.lower()
 
     # Проверяем в заголовке
-    if vacancy.name and keyword_lower in vacancy.name.lower():
+    if vacancy.title and keyword_lower in vacancy.title.lower():
         return True
 
     # Проверяем в требованиях
@@ -337,7 +337,7 @@ class AdvancedSearch:
             if hasattr(vacancy, "search_query") and vacancy.search_query:
                 search_query = vacancy.search_query
 
-            search_text = f"{vacancy.name} {vacancy.description or ''} {search_query}".lower()
+            search_text = f"{vacancy.title} {vacancy.description or ''} {search_query}".lower()
             if all(keyword.lower() in search_text for keyword in keywords):
                 result.append(vacancy)
         return result
@@ -351,7 +351,7 @@ class AdvancedSearch:
             if hasattr(vacancy, "search_query") and vacancy.search_query:
                 search_query = vacancy.search_query
 
-            search_text = f"{vacancy.name} {vacancy.description or ''} {search_query}".lower()
+            search_text = f"{vacancy.title} {vacancy.description or ''} {search_query}".lower()
             if any(keyword.lower() in search_text for keyword in keywords):
                 result.append(vacancy)
         return result
