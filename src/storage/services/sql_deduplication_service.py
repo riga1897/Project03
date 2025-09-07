@@ -169,7 +169,7 @@ class SQLDeduplicationService(AbstractDeduplicationService):
                 vacancy_id,
                 original_index,
                 ROW_NUMBER() OVER (
-                    PARTITION BY title_normalized, employer_normalized, salary_normalized, area_normalized
+                    PARTITION BY title_normalized, employer_normalized, salary_normalized, area_normalized  
                     ORDER BY source_priority ASC, original_index ASC
                 ) as row_num
             FROM temp_deduplication
