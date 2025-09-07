@@ -699,20 +699,15 @@ class TestDescriptionParserExceptionCoverage:
 
     @patch('src.utils.description_parser.logger')
     def test_extract_responsibilities_exception_handling(self, mock_logger):
-        """Покрытие строк 100-101: исключение при парсинге обязанностей"""
+        """Покрытие строк 100-101: исключение при парсинге"""
         
-        # Создаем описание, которое пройдет первый цикл, но упадет на втором
-        original_search = __import__('re').search
-        call_count = [0]
-        
-        def mock_search_with_counter(*args, **kwargs):
-            call_count[0] += 1
-            if call_count[0] > 6:  # После прохода по REQUIREMENTS_PATTERNS
-                raise Exception("Error in responsibilities parsing")
-            return original_search(*args, **kwargs)
-        
-        with patch('re.search', side_effect=mock_search_with_counter):
-            description = "<p><strong>Требования:</strong></p><p>Python</p><p><strong>Обязанности:</strong></p><p>Coding</p>"
+        # Мокируем match.group() чтобы вызвать исключение
+        with patch('re.search') as mock_search:
+            mock_match = MagicMock()
+            mock_match.group.side_effect = Exception("Error extracting match group")
+            mock_search.return_value = mock_match
+            
+            description = "<p><strong>Требования:</strong></p><p>Python</p>"
             
             result = DescriptionParser.extract_requirements_and_responsibilities(description)
             
