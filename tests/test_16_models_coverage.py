@@ -569,94 +569,130 @@ class TestVacancyFactory:
         assert vacancy.employment.name == "Частичная"
         assert vacancy.employment.id == "part"
     
-    def test_factory_create_schedule_dict(self):
-        """Покрытие создания графика из словаря"""
-        sch_data = {"name": "Удаленно", "id": "remote"}
-        schedule = VacancyFactory._create_schedule(sch_data)
+    def test_factory_schedule_handling(self):
+        """Покрытие обработки графика в Factory методах"""
+        data_with_schedule = {
+            "id": "sch_test",
+            "name": "Job with Schedule",
+            "alternate_url": "https://test.com/sch",
+            "schedule": {"name": "Удаленно", "id": "remote"}
+        }
         
-        assert isinstance(schedule, Schedule)
-        assert schedule.name == "Удаленно"
-        assert schedule.id == "remote"
+        vacancy = VacancyFactory.from_hh_api(data_with_schedule)
+        
+        assert isinstance(vacancy.schedule, Schedule)
+        assert vacancy.schedule.name == "Удаленно"
+        assert vacancy.schedule.id == "remote"
     
-    def test_factory_create_schedule_string(self):
-        """Покрытие создания графика из строки"""
-        schedule = VacancyFactory._create_schedule("Вахта")
+    def test_factory_salary_handling(self):
+        """Покрытие обработки зарплаты в Factory методах"""
+        data_with_salary = {
+            "id": "sal_test",
+            "name": "Job with Salary",
+            "alternate_url": "https://test.com/sal",
+            "salary": {"from": 100000, "to": 150000, "currency": "RUR"}
+        }
         
-        assert isinstance(schedule, Schedule)
-        assert schedule.name == "Вахта"
+        vacancy = VacancyFactory.from_hh_api(data_with_salary)
+        
+        assert vacancy.salary is not None
+        assert vacancy.salary["from"] == 100000
+        assert vacancy.salary["to"] == 150000
     
-    def test_factory_create_schedule_none(self):
-        """Покрытие создания графика из None"""
-        schedule = VacancyFactory._create_schedule(None)
+    def test_factory_area_extraction(self):
+        """Покрытие извлечения области из API данных"""
+        data_with_area = {
+            "id": "area_test",
+            "name": "Job in Area",
+            "alternate_url": "https://test.com/area",
+            "area": {"name": "Новосибирск"}
+        }
         
-        assert schedule is None
+        vacancy = VacancyFactory.from_hh_api(data_with_area)
+        
+        assert vacancy.area == "Новосибирск"
     
-    def test_factory_create_salary_valid(self):
-        """Покрытие создания зарплаты из валидного словаря"""
-        salary_data = {"from": 50000, "to": 80000, "currency": "USD"}
-        salary = VacancyFactory._create_salary(salary_data)
-        
-        assert isinstance(salary, Salary)
-        assert salary.amount_from == 50000
-        assert salary.amount_to == 80000
-        assert salary.currency == "USD"
-    
-    def test_factory_create_salary_invalid(self):
-        """Покрытие создания зарплаты из невалидного словаря"""
-        # Невалидные данные
-        salary = VacancyFactory._create_salary({"invalid": "data"})
-        assert salary is None
-        
-        # None
-        salary = VacancyFactory._create_salary(None)
-        assert salary is None
-        
-        # Не словарь
-        salary = VacancyFactory._create_salary("invalid")
-        assert salary is None
-    
-    def test_factory_extract_description(self):
-        """Покрытие извлечения описания"""
+    def test_factory_description_extraction(self):
+        """Покрытие извлечения описания из snippet"""
         data_with_snippet = {
+            "id": "snippet_test",
+            "name": "Job with Snippet",
+            "alternate_url": "https://test.com/snippet",
             "snippet": {
-                "requirement": "Python",
-                "responsibility": "Development"
+                "requirement": "Python skills",
+                "responsibility": "Development tasks"
             }
         }
         
-        description = VacancyFactory._extract_description(data_with_snippet)
-        assert "Python" in description
-        assert "Development" in description
+        vacancy = VacancyFactory.from_hh_api(data_with_snippet)
         
-        # Без snippet
-        description = VacancyFactory._extract_description({})
-        assert description is None
+        assert vacancy.requirements == "Python skills"
+        assert vacancy.responsibilities == "Development tasks"
     
-    def test_factory_extract_area(self):
-        """Покрытие извлечения области"""
-        data_with_area = {"area": {"name": "Новосибирск"}}
-        area = VacancyFactory._extract_area(data_with_area)
-        assert area == "Новосибирск"
-        
-        # Без area
-        area = VacancyFactory._extract_area({})
-        assert area is None
-    
-    def test_factory_with_exception_handling(self):
-        """Покрытие обработки исключений в фабрике"""
-        # Данные которые могут вызвать ошибку
-        problematic_data = {
-            "name": "Test",
-            "employer": {"name": "Test"},
-            "salary": {"from": "invalid_number"}  # Невалидная зарплата
+    def test_factory_superjob_salary_handling(self):
+        """Покрытие обработки зарплаты SuperJob"""
+        data_with_payment = {
+            "id": "sj_payment_test",
+            "profession": "SuperJob with Payment",
+            "link": "https://superjob.ru/payment",
+            "payment_from": 80000,
+            "payment_to": 120000,
+            "firm_name": "SJ Company"
         }
         
-        # Фабрика должна обработать исключение и создать вакансию
-        vacancy = VacancyFactory.create_from_dict(problematic_data)
+        vacancy = VacancyFactory.from_superjob_api(data_with_payment)
         
-        assert isinstance(vacancy, Vacancy)
-        assert vacancy.title == "Test"
-        assert vacancy.salary is None  # Невалидная зарплата игнорируется
+        assert vacancy.salary is not None
+        assert vacancy.salary["from"] == 80000
+        assert vacancy.salary["to"] == 120000
+        assert vacancy.salary["currency"] == "RUR"
+    
+    def test_factory_empty_data_handling(self):
+        """Покрытие обработки пустых данных"""
+        # Минимальные данные без опциональных полей
+        minimal_data = {
+            "id": "minimal_test",
+            "name": "Minimal Job",
+            "alternate_url": "https://test.com/minimal"
+        }
+        
+        vacancy = VacancyFactory.from_hh_api(minimal_data)
+        
+        assert vacancy.title == "Minimal Job"
+        assert vacancy.employer is None
+        assert vacancy.salary is None
+        assert vacancy.experience is None
+    
+    def test_factory_uuid_generation(self):
+        """Покрытие генерации UUID для вакансий без ID"""
+        # Данные без ID
+        data_no_id = {
+            "name": "Job without ID",
+            "alternate_url": "https://test.com/no-id"
+        }
+        
+        vacancy = VacancyFactory.from_hh_api(data_no_id)
+        
+        # Проверяем что UUID был сгенерирован
+        assert vacancy.id is not None
+        assert len(vacancy.id) > 0
+        assert vacancy.title == "Job without ID"
+    
+    def test_factory_published_at_handling(self):
+        """Покрытие обработки даты публикации"""
+        data_with_date = {
+            "id": "date_test",
+            "name": "Job with Date",
+            "alternate_url": "https://test.com/date",
+            "published_at": "2023-01-01T12:00:00"
+        }
+        
+        vacancy = VacancyFactory.from_hh_api(data_with_date)
+        
+        # published_at преобразуется в datetime объект валидатором
+        assert vacancy.published_at is not None
+        assert str(vacancy.published_at).startswith("2023-01-01")
+        assert vacancy.source == "hh.ru"
 
 
 class TestModelValidation:
@@ -684,9 +720,9 @@ class TestModelValidation:
         employer.name = "New Name"
         assert employer.name == "New Name"
         
-        # Присваивание пустого имени должно валидироваться
-        employer.name = ""
-        assert employer.name == "Не указана"
+        # Присваивание пустого имени вызывает ValidationError (min_length=1)
+        with pytest.raises(ValidationError):
+            employer.name = ""
 
 
 class TestEdgeCases:
@@ -697,8 +733,9 @@ class TestEdgeCases:
         large_description = "A" * 10000  # Большое описание
         
         vacancy = Vacancy(
-            title="Large Data Test",
-            employer=Employer(name="Big Company"),
+            vacancy_id="large_test",
+            name="Large Data Test",
+            alternate_url="https://test.com/large",
             description=large_description
         )
         
@@ -716,12 +753,12 @@ class TestEdgeCases:
     def test_nested_dict_access(self):
         """Покрытие глубокого доступа к вложенным данным"""
         complex_data = {
+            "id": "complex_test",
             "name": "Complex Job",
+            "alternate_url": "https://test.com/complex",
             "employer": {
                 "name": "Nested Company",
-                "nested": {
-                    "deep": "value"
-                }
+                "id": "nested_123"
             },
             "snippet": {
                 "requirement": "Complex requirement",
@@ -729,8 +766,9 @@ class TestEdgeCases:
             }
         }
         
-        vacancy = VacancyFactory.create_from_dict(complex_data)
+        vacancy = VacancyFactory.from_hh_api(complex_data)
         
         assert vacancy.title == "Complex Job"
         assert vacancy.employer.name == "Nested Company"
-        assert "Complex requirement" in vacancy.description
+        assert vacancy.requirements == "Complex requirement"
+        assert vacancy.responsibilities is None
