@@ -1,0 +1,646 @@
+~/workspace$ pytest tests/test_13_ui_interfaces_coverage.py
+=================================== test session starts ====================================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 30 items                                                                         
+
+tests/test_13_ui_interfaces_coverage.py FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF               [100%]
+
+========================================= FAILURES =========================================
+______________________ TestConsoleInterface.test_user_interface_init _______________________
+
+args = (<tests.test_13_ui_interfaces_coverage.TestConsoleInterface object at 0x7ff98b597f10>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7ff98af55750>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.ui_interfaces.console_interface' from '/home/runner/workspace/src/ui_interfaces/console_interface.py'> does not have the attribute 'VacancyOperationsCoordinator'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+_______________________ TestConsoleInterface.test_run_main_menu_exit _______________________
+
+args = (<tests.test_13_ui_interfaces_coverage.TestConsoleInterface object at 0x7ff98af76f50>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1357: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/contextlib.py:517: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7ff98af55e10>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.ui_interfaces.console_interface' from '/home/runner/workspace/src/ui_interfaces/console_interface.py'> does not have the attribute 'VacancyOperationsCoordinator'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+__________________ TestConsoleInterface.test_run_main_menu_invalid_choice __________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestConsoleInterface object at 0x7ff98af775d0>
+mock_print = <MagicMock name='print' id='140709751185680'>
+mock_input = <MagicMock name='input' id='140709751191376'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_run_main_menu_invalid_choice(self, mock_print, mock_input):
+        """Покрытие неверного выбора в главном меню."""
+        mock_input.side_effect = ["invalid", "0"]
+        mock_storage = Mock()
+        mock_db_manager = Mock()
+    
+>       ui = UserInterface(mock_storage, mock_db_manager)
+             ^^^^^^^^^^^^^
+E       NameError: name 'UserInterface' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:76: NameError
+______________________ TestConsoleInterface.test_run_search_vacancies ______________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestConsoleInterface object at 0x7ff98af77c90>
+mock_print = <MagicMock name='print' id='140709751400912'>
+mock_input = <MagicMock name='input' id='140709755210192'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_run_search_vacancies(self, mock_print, mock_input):
+        """Покрытие поиска вакансий."""
+        mock_input.side_effect = ["1", "0"]  # Поиск вакансий, затем выход
+        mock_storage = Mock()
+        mock_db_manager = Mock()
+    
+>       ui = UserInterface(mock_storage, mock_db_manager)
+             ^^^^^^^^^^^^^
+E       NameError: name 'UserInterface' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:90: NameError
+_____________________ TestConsoleInterface.test_run_display_vacancies ______________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestConsoleInterface object at 0x7ff98af84350>
+mock_print = <MagicMock name='print' id='140709734406160'>
+mock_input = <MagicMock name='input' id='140709750785104'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_run_display_vacancies(self, mock_print, mock_input):
+        """Покрытие отображения вакансий."""
+        mock_input.side_effect = ["2", "0"]  # Отображение вакансий, затем выход
+        mock_storage = Mock()
+        mock_db_manager = Mock()
+    
+>       ui = UserInterface(mock_storage, mock_db_manager)
+             ^^^^^^^^^^^^^
+E       NameError: name 'UserInterface' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:108: NameError
+_____________________ TestConsoleInterface.test_run_vacancy_operations _____________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestConsoleInterface object at 0x7ff98af849d0>
+mock_print = <MagicMock name='print' id='140709751127696'>
+mock_input = <MagicMock name='input' id='140709751346448'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_run_vacancy_operations(self, mock_print, mock_input):
+        """Покрытие операций с вакансиями."""
+        mock_input.side_effect = ["3", "0"]  # Операции с вакансиями, затем выход
+        mock_storage = Mock()
+        mock_db_manager = Mock()
+    
+>       ui = UserInterface(mock_storage, mock_db_manager)
+             ^^^^^^^^^^^^^
+E       NameError: name 'UserInterface' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:126: NameError
+_________________________ TestConsoleInterface.test_run_statistics _________________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestConsoleInterface object at 0x7ff98af85050>
+mock_print = <MagicMock name='print' id='140709751042704'>
+mock_input = <MagicMock name='input' id='140709751081232'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_run_statistics(self, mock_print, mock_input):
+        """Покрытие статистики."""
+        mock_input.side_effect = ["4", "0"]  # Статистика, затем выход
+        mock_storage = Mock()
+        mock_db_manager = Mock()
+    
+        # Настраиваем мок для get_companies_and_vacancies_count
+        mock_db_manager.get_companies_and_vacancies_count.return_value = [
+            ("Company A", 10), ("Company B", 5)
+        ]
+    
+>       ui = UserInterface(mock_storage, mock_db_manager)
+             ^^^^^^^^^^^^^
+E       NameError: name 'UserInterface' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:149: NameError
+______________________ TestConsoleInterface.test_run_statistics_empty ______________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestConsoleInterface object at 0x7ff98af84ed0>
+mock_print = <MagicMock name='print' id='140709750833040'>
+mock_input = <MagicMock name='input' id='140709751195472'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_run_statistics_empty(self, mock_print, mock_input):
+        """Покрытие пустой статистики."""
+        mock_input.side_effect = ["4", "0"]  # Статистика, затем выход
+        mock_storage = Mock()
+        mock_db_manager = Mock()
+    
+        # Настраиваем мок для пустой статистики
+        mock_db_manager.get_companies_and_vacancies_count.return_value = []
+    
+>       ui = UserInterface(mock_storage, mock_db_manager)
+             ^^^^^^^^^^^^^
+E       NameError: name 'UserInterface' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:166: NameError
+______________________ TestConsoleInterface.test_run_statistics_error ______________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestConsoleInterface object at 0x7ff98af854d0>
+mock_print = <MagicMock name='print' id='140709750746960'>
+mock_input = <MagicMock name='input' id='140709750735120'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_run_statistics_error(self, mock_print, mock_input):
+        """Покрытие ошибки статистики."""
+        mock_input.side_effect = ["4", "0"]  # Статистика, затем выход
+        mock_storage = Mock()
+        mock_db_manager = Mock()
+    
+        # Настраиваем мок для ошибки статистики
+        mock_db_manager.get_companies_and_vacancies_count.side_effect = Exception("DB Error")
+    
+>       ui = UserInterface(mock_storage, mock_db_manager)
+             ^^^^^^^^^^^^^
+E       NameError: name 'UserInterface' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:183: NameError
+_____________________ TestConsoleInterface.test_run_keyboard_interrupt _____________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestConsoleInterface object at 0x7ff98af857d0>
+mock_print = <MagicMock name='print' id='140709750822288'>
+mock_input = <MagicMock name='input' id='140709751209872'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_run_keyboard_interrupt(self, mock_print, mock_input):
+        """Покрытие прерывания с клавиатуры."""
+        mock_input.side_effect = KeyboardInterrupt()
+        mock_storage = Mock()
+        mock_db_manager = Mock()
+    
+>       ui = UserInterface(mock_storage, mock_db_manager)
+             ^^^^^^^^^^^^^
+E       NameError: name 'UserInterface' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:197: NameError
+_____________________ TestConsoleInterface.test_run_general_exception ______________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestConsoleInterface object at 0x7ff98af85b50>
+mock_print = <MagicMock name='print' id='140709755319312'>
+mock_input = <MagicMock name='input' id='140709763150800'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_run_general_exception(self, mock_print, mock_input):
+        """Покрытие общего исключения."""
+        mock_input.side_effect = Exception("General error")
+        mock_storage = Mock()
+        mock_db_manager = Mock()
+    
+>       ui = UserInterface(mock_storage, mock_db_manager)
+             ^^^^^^^^^^^^^
+E       NameError: name 'UserInterface' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:211: NameError
+_______________________ TestSourceSelector.test_source_selector_init _______________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestSourceSelector object at 0x7ff98af86290>
+
+    def test_source_selector_init(self):
+        """Покрытие инициализации селектора источников."""
+>       selector = SourceSelector()
+                   ^^^^^^^^^^^^^^
+E       NameError: name 'SourceSelector' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:223: NameError
+_________________________ TestSourceSelector.test_select_source_hh _________________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestSourceSelector object at 0x7ff98af86890>
+mock_print = <MagicMock name='print' id='140709733846736'>
+mock_input = <MagicMock name='input' id='140709733843600'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_select_source_hh(self, mock_print, mock_input):
+        """Покрытие выбора HeadHunter."""
+        mock_input.return_value = "1"
+    
+>       selector = SourceSelector()
+                   ^^^^^^^^^^^^^^
+E       NameError: name 'SourceSelector' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:234: NameError
+_________________________ TestSourceSelector.test_select_source_sj _________________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestSourceSelector object at 0x7ff98af86e50>
+mock_print = <MagicMock name='print' id='140709734407440'>
+mock_input = <MagicMock name='input' id='140709734237840'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_select_source_sj(self, mock_print, mock_input):
+        """Покрытие выбора SuperJob."""
+        mock_input.return_value = "2"
+    
+>       selector = SourceSelector()
+                   ^^^^^^^^^^^^^^
+E       NameError: name 'SourceSelector' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:246: NameError
+________________________ TestSourceSelector.test_select_source_both ________________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestSourceSelector object at 0x7ff98af87450>
+mock_print = <MagicMock name='print' id='140709751121232'>
+mock_input = <MagicMock name='input' id='140709751126928'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_select_source_both(self, mock_print, mock_input):
+        """Покрытие выбора обоих источников."""
+        mock_input.return_value = "3"
+    
+>       selector = SourceSelector()
+                   ^^^^^^^^^^^^^^
+E       NameError: name 'SourceSelector' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:258: NameError
+_________________ TestSourceSelector.test_select_source_invalid_then_valid _________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestSourceSelector object at 0x7ff98af87a90>
+mock_print = <MagicMock name='print' id='140709734226064'>
+mock_input = <MagicMock name='input' id='140709734231760'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_select_source_invalid_then_valid(self, mock_print, mock_input):
+        """Покрытие неверного выбора с последующим правильным."""
+        mock_input.side_effect = ["invalid", "1"]
+    
+>       selector = SourceSelector()
+                   ^^^^^^^^^^^^^^
+E       NameError: name 'SourceSelector' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:270: NameError
+_______________ TestVacancyDisplayHandler.test_vacancy_display_handler_init ________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestVacancyDisplayHandler object at 0x7ff98af90310>
+
+    def test_vacancy_display_handler_init(self):
+        """Покрытие инициализации обработчика отображения."""
+        mock_storage = Mock()
+    
+>       handler = VacancyDisplayHandler(mock_storage)
+                  ^^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'VacancyDisplayHandler' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:284: NameError
+_______________ TestVacancyDisplayHandler.test_display_saved_vacancies_empty _______________
+
+self = <tests.test_13_ui_interfaces_coverage.TestVacancyDisplayHandler object at 0x7ff98af90950>
+mock_print = <MagicMock name='print' id='140709734197648'>
+
+    @patch('builtins.print')
+    def test_display_saved_vacancies_empty(self, mock_print):
+        """Покрытие отображения пустого списка вакансий."""
+        mock_storage = Mock()
+        mock_storage.load_vacancies.return_value = []
+    
+>       handler = VacancyDisplayHandler(mock_storage)
+                  ^^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'VacancyDisplayHandler' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:294: NameError
+_____________ TestVacancyDisplayHandler.test_display_saved_vacancies_with_data _____________
+
+self = <tests.test_13_ui_interfaces_coverage.TestVacancyDisplayHandler object at 0x7ff98af90fd0>
+mock_print = <MagicMock name='print' id='140709750794128'>
+
+    @patch('builtins.print')
+    def test_display_saved_vacancies_with_data(self, mock_print):
+        """Покрытие отображения вакансий с данными."""
+        mock_vacancy = Mock()
+        mock_vacancy.title = "Python Developer"
+        mock_vacancy.employer = Mock()
+        mock_vacancy.employer.name = "Test Company"
+        mock_vacancy.salary = None
+        mock_vacancy.url = "http://test.com"
+    
+        mock_storage = Mock()
+        mock_storage.load_vacancies.return_value = [mock_vacancy]
+    
+>       handler = VacancyDisplayHandler(mock_storage)
+                  ^^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'VacancyDisplayHandler' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:313: NameError
+_______________ TestVacancyDisplayHandler.test_display_saved_vacancies_error _______________
+
+self = <tests.test_13_ui_interfaces_coverage.TestVacancyDisplayHandler object at 0x7ff98af91690>
+mock_print = <MagicMock name='print' id='140709733657104'>
+
+    @patch('builtins.print')
+    def test_display_saved_vacancies_error(self, mock_print):
+        """Покрытие ошибки при отображении вакансий."""
+        mock_storage = Mock()
+        mock_storage.load_vacancies.side_effect = Exception("Storage error")
+    
+>       handler = VacancyDisplayHandler(mock_storage)
+                  ^^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'VacancyDisplayHandler' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:325: NameError
+________________ TestVacancySearchHandler.test_vacancy_search_handler_init _________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestVacancySearchHandler object at 0x7ff98af91ed0>
+
+    def test_vacancy_search_handler_init(self):
+        """Покрытие инициализации обработчика поиска."""
+        mock_storage = Mock()
+        mock_source_selector = Mock()
+    
+>       handler = VacancySearchHandler(mock_storage, mock_source_selector)
+                  ^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'VacancySearchHandler' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:340: NameError
+___________________ TestVacancySearchHandler.test_handle_search_success ____________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestVacancySearchHandler object at 0x7ff98af92510>
+mock_print = <MagicMock name='print' id='140709733890384'>
+mock_input = <MagicMock name='input' id='140709733890256'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_handle_search_success(self, mock_print, mock_input):
+        """Покрытие успешного поиска вакансий."""
+        mock_input.side_effect = ["Python developer"]
+    
+        mock_storage = Mock()
+        mock_source_selector = Mock()
+        mock_source_selector.select_source.return_value = "hh"
+    
+>       handler = VacancySearchHandler(mock_storage, mock_source_selector)
+                  ^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'VacancySearchHandler' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:355: NameError
+_________________ TestVacancySearchHandler.test_handle_search_empty_query __________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestVacancySearchHandler object at 0x7ff98af92b90>
+mock_print = <MagicMock name='print' id='140709733938320'>
+mock_input = <MagicMock name='input' id='140709738366608'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_handle_search_empty_query(self, mock_print, mock_input):
+        """Покрытие пустого поискового запроса."""
+        mock_input.return_value = ""
+    
+        mock_storage = Mock()
+        mock_source_selector = Mock()
+    
+>       handler = VacancySearchHandler(mock_storage, mock_source_selector)
+                  ^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'VacancySearchHandler' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:375: NameError
+________ TestVacancyOperationsCoordinator.test_vacancy_operations_coordinator_init _________
+
+self = <tests.test_13_ui_interfaces_coverage.TestVacancyOperationsCoordinator object at 0x7ff98af933d0>
+
+    def test_vacancy_operations_coordinator_init(self):
+        """Покрытие инициализации координатора операций."""
+        mock_storage = Mock()
+    
+>       coordinator = VacancyOperationsCoordinator(mock_storage)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'VacancyOperationsCoordinator' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:389: NameError
+_____________ TestVacancyOperationsCoordinator.test_coordinate_operations_back _____________
+
+self = <tests.test_13_ui_interfaces_coverage.TestVacancyOperationsCoordinator object at 0x7ff98af93a10>
+mock_print = <MagicMock name='print' id='140709738592656'>
+mock_input = <MagicMock name='input' id='140709738422544'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_coordinate_operations_back(self, mock_print, mock_input):
+        """Покрытие возврата в главное меню."""
+        mock_input.return_value = "0"
+    
+        mock_storage = Mock()
+>       coordinator = VacancyOperationsCoordinator(mock_storage)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'VacancyOperationsCoordinator' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:400: NameError
+________ TestVacancyOperationsCoordinator.test_coordinate_operations_invalid_choice ________
+
+self = <tests.test_13_ui_interfaces_coverage.TestVacancyOperationsCoordinator object at 0x7ff98af9c0d0>
+mock_print = <MagicMock name='print' id='140709737862672'>
+mock_input = <MagicMock name='input' id='140709737872976'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_coordinate_operations_invalid_choice(self, mock_print, mock_input):
+        """Покрытие неверного выбора операции."""
+        mock_input.side_effect = ["invalid", "0"]
+    
+        mock_storage = Mock()
+>       coordinator = VacancyOperationsCoordinator(mock_storage)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'VacancyOperationsCoordinator' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:414: NameError
+__________ TestUIInterfacesIntegration.test_user_interface_components_integration __________
+
+self = <tests.test_13_ui_interfaces_coverage.TestUIInterfacesIntegration object at 0x7ff98af9c8d0>
+
+    def test_user_interface_components_integration(self):
+        """Покрытие интеграции компонентов пользовательского интерфейса."""
+        mock_storage = Mock()
+        mock_db_manager = Mock()
+    
+>       ui = UserInterface(mock_storage, mock_db_manager)
+             ^^^^^^^^^^^^^
+E       NameError: name 'UserInterface' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:430: NameError
+___________________ TestUIInterfacesIntegration.test_components_creation ___________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestUIInterfacesIntegration object at 0x7ff98af9cf50>
+
+    def test_components_creation(self):
+        """Покрытие создания отдельных компонентов."""
+        mock_storage = Mock()
+    
+        # Тестируем создание каждого компонента отдельно
+>       source_selector = SourceSelector()
+                          ^^^^^^^^^^^^^^
+E       NameError: name 'SourceSelector' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:448: NameError
+_______________ TestUIInterfacesErrorHandling.test_error_handling_in_display _______________
+
+self = <tests.test_13_ui_interfaces_coverage.TestUIInterfacesErrorHandling object at 0x7ff98af93190>
+mock_print = <MagicMock name='print' id='140709734200144'>
+
+    @patch('builtins.print')
+    def test_error_handling_in_display(self, mock_print):
+        """Покрытие обработки ошибок в отображении."""
+        mock_storage = Mock()
+        mock_storage.load_vacancies.side_effect = Exception("Storage error")
+    
+>       handler = VacancyDisplayHandler(mock_storage)
+                  ^^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'VacancyDisplayHandler' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:470: NameError
+________________ TestUIInterfacesErrorHandling.test_error_handling_in_menu _________________
+
+self = <tests.test_13_ui_interfaces_coverage.TestUIInterfacesErrorHandling object at 0x7ff98af900d0>
+mock_print = <MagicMock name='print' id='140709738389520'>
+mock_input = <MagicMock name='input' id='140709738394768'>
+
+    @patch('builtins.input')
+    @patch('builtins.print')
+    def test_error_handling_in_menu(self, mock_print, mock_input):
+        """Покрытие обработки ошибок в меню."""
+        mock_input.side_effect = Exception("Input error")
+    
+        mock_storage = Mock()
+        mock_db_manager = Mock()
+    
+>       ui = UserInterface(mock_storage, mock_db_manager)
+             ^^^^^^^^^^^^^
+E       NameError: name 'UserInterface' is not defined
+
+tests/test_13_ui_interfaces_coverage.py:487: NameError
+================================= short test summary info ==================================
+FAILED tests/test_13_ui_interfaces_coverage.py::TestConsoleInterface::test_user_interface_init - AttributeError: <module 'src.ui_interfaces.console_interface' from '/home/runner/worksp...
+FAILED tests/test_13_ui_interfaces_coverage.py::TestConsoleInterface::test_run_main_menu_exit - AttributeError: <module 'src.ui_interfaces.console_interface' from '/home/runner/worksp...
+FAILED tests/test_13_ui_interfaces_coverage.py::TestConsoleInterface::test_run_main_menu_invalid_choice - NameError: name 'UserInterface' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestConsoleInterface::test_run_search_vacancies - NameError: name 'UserInterface' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestConsoleInterface::test_run_display_vacancies - NameError: name 'UserInterface' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestConsoleInterface::test_run_vacancy_operations - NameError: name 'UserInterface' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestConsoleInterface::test_run_statistics - NameError: name 'UserInterface' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestConsoleInterface::test_run_statistics_empty - NameError: name 'UserInterface' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestConsoleInterface::test_run_statistics_error - NameError: name 'UserInterface' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestConsoleInterface::test_run_keyboard_interrupt - NameError: name 'UserInterface' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestConsoleInterface::test_run_general_exception - NameError: name 'UserInterface' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestSourceSelector::test_source_selector_init - NameError: name 'SourceSelector' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestSourceSelector::test_select_source_hh - NameError: name 'SourceSelector' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestSourceSelector::test_select_source_sj - NameError: name 'SourceSelector' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestSourceSelector::test_select_source_both - NameError: name 'SourceSelector' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestSourceSelector::test_select_source_invalid_then_valid - NameError: name 'SourceSelector' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestVacancyDisplayHandler::test_vacancy_display_handler_init - NameError: name 'VacancyDisplayHandler' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestVacancyDisplayHandler::test_display_saved_vacancies_empty - NameError: name 'VacancyDisplayHandler' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestVacancyDisplayHandler::test_display_saved_vacancies_with_data - NameError: name 'VacancyDisplayHandler' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestVacancyDisplayHandler::test_display_saved_vacancies_error - NameError: name 'VacancyDisplayHandler' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestVacancySearchHandler::test_vacancy_search_handler_init - NameError: name 'VacancySearchHandler' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestVacancySearchHandler::test_handle_search_success - NameError: name 'VacancySearchHandler' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestVacancySearchHandler::test_handle_search_empty_query - NameError: name 'VacancySearchHandler' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestVacancyOperationsCoordinator::test_vacancy_operations_coordinator_init - NameError: name 'VacancyOperationsCoordinator' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestVacancyOperationsCoordinator::test_coordinate_operations_back - NameError: name 'VacancyOperationsCoordinator' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestVacancyOperationsCoordinator::test_coordinate_operations_invalid_choice - NameError: name 'VacancyOperationsCoordinator' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestUIInterfacesIntegration::test_user_interface_components_integration - NameError: name 'UserInterface' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestUIInterfacesIntegration::test_components_creation - NameError: name 'SourceSelector' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestUIInterfacesErrorHandling::test_error_handling_in_display - NameError: name 'VacancyDisplayHandler' is not defined
+FAILED tests/test_13_ui_interfaces_coverage.py::TestUIInterfacesErrorHandling::test_error_handling_in_menu - NameError: name 'UserInterface' is not defined
+==================================== 30 failed in 0.79s ====================================
