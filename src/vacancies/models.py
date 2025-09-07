@@ -346,14 +346,13 @@ class Vacancy(BaseModel):
         # Обрабатываем вложенные объекты
         processed_data = data.copy()
 
-        # ИСПРАВЛЕНО: Маппинг полей API на поля модели с учетом alias
-        # Маппим поля API на alias полей модели
-        if 'id' in processed_data:
-            processed_data['vacancy_id'] = processed_data.pop('id')
-        if 'name' in processed_data and 'title' not in processed_data:
-            processed_data['title'] = processed_data.pop('name')  
-        if 'alternate_url' in processed_data and 'url' not in processed_data:
-            processed_data['url'] = processed_data.pop('alternate_url')
+        # ИСПРАВЛЕНО: Правильный маппинг для Pydantic v2 с alias
+        # Если данные приходят с API ключами, сохраняем их в правильных alias именах
+        # НЕ удаляем исходные ключи, а добавляем нужные alias ключи
+        if 'id' in processed_data and 'vacancy_id' not in processed_data:
+            processed_data['vacancy_id'] = processed_data['id']
+        # Для Pydantic v2 с alias="name" нужно оставить данные в ключе 'name'
+        # Аналогично для alternate_url
 
         # Employer
         if 'employer' in processed_data and isinstance(processed_data['employer'], dict):
