@@ -134,7 +134,7 @@ class SimpleCursor:
                         query = query.replace(placeholder, str(param))
 
             # Выполнение через psql с JSON выводом
-            cmd = ["psql", self.database_url, "-c", query, "-t", "--quiet"]  # только данные
+            cmd = ["psql", self.adapter.database_url, "-c", query, "-t", "--quiet"]  # только данные
 
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
 
@@ -176,7 +176,7 @@ class SimpleCursor:
                     else:
                         query = query.replace(placeholder, str(param))
 
-            cmd = ["psql", self.database_url, "-c", query, "--quiet"]
+            cmd = ["psql", self.adapter.database_url, "-c", query, "--quiet"]
 
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
 
