@@ -342,8 +342,15 @@ class SearchQueryParser:
         """Инициализация парсера запросов."""
         pass
 
-    def parse(self, query: str) -> Dict[str, Any]:
-        """Парсинг поискового запроса"""
+    def parse(self, query: str) -> Optional[Dict[str, Any]]:
+        """Парсинг сложного поискового запроса.
+        
+        Args:
+            query: Строка поискового запроса.
+            
+        Returns:
+            Словарь с разобранными компонентами запроса или None.
+        """
         if not query or not query.strip():
             return None
 
