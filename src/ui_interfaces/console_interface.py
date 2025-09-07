@@ -50,7 +50,7 @@ class UserInterface:
         self.storage = storage
 
         # Инициализируем только PostgreSQL хранилище
-        self.db_storage = self.storage
+        self.db_storage = self.storage  # type: ignore
 
         self.menu_manager = create_main_menu()
         self.vacancy_ops = VacancyOperations()

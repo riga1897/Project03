@@ -16,6 +16,20 @@ import pytest
 # Импорты из реального кода для покрытия  
 from src.ui_interfaces.console_interface import UserInterface
 
+# Подавляем LSP ошибки для тестовых классов
+# pylint: disable=unused-import
+try:
+    from src.ui_interfaces.source_selector import SourceSelector
+    from src.ui_interfaces.vacancy_display_handler import VacancyDisplayHandler
+    from src.ui_interfaces.vacancy_search_handler import VacancySearchHandler
+    from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
+except ImportError:
+    # Создаем заглушки для LSP
+    SourceSelector = None  # type: ignore
+    VacancyDisplayHandler = None  # type: ignore
+    VacancySearchHandler = None  # type: ignore
+    VacancyOperationsCoordinator = None  # type: ignore
+
 
 class TestConsoleInterface:
     """100% покрытие консольного интерфейса."""
