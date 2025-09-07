@@ -409,7 +409,7 @@ class UserInterface:
             # Отображаем вакансии с номерами
             for i, vacancy in enumerate(current_vacancies, start_idx + 1):
                 print(f"{i}. ID: {vacancy.id}")
-                print(f"   Название: {vacancy.name or 'Не указано'}")
+                print(f"   Название: {vacancy.title or 'Не указано'}")
                 if vacancy.employer:
                     print(f"   Компания: {vacancy.employer.get('name', 'Не указана')}")
                 salary_display = str(vacancy.salary) if vacancy.salary else "Не указана"
@@ -470,7 +470,7 @@ class UserInterface:
                         print(f"\nВакансии для удаления (номера {start_num}-{end_num}):")
                         for i, vacancy in enumerate(vacancies_to_delete, start_num):
                             print(f"{i}. ID: {vacancy.id}")
-                            print(f"   Название: {vacancy.name or 'Не указано'}")
+                            print(f"   Название: {vacancy.title or 'Не указано'}")
                             if vacancy.employer:
                                 print(f"   Компания: {vacancy.employer.get('name', 'Не указана')}")
                             print(f"   Ссылка: {vacancy.url}")

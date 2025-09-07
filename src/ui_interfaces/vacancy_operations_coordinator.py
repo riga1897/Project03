@@ -140,7 +140,7 @@ class VacancyOperationsCoordinator:
         print("\nПример найденных вакансий:")
         for i, vacancy in enumerate(filtered_vacancies[:5], 1):
             print(f"{i}. ID: {vacancy.id}")
-            print(f"   Название: {vacancy.name or 'Не указано'}")
+            print(f"   Название: {vacancy.title or 'Не указано'}")
             if vacancy.employer:
                 if isinstance(vacancy.employer, dict):
                     print(f"   Компания: {vacancy.employer.get('name', 'Неизвестная компания')}")
