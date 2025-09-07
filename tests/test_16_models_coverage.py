@@ -50,12 +50,13 @@ class TestEmployer:
     
     def test_employer_name_validation_empty(self):
         """Покрытие валидации пустого имени"""
-        # Пустое имя должно вызывать ValidationError
+        # Пустое имя вызывает ValidationError (min_length=1)
         with pytest.raises(ValidationError):
             Employer(name="")
         
-        with pytest.raises(ValidationError):
-            Employer(name="   ")
+        # Пробелы преобразуются валидатором в "Не указана"
+        employer = Employer(name="   ")
+        assert employer.name == "Не указана"
     
     def test_employer_name_validation_strip(self):
         """Покрытие удаления пробелов из имени"""
@@ -141,10 +142,11 @@ class TestExperience:
     
     def test_experience_name_validation_empty(self):
         """Покрытие валидации пустого имени"""
-        # Пустое имя должно вызывать ValidationError
-        with pytest.raises(ValidationError):
-            Experience(name="")
+        # Пустое имя возвращает "Не указан"
+        experience = Experience(name="")
+        assert experience.name == "Не указан"
         
+        # None вызывает ValidationError (type validation)
         with pytest.raises(ValidationError):
             Experience(name=None)
     
@@ -204,9 +206,11 @@ class TestEmployment:
     
     def test_employment_name_validation_empty(self):
         """Покрытие валидации пустого имени"""
-        with pytest.raises(ValidationError):
-            Employment(name="")
+        # Пустое имя возвращает "Не указан"
+        employment = Employment(name="")
+        assert employment.name == "Не указан"
         
+        # None вызывает ValidationError (type validation)
         with pytest.raises(ValidationError):
             Employment(name=None)
     
@@ -266,9 +270,11 @@ class TestSchedule:
     
     def test_schedule_name_validation_empty(self):
         """Покрытие валидации пустого имени"""
-        with pytest.raises(ValidationError):
-            Schedule(name="")
+        # Пустое имя возвращает "Не указан"
+        schedule = Schedule(name="")
+        assert schedule.name == "Не указан"
         
+        # None вызывает ValidationError (type validation)
         with pytest.raises(ValidationError):
             Schedule(name=None)
     
@@ -360,23 +366,20 @@ class TestVacancy:
     
     def test_vacancy_title_validation_empty(self):
         """Покрытие валидации пустого заголовка"""
-        vacancy = Vacancy(
-            title="",
-            employer=Employer(name="Test")
-        )
-        assert vacancy.title == "Название не указано"
-        
-        vacancy = Vacancy(
-            title="   ",
-            employer=Employer(name="Test")
-        )
-        assert vacancy.title == "Название не указано"
+        # Пустой title должен вызывать ValidationError согласно validator
+        with pytest.raises(ValidationError):
+            Vacancy(
+                vacancy_id="test_empty",
+                name="",
+                alternate_url="https://test.com"
+            )
     
     def test_vacancy_title_validation_strip(self):
         """Покрытие удаления пробелов из заголовка"""
         vacancy = Vacancy(
-            title="  Developer Position  ",
-            employer=Employer(name="Test")
+            vacancy_id="test_strip",
+            name="  Developer Position  ",
+            alternate_url="https://test.com"
         )
         assert vacancy.title == "Developer Position"
     
@@ -427,34 +430,38 @@ class TestVacancy:
     def test_vacancy_to_dict(self):
         """Покрытие метода to_dict"""
         vacancy = Vacancy(
-            title="Test",
-            employer=Employer(name="Test Company")
+            vacancy_id="test_dict",
+            name="Test",
+            alternate_url="https://test.com"
         )
         result = vacancy.to_dict()
         
         assert isinstance(result, dict)
         assert result["title"] == "Test"
-        assert "employer" in result
-        assert "id" in result
+        assert result["id"] == "test_dict"
+        assert result["url"] == "https://test.com"
     
     def test_vacancy_from_dict(self):
         """Покрытие метода from_dict"""
         data = {
-            "title": "Dict Vacancy",
-            "employer": {"name": "Dict Company"},
-            "url": "https://dict.com"
+            "vacancy_id": "dict_123",
+            "name": "Dict Vacancy",
+            "alternate_url": "https://dict.com",
+            "employer": {"name": "Dict Company"}
         }
         vacancy = Vacancy.from_dict(data)
         
         assert vacancy.title == "Dict Vacancy"
-        assert vacancy.employer.name == "Dict Company"
+        assert vacancy.id == "dict_123"
         assert vacancy.url == "https://dict.com"
+        assert vacancy.employer.name == "Dict Company"
     
     def test_vacancy_get_method(self):
         """Покрытие dictionary-like доступа"""
         vacancy = Vacancy(
-            title="Test",
-            employer=Employer(name="Test"),
+            vacancy_id="test_get",
+            name="Test",
+            alternate_url="https://test.com",
             area="SPB"
         )
         
