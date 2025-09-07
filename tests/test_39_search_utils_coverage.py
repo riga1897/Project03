@@ -873,7 +873,7 @@ class TestFilterVacanciesByKeyword:
         """Покрытие: AttributeError в обработке benefits - строки 262-263"""
         vacancy = MagicMock()
         vacancy.id = "1"
-        vacancy.title = "Python Developer"  # 10 очков для надежности  
+        vacancy.title = "ДМС Python Developer"  # 10 очков, содержит ДМС  
         vacancy.requirements = None
         vacancy.responsibilities = None
         vacancy.description = None
