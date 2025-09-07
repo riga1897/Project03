@@ -51,6 +51,9 @@ class ConcreteVacancyStorage(AbstractVacancyStorage):
     
     def check_vacancies_exist_batch(self, vacancies: List[AbstractVacancy]) -> Dict[str, bool]:
         return {}
+    
+    def add_vacancy_batch_optimized(self, vacancies: List[AbstractVacancy]) -> None:
+        pass
 
 
 class ConcreteDBManager(AbstractDBManager):
