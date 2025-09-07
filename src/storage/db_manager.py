@@ -68,7 +68,7 @@ class DBManager(AbstractDBManager):
             connection_params = self.db_config.get_connection_params()
             # Добавляем явное указание кодировки UTF-8
             connection_params["client_encoding"] = "utf8"
-            connection = psycopg2.connect(**connection_params)
+            connection = psycopg2.connect(**connection_params)  # type: ignore
 
             # Устанавливаем кодировку для соединения
             connection.set_client_encoding("UTF8")
@@ -96,7 +96,7 @@ class DBManager(AbstractDBManager):
 
         # Подключаемся к системной БД postgres для создания новой БД
         try:
-            connection = psycopg2.connect(**system_params)
+            connection = psycopg2.connect(**system_params)  # type: ignore
             connection.autocommit = True
         except PsycopgError as e:
             logger.error(f"Не удается подключиться к системной БД postgres: {e}")
@@ -289,7 +289,7 @@ class DBManager(AbstractDBManager):
         try:
             # Используем контекстный менеджер для безопасной работы с подключением
             with self._get_connection() as connection:
-                with connection.cursor() as cursor:
+                cursor = connection.cursor()
                     # Устанавливаем кодировку сессии
                     cursor.execute("SET client_encoding TO 'UTF8'")
 
@@ -656,7 +656,7 @@ class DBManager(AbstractDBManager):
             logger.error(f"Неожиданная ошибка в get_vacancies_with_higher_salary: {e}")
             return []
 
-    def get_vacancies_with_keyword(self, keyword: str) -> List["Vacancy"]:
+    def get_vacancies_with_keyword(self, keyword: str) -> List[Dict[str, Any]]:
         """
         Получает список всех вакансий, в названии которых содержатся переданные слова
         Использует SQL-оператор LIKE для поиска по ключевому слову
@@ -728,9 +728,6 @@ class DBManager(AbstractDBManager):
 
         except Exception as e:
             logger.error(f"Ошибка при выполнении SQL-запроса для поиска вакансий по ключевому слову '{keyword}': {e}")
-            return []
-        except Exception as e:
-            logger.error(f"Неожиданная ошибка в get_vacancies_with_keyword: {e}")
             return []
 
     def get_database_stats(self) -> Dict[str, Any]:
@@ -821,11 +818,8 @@ class DBManager(AbstractDBManager):
         except Exception as e:
             logger.error(f"Ошибка при выполнении SQL-запросов для получения статистики БД: {e}")
             return {}
-        except Exception as e:
-            logger.error(f"Неожиданная ошибка при получении статистики БД: {e}")
-            return {}
 
-    def get_connection(self):
+    def get_connection(self) -> Any:
         """
         Публичный метод для получения подключения к базе данных
 
