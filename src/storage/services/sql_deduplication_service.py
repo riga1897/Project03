@@ -143,7 +143,7 @@ class SQLDeduplicationService(AbstractDeduplicationService):
                 source_priority = 3  # Остальные источники
             
             dedup_data.append((
-                vacancy.vacancy_id, 
+                vacancy.id,  # Исправлено: vacancy.id вместо vacancy.vacancy_id
                 title_normalized, 
                 employer_normalized, 
                 employer_id, 
@@ -158,7 +158,7 @@ class SQLDeduplicationService(AbstractDeduplicationService):
             """
             INSERT INTO temp_deduplication 
             (vacancy_id, title_normalized, employer_normalized, employer_id, salary_normalized, area_normalized, source_priority, original_index)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """,
             dedup_data,
         )
@@ -204,7 +204,7 @@ class SQLDeduplicationService(AbstractDeduplicationService):
 
     def _build_unique_vacancies(self, original_vacancies: List[Vacancy], unique_ids: List[str]) -> List[Vacancy]:
         """Строит итоговый список уникальных вакансий"""
-        vacancy_map = {v.vacancy_id: v for v in original_vacancies}
+        vacancy_map = {v.id: v for v in original_vacancies}  # Исправлено: v.id вместо v.vacancy_id
 
         unique_vacancies = []
         for vacancy_id in unique_ids:
