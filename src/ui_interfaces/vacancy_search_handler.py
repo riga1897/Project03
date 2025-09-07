@@ -169,7 +169,7 @@ class VacancySearchHandler:
             # Сообщение уже выведено в _display_duplicate_info
             pass
 
-    def _save_vacancies(self, vacancies: List[Vacancy], search_query: str = None) -> None:
+    def _save_vacancies(self, vacancies: List[Vacancy], search_query: Optional[str] = None) -> None:
         """
         Сохранение вакансий в хранилище
 
