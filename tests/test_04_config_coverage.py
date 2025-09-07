@@ -5,6 +5,7 @@
 """
 
 import pytest
+from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 from src.config.api_config import APIConfig
@@ -112,14 +113,20 @@ class TestSJAPIConfig:
         assert params["payment_from"] == 50000
         assert params["page"] == 1
 
-    def test_save_load_token(self):
+    @patch('src.utils.file_handlers.json_handler.write_json')
+    @patch('src.utils.file_handlers.json_handler.read_json')
+    def test_save_load_token(self, mock_read_json, mock_write_json):
         """Покрытие save_token и load_token."""
-        import tempfile
-        with tempfile.NamedTemporaryFile(suffix='.json', delete=False) as tmp:
-            config = SJAPIConfig(token_file=Path(tmp.name))
-            config.save_token("test_token")
-            loaded_token = config.load_token()
-            assert loaded_token == "test_token"
+        config = SJAPIConfig(token_file=Path("test_token.json"))
+        
+        # Тест save_token
+        config.save_token("test_token")
+        mock_write_json.assert_called_once()
+        
+        # Тест load_token
+        mock_read_json.return_value = [{"superjob_api_key": "test_token"}]
+        loaded_token = config.load_token()
+        assert loaded_token == "test_token"
 
 
 class TestTargetCompanies:
