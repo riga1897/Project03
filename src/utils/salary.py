@@ -77,7 +77,7 @@ class Salary:
         """Валидация валюты"""
         if not value or not isinstance(value, str):
             return "RUR"
-        return value.upper().strip()
+        return str(value).upper().strip()
 
     @staticmethod
     def _parse_salary_range_string(salary_range: str) -> Dict[str, Any]:

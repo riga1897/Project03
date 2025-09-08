@@ -4,7 +4,7 @@
 
 import logging
 from collections import defaultdict
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -78,9 +78,9 @@ class VacancyStats:
             "without_salary_count": without_salary_count,
         }
 
-    def get_top_employers(self, vacancies: List[Any], top_n: int = 10) -> List[tuple[str, int]]:
+    def get_top_employers(self, vacancies: List[Any], top_n: int = 10) -> List[Tuple[str, int]]:
         """Получение топ работодателей"""
-        employer_counts = {}
+        employer_counts: Dict[str, int] = {}
         for vacancy in vacancies:
             if vacancy.employer and vacancy.employer.name:
                 name = vacancy.employer.name
@@ -92,14 +92,14 @@ class VacancyStats:
 
     def get_source_distribution(self, vacancies: List[Any]) -> Dict[str, int]:
         """Получение распределения по источникам"""
-        source_counts = {}
+        source_counts: Dict[str, int] = {}
         for vacancy in vacancies:
             source = vacancy.source
             source_counts[source] = source_counts.get(source, 0) + 1
 
         return source_counts
 
-    def display_company_stats(self, vacancies: List[Any], source_name: str = None) -> None:
+    def display_company_stats(self, vacancies: List[Any], source_name: Optional[str] = None) -> None:
         """
         Отображение статистики по компаниям
 
@@ -114,7 +114,7 @@ class VacancyStats:
         print(f"Статистика по компаниям{' (' + source_name + ')' if source_name else ''}: {len(vacancies)} вакансий")
 
         # Подсчитываем вакансии по компаниям
-        company_stats = {}
+        company_stats: Dict[str, int] = {}
         for vacancy in vacancies:
             try:
                 # Получаем имя работодателя из разных возможных структур

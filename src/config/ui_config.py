@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -69,7 +69,7 @@ class UIConfig:
     items_per_page: int = 5  # Количество элементов на странице по умолчанию
     max_display_items: int = 20  # Максимальное количество отображаемых элементов
 
-    def get_pagination_settings(self, **kwargs) -> dict:
+    def get_pagination_settings(self, **kwargs: Any) -> dict:
         """
         Получить настройки пагинации
 

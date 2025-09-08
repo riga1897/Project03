@@ -19,7 +19,7 @@ class MenuManager:
         Создает пустую структуру меню с возможностью
         динамического добавления и удаления пунктов.
         """
-        self.menu_items: Dict[str, Tuple[str, Callable]] = {}
+        self.menu_items: Dict[str, Tuple[str, Optional[Callable]]] = {}
         self.menu_order: List[str] = []
 
     def add_menu_item(self, key: str, title: str, handler: Optional[Callable], position: Optional[int] = None) -> None:
@@ -64,7 +64,7 @@ class MenuManager:
         """
         return [(key, self.menu_items[key][0]) for key in self.menu_order if key in self.menu_items]
 
-    def get_handler(self, key: str) -> Callable:
+    def get_handler(self, key: str) -> Optional[Callable]:
         """
         Возвращает обработчик для пункта меню
 
@@ -72,7 +72,7 @@ class MenuManager:
             key: Ключ пункта меню
 
         Returns:
-            Callable: Функция-обработчик или None если не найден
+            Optional[Callable]: Функция-обработчик или None если не найден
         """
         return self.menu_items.get(key, (None, None))[1]
 

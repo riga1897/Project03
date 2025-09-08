@@ -37,7 +37,7 @@ class Paginator:
             List[Dict]: Объединенный список всех полученных данных
         """
         actual_max = min(total_pages, max_pages) if max_pages else total_pages
-        results = []
+        results: List[Dict] = []
 
         if actual_max <= start_page:
             logger.warning("No pages to process (start_page >= total_pages)")

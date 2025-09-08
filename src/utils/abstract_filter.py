@@ -74,7 +74,7 @@ class AbstractDataFilter(ABC):
         """
         pass
 
-    def filter_by_multiple_criteria(self, data: List[Dict[str, Any]], **filters) -> List[Dict[str, Any]]:
+    def filter_by_multiple_criteria(self, data: List[Dict[str, Any]], **filters: Any) -> List[Dict[str, Any]]:
         """
         Фильтрация по множественным критериям
 

@@ -1,5 +1,5 @@
 import os
-from typing import Dict
+from typing import Dict, Optional
 
 
 class AppConfig:
@@ -13,11 +13,11 @@ class AppConfig:
 
         # Настройки БД
         self.db_config = {
-            "host": os.getenv("PGHOST", "localhost"),
-            "port": os.getenv("PGPORT", "5432"),
-            "database": os.getenv("PGDATABASE", "Project03"),
-            "username": os.getenv("PGUSER", "postgres"),
-            "password": os.getenv("PGPASSWORD", ""),
+            "host": os.getenv("PGHOST") or "localhost",
+            "port": os.getenv("PGPORT") or "5432",
+            "database": os.getenv("PGDATABASE") or "Project03",
+            "username": os.getenv("PGUSER") or "postgres",
+            "password": os.getenv("PGPASSWORD") or "",
         }
 
     def get_storage_type(self) -> str:
