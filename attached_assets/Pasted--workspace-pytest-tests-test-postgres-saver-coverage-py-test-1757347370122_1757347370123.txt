@@ -1,0 +1,58 @@
+~/workspace$ pytest tests/test_postgres_saver_coverage.py 
+=================================== test session starts ====================================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 46 items                                                                         
+
+tests/test_postgres_saver_coverage.py ............................................F. [100%]
+
+========================================= FAILURES =========================================
+___________ TestPostgresSaverQueryOperations.test_search_vacancies_batch_success ___________
+
+self = <tests.test_postgres_saver_coverage.TestPostgresSaverQueryOperations object at 0x7ff8ab347f50>
+mock_logger = <MagicMock name='logger' id='140705980605392'>
+mock_psycopg2 = <MagicMock name='psycopg2' id='140705980601936'>
+
+    @patch('src.storage.postgres_saver.psycopg2')
+    @patch('src.storage.postgres_saver.logger')
+    def test_search_vacancies_batch_success(self, mock_logger, mock_psycopg2):
+        """Покрытие: batch поиск вакансий"""
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_connection.cursor.return_value = mock_cursor
+        # Исправляем проблему с encoding для execute_values
+        mock_cursor.connection = mock_connection
+        mock_connection.encoding = 'UTF8'
+    
+        # Мокируем результат поиска
+        mock_rows = [
+            ("id1", "Python Developer", "url1", 100000, 150000, "RUR", "desc1",
+             "req1", "resp1", "1-3 года", "Полная", "Полный", "Москва", "hh",
+             datetime.now(), datetime.now(), "Tech Co"),
+        ]
+        mock_cursor.fetchall.return_value = mock_rows
+    
+        with patch.object(PostgresSaver, '_ensure_tables_exist'):
+            saver = PostgresSaver({"host": "test"})
+    
+        with patch.object(saver, '_get_connection', return_value=mock_connection):
+            with patch.object(saver, '_convert_rows_to_vacancies', return_value=[MagicMock()]) as mock_convert:
+                result = saver.search_vacancies_batch(["Python", "Django"], limit=10)
+    
+                # Проверяем что запрос построен правильно
+                call_args = mock_cursor.execute.call_args
+                query = call_args[0][0]
+                params = call_args[0][1]
+    
+                assert "(LOWER(title) LIKE LOWER(%s)" in query
+                assert "LIMIT %s" in query
+                assert "%Python%" in params
+                assert "%Django%" in params
+>               assert 10 in params
+E               AssertionError: assert 10 in ['%Python%', '%Python%', '%Python%', '%Django%', '%Django%', '%Django%', ...]
+
+tests/test_postgres_saver_coverage.py:1128: AssertionError
+================================= short test summary info ==================================
+FAILED tests/test_postgres_saver_coverage.py::TestPostgresSaverQueryOperations::test_search_vacancies_batch_success - AssertionError: assert 10 in ['%Python%', '%Python%', '%Python%', '%Django%', '%Django%.
