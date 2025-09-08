@@ -13,12 +13,12 @@ try:
     from psycopg2.extras import RealDictCursor
 
     PSYCOPG2_AVAILABLE = True
-    PsycopgError: type[Exception] = psycopg2.Error
+    PsycopgError = psycopg2.Error
 except ImportError:
     PSYCOPG2_AVAILABLE = False
     psycopg2 = None  # type: ignore
     RealDictCursor = None  # type: ignore
-    PsycopgError: type[Exception] = Exception  # Fallback для обработки исключений
+    PsycopgError = Exception  # type: ignore
     from .simple_db_adapter import get_db_adapter
 
     print("⚠️  psycopg2 недоступен, используется простой DB адаптер")
@@ -110,7 +110,7 @@ class DBManager(AbstractDBManager):
                 test_connection = self._get_connection()
                 test_connection.close()
                 logger.info(f"✓ База данных {database_name} уже доступна")
-                return
+                return True
             except PsycopgError:
                 logger.error(f"База данных {database_name} недоступна и не может быть создана")
                 return False
@@ -327,7 +327,7 @@ class DBManager(AbstractDBManager):
                         cursor.execute("SELECT name, hh_id, sj_id FROM companies ORDER BY name LIMIT 5")
                         existing_companies = cursor.fetchall()
                         logger.info(f"DEBUG: Первые 5 компаний в БД: {existing_companies}")
-                        return
+                        return True
 
                     # Добавляем целевые компании с их API идентификаторами
                     for company in TARGET_COMPANIES:
@@ -350,7 +350,8 @@ class DBManager(AbstractDBManager):
 
         except Exception as e:
             logger.error(f"Ошибка при заполнении таблицы companies: {e}")
-            raise
+            return False
+        return True
 
     def get_target_companies_analysis(self) -> List[Tuple[str, int]]:
         """Получает анализ ТОЛЬКО по целевым компаниям.

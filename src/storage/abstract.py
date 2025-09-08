@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 from src.vacancies.abstract import AbstractVacancy
+
+if TYPE_CHECKING:
+    from src.vacancies.models import Vacancy
 
 
 class AbstractVacancyStorage(ABC):

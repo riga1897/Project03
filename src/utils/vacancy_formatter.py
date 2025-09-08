@@ -207,12 +207,7 @@ class VacancyFormatter:
         # Унифицируем: используем только объекты Salary, не словари
         # Если пришел словарь - преобразуем в объект Salary
         if isinstance(salary, dict):
-            try:
-                from src.utils.salary import Salary
-            except ImportError:
-                # Fallback for backwards compatibility
-                from utils.salary import Salary
-
+            from src.utils.salary import Salary
             salary = Salary(salary)
 
         return str(salary)

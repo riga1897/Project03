@@ -11,12 +11,12 @@ try:
     import psycopg2
     from psycopg2.extras import RealDictCursor
 
-    PsycopgError: type[Exception] = psycopg2.Error
+    PsycopgError = psycopg2.Error
     PSYCOPG2_AVAILABLE = True
 except ImportError:
     psycopg2 = None  # type: ignore
     RealDictCursor = None  # type: ignore
-    PsycopgError: type[Exception] = Exception
+    PsycopgError = Exception  # type: ignore
     PSYCOPG2_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
