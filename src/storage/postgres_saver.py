@@ -944,7 +944,7 @@ class PostgresSaver(AbstractVacancyStorage):
                                 "experience": {"name": row["experience"] or ""},
                                 "employment": {"name": row["employment"] or ""},
                                 "schedule": {"name": row["schedule"] or ""},
-                                "published_at": row["published_at"].isoformat() if row["published_at"] else None,
+                                "published_at": row["published_at"].isoformat() if row["published_at"] and hasattr(row["published_at"], "isoformat") else (str(row["published_at"]) if row["published_at"] else None),
                                 "source": row["source"] or "database",
                             }
 

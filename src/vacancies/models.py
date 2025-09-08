@@ -307,7 +307,7 @@ class Vacancy(BaseModel, AbstractVacancy):
     schedule: Optional[Schedule] = Field(None, description="График работы")
 
     # Временные метки
-    published_at: Optional[Union[datetime, str]] = Field(None, description="Дата публикации")
+    published_at: Optional[str] = Field(None, description="Дата публикации в ISO формате")
     created_at: Optional[datetime] = Field(default_factory=datetime.now, description="Дата создания записи")
     updated_at: Optional[datetime] = Field(None, description="Дата обновления записи")
 
@@ -474,9 +474,7 @@ class Vacancy(BaseModel, AbstractVacancy):
     def to_dict(self) -> Dict[str, Any]:
         """Преобразование в словарь"""
         data = self.model_dump()
-        # Преобразуем datetime в строки для JSON совместимости
-        if data.get("published_at") and isinstance(data["published_at"], datetime):
-            data["published_at"] = data["published_at"].isoformat()
+        # published_at уже строка в ISO формате, ничего не делаем
         if data.get("created_at") and isinstance(data["created_at"], datetime):
             data["created_at"] = data["created_at"].isoformat()
         if data.get("updated_at") and isinstance(data["updated_at"], datetime):

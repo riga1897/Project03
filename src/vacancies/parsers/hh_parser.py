@@ -180,7 +180,7 @@ class HHParser(BaseParser):
             experience=hh_vacancy.experience,
             employment=hh_vacancy.employment,
             schedule=hh_vacancy.schedule,
-            published_at=hh_vacancy.published_at.isoformat() if hh_vacancy.published_at else None,
+            published_at=hh_vacancy.published_at.isoformat() if hh_vacancy.published_at and hasattr(hh_vacancy.published_at, "isoformat") else (str(hh_vacancy.published_at) if hh_vacancy.published_at else None),
             skills=hh_vacancy.skills,
             detailed_description=hh_vacancy.detailed_description,
             benefits=hh_vacancy.benefits,

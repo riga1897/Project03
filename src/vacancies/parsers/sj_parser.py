@@ -77,7 +77,7 @@ class SuperJobParser(BaseParser):
             "experience": sj_vacancy.experience,
             "employment": sj_vacancy.employment,
             "schedule": sj_vacancy.schedule,
-            "published_at": sj_vacancy.published_at.isoformat() if sj_vacancy.published_at else None,
+            "published_at": sj_vacancy.published_at.isoformat() if sj_vacancy.published_at and hasattr(sj_vacancy.published_at, "isoformat") else (str(sj_vacancy.published_at) if sj_vacancy.published_at else None),
             "skills": [],
             "keywords": [],
             "detailed_description": sj_vacancy.detailed_description,
