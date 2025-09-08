@@ -112,30 +112,26 @@ class SQLDeduplicationService(AbstractDeduplicationService):
         # Подготавливаем данные для вставки
         dedup_data = []
         for idx, vacancy in enumerate(vacancies):
-            # Нормализуем данные для дедупликации
+            # Нормализуем название вакансии
             title_normalized = self._normalize_text(vacancy.title or "")
 
-            # Извлекаем и нормализуем имя работодателя
-            employer_name = "неизвестный"
+            # Извлекаем и нормализуем информацию о работодателе
+            employer_name = ""
             employer_id = None
-
             if vacancy.employer:
-                if hasattr(vacancy.employer, "get_name"):
-                    employer_name = vacancy.employer.get_name()
-                elif hasattr(vacancy.employer, "name"):
-                    employer_name = vacancy.employer.name
-                elif isinstance(vacancy.employer, dict):
-                    employer_name = vacancy.employer.get("name", "неизвестный")
-                else:
-                    employer_name = str(vacancy.employer)
-
-                # Извлекаем employer.id (hh_id или sj_id)
-                if hasattr(vacancy.employer, "get_id"):
-                    employer_id = vacancy.employer.get_id()
-                elif hasattr(vacancy.employer, "id"):
-                    employer_id = vacancy.employer.id
-                elif isinstance(vacancy.employer, dict):
-                    employer_id = vacancy.employer.get("id")
+                try:
+                    if isinstance(vacancy.employer, str):
+                        employer_name = vacancy.employer
+                    elif isinstance(vacancy.employer, dict):
+                        employer_name = vacancy.employer.get("name", "")
+                        employer_id = vacancy.employer.get("id")
+                    else:
+                        # Обработка объектов, которые не являются строкой или словарем
+                        employer_name = str(vacancy.employer)
+                        logger.debug(f"Employer не является строкой или словарем: {type(vacancy.employer)} = {vacancy.employer}")
+                except Exception as e:
+                    logger.warning(f"Ошибка обработки employer для вакансии {getattr(vacancy, 'vacancy_id', 'unknown')}: {e}")
+                    employer_name = "unknown"
 
             employer_normalized = self._normalize_text(employer_name)
 

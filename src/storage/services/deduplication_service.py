@@ -6,7 +6,7 @@
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, List
+from typing import List, Any
 
 try:
     from ..abstract_db_manager import AbstractDBManager
@@ -56,6 +56,13 @@ class SQLDeduplicationStrategy(DeduplicationStrategy):
 
         logger.info(f"Начинаем SQL-дедупликацию для {len(vacancies)} вакансий")
 
+        # Проверяем типы данных в вакансиях для диагностики
+        for i, vacancy in enumerate(vacancies[:3]):  # Проверяем первые 3 вакансии
+            if hasattr(vacancy, 'employer') and vacancy.employer:
+                if not isinstance(vacancy.employer, (dict, str)):
+                    print(f"  ❌ ОШИБКА: Вакансия {i+1} - employer не словарь и не строка: {type(vacancy.employer)}")
+                    logger.warning(f"Вакансия {getattr(vacancy, 'vacancy_id', i)} имеет employer типа {type(vacancy.employer)}: {vacancy.employer}")
+
         try:
             connection = db_manager._get_connection()
             cursor = connection.cursor()
@@ -75,10 +82,16 @@ class SQLDeduplicationStrategy(DeduplicationStrategy):
             # Подготавливаем данные для вставки
             temp_data = []
             for idx, vacancy in enumerate(vacancies):
-                normalized_title = self._normalize_text(vacancy.title or "")
-                normalized_employer = self._normalize_employer(vacancy.employer or "")
+                try:
+                    normalized_title = self._normalize_text(vacancy.title or "")
+                    normalized_employer = self._normalize_employer(vacancy.employer or "")
+                    vacancy_id = getattr(vacancy, 'vacancy_id', getattr(vacancy, 'id', f'unknown_{idx}'))
 
-                temp_data.append((vacancy.vacancy_id, normalized_title, normalized_employer, idx))
+                    temp_data.append((vacancy_id, normalized_title, normalized_employer, idx))
+                except Exception as e:
+                    logger.error(f"Ошибка обработки вакансии {idx}: {e}")
+                    # Пропускаем проблемную вакансию
+                    continue
 
             # Вставляем данные
             cursor.executemany(
@@ -144,12 +157,20 @@ class SQLDeduplicationStrategy(DeduplicationStrategy):
         if not employer:
             return ""
 
-        if isinstance(employer, dict):
-            name = employer.get("name", "")
-        else:
-            name = str(employer)
-
-        return self._normalize_text(name)
+        try:
+            if isinstance(employer, dict):
+                name = employer.get("name", "")
+            elif isinstance(employer, str):
+                name = employer
+            else:
+                # Для других типов данных пытаемся преобразовать в строку
+                name = str(employer)
+                logger.debug(f"Employer преобразован из {type(employer)} в строку: {name}")
+            
+            return self._normalize_text(name)
+        except Exception as e:
+            logger.warning(f"Ошибка нормализации employer {employer}: {e}")
+            return "unknown_employer"
 
 
 class DeduplicationService:
