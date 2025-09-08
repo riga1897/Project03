@@ -79,7 +79,8 @@ class VacancyStorageService(AbstractVacancyStorageService):
         self.deduplication_service = DeduplicationService(SQLDeduplicationStrategy())
 
         # Настраиваем стратегии фильтрации на основе конфигурации
-        filter_strategies = [TargetCompanyFilterStrategy()]
+        from src.storage.services.filtering_strategies import FilteringStrategy
+        filter_strategies: List[FilteringStrategy] = [TargetCompanyFilterStrategy()]
 
         # Добавляем фильтр по зарплате, если включен
         if self._should_filter_by_salary():
@@ -297,7 +298,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
             print(f"  {i+1}. '{vacancy.title[:50]}...' | Зарплата: {salary_info} | Компания: {employer_info}")
 
             if has_salary and len(salary_examples) < 3:
-                salary_examples.append({"title": vacancy.title, "salary": salary_info, "raw_salary": vacancy.salary})
+                salary_examples.append(f"{vacancy.title}: {salary_info}")
 
         print(f"\n📊 СТАТИСТИКА [{stage}]:")
         print(f"   С зарплатой: {with_salary}")
@@ -491,7 +492,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
         if not isinstance(vacancies, list):
             vacancies = [vacancies]
 
-        messages = self.add_vacancy_batch_optimized(vacancies, search_query=None)
+        messages = self.add_vacancy_batch_optimized(vacancies, search_query="")
         return len(messages)
 
     def load_vacancies(
@@ -548,10 +549,11 @@ class VacancyStorageService(AbstractVacancyStorageService):
                             salary_data = {"to": int(salary_match[0]), "currency": "RUR"}
 
             # Обрабатываем работодателя
+            from src.vacancies.models import Employer
             employer = None
             company_name = data.get("company_name")
             if company_name and company_name != "Неизвестная компания":
-                employer = {"name": company_name}
+                employer = Employer(name=company_name)
 
             vacancy = Vacancy(
                 vacancy_id=data.get("vacancy_id", ""),
@@ -602,7 +604,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
         """Заполняет таблицу компаний"""
         return self.db_manager.populate_companies_table()
 
-    def get_companies_and_vacancies_count(self) -> tuple[int, int]:
+    def get_companies_and_vacancies_count(self) -> List[Tuple[Any, ...]]:
         """Получает статистику по компаниям"""
         return self.db_manager.get_companies_and_vacancies_count()
 
