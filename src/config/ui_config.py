@@ -39,7 +39,7 @@ class UIPaginationConfig:
             "top": self.top_vacancies_per_page,
         }
 
-        return context_mapping.get(context, self.default_items_per_page)
+        return context_mapping.get(context or "", self.default_items_per_page)
 
     def validate_items_per_page(self, value: int) -> int:
         """

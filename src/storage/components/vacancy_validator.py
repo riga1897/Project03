@@ -105,18 +105,21 @@ class VacancyValidator:
     def _validate_business_rules(self, vacancy: AbstractVacancy) -> bool:
         """Валидация бизнес-правил"""
         # Проверка URL
-        if hasattr(vacancy, "url") and vacancy.url:
-            if not vacancy.url.startswith(("http://", "https://")):
+        url_value = getattr(vacancy, "url", None)
+        if url_value:
+            if not str(url_value).startswith(("http://", "https://")):
                 self._validation_errors.append("URL вакансии должен начинаться с http:// или https://")
 
         # Проверка ID
-        if hasattr(vacancy, "vacancy_id") and vacancy.vacancy_id:
-            if len(str(vacancy.vacancy_id)) > 100:  # Разумное ограничение
+        vacancy_id_value = getattr(vacancy, "vacancy_id", None)
+        if vacancy_id_value:
+            if len(str(vacancy_id_value)) > 100:  # Разумное ограничение
                 self._validation_errors.append("ID вакансии слишком длинный")
 
         # Проверка названия
-        if hasattr(vacancy, "title") and vacancy.title:
-            if len(vacancy.title) > 500:  # Разумное ограничение
+        title_value = getattr(vacancy, "title", None)
+        if title_value:
+            if len(str(title_value)) > 500:  # Разумное ограничение
                 self._validation_errors.append("Название вакансии слишком длинное")
 
         return len(self._validation_errors) == 0

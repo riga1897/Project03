@@ -125,7 +125,7 @@ class VacancyStats:
                     employer = vacancy.get("employer")
                     if isinstance(employer, dict):
                         employer_name = employer.get("name")
-                    elif hasattr(employer, "name"):
+                    elif hasattr(employer, "name") and employer is not None:
                         employer_name = employer.name
                     elif isinstance(employer, str):
                         employer_name = employer
@@ -134,7 +134,7 @@ class VacancyStats:
                     employer = vacancy.employer
                     if isinstance(employer, dict):
                         employer_name = employer.get("name")
-                    elif hasattr(employer, "name"):
+                    elif hasattr(employer, "name") and employer is not None:
                         employer_name = employer.name
                     elif isinstance(employer, str):
                         employer_name = employer
