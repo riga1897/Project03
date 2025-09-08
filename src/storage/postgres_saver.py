@@ -9,10 +9,12 @@ from src.storage.db_psycopg2_compat import is_available as psycopg2_available
 try:
     PsycopgError = get_psycopg_error()
     RealDictCursor = get_real_dict_cursor()
+    psycopg2 = get_psycopg2()  # Добавляем для обратной совместимости с тестами
 except ImportError:
     # Fallback для случаев когда psycopg2 недоступен
     PsycopgError = Exception
     RealDictCursor = None
+    psycopg2 = None
 
 from src.storage.abstract import AbstractVacancyStorage
 from src.storage.db_connection_config import get_db_connection_params
