@@ -25,7 +25,7 @@ class SJAPIConfig:
     # Настройка фильтрации данных через SQL
     filter_by_target_companies = True  # Фильтровать по целевым компаниям через SQL
 
-    def __init__(self, token_file: Path = Path("token.json"), **kwargs):
+    def __init__(self, token_file: Path = Path("token.json"), **kwargs: Any) -> None:
         """Инициализация конфигурации SuperJob API с загрузкой настроек."""
         self.token_file = token_file
         # Инициализация APIConfig, если он нужен (в данном случае не используется напрямую в SJAPIConfig)
@@ -39,7 +39,7 @@ class SJAPIConfig:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-    def get_params(self, **kwargs) -> Dict[str, Any]:
+    def get_params(self, **kwargs: Any) -> Dict[str, Any]:
         """Генерация параметров запроса с учетом переопределений"""
         params = {
             "count": kwargs.get("count", self.count),

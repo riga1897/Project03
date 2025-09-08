@@ -185,7 +185,7 @@ class Experience(BaseModel):
     @classmethod
     def from_string(cls, data: str) -> "Experience":
         """Создать из строки"""
-        return cls(name=data)
+        return cls(name=data, id=None)
 
     model_config = ConfigDict(validate_assignment=True)
 
@@ -232,7 +232,7 @@ class Employment(BaseModel):
     @classmethod
     def from_string(cls, data: str) -> "Employment":
         """Создать из строки"""
-        return cls(name=data)
+        return cls(name=data, id=None)
 
     model_config = ConfigDict(validate_assignment=True)
 
@@ -279,7 +279,7 @@ class Schedule(BaseModel):
     @classmethod
     def from_string(cls, data: str) -> "Schedule":
         """Создать из строки"""
-        return cls(name=data)
+        return cls(name=data, id=None)
 
     model_config = ConfigDict(validate_assignment=True)
 
@@ -549,9 +549,9 @@ class VacancyFactory:
         schedule_data = data.get("schedule", {})
 
         return Vacancy(
-            vacancy_id=str(data.get("id", str(uuid.uuid4()))),
-            name=data.get("name", ""),
-            alternate_url=data.get("alternate_url", ""),
+            id=str(data.get("id", str(uuid.uuid4()))),
+            title=data.get("name", ""),
+            url=data.get("alternate_url", ""),
             employer=Employer(**employer_data) if employer_data else None,
             salary=salary_data if salary_data else None,
             experience=Experience(**experience_data) if experience_data else None,
@@ -580,9 +580,9 @@ class VacancyFactory:
             }
 
         return Vacancy(
-            vacancy_id=str(data.get("id", str(uuid.uuid4()))),
-            name=data.get("profession", ""),
-            alternate_url=data.get("link", ""),
+            id=str(data.get("id", str(uuid.uuid4()))),
+            title=data.get("profession", ""),
+            url=data.get("link", ""),
             employer=(
                 Employer(
                     name=data.get("firm_name", "Не указана"),

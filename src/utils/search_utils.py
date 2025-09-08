@@ -80,7 +80,7 @@ def extract_keywords(query: str) -> List[str]:
     return keywords
 
 
-def build_search_params(query: str, per_page: int = 50, page: int = 0, **kwargs) -> Dict[str, Any]:
+def build_search_params(query: str, per_page: int = 50, page: int = 0, **kwargs: Any) -> Dict[str, Any]:
     """
     Построение параметров поиска
 

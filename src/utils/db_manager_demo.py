@@ -7,7 +7,7 @@
 
 import logging
 import re
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from src.storage.db_manager import DBManager
 
@@ -165,7 +165,7 @@ class DBManagerDemo:
             return
 
         # Сортируем вакансии: сначала по убыванию зарплаты, потом по названию
-        def get_salary_value(vacancy) -> int:
+        def get_salary_value(vacancy: Dict[str, Any]) -> int:
             """Извлекает числовое значение зарплаты для сортировки"""
             salary_info = vacancy.get("salary_info", "Не указана")
             if salary_info == "Не указана":

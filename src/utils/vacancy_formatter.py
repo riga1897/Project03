@@ -164,8 +164,8 @@ class VacancyFormatter:
                     responsibilities = snippet.responsibility
 
         # Проверяем, что строка не пустая
-        if responsibilities and responsibilities.strip():
-            return responsibilities.strip()
+        if responsibilities and str(responsibilities).strip():
+            return str(responsibilities).strip()
 
         return None
 
@@ -184,8 +184,8 @@ class VacancyFormatter:
                     requirements = snippet.requirement
 
         # Проверяем, что строка не пустая
-        if requirements and requirements.strip():
-            return requirements.strip()
+        if requirements and str(requirements).strip():
+            return str(requirements).strip()
 
         return None
 
@@ -208,9 +208,10 @@ class VacancyFormatter:
         # Если пришел словарь - преобразуем в объект Salary
         if isinstance(salary, dict):
             try:
-                from utils.salary import Salary
-            except ImportError:
                 from src.utils.salary import Salary
+            except ImportError:
+                # Fallback for backwards compatibility
+                from utils.salary import Salary
 
             salary = Salary(salary)
 
@@ -297,7 +298,8 @@ class VacancyFormatter:
             return "Не указана"
 
         if isinstance(company, dict):
-            return company.get("name", "Не указана")
+            name = company.get("name", "Не указана")
+            return str(name) if name is not None else "Не указана"
 
         return str(company)
 
