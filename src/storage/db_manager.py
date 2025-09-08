@@ -21,7 +21,7 @@ except ImportError:
     PsycopgError = Exception  # type: ignore
     from .simple_db_adapter import get_db_adapter
 
-    print("⚠️  psycopg2 недоступен, используется простой DB адаптер")
+    print("psycopg2 недоступен, используется простой DB адаптер")
 
 from src.config.db_config import DatabaseConfig
 from src.config.target_companies import TargetCompanies
@@ -317,36 +317,36 @@ class DBManager(AbstractDBManager):
                     logger.warning("Таблица companies не существует. Таблицы должны быть созданы заранее.")
                     return False
 
-                    # Проверяем, есть ли уже данные в таблице
-                    cursor.execute("SELECT COUNT(*) FROM companies")
-                    companies_count = cursor.fetchone()[0]
+            # Проверяем, есть ли уже данные в таблице
+            cursor.execute("SELECT COUNT(*) FROM companies")
+            companies_count = cursor.fetchone()[0]
 
-                    if companies_count > 0:
-                        logger.info(f"✓ Таблица companies уже содержит {companies_count} компаний")
-                        # Для отладки: показываем, какие компании есть в БД
-                        cursor.execute("SELECT name, hh_id, sj_id FROM companies ORDER BY name LIMIT 5")
-                        existing_companies = cursor.fetchall()
-                        logger.info(f"DEBUG: Первые 5 компаний в БД: {existing_companies}")
-                        return True
+            if companies_count > 0:
+                logger.info(f"✓ Таблица companies уже содержит {companies_count} компаний")
+                # Для отладки: показываем, какие компании есть в БД
+                cursor.execute("SELECT name, hh_id, sj_id FROM companies ORDER BY name LIMIT 5")
+                existing_companies = cursor.fetchall()
+                logger.info(f"DEBUG: Первые 5 компаний в БД: {existing_companies}")
+                return True
 
-                    # Добавляем целевые компании с их API идентификаторами
-                    for company in TARGET_COMPANIES:
-                        # Сначала проверяем, существует ли компания
-                        cursor.execute("SELECT id FROM companies WHERE name = %s", (company.name,))
-                        if not cursor.fetchone():
-                            cursor.execute(
-                                """
-                                INSERT INTO companies (name, hh_id, sj_id)
-                                VALUES (%s, %s, %s)
-                            """,
-                                (company.name, getattr(company, "hh_id", None), getattr(company, "sj_id", None)),
-                            )
-                            logger.info(f"Добавлена целевая компания: {company.name}")
+            # Добавляем целевые компании с их API идентификаторами
+            for company in TARGET_COMPANIES:
+                # Сначала проверяем, существует ли компания
+                cursor.execute("SELECT id FROM companies WHERE name = %s", (company.name,))
+                if not cursor.fetchone():
+                    cursor.execute(
+                        """
+                        INSERT INTO companies (name, hh_id, sj_id)
+                        VALUES (%s, %s, %s)
+                    """,
+                        (company.name, getattr(company, "hh_id", None), getattr(company, "sj_id", None)),
+                    )
+                    logger.info(f"Добавлена целевая компания: {company.name}")
 
-                    # Проверяем результат
-                    cursor.execute("SELECT COUNT(*) FROM companies")
-                    final_count = cursor.fetchone()[0]
-                    logger.info(f"✓ Добавлено компаний в таблицу companies: {final_count}")
+            # Проверяем результат
+            cursor.execute("SELECT COUNT(*) FROM companies")
+            final_count = cursor.fetchone()[0]
+            logger.info(f"✓ Добавлено компаний в таблицу companies: {final_count}")
 
         except Exception as e:
             logger.error(f"Ошибка при заполнении таблицы companies: {e}")
