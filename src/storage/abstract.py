@@ -19,7 +19,7 @@ class AbstractVacancyStorage(ABC):
         """
 
     @abstractmethod
-    def get_vacancies(self, filters: Optional[Dict[str, Any]] = None) -> List["Vacancy"]:
+    def get_vacancies(self, filters: Optional[Dict[str, Any]] = None) -> List[AbstractVacancy]:
         """
         Возвращает список вакансий из PostgreSQL с учетом фильтров
         :param filters: Словарь с критериями фильтрации

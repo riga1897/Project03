@@ -6,11 +6,11 @@ try:
     import psycopg2
     from psycopg2.extras import RealDictCursor
 
-    PsycopgError: type[Exception] = psycopg2.Error
+    PsycopgError = psycopg2.Error
 except ImportError:
     psycopg2 = None  # type: ignore
     RealDictCursor = None  # type: ignore
-    PsycopgError: type[Exception] = Exception
+    PsycopgError = Exception  # type: ignore
 
 from src.storage.abstract import AbstractVacancyStorage
 from src.vacancies.abstract import AbstractVacancy
@@ -891,7 +891,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
         return vacancies
 
-    def get_vacancies(self, filters: Optional[Dict[str, Any]] = None) -> List[Vacancy]:
+    def get_vacancies(self, filters: Optional[Dict[str, Any]] = None) -> List[AbstractVacancy]:
         """Получить все сохраненные вакансии"""
         try:
             with self._get_connection() as conn:
@@ -956,7 +956,9 @@ class PostgresSaver(AbstractVacancyStorage):
                     logger.info(
                         f"Загружено {len(vacancies)} вакансий из БД ({len(rows)} записей в БД, пропущено {skipped_count})"
                     )
-                    return vacancies
+                    # Type casting для совместимости с AbstractVacancy
+                    from typing import cast
+                    return cast(List[AbstractVacancy], vacancies)
 
         except Exception as e:
             logger.error(f"Ошибка при получении вакансий: {e}")

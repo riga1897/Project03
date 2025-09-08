@@ -67,7 +67,7 @@ class UserInterface:
 
         # DB Manager для демонстрации
         self.db_manager = db_manager
-        if self.db_manager and DBManagerDemo_class:
+        if self.db_manager and DBManagerDemo_class is not None:
             self.demo = DBManagerDemo_class(self.db_manager)
         else:
             self.demo = None  # type: ignore
@@ -147,7 +147,7 @@ class UserInterface:
         print("7. Удалить сохраненные вакансии")
         print("8. Очистить кэш API")
         print("9. Настройка SuperJob API")
-        if DBManager_class and DBManagerDemo_class:
+        if DBManager_class is not None and DBManagerDemo_class is not None:
             print("10. Демонстрация DBManager (анализ данных в БД)")
         print("0. Выход")
         print_menu_separator()

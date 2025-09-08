@@ -292,10 +292,12 @@ class APIDataFilter(AbstractDataFilter):
 
     def _extract_employment_type(self, item: Dict[str, Any]) -> Optional[str]:
         """Извлечение типа занятости"""
+        # Fallback for missing module
         try:
             from src.utils.data_normalizers import normalize_employment_data
         except ImportError:
-            from src.utils.data_normalizers import normalize_employment_data
+            def normalize_employment_data(data):  # type: ignore
+                return str(data) if data else None
 
         # Защитная проверка типа данных
         if not isinstance(item, dict):
@@ -306,9 +308,12 @@ class APIDataFilter(AbstractDataFilter):
     def _extract_company_name(self, item: Dict[str, Any]) -> Optional[str]:
         """Извлечение названия компании"""
         try:
-            from utils.data_normalizers import normalize_employer_data
-        except ImportError:
             from src.utils.data_normalizers import normalize_employer_data
+        except ImportError:
+            def normalize_employer_data(data):  # type: ignore
+                if isinstance(data, dict):
+                    return data.get("name", str(data))
+                return str(data) if data else None
 
         # Защитная проверка типа данных
         if not isinstance(item, dict):
