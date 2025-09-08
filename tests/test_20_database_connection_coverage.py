@@ -51,18 +51,22 @@ class TestDatabaseConnection:
         'PGDATABASE': 'test-db',
         'PGUSER': 'test-user',
         'PGPASSWORD': 'test-pass'
-    })
+    }, clear=True)  # clear=True убирает DATABASE_URL
     def test_init_with_env_params(self):
         """Покрытие инициализации с параметрами из env"""
         db_conn = DatabaseConnection()
         
-        assert db_conn._connection_params == {
+        # Новый конфигуратор добавляет дополнительные параметры
+        expected_params = {
             "host": "test-host",
             "port": "5433", 
             "database": "test-db",
             "user": "test-user",
-            "password": "test-pass"
+            "password": "test-pass",
+            "connect_timeout": "10",
+            "command_timeout": "30"
         }
+        assert db_conn._connection_params == expected_params
         assert db_conn._connection is None
 
     def test_init_with_custom_params(self):
@@ -90,17 +94,24 @@ class TestDatabaseConnection:
             "port": "5432",
             "database": "postgres", 
             "user": "postgres",
-            "password": ""
+            "password": "",
+            "connect_timeout": "10",
+            "command_timeout": "30"
         }
         
         assert db_conn._connection_params == expected_params
 
-    @patch('src.storage.components.database_connection.psycopg2')
-    def test_get_connection_creates_new_when_none(self, mock_psycopg2):
+    @patch('src.storage.db_psycopg2_compat.get_psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_real_dict_cursor')
+    @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
+    def test_get_connection_creates_new_when_none(self, mock_is_available, mock_real_dict_cursor, mock_get_psycopg2):
         """Покрытие создания нового подключения когда его нет"""
         # Настройка mock
         mock_connection = Mock()
+        mock_psycopg2 = Mock()
         mock_psycopg2.connect.return_value = mock_connection
+        mock_get_psycopg2.return_value = mock_psycopg2
+        mock_real_dict_cursor.return_value = Mock()
         
         db_conn = DatabaseConnection()
         result = db_conn.get_connection()
@@ -109,8 +120,10 @@ class TestDatabaseConnection:
         assert db_conn._connection == mock_connection
         mock_psycopg2.connect.assert_called_once()
 
-    @patch('src.storage.components.database_connection.psycopg2')
-    def test_get_connection_reuses_valid_connection(self, mock_psycopg2):
+    @patch('src.storage.db_psycopg2_compat.get_psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_real_dict_cursor')
+    @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
+    def test_get_connection_reuses_valid_connection(self, mock_is_available, mock_real_dict_cursor, mock_get_psycopg2):
         """Покрытие переиспользования валидного подключения"""
         # Настройка mock
         mock_connection = Mock()
@@ -119,6 +132,11 @@ class TestDatabaseConnection:
         mock_cursor_context.__enter__ = Mock(return_value=mock_cursor)
         mock_cursor_context.__exit__ = Mock(return_value=None)
         mock_connection.cursor.return_value = mock_cursor_context
+        
+        # Настройка модуля совместимости
+        mock_psycopg2 = Mock()
+        mock_get_psycopg2.return_value = mock_psycopg2
+        mock_real_dict_cursor.return_value = Mock()
         
         db_conn = DatabaseConnection()
         db_conn._connection = mock_connection
@@ -129,8 +147,10 @@ class TestDatabaseConnection:
         # Проверяем что SELECT 1 был выполнен для проверки
         mock_cursor.execute.assert_called_with("SELECT 1")
 
-    @patch('src.storage.components.database_connection.psycopg2')
-    def test_get_connection_recreates_invalid_connection(self, mock_psycopg2):
+    @patch('src.storage.db_psycopg2_compat.get_psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_real_dict_cursor')
+    @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
+    def test_get_connection_recreates_invalid_connection(self, mock_is_available, mock_real_dict_cursor, mock_get_psycopg2):
         """Покрытие пересоздания неисправного подключения"""
         # Настройка proper exception classes на mock psycopg2
         mock_psycopg2.OperationalError = MockOperationalError
@@ -182,7 +202,9 @@ class TestDatabaseConnection:
         assert result is True
         mock_cursor.execute.assert_called_with("SELECT 1")
 
-    @patch('src.storage.components.database_connection.psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_real_dict_cursor')
+    @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
     def test_is_connection_valid_broken_connection(self, mock_psycopg2):
         """Покрытие проверки поломанного подключения"""
         # Настройка proper exception classes на mock psycopg2
@@ -204,7 +226,9 @@ class TestDatabaseConnection:
         result = db_conn._is_connection_valid()
         assert result is False
 
-    @patch('src.storage.components.database_connection.psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_real_dict_cursor')
+    @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
     @patch('src.storage.components.database_connection.logger')
     def test_create_new_connection_success(self, mock_logger, mock_psycopg2):
         """Покрытие успешного создания подключения"""
@@ -225,7 +249,9 @@ class TestDatabaseConnection:
         mock_logger.debug.assert_called()
 
     @patch('src.storage.components.database_connection.PsycopgError', MockPsycopgError)
-    @patch('src.storage.components.database_connection.psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_real_dict_cursor')
+    @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
     @patch('src.storage.components.database_connection.logger')
     def test_create_new_connection_failure(self, mock_logger, mock_psycopg2):
         """Покрытие неудачного создания подключения"""
@@ -240,7 +266,9 @@ class TestDatabaseConnection:
         
         mock_logger.error.assert_called()
 
-    @patch('src.storage.components.database_connection.psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_real_dict_cursor')
+    @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
     @patch('src.storage.components.database_connection.RealDictCursor')
     def test_create_new_connection_with_cursor_factory(self, mock_real_dict_cursor, mock_psycopg2):
         """Покрытие создания подключения с cursor_factory"""
@@ -289,7 +317,9 @@ class TestDatabaseConnection:
         mock_logger.warning.assert_called()  # В коде используется warning, не error
         assert db_conn._connection is None
 
-    @patch('src.storage.components.database_connection.psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_real_dict_cursor')
+    @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
     def test_context_manager_protocol(self, mock_psycopg2):
         """Покрытие протокола контекстного менеджера"""
         mock_connection = Mock()
@@ -333,7 +363,9 @@ class TestDatabaseConnectionEdgeCases:
             db_conn._create_new_connection()
 
     @patch('src.storage.components.database_connection.RealDictCursor', None)
-    @patch('src.storage.components.database_connection.psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_real_dict_cursor')
+    @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
     def test_real_dict_cursor_not_available(self, mock_psycopg2):
         """Покрытие случая когда RealDictCursor недоступен"""
         mock_connection = Mock()
@@ -365,7 +397,9 @@ class TestDatabaseConnectionEdgeCases:
         
         assert db_conn._connection_params["password"] == ""
 
-    @patch('src.storage.components.database_connection.psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_real_dict_cursor')
+    @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
     def test_multiple_get_connection_calls(self, mock_psycopg2):
         """Покрытие множественных вызовов get_connection"""
         mock_connection = Mock()
@@ -391,7 +425,9 @@ class TestDatabaseConnectionEdgeCases:
 class TestDatabaseConnectionIntegration:
     """Интеграционные тесты и комплексные сценарии"""
 
-    @patch('src.storage.components.database_connection.psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_real_dict_cursor')
+    @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
     def test_full_lifecycle(self, mock_psycopg2):
         """Покрытие полного жизненного цикла подключения"""
         mock_connection = Mock()
@@ -409,7 +445,9 @@ class TestDatabaseConnectionIntegration:
         # После выхода из контекста подключение должно быть закрыто
         mock_connection.close.assert_called_once()
 
-    @patch('src.storage.components.database_connection.psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_psycopg2')
+    @patch('src.storage.db_psycopg2_compat.get_real_dict_cursor')
+    @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
     def test_connection_recovery_scenario(self, mock_psycopg2):
         """Покрытие сценария восстановления подключения"""
         # Настройка proper exception classes на mock psycopg2
