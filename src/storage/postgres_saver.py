@@ -1023,7 +1023,7 @@ class PostgresSaver(AbstractVacancyStorage):
             cursor = connection.cursor()
             cursor.execute("DELETE FROM vacancies WHERE LOWER(title) LIKE LOWER(%s)", (f"%{keyword}%",))
 
-            deleted_count = cursor.rowcount
+            deleted_count = int(cursor.rowcount) if cursor.rowcount is not None else 0
             connection.commit()
 
             if deleted_count > 0:
