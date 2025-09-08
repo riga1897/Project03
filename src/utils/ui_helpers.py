@@ -198,6 +198,10 @@ def _build_searchable_text(vacancy: Vacancy) -> str:
     """
     searchable_text = []
 
+    # Добавляем ID вакансии для поиска
+    if vacancy.vacancy_id:
+        searchable_text.append(str(vacancy.vacancy_id))
+
     # Проверяем названия
     if vacancy.title:
         searchable_text.append(str(vacancy.title))
