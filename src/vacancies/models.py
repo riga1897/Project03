@@ -323,8 +323,7 @@ class Vacancy(BaseModel, AbstractVacancy):
     employer_name: Optional[str] = Field(default=None, description="Внутреннее название работодателя")
     
     # Property для совместимости с AbstractVacancy
-    @property
-    def vacancy_id(self) -> str:
+    def get_vacancy_id(self) -> str:
         """Альтернативный способ доступа к идентификатору вакансии"""
         return self.id
 

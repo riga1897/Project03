@@ -272,11 +272,7 @@ class APIDataFilter(AbstractDataFilter):
 
     def _extract_location(self, item: Dict[str, Any]) -> Optional[str]:
         """Извлечение местоположения"""
-        try:
-            from src.utils.data_normalizers import normalize_area_data
-        except ImportError:
-            # Fallback for backwards compatibility
-            from utils.data_normalizers import normalize_area_data
+        from src.utils.data_normalizers import normalize_area_data
 
         # Защитная проверка типа данных
         if not isinstance(item, dict):
@@ -286,11 +282,7 @@ class APIDataFilter(AbstractDataFilter):
 
     def _extract_experience(self, item: Dict[str, Any]) -> Optional[str]:
         """Извлечение опыта работы"""
-        try:
-            from src.utils.data_normalizers import normalize_experience_data
-        except ImportError:
-            # Fallback for backwards compatibility
-            from utils.data_normalizers import normalize_experience_data
+        from src.utils.data_normalizers import normalize_experience_data
 
         # Защитная проверка типа данных
         if not isinstance(item, dict):

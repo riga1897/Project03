@@ -308,8 +308,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
         if salary_examples:
             print("\n💰 ПРИМЕРЫ ЗАРПЛАТ:")
             for example in salary_examples:
-                print(f"   '{example['title'][:40]}...' - {example['salary']}")
-                print(f"     Raw data: {example['raw_salary']}")
+                print(f"   '{example}'...")
 
         print("-" * 80)
 
