@@ -212,26 +212,28 @@ class VacancySearchHandler:
         print(f"Проверка {len(vacancies)} вакансий на дубликаты...")
 
         # ДОБАВЛЕНО: Логирование для диагностики
-        print("DEBUG: Проверяем ID вакансий:")
-        for i, v in enumerate(vacancies[:5]):  # Показываем первые 5
-            print(f"  {i+1}. vacancy.id = '{v.id}'")
-        if len(vacancies) > 5:
-            print(f"  ... и еще {len(vacancies) - 5} вакансий")
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("Проверяем ID вакансий:")
+            for i, v in enumerate(vacancies[:5]):  # Показываем первые 5
+                logger.debug(f"  {i+1}. vacancy.id = '{v.id}'")
+            if len(vacancies) > 5:
+                logger.debug(f"  ... и еще {len(vacancies) - 5} вакансий")
 
         # Используем batch-метод для проверки дубликатов
         existence_map = self.storage.check_vacancies_exist_batch(vacancies)
 
         # ДОБАВЛЕНО: Логирование результата проверки
-        print("DEBUG: Результат check_vacancies_exist_batch:")
-        print(f"  Тип: {type(existence_map)}")
-        if isinstance(existence_map, dict):
-            found_count = sum(1 for exists in existence_map.values() if exists)
-            print(f"  Найдено дубликатов: {found_count} из {len(existence_map)}")
-            if found_count > 0:
-                print("  Примеры найденных:")
-                for vacancy_id, exists in list(existence_map.items())[:3]:
-                    if exists:
-                        print(f"    {vacancy_id}: НАЙДЕН")
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("Результат check_vacancies_exist_batch:")
+            logger.debug(f"  Тип: {type(existence_map)}")
+            if isinstance(existence_map, dict):
+                found_count = sum(1 for exists in existence_map.values() if exists)
+                logger.debug(f"  Найдено дубликатов: {found_count} из {len(existence_map)}")
+                if found_count > 0:
+                    logger.debug("  Примеры найденных:")
+                    for vacancy_id, exists in list(existence_map.items())[:3]:
+                        if exists:
+                            logger.debug(f"    {vacancy_id}: НАЙДЕН")
         else:
             print("  ❌ ОШИБКА: Не словарь!")
 
