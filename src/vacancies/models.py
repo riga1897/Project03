@@ -307,7 +307,7 @@ class Vacancy(BaseModel, AbstractVacancy):
     schedule: Optional[Schedule] = Field(None, description="График работы")
 
     # Временные метки
-    published_at: Optional[str] = Field(None, description="Дата публикации в ISO формате")
+    published_at: Optional[datetime] = Field(None, description="Дата публикации")
     created_at: Optional[datetime] = Field(default_factory=datetime.now, description="Дата создания записи")
     updated_at: Optional[datetime] = Field(None, description="Дата обновления записи")
 

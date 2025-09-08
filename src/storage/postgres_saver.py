@@ -816,14 +816,8 @@ class PostgresSaver(AbstractVacancyStorage):
                 else:
                     employer = {"name": "Неизвестная компания"}
 
-                # Convert published_at string back to proper format
-                published_at = None
-                if published_at_db:
-                    # Конвертируем datetime объект в строку ISO формата
-                    if hasattr(published_at_db, "isoformat"):
-                        published_at = published_at_db.isoformat()
-                    else:
-                        published_at = str(published_at_db)
+                # Используем published_at как datetime объект напрямую  
+                published_at = published_at_db
 
                 # Создаем объект Employer если есть данные
                 employer_obj = None
