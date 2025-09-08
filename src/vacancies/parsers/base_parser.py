@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List
 
+from src.vacancies.models import Vacancy
+
 
 class BaseParser(ABC):
     """Базовый абстрактный класс для парсеров вакансий"""
@@ -19,7 +21,7 @@ class BaseParser(ABC):
         pass
 
     @abstractmethod
-    def parse_vacancies(self, raw_vacancies: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def parse_vacancies(self, raw_vacancies: List[Dict[str, Any]]) -> List[Vacancy]:
         """
         Парсинг списка вакансий из сырых данных API
 
@@ -27,6 +29,6 @@ class BaseParser(ABC):
             raw_vacancies: Список сырых данных вакансий от API
 
         Returns:
-            List[Dict[str, Any]]: Список унифицированных данных вакансий
+            List[Vacancy]: Список типизированных объектов вакансий
         """
         pass

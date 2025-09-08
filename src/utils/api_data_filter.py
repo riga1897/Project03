@@ -18,14 +18,37 @@ class APIDataFilter(AbstractDataFilter):
 
     def filter_by_salary(
         self,
+        data: List[Dict[str, Any]],
+        min_salary: Optional[int] = None,
+        max_salary: Optional[int] = None,
+    ) -> List[Dict[str, Any]]:
+        """
+        Реализация абстрактного метода фильтрации по зарплате
+        """
+        return self.filter_by_salary_range(data, min_salary, max_salary)
+    
+    def filter_by_salary_vacancies(
+        self,
         data: List["Vacancy"],
         min_salary: Optional[int] = None,
         max_salary: Optional[int] = None,
     ) -> List["Vacancy"]:
         """
-        Реализация абстрактного метода фильтрации по зарплате
+        Фильтрация списка Vacancy объектов по зарплате
         """
-        return self.filter_by_salary_range(data, min_salary, max_salary)
+        if not data:
+            return []
+        
+        # Конвертируем в словари, фильтруем, затем возвращаем исходные объекты
+        filtered_ids = set()
+        dict_data = [v.model_dump() if hasattr(v, 'model_dump') else v.__dict__ for v in data]
+        filtered_dicts = self.filter_by_salary_range(dict_data, min_salary, max_salary)
+        
+        for item in filtered_dicts:
+            if 'id' in item:
+                filtered_ids.add(item['id'])
+        
+        return [v for v in data if (hasattr(v, 'id') and v.id in filtered_ids)]
 
     def filter_by_salary_range(
         self,

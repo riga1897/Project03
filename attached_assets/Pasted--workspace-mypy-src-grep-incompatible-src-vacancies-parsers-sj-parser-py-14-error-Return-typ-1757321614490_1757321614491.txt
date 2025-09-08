@@ -1,0 +1,35 @@
+~/workspace$ mypy src/ | grep incompatible
+src/vacancies/parsers/sj_parser.py:14: error: Return type "list[Vacancy]" of "parse_vacancies" incompatible with return type "list[dict[str, Any]]" in supertype "src.vacancies.parsers.base_parser.BaseParser"  [override]
+src/vacancies/parsers/hh_parser.py:19: error: Return type "list[Vacancy]" of "parse_vacancies" incompatible with return type "list[dict[str, Any]]" in supertype "src.vacancies.parsers.base_parser.BaseParser"  [override]
+src/utils/api_data_filter.py:19: error: Return type "list[Vacancy]" of "filter_by_salary" incompatible with return type "list[dict[str, Any]]" in supertype "src.utils.abstract_filter.AbstractDataFilter"  [override]
+src/utils/api_data_filter.py:21: error: Argument 1 of "filter_by_salary" is incompatible with supertype "src.utils.abstract_filter.AbstractDataFilter"; supertype defines the argument type as "list[dict[str, Any]]"  [override]
+src/utils/api_data_filter.py:21: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#incompatible-overrides
+src/utils/api_data_filter.py:28: error: Argument 1 to "filter_by_salary_range" of "APIDataFilter" has incompatible type "list[Vacancy]"; expected "list[dict[str, Any]]"  [arg-type]
+src/storage/postgres_saver.py:329: error: Signature of "add_vacancy_batch_optimized" incompatible with supertype "src.storage.abstract.AbstractVacancyStorage"  [override]
+src/storage/postgres_saver.py:639: error: Return type "bool | list[str]" of "add_vacancy" incompatible with return type "None" in supertype "src.storage.abstract.AbstractVacancyStorage"  [override]
+src/storage/postgres_saver.py:639: error: Argument 1 of "add_vacancy" is incompatible with supertype "src.storage.abstract.AbstractVacancyStorage"; supertype defines the argument type as "AbstractVacancy"  [override]
+src/storage/postgres_saver.py:639: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#incompatible-overrides
+src/storage/postgres_saver.py:759: error: Argument 1 to "append" of "list" has incompatible type "int"; expected "str"  [arg-type]
+src/storage/postgres_saver.py:763: error: Argument 1 to "append" of "list" has incompatible type "int"; expected "str"  [arg-type]
+src/storage/postgres_saver.py:842: error: Argument "employer" to "Vacancy" has incompatible type "dict[str, Any]"; expected "Employer | None"  [arg-type]
+src/storage/postgres_saver.py:894: error: Signature of "get_vacancies" incompatible with supertype "src.storage.abstract.AbstractVacancyStorage"  [override]
+src/storage/postgres_saver.py:1108: error: Argument 1 of "check_vacancies_exist_batch" is incompatible with supertype "src.storage.abstract.AbstractVacancyStorage"; supertype defines the argument type as "list[AbstractVacancy]"  [override]
+src/storage/postgres_saver.py:1108: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#incompatible-overrides
+src/storage/postgres_saver.py:1293: error: Argument 1 to "append" of "list" has incompatible type "int"; expected "str"  [arg-type]
+src/storage/components/vacancy_repository.py:211: error: Argument 2 of "add_vacancy_batch_optimized" is incompatible with supertype "src.storage.abstract.AbstractVacancyStorage"; supertype defines the argument type as "str | None"  [override]
+src/storage/components/vacancy_repository.py:211: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#incompatible-overrides
+src/api_modules/sj_api.py:48: error: Dict entry 0 has incompatible type "str": "str | None"; expected "str": "str"  [dict-item]
+src/api_modules/sj_api.py:101: error: Argument 2 to "connect" of "APIConnector" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
+src/api_modules/sj_api.py:290: error: Argument 1 to "display_company_stats" of "VacancyStats" has incompatible type "list[dict[Any, Any]]"; expected "VacancyStats"  [arg-type]
+src/api_modules/sj_api.py:290: error: Argument 2 to "display_company_stats" of "VacancyStats" has incompatible type "str"; expected "list[Any]"  [arg-type]
+src/storage/services/vacancy_storage_service.py:86: error: Argument 1 to "append" of "list" has incompatible type "SalaryFilterStrategy"; expected "TargetCompanyFilterStrategy"  [arg-type]
+src/storage/services/vacancy_storage_service.py:89: error: Argument 1 to "CompositeFilterStrategy" has incompatible type "list[TargetCompanyFilterStrategy]"; expected "list[FilteringStrategy]"  [arg-type]
+src/storage/services/vacancy_storage_service.py:300: error: Argument 1 to "append" of "list" has incompatible type "dict[str, str | dict[str, Any] | None]"; expected "str"  [arg-type]
+src/storage/services/vacancy_storage_service.py:494: error: Argument "search_query" to "add_vacancy_batch_optimized" of "VacancyStorageService" has incompatible type "None"; expected "str"  [arg-type]
+src/storage/services/vacancy_storage_service.py:567: error: Argument "employer" to "Vacancy" has incompatible type "dict[str, Any] | None"; expected "Employer | None"  [arg-type]
+src/storage/services/vacancy_storage_service.py:605: error: Return type "tuple[int, int]" of "get_companies_and_vacancies_count" incompatible with return type "list[tuple[Any, ...]]" in supertype "src.storage.services.abstract_storage_service.AbstractVacancyStorageService"  [override]
+src/api_modules/unified_api.py:58: error: Argument 2 to "get_vacancies" of "HeadHunterAPI" has incompatible type "**dict[str, dict[str, Any]]"; expected "int"  [arg-type]
+src/api_modules/unified_api.py:364: error: Argument "sources" to "get_vacancies_from_sources" of "UnifiedAPI" has incompatible type "dict[str, Any] | list[str]"; expected "list[str]"  [arg-type]
+src/api_modules/unified_api.py:368: error: Argument "sources" to "get_all_vacancies" of "UnifiedAPI" has incompatible type "list[str]"; expected "dict[str, Any]"  [arg-type]
+src/ui_interfaces/console_interface.py:384: error: Argument 1 to "format_vacancy_info" of "VacancyFormatter" has incompatible type "Vacancy"; expected "VacancyFormatter"  [arg-type]
+~/workspace$ 
