@@ -78,7 +78,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             params = {}
         try:
             # Делаем запрос к HH API через CachedAPI
-            data = self._CachedAPI__connect_to_api(url, params, "hh")
+            data = self._connect_to_api(url, params, "hh")
             return data
         except Exception as e:
             logger.error(f"Ошибка при подключении к API: {e}")

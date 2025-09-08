@@ -122,7 +122,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             search_query_lower = search_query.lower() if search_query else search_query
             params = self.config.get_params(keyword=search_query_lower, page=page, **kwargs)
 
-            data = self._CachedAPI__connect_to_api(self.BASE_URL, params, "sj")
+            data = self._connect_to_api(self.BASE_URL, params, "sj")
             items = data.get("objects", [])
 
             # Добавляем источник и валидируем как в HH API
@@ -172,7 +172,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             # Получаем первую страницу для метаданных
             first_page_params = self.config.get_params(keyword=search_query_lower, page=0, **kwargs)
 
-            initial_data = self._CachedAPI__connect_to_api(
+            initial_data = self._connect_to_api(
                 self.BASE_URL,
                 first_page_params,  # Минимальные данные сначала
                 "sj",

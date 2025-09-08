@@ -67,7 +67,7 @@ class CachedAPI(BaseJobAPI, ABC):
         # Возвращаем None - данных в кэше нет, нужно загрузить
         return None
 
-    def __connect_to_api(self, url: str, params: Dict, api_prefix: str) -> Dict:
+    def _connect_to_api(self, url: str, params: Dict, api_prefix: str) -> Dict:
         """
         Подключение к API с многоуровневым кэшированием
 
@@ -102,7 +102,7 @@ class CachedAPI(BaseJobAPI, ABC):
         # 3. Делаем реальный запрос к API с сохранением в оба кэша
         try:
             # Делаем прямой запрос к API
-            data = self.connector._APIConnector__connect(url, params)
+            data = self.connector.connect(url, params)
             logger.debug(f"Данные получены из API для {api_prefix}")
 
             # Кэш в памяти управляется декоратором автоматически

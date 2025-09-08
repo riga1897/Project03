@@ -114,7 +114,7 @@ class APIConnector:
             if response.status_code == 429:
                 retry_after = int(response.headers.get("Retry-After", 1))
                 sleep(retry_after)
-                return self._APIConnector__connect(url, params, delay, show_progress, progress_desc)
+                return self.__connect(url, params, delay, show_progress, progress_desc)
 
             response.raise_for_status()
             return response.json()
@@ -149,4 +149,4 @@ class APIConnector:
         Returns:
             Dict: Ответ API
         """
-        return self._APIConnector__connect(url, params or {})
+        return self.__connect(url, params or {})
