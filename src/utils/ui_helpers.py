@@ -167,7 +167,7 @@ def _parse_search_query(query: str) -> dict:
         dict: {"keywords": [список_слов], "operator": "AND"/"OR"}
     """
     if not query or not query.strip():
-        return None
+        return {"keywords": [], "operator": "OR"}
 
     query = query.strip()
 
@@ -199,7 +199,7 @@ def _build_searchable_text(vacancy: Vacancy) -> str:
     searchable_text = []
 
     # Добавляем ID вакансии для поиска (если есть)
-    if hasattr(vacancy, 'vacancy_id') and vacancy.vacancy_id:
+    if hasattr(vacancy, "vacancy_id") and vacancy.vacancy_id:
         searchable_text.append(str(vacancy.vacancy_id))
 
     # Проверяем названия

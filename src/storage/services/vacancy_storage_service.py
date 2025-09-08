@@ -637,7 +637,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
                     cursor.execute("DELETE FROM vacancies WHERE vacancy_id = %s", (vacancy_id,))
                     deleted_count = cursor.rowcount
                     connection.commit()
-                    return deleted_count > 0
+                    return bool(deleted_count > 0)
         except Exception as e:
             logger.error(f"Ошибка удаления вакансии {vacancy_id}: {e}")
             return False
@@ -649,7 +649,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
         """
         if not updates:
             return False
-            
+
         try:
             # Формируем SET часть запроса
             set_parts = []
@@ -657,19 +657,21 @@ class VacancyStorageService(AbstractVacancyStorageService):
             for key, value in updates.items():
                 set_parts.append(f"{key} = %s")
                 params.append(value)
-            
+
             if not set_parts:
                 return False
-                
+
             params.append(vacancy_id)
-            query = f"UPDATE vacancies SET {', '.join(set_parts)}, updated_at = CURRENT_TIMESTAMP WHERE vacancy_id = %s"
-            
+            query = (
+                f"UPDATE vacancies SET {', '.join(set_parts)}, updated_at = CURRENT_TIMESTAMP WHERE vacancy_id = %s"
+            )
+
             with self.db_manager._get_connection() as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(query, params)
                     updated_count = cursor.rowcount
                     connection.commit()
-                    return updated_count > 0
+                    return bool(updated_count > 0)
         except Exception as e:
             logger.error(f"Ошибка обновления вакансии {vacancy_id}: {e}")
             return False
@@ -682,12 +684,12 @@ class VacancyStorageService(AbstractVacancyStorageService):
         try:
             total_vacancies = self.get_vacancies_count()
             companies_stats = self.get_companies_and_vacancies_count()
-            
+
             return {
                 "total_vacancies": total_vacancies,
                 "total_companies": len(companies_stats),
                 "companies_stats": companies_stats,
-                "connection_status": self.check_connection()
+                "connection_status": self.check_connection(),
             }
         except Exception as e:
             logger.error(f"Ошибка получения статистики хранилища: {e}")
@@ -696,5 +698,5 @@ class VacancyStorageService(AbstractVacancyStorageService):
                 "total_companies": 0,
                 "companies_stats": [],
                 "connection_status": False,
-                "error": str(e)
+                "error": str(e),
             }

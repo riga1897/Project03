@@ -2,12 +2,8 @@ import logging
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from src.storage.db_psycopg2_compat import (
-    get_psycopg2, 
-    get_psycopg_error, 
-    get_real_dict_cursor,
-    is_available as psycopg2_available
-)
+from src.storage.db_psycopg2_compat import get_psycopg2, get_psycopg_error, get_real_dict_cursor
+from src.storage.db_psycopg2_compat import is_available as psycopg2_available
 
 # Получаем классы для использования в коде
 try:
@@ -43,10 +39,10 @@ class PostgresSaver(AbstractVacancyStorage):
         """
         # Используем универсальный конфигуратор подключения
         connection_params = get_db_connection_params(db_config)
-        
+
         self.host = connection_params["host"]
         self.port = connection_params["port"]
-        self.database = connection_params["database"]  
+        self.database = connection_params["database"]
         self.username = connection_params["user"]
         self.password = connection_params["password"]
 
@@ -58,7 +54,7 @@ class PostgresSaver(AbstractVacancyStorage):
         """Создает подключение к базе данных"""
         if not psycopg2_available():
             raise ConnectionError("psycopg2 не установлен или недоступен")
-            
+
         db_name = database or self.database
         try:
             psycopg2 = get_psycopg2()
@@ -757,7 +753,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
             if limit:
                 query += " LIMIT %s"
-                params.append(limit)
+                params.append(str(limit))
 
             if offset > 0:
                 query += " OFFSET %s"
@@ -1309,7 +1305,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
             if limit:
                 query += " LIMIT %s"
-                params.append(limit)
+                params.append(str(limit))
 
             cursor.execute(query, params)
             results = cursor.fetchall()

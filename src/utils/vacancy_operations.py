@@ -29,8 +29,12 @@ class VacancyOperations:
                 (isinstance(v.salary, dict) and (v.salary.get("from") or v.salary.get("to")))
                 or (
                     not isinstance(v.salary, dict)
-                    and (getattr(v.salary, "salary_from", None) or getattr(v.salary, "salary_to", None) or 
-                         getattr(v.salary, "amount_from", None) or getattr(v.salary, "amount_to", None))
+                    and (
+                        getattr(v.salary, "salary_from", None)
+                        or getattr(v.salary, "salary_to", None)
+                        or getattr(v.salary, "amount_from", None)
+                        or getattr(v.salary, "amount_to", None)
+                    )
                 )
             )
         ]
@@ -92,10 +96,10 @@ class VacancyOperations:
                 salary_to = vacancy.salary.get("to")
             else:
                 # Поддержка разных названий атрибутов в объектах зарплаты
-                salary_from = (getattr(vacancy.salary, "salary_from", None) or 
-                             getattr(vacancy.salary, "amount_from", None))
-                salary_to = (getattr(vacancy.salary, "salary_to", None) or 
-                           getattr(vacancy.salary, "amount_to", None))
+                salary_from = getattr(vacancy.salary, "salary_from", None) or getattr(
+                    vacancy.salary, "amount_from", None
+                )
+                salary_to = getattr(vacancy.salary, "salary_to", None) or getattr(vacancy.salary, "amount_to", None)
 
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:
@@ -104,8 +108,8 @@ class VacancyOperations:
             # Правильная логика для минимальной зарплаты:
             # Вакансия подходит если её максимальная зарплата >= min_salary
             vacancy_max = salary_to or salary_from  # Берем максимум из диапазона или единственное значение
-            
-            if vacancy_max >= min_salary:
+
+            if vacancy_max is not None and vacancy_max >= min_salary:
                 filtered_vacancies.append(vacancy)
 
         logger.info(
@@ -138,10 +142,10 @@ class VacancyOperations:
                 salary_to = vacancy.salary.get("to")
             else:
                 # Поддержка разных названий атрибутов в объектах зарплаты
-                salary_from = (getattr(vacancy.salary, "salary_from", None) or 
-                             getattr(vacancy.salary, "amount_from", None))
-                salary_to = (getattr(vacancy.salary, "salary_to", None) or 
-                           getattr(vacancy.salary, "amount_to", None))
+                salary_from = getattr(vacancy.salary, "salary_from", None) or getattr(
+                    vacancy.salary, "amount_from", None
+                )
+                salary_to = getattr(vacancy.salary, "salary_to", None) or getattr(vacancy.salary, "amount_to", None)
 
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:
@@ -150,8 +154,8 @@ class VacancyOperations:
             # Правильная логика для максимальной зарплаты:
             # Вакансия подходит если её минимальная зарплата <= max_salary
             vacancy_min = salary_from or salary_to  # Берем минимум из диапазона или единственное значение
-            
-            if vacancy_min <= max_salary:
+
+            if vacancy_min is not None and vacancy_min <= max_salary:
                 filtered_vacancies.append(vacancy)
 
         logger.info(
@@ -185,10 +189,10 @@ class VacancyOperations:
                 salary_to = vacancy.salary.get("to")
             else:
                 # Поддержка разных названий атрибутов в объектах зарплаты
-                salary_from = (getattr(vacancy.salary, "salary_from", None) or 
-                             getattr(vacancy.salary, "amount_from", None))
-                salary_to = (getattr(vacancy.salary, "salary_to", None) or 
-                           getattr(vacancy.salary, "amount_to", None))
+                salary_from = getattr(vacancy.salary, "salary_from", None) or getattr(
+                    vacancy.salary, "amount_from", None
+                )
+                salary_to = getattr(vacancy.salary, "salary_to", None) or getattr(vacancy.salary, "amount_to", None)
 
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:
@@ -198,9 +202,10 @@ class VacancyOperations:
             # Вакансия подходит если её максимальная >= min_salary И минимальная <= max_salary
             vacancy_min = salary_from or salary_to
             vacancy_max = salary_to or salary_from
-            
+
             # Проверяем, попадает ли вакансия в диапазон
-            if vacancy_max >= min_salary and vacancy_min <= max_salary:
+            if (vacancy_max is not None and vacancy_max >= min_salary and 
+                vacancy_min is not None and vacancy_min <= max_salary):
                 filtered_vacancies.append(vacancy)
 
         logger.info(

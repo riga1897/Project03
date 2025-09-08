@@ -7,13 +7,9 @@ import logging
 import os
 from typing import Any, Optional
 
-from src.storage.db_psycopg2_compat import (
-    get_psycopg2, 
-    get_psycopg_error, 
-    get_real_dict_cursor,
-    is_available as psycopg2_available
-)
 from src.storage.db_connection_config import get_db_connection_params
+from src.storage.db_psycopg2_compat import get_psycopg2, get_psycopg_error, get_real_dict_cursor
+from src.storage.db_psycopg2_compat import is_available as psycopg2_available
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +68,7 @@ class DatabaseConnection:
         """Создание нового подключения к базе данных"""
         if not psycopg2_available():
             raise ConnectionError("psycopg2 не установлен или недоступен")
-            
+
         try:
             psycopg2 = get_psycopg2()
             RealDictCursor = get_real_dict_cursor()

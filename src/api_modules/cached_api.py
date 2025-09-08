@@ -74,17 +74,17 @@ class CachedAPI(BaseJobAPI, ABC):
     def _connect_to_api(self, url: str, params: Dict, api_prefix: str) -> Dict:
         """
         Публичный интерфейс для подключения к API с кэшированием
-        
+
         Args:
             url: URL для запроса
             params: Параметры запроса
             api_prefix: Префикс для кэша
-            
+
         Returns:
             Dict: Ответ API или пустая структура при ошибке
         """
         return self.__connect_to_api(url, params, api_prefix)
-    
+
     def __connect_to_api(self, url: str, params: Dict, api_prefix: str) -> Dict:
         """
         Подключение к API с многоуровневым кэшированием
