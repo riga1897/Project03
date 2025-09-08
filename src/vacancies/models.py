@@ -320,7 +320,7 @@ class Vacancy(BaseModel, AbstractVacancy):
     skills: Optional[list] = Field(default=None, description="Ключевые навыки")
     benefits: Optional[str] = Field(default=None, description="Льготы и бонусы")
     company_name: Optional[str] = Field(default=None, description="Название компании")
-    _employer_name: Optional[str] = Field(default=None, description="Внутреннее название работодателя")
+    employer_name: Optional[str] = Field(default=None, description="Внутреннее название работодателя")
     
     # Property для совместимости с AbstractVacancy
     @property
