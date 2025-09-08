@@ -55,12 +55,8 @@ class UnifiedAPI:
         if "hh" in sources:
             try:
                 logger.info(f"Получение вакансий с HH.ru по запросу: '{search_query}'")
-                # Передаем только поддерживаемые параметры
-                hh_kwargs = {}
-                if kwargs:
-                    allowed_keys = ['page', 'pages', 'per_page', 'period']
-                    hh_kwargs = {k: v for k, v in kwargs.items() if k in allowed_keys and isinstance(v, (str, int, float, bool, type(None)))}
-                hh_data = self.hh_api.get_vacancies(search_query, **hh_kwargs)
+                # Передаем только поддерживаемые параметры к HH API
+                hh_data = self.hh_api.get_vacancies(search_query)
                 if hh_data:
                     all_vacancies.extend(hh_data)
                     logger.info(f"HH.ru: получено {len(hh_data)} вакансий")
@@ -370,7 +366,9 @@ class UnifiedAPI:
             sources = self.get_available_sources()
         elif not isinstance(sources, list):
             sources = [sources] if isinstance(sources, str) else self.get_available_sources()
-        return self.get_vacancies_from_sources(query, sources=sources, **kwargs)
+        # Ensure sources is always List[str]
+        validated_sources: List[str] = sources if isinstance(sources, list) else self.get_available_sources()
+        return self.get_vacancies_from_sources(query, sources=validated_sources, **kwargs)
 
     def get_vacancies_from_all_sources(self, query: str, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:
         """Получение вакансий из всех источников"""

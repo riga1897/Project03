@@ -636,18 +636,23 @@ class PostgresSaver(AbstractVacancyStorage):
 
         return update_messages
 
-    def add_vacancy(self, vacancy: AbstractVacancy) -> None:
+    def add_vacancy(self, vacancy: AbstractVacancy) -> bool:
         """
         Добавляет одну вакансию в базу данных
 
         Args:
             vacancy: Объект вакансии для добавления
+            
+        Returns:
+            bool: True если вакансия успешно добавлена, False иначе
         """
         try:
             # Добавляем одну вакансию через batch метод
-            self.add_vacancy_batch_optimized([vacancy])
+            result = self.add_vacancy_batch_optimized([vacancy])
+            return len(result) > 0
         except Exception as e:
             logger.error(f"Ошибка добавления вакансии: {e}")
+            return False
 
     def add_vacancies(self, vacancies: List[AbstractVacancy]) -> List[str]:
         """
