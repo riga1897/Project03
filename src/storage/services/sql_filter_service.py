@@ -6,7 +6,7 @@
 """
 
 import logging
-from typing import List, Set, Tuple
+from typing import Any, List, Set, Tuple
 
 from src.config.target_companies import TargetCompanies
 from src.storage.abstract_db_manager import AbstractDBManager
@@ -76,7 +76,7 @@ class SQLFilterService:
             logger.error(f"Ошибка SQL фильтрации: {e}")
             return []
 
-    def _create_temp_vacancy_table(self, cursor, vacancies: List[Vacancy]) -> None:
+    def _create_temp_vacancy_table(self, cursor: Any, vacancies: List[Vacancy]) -> None:
         """Создает временную таблицу с вакансиями для SQL обработки"""
         cursor.execute(
             """

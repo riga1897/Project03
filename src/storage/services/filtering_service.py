@@ -52,7 +52,7 @@ class TargetCompanyFilterStrategy(FilteringStrategy):
     Использует ТОЛЬКО ID-основанную фильтрацию (без фолбэков)
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Инициализация стратегии"""
         self.target_companies = TargetCompanies.get_all_companies()
         # Получаем все валидные ID целевых компаний

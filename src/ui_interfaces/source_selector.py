@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 class SourceSelector:
     """Класс для выбора источников данных в пользовательском интерфейсе"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Инициализация селектора источников данных."""
         self.source_manager = source_manager
 
