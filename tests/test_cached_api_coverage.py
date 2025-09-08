@@ -212,7 +212,7 @@ class TestCachedAPIImplementation:
             # Мокируем connector 
             mock_connector = MagicMock()
             api_data = {"items": [{"id": "api1", "name": "API Job", "employer": {"name": "Company"}}], "found": 1}
-            mock_connector._APIConnector__connect.return_value = api_data
+            mock_connector.connect.return_value = api_data
             api.connector = mock_connector
             
             # Мокируем что кэши пустые
@@ -222,7 +222,7 @@ class TestCachedAPIImplementation:
                         result = api._CachedAPI__connect_to_api("http://api.url", {"q": "python"}, "hh")
                         
                         assert result == api_data
-                        mock_connector._APIConnector__connect.assert_called_once_with("http://api.url", {"q": "python"})
+                        mock_connector.connect.assert_called_once_with("http://api.url", {"q": "python"})
                         mock_cache_instance.save_response.assert_called_once_with("hh", {"q": "python"}, api_data)
                         mock_logger.debug.assert_any_call("Данные получены из API для hh")
                         mock_logger.debug.assert_any_call("Данные сохранены в файловый кэш data/cache/ для hh")
@@ -244,7 +244,7 @@ class TestCachedAPIImplementation:
             
             mock_connector = MagicMock()
             incomplete_data = {"items": [], "found": 0}  # Неполные данные
-            mock_connector._APIConnector__connect.return_value = incomplete_data
+            mock_connector.connect.return_value = incomplete_data
             api.connector = mock_connector
             
             with patch.object(api, '_cached_api_request', return_value=None):
@@ -273,7 +273,7 @@ class TestCachedAPIImplementation:
             
             mock_connector = MagicMock()
             invalid_data = {"items": [{"id": "1"}], "found": 1}  # Невалидная структура вакансии
-            mock_connector._APIConnector__connect.return_value = invalid_data
+            mock_connector.connect.return_value = invalid_data
             api.connector = mock_connector
             
             with patch.object(api, '_cached_api_request', return_value=None):
@@ -301,7 +301,7 @@ class TestCachedAPIImplementation:
             api = mock_concrete_api("/cache")
             
             mock_connector = MagicMock()
-            mock_connector._APIConnector__connect.side_effect = ConnectionError("Network error")
+            mock_connector.connect.side_effect = ConnectionError("Network error")
             api.connector = mock_connector
             
             with patch.object(api, '_cached_api_request', return_value=None):
@@ -328,7 +328,7 @@ class TestCachedAPIImplementation:
             api = mock_concrete_api("/cache")
             
             mock_connector = MagicMock()
-            mock_connector._APIConnector__connect.side_effect = TimeoutError("Request timeout")
+            mock_connector.connect.side_effect = TimeoutError("Request timeout")
             api.connector = mock_connector
             
             with patch.object(api, '_cached_api_request', return_value=None):
@@ -354,7 +354,7 @@ class TestCachedAPIImplementation:
             api = mock_concrete_api("/cache")
             
             mock_connector = MagicMock()
-            mock_connector._APIConnector__connect.side_effect = ValueError("Unexpected error")
+            mock_connector.connect.side_effect = ValueError("Unexpected error")
             api.connector = mock_connector
             
             with patch.object(api, '_cached_api_request', return_value=None):
