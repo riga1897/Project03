@@ -208,6 +208,32 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             if "403" in str(e) or "401" in str(e):
                 logger.warning("Возможно, проблема с API ключом SuperJob")
             return []
+    
+    def get_companies(self, **kwargs: Any) -> List[Dict]:
+        """
+        Получение списка компаний с SuperJob
+
+        Args:
+            **kwargs: Дополнительные параметры поиска
+
+        Returns:
+            List[Dict]: Список компаний
+        """
+        try:
+            # SJ API не предоставляет прямой метод для получения компаний
+            # Используем целевые компании из конфигурации
+            target_companies = TargetCompanies()
+            companies = []
+            for company_id, company_info in target_companies.companies.items():
+                companies.append({
+                    "id": company_id,
+                    "name": company_info.get("name", f"Company {company_id}"),
+                    "source": "superjob.ru"
+                })
+            return companies
+        except Exception as e:
+            logger.error(f"Ошибка получения компаний с SuperJob: {e}")
+            return []
 
     def _deduplicate_vacancies(self, vacancies: List[Dict], source: str = None) -> List[Dict]:
         """

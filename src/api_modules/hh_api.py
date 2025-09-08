@@ -117,6 +117,32 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         except Exception as e:
             logger.error(f"Failed to get vacancies page {page}: {e}")
             return []
+    
+    def get_companies(self, **kwargs: Any) -> List[Dict]:
+        """
+        Получение списка компаний с HeadHunter
+
+        Args:
+            **kwargs: Дополнительные параметры поиска
+
+        Returns:
+            List[Dict]: Список компаний
+        """
+        try:
+            # HH API не предоставляет прямой метод для получения компаний
+            # Используем целевые компании из конфигурации
+            target_companies = TargetCompanies()
+            companies = []
+            for company_id, company_info in target_companies.companies.items():
+                companies.append({
+                    "id": company_id,
+                    "name": company_info.get("name", f"Company {company_id}"),
+                    "source": "hh.ru"
+                })
+            return companies
+        except Exception as e:
+            logger.error(f"Ошибка получения компаний с HH: {e}")
+            return []
 
     def get_vacancies(self, search_query: str = None, per_page: int = 100, **kwargs: Any) -> List[Dict[str, Any]]:
         """
