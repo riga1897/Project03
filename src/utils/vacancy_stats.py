@@ -210,7 +210,8 @@ class VacancyStatsExtended:
         if hasattr(vacancy, "employer") and vacancy.employer:
             employer = vacancy.employer
             if isinstance(employer, dict):
-                return employer.get("name", "Неизвестная компания")
+                name = employer.get("name", "Неизвестная компания")
+                return str(name) if name else "Неизвестная компания"
             elif isinstance(employer, str):
                 return employer
             return str(employer)
@@ -219,7 +220,7 @@ class VacancyStatsExtended:
         if isinstance(vacancy, dict) and "employer" in vacancy:
             employer = vacancy["employer"]
             if isinstance(employer, dict) and "name" in employer and employer["name"]:
-                return employer["name"]
+                return str(employer["name"])
             elif isinstance(employer, str) and employer.strip():
                 return employer
 
@@ -239,7 +240,7 @@ class VacancyStatsExtended:
             if isinstance(raw_data, dict) and "employer" in raw_data:
                 employer = raw_data["employer"]
                 if isinstance(employer, dict) and "name" in employer:
-                    return employer["name"]
+                    return str(employer["name"])
 
         # ПРИОРИТЕТ 5: Преобразованные данные - поле company
         if isinstance(vacancy, dict) and "company" in vacancy:

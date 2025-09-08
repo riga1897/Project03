@@ -4,7 +4,7 @@
 """
 
 import logging
-from typing import Dict, List
+from typing import Any, Dict, List, Tuple, Type, Union
 
 from src.vacancies.abstract import AbstractVacancy
 
@@ -28,11 +28,11 @@ class VacancyValidator:
     REQUIRED_FIELDS = {"vacancy_id": str, "title": str, "url": str}
 
     OPTIONAL_FIELDS = {
-        "salary": object,
+        "salary": Any,
         "description": str,
         "requirements": (str, type(None)),
         "responsibilities": (str, type(None)),
-        "employer": object,
+        "employer": Any,
         "experience": (str, type(None)),
         "employment": (str, type(None)),
         "area": (str, type(None)),

@@ -56,7 +56,7 @@ class SimpleDBAdapter:
     def test_connection(self) -> bool:
         """Проверка соединения с БД"""
         try:
-            cmd = ["psql", self.database_url, "-c", "SELECT 1", "-t", "--quiet"]
+            cmd = ["psql", str(self.database_url), "-c", "SELECT 1", "-t", "--quiet"]
 
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
             return result.returncode == 0
@@ -113,7 +113,7 @@ class SimpleCursor:
                     else:
                         query = query.replace(placeholder, str(param), 1)
 
-            cmd = ["psql", self.adapter.database_url, "-c", query, "-t", "--quiet"]  # только данные
+            cmd = ["psql", str(self.adapter.database_url), "-c", query, "-t", "--quiet"]  # только данные
 
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
 
@@ -156,8 +156,8 @@ class SimpleCursor:
             for field in result:
                 if isinstance(field, str) and field.isdigit():
                     converted.append(int(field))
-                elif isinstance(field, str) and field.replace(".", "").isdigit():
-                    converted.append(float(field))
+                elif isinstance(field, str) and "." in field and field.replace(".", "").isdigit():
+                    converted.append(field)  # Keep as string to avoid type mixing
                 else:
                     converted.append(field)
             return tuple(converted)
@@ -185,7 +185,7 @@ class SimpleCursor:
                         query = query.replace(placeholder, str(param))
 
             # Выполнение через psql с JSON выводом
-            cmd = ["psql", self.adapter.database_url, "-c", query, "-t", "--quiet"]  # только данные
+            cmd = ["psql", str(self.adapter.database_url), "-c", query, "-t", "--quiet"]  # только данные
 
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
 

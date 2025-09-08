@@ -127,11 +127,11 @@ class VacancyFormatter:
 
         # В новой Pydantic архитектуре employer - объект с методом get_name()
         if hasattr(employer, "get_name"):
-            return employer.get_name()
+            return str(employer.get_name())
 
         # Если это Pydantic объект с атрибутом name
         if hasattr(employer, "name"):
-            return employer.name
+            return str(employer.name)
 
         # Fallback для обратной совместимости
         return str(employer) if employer else "Не указана"
@@ -258,7 +258,7 @@ class VacancyFormatter:
 
         # В объектной архитектуре experience всегда объект с методом get_name()
         if hasattr(experience, "get_name"):
-            return experience.get_name()
+            return str(experience.get_name())
 
         # Fallback для обратной совместимости
         return str(experience)
@@ -270,7 +270,7 @@ class VacancyFormatter:
 
         # В объектной архитектуре employment всегда объект с методом get_name()
         if hasattr(employment, "get_name"):
-            return employment.get_name()
+            return str(employment.get_name())
 
         # Fallback для обратной совместимости
         return str(employment)
@@ -282,11 +282,11 @@ class VacancyFormatter:
 
         # В новой Pydantic архитектуре schedule - это объект с методом get_name()
         if hasattr(schedule, "get_name"):
-            return schedule.get_name()
+            return str(schedule.get_name())
 
         # Если это объект с атрибутом name
         if hasattr(schedule, "name"):
-            return schedule.name
+            return str(schedule.name)
 
         # Fallback для строк и остального
         return str(schedule)
