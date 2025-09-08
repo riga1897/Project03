@@ -326,13 +326,13 @@ class PostgresSaver(AbstractVacancyStorage):
                 except Exception:
                     pass
 
-    def add_vacancy_batch_optimized(self, vacancies: Union[Vacancy, List[Vacancy]]) -> List[str]:
+    def add_vacancy_batch_optimized(self, vacancies: List[AbstractVacancy], search_query: Optional[str] = None) -> List[str]:
         """
         Максимально оптимизированное batch-добавление вакансий через временные таблицы.
         Использует SQL для всех операций, минимизирует количество запросов.
         """
-        if not isinstance(vacancies, list):
-            vacancies = [vacancies]
+        if not vacancies:
+            return []
 
         # Исправляем двойную вложенность списков
         if len(vacancies) == 1 and isinstance(vacancies[0], list):
@@ -636,31 +636,20 @@ class PostgresSaver(AbstractVacancyStorage):
 
         return update_messages
 
-    def add_vacancy(self, vacancy: Union[Vacancy, List[Vacancy]]) -> Union[bool, List[str]]:
+    def add_vacancy(self, vacancy: AbstractVacancy) -> None:
         """
-        Добавляет одну вакансию или список вакансий в базу данных
+        Добавляет одну вакансию в базу данных
 
         Args:
-            vacancy: Объект вакансии или список вакансий для добавления
-
-        Returns:
-            Union[bool, List[str]]: True/False для одной вакансии, список сообщений для множественных
+            vacancy: Объект вакансии для добавления
         """
         try:
-            if isinstance(vacancy, list):
-                # Если передан список, используем batch метод
-                return self.add_vacancy_batch_optimized(vacancy)
-            else:
-                # Если передана одна вакансия, конвертируем в список
-                result = self.add_vacancies([vacancy])
-                # add_vacancies возвращает список добавленных вакансий
-                # Если список не пустой, значит вакансия добавлена
-                return len(result) > 0 if isinstance(result, list) else bool(result)
+            # Добавляем одну вакансию через batch метод
+            self.add_vacancy_batch_optimized([vacancy])
         except Exception as e:
             logger.error(f"Ошибка добавления вакансии: {e}")
-            return False if not isinstance(vacancy, list) else []
 
-    def add_vacancies(self, vacancies: List[Vacancy]) -> List[str]:
+    def add_vacancies(self, vacancies: List[AbstractVacancy]) -> List[str]:
         """
         Добавляет список вакансий в базу данных.
         Всегда использует batch операции для эффективности.
@@ -829,6 +818,17 @@ class PostgresSaver(AbstractVacancyStorage):
                     else:
                         published_at = str(published_at_db)
 
+                # Создаем объект Employer если есть данные
+                employer_obj = None
+                if employer and isinstance(employer, dict):
+                    from src.vacancies.models import Employer
+                    employer_obj = Employer(
+                        name=employer.get('name', ''),
+                        id=employer.get('id'),
+                        trusted=employer.get('trusted'),
+                        alternate_url=employer.get('alternate_url')
+                    )
+
                 vacancy = Vacancy(
                     title=title,
                     url=url,
@@ -839,7 +839,7 @@ class PostgresSaver(AbstractVacancyStorage):
                     experience=experience,
                     employment=employment,
                     schedule=schedule,
-                    employer=employer,
+                    employer=employer_obj,
                     vacancy_id=vacancy_id,
                     published_at=published_at,
                     source=source or "unknown",
@@ -891,7 +891,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
         return vacancies
 
-    def get_vacancies(self) -> List[Vacancy]:
+    def get_vacancies(self, filters: Optional[Dict[str, Any]] = None) -> List[AbstractVacancy]:
         """Получить все сохраненные вакансии"""
         try:
             with self._get_connection() as conn:
@@ -1105,7 +1105,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 cursor.close()
             connection.close()
 
-    def check_vacancies_exist_batch(self, vacancies: List[Vacancy]) -> Dict[str, bool]:
+    def check_vacancies_exist_batch(self, vacancies: List[AbstractVacancy]) -> Dict[str, bool]:
         """
         Проверяет существование множества вакансий через временную таблицу
 
