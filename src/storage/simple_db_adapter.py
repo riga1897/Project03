@@ -8,21 +8,45 @@ import os
 import subprocess
 from typing import Any, Dict, List, Optional, Tuple
 
+from src.storage.db_connection_config import get_db_connection_params
+
 logger = logging.getLogger(__name__)
 
 
 class SimpleDBAdapter:
     """Простой адаптер для работы с PostgreSQL через psql"""
 
-    def __init__(self) -> None:
+    def __init__(self, db_config: Optional[Dict[str, str]] = None) -> None:
         """Инициализация адаптера базы данных.
+        
+        Args:
+            db_config: Конфигурация подключения к БД (опционально)
 
         Raises:
-            RuntimeError: Если переменная DATABASE_URL не установлена.
+            RuntimeError: Если нет возможности получить параметры подключения к БД.
         """
-        self.database_url = os.getenv("DATABASE_URL")
-        if not self.database_url:
-            raise RuntimeError("DATABASE_URL не установлен")
+        # Используем универсальный конфигуратор подключения
+        try:
+            connection_params = get_db_connection_params(db_config)
+            
+            # Формируем DATABASE_URL из параметров если его нет
+            self.database_url = os.getenv("DATABASE_URL")
+            if not self.database_url:
+                # Строим DATABASE_URL из параметров подключения
+                self.database_url = (
+                    f"postgresql://{connection_params['user']}:{connection_params['password']}@"
+                    f"{connection_params['host']}:{connection_params['port']}/{connection_params['database']}"
+                )
+            
+            # Сохраняем отдельные параметры для использования
+            self.host = connection_params["host"]
+            self.port = connection_params["port"] 
+            self.database = connection_params["database"]
+            self.username = connection_params["user"]
+            self.password = connection_params["password"]
+            
+        except Exception as e:
+            raise RuntimeError(f"Не удалось получить параметры подключения к БД: {e}")
 
     def __enter__(self) -> "SimpleDBAdapter":
         """Поддержка контекстного менеджера.
