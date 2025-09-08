@@ -17,7 +17,7 @@ class SimpleDBAdapter:
 
     def __init__(self) -> None:
         """Инициализация адаптера базы данных.
-        
+
         Raises:
             RuntimeError: Если переменная DATABASE_URL не установлена.
         """
@@ -27,7 +27,7 @@ class SimpleDBAdapter:
 
     def __enter__(self) -> "SimpleDBAdapter":
         """Поддержка контекстного менеджера.
-        
+
         Returns:
             Экземпляр адаптера для работы в контексте.
         """
@@ -35,7 +35,7 @@ class SimpleDBAdapter:
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         """Поддержка контекстного менеджера.
-        
+
         Args:
             exc_type: Тип исключения.
             exc_val: Значение исключения.
@@ -45,10 +45,10 @@ class SimpleDBAdapter:
 
     def cursor(self, cursor_factory: Any = None) -> "SimpleCursor":
         """Имитация cursor() для совместимости с psycopg2.
-        
+
         Args:
             cursor_factory: Фабрика курсоров (не используется).
-            
+
         Returns:
             Экземпляр SimpleCursor для выполнения запросов.
         """
@@ -70,7 +70,7 @@ class SimpleCursor:
 
     def __init__(self, adapter: SimpleDBAdapter) -> None:
         """Инициализация курсора.
-        
+
         Args:
             adapter: Экземпляр SimpleDBAdapter для выполнения запросов.
         """
@@ -79,7 +79,7 @@ class SimpleCursor:
 
     def __enter__(self) -> "SimpleCursor":
         """Поддержка контекстного менеджера.
-        
+
         Returns:
             Экземпляр курсора для работы в контексте.
         """
@@ -87,7 +87,7 @@ class SimpleCursor:
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         """Поддержка контекстного менеджера.
-        
+
         Args:
             exc_type: Тип исключения.
             exc_val: Значение исключения.
@@ -97,7 +97,7 @@ class SimpleCursor:
 
     def execute(self, query: str, params: Tuple = ()) -> None:
         """Выполнение SQL запроса.
-        
+
         Args:
             query: SQL запрос для выполнения.
             params: Параметры для подстановки в запрос.
@@ -106,7 +106,7 @@ class SimpleCursor:
             # Подготовка запроса с параметрами
             if params:
                 for i, param in enumerate(params):
-                    placeholder = f"%s"
+                    placeholder = "%s"
                     if isinstance(param, str):
                         query = query.replace(placeholder, f"'{param}'", 1)
                     elif param is None:
@@ -146,7 +146,7 @@ class SimpleCursor:
 
     def fetchone(self) -> Optional[Tuple[Any, ...]]:
         """Получение одной строки результата.
-        
+
         Returns:
             Кортеж с данными первой строки или None если результат пуст.
         """
@@ -166,7 +166,7 @@ class SimpleCursor:
 
     def fetchall(self) -> List[Tuple[Any, ...]]:
         """Получение всех строк результата.
-        
+
         Returns:
             Список кортежей с данными всех строк результата.
         """
@@ -268,7 +268,7 @@ db_adapter = SimpleDBAdapter()
 
 def get_db_adapter() -> SimpleDBAdapter:
     """Получение адаптера БД.
-    
+
     Returns:
         Глобальный экземпляр SimpleDBAdapter.
     """

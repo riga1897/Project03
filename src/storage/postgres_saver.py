@@ -1434,6 +1434,28 @@ class PostgresSaver(AbstractVacancyStorage):
                         salary_currency = vacancy.salary.get("currency")
                     # Если salary - boolean или что-то другое, оставляем None
 
+                # Обработка experience, employment, schedule
+                experience_str = None
+                if vacancy.experience:
+                    if hasattr(vacancy.experience, "get_name"):
+                        experience_str = vacancy.experience.get_name()
+                    else:
+                        experience_str = str(vacancy.experience)
+
+                employment_str = None
+                if vacancy.employment:
+                    if hasattr(vacancy.employment, "get_name"):
+                        employment_str = vacancy.employment.get_name()
+                    else:
+                        employment_str = str(vacancy.employment)
+
+                schedule_str = None
+                if vacancy.schedule:
+                    if hasattr(vacancy.schedule, "get_name"):
+                        schedule_str = vacancy.schedule.get_name()
+                    else:
+                        schedule_str = str(vacancy.schedule)
+
                 area_str = str(vacancy.area) if vacancy.area else None
                 published_date = self._normalize_published_date(vacancy.published_at)
 

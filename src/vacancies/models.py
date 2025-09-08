@@ -78,7 +78,7 @@ class Employer(BaseModel):
     # Методы для обратной совместимости с существующим кодом
     def get_name(self) -> str:
         """Получить название компании.
-        
+
         Returns:
             Название компании.
         """
@@ -86,7 +86,7 @@ class Employer(BaseModel):
 
     def get_id(self) -> Optional[str]:
         """Получить ID работодателя.
-        
+
         Returns:
             ID работодателя или None.
         """
@@ -94,7 +94,7 @@ class Employer(BaseModel):
 
     def is_trusted(self) -> Optional[bool]:
         """Проверить, является ли работодатель проверенным.
-        
+
         Returns:
             True если работодатель проверен, False или None иначе.
         """
@@ -102,7 +102,7 @@ class Employer(BaseModel):
 
     def get_url(self) -> Optional[str]:
         """Получить URL работодателя.
-        
+
         Returns:
             URL страницы работодателя или None.
         """
@@ -110,7 +110,7 @@ class Employer(BaseModel):
 
     def to_dict(self) -> Dict[str, Any]:
         """Преобразование объекта в словарь.
-        
+
         Returns:
             Словарь с данными работодателя.
         """
@@ -119,10 +119,10 @@ class Employer(BaseModel):
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Employer":
         """Создание объекта из словаря.
-        
+
         Args:
             data: Словарь с данными работодателя.
-            
+
         Returns:
             Новый экземпляр Employer.
         """
@@ -130,11 +130,11 @@ class Employer(BaseModel):
 
     def get(self, key: str, default: Any = None) -> Any:
         """Dictionary-like access для обратной совместимости.
-        
+
         Args:
             key: Ключ для доступа к атрибуту.
             default: Значение по умолчанию если ключ не найден.
-            
+
         Returns:
             Значение атрибута или значение по умолчанию.
         """
@@ -153,10 +153,10 @@ class Experience(BaseModel):
     @classmethod
     def validate_name(cls, v: str) -> str:
         """Валидирует и нормализует описание опыта работы.
-        
+
         Args:
             v: Входное описание опыта.
-            
+
         Returns:
             Нормализованное описание опыта.
         """
@@ -200,10 +200,10 @@ class Employment(BaseModel):
     @classmethod
     def validate_name(cls, v: str) -> str:
         """Валидирует и нормализует тип занятости.
-        
+
         Args:
             v: Входной тип занятости.
-            
+
         Returns:
             Нормализованный тип занятости.
         """
@@ -247,10 +247,10 @@ class Schedule(BaseModel):
     @classmethod
     def validate_name(cls, v: str) -> str:
         """Валидирует и нормализует название графика работы.
-        
+
         Args:
             v: Входное название графика.
-            
+
         Returns:
             Нормализованное название графика.
         """
@@ -319,13 +319,13 @@ class Vacancy(BaseModel):
     @classmethod
     def validate_name_vacancy(cls, v: str) -> str:
         """Валидирует название вакансии.
-        
+
         Args:
             v: Входное название вакансии.
-            
+
         Returns:
             Нормализованное название вакансии.
-        
+
         Raises:
             ValueError: Когда название пустое.
         """
@@ -337,13 +337,13 @@ class Vacancy(BaseModel):
     @classmethod
     def validate_url_vacancy(cls, v: str) -> str:
         """Валидирует и нормализует URL вакансии.
-        
+
         Args:
             v: Входной URL.
-            
+
         Returns:
             Нормализованный URL с протоколом.
-        
+
         Raises:
             ValueError: Когда URL пустой.
         """
@@ -357,10 +357,10 @@ class Vacancy(BaseModel):
     @classmethod
     def validate_area(cls, v: Any) -> Optional[str]:
         """Валидация и нормализация поля area из API ответов.
-        
+
         Args:
             v: Входное значение области (может быть dict, str или другим типом).
-            
+
         Returns:
             Нормализованное название области или None.
         """
@@ -390,10 +390,10 @@ class Vacancy(BaseModel):
     @classmethod
     def validate_published_at(cls, v: Any) -> Optional[datetime]:
         """Валидирует и преобразует дату публикации вакансии.
-        
+
         Args:
             v: Входное значение даты (строка, datetime или None).
-            
+
         Returns:
             Объект datetime или None.
         """
@@ -416,10 +416,10 @@ class Vacancy(BaseModel):
     @classmethod
     def validate_salary(cls, v: Any) -> Optional[Dict[str, Any]]:
         """Валидирует и нормализует данные о зарплате.
-        
+
         Args:
             v: Входные данные о зарплате.
-            
+
         Returns:
             Нормализованные данные о зарплате или None.
         """
@@ -435,7 +435,7 @@ class Vacancy(BaseModel):
     @model_validator(mode="after")
     def validate_vacancy_data(self) -> "Vacancy":
         """Комплексная валидация данных вакансии.
-        
+
         Returns:
             Проверенные данные вакансии.
         """
@@ -456,7 +456,7 @@ class Vacancy(BaseModel):
 
     def set_salary(self, salary_data: Union[Dict[str, Any], Salary, None]) -> None:
         """Установить данные о зарплате.
-        
+
         Args:
             salary_data: Данные о зарплате в виде словаря, объекта Salary или None.
         """
@@ -517,7 +517,7 @@ class Vacancy(BaseModel):
     # Дополнительные методы для удобства
     def __str__(self) -> str:
         """Строковое представление вакансии для пользователей.
-        
+
         Returns:
             Строка в формате "Название - Работодатель".
         """
@@ -526,7 +526,7 @@ class Vacancy(BaseModel):
 
     def __repr__(self) -> str:
         """Строковое представление вакансии для разработчиков.
-        
+
         Returns:
             Строка с ID и названием вакансии.
         """

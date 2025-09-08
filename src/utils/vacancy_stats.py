@@ -172,7 +172,7 @@ def calculate_statistics(vacancies: List[Any]) -> Dict[str, Any]:
 
 class VacancyStatsExtended:
     """Расширенные статические методы для работы с вакансиями"""
-    
+
     @staticmethod
     def get_company_distribution(vacancies: List[Dict[str, Any]]) -> Dict[str, int]:
         """

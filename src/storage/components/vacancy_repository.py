@@ -57,7 +57,7 @@ class VacancyRepository(AbstractVacancyStorage):
                     insert_query = """
                         INSERT INTO vacancies (
                             vacancy_id, title, url, salary_from, salary_to, salary_currency,
-                            description, requirements, responsibilities, experience, 
+                            description, requirements, responsibilities, experience,
                             employment, area, source, employer_name
                         ) VALUES (
                             %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
@@ -271,7 +271,7 @@ class VacancyRepository(AbstractVacancyStorage):
                         """
                         INSERT INTO vacancies (
                             vacancy_id, title, url, salary_from, salary_to, salary_currency,
-                            description, requirements, responsibilities, experience, 
+                            description, requirements, responsibilities, experience,
                             employment, area, source, employer_name
                         ) VALUES %s
                         ON CONFLICT (vacancy_id) DO NOTHING

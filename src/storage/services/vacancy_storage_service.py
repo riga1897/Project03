@@ -200,8 +200,8 @@ class VacancyStorageService(AbstractVacancyStorageService):
                 with connection.cursor() as cursor:
                     cursor.execute(
                         """
-                        SELECT id, hh_id, sj_id 
-                        FROM companies 
+                        SELECT id, hh_id, sj_id
+                        FROM companies
                         WHERE hh_id IS NOT NULL OR sj_id IS NOT NULL
                     """
                     )
@@ -312,7 +312,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
         print(f"   Общий процент с зарплатой: {(with_salary/len(vacancies)*100):.1f}%")
 
         if salary_examples:
-            print(f"\n💰 ПРИМЕРЫ ЗАРПЛАТ:")
+            print("\n💰 ПРИМЕРЫ ЗАРПЛАТ:")
             for example in salary_examples:
                 print(f"   '{example['title'][:40]}...' - {example['salary']}")
                 print(f"     Raw data: {example['raw_salary']}")
@@ -367,7 +367,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
                             """
                             INSERT INTO vacancies (
                                 vacancy_id, title, url, salary_from, salary_to, salary_currency,
-                                description, requirements, responsibilities, experience, 
+                                description, requirements, responsibilities, experience,
                                 employment, schedule, area, source, published_at, company_id, search_query
                             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                             ON CONFLICT (vacancy_id) DO UPDATE SET
@@ -463,7 +463,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
                         from datetime import datetime
 
                         published_at = datetime.fromisoformat(vacancy.published_at.replace("Z", "+00:00"))
-                    except:
+                    except Exception:
                         published_at = None
 
             return (

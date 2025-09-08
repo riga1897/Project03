@@ -75,21 +75,21 @@ def simple_cache(ttl: Optional[int] = None, max_size: int = 1000) -> Callable:
 
 def retry_on_failure(max_attempts: int = 3, delay: float = 1.0) -> Callable:
     """Декоратор для повторных попыток при ошибке.
-    
+
     Args:
         max_attempts: Максимальное количество попыток.
         delay: Задержка между попытками в секундах.
-        
+
     Returns:
         Декорированная функция с логикой повторных попыток.
     """
 
     def decorator(func: Callable) -> Callable:
         """Внутренний декоратор для обработки повторных попыток.
-        
+
         Args:
             func: Функция для декорирования.
-            
+
         Returns:
             Обернутая функция с логикой повторных попыток.
         """
@@ -112,10 +112,10 @@ def retry_on_failure(max_attempts: int = 3, delay: float = 1.0) -> Callable:
 
 def time_execution(func: Callable) -> Callable:
     """Декоратор для измерения времени выполнения.
-    
+
     Args:
         func: Функция для декорирования.
-        
+
     Returns:
         Декорированная функция с измерением времени выполнения.
     """
@@ -135,10 +135,10 @@ def time_execution(func: Callable) -> Callable:
 
 def log_errors(func: Callable) -> Callable:
     """Декоратор для логирования ошибок.
-    
+
     Args:
         func: Функция для декорирования.
-        
+
     Returns:
         Декорированная функция с логированием ошибок.
     """

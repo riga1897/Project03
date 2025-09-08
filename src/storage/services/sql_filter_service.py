@@ -135,8 +135,8 @@ class SQLFilterService:
         # Вставляем данные
         cursor.executemany(
             """
-            INSERT INTO temp_filter_vacancies 
-            (vacancy_id, title_normalized, employer_id, employer_name_normalized, source, 
+            INSERT INTO temp_filter_vacancies
+            (vacancy_id, title_normalized, employer_id, employer_name_normalized, source,
              salary_from, salary_to, original_index, description, requirements, responsibilities)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """,
@@ -154,26 +154,26 @@ class SQLFilterService:
 
         query = f"""
         WITH filtered_by_companies AS (
-            SELECT 
+            SELECT
                 vacancy_id,
                 title_normalized,
                 employer_name_normalized,
                 original_index,
                 ROW_NUMBER() OVER (
-                    PARTITION BY title_normalized, employer_name_normalized 
+                    PARTITION BY title_normalized, employer_name_normalized
                     ORDER BY original_index
                 ) as row_num
             FROM temp_filter_vacancies
             WHERE (
                 (source = 'hh' AND employer_id IN ({hh_ids_list if hh_ids_list else 'NULL'}))
-                OR 
+                OR
                 (source = 'sj' AND employer_id IN ({sj_ids_list if sj_ids_list else 'NULL'}))
-                OR 
+                OR
                 (employer_id IN ({hh_ids_list if hh_ids_list else 'NULL'}) OR employer_id IN ({sj_ids_list if sj_ids_list else 'NULL'}))
             )
         )
-        SELECT vacancy_id 
-        FROM filtered_by_companies 
+        SELECT vacancy_id
+        FROM filtered_by_companies
         WHERE row_num = 1
         ORDER BY original_index
         """
@@ -227,7 +227,7 @@ class SQLFilterService:
                     ids_placeholders = ", ".join(["%s"] * len(all_target_ids))
 
                     query = f"""
-                    SELECT 
+                    SELECT
                         c.name as company_name,
                         COUNT(v.id) as vacancy_count
                     FROM companies c

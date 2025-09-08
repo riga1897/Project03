@@ -125,7 +125,7 @@ class CompanyIDFilterService(AbstractFilterService):
         # Вставляем данные
         cursor.executemany(
             """
-            INSERT INTO temp_company_filter 
+            INSERT INTO temp_company_filter
             (vacancy_id, employer_id, source, original_index)
             VALUES (%s, %s, %s, %s)
         """,
@@ -176,7 +176,7 @@ class CompanyIDFilterService(AbstractFilterService):
             return []
 
         query = f"""
-        SELECT vacancy_id 
+        SELECT vacancy_id
         FROM temp_company_filter
         WHERE employer_id IS NOT NULL AND ({' OR '.join(query_parts)})
         ORDER BY original_index

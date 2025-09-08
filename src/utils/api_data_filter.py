@@ -2,12 +2,15 @@
 Модуль для фильтрации данных API
 """
 
-from typing import Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 try:
     from .abstract_filter import AbstractDataFilter
 except ImportError:
     from src.utils.abstract_filter import AbstractDataFilter
+
+if TYPE_CHECKING:
+    from src.vacancies.models import Vacancy
 
 
 class APIDataFilter(AbstractDataFilter):

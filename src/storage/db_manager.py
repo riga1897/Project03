@@ -144,7 +144,7 @@ class DBManager(AbstractDBManager):
                 cursor.close()
             if "connection" in locals() and connection is not None:
                 connection.close()
-        
+
         return True
 
     def create_tables(self) -> bool:

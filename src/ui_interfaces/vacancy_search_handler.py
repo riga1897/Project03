@@ -212,7 +212,7 @@ class VacancySearchHandler:
         print(f"Проверка {len(vacancies)} вакансий на дубликаты...")
 
         # ДОБАВЛЕНО: Логирование для диагностики
-        print(f"DEBUG: Проверяем ID вакансий:")
+        print("DEBUG: Проверяем ID вакансий:")
         for i, v in enumerate(vacancies[:5]):  # Показываем первые 5
             print(f"  {i+1}. vacancy.id = '{v.id}'")
         if len(vacancies) > 5:
@@ -222,18 +222,18 @@ class VacancySearchHandler:
         existence_map = self.storage.check_vacancies_exist_batch(vacancies)
 
         # ДОБАВЛЕНО: Логирование результата проверки
-        print(f"DEBUG: Результат check_vacancies_exist_batch:")
+        print("DEBUG: Результат check_vacancies_exist_batch:")
         print(f"  Тип: {type(existence_map)}")
         if isinstance(existence_map, dict):
             found_count = sum(1 for exists in existence_map.values() if exists)
             print(f"  Найдено дубликатов: {found_count} из {len(existence_map)}")
             if found_count > 0:
-                print(f"  Примеры найденных:")
+                print("  Примеры найденных:")
                 for vacancy_id, exists in list(existence_map.items())[:3]:
                     if exists:
                         print(f"    {vacancy_id}: НАЙДЕН")
         else:
-            print(f"  ❌ ОШИБКА: Не словарь!")
+            print("  ❌ ОШИБКА: Не словарь!")
 
         # Защитная проверка типа результата
         if not isinstance(existence_map, dict):

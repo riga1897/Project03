@@ -95,17 +95,17 @@ class SQLDeduplicationStrategy(DeduplicationStrategy):
             cursor.execute(
                 """
                 WITH ranked_vacancies AS (
-                    SELECT 
+                    SELECT
                         vacancy_id,
                         original_index,
                         ROW_NUMBER() OVER (
-                            PARTITION BY title_normalized, employer_normalized 
+                            PARTITION BY title_normalized, employer_normalized
                             ORDER BY original_index
                         ) as rn
                     FROM temp_vacancies
                 )
-                SELECT original_index 
-                FROM ranked_vacancies 
+                SELECT original_index
+                FROM ranked_vacancies
                 WHERE rn = 1
                 ORDER BY original_index
             """

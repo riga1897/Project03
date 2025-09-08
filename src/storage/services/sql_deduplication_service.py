@@ -182,7 +182,7 @@ class SQLDeduplicationService(AbstractDeduplicationService):
         # Вставляем данные
         cursor.executemany(
             """
-            INSERT INTO temp_deduplication 
+            INSERT INTO temp_deduplication
             (vacancy_id, title_normalized, employer_normalized, employer_id, salary_normalized, area_normalized, source_priority, original_index)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """,
@@ -196,17 +196,17 @@ class SQLDeduplicationService(AbstractDeduplicationService):
 
         query = """
         WITH ranked_vacancies AS (
-            SELECT 
+            SELECT
                 vacancy_id,
                 original_index,
                 ROW_NUMBER() OVER (
-                    PARTITION BY title_normalized, employer_normalized, salary_normalized, area_normalized  
+                    PARTITION BY title_normalized, employer_normalized, salary_normalized, area_normalized
                     ORDER BY source_priority ASC, original_index ASC
                 ) as row_num
             FROM temp_deduplication
         )
-        SELECT vacancy_id 
-        FROM ranked_vacancies 
+        SELECT vacancy_id
+        FROM ranked_vacancies
         WHERE row_num = 1
         ORDER BY original_index
         """

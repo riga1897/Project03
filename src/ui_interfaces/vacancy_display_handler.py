@@ -42,7 +42,7 @@ class VacancyDisplayHandler:
                         print(
                             f"⚠️  РАСХОЖДЕНИЕ: {total_count} записей в БД → {len(vacancies)} объектов загружено (потеряно {discrepancy} записей)"
                         )
-                        print(f"Проверьте логи на предмет ошибок конвертации записей БД в объекты Vacancy")
+                        print("Проверьте логи на предмет ошибок конвертации записей БД в объекты Vacancy")
                     else:
                         print(
                             f"Статус БД: {total_count} записей в таблице, загружено {len(vacancies)} объектов вакансий"
