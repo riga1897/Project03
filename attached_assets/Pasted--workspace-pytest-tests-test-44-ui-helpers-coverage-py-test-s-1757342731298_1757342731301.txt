@@ -1,0 +1,379 @@
+~/workspace$ pytest tests/test_44_ui_helpers_coverage.py
+=================================== test session starts ====================================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 56 items                                                                         
+
+tests/test_44_ui_helpers_coverage.py ..................F........FFFFFF.F............ [ 83%]
+.......FF                                                                            [100%]
+
+========================================= FAILURES =========================================
+___________________ TestSearchQueryParsing.test_parse_search_query_empty ___________________
+
+self = <tests.test_44_ui_helpers_coverage.TestSearchQueryParsing object at 0x7f885f944a10>
+
+    def test_parse_search_query_empty(self):
+        """Покрытие: пустой или None запрос"""
+>       assert _parse_search_query("") is None
+E       AssertionError: assert {'keywords': [], 'operator': 'OR'} is None
+E        +  where {'keywords': [], 'operator': 'OR'} = _parse_search_query('')
+
+tests/test_44_ui_helpers_coverage.py:273: AssertionError
+______________ TestBuildSearchableText.test_build_searchable_text_all_fields _______________
+
+self = <tests.test_44_ui_helpers_coverage.TestBuildSearchableText object at 0x7f885f949c50>
+
+    def test_build_searchable_text_all_fields(self):
+        """Покрытие: все поля заполнены"""
+        employer = MockEmployer("Test Company")
+        employment = MagicMock()
+        employment.__str__ = MagicMock(return_value="Full-time")
+    
+        vacancy = MockVacancy(
+            title="Senior Developer",
+            description="Great job opportunity",
+            requirements="Python experience",
+            responsibilities="Code development",
+            employer=employer,
+            employment=employment,
+            skills=["Python", "Django"]
+        )
+    
+>       result = _build_searchable_text(vacancy)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_44_ui_helpers_coverage.py:347: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+vacancy = <tests.test_44_ui_helpers_coverage.MockVacancy object at 0x7f885f6fc190>
+
+    def _build_searchable_text(vacancy: Vacancy) -> str:
+        """
+        Формирует единую строку поиска из всех текстовых полей вакансии
+    
+        Args:
+            vacancy: Объект вакансии
+    
+        Returns:
+            str: Объединенный текст для поиска в нижнем регистре
+        """
+        searchable_text = []
+    
+        # Добавляем ID вакансии для поиска
+>       if vacancy.vacancy_id:
+           ^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'MockVacancy' object has no attribute 'vacancy_id'
+
+src/utils/ui_helpers.py:202: AttributeError
+_____________ TestBuildSearchableText.test_build_searchable_text_empty_fields ______________
+
+self = <tests.test_44_ui_helpers_coverage.TestBuildSearchableText object at 0x7f885f94a7d0>
+
+    def test_build_searchable_text_empty_fields(self):
+        """Покрытие: пустые поля"""
+        vacancy = MockVacancy(
+            title=None,
+            description="",
+            requirements=None,
+            responsibilities="",
+            employer=None,
+            employment=None,
+            skills=None
+        )
+    
+>       result = _build_searchable_text(vacancy)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_44_ui_helpers_coverage.py:371: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+vacancy = <tests.test_44_ui_helpers_coverage.MockVacancy object at 0x7f885f51a2d0>
+
+    def _build_searchable_text(vacancy: Vacancy) -> str:
+        """
+        Формирует единую строку поиска из всех текстовых полей вакансии
+    
+        Args:
+            vacancy: Объект вакансии
+    
+        Returns:
+            str: Объединенный текст для поиска в нижнем регистре
+        """
+        searchable_text = []
+    
+        # Добавляем ID вакансии для поиска
+>       if vacancy.vacancy_id:
+           ^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'MockVacancy' object has no attribute 'vacancy_id'
+
+src/utils/ui_helpers.py:202: AttributeError
+__________ TestBuildSearchableText.test_build_searchable_text_employer_variations __________
+
+self = <tests.test_44_ui_helpers_coverage.TestBuildSearchableText object at 0x7f885f94a690>
+
+    def test_build_searchable_text_employer_variations(self):
+        """Покрытие: различные форматы employer"""
+        # Employer с атрибутом name
+        employer1 = MockEmployer("Company A")
+        vacancy1 = MockVacancy(employer=employer1)
+>       result1 = _build_searchable_text(vacancy1)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_44_ui_helpers_coverage.py:381: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+vacancy = <tests.test_44_ui_helpers_coverage.MockVacancy object at 0x7f885f622e10>
+
+    def _build_searchable_text(vacancy: Vacancy) -> str:
+        """
+        Формирует единую строку поиска из всех текстовых полей вакансии
+    
+        Args:
+            vacancy: Объект вакансии
+    
+        Returns:
+            str: Объединенный текст для поиска в нижнем регистре
+        """
+        searchable_text = []
+    
+        # Добавляем ID вакансии для поиска
+>       if vacancy.vacancy_id:
+           ^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'MockVacancy' object has no attribute 'vacancy_id'
+
+src/utils/ui_helpers.py:202: AttributeError
+_________ TestBuildSearchableText.test_build_searchable_text_employment_with_name __________
+
+self = <tests.test_44_ui_helpers_coverage.TestBuildSearchableText object at 0x7f885f948810>
+
+    def test_build_searchable_text_employment_with_name(self):
+        """Покрытие: employment с атрибутом name"""
+        employment = MagicMock()
+        # Мокируем hasattr чтобы __str__ не нашелся, а name нашелся
+        employment.name = "Part-time"
+    
+        vacancy = MockVacancy(employment=employment)
+    
+        with patch('builtins.hasattr', side_effect=lambda obj, attr: attr == 'name'):
+>           result = _build_searchable_text(vacancy)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_44_ui_helpers_coverage.py:403: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+vacancy = <tests.test_44_ui_helpers_coverage.MockVacancy object at 0x7f88614b2b50>
+
+    def _build_searchable_text(vacancy: Vacancy) -> str:
+        """
+        Формирует единую строку поиска из всех текстовых полей вакансии
+    
+        Args:
+            vacancy: Объект вакансии
+    
+        Returns:
+            str: Объединенный текст для поиска в нижнем регистре
+        """
+        searchable_text = []
+    
+        # Добавляем ID вакансии для поиска
+>       if vacancy.vacancy_id:
+           ^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'MockVacancy' object has no attribute 'vacancy_id'
+
+src/utils/ui_helpers.py:202: AttributeError
+___________ TestBuildSearchableText.test_build_searchable_text_skills_variations ___________
+
+self = <tests.test_44_ui_helpers_coverage.TestBuildSearchableText object at 0x7f885f948210>
+
+    def test_build_searchable_text_skills_variations(self):
+        """Покрытие: различные форматы skills"""
+        vacancy = MockVacancy(
+            skills=[
+                {"name": "Python"},  # dict с name
+                "JavaScript",        # строка
+                123,                # другой тип
+                {"other": "value"}  # dict без name
+            ]
+        )
+    
+>       result = _build_searchable_text(vacancy)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_44_ui_helpers_coverage.py:417: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+vacancy = <tests.test_44_ui_helpers_coverage.MockVacancy object at 0x7f885f458810>
+
+    def _build_searchable_text(vacancy: Vacancy) -> str:
+        """
+        Формирует единую строку поиска из всех текстовых полей вакансии
+    
+        Args:
+            vacancy: Объект вакансии
+    
+        Returns:
+            str: Объединенный текст для поиска в нижнем регистре
+        """
+        searchable_text = []
+    
+        # Добавляем ID вакансии для поиска
+>       if vacancy.vacancy_id:
+           ^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'MockVacancy' object has no attribute 'vacancy_id'
+
+src/utils/ui_helpers.py:202: AttributeError
+__________ TestBuildSearchableText.test_build_searchable_text_no_skills_attribute __________
+
+self = <tests.test_44_ui_helpers_coverage.TestBuildSearchableText object at 0x7f885f949250>
+
+    def test_build_searchable_text_no_skills_attribute(self):
+        """Покрытие: вакансия без атрибута skills"""
+        vacancy = MockVacancy()
+        delattr(vacancy, 'skills')  # Удаляем атрибут
+    
+>       result = _build_searchable_text(vacancy)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_44_ui_helpers_coverage.py:429: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+vacancy = <tests.test_44_ui_helpers_coverage.MockVacancy object at 0x7f885f69de10>
+
+    def _build_searchable_text(vacancy: Vacancy) -> str:
+        """
+        Формирует единую строку поиска из всех текстовых полей вакансии
+    
+        Args:
+            vacancy: Объект вакансии
+    
+        Returns:
+            str: Объединенный текст для поиска в нижнем регистре
+        """
+        searchable_text = []
+    
+        # Добавляем ID вакансии для поиска
+>       if vacancy.vacancy_id:
+           ^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'MockVacancy' object has no attribute 'vacancy_id'
+
+src/utils/ui_helpers.py:202: AttributeError
+____________ TestVacancyFiltering.test_filter_vacancies_by_keyword_single_word _____________
+
+self = <tests.test_44_ui_helpers_coverage.TestVacancyFiltering object at 0x7f885f958f10>
+
+    def test_filter_vacancies_by_keyword_single_word(self):
+        """Покрытие: поиск по одному слову"""
+        vacancy1 = MockVacancy(title="Python Developer")
+        vacancy2 = MockVacancy(title="Java Developer")
+        vacancy3 = MockVacancy(description="Experience with Python required")
+    
+        vacancies = [vacancy1, vacancy2, vacancy3]
+>       result = filter_vacancies_by_keyword(vacancies, "Python")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_44_ui_helpers_coverage.py:456: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/utils/ui_helpers.py:144: in filter_vacancies_by_keyword
+    full_text = _build_searchable_text(vacancy)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+vacancy = <tests.test_44_ui_helpers_coverage.MockVacancy object at 0x7f885f526f90>
+
+    def _build_searchable_text(vacancy: Vacancy) -> str:
+        """
+        Формирует единую строку поиска из всех текстовых полей вакансии
+    
+        Args:
+            vacancy: Объект вакансии
+    
+        Returns:
+            str: Объединенный текст для поиска в нижнем регистре
+        """
+        searchable_text = []
+    
+        # Добавляем ID вакансии для поиска
+>       if vacancy.vacancy_id:
+           ^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'MockVacancy' object has no attribute 'vacancy_id'
+
+src/utils/ui_helpers.py:202: AttributeError
+___________ TestIntegration.test_search_query_parsing_and_filtering_integration ____________
+
+self = <tests.test_44_ui_helpers_coverage.TestIntegration object at 0x7f885f993c10>
+
+    def test_search_query_parsing_and_filtering_integration(self):
+        """Покрытие: интеграция парсинга запроса и фильтрации"""
+        vacancies = [
+            MockVacancy(title="Python Django Developer"),
+            MockVacancy(title="Python Flask Developer"),
+            MockVacancy(title="Java Spring Developer")
+        ]
+    
+        # Парсим запрос
+        query = "Python AND Django"
+        parsed = _parse_search_query(query)
+    
+        assert parsed["operator"] == "AND"
+        assert "Python" in parsed["keywords"]
+        assert "Django" in parsed["keywords"]
+    
+        # Используем результат парсинга для фильтрации
+>       result = filter_vacancies_by_keyword(vacancies, query)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_44_ui_helpers_coverage.py:781: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/utils/ui_helpers.py:144: in filter_vacancies_by_keyword
+    full_text = _build_searchable_text(vacancy)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+vacancy = <tests.test_44_ui_helpers_coverage.MockVacancy object at 0x7f885f684990>
+
+    def _build_searchable_text(vacancy: Vacancy) -> str:
+        """
+        Формирует единую строку поиска из всех текстовых полей вакансии
+    
+        Args:
+            vacancy: Объект вакансии
+    
+        Returns:
+            str: Объединенный текст для поиска в нижнем регистре
+        """
+        searchable_text = []
+    
+        # Добавляем ID вакансии для поиска
+>       if vacancy.vacancy_id:
+           ^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'MockVacancy' object has no attribute 'vacancy_id'
+
+src/utils/ui_helpers.py:202: AttributeError
+_______________________ TestIntegration.test_edge_cases_combination ________________________
+
+self = <tests.test_44_ui_helpers_coverage.TestIntegration object at 0x7f885f99c250>
+
+    def test_edge_cases_combination(self):
+        """Покрытие: граничные случаи в комбинации"""
+        # Комбинация пустых входных данных
+        assert filter_vacancies_by_keyword([], "") == []
+>       assert _parse_search_query("") is None
+E       AssertionError: assert {'keywords': [], 'operator': 'OR'} is None
+E        +  where {'keywords': [], 'operator': 'OR'} = _parse_search_query('')
+
+tests/test_44_ui_helpers_coverage.py:791: AssertionError
+================================= short test summary info ==================================
+FAILED tests/test_44_ui_helpers_coverage.py::TestSearchQueryParsing::test_parse_search_query_empty - AssertionError: assert {'keywords': [], 'operator': 'OR'} is None
+FAILED tests/test_44_ui_helpers_coverage.py::TestBuildSearchableText::test_build_searchable_text_all_fields - AttributeError: 'MockVacancy' object has no attribute 'vacancy_id'
+FAILED tests/test_44_ui_helpers_coverage.py::TestBuildSearchableText::test_build_searchable_text_empty_fields - AttributeError: 'MockVacancy' object has no attribute 'vacancy_id'
+FAILED tests/test_44_ui_helpers_coverage.py::TestBuildSearchableText::test_build_searchable_text_employer_variations - AttributeError: 'MockVacancy' object has no attribute 'vacancy_id'
+FAILED tests/test_44_ui_helpers_coverage.py::TestBuildSearchableText::test_build_searchable_text_employment_with_name - AttributeError: 'MockVacancy' object has no attribute 'vacancy_id'
+FAILED tests/test_44_ui_helpers_coverage.py::TestBuildSearchableText::test_build_searchable_text_skills_variations - AttributeError: 'MockVacancy' object has no attribute 'vacancy_id'
+FAILED tests/test_44_ui_helpers_coverage.py::TestBuildSearchableText::test_build_searchable_text_no_skills_attribute - AttributeError: 'MockVacancy' object has no attribute 'vacancy_id'
+FAILED tests/test_44_ui_helpers_coverage.py::TestVacancyFiltering::test_filter_vacancies_by_keyword_single_word - AttributeError: 'MockVacancy' object has no attribute 'vacancy_id'
+FAILED tests/test_44_ui_helpers_coverage.py::TestIntegration::test_search_query_parsing_and_filtering_integration - AttributeError: 'MockVacancy' object has no attribute 'vacancy_id'
+FAILED tests/test_44_ui_helpers_coverage.py::TestIntegration::test_edge_cases_combination - AssertionError: assert {'keywords': [], 'operator': 'OR'} is None
+============================== 10 failed, 46 passed in 0.85s ===============================
+~/workspace$ 
