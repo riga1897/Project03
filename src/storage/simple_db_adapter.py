@@ -18,7 +18,7 @@ class SimpleDBAdapter:
 
     def __init__(self, db_config: Optional[Dict[str, str]] = None) -> None:
         """Инициализация адаптера базы данных.
-        
+
         Args:
             db_config: Конфигурация подключения к БД (опционально)
 
@@ -28,7 +28,7 @@ class SimpleDBAdapter:
         # Используем универсальный конфигуратор подключения
         try:
             connection_params = get_db_connection_params(db_config)
-            
+
             # Формируем DATABASE_URL из параметров если его нет
             self.database_url = os.getenv("DATABASE_URL")
             if not self.database_url:
@@ -37,14 +37,14 @@ class SimpleDBAdapter:
                     f"postgresql://{connection_params['user']}:{connection_params['password']}@"
                     f"{connection_params['host']}:{connection_params['port']}/{connection_params['database']}"
                 )
-            
+
             # Сохраняем отдельные параметры для использования
             self.host = connection_params["host"]
-            self.port = connection_params["port"] 
+            self.port = connection_params["port"]
             self.database = connection_params["database"]
             self.username = connection_params["user"]
             self.password = connection_params["password"]
-            
+
         except Exception as e:
             raise RuntimeError(f"Не удалось получить параметры подключения к БД: {e}")
 

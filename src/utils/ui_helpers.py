@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from src.utils.vacancy_formatter import vacancy_formatter
 from src.utils.vacancy_operations import VacancyOperations
@@ -156,7 +156,7 @@ def filter_vacancies_by_keyword(vacancies: List[Vacancy], keyword: str) -> List[
     return filtered_vacancies
 
 
-def _parse_search_query(query: str) -> dict:
+def _parse_search_query(query: str) -> Optional[Dict[str, Any]]:
     """
     Парсит поисковый запрос на ключевые слова и логический оператор
 
