@@ -326,7 +326,9 @@ class PostgresSaver(AbstractVacancyStorage):
                 except Exception:
                     pass
 
-    def add_vacancy_batch_optimized(self, vacancies: List[AbstractVacancy], search_query: Optional[str] = None) -> List[str]:
+    def add_vacancy_batch_optimized(
+        self, vacancies: List[AbstractVacancy], search_query: Optional[str] = None
+    ) -> List[str]:
         """
         Максимально оптимизированное batch-добавление вакансий через временные таблицы.
         Использует SQL для всех операций, минимизирует количество запросов.
@@ -456,6 +458,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
                 # Унифицированная обработка area для сохранения в БД
                 from src.utils.data_normalizers import normalize_area_data
+
                 area_str = normalize_area_data(vacancy.area)
 
                 # Обработка полей объектов в строки для БД
@@ -638,7 +641,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
         Args:
             vacancy: Объект вакансии для добавления
-            
+
         Returns:
             bool: True если вакансия успешно добавлена, False иначе
         """
@@ -812,18 +815,19 @@ class PostgresSaver(AbstractVacancyStorage):
                 else:
                     employer = {"name": "Неизвестная компания"}
 
-                # Используем published_at как datetime объект напрямую  
+                # Используем published_at как datetime объект напрямую
                 published_at = published_at_db
 
                 # Создаем объект Employer если есть данные
                 employer_obj = None
                 if employer and isinstance(employer, dict):
                     from src.vacancies.models import Employer
+
                     employer_obj = Employer(
-                        name=employer.get('name', ''),
-                        id=employer.get('id'),
-                        trusted=bool(employer.get('trusted', False)),
-                        alternate_url=employer.get('alternate_url')
+                        name=employer.get("name", ""),
+                        id=employer.get("id"),
+                        trusted=bool(employer.get("trusted", False)),
+                        alternate_url=employer.get("alternate_url"),
                     )
 
                 vacancy = Vacancy(
@@ -937,7 +941,11 @@ class PostgresSaver(AbstractVacancyStorage):
                                 "experience": {"name": row["experience"] or ""},
                                 "employment": {"name": row["employment"] or ""},
                                 "schedule": {"name": row["schedule"] or ""},
-                                "published_at": row["published_at"].isoformat() if row["published_at"] and hasattr(row["published_at"], "isoformat") else (str(row["published_at"]) if row["published_at"] else None),
+                                "published_at": (
+                                    row["published_at"].isoformat()
+                                    if row["published_at"] and hasattr(row["published_at"], "isoformat")
+                                    else (str(row["published_at"]) if row["published_at"] else None)
+                                ),
                                 "source": row["source"] or "database",
                             }
 
@@ -958,6 +966,7 @@ class PostgresSaver(AbstractVacancyStorage):
                     )
                     # Type casting для совместимости с AbstractVacancy
                     from typing import cast
+
                     return cast(List[AbstractVacancy], vacancies)
 
         except Exception as e:

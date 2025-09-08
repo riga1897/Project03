@@ -117,7 +117,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         except Exception as e:
             logger.error(f"Failed to get vacancies page {page}: {e}")
             return []
-    
+
     def get_companies(self, **kwargs: Any) -> List[Dict]:
         """
         Получение списка компаний с HeadHunter
@@ -134,17 +134,15 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             target_companies = TargetCompanies()
             companies = []
             for company_info in target_companies.get_all_companies():
-                companies.append({
-                    "id": company_info.hh_id,
-                    "name": company_info.name,
-                    "source": "hh.ru"
-                })
+                companies.append({"id": company_info.hh_id, "name": company_info.name, "source": "hh.ru"})
             return companies
         except Exception as e:
             logger.error(f"Ошибка получения компаний с HH: {e}")
             return []
 
-    def get_vacancies(self, search_query: Optional[str] = None, per_page: int = 100, **kwargs: Any) -> List[Dict[str, Any]]:
+    def get_vacancies(
+        self, search_query: Optional[str] = None, per_page: int = 100, **kwargs: Any
+    ) -> List[Dict[str, Any]]:
         """
         Получает вакансии с HeadHunter API
 
@@ -189,7 +187,8 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             # Получаем все страницы
             if total_pages > 0:
                 results = self._paginator.paginate(
-                    fetch_func=lambda p: self.get_vacancies_page(search_query or "", p, **kwargs), total_pages=total_pages
+                    fetch_func=lambda p: self.get_vacancies_page(search_query or "", p, **kwargs),
+                    total_pages=total_pages,
                 )
             else:
                 results = []

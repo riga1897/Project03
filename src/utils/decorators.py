@@ -67,8 +67,8 @@ def simple_cache(ttl: Optional[int] = None, max_size: int = 1000) -> Callable[[C
             }
 
         # Добавляем атрибуты с правильной типизацией
-        setattr(wrapper, 'clear_cache', clear_cache)
-        setattr(wrapper, 'cache_info', cache_info)
+        setattr(wrapper, "clear_cache", clear_cache)
+        setattr(wrapper, "cache_info", cache_info)
         return wrapper
 
     return decorator

@@ -63,17 +63,18 @@ class SJAPIConfig:
             params.update(self.custom_params)
         params.update(kwargs)
         return params
-    
+
     def is_configured(self) -> bool:
         """
         Проверяет, настроен ли API конфигурацией
-        
+
         Returns:
             bool: True если API настроен (есть токен), False иначе
         """
         from src.utils.env_loader import EnvLoader
+
         api_key = EnvLoader.get_env_var("SUPERJOB_API_KEY", "")
-        # Проверяем что ключ есть и не является тестовым 
+        # Проверяем что ключ есть и не является тестовым
         return bool(api_key) and api_key != "test_tool_key" and len(api_key or "") > 10
 
     def save_token(self, token: str) -> None:

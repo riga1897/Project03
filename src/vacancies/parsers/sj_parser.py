@@ -56,9 +56,9 @@ class SuperJobParser(BaseParser):
         # Обрабатываем зарплату для корректного отображения
         salary_dict = None
         if sj_vacancy.salary:
-            if hasattr(sj_vacancy.salary, 'to_dict'):
+            if hasattr(sj_vacancy.salary, "to_dict"):
                 salary_dict = sj_vacancy.salary.to_dict()
-            elif hasattr(sj_vacancy.salary, 'model_dump'):
+            elif hasattr(sj_vacancy.salary, "model_dump"):
                 salary_dict = sj_vacancy.salary.model_dump()
             else:
                 salary_dict = sj_vacancy.salary
@@ -82,7 +82,11 @@ class SuperJobParser(BaseParser):
             "experience": sj_vacancy.experience,
             "employment": sj_vacancy.employment,
             "schedule": sj_vacancy.schedule,
-            "published_at": sj_vacancy.published_at.isoformat() if sj_vacancy.published_at and hasattr(sj_vacancy.published_at, "isoformat") else (str(sj_vacancy.published_at) if sj_vacancy.published_at else None),
+            "published_at": (
+                sj_vacancy.published_at.isoformat()
+                if sj_vacancy.published_at and hasattr(sj_vacancy.published_at, "isoformat")
+                else (str(sj_vacancy.published_at) if sj_vacancy.published_at else None)
+            ),
             "skills": [],
             "keywords": [],
             "detailed_description": sj_vacancy.detailed_description,

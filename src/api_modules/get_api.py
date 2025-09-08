@@ -8,7 +8,7 @@
 
 import os
 from time import sleep
-from typing import Dict, Optional, Any
+from typing import Any, Dict, Optional
 
 import requests
 from tqdm import tqdm
@@ -49,7 +49,7 @@ class APIConnector:
             unit="req",
             bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]",
             dynamic_ncols=True,
-            disable=os.getenv("DISABLE_TQDM") == "1"
+            disable=os.getenv("DISABLE_TQDM") == "1",
         )
 
     def _update_progress(self, n: int = 1) -> None:

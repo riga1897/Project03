@@ -152,6 +152,7 @@ class VacancyRepository(AbstractVacancyStorage):
 
                     # Type casting для совместимости с AbstractVacancy
                     from typing import cast
+
                     return cast(List[AbstractVacancy], vacancies)
 
         except Exception as e:
@@ -211,7 +212,9 @@ class VacancyRepository(AbstractVacancyStorage):
             logger.error(f"Ошибка проверки существования вакансий: {e}")
             raise
 
-    def add_vacancy_batch_optimized(self, vacancies: List[AbstractVacancy], search_query: Optional[str] = None) -> List[str]:
+    def add_vacancy_batch_optimized(
+        self, vacancies: List[AbstractVacancy], search_query: Optional[str] = None
+    ) -> List[str]:
         """
         Оптимизированное batch-добавление вакансий
 

@@ -26,7 +26,7 @@ class APIDataFilter(AbstractDataFilter):
         Реализация абстрактного метода фильтрации по зарплате
         """
         return self.filter_by_salary_range(data, min_salary, max_salary)
-    
+
     def filter_by_salary_vacancies(
         self,
         data: List["Vacancy"],
@@ -38,17 +38,17 @@ class APIDataFilter(AbstractDataFilter):
         """
         if not data:
             return []
-        
+
         # Конвертируем в словари, фильтруем, затем возвращаем исходные объекты
         filtered_ids = set()
-        dict_data = [v.model_dump() if hasattr(v, 'model_dump') else v.__dict__ for v in data]
+        dict_data = [v.model_dump() if hasattr(v, "model_dump") else v.__dict__ for v in data]
         filtered_dicts = self.filter_by_salary_range(dict_data, min_salary, max_salary)
-        
+
         for item in filtered_dicts:
-            if 'id' in item:
-                filtered_ids.add(item['id'])
-        
-        return [v for v in data if (hasattr(v, 'id') and v.id in filtered_ids)]
+            if "id" in item:
+                filtered_ids.add(item["id"])
+
+        return [v for v in data if (hasattr(v, "id") and v.id in filtered_ids)]
 
     def filter_by_salary_range(
         self,
@@ -296,6 +296,7 @@ class APIDataFilter(AbstractDataFilter):
         try:
             from src.utils.data_normalizers import normalize_employment_data
         except ImportError:
+
             def normalize_employment_data(data):  # type: ignore
                 return str(data) if data else None
 
@@ -310,6 +311,7 @@ class APIDataFilter(AbstractDataFilter):
         try:
             from src.utils.data_normalizers import normalize_employer_data
         except ImportError:
+
             def normalize_employer_data(data):  # type: ignore
                 if isinstance(data, dict):
                     return data.get("name", str(data))

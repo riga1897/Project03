@@ -6,7 +6,7 @@
 
 import logging
 import os
-from typing import Any, Dict, List, Optional, Union, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 try:
     from ..db_manager import DBManager
@@ -549,18 +549,14 @@ class VacancyStorageService(AbstractVacancyStorageService):
 
             # Обрабатываем работодателя
             from src.vacancies.models import Employer
+
             employer = None
             company_name = data.get("company_name")
             if company_name and company_name != "Неизвестная компания":
-                employer = Employer(
-                    name=company_name,
-                    id=None,
-                    trusted=False,
-                    alternate_url=None
-                )
+                employer = Employer(name=company_name, id=None, trusted=False, alternate_url=None)
 
             from datetime import datetime
-            
+
             vacancy = Vacancy(
                 vacancy_id=data.get("vacancy_id", ""),
                 name=data.get("title", ""),
@@ -577,7 +573,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
                 published_at=data.get("published_at"),
                 updated_at=datetime.now(),
                 area=data.get("area"),
-                company_id=data.get("raw_company_id")
+                company_id=data.get("raw_company_id"),
             )
 
             # Дополнительные поля

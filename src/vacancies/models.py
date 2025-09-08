@@ -315,13 +315,13 @@ class Vacancy(BaseModel, AbstractVacancy):
     area: Optional[str] = Field(None, description="Регион/местоположение вакансии")
     source: Optional[str] = Field(None, description="Источник вакансии")
     company_id: Optional[int] = Field(None, description="ID компании в БД (для связи с таблицей companies)")
-    
+
     # Дополнительные атрибуты для совместимости
     skills: Optional[list] = Field(default=None, description="Ключевые навыки")
     benefits: Optional[str] = Field(default=None, description="Льготы и бонусы")
     company_name: Optional[str] = Field(default=None, description="Название компании")
     employer_name: Optional[str] = Field(default=None, description="Внутреннее название работодателя")
-    
+
     # Property для совместимости с AbstractVacancy
     def get_vacancy_id(self) -> str:
         """Альтернативный способ доступа к идентификатору вакансии"""

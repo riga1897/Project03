@@ -20,6 +20,7 @@ from src.vacancies.models import Vacancy
 try:
     from src.storage.db_manager import DBManager
     from src.utils.db_manager_demo import DBManagerDemo
+
     DBManager_class = DBManager
     DBManagerDemo_class = DBManagerDemo
 except ImportError:

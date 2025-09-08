@@ -208,6 +208,7 @@ class VacancyFormatter:
         # Если пришел словарь - преобразуем в объект Salary
         if isinstance(salary, dict):
             from src.utils.salary import Salary
+
             salary = Salary(salary)
 
         return str(salary)

@@ -5,10 +5,10 @@ from typing import Any, Dict, List, Optional, Tuple
 class AbstractDBManager(ABC):
     """Абстрактный класс для менеджеров базы данных"""
 
-    @abstractmethod  
+    @abstractmethod
     def _get_connection(self) -> Any:
         """Получить подключение к базе данных
-        
+
         Returns:
             Подключение к базе данных
         """

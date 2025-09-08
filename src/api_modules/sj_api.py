@@ -44,7 +44,10 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
         self.connector = APIConnector(api_config)
 
         # Настраиваем специфичные для SJ заголовки
-        api_key = EnvLoader.get_env_var("SUPERJOB_API_KEY", "v3.r.137440105.example.test_tool") or "v3.r.137440105.example.test_tool"
+        api_key = (
+            EnvLoader.get_env_var("SUPERJOB_API_KEY", "v3.r.137440105.example.test_tool")
+            or "v3.r.137440105.example.test_tool"
+        )
         self.connector.headers.update({"X-Api-App-Id": api_key, "User-Agent": "VacancySearchApp/1.0"})
 
         # Инициализируем общие компоненты как в HH API
@@ -208,7 +211,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             if "403" in str(e) or "401" in str(e):
                 logger.warning("Возможно, проблема с API ключом SuperJob")
             return []
-    
+
     def get_companies(self, **kwargs: Any) -> List[Dict]:
         """
         Получение списка компаний с SuperJob
@@ -225,11 +228,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             target_companies_list = TargetCompanies.get_all_companies()
             companies = []
             for company_info in target_companies_list:
-                companies.append({
-                    "id": company_info.sj_id,
-                    "name": company_info.name,
-                    "source": "superjob.ru"
-                })
+                companies.append({"id": company_info.sj_id, "name": company_info.name, "source": "superjob.ru"})
             return companies
         except Exception as e:
             logger.error(f"Ошибка получения компаний с SuperJob: {str(e)}")
@@ -249,7 +248,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
         seen_ids = set()
         unique_vacancies = []
         for vacancy in vacancies:
-            vacancy_id = vacancy.get('id') or vacancy.get('link', '')
+            vacancy_id = vacancy.get("id") or vacancy.get("link", "")
             if vacancy_id and vacancy_id not in seen_ids:
                 seen_ids.add(vacancy_id)
                 unique_vacancies.append(vacancy)

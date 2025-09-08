@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional
 
 class AbstractVacancy(ABC):
     """Абстрактный базовый класс для представления вакансии
-    
+
     Определяет минимальный интерфейс для всех типов вакансий.
     Конкретные реализации должны предоставить все необходимые атрибуты
     как обычные поля или свойства.
@@ -19,14 +19,14 @@ class AbstractVacancy(ABC):
     description: Optional[str]
     requirements: Optional[str]
     responsibilities: Optional[str]
-    
+
     # Связанные объекты
     employer: Optional[Any]
     salary: Optional[Any]
     experience: Optional[Any]
     employment: Optional[Any]
     schedule: Optional[Any]
-    
+
     # Метаинформация
     area: Optional[str]
     source: Optional[str]
