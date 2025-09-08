@@ -231,16 +231,23 @@ class APIDataFilter(AbstractDataFilter):
         if not salary_from and not salary_to:
             return False
 
-        # Берем среднее значение если есть оба, иначе имеющееся
-        if salary_from and salary_to:
-            avg_salary = (salary_from + salary_to) / 2
-        else:
-            avg_salary = salary_from or salary_to
-
-        if min_salary and avg_salary < min_salary:
-            return False
-        if max_salary and avg_salary > max_salary:
-            return False
+        # Правильная логика фильтрации:
+        # - Для минимальной зарплаты: проверяем что максимальная зарплата вакансии >= критерию
+        # - Для максимальной зарплаты: проверяем что минимальная зарплата вакансии <= критерию
+        
+        # Проверяем минимальный критерий
+        if min_salary:
+            # Вакансия подходит если её максимальная зарплата >= min_salary
+            vacancy_max = salary_to or salary_from  # Берем максимум из диапазона или единственное значение
+            if vacancy_max and vacancy_max < min_salary:
+                return False
+        
+        # Проверяем максимальный критерий  
+        if max_salary:
+            # Вакансия подходит если её минимальная зарплата <= max_salary
+            vacancy_min = salary_from or salary_to  # Берем минимум из диапазона или единственное значение
+            if vacancy_min and vacancy_min > max_salary:
+                return False
 
         return True
 

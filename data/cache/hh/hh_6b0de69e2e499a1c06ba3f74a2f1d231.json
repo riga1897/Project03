@@ -1,0 +1,966 @@
+{
+  "timestamp": 1757348188.8903968,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 50,
+      "only_with_salary": false,
+      "period": 1,
+      "text": "python",
+      "page": 0,
+      "employer_id": "2748"
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "123225585",
+        "premium": false,
+        "name": "Системный аналитик",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T08:39:15+0300",
+        "created_at": "2025-09-08T08:39:15+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123225585",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123225585?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123225585",
+        "relations": [],
+        "employer": {
+          "id": "2748",
+          "name": "Ростелеком",
+          "url": "https://api.hh.ru/employers/2748",
+          "alternate_url": "https://hh.ru/employer/2748",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/592930.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/2812975.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/2812976.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2748",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "...activity, sequence), BPMN. Навыки работы с SQL, понимание реляционных БД. Умение составлять ТЗ, техдокументацию, контракты API. Базовые знания программирования <highlighttext>Python</highlighttext>.",
+          "responsibility": "Анализировать, систематизировать и собирать требований от бизнес-заказчиков. Разрабатывать функциональные требования, ТЗ и проектную документацию. Моделировать бизнес-процессы (UML: activity..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "148",
+            "name": "Системный аналитик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124813520",
+        "premium": false,
+        "name": "Python-разработчик",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T08:39:15+0300",
+        "created_at": "2025-09-08T08:39:15+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124813520",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124813520?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124813520",
+        "relations": [],
+        "employer": {
+          "id": "2748",
+          "name": "Ростелеком",
+          "url": "https://api.hh.ru/employers/2748",
+          "alternate_url": "https://hh.ru/employer/2748",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/592930.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/2812975.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/2812976.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2748",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Знание языка <highlighttext>Python</highlighttext>, его стандартных библиотек и ключевых фреймворков. Опыт написания скриптов для автоматизации и обработки данных. Понимание VBA и...",
+          "responsibility": "Разработка архитектуры и скрипта автоматизации на <highlighttext>Python</highlighttext> (перенести бизнес-логику, формулы, обеспечив их функциональную эквивалентность или улучшение). Тестирование и верификация..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "FLEXIBLE",
+            "name": "По договорённости"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124020069",
+        "premium": false,
+        "name": "Руководитель направления БД",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "улица Дубовая Роща",
+          "building": "25к1с2",
+          "lat": 55.818983,
+          "lng": 37.604008,
+          "description": null,
+          "raw": "Москва, улица Дубовая Роща, 25к1с2",
+          "metro": {
+            "station_name": "ВДНХ",
+            "line_name": "Калужско-Рижская",
+            "station_id": "6.27",
+            "line_id": "6",
+            "lat": 55.819626,
+            "lng": 37.640751
+          },
+          "metro_stations": [
+            {
+              "station_name": "ВДНХ",
+              "line_name": "Калужско-Рижская",
+              "station_id": "6.27",
+              "line_id": "6",
+              "lat": 55.819626,
+              "lng": 37.640751
+            },
+            {
+              "station_name": "Дмитровская",
+              "line_name": "Серпуховско-Тимирязевская",
+              "station_id": "9.35",
+              "line_id": "9",
+              "lat": 55.808056,
+              "lng": 37.581734
+            },
+            {
+              "station_name": "Тимирязевская",
+              "line_name": "Серпуховско-Тимирязевская",
+              "station_id": "9.141",
+              "line_id": "9",
+              "lat": 55.81866,
+              "lng": 37.574498
+            }
+          ],
+          "id": "440821"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T14:45:24+0300",
+        "created_at": "2025-09-08T14:45:24+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124020069",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124020069?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124020069",
+        "relations": [],
+        "employer": {
+          "id": "2748",
+          "name": "Ростелеком",
+          "url": "https://api.hh.ru/employers/2748",
+          "alternate_url": "https://hh.ru/employer/2748",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/592930.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/2812975.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/2812976.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2748",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Опыт администрирования ОС Linux (Astra). Опыт написания автоматизаций на Bash, <highlighttext>Python</highlighttext>. Опыт разработки проектной документации (ТЗ, Тех.Проект, ПМИ и т...",
+          "responsibility": "Администрирование СУБД PostgreSQL. Установка и настройка СУБД PostgreSQL, а так-же кластера PostgreSQL с использованием ansible. Резервное копирование и проверка. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "104",
+            "name": "Руководитель группы разработки"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "125046559",
+        "premium": false,
+        "name": "Python-разработчик",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "2",
+          "name": "Санкт-Петербург",
+          "url": "https://api.hh.ru/areas/2"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T16:08:06+0300",
+        "created_at": "2025-09-08T16:08:06+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=125046559",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/125046559?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/125046559",
+        "relations": [],
+        "employer": {
+          "id": "2748",
+          "name": "Ростелеком",
+          "url": "https://api.hh.ru/employers/2748",
+          "alternate_url": "https://hh.ru/employer/2748",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/592930.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/2812975.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/2812976.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2748",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Знание языка <highlighttext>Python</highlighttext>, его стандартных библиотек и ключевых фреймворков. Опыт написания скриптов для автоматизации и обработки данных. Понимание VBA и...",
+          "responsibility": "Разработка архитектуры и скрипта автоматизации на <highlighttext>Python</highlighttext> (перенести бизнес-логику, формулы, обеспечив их функциональную эквивалентность или улучшение). Тестирование и верификация..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "FLEXIBLE",
+            "name": "По договорённости"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124813521",
+        "premium": false,
+        "name": "Python-разработчик",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "66",
+          "name": "Нижний Новгород",
+          "url": "https://api.hh.ru/areas/66"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T08:39:15+0300",
+        "created_at": "2025-09-08T08:39:15+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124813521",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124813521?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124813521",
+        "relations": [],
+        "employer": {
+          "id": "2748",
+          "name": "Ростелеком",
+          "url": "https://api.hh.ru/employers/2748",
+          "alternate_url": "https://hh.ru/employer/2748",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/592930.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/2812975.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/2812976.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2748",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Знание языка <highlighttext>Python</highlighttext>, его стандартных библиотек и ключевых фреймворков. Опыт написания скриптов для автоматизации и обработки данных. Понимание VBA и...",
+          "responsibility": "Разработка архитектуры и скрипта автоматизации на <highlighttext>Python</highlighttext> (перенести бизнес-логику, формулы, обеспечив их функциональную эквивалентность или улучшение). Тестирование и верификация..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "FLEXIBLE",
+            "name": "По договорённости"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124813522",
+        "premium": false,
+        "name": "Python-разработчик",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "3",
+          "name": "Екатеринбург",
+          "url": "https://api.hh.ru/areas/3"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T08:39:14+0300",
+        "created_at": "2025-09-08T08:39:14+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124813522",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124813522?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124813522",
+        "relations": [],
+        "employer": {
+          "id": "2748",
+          "name": "Ростелеком",
+          "url": "https://api.hh.ru/employers/2748",
+          "alternate_url": "https://hh.ru/employer/2748",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/592930.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/2812975.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/2812976.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2748",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Знание языка <highlighttext>Python</highlighttext>, его стандартных библиотек и ключевых фреймворков. Опыт написания скриптов для автоматизации и обработки данных. Понимание VBA и...",
+          "responsibility": "Разработка архитектуры и скрипта автоматизации на <highlighttext>Python</highlighttext> (перенести бизнес-логику, формулы, обеспечив их функциональную эквивалентность или улучшение). Тестирование и верификация..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "FLEXIBLE",
+            "name": "По договорённости"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "125047298",
+        "premium": false,
+        "name": "Python-разработчик",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "53",
+          "name": "Краснодар",
+          "url": "https://api.hh.ru/areas/53"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T16:15:22+0300",
+        "created_at": "2025-09-08T16:15:22+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=125047298",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/125047298?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/125047298",
+        "relations": [],
+        "employer": {
+          "id": "2748",
+          "name": "Ростелеком",
+          "url": "https://api.hh.ru/employers/2748",
+          "alternate_url": "https://hh.ru/employer/2748",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/592930.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/2812975.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/2812976.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2748",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Знание языка <highlighttext>Python</highlighttext>, его стандартных библиотек и ключевых фреймворков. Опыт написания скриптов для автоматизации и обработки данных. Понимание VBA и...",
+          "responsibility": "Разработка архитектуры и скрипта автоматизации на <highlighttext>Python</highlighttext> (перенести бизнес-логику, формулы, обеспечив их функциональную эквивалентность или улучшение). Тестирование и верификация..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "FLEXIBLE",
+            "name": "По договорённости"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "125046730",
+        "premium": false,
+        "name": "Python-разработчик",
+        "department": null,
+        "has_test": true,
+        "response_letter_required": false,
+        "area": {
+          "id": "66",
+          "name": "Нижний Новгород",
+          "url": "https://api.hh.ru/areas/66"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T16:10:06+0300",
+        "created_at": "2025-09-08T16:10:06+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=125046730",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/125046730?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/125046730",
+        "relations": [],
+        "employer": {
+          "id": "2748",
+          "name": "Ростелеком",
+          "url": "https://api.hh.ru/employers/2748",
+          "alternate_url": "https://hh.ru/employer/2748",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/592930.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/2812975.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/2812976.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2748",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Знание языка <highlighttext>Python</highlighttext>, его стандартных библиотек и ключевых фреймворков. Опыт написания скриптов для автоматизации и обработки данных. Понимание VBA и...",
+          "responsibility": "Разработка архитектуры и скрипта автоматизации на <highlighttext>Python</highlighttext> (перенести бизнес-логику, формулы, обеспечив их функциональную эквивалентность или улучшение). Тестирование и верификация..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "FLEXIBLE",
+            "name": "По договорённости"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 9,
+    "pages": 1,
+    "page": 0,
+    "per_page": 50,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&employer_id=2748&enable_snippets=true&items_on_page=50&search_period=1&text=python"
+  }
+}

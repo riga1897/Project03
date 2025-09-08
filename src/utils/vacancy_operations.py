@@ -101,19 +101,11 @@ class VacancyOperations:
             if not salary_from and not salary_to:
                 continue
 
-            # Вычисляем среднюю зарплату для сравнения
-            if salary_from and salary_to:
-                # Если есть диапазон - берем среднее
-                avg_salary = (salary_from + salary_to) / 2
-            elif salary_from:
-                # Если есть только "от" - используем это значение
-                avg_salary = salary_from
-            else:
-                # Если есть только "до" - используем это значение
-                avg_salary = salary_to
-
-            # Проверяем, что зарплата больше или равна минимальной
-            if avg_salary >= min_salary:
+            # Правильная логика для минимальной зарплаты:
+            # Вакансия подходит если её максимальная зарплата >= min_salary
+            vacancy_max = salary_to or salary_from  # Берем максимум из диапазона или единственное значение
+            
+            if vacancy_max >= min_salary:
                 filtered_vacancies.append(vacancy)
 
         logger.info(
@@ -155,19 +147,11 @@ class VacancyOperations:
             if not salary_from and not salary_to:
                 continue
 
-            # Вычисляем среднюю зарплату для сравнения
-            if salary_from and salary_to:
-                # Если есть диапазон - берем среднее
-                avg_salary = (salary_from + salary_to) / 2
-            elif salary_from:
-                # Если есть только "от" - используем это значение
-                avg_salary = salary_from
-            else:
-                # Если есть только "до" - используем это значение
-                avg_salary = salary_to
-
-            # Проверяем, что зарплата меньше или равна максимальной
-            if avg_salary <= max_salary:
+            # Правильная логика для максимальной зарплаты:
+            # Вакансия подходит если её минимальная зарплата <= max_salary
+            vacancy_min = salary_from or salary_to  # Берем минимум из диапазона или единственное значение
+            
+            if vacancy_min <= max_salary:
                 filtered_vacancies.append(vacancy)
 
         logger.info(
@@ -210,19 +194,13 @@ class VacancyOperations:
             if not salary_from and not salary_to:
                 continue
 
-            # Вычисляем среднюю зарплату для сравнения
-            if salary_from and salary_to:
-                # Если есть диапазон - берем среднее
-                avg_salary = (salary_from + salary_to) / 2
-            elif salary_from:
-                # Если есть только "от" - используем это значение
-                avg_salary = salary_from
-            else:
-                # Если есть только "до" - используем это значение
-                avg_salary = salary_to
-
-            # Проверяем, попадает ли зарплата в диапазон
-            if min_salary <= avg_salary <= max_salary:
+            # Правильная логика для диапазона зарплат:
+            # Вакансия подходит если её максимальная >= min_salary И минимальная <= max_salary
+            vacancy_min = salary_from or salary_to
+            vacancy_max = salary_to or salary_from
+            
+            # Проверяем, попадает ли вакансия в диапазон
+            if vacancy_max >= min_salary and vacancy_min <= max_salary:
                 filtered_vacancies.append(vacancy)
 
         logger.info(

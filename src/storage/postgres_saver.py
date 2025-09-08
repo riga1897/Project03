@@ -726,12 +726,14 @@ class PostgresSaver(AbstractVacancyStorage):
                     params.append(f"%{filters['title']}%")
 
                 if filters.get("salary_from"):
-                    where_conditions.append("v.salary_from >= %s")
-                    params.append(filters["salary_from"])
+                    # Правильная логика: вакансия подходит если её максимальная зарплата >= минимальному критерию
+                    where_conditions.append("v.salary_to >= %s OR (v.salary_to IS NULL AND v.salary_from >= %s)")
+                    params.extend([filters["salary_from"], filters["salary_from"]])
 
                 if filters.get("salary_to"):
-                    where_conditions.append("v.salary_to <= %s")
-                    params.append(filters["salary_to"])
+                    # Правильная логика: вакансия подходит если её минимальная зарплата <= максимальному критерию
+                    where_conditions.append("v.salary_from <= %s OR (v.salary_from IS NULL AND v.salary_to <= %s)")
+                    params.extend([filters["salary_to"], filters["salary_to"]])
 
                 if filters.get("employer"):  # Filter by company name from joined table
                     where_conditions.append("LOWER(c.name) LIKE LOWER(%s)")
