@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from tqdm import tqdm
 
@@ -140,7 +140,7 @@ class UnifiedAPI:
         logger.info(f"Фильтрация по целевым компаниям: {len(all_vacancies)} -> {len(filtered_vacancies)} вакансий")
         return filtered_vacancies
 
-    def get_hh_vacancies(self, query: str, **kwargs) -> List[Vacancy]:
+    def get_hh_vacancies(self, query: str, **kwargs: Any) -> List[Vacancy]:
         """Получение вакансий только с HH.ru с дедупликацией"""
         try:
             hh_data = self.hh_api.get_vacancies_with_deduplication(query, **kwargs)
@@ -149,7 +149,7 @@ class UnifiedAPI:
             logger.error(f"Ошибка получения вакансий HH: {e}")
             return []
 
-    def get_sj_vacancies(self, query: str, **kwargs) -> List[Vacancy]:
+    def get_sj_vacancies(self, query: str, **kwargs: Any) -> List[Vacancy]:
         """Получение вакансий только с SuperJob с дедупликацией"""
         try:
             # Синхронизируем параметры периода
@@ -255,7 +255,7 @@ class UnifiedAPI:
             raise
 
     def get_vacancies_from_target_companies(
-        self, search_query: str = "", sources: List[str] = None, **kwargs
+        self, search_query: str = "", sources: Optional[List[str]] = None, **kwargs: Any
     ) -> List[Dict]:
         """
         Получение вакансий от целевых компаний из указанных источников

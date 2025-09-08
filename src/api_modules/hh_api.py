@@ -118,7 +118,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             logger.error(f"Failed to get vacancies page {page}: {e}")
             return []
 
-    def get_vacancies(self, search_query: str = None, per_page: int = 100, **kwargs) -> List[Dict[str, Any]]:
+    def get_vacancies(self, search_query: str = None, per_page: int = 100, **kwargs: Any) -> List[Dict[str, Any]]:
         """
         Получает вакансии с HeadHunter API
 
@@ -179,7 +179,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             logger.error(f"Ошибка получения вакансий: {e}")
             return []
 
-    def get_vacancies_with_deduplication(self, search_query: str, **kwargs) -> List[Dict]:
+    def get_vacancies_with_deduplication(self, search_query: str, **kwargs: Any) -> List[Dict]:
         """
         Получение вакансий с HH.ru БЕЗ дедупликации.
         Дедупликация выполняется централизованно в PostgresSaver.
@@ -193,7 +193,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         """
         return self.get_vacancies(search_query, **kwargs)
 
-    def get_vacancies_from_target_companies(self, search_query: str = "", **kwargs) -> List[Dict]:
+    def get_vacancies_from_target_companies(self, search_query: str = "", **kwargs: Any) -> List[Dict]:
         """
         Получение вакансий только от целевых компаний
 
@@ -234,7 +234,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
 
         return all_vacancies
 
-    def get_vacancies_by_company(self, company_id: str, search_query: str = "", **kwargs) -> List[Dict]:
+    def get_vacancies_by_company(self, company_id: str, search_query: str = "", **kwargs: Any) -> List[Dict]:
         """
         Получение вакансий конкретной компании
 
@@ -294,7 +294,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             logger.error(f"Ошибка получения вакансий компании {company_id}: {e}")
             return []
 
-    def get_vacancies_page_by_company(self, company_id: str, search_query: str, page: int = 0, **kwargs) -> List[Dict]:
+    def get_vacancies_page_by_company(self, company_id: str, search_query: str, page: int = 0, **kwargs: Any) -> List[Dict]:
         """
         Получение одной страницы вакансий конкретной компании
 

@@ -139,7 +139,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             logger.error(f"Failed to get vacancies page {page}: {e}")
             return []
 
-    def get_vacancies(self, search_query: str, **kwargs) -> List[Dict]:
+    def get_vacancies(self, search_query: str, **kwargs: Any) -> List[Dict]:
         """
         Получение всех вакансий с пагинацией и валидацией (адаптировано под паттерн HH API)
 
@@ -221,7 +221,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
         """
         return super()._deduplicate_vacancies(vacancies, "sj")
 
-    def get_vacancies_with_deduplication(self, search_query: str, **kwargs) -> List[Dict]:
+    def get_vacancies_with_deduplication(self, search_query: str, **kwargs: Any) -> List[Dict]:
         """
         Получение вакансий с SuperJob с дедупликацией
 
@@ -235,7 +235,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
         vacancies = self.get_vacancies(search_query, **kwargs)
         return self._deduplicate_vacancies(vacancies)
 
-    def get_vacancies_from_target_companies(self, search_query: str = "", **kwargs) -> List[Dict]:
+    def get_vacancies_from_target_companies(self, search_query: str = "", **kwargs: Any) -> List[Dict]:
         """
         Получение вакансий только от целевых компаний
 
