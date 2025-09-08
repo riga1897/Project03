@@ -191,7 +191,7 @@ class SQLDeduplicationService(AbstractDeduplicationService):
 
         logger.info(f"Создана временная таблица для дедупликации: {len(dedup_data)} записей")
 
-    def _execute_deduplication_query(self, cursor) -> List[str]:
+    def _execute_deduplication_query(self, cursor: Any) -> List[str]:
         """Выполняет SQL запрос для поиска уникальных вакансий"""
 
         query = """

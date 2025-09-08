@@ -240,7 +240,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
 
         with_salary = 0
         without_salary = 0
-        salary_examples = []
+        salary_examples: List[str] = []
 
         print(f"\n🔍 [{stage}] Анализ {len(vacancies)} вакансий:")
 

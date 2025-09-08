@@ -144,7 +144,7 @@ class SQLFilterService:
 
         logger.info(f"Создана временная таблица с {len(vacancy_data)} записями")
 
-    def _execute_filter_query(self, cursor) -> List[str]:
+    def _execute_filter_query(self, cursor: Any) -> List[str]:
         """Выполняет единый SQL запрос для фильтрации по целевым компаниям и дедупликации"""
 
         # Формируем списки ID для SQL запроса

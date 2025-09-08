@@ -6,7 +6,7 @@
 """
 
 import logging
-from typing import List, Set, Tuple
+from typing import Any, List, Set, Tuple
 
 from src.config.target_companies import TargetCompanies
 from src.storage.abstract_db_manager import AbstractDBManager
@@ -79,7 +79,7 @@ class CompanyIDFilterService(AbstractFilterService):
             # В случае ошибки возвращаем пустой список (строгий подход)
             return []
 
-    def _create_temp_table(self, cursor, vacancies: List[Vacancy]) -> None:
+    def _create_temp_table(self, cursor: Any, vacancies: List[Vacancy]) -> None:
         """Создает временную таблицу для фильтрации по ID"""
         cursor.execute(
             """
@@ -133,7 +133,7 @@ class CompanyIDFilterService(AbstractFilterService):
 
         logger.info(f"Создана временная таблица для фильтрации: {len(filter_data)} записей")
 
-    def _execute_id_filter_query(self, cursor) -> List[str]:
+    def _execute_id_filter_query(self, cursor: Any) -> List[str]:
         """Выполняет SQL запрос для фильтрации ТОЛЬКО по ID компаний"""
 
         # Формируем списки ID для SQL запроса
