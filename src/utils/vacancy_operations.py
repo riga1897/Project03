@@ -250,7 +250,7 @@ class VacancyOperations:
             # Разбираем более аккуратно, сохраняя регистр
             parts = query.split()
             keywords = []
-            current_keyword = []
+            current_keyword: List[str] = []
             for part in parts:
                 if part.upper() == "AND":
                     if current_keyword:

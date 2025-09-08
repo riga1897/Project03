@@ -63,7 +63,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             and bool(vacancy.get("alternate_url"))  # У HH это поле 'alternate_url'
         )
 
-    def __connect(self, url: str, params=None) -> Dict:
+    def __connect(self, url: str, params: Optional[Dict] = None) -> Dict:
         """
         Выполнение HTTP-запроса к API HeadHunter
 
@@ -84,7 +84,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             logger.error(f"Ошибка при подключении к API: {e}")
             return {}
 
-    def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs) -> List[Dict]:
+    def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs: Any) -> List[Dict]:
         """
         Получение и валидация одной страницы вакансий
 

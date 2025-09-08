@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from src.config.api_config import APIConfig
 from src.config.sj_api_config import SJAPIConfig
@@ -85,7 +85,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             and bool(vacancy.get("link"))  # У SJ это поле 'link'
         )
 
-    def __connect(self, url: str, params: Dict = None) -> Dict:
+    def __connect(self, url: str, params: Optional[Dict] = None) -> Dict:
         """
         Выполнение HTTP-запроса к API SuperJob
 
@@ -105,7 +105,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             logger.error(f"Ошибка при подключении к API: {e}")
             return self._get_empty_response()
 
-    def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs) -> List[Dict]:
+    def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs: Any) -> List[Dict]:
         """
         Получение одной страницы вакансий (адаптировано под паттерн HH API)
 

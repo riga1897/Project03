@@ -12,7 +12,7 @@ import logging
 import time
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from src.utils.cache import FileCache
 from src.utils.decorators import simple_cache
@@ -311,9 +311,9 @@ class CachedAPI(BaseJobAPI, ABC):
         """Валидация структуры вакансии для конкретного API"""
 
     @abstractmethod
-    def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs) -> List[Dict]:
+    def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs: Any) -> List[Dict]:
         """Получить одну страницу вакансий"""
 
     @abstractmethod
-    def get_vacancies(self, search_query: str, **kwargs) -> List[Dict]:
+    def get_vacancies(self, search_query: str, **kwargs: Any) -> List[Dict]:
         """Получить все вакансии с пагинацией"""

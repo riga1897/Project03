@@ -54,7 +54,7 @@ class PostgresSaver(AbstractVacancyStorage):
         # self._ensure_database_exists()  # Удалено - теперь используется DBManager
         self._ensure_tables_exist()
 
-    def _get_connection(self, database=None) -> Any:
+    def _get_connection(self, database: Optional[str] = None) -> Any:
         """Создает подключение к базе данных"""
         db_name = database or self.database
         try:
@@ -1374,7 +1374,7 @@ class PostgresSaver(AbstractVacancyStorage):
                     company_id_mapping[str(sj_id)] = comp_id
 
             # Подготавливаем данные для вставки с фильтрацией по целевым компаниям
-            insert_data = []
+            insert_data: List[Tuple[Any, ...]] = []
             filtered_count = 0
 
             # Счетчик отфильтрованных вакансий
