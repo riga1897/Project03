@@ -2,15 +2,12 @@ import logging
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-try:
-    import psycopg2
-    from psycopg2.extras import RealDictCursor
-
-    PsycopgError = psycopg2.Error
-except ImportError:
-    psycopg2 = None  # type: ignore
-    RealDictCursor = None  # type: ignore
-    PsycopgError = Exception  # type: ignore
+from src.storage.db_psycopg2_compat import (
+    get_psycopg2, 
+    get_psycopg_error, 
+    get_real_dict_cursor,
+    is_available as psycopg2_available
+)
 
 from src.storage.abstract import AbstractVacancyStorage
 from src.vacancies.abstract import AbstractVacancy
@@ -56,8 +53,12 @@ class PostgresSaver(AbstractVacancyStorage):
 
     def _get_connection(self, database: Optional[str] = None) -> Any:
         """Создает подключение к базе данных"""
+        if not psycopg2_available():
+            raise ConnectionError("psycopg2 не установлен или недоступен")
+            
         db_name = database or self.database
         try:
+            psycopg2 = get_psycopg2()
             connection = psycopg2.connect(
                 host=self.host,
                 port=self.port,
@@ -69,7 +70,7 @@ class PostgresSaver(AbstractVacancyStorage):
             # Устанавливаем кодировку для соединения
             connection.set_client_encoding("UTF8")
             return connection
-        except PsycopgError as e:
+        except get_psycopg_error() as e:
             logger.error(f"Ошибка подключения к БД {db_name}: {e}")
             raise
 

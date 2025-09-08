@@ -7,17 +7,12 @@ import logging
 import os
 from typing import Any, Optional
 
-try:
-    import psycopg2
-    from psycopg2.extras import RealDictCursor
-
-    PsycopgError = psycopg2.Error
-    PSYCOPG2_AVAILABLE = True
-except ImportError:
-    psycopg2 = None  # type: ignore
-    RealDictCursor = None  # type: ignore
-    PsycopgError = Exception  # type: ignore
-    PSYCOPG2_AVAILABLE = False
+from src.storage.db_psycopg2_compat import (
+    get_psycopg2, 
+    get_psycopg_error, 
+    get_real_dict_cursor,
+    is_available as psycopg2_available
+)
 
 logger = logging.getLogger(__name__)
 
@@ -74,19 +69,24 @@ class DatabaseConnection:
             with self._connection.cursor() as cursor:
                 cursor.execute("SELECT 1")
             return True
-        except (psycopg2.OperationalError, psycopg2.InterfaceError):
+        except Exception:  # Ловим все psycopg2 ошибки
             return False
 
     def _create_new_connection(self) -> None:
         """Создание нового подключения к базе данных"""
+        if not psycopg2_available():
+            raise ConnectionError("psycopg2 не установлен или недоступен")
+            
         try:
+            psycopg2 = get_psycopg2()
+            RealDictCursor = get_real_dict_cursor()
             connection = psycopg2.connect(**self._connection_params, cursor_factory=RealDictCursor)
             self._connection = connection
             if self._connection is not None:
                 self._connection.autocommit = False
             logger.debug("Установлено новое подключение к базе данных")
 
-        except PsycopgError as e:
+        except get_psycopg_error() as e:
             logger.error(f"Ошибка подключения к базе данных: {e}")
             raise ConnectionError(f"Не удалось подключиться к базе данных: {e}")
 
