@@ -139,7 +139,7 @@ class APIConnector:
         finally:
             self._close_progress()
 
-    def connect(self, url: str, params: Dict = None) -> Dict:
+    def connect(self, url: str, params: Optional[Dict] = None) -> Dict:
         """
         Выполнение HTTP-запроса
 

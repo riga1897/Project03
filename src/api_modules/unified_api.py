@@ -31,7 +31,7 @@ class UnifiedAPI:
         }
 
     def get_vacancies_from_sources(
-        self, search_query: str, sources: List[str] = None, **kwargs: dict[str, Any]
+        self, search_query: str, sources: Optional[List[str]] = None, **kwargs: dict[str, Any]
     ) -> List[Dict]:
         """
         Получение вакансий из выбранных источников с фильтрацией по целевым компаниям и дедупликацией

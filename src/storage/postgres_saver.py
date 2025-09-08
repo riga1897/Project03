@@ -1312,7 +1312,7 @@ class PostgresSaver(AbstractVacancyStorage):
             connection.close()
 
     def filter_and_deduplicate_vacancies(
-        self, vacancies: List[Vacancy], filters: Dict[str, Any] = None
+        self, vacancies: List[Vacancy], filters: Optional[Dict[str, Any]] = None
     ) -> List[Vacancy]:
         """
         Единственная точка фильтрации и дедупликации вакансий через SQL временные таблицы.

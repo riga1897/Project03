@@ -348,7 +348,7 @@ def debug_search_vacancies(vacancies: List[Vacancy], keyword: str) -> None:
         debug_vacancy_search(vacancy, keyword)
 
 
-def display_vacancy_info(vacancy: "Vacancy", number: int = None) -> None:
+def display_vacancy_info(vacancy: "Vacancy", number: Optional[int] = None) -> None:
     """
     Отображение информации о вакансии
 

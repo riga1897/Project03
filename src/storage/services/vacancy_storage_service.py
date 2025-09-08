@@ -313,7 +313,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
 
         print("-" * 80)
 
-    def add_vacancy_batch_optimized(self, vacancies: List[Vacancy], search_query: str = None) -> List[str]:
+    def add_vacancy_batch_optimized(self, vacancies: List[Vacancy], search_query: Optional[str] = None) -> List[str]:
         """
         Оптимизированное пакетное добавление вакансий
         Заменяет одноименный метод в postgres_saver
@@ -398,7 +398,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
             return [f"Ошибка сохранения: {e}"]
 
     def _prepare_vacancy_data(
-        self, vacancy: Vacancy, company_mapping: Dict[str, int], search_query: str = None
+        self, vacancy: Vacancy, company_mapping: Dict[str, int], search_query: Optional[str] = None
     ) -> Optional[tuple]:
         """Подготавливает данные вакансии для вставки в БД"""
         try:
@@ -553,12 +553,17 @@ class VacancyStorageService(AbstractVacancyStorageService):
             employer = None
             company_name = data.get("company_name")
             if company_name and company_name != "Неизвестная компания":
-                employer = Employer(name=company_name)
+                employer = Employer(
+                    name=company_name,
+                    id=None,
+                    trusted=False,
+                    alternate_url=None
+                )
 
             vacancy = Vacancy(
                 vacancy_id=data.get("vacancy_id", ""),
-                title=data.get("title", ""),
-                url=data.get("url", ""),
+                name=data.get("title", ""),
+                alternate_url=data.get("url", ""),
                 salary=salary_data,
                 description=data.get("description", ""),
                 requirements=data.get("requirements", ""),
