@@ -690,7 +690,9 @@ class PostgresSaver(AbstractVacancyStorage):
         if not isinstance(vacancies, list):
             vacancies = [vacancies]
 
-        update_messages = self.add_vacancy_batch_optimized(vacancies)
+        # Explicitly cast to List[AbstractVacancy] for type checker
+        abstract_vacancies: List[AbstractVacancy] = vacancies
+        update_messages = self.add_vacancy_batch_optimized(abstract_vacancies)
         return len(update_messages)
 
     def load_vacancies(
@@ -745,11 +747,11 @@ class PostgresSaver(AbstractVacancyStorage):
 
             if limit:
                 query += " LIMIT %s"
-                params.append(limit)
+                params.append(str(limit))
 
             if offset > 0:
                 query += " OFFSET %s"
-                params.append(offset)
+                params.append(str(offset))
 
             cursor.execute(query, params)
             results = cursor.fetchall()
@@ -1290,7 +1292,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
             if limit:
                 query += " LIMIT %s"
-                params.append(limit)
+                params.append(str(limit))
 
             cursor.execute(query, params)
             results = cursor.fetchall()
