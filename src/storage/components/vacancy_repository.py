@@ -34,7 +34,7 @@ class VacancyRepository(AbstractVacancyStorage):
         self._db_connection = db_connection
         self._validator = validator
 
-    def add_vacancy(self, vacancy: AbstractVacancy) -> None:
+    def add_vacancy(self, vacancy: AbstractVacancy) -> bool:
         """
         Добавляет вакансию в хранилище
 
@@ -92,10 +92,11 @@ class VacancyRepository(AbstractVacancyStorage):
 
                 conn.commit()
                 logger.debug(f"Вакансия {vacancy.vacancy_id} успешно добавлена")
+                return True
 
         except Exception as e:
             logger.error(f"Ошибка добавления вакансии {vacancy.vacancy_id}: {e}")
-            raise
+            return False
 
     def get_vacancies(self, filters: Optional[Dict[str, Any]] = None) -> List[AbstractVacancy]:
         """
