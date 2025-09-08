@@ -93,6 +93,7 @@ def retry_on_failure(max_attempts: int = 3, delay: float = 1.0) -> Callable:
         Returns:
             Обернутая функция с логикой повторных попыток.
         """
+
         @wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             """Обёртка для повторных попыток при ошибках."""

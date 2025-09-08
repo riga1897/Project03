@@ -8,7 +8,6 @@ import logging
 import os
 from typing import Any, Dict, List, Optional, Union
 
-
 try:
     from ..db_manager import DBManager
 except ImportError:

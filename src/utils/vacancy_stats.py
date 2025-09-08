@@ -271,7 +271,9 @@ class VacancyStatsExtended:
         VacancyStatsExtended._display_company_distribution(company_stats, len(vacancies), source_name)
 
     @staticmethod
-    def _display_company_distribution(company_stats: Dict[str, int], total_vacancies: int, source_name: str = "") -> None:
+    def _display_company_distribution(
+        company_stats: Dict[str, int], total_vacancies: int, source_name: str = ""
+    ) -> None:
         """
         Отобразить распределение компаний
 
