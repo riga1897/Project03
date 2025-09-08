@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from src.api_modules.unified_api import UnifiedAPI
 from src.config.ui_config import ui_pagination_config
@@ -37,7 +37,7 @@ class UserInterface:
     специализированным обработчикам.
     """
 
-    def __init__(self, storage=None, db_manager=None):
+    def __init__(self, storage: Any = None, db_manager: Any = None):
         """Инициализация пользовательского интерфейса"""
         # Removed unused import: AppConfig
         # Removed unused import: VacancyOperationsCoordinator
@@ -379,7 +379,7 @@ class UserInterface:
             vacancies: Список вакансий для отображения
         """
 
-        def format_vacancy(vacancy, number=None) -> str:
+        def format_vacancy(vacancy: Vacancy, number: Any = None) -> str:
             """Локальная функция форматирования вакансии для пагинации."""
             return VacancyFormatter.format_vacancy_info(vacancy, number)
 

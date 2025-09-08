@@ -5,7 +5,7 @@
 """
 
 import logging
-from typing import List
+from typing import Any, List
 
 from src.api_modules.unified_api import UnifiedAPI
 from src.ui_interfaces.source_selector import SourceSelector
@@ -26,7 +26,7 @@ class VacancyOperationsCoordinator:
     Централизует взаимодействие между поиском, отображением и сохранением вакансий.
     """
 
-    def __init__(self, unified_api: UnifiedAPI, storage):
+    def __init__(self, unified_api: UnifiedAPI, storage: Any):
         """
         Инициализация координатора
 
@@ -222,7 +222,7 @@ class VacancyOperationsCoordinator:
 
         input("\nНажмите Enter для продолжения...")
 
-    def get_vacancies_from_sources(self, search_query: str, sources: List[str], **kwargs) -> List[Vacancy]:
+    def get_vacancies_from_sources(self, search_query: str, sources: List[str], **kwargs: Any) -> List[Vacancy]:
         """
         Получение вакансий из выбранных источников
 
