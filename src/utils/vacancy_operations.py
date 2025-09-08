@@ -204,8 +204,12 @@ class VacancyOperations:
             vacancy_max = salary_to or salary_from
 
             # Проверяем, попадает ли вакансия в диапазон
-            if (vacancy_max is not None and vacancy_max >= min_salary and
-                    vacancy_min is not None and vacancy_min <= max_salary):
+            if (
+                vacancy_max is not None
+                and vacancy_max >= min_salary
+                and vacancy_min is not None
+                and vacancy_min <= max_salary
+            ):
                 filtered_vacancies.append(vacancy)
 
         logger.info(
