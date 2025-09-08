@@ -152,9 +152,12 @@ class TestDatabaseConnection:
     @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
     def test_get_connection_recreates_invalid_connection(self, mock_is_available, mock_real_dict_cursor, mock_get_psycopg2):
         """Покрытие пересоздания неисправного подключения"""
-        # Настройка proper exception classes на mock psycopg2
+        # Настройка модуля совместимости
+        mock_psycopg2 = Mock()
         mock_psycopg2.OperationalError = MockOperationalError
         mock_psycopg2.InterfaceError = MockInterfaceError
+        mock_get_psycopg2.return_value = mock_psycopg2
+        mock_real_dict_cursor.return_value = Mock()
         
         # Неисправное существующее подключение
         bad_connection = Mock()
@@ -205,11 +208,14 @@ class TestDatabaseConnection:
     @patch('src.storage.db_psycopg2_compat.get_psycopg2')
     @patch('src.storage.db_psycopg2_compat.get_real_dict_cursor')
     @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
-    def test_is_connection_valid_broken_connection(self, mock_psycopg2):
+    def test_is_connection_valid_broken_connection(self, mock_is_available, mock_real_dict_cursor, mock_get_psycopg2):
         """Покрытие проверки поломанного подключения"""
-        # Настройка proper exception classes на mock psycopg2
+        # Настройка модуля совместимости
+        mock_psycopg2 = Mock()
         mock_psycopg2.OperationalError = MockOperationalError
         mock_psycopg2.InterfaceError = MockInterfaceError
+        mock_get_psycopg2.return_value = mock_psycopg2
+        mock_real_dict_cursor.return_value = Mock()
         
         mock_connection = Mock()
         mock_cursor = Mock()
@@ -230,7 +236,7 @@ class TestDatabaseConnection:
     @patch('src.storage.db_psycopg2_compat.get_real_dict_cursor')
     @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
     @patch('src.storage.components.database_connection.logger')
-    def test_create_new_connection_success(self, mock_logger, mock_psycopg2):
+    def test_create_new_connection_success(self, mock_logger, mock_is_available, mock_real_dict_cursor, mock_get_psycopg2):
         """Покрытие успешного создания подключения"""
         # Настройка proper exception classes на mock psycopg2
         mock_psycopg2.Error = MockError
@@ -450,9 +456,12 @@ class TestDatabaseConnectionIntegration:
     @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
     def test_connection_recovery_scenario(self, mock_psycopg2):
         """Покрытие сценария восстановления подключения"""
-        # Настройка proper exception classes на mock psycopg2
+        # Настройка модуля совместимости
+        mock_psycopg2 = Mock()
         mock_psycopg2.OperationalError = MockOperationalError
         mock_psycopg2.InterfaceError = MockInterfaceError
+        mock_get_psycopg2.return_value = mock_psycopg2
+        mock_real_dict_cursor.return_value = Mock()
         
         # Первое подключение работает
         good_connection = Mock()
