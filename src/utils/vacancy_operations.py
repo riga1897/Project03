@@ -28,8 +28,9 @@ class VacancyOperations:
             and (
                 (isinstance(v.salary, dict) and (v.salary.get("from") or v.salary.get("to")))
                 or (
-                    hasattr(v.salary, "amount_from")
-                    and (getattr(v.salary, "amount_from", None) or getattr(v.salary, "amount_to", None))
+                    not isinstance(v.salary, dict)
+                    and (getattr(v.salary, "salary_from", None) or getattr(v.salary, "salary_to", None) or 
+                         getattr(v.salary, "amount_from", None) or getattr(v.salary, "amount_to", None))
                 )
             )
         ]
@@ -90,8 +91,11 @@ class VacancyOperations:
                 salary_from = vacancy.salary.get("from")
                 salary_to = vacancy.salary.get("to")
             else:
-                salary_from = getattr(vacancy.salary, "amount_from", None)
-                salary_to = getattr(vacancy.salary, "amount_to", None)
+                # Поддержка разных названий атрибутов в объектах зарплаты
+                salary_from = (getattr(vacancy.salary, "salary_from", None) or 
+                             getattr(vacancy.salary, "amount_from", None))
+                salary_to = (getattr(vacancy.salary, "salary_to", None) or 
+                           getattr(vacancy.salary, "amount_to", None))
 
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:
@@ -141,8 +145,11 @@ class VacancyOperations:
                 salary_from = vacancy.salary.get("from")
                 salary_to = vacancy.salary.get("to")
             else:
-                salary_from = getattr(vacancy.salary, "amount_from", None)
-                salary_to = getattr(vacancy.salary, "amount_to", None)
+                # Поддержка разных названий атрибутов в объектах зарплаты
+                salary_from = (getattr(vacancy.salary, "salary_from", None) or 
+                             getattr(vacancy.salary, "amount_from", None))
+                salary_to = (getattr(vacancy.salary, "salary_to", None) or 
+                           getattr(vacancy.salary, "amount_to", None))
 
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:
@@ -193,8 +200,11 @@ class VacancyOperations:
                 salary_from = vacancy.salary.get("from")
                 salary_to = vacancy.salary.get("to")
             else:
-                salary_from = getattr(vacancy.salary, "amount_from", None)
-                salary_to = getattr(vacancy.salary, "amount_to", None)
+                # Поддержка разных названий атрибутов в объектах зарплаты
+                salary_from = (getattr(vacancy.salary, "salary_from", None) or 
+                             getattr(vacancy.salary, "amount_from", None))
+                salary_to = (getattr(vacancy.salary, "salary_to", None) or 
+                           getattr(vacancy.salary, "amount_to", None))
 
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:
