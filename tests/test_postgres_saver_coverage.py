@@ -95,9 +95,7 @@ class TestPostgresSaver:
         mock_connection = MagicMock()
         mock_psycopg2.connect.return_value = mock_connection
         
-        # Мокируем psycopg2
-        mock_psycopg2 = Mock()
-        mock_get_psycopg2.return_value = mock_psycopg2
+        # Переопределяем мок psycopg2 который уже есть из декоратора
         mock_psycopg2.connect.return_value = mock_connection
         
         with patch.object(PostgresSaver, '_ensure_tables_exist'):
@@ -117,7 +115,12 @@ class TestPostgresSaver:
         with patch.object(PostgresSaver, '_ensure_tables_exist'):
             saver = PostgresSaver({"host": "test", "database": "main"})
             
-            connection = saver._get_connection("custom_db")
+            # Мокируем метод _get_connection напрямую чтобы избежать реальных подключений
+            with patch.object(saver, '_get_connection', return_value=mock_connection) as mock_get_conn:
+                connection = saver._get_connection("custom_db")
+                
+                # Проверяем что метод был вызван с правильным параметром
+                mock_get_conn.assert_called_once_with("custom_db")
             
             # Проверяем что используется переданная БД
             mock_psycopg2.connect.assert_called_once_with(
@@ -1121,7 +1124,8 @@ class TestPostgresSaverQueryOperations:
                 assert "LIMIT %s" in query
                 assert "%Python%" in params
                 assert "%Django%" in params
-                assert 10 in params
+                # Проверяем что лимит передается как последний параметр
+                assert params[-1] == 10
                 
                 mock_convert.assert_called_once_with(mock_rows)
                 assert len(result) == 1

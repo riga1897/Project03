@@ -1,0 +1,161 @@
+~/workspace$ pytest tests/test_postgres_saver_coverage.py 
+================================== test session starts ==================================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 46 items                                                                      
+
+tests/test_postgres_saver_coverage.py ...FF...................................... [ 93%]
+.F.                                                                               [100%]
+
+======================================= FAILURES ========================================
+_____________________ TestPostgresSaver.test_get_connection_success _____________________
+
+self = <tests.test_postgres_saver_coverage.TestPostgresSaver object at 0x7fb822721210>
+mock_logger = <MagicMock name='logger' id='140428820679760'>
+mock_psycopg2 = <Mock id='140428820621136'>
+
+    @patch('src.storage.postgres_saver.psycopg2')
+    @patch('src.storage.postgres_saver.logger')
+    def test_get_connection_success(self, mock_logger, mock_psycopg2):
+        """Покрытие: успешное создание подключения к БД"""
+        # Настраиваем мок соединения
+        mock_connection = MagicMock()
+        mock_psycopg2.connect.return_value = mock_connection
+    
+        # Мокируем psycopg2
+        mock_psycopg2 = Mock()
+>       mock_get_psycopg2.return_value = mock_psycopg2
+        ^^^^^^^^^^^^^^^^^
+E       NameError: name 'mock_get_psycopg2' is not defined
+
+tests/test_postgres_saver_coverage.py:100: NameError
+______________ TestPostgresSaver.test_get_connection_with_custom_database _______________
+
+self = <tests.test_postgres_saver_coverage.TestPostgresSaver object at 0x7fb822721890>
+mock_logger = <MagicMock name='logger' id='140428812333648'>
+mock_psycopg2 = <MagicMock name='psycopg2' id='140428821072144'>
+
+    @patch('src.storage.postgres_saver.psycopg2')
+    @patch('src.storage.postgres_saver.logger')
+    def test_get_connection_with_custom_database(self, mock_logger, mock_psycopg2):
+        """Покрытие: создание подключения к кастомной БД"""
+        mock_connection = MagicMock()
+        mock_psycopg2.connect.return_value = mock_connection
+    
+        with patch.object(PostgresSaver, '_ensure_tables_exist'):
+            saver = PostgresSaver({"host": "test", "database": "main"})
+    
+>           connection = saver._get_connection("custom_db")
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_postgres_saver_coverage.py:120: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/storage/postgres_saver.py:63: in _get_connection
+    connection = psycopg2.connect(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+dsn = 'host=test port=5432 user=neondb_owner password=npg_MPnXu1JWZ5jB client_encoding=utf8 dbname=custom_db'
+connection_factory = None, cursor_factory = None
+kwargs = {'client_encoding': 'utf8', 'database': 'custom_db', 'host': 'test', 'password': 'npg_MPnXu1JWZ5jB', ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       psycopg2.OperationalError: could not translate host name "test" to address: Name or service not known
+
+.pythonlibs/lib/python3.11/site-packages/psycopg2/__init__.py:122: OperationalError
+_________ TestPostgresSaverQueryOperations.test_search_vacancies_batch_success __________
+
+self = <tests.test_postgres_saver_coverage.TestPostgresSaverQueryOperations object at 0x7fb82272fa90>
+mock_logger = <MagicMock name='logger' id='140428805414800'>
+mock_psycopg2 = <MagicMock name='psycopg2' id='140428805420560'>
+
+    @patch('src.storage.postgres_saver.psycopg2')
+    @patch('src.storage.postgres_saver.logger')
+    def test_search_vacancies_batch_success(self, mock_logger, mock_psycopg2):
+        """Покрытие: batch поиск вакансий"""
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_connection.cursor.return_value = mock_cursor
+        # Исправляем проблему с encoding для execute_values
+        mock_cursor.connection = mock_connection
+        mock_connection.encoding = 'UTF8'
+    
+        # Мокируем результат поиска
+        mock_rows = [
+            ("id1", "Python Developer", "url1", 100000, 150000, "RUR", "desc1",
+             "req1", "resp1", "1-3 года", "Полная", "Полный", "Москва", "hh",
+             datetime.now(), datetime.now(), "Tech Co"),
+        ]
+        mock_cursor.fetchall.return_value = mock_rows
+    
+        with patch.object(PostgresSaver, '_ensure_tables_exist'):
+            saver = PostgresSaver({"host": "test"})
+    
+        with patch.object(saver, '_get_connection', return_value=mock_connection):
+            with patch.object(saver, '_convert_rows_to_vacancies', return_value=[MagicMock()]) as mock_convert:
+                result = saver.search_vacancies_batch(["Python", "Django"], limit=10)
+    
+                # Проверяем что запрос построен правильно
+                call_args = mock_cursor.execute.call_args
+                query = call_args[0][0]
+                params = call_args[0][1]
+    
+                assert "(LOWER(title) LIKE LOWER(%s)" in query
+                assert "LIMIT %s" in query
+                assert "%Python%" in params
+                assert "%Django%" in params
+>               assert 10 in params
+E               AssertionError: assert 10 in ['%Python%', '%Python%', '%Python%', '%Django%', '%Django%', '%Django%', ...]
+
+tests/test_postgres_saver_coverage.py:1124: AssertionError
+================================ short test summary info ================================
+FAILED tests/test_postgres_saver_coverage.py::TestPostgresSaver::test_get_connection_success - NameError: name 'mock_get_psycopg2' is not defined
+FAILED tests/test_postgres_saver_coverage.py::TestPostgresSaver::test_get_connection_with_custom_database - psycopg2.OperationalError: could not translate host name "test" to address: Name or ...
+FAILED tests/test_postgres_saver_coverage.py::TestPostgresSaverQueryOperations::test_search_vacancies_batch_success - AssertionError: assert 10 in ['%Python%', '%Python%', '%Python%', '%Django%', '%Djan...
+============================= 3 failed, 43 passed in 0.74s ==============================
+~/workspace$ 
