@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from datetime import datetime
 from typing import Any, Dict, Optional
 
 
@@ -29,7 +30,7 @@ class AbstractVacancy(ABC):
     # Метаинформация
     area: Optional[str]
     source: Optional[str]
-    published_at: Optional[str]
+    published_at: Optional[datetime]
     company_id: Optional[int]
 
     @abstractmethod

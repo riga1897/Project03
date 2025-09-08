@@ -432,9 +432,9 @@ class PostgresSaver(AbstractVacancyStorage):
                 salary_currency = None
 
                 if vacancy.salary:
-                    if hasattr(vacancy.salary, "salary_from"):
-                        salary_from = vacancy.salary.salary_from
-                        salary_to = vacancy.salary.salary_to
+                    if hasattr(vacancy.salary, "amount_from"):
+                        salary_from = vacancy.salary.amount_from
+                        salary_to = vacancy.salary.amount_to
                         salary_currency = vacancy.salary.currency
                     elif isinstance(vacancy.salary, dict):
                         salary_from = vacancy.salary.get("from")
@@ -826,14 +826,14 @@ class PostgresSaver(AbstractVacancyStorage):
                     employer_obj = Employer(
                         name=employer.get('name', ''),
                         id=employer.get('id'),
-                        trusted=employer.get('trusted'),
+                        trusted=bool(employer.get('trusted', False)),
                         alternate_url=employer.get('alternate_url')
                     )
 
                 vacancy = Vacancy(
-                    title=title,
-                    url=url,
-                    salary=salary_data,  # Передаем словарь, а не объект Salary
+                    name=title,  # используем правильное имя поля
+                    alternate_url=url,  # используем правильное имя поля
+                    salary=salary_data,
                     description=description,
                     requirements=requirements,
                     responsibilities=responsibilities,
@@ -844,6 +844,9 @@ class PostgresSaver(AbstractVacancyStorage):
                     vacancy_id=vacancy_id,
                     published_at=published_at,
                     source=source or "unknown",
+                    area=area,
+                    updated_at=datetime.now(),
+                    company_id=company_id,
                 )
 
                 # Устанавливаем area напрямую
@@ -892,7 +895,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
         return vacancies
 
-    def get_vacancies(self, filters: Optional[Dict[str, Any]] = None) -> List[AbstractVacancy]:
+    def get_vacancies(self, filters: Optional[Dict[str, Any]] = None) -> List[Vacancy]:
         """Получить все сохраненные вакансии"""
         try:
             with self._get_connection() as conn:
@@ -1436,9 +1439,9 @@ class PostgresSaver(AbstractVacancyStorage):
                 salary_currency = None
 
                 if vacancy.salary:
-                    if hasattr(vacancy.salary, "salary_from"):
-                        salary_from = vacancy.salary.salary_from
-                        salary_to = vacancy.salary.salary_to
+                    if hasattr(vacancy.salary, "amount_from"):
+                        salary_from = vacancy.salary.amount_from
+                        salary_to = vacancy.salary.amount_to
                         salary_currency = vacancy.salary.currency
                     elif isinstance(vacancy.salary, dict):
                         salary_from = vacancy.salary.get("from")
