@@ -38,7 +38,10 @@ class FileOperations:
                 return []
 
             with file_path.open("r", encoding="utf-8") as f:
-                return json.load(f)
+                data = json.load(f)
+                if isinstance(data, list):
+                    return data
+                return []
 
         except json.JSONDecodeError as e:
             logger.warning(f"Invalid JSON in {file_path}, returning empty list. Error: {e}")

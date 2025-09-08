@@ -11,7 +11,7 @@ from src.config.sj_api_config import SJAPIConfig
 class SourceManager:
     """Менеджер для управления источниками данных"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Инициализация менеджера источников с конфигурациями API."""
         self._sources_config = {
             "hh.ru": {

@@ -15,7 +15,7 @@ Functions:
 
 import logging
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from src.vacancies.models import Vacancy
 
@@ -372,11 +372,11 @@ class SearchQueryParser:
 class AdvancedSearch:
     """Класс для продвинутого поиска"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Инициализация продвинутого поиска"""
         pass
 
-    def search_with_and(self, vacancies, keywords) -> list:
+    def search_with_and(self, vacancies: List[Any], keywords: List[str]) -> List[Any]:
         """Поиск с оператором AND - ищет во всех текстовых полях включая search_query"""
         result = []
         for vacancy in vacancies:
@@ -390,7 +390,7 @@ class AdvancedSearch:
                 result.append(vacancy)
         return result
 
-    def search_with_or(self, vacancies, keywords) -> list:
+    def search_with_or(self, vacancies: List[Any], keywords: List[str]) -> List[Any]:
         """Поиск с оператором OR - ищет во всех текстовых полях включая search_query"""
         result = []
         for vacancy in vacancies:

@@ -201,7 +201,7 @@ class DBManagerDemo:
         print(f"\nВсего вакансий: {len(sorted_vacancies)}")
 
         # Добавляем анализ по компаниям
-        companies_with_vacancies = {}
+        companies_with_vacancies: Dict[str, Any] = {}
         for vacancy in all_vacancies:
             company_name = vacancy.get("company_name", "Неизвестная компания")
             companies_with_vacancies[company_name] = companies_with_vacancies.get(company_name, 0) + 1

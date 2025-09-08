@@ -184,7 +184,7 @@ class VacancyStatsExtended:
         Returns:
             Dict[str, int]: Словарь с компаниями и количеством вакансий
         """
-        company_stats = defaultdict(int)
+        company_stats: Dict[str, int] = defaultdict(int)
 
         for vacancy in vacancies:
             # Получаем название компании из разных источников

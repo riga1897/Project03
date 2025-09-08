@@ -20,7 +20,7 @@ class HHAPIConfig:
         env_value = EnvLoader.get_env_var("FILTER_ONLY_WITH_SALARY", "false")
         self.only_with_salary = str(env_value).lower() in ("true", "1", "yes", "on")
 
-    def get_params(self, **kwargs) -> Dict[str, Any]:
+    def get_params(self, **kwargs: Any) -> Dict[str, Any]:
         """Генерация параметров запроса с учетом переопределений"""
         params = {
             "area": kwargs.get("area", self.area),
@@ -33,6 +33,6 @@ class HHAPIConfig:
         params.update(kwargs)
         return params
 
-    def get_hh_params(self, **kwargs) -> Dict[str, Any]:
+    def get_hh_params(self, **kwargs: Any) -> Dict[str, Any]:
         """Get HH API params with overrides (для совместимости со старым интерфейсом)."""
         return self.get_params(**kwargs)

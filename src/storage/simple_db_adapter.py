@@ -74,7 +74,7 @@ class SimpleCursor:
             adapter: Экземпляр SimpleDBAdapter для выполнения запросов.
         """
         self.adapter = adapter
-        self._last_results = []
+        self._last_results: List[Any] = []
 
     def __enter__(self) -> "SimpleCursor":
         """Поддержка контекстного менеджера.

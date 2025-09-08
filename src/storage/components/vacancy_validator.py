@@ -41,7 +41,7 @@ class VacancyValidator:
 
     def __init__(self) -> None:
         """Инициализация валидатора"""
-        self._validation_errors = []
+        self._validation_errors: List[str] = []
 
     def validate_vacancy(self, vacancy: AbstractVacancy) -> bool:
         """

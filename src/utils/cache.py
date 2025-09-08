@@ -100,7 +100,7 @@ class FileCache:
             logger.warning(f"Ошибка валидации ответа: {e}")
             return False
 
-    def load_response(self, source: str, params: Dict[str, Any]) -> Optional[Dict]:
+    def load_response(self, source: str, params: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """Загрузка кэшированного ответа с проверкой целостности"""
         try:
             params_hash = self._generate_params_hash(params)
@@ -119,6 +119,8 @@ class FileCache:
 
             with open(filepath, "r", encoding="utf-8") as f:
                 cached_data = json.load(f)
+                if not isinstance(cached_data, dict):
+                    return None
 
             # Проверяем структуру кэшированных данных
             if not self._validate_cached_structure(cached_data):

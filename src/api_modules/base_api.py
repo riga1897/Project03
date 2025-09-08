@@ -8,7 +8,7 @@
 import logging
 import os
 from abc import ABC, abstractmethod
-from typing import Dict, List
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ class BaseJobAPI(ABC):
     """
 
     @abstractmethod
-    def get_vacancies(self, search_query: str, **kwargs) -> List[Dict]:
+    def get_vacancies(self, search_query: str, **kwargs: Any) -> List[Dict]:
         """
         Получение списка вакансий из источника по поисковому запросу.
 

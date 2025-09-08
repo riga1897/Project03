@@ -203,7 +203,7 @@ class CachedAPI(BaseJobAPI, ABC):
             max_file_size = max(file_sizes) if file_sizes else 0
 
             # Популярные поисковые запросы
-            query_stats = {}
+            query_stats: Dict[str, int] = {}
             for query in search_queries:
                 query_stats[query] = query_stats.get(query, 0) + 1
             popular_queries = sorted(query_stats.items(), key=lambda x: x[1], reverse=True)[:5]

@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, Union
 
 from src.utils.env_loader import EnvLoader
 
@@ -73,7 +73,7 @@ class DatabaseConfig:
 
         return params
 
-    def _parse_database_url(self, database_url: str) -> Dict[str, str]:
+    def _parse_database_url(self, database_url: str) -> Dict[str, Union[str, None]]:
         """
         Парсит DATABASE_URL в формате postgresql://username:password@hostname:port/database
 
