@@ -18,12 +18,13 @@ try:
 except ImportError:
     from src.storage.services.deduplication_service import DeduplicationService, SQLDeduplicationStrategy
 
-try:
-    from .filtering_service import (CompositeFilterStrategy, FilteringService, SalaryFilterStrategy,
-                                    TargetCompanyFilterStrategy)
-except ImportError:
-    from src.storage.services.filtering_service import (CompositeFilterStrategy, FilteringService,
-                                                        SalaryFilterStrategy, TargetCompanyFilterStrategy)
+# Filtering service импорты закомментированы, так как не используются
+# try:
+#     from .filtering_service import (CompositeFilterStrategy, FilteringService, SalaryFilterStrategy,
+#                                     TargetCompanyFilterStrategy)
+# except ImportError:
+#     from src.storage.services.filtering_service import (CompositeFilterStrategy, FilteringService,
+#                                                         SalaryFilterStrategy, TargetCompanyFilterStrategy)
 
 try:
     from .vacancy_processing_coordinator import VacancyProcessingCoordinator
