@@ -6,7 +6,7 @@
 
 import logging
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Any
 
 try:
     from ..abstract_db_manager import AbstractDBManager
