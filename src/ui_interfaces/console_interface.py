@@ -147,7 +147,7 @@ class UserInterface:
         print("7. Удалить сохраненные вакансии")
         print("8. Очистить кэш API")
         print("9. Настройка SuperJob API")
-        if DBManager and DBManagerDemo:
+        if DBManager_class and DBManagerDemo_class:
             print("10. Демонстрация DBManager (анализ данных в БД)")
         print("0. Выход")
         print_menu_separator()

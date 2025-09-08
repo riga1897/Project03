@@ -374,9 +374,7 @@ class UnifiedAPI:
 
     def get_vacancies_from_all_sources(self, query: str, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:
         """Получение вакансий из всех источников"""
-        kwargs_copy = kwargs.copy()
-        kwargs_copy["sources"] = ["hh", "sj"]
-        return self.get_all_vacancies(query, **kwargs_copy)
+        return self.get_vacancies_from_sources(query, sources=["hh", "sj"], **kwargs)
 
     def get_vacancies_from_source(
         self, search_query: str, source: str, **kwargs: dict[str, Any]

@@ -131,24 +131,24 @@ class CachedAPI(BaseJobAPI, ABC):
             logger.error(f"Неизвестная ошибка API {api_prefix}: {e}")
             return self._get_empty_response()
 
-    def clear_cache(self, api_prefix: str) -> None:
+    def clear_cache(self, source: str) -> None:
         """
         Очистка кэша для конкретного API
 
         Args:
-            api_prefix: Префикс API (hh, sj)
+            source: Префикс API (hh, sj)
         """
         try:
             # Очищаем файловый кэш
-            self.cache.clear(api_prefix)
+            self.cache.clear(source)
 
             # Очищаем кэш в памяти
             if hasattr(self._cached_api_request, "clear_cache"):
                 self._cached_api_request.clear_cache()
 
-            logger.info(f"Кэш {api_prefix} очищен (файловый и в памяти)")
+            logger.info(f"Кэш {source} очищен (файловый и в памяти)")
         except Exception as e:
-            logger.error(f"Ошибка очистки кэша {api_prefix}: {e}")
+            logger.error(f"Ошибка очистки кэша {source}: {e}")
 
     def get_cache_status(self, api_prefix: str) -> Dict:
         """
