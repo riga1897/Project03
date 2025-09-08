@@ -152,12 +152,12 @@ class SimpleCursor:
         if self._last_results:
             result = self._last_results[0]
             # Попытка конвертировать строковые числа в числа
-            converted = []
+            converted: List[Any] = []
             for field in result:
                 if isinstance(field, str) and field.isdigit():
                     converted.append(int(field))
                 elif isinstance(field, str) and "." in field and field.replace(".", "").isdigit():
-                    converted.append(field)  # Keep as string to avoid type mixing
+                    converted.append(float(field))
                 else:
                     converted.append(field)
             return tuple(converted)
@@ -227,7 +227,7 @@ class SimpleCursor:
                     else:
                         query = query.replace(placeholder, str(param))
 
-            cmd = ["psql", self.adapter.database_url, "-c", query, "--quiet"]
+            cmd = ["psql", str(self.adapter.database_url), "-c", query, "--quiet"]
 
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
 

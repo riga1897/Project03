@@ -14,7 +14,7 @@ class DatabaseConfig:
         """
         self.default_config = self._get_default_config()
 
-    def _get_default_config(self) -> Dict[str, str]:
+    def _get_default_config(self) -> Dict[str, Union[str, None]]:
         """Получает конфигурацию по умолчанию из переменных окружения"""
         # EnvLoader автоматически загружает переменные из .env при импорте
 
@@ -36,7 +36,7 @@ class DatabaseConfig:
             "command_timeout": EnvLoader.get_env_var("PGCOMMAND_TIMEOUT", "30"),
         }
 
-    def get_config(self, custom_config: Optional[Dict[str, str]] = None) -> Dict[str, str]:
+    def get_config(self, custom_config: Optional[Dict[str, str]] = None) -> Dict[str, Union[str, None]]:
         """
         Возвращает конфигурацию БД
 
