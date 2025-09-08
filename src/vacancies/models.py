@@ -409,7 +409,7 @@ class Vacancy(BaseModel):
                         continue
                 return datetime.fromisoformat(v.replace("Z", "+00:00"))
             except (ValueError, TypeError):
-                return v  # Возвращаем как есть, если не удалось распарсить
+                return None  # Возвращаем None, если не удалось распарсить
         return v
 
     @field_validator("salary", mode="before")
@@ -432,20 +432,8 @@ class Vacancy(BaseModel):
             return v.to_dict()
         return v
 
-    @model_validator(mode="after")
-    def validate_vacancy_data(self) -> "Vacancy":
-        """Комплексная валидация данных вакансии.
-
-        Returns:
-            Проверенные данные вакансии.
-        """
-        # Проверяем что ID и URL совместимы с источником
-        if self.source == "hh.ru" and self.id:
-            if not str(self.id).isdigit():
-                # Для HeadHunter ID обычно числовой, но оставляем гибкость
-                pass
-
-        return self
+# Примечание: Убираем model_validator для улучшения совместимости с Pydantic v2
+    # Простая валидация происходит на уровне field_validator
 
     # Методы для работы с зарплатой (обратная совместимость)
     def get_salary(self) -> Optional[Salary]:
@@ -549,9 +537,9 @@ class VacancyFactory:
         schedule_data = data.get("schedule", {})
 
         return Vacancy(
-            id=str(data.get("id", str(uuid.uuid4()))),
-            title=data.get("name", ""),
-            url=data.get("alternate_url", ""),
+            vacancy_id=str(data.get("id", str(uuid.uuid4()))),
+            name=data.get("name", ""),
+            alternate_url=data.get("alternate_url", ""),
             employer=Employer(**employer_data) if employer_data else None,
             salary=salary_data if salary_data else None,
             experience=Experience(**experience_data) if experience_data else None,
@@ -565,6 +553,8 @@ class VacancyFactory:
             description=data.get("description"),
             published_at=data.get("published_at"),
             source="hh.ru",
+            updated_at=None,
+            company_id=None,
         )
 
     @staticmethod
@@ -580,13 +570,15 @@ class VacancyFactory:
             }
 
         return Vacancy(
-            id=str(data.get("id", str(uuid.uuid4()))),
-            title=data.get("profession", ""),
-            url=data.get("link", ""),
-            employer=(
+            vacancy_id=str(data.get("id", str(uuid.uuid4()))),
+            name=data.get("profession", ""),
+            alternate_url=data.get("link", ""),
+            employer=(  
                 Employer(
                     name=data.get("firm_name", "Не указана"),
                     id=str(data.get("id_client", "")) if data.get("id_client") else None,
+                    trusted=None,
+                    alternate_url=None,
                 )
                 if data.get("firm_name")
                 else None
@@ -597,6 +589,11 @@ class VacancyFactory:
             responsibilities=data.get("work"),
             published_at=data.get("date_published"),
             source="superjob.ru",
+            experience=None,
+            employment=None,
+            schedule=None,
+            updated_at=None,
+            company_id=None,
         )
 
 

@@ -4,7 +4,7 @@
 """
 
 import logging
-from typing import Optional
+
 
 from src.config.app_config import AppConfig
 from src.storage.storage_factory import StorageFactory

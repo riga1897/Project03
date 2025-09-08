@@ -1,0 +1,136 @@
+{
+  "timestamp": 1757318928.9601405,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 1,
+      "only_with_salary": false,
+      "period": 15,
+      "text": "python",
+      "page": 0,
+      "employer_id": "84585"
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "124812733",
+        "premium": false,
+        "name": "Ревьюер заданий по Data Science для образовательных курсов",
+        "department": {
+          "id": "84585-84585-dev",
+          "name": "Авито: разработка"
+        },
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": null,
+        "salary_range": null,
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-03T11:32:22+0300",
+        "created_at": "2025-09-03T11:32:22+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124812733",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124812733?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124812733",
+        "relations": [],
+        "employer": {
+          "id": "84585",
+          "name": "Авито",
+          "url": "https://api.hh.ru/employers/84585",
+          "alternate_url": "https://hh.ru/employer/84585",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1005271.png",
+            "90": "https://img.hhcdn.ru/employer-logo/5641864.png",
+            "240": "https://img.hhcdn.ru/employer-logo/5641865.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=84585",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Уверенно владеете <highlighttext>Python</highlighttext> (PyTorch, Transformers). Знаете LLM (RAG-архитектуры, оптимизация inference, GPU/TPU, LoRA). Имеете навыки в fine-tuning, prompt...",
+          "responsibility": "Проверять работы студентов курса, опираясь при проверке на критерии, гайды и чек-листы, которые составляют авторы заданий. Давать обратную связь..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_2",
+            "name": "2 часа"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "132",
+            "name": "Учитель, преподаватель, педагог"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 1,
+    "pages": 1,
+    "page": 0,
+    "per_page": 1,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&employer_id=84585&enable_snippets=true&items_on_page=1&search_period=15&text=python"
+  }
+}

@@ -1,0 +1,899 @@
+~/workspace$ pytest tests/test_16_models_coverage.py
+=================================== test session starts ====================================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 64 items                                                                         
+
+tests/test_16_models_coverage.py ..............................................FFFFF [ 79%]
+FFFFFFFF....F                                                                        [100%]
+
+========================================= FAILURES =========================================
+___________________ TestVacancyFactory.test_factory_from_hh_api_minimal ____________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7f2986c38ad0>
+
+    def test_factory_from_hh_api_minimal(self):
+        """Покрытие создания из минимальных HH данных"""
+        data = {
+            "id": "123",
+            "name": "HH Job",
+            "alternate_url": "https://hh.ru/vacancy/123"
+        }
+    
+>       vacancy = VacancyFactory.from_hh_api(data)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_16_models_coverage.py:489: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'alternate_url': 'https://hh.ru/vacancy/123', 'id': '123', 'name': 'HH Job'}
+
+    @staticmethod
+    def from_hh_api(data: Dict[str, Any]) -> Vacancy:
+        """Создание вакансии из данных HeadHunter API"""
+        employer_data = data.get("employer", {})
+        salary_data = data.get("salary", {})
+        experience_data = data.get("experience", {})
+        employment_data = data.get("employment", {})
+        schedule_data = data.get("schedule", {})
+    
+>       return Vacancy(
+            id=str(data.get("id", str(uuid.uuid4()))),
+            title=data.get("name", ""),
+            url=data.get("alternate_url", ""),
+            employer=Employer(**employer_data) if employer_data else None,
+            salary=salary_data if salary_data else None,
+            experience=Experience(**experience_data) if experience_data else None,
+            employment=Employment(**employment_data) if employment_data else None,
+            schedule=Schedule(**schedule_data) if schedule_data else None,
+            area=data.get("area", {}).get("name") if isinstance(data.get("area"), dict) else data.get("area"),
+            requirements=data.get("snippet", {}).get("requirement") if isinstance(data.get("snippet"), dict) else None,
+            responsibilities=(
+                data.get("snippet", {}).get("responsibility") if isinstance(data.get("snippet"), dict) else None
+            ),
+            description=data.get("description"),
+            published_at=data.get("published_at"),
+            source="hh.ru",
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'id': '123', 'title': 'H...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'id': '123', 'title': 'H...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'id': '123', 'title': 'H...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+src/vacancies/models.py:551: ValidationError
+_____________________ TestVacancyFactory.test_factory_from_hh_api_full _____________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7f2986c2ebd0>
+
+    def test_factory_from_hh_api_full(self):
+        """Покрытие создания из полных HH данных"""
+        data = {
+            "id": "456",
+            "name": "Full HH Job",
+            "alternate_url": "https://hh.ru/vacancy/456",
+            "employer": {"name": "HH Corp", "id": "123"},
+            "experience": {"name": "5+ лет", "id": "senior"},
+            "employment": {"name": "Полная", "id": "full"},
+            "schedule": {"name": "Офис", "id": "office"},
+            "salary": {"from": 80000, "to": 120000, "currency": "RUR"},
+            "snippet": {"requirement": "Python skills", "responsibility": "Development"},
+            "area": {"name": "Екатеринбург"},
+            "published_at": "2023-01-01T12:00:00",
+            "description": "Job description"
+        }
+    
+>       vacancy = VacancyFactory.from_hh_api(data)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_16_models_coverage.py:513: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'alternate_url': 'https://hh.ru/vacancy/456', 'area': {'name': 'Екатеринбург'}, 'description': 'Job description', 'employer': {'id': '123', 'name': 'HH Corp'}, ...}
+
+    @staticmethod
+    def from_hh_api(data: Dict[str, Any]) -> Vacancy:
+        """Создание вакансии из данных HeadHunter API"""
+        employer_data = data.get("employer", {})
+        salary_data = data.get("salary", {})
+        experience_data = data.get("experience", {})
+        employment_data = data.get("employment", {})
+        schedule_data = data.get("schedule", {})
+    
+>       return Vacancy(
+            id=str(data.get("id", str(uuid.uuid4()))),
+            title=data.get("name", ""),
+            url=data.get("alternate_url", ""),
+            employer=Employer(**employer_data) if employer_data else None,
+            salary=salary_data if salary_data else None,
+            experience=Experience(**experience_data) if experience_data else None,
+            employment=Employment(**employment_data) if employment_data else None,
+            schedule=Schedule(**schedule_data) if schedule_data else None,
+            area=data.get("area", {}).get("name") if isinstance(data.get("area"), dict) else data.get("area"),
+            requirements=data.get("snippet", {}).get("requirement") if isinstance(data.get("snippet"), dict) else None,
+            responsibilities=(
+                data.get("snippet", {}).get("responsibility") if isinstance(data.get("snippet"), dict) else None
+            ),
+            description=data.get("description"),
+            published_at=data.get("published_at"),
+            source="hh.ru",
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'id': '456', 'title': 'F...:00', 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'id': '456', 'title': 'F...:00', 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'id': '456', 'title': 'F...:00', 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+src/vacancies/models.py:551: ValidationError
+____________________ TestVacancyFactory.test_factory_from_superjob_api _____________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7f2986c2db50>
+
+    def test_factory_from_superjob_api(self):
+        """Покрытие создания из SuperJob данных"""
+        data = {
+            "id": "789",
+            "profession": "SuperJob Developer",
+            "link": "https://superjob.ru/vacancy/789",
+            "payment_from": 100000,
+            "payment_to": 150000,
+            "firm_name": "SuperJob Company"
+        }
+    
+>       vacancy = VacancyFactory.from_superjob_api(data)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_16_models_coverage.py:533: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'firm_name': 'SuperJob Company', 'id': '789', 'link': 'https://superjob.ru/vacancy/789', 'payment_from': 100000, ...}
+
+    @staticmethod
+    def from_superjob_api(data: Dict[str, Any]) -> Vacancy:
+        """Создание вакансии из данных SuperJob API"""
+        salary_data = None
+        if data.get("payment_from", 0) > 0 or data.get("payment_to", 0) > 0:
+            salary_data = {
+                "from": data.get("payment_from") if data.get("payment_from", 0) > 0 else None,
+                "to": data.get("payment_to") if data.get("payment_to", 0) > 0 else None,
+                "currency": "RUR",
+                "gross": False,
+            }
+    
+>       return Vacancy(
+            id=str(data.get("id", str(uuid.uuid4()))),
+            title=data.get("profession", ""),
+            url=data.get("link", ""),
+            employer=(
+                Employer(
+                    name=data.get("firm_name", "Не указана"),
+                    id=str(data.get("id_client", "")) if data.get("id_client") else None,
+                )
+                if data.get("firm_name")
+                else None
+            ),
+            salary=salary_data,
+            area=data.get("town", {}).get("title") if isinstance(data.get("town"), dict) else data.get("town"),
+            requirements=data.get("candidat"),
+            responsibilities=data.get("work"),
+            published_at=data.get("date_published"),
+            source="superjob.ru",
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'id': '789', 'title': 'S...'source': 'superjob.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'id': '789', 'title': 'S...'source': 'superjob.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'id': '789', 'title': 'S...'source': 'superjob.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+src/vacancies/models.py:582: ValidationError
+___________________ TestVacancyFactory.test_factory_experience_handling ____________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7f2986c2d690>
+
+    def test_factory_experience_handling(self):
+        """Покрытие обработки опыта в Factory методах"""
+        # Тестируем создание вакансии с опытом
+        data_with_exp = {
+            "id": "exp_test",
+            "name": "Job with Experience",
+            "alternate_url": "https://test.com/exp",
+            "experience": {"name": "Middle", "id": "mid"}
+        }
+    
+>       vacancy = VacancyFactory.from_hh_api(data_with_exp)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_16_models_coverage.py:550: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'alternate_url': 'https://test.com/exp', 'experience': {'id': 'mid', 'name': 'Middle'}, 'id': 'exp_test', 'name': 'Job with Experience'}
+
+    @staticmethod
+    def from_hh_api(data: Dict[str, Any]) -> Vacancy:
+        """Создание вакансии из данных HeadHunter API"""
+        employer_data = data.get("employer", {})
+        salary_data = data.get("salary", {})
+        experience_data = data.get("experience", {})
+        employment_data = data.get("employment", {})
+        schedule_data = data.get("schedule", {})
+    
+>       return Vacancy(
+            id=str(data.get("id", str(uuid.uuid4()))),
+            title=data.get("name", ""),
+            url=data.get("alternate_url", ""),
+            employer=Employer(**employer_data) if employer_data else None,
+            salary=salary_data if salary_data else None,
+            experience=Experience(**experience_data) if experience_data else None,
+            employment=Employment(**employment_data) if employment_data else None,
+            schedule=Schedule(**schedule_data) if schedule_data else None,
+            area=data.get("area", {}).get("name") if isinstance(data.get("area"), dict) else data.get("area"),
+            requirements=data.get("snippet", {}).get("requirement") if isinstance(data.get("snippet"), dict) else None,
+            responsibilities=(
+                data.get("snippet", {}).get("responsibility") if isinstance(data.get("snippet"), dict) else None
+            ),
+            description=data.get("description"),
+            published_at=data.get("published_at"),
+            source="hh.ru",
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'id': 'exp_test', 'title...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'id': 'exp_test', 'title...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'id': 'exp_test', 'title...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+src/vacancies/models.py:551: ValidationError
+___________________ TestVacancyFactory.test_factory_employment_handling ____________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7f2986c2f9d0>
+
+    def test_factory_employment_handling(self):
+        """Покрытие обработки типа занятости в Factory методах"""
+        # Тестируем создание вакансии с типом занятости
+        data_with_emp = {
+            "id": "emp_test",
+            "name": "Job with Employment",
+            "alternate_url": "https://test.com/emp",
+            "employment": {"name": "Частичная", "id": "part"}
+        }
+    
+>       vacancy = VacancyFactory.from_hh_api(data_with_emp)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_16_models_coverage.py:566: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'alternate_url': 'https://test.com/emp', 'employment': {'id': 'part', 'name': 'Частичная'}, 'id': 'emp_test', 'name': 'Job with Employment'}
+
+    @staticmethod
+    def from_hh_api(data: Dict[str, Any]) -> Vacancy:
+        """Создание вакансии из данных HeadHunter API"""
+        employer_data = data.get("employer", {})
+        salary_data = data.get("salary", {})
+        experience_data = data.get("experience", {})
+        employment_data = data.get("employment", {})
+        schedule_data = data.get("schedule", {})
+    
+>       return Vacancy(
+            id=str(data.get("id", str(uuid.uuid4()))),
+            title=data.get("name", ""),
+            url=data.get("alternate_url", ""),
+            employer=Employer(**employer_data) if employer_data else None,
+            salary=salary_data if salary_data else None,
+            experience=Experience(**experience_data) if experience_data else None,
+            employment=Employment(**employment_data) if employment_data else None,
+            schedule=Schedule(**schedule_data) if schedule_data else None,
+            area=data.get("area", {}).get("name") if isinstance(data.get("area"), dict) else data.get("area"),
+            requirements=data.get("snippet", {}).get("requirement") if isinstance(data.get("snippet"), dict) else None,
+            responsibilities=(
+                data.get("snippet", {}).get("responsibility") if isinstance(data.get("snippet"), dict) else None
+            ),
+            description=data.get("description"),
+            published_at=data.get("published_at"),
+            source="hh.ru",
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'id': 'emp_test', 'title...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'id': 'emp_test', 'title...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'id': 'emp_test', 'title...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+src/vacancies/models.py:551: ValidationError
+____________________ TestVacancyFactory.test_factory_schedule_handling _____________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7f2986c2c310>
+
+    def test_factory_schedule_handling(self):
+        """Покрытие обработки графика в Factory методах"""
+        data_with_schedule = {
+            "id": "sch_test",
+            "name": "Job with Schedule",
+            "alternate_url": "https://test.com/sch",
+            "schedule": {"name": "Удаленно", "id": "remote"}
+        }
+    
+>       vacancy = VacancyFactory.from_hh_api(data_with_schedule)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_16_models_coverage.py:581: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'alternate_url': 'https://test.com/sch', 'id': 'sch_test', 'name': 'Job with Schedule', 'schedule': {'id': 'remote', 'name': 'Удаленно'}}
+
+    @staticmethod
+    def from_hh_api(data: Dict[str, Any]) -> Vacancy:
+        """Создание вакансии из данных HeadHunter API"""
+        employer_data = data.get("employer", {})
+        salary_data = data.get("salary", {})
+        experience_data = data.get("experience", {})
+        employment_data = data.get("employment", {})
+        schedule_data = data.get("schedule", {})
+    
+>       return Vacancy(
+            id=str(data.get("id", str(uuid.uuid4()))),
+            title=data.get("name", ""),
+            url=data.get("alternate_url", ""),
+            employer=Employer(**employer_data) if employer_data else None,
+            salary=salary_data if salary_data else None,
+            experience=Experience(**experience_data) if experience_data else None,
+            employment=Employment(**employment_data) if employment_data else None,
+            schedule=Schedule(**schedule_data) if schedule_data else None,
+            area=data.get("area", {}).get("name") if isinstance(data.get("area"), dict) else data.get("area"),
+            requirements=data.get("snippet", {}).get("requirement") if isinstance(data.get("snippet"), dict) else None,
+            responsibilities=(
+                data.get("snippet", {}).get("responsibility") if isinstance(data.get("snippet"), dict) else None
+            ),
+            description=data.get("description"),
+            published_at=data.get("published_at"),
+            source="hh.ru",
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'id': 'sch_test', 'title...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'id': 'sch_test', 'title...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'id': 'sch_test', 'title...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+src/vacancies/models.py:551: ValidationError
+_____________________ TestVacancyFactory.test_factory_salary_handling ______________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7f2986c2cbd0>
+
+    def test_factory_salary_handling(self):
+        """Покрытие обработки зарплаты в Factory методах"""
+        data_with_salary = {
+            "id": "sal_test",
+            "name": "Job with Salary",
+            "alternate_url": "https://test.com/sal",
+            "salary": {"from": 100000, "to": 150000, "currency": "RUR"}
+        }
+    
+>       vacancy = VacancyFactory.from_hh_api(data_with_salary)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_16_models_coverage.py:596: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'alternate_url': 'https://test.com/sal', 'id': 'sal_test', 'name': 'Job with Salary', 'salary': {'currency': 'RUR', 'from': 100000, 'to': 150000}}
+
+    @staticmethod
+    def from_hh_api(data: Dict[str, Any]) -> Vacancy:
+        """Создание вакансии из данных HeadHunter API"""
+        employer_data = data.get("employer", {})
+        salary_data = data.get("salary", {})
+        experience_data = data.get("experience", {})
+        employment_data = data.get("employment", {})
+        schedule_data = data.get("schedule", {})
+    
+>       return Vacancy(
+            id=str(data.get("id", str(uuid.uuid4()))),
+            title=data.get("name", ""),
+            url=data.get("alternate_url", ""),
+            employer=Employer(**employer_data) if employer_data else None,
+            salary=salary_data if salary_data else None,
+            experience=Experience(**experience_data) if experience_data else None,
+            employment=Employment(**employment_data) if employment_data else None,
+            schedule=Schedule(**schedule_data) if schedule_data else None,
+            area=data.get("area", {}).get("name") if isinstance(data.get("area"), dict) else data.get("area"),
+            requirements=data.get("snippet", {}).get("requirement") if isinstance(data.get("snippet"), dict) else None,
+            responsibilities=(
+                data.get("snippet", {}).get("responsibility") if isinstance(data.get("snippet"), dict) else None
+            ),
+            description=data.get("description"),
+            published_at=data.get("published_at"),
+            source="hh.ru",
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'id': 'sal_test', 'title...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'id': 'sal_test', 'title...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'id': 'sal_test', 'title...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+src/vacancies/models.py:551: ValidationError
+_____________________ TestVacancyFactory.test_factory_area_extraction ______________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7f2986c2df10>
+
+    def test_factory_area_extraction(self):
+        """Покрытие извлечения области из API данных"""
+        data_with_area = {
+            "id": "area_test",
+            "name": "Job in Area",
+            "alternate_url": "https://test.com/area",
+            "area": {"name": "Новосибирск"}
+        }
+    
+>       vacancy = VacancyFactory.from_hh_api(data_with_area)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_16_models_coverage.py:611: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'alternate_url': 'https://test.com/area', 'area': {'name': 'Новосибирск'}, 'id': 'area_test', 'name': 'Job in Area'}
+
+    @staticmethod
+    def from_hh_api(data: Dict[str, Any]) -> Vacancy:
+        """Создание вакансии из данных HeadHunter API"""
+        employer_data = data.get("employer", {})
+        salary_data = data.get("salary", {})
+        experience_data = data.get("experience", {})
+        employment_data = data.get("employment", {})
+        schedule_data = data.get("schedule", {})
+    
+>       return Vacancy(
+            id=str(data.get("id", str(uuid.uuid4()))),
+            title=data.get("name", ""),
+            url=data.get("alternate_url", ""),
+            employer=Employer(**employer_data) if employer_data else None,
+            salary=salary_data if salary_data else None,
+            experience=Experience(**experience_data) if experience_data else None,
+            employment=Employment(**employment_data) if employment_data else None,
+            schedule=Schedule(**schedule_data) if schedule_data else None,
+            area=data.get("area", {}).get("name") if isinstance(data.get("area"), dict) else data.get("area"),
+            requirements=data.get("snippet", {}).get("requirement") if isinstance(data.get("snippet"), dict) else None,
+            responsibilities=(
+                data.get("snippet", {}).get("responsibility") if isinstance(data.get("snippet"), dict) else None
+            ),
+            description=data.get("description"),
+            published_at=data.get("published_at"),
+            source="hh.ru",
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'id': 'area_test', 'titl...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'id': 'area_test', 'titl...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'id': 'area_test', 'titl...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+src/vacancies/models.py:551: ValidationError
+__________________ TestVacancyFactory.test_factory_description_extraction __________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7f2986c26990>
+
+    def test_factory_description_extraction(self):
+        """Покрытие извлечения описания из snippet"""
+        data_with_snippet = {
+            "id": "snippet_test",
+            "name": "Job with Snippet",
+            "alternate_url": "https://test.com/snippet",
+            "snippet": {
+                "requirement": "Python skills",
+                "responsibility": "Development tasks"
+            }
+        }
+    
+>       vacancy = VacancyFactory.from_hh_api(data_with_snippet)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_16_models_coverage.py:627: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'alternate_url': 'https://test.com/snippet', 'id': 'snippet_test', 'name': 'Job with Snippet', 'snippet': {'requirement': 'Python skills', 'responsibility': 'Development tasks'}}
+
+    @staticmethod
+    def from_hh_api(data: Dict[str, Any]) -> Vacancy:
+        """Создание вакансии из данных HeadHunter API"""
+        employer_data = data.get("employer", {})
+        salary_data = data.get("salary", {})
+        experience_data = data.get("experience", {})
+        employment_data = data.get("employment", {})
+        schedule_data = data.get("schedule", {})
+    
+>       return Vacancy(
+            id=str(data.get("id", str(uuid.uuid4()))),
+            title=data.get("name", ""),
+            url=data.get("alternate_url", ""),
+            employer=Employer(**employer_data) if employer_data else None,
+            salary=salary_data if salary_data else None,
+            experience=Experience(**experience_data) if experience_data else None,
+            employment=Employment(**employment_data) if employment_data else None,
+            schedule=Schedule(**schedule_data) if schedule_data else None,
+            area=data.get("area", {}).get("name") if isinstance(data.get("area"), dict) else data.get("area"),
+            requirements=data.get("snippet", {}).get("requirement") if isinstance(data.get("snippet"), dict) else None,
+            responsibilities=(
+                data.get("snippet", {}).get("responsibility") if isinstance(data.get("snippet"), dict) else None
+            ),
+            description=data.get("description"),
+            published_at=data.get("published_at"),
+            source="hh.ru",
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'id': 'snippet_test', 't...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'id': 'snippet_test', 't...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'id': 'snippet_test', 't...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+src/vacancies/models.py:551: ValidationError
+_________________ TestVacancyFactory.test_factory_superjob_salary_handling _________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7f2986c275d0>
+
+    def test_factory_superjob_salary_handling(self):
+        """Покрытие обработки зарплаты SuperJob"""
+        data_with_payment = {
+            "id": "sj_payment_test",
+            "profession": "SuperJob with Payment",
+            "link": "https://superjob.ru/payment",
+            "payment_from": 80000,
+            "payment_to": 120000,
+            "firm_name": "SJ Company"
+        }
+    
+>       vacancy = VacancyFactory.from_superjob_api(data_with_payment)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_16_models_coverage.py:643: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'firm_name': 'SJ Company', 'id': 'sj_payment_test', 'link': 'https://superjob.ru/payment', 'payment_from': 80000, ...}
+
+    @staticmethod
+    def from_superjob_api(data: Dict[str, Any]) -> Vacancy:
+        """Создание вакансии из данных SuperJob API"""
+        salary_data = None
+        if data.get("payment_from", 0) > 0 or data.get("payment_to", 0) > 0:
+            salary_data = {
+                "from": data.get("payment_from") if data.get("payment_from", 0) > 0 else None,
+                "to": data.get("payment_to") if data.get("payment_to", 0) > 0 else None,
+                "currency": "RUR",
+                "gross": False,
+            }
+    
+>       return Vacancy(
+            id=str(data.get("id", str(uuid.uuid4()))),
+            title=data.get("profession", ""),
+            url=data.get("link", ""),
+            employer=(
+                Employer(
+                    name=data.get("firm_name", "Не указана"),
+                    id=str(data.get("id_client", "")) if data.get("id_client") else None,
+                )
+                if data.get("firm_name")
+                else None
+            ),
+            salary=salary_data,
+            area=data.get("town", {}).get("title") if isinstance(data.get("town"), dict) else data.get("town"),
+            requirements=data.get("candidat"),
+            responsibilities=data.get("work"),
+            published_at=data.get("date_published"),
+            source="superjob.ru",
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'id': 'sj_payment_test',...'source': 'superjob.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'id': 'sj_payment_test',...'source': 'superjob.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'id': 'sj_payment_test',...'source': 'superjob.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+src/vacancies/models.py:582: ValidationError
+___________________ TestVacancyFactory.test_factory_empty_data_handling ____________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7f2986c268d0>
+
+    def test_factory_empty_data_handling(self):
+        """Покрытие обработки пустых данных"""
+        # Минимальные данные без опциональных полей
+        minimal_data = {
+            "id": "minimal_test",
+            "name": "Minimal Job",
+            "alternate_url": "https://test.com/minimal"
+        }
+    
+>       vacancy = VacancyFactory.from_hh_api(minimal_data)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_16_models_coverage.py:659: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'alternate_url': 'https://test.com/minimal', 'id': 'minimal_test', 'name': 'Minimal Job'}
+
+    @staticmethod
+    def from_hh_api(data: Dict[str, Any]) -> Vacancy:
+        """Создание вакансии из данных HeadHunter API"""
+        employer_data = data.get("employer", {})
+        salary_data = data.get("salary", {})
+        experience_data = data.get("experience", {})
+        employment_data = data.get("employment", {})
+        schedule_data = data.get("schedule", {})
+    
+>       return Vacancy(
+            id=str(data.get("id", str(uuid.uuid4()))),
+            title=data.get("name", ""),
+            url=data.get("alternate_url", ""),
+            employer=Employer(**employer_data) if employer_data else None,
+            salary=salary_data if salary_data else None,
+            experience=Experience(**experience_data) if experience_data else None,
+            employment=Employment(**employment_data) if employment_data else None,
+            schedule=Schedule(**schedule_data) if schedule_data else None,
+            area=data.get("area", {}).get("name") if isinstance(data.get("area"), dict) else data.get("area"),
+            requirements=data.get("snippet", {}).get("requirement") if isinstance(data.get("snippet"), dict) else None,
+            responsibilities=(
+                data.get("snippet", {}).get("responsibility") if isinstance(data.get("snippet"), dict) else None
+            ),
+            description=data.get("description"),
+            published_at=data.get("published_at"),
+            source="hh.ru",
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'id': 'minimal_test', 't...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'id': 'minimal_test', 't...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'id': 'minimal_test', 't...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+src/vacancies/models.py:551: ValidationError
+_____________________ TestVacancyFactory.test_factory_uuid_generation ______________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7f2986c25a10>
+
+    def test_factory_uuid_generation(self):
+        """Покрытие генерации UUID для вакансий без ID"""
+        # Данные без ID
+        data_no_id = {
+            "name": "Job without ID",
+            "alternate_url": "https://test.com/no-id"
+        }
+    
+>       vacancy = VacancyFactory.from_hh_api(data_no_id)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_16_models_coverage.py:674: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'alternate_url': 'https://test.com/no-id', 'name': 'Job without ID'}
+
+    @staticmethod
+    def from_hh_api(data: Dict[str, Any]) -> Vacancy:
+        """Создание вакансии из данных HeadHunter API"""
+        employer_data = data.get("employer", {})
+        salary_data = data.get("salary", {})
+        experience_data = data.get("experience", {})
+        employment_data = data.get("employment", {})
+        schedule_data = data.get("schedule", {})
+    
+>       return Vacancy(
+            id=str(data.get("id", str(uuid.uuid4()))),
+            title=data.get("name", ""),
+            url=data.get("alternate_url", ""),
+            employer=Employer(**employer_data) if employer_data else None,
+            salary=salary_data if salary_data else None,
+            experience=Experience(**experience_data) if experience_data else None,
+            employment=Employment(**employment_data) if employment_data else None,
+            schedule=Schedule(**schedule_data) if schedule_data else None,
+            area=data.get("area", {}).get("name") if isinstance(data.get("area"), dict) else data.get("area"),
+            requirements=data.get("snippet", {}).get("requirement") if isinstance(data.get("snippet"), dict) else None,
+            responsibilities=(
+                data.get("snippet", {}).get("responsibility") if isinstance(data.get("snippet"), dict) else None
+            ),
+            description=data.get("description"),
+            published_at=data.get("published_at"),
+            source="hh.ru",
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'id': 'c92f13d9-9f85-4a3...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'id': 'c92f13d9-9f85-4a3...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'id': 'c92f13d9-9f85-4a3...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+src/vacancies/models.py:551: ValidationError
+__________________ TestVacancyFactory.test_factory_published_at_handling ___________________
+
+self = <tests.test_16_models_coverage.TestVacancyFactory object at 0x7f2986c27250>
+
+    def test_factory_published_at_handling(self):
+        """Покрытие обработки даты публикации"""
+        data_with_date = {
+            "id": "date_test",
+            "name": "Job with Date",
+            "alternate_url": "https://test.com/date",
+            "published_at": "2023-01-01T12:00:00"
+        }
+    
+>       vacancy = VacancyFactory.from_hh_api(data_with_date)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_16_models_coverage.py:690: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'alternate_url': 'https://test.com/date', 'id': 'date_test', 'name': 'Job with Date', 'published_at': '2023-01-01T12:00:00'}
+
+    @staticmethod
+    def from_hh_api(data: Dict[str, Any]) -> Vacancy:
+        """Создание вакансии из данных HeadHunter API"""
+        employer_data = data.get("employer", {})
+        salary_data = data.get("salary", {})
+        experience_data = data.get("experience", {})
+        employment_data = data.get("employment", {})
+        schedule_data = data.get("schedule", {})
+    
+>       return Vacancy(
+            id=str(data.get("id", str(uuid.uuid4()))),
+            title=data.get("name", ""),
+            url=data.get("alternate_url", ""),
+            employer=Employer(**employer_data) if employer_data else None,
+            salary=salary_data if salary_data else None,
+            experience=Experience(**experience_data) if experience_data else None,
+            employment=Employment(**employment_data) if employment_data else None,
+            schedule=Schedule(**schedule_data) if schedule_data else None,
+            area=data.get("area", {}).get("name") if isinstance(data.get("area"), dict) else data.get("area"),
+            requirements=data.get("snippet", {}).get("requirement") if isinstance(data.get("snippet"), dict) else None,
+            responsibilities=(
+                data.get("snippet", {}).get("responsibility") if isinstance(data.get("snippet"), dict) else None
+            ),
+            description=data.get("description"),
+            published_at=data.get("published_at"),
+            source="hh.ru",
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'id': 'date_test', 'titl...:00', 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'id': 'date_test', 'titl...:00', 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'id': 'date_test', 'titl...:00', 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+src/vacancies/models.py:551: ValidationError
+__________________________ TestEdgeCases.test_nested_dict_access ___________________________
+
+self = <tests.test_16_models_coverage.TestEdgeCases object at 0x7f2986df6950>
+
+    def test_nested_dict_access(self):
+        """Покрытие глубокого доступа к вложенным данным"""
+        complex_data = {
+            "id": "complex_test",
+            "name": "Complex Job",
+            "alternate_url": "https://test.com/complex",
+            "employer": {
+                "name": "Nested Company",
+                "id": "nested_123"
+            },
+            "snippet": {
+                "requirement": "Complex requirement",
+                "responsibility": None  # None значение
+            }
+        }
+    
+>       vacancy = VacancyFactory.from_hh_api(complex_data)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_16_models_coverage.py:769: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = {'alternate_url': 'https://test.com/complex', 'employer': {'id': 'nested_123', 'name': 'Nested Company'}, 'id': 'complex_test', 'name': 'Complex Job', ...}
+
+    @staticmethod
+    def from_hh_api(data: Dict[str, Any]) -> Vacancy:
+        """Создание вакансии из данных HeadHunter API"""
+        employer_data = data.get("employer", {})
+        salary_data = data.get("salary", {})
+        experience_data = data.get("experience", {})
+        employment_data = data.get("employment", {})
+        schedule_data = data.get("schedule", {})
+    
+>       return Vacancy(
+            id=str(data.get("id", str(uuid.uuid4()))),
+            title=data.get("name", ""),
+            url=data.get("alternate_url", ""),
+            employer=Employer(**employer_data) if employer_data else None,
+            salary=salary_data if salary_data else None,
+            experience=Experience(**experience_data) if experience_data else None,
+            employment=Employment(**employment_data) if employment_data else None,
+            schedule=Schedule(**schedule_data) if schedule_data else None,
+            area=data.get("area", {}).get("name") if isinstance(data.get("area"), dict) else data.get("area"),
+            requirements=data.get("snippet", {}).get("requirement") if isinstance(data.get("snippet"), dict) else None,
+            responsibilities=(
+                data.get("snippet", {}).get("responsibility") if isinstance(data.get("snippet"), dict) else None
+            ),
+            description=data.get("description"),
+            published_at=data.get("published_at"),
+            source="hh.ru",
+        )
+E       pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+E       vacancy_id
+E         Field required [type=missing, input_value={'id': 'complex_test', 't...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       name
+E         Field required [type=missing, input_value={'id': 'complex_test', 't...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+E       alternate_url
+E         Field required [type=missing, input_value={'id': 'complex_test', 't...None, 'source': 'hh.ru'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.11/v/missing
+
+src/vacancies/models.py:551: ValidationError
+================================= short test summary info ==================================
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_from_hh_api_minimal - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_from_hh_api_full - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_from_superjob_api - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_experience_handling - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_employment_handling - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_schedule_handling - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_salary_handling - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_area_extraction - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_description_extraction - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_superjob_salary_handling - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_empty_data_handling - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_uuid_generation - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestVacancyFactory::test_factory_published_at_handling - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+FAILED tests/test_16_models_coverage.py::TestEdgeCases::test_nested_dict_access - pydantic_core._pydantic_core.ValidationError: 3 validation errors for Vacancy
+============================== 14 failed, 50 passed in 1.22s ===============================
+~/workspace$ 
