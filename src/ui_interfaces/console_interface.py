@@ -1,5 +1,5 @@
 import logging
-from typing import Any, List, Optional
+from typing import List, Optional, Any
 
 from src.api_modules.unified_api import UnifiedAPI
 from src.config.ui_config import ui_pagination_config
