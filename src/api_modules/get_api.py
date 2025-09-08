@@ -8,7 +8,7 @@
 
 import os
 from time import sleep
-from typing import Dict, Optional
+from typing import Dict, Optional, Any
 
 import requests
 from tqdm import tqdm
@@ -33,7 +33,7 @@ class APIConnector:
         """
         self.config = config or APIConfig()
         self.headers = {"User-Agent": self.config.user_agent, "Accept": "application/json"}
-        self._progress = None
+        self._progress: Optional[Any] = None
 
     def _init_progress(self, total: int, desc: str) -> None:
         """
@@ -43,15 +43,14 @@ class APIConnector:
             total: Общее количество операций
             desc: Описание операции
         """
-        tqdm_params = {
-            "total": total,
-            "desc": desc,
-            "unit": "req",
-            "bar_format": "{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]",
-            "dynamic_ncols": True,
-            "disable": os.getenv("DISABLE_TQDM") == "1",  # Автоматическое отключение
-        }
-        self._progress = tqdm(**tqdm_params)
+        self._progress = tqdm(
+            total=total,
+            desc=desc,
+            unit="req",
+            bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]",
+            dynamic_ncols=True,
+            disable=os.getenv("DISABLE_TQDM") == "1"
+        )
 
     def _update_progress(self, n: int = 1) -> None:
         """
@@ -76,7 +75,7 @@ class APIConnector:
     def __connect(
         self,
         url: str,
-        params: Dict,
+        params: Optional[Dict] = None,
         delay: float = 0.15,
         show_progress: bool = False,
         progress_desc: Optional[str] = None,
@@ -105,7 +104,7 @@ class APIConnector:
             sleep(delay)
             response = requests.get(
                 url,
-                params={k: v for k, v in params.items() if v is not None},
+                params={k: v for k, v in (params or {}).items() if v is not None},
                 headers=self.headers,
                 timeout=self.config.timeout,
             )
@@ -115,7 +114,7 @@ class APIConnector:
             if response.status_code == 429:
                 retry_after = int(response.headers.get("Retry-After", 1))
                 sleep(retry_after)
-                return self.__connect(url, params, delay, show_progress, progress_desc)
+                return self._APIConnector__connect(url, params, delay, show_progress, progress_desc)
 
             response.raise_for_status()
             return response.json()
@@ -150,4 +149,4 @@ class APIConnector:
         Returns:
             Dict: Ответ API
         """
-        return self._APIConnector__connect(url, params)
+        return self._APIConnector__connect(url, params or {})
