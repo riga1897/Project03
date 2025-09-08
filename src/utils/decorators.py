@@ -66,8 +66,9 @@ def simple_cache(ttl: Optional[int] = None, max_size: int = 1000) -> Callable[[C
                 "ttl": ttl if ttl is not None else EnvLoader.get_env_var_int("CACHE_TTL", 3600),
             }
 
-        wrapper.clear_cache = clear_cache
-        wrapper.cache_info = cache_info
+        # Добавляем атрибуты с правильной типизацией
+        setattr(wrapper, 'clear_cache', clear_cache)
+        setattr(wrapper, 'cache_info', cache_info)
         return wrapper
 
     return decorator

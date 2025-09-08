@@ -27,7 +27,7 @@ class VacancyOperations:
             if v.salary
             and (
                 (isinstance(v.salary, dict) and (v.salary.get("from") or v.salary.get("to")))
-                or (hasattr(v.salary, "salary_from") and (v.salary.salary_from or v.salary.salary_to))
+                or (hasattr(v.salary, "amount_from") and (v.salary.amount_from or v.salary.amount_to))
             )
         ]
 

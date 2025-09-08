@@ -168,21 +168,5 @@ class HHParser(BaseParser):
     def convert_to_unified_format(hh_vacancy: Vacancy) -> Vacancy:
         """Конвертация HH вакансии в унифицированный формат"""
         # Для HH: обязанности = responsibility, требования = requirement
-        return Vacancy(
-            vacancy_id=hh_vacancy.vacancy_id,
-            title=hh_vacancy.title,
-            url=hh_vacancy.url,
-            salary=hh_vacancy.salary.to_dict() if hh_vacancy.salary else None,
-            description=hh_vacancy.description,
-            requirements=hh_vacancy.requirements,  # requirement из snippet
-            responsibilities=hh_vacancy.responsibilities,  # responsibility из snippet
-            employer=hh_vacancy.employer,
-            experience=hh_vacancy.experience,
-            employment=hh_vacancy.employment,
-            schedule=hh_vacancy.schedule,
-            published_at=hh_vacancy.published_at.isoformat() if hh_vacancy.published_at and hasattr(hh_vacancy.published_at, "isoformat") else (str(hh_vacancy.published_at) if hh_vacancy.published_at else None),
-            skills=hh_vacancy.skills,
-            detailed_description=hh_vacancy.detailed_description,
-            benefits=hh_vacancy.benefits,
-            source=hh_vacancy.source or "hh.ru",
-        )
+        # Просто возвращаем исходную вакансию, так как она уже в правильном формате
+        return hh_vacancy

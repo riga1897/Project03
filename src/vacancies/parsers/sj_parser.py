@@ -56,7 +56,12 @@ class SuperJobParser(BaseParser):
         # Обрабатываем зарплату для корректного отображения
         salary_dict = None
         if sj_vacancy.salary:
-            salary_dict = sj_vacancy.salary.to_dict()
+            if hasattr(sj_vacancy.salary, 'to_dict'):
+                salary_dict = sj_vacancy.salary.to_dict()
+            elif hasattr(sj_vacancy.salary, 'model_dump'):
+                salary_dict = sj_vacancy.salary.model_dump()
+            else:
+                salary_dict = sj_vacancy.salary
             # Исправляем период для SuperJob
             if salary_dict and "period" in salary_dict:
                 if salary_dict["period"] in ["месяц", "month"]:

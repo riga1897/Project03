@@ -235,7 +235,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             logger.error(f"Ошибка получения компаний с SuperJob: {str(e)}")
             return []
 
-    def _deduplicate_vacancies(self, vacancies: List[Dict], source: str = None) -> List[Dict]:
+    def _deduplicate_vacancies(self, vacancies: List[Dict], source: Optional[str] = None) -> List[Dict]:
         """
         Удаление дублирующихся вакансий SJ с фильтрацией по целевым компаниям
 
@@ -342,11 +342,11 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
                 logger.error(f"Ошибка SuperJob API: {e}")
             return []
 
-    def clear_cache(self, api_prefix: str) -> None:
+    def clear_cache(self, source: str) -> None:
         """
         Очищает кэш API (используя общий механизм как в HH API)
 
         Удаляет все сохраненные ответы API из кэша для освобождения места
         и обеспечения получения актуальных данных при следующих запросах.
         """
-        super().clear_cache(api_prefix)
+        super().clear_cache(source)

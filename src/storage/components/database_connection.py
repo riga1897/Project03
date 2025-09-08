@@ -80,8 +80,10 @@ class DatabaseConnection:
     def _create_new_connection(self) -> None:
         """Создание нового подключения к базе данных"""
         try:
-            self._connection = psycopg2.connect(**self._connection_params, cursor_factory=RealDictCursor)
-            self._connection.autocommit = False
+            connection = psycopg2.connect(**self._connection_params, cursor_factory=RealDictCursor)
+            self._connection = connection
+            if self._connection is not None:
+                self._connection.autocommit = False
             logger.debug("Установлено новое подключение к базе данных")
 
         except PsycopgError as e:
