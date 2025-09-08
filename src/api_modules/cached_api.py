@@ -41,6 +41,9 @@ class CachedAPI(BaseJobAPI, ABC):
         super().__init__()
         self.cache_dir = Path(cache_dir)
         self._init_cache()
+        # Инициализируем connector для API запросов
+        from .get_api import APIConnector
+        self.connector = APIConnector()
 
     def _init_cache(self) -> None:
         """

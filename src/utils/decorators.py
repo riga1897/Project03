@@ -6,7 +6,7 @@ from typing import Any, Callable, Dict, Optional, Tuple
 from .env_loader import EnvLoader
 
 
-def simple_cache(ttl: Optional[int] = None, max_size: int = 1000) -> Callable:
+def simple_cache(ttl: Optional[int] = None, max_size: int = 1000) -> Callable[[Callable[..., Any]], Any]:
     """
     Декоратор для кэширования результатов функций в памяти с ограничением размера
     :param ttl: Время жизни кэша в секундах (по умолчанию 1 час)
@@ -14,7 +14,7 @@ def simple_cache(ttl: Optional[int] = None, max_size: int = 1000) -> Callable:
     :return: Декорированная функция
     """
 
-    def decorator(func: Callable) -> Callable:
+    def decorator(func: Callable[..., Any]) -> Any:
         """Внутренняя функция-декоратор для кэширования."""
         cache: Dict[Tuple, Tuple[float, Any]] = {}
         access_times: Dict[Tuple, float] = {}  # Для LRU очистки
