@@ -5,7 +5,7 @@
 """
 
 import logging
-from typing import Any, List
+from typing import Any, List, Optional
 
 from src.api_modules.unified_api import UnifiedAPI
 from src.ui_interfaces.source_selector import SourceSelector
