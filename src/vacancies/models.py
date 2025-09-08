@@ -22,6 +22,7 @@ from typing import Any, Dict, Optional, Union
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from src.utils.salary import Salary
+from src.vacancies.abstract import AbstractVacancy
 
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
@@ -284,7 +285,7 @@ class Schedule(BaseModel):
     model_config = ConfigDict(validate_assignment=True)
 
 
-class Vacancy(BaseModel):
+class Vacancy(BaseModel, AbstractVacancy):
     """Основная модель вакансии с Pydantic валидацией"""
 
     # Основная информация
@@ -314,6 +315,18 @@ class Vacancy(BaseModel):
     area: Optional[str] = Field(None, description="Регион/местоположение вакансии")
     source: Optional[str] = Field(None, description="Источник вакансии")
     company_id: Optional[int] = Field(None, description="ID компании в БД (для связи с таблицей companies)")
+    
+    # Дополнительные атрибуты для совместимости
+    skills: Optional[list] = Field(default=None, description="Ключевые навыки")
+    benefits: Optional[str] = Field(default=None, description="Льготы и бонусы")
+    company_name: Optional[str] = Field(default=None, description="Название компании")
+    _employer_name: Optional[str] = Field(default=None, description="Внутреннее название работодателя")
+    
+    # Property для совместимости с AbstractVacancy
+    @property
+    def vacancy_id(self) -> str:
+        """Альтернативный способ доступа к идентификатору вакансии"""
+        return self.id
 
     @field_validator("title", mode="before")
     @classmethod
