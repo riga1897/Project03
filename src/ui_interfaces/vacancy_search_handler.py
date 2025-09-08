@@ -219,14 +219,24 @@ class VacancySearchHandler:
             if len(vacancies) > 5:
                 logger.debug(f"  ... и еще {len(vacancies) - 5} вакансий")
 
+        # Проверяем объект storage перед вызовом
+        logger.debug(f"Тип storage объекта: {type(self.storage)}")
+        logger.debug(f"Имеет ли метод check_vacancies_exist_batch: {hasattr(self.storage, 'check_vacancies_exist_batch')}")
+
         # Используем batch-метод для проверки дубликатов
-        existence_map = self.storage.check_vacancies_exist_batch(vacancies)
+        try:
+            existence_map = self.storage.check_vacancies_exist_batch(vacancies)
+            logger.debug(f"check_vacancies_exist_batch успешно выполнен, результат: {type(existence_map)}")
+        except Exception as e:
+            logger.error(f"Ошибка при вызове check_vacancies_exist_batch: {e}")
+            logger.error(f"Тип ошибки: {type(e)}")
+            existence_map = {}
 
         # ДОБАВЛЕНО: Логирование результата проверки
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug("Результат check_vacancies_exist_batch:")
-            logger.debug(f"  Тип: {type(existence_map)}")
-            if isinstance(existence_map, dict):
+        if isinstance(existence_map, dict):
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug("Результат check_vacancies_exist_batch:")
+                logger.debug(f"  Тип: {type(existence_map)}")
                 found_count = sum(1 for exists in existence_map.values() if exists)
                 logger.debug(f"  Найдено дубликатов: {found_count} из {len(existence_map)}")
                 if found_count > 0:
@@ -236,10 +246,8 @@ class VacancySearchHandler:
                             logger.debug(f"    {vacancy_id}: НАЙДЕН")
         else:
             print("  ❌ ОШИБКА: Не словарь!")
-
-        # Защитная проверка типа результата
-        if not isinstance(existence_map, dict):
             logger.error(f"check_vacancies_exist_batch вернул неожиданный тип: {type(existence_map)}")
+            logger.error(f"Значение: {existence_map}")
             # Если не словарь, считаем все вакансии новыми
             existence_map = {}
 

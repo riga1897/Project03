@@ -1118,10 +1118,16 @@ class PostgresSaver(AbstractVacancyStorage):
         if not vacancies:
             return {}
 
-        connection = self._get_connection()
+        try:
+            connection = self._get_connection()
+        except Exception as e:
+            logger.error(f"Ошибка подключения к БД в check_vacancies_exist_batch: {e}")
+            # Возвращаем словарь с False для всех вакансий
+            return {v.id: False for v in vacancies}
 
         try:
             cursor = connection.cursor()
+            logger.debug(f"Проверяем {len(vacancies)} вакансий на существование в БД")
 
             # Создаем временную таблицу для batch-проверки
             cursor.execute(
@@ -1154,19 +1160,23 @@ class PostgresSaver(AbstractVacancyStorage):
             )
 
             result = {row[0]: row[1] for row in cursor.fetchall()}
+            logger.debug(f"Результат проверки: {len(result)} записей, тип: {type(result)}")
 
             connection.commit()
             return result
 
-        except PsycopgError as e:
+        except Exception as e:
             logger.error(f"Ошибка batch проверки через временную таблицу: {e}")
-            if not connection.closed:
+            logger.error(f"Тип ошибки: {type(e)}")
+            if "connection" in locals() and not connection.closed:
                 try:
                     connection.rollback()
                 except Exception:
                     pass
             # В случае ошибки возвращаем словарь с False для всех
-            return {v.id: False for v in vacancies}
+            fallback_result = {v.id: False for v in vacancies}
+            logger.debug(f"Возвращаем fallback результат: {type(fallback_result)}")
+            return fallback_result
         finally:
             if "cursor" in locals():
                 cursor.close()
