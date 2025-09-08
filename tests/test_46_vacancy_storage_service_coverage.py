@@ -353,9 +353,9 @@ class TestVacancyStorageServiceLoading:
             "description": "Great job",
             "requirements": "Python skills",
             "responsibilities": "Code development",
-            "experience": "3-5 years",
-            "employment": "Full-time",
-            "schedule": "Full day",
+            "experience": None,  # Нужно None, а не строка для Pydantic
+            "employment": None,
+            "schedule": None,
             "area": "Moscow",
             "source": "hh.ru",
             "published_at": datetime.now(),
@@ -366,8 +366,8 @@ class TestVacancyStorageServiceLoading:
         
         assert result is not None
         assert result.vacancy_id == "123"
-        assert result.name == "Python Developer"
-        assert result.alternate_url == "http://example.com/job"
+        assert result.title == "Python Developer"  # Поле называется title, не name
+        assert result.url == "http://example.com/job"  # И url, не alternate_url
 
 
 class TestVacancyStorageServiceUtilityMethods:
