@@ -181,7 +181,9 @@ class VacancySearchHandler:
             print(f"Сохранение {len(vacancies)} вакансий...")
 
             # Сохраняем новые вакансии оптимизированным методом
-            update_messages = self.storage.add_vacancy_batch_optimized(vacancies)
+            from src.vacancies.abstract import AbstractVacancy
+            abstract_vacancies: List[AbstractVacancy] = vacancies
+            update_messages = self.storage.add_vacancy_batch_optimized(abstract_vacancies)
 
             if update_messages:
                 for message in update_messages:
@@ -227,7 +229,9 @@ class VacancySearchHandler:
 
         # Используем batch-метод для проверки дубликатов
         try:
-            existence_map = self.storage.check_vacancies_exist_batch(vacancies)
+            from src.vacancies.abstract import AbstractVacancy
+            abstract_vacancies: List[AbstractVacancy] = vacancies
+            existence_map = self.storage.check_vacancies_exist_batch(abstract_vacancies)
             logger.debug(f"check_vacancies_exist_batch успешно выполнен, результат: {type(existence_map)}")
         except Exception as e:
             logger.error(f"Ошибка при вызове check_vacancies_exist_batch: {e}")

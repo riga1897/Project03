@@ -55,7 +55,7 @@ class UnifiedAPI:
         if "hh" in sources:
             try:
                 logger.info(f"Получение вакансий с HH.ru по запросу: '{search_query}'")
-                hh_data = self.hh_api.get_vacancies(search_query, **kwargs)
+                hh_data = self.hh_api.get_vacancies(search_query, **{k: v for k, v in kwargs.items() if isinstance(v, (str, int, float, bool, type(None)))}) if kwargs else self.hh_api.get_vacancies(search_query)
                 if hh_data:
                     all_vacancies.extend(hh_data)
                     logger.info(f"HH.ru: получено {len(hh_data)} вакансий")
@@ -360,12 +360,14 @@ class UnifiedAPI:
     def get_all_vacancies(self, query: str, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:
         """Получение всех вакансий из всех доступных источников"""
         # Используем переданные sources или все доступные по умолчанию
-        sources = kwargs.pop("sources", None) or self.get_available_sources()
+        sources = kwargs.pop("sources", None)
+        if sources is None:
+            sources = self.get_available_sources()
         return self.get_vacancies_from_sources(query, sources=sources, **kwargs)
 
     def get_vacancies_from_all_sources(self, query: str, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:
         """Получение вакансий из всех источников"""
-        return self.get_all_vacancies(query, sources=["hh", "sj"], **kwargs)
+        return self.get_all_vacancies(query, **{**kwargs, "sources": ["hh", "sj"]})
 
     def get_vacancies_from_source(
         self, search_query: str, source: str, **kwargs: dict[str, Any]
