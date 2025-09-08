@@ -751,7 +751,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
             if limit:
                 query += " LIMIT %s"
-                params.append(str(limit))
+                params.append(limit)
 
             if offset > 0:
                 query += " OFFSET %s"
@@ -1303,7 +1303,7 @@ class PostgresSaver(AbstractVacancyStorage):
 
             if limit:
                 query += " LIMIT %s"
-                params.append(str(limit))
+                params.append(limit)
 
             cursor.execute(query, params)
             results = cursor.fetchall()
