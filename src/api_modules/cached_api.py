@@ -71,7 +71,7 @@ class CachedAPI(BaseJobAPI, ABC):
         # Возвращаем пустой ответ - данных в кэше нет, нужно загрузить
         return {}
 
-    def _connect_to_api(self, url: str, params: Dict, api_prefix: str) -> Dict:
+    def __connect_to_api(self, url: str, params: Dict, api_prefix: str) -> Dict:
         """
         Подключение к API с многоуровневым кэшированием
 
