@@ -578,14 +578,21 @@ class TestVacancyOperationsIntegration:
         min_filtered = VacancyOperations.filter_vacancies_by_min_salary(with_salary, 75000)
         assert len(min_filtered) == 3  # Senior, Middle, Lead
         
-        # 3. Фильтруем по максимальной зарплате
+        # 3. Фильтруем по максимальной зарплате  
         max_filtered = VacancyOperations.filter_vacancies_by_max_salary(min_filtered, 180000)
-        assert len(max_filtered) == 2  # Senior, Middle (Lead исключается)
+        # С новой правильной логикой: проверяем что минимальная зарплата <= критерию
+        # Senior: min=150,000 <= 180,000 ✅
+        # Middle: min=80,000 <= 180,000 ✅  
+        # Lead: min=180,000 <= 180,000 ✅ (на границе)
+        assert len(max_filtered) == 3  # Все три проходят
         
-        # 4. Сортируем по убыванию зарплаты
+        # 4. Сортируем по убыванию зарплаты  
         sorted_vacancies = VacancyOperations.sort_vacancies_by_salary(max_filtered)
-        assert sorted_vacancies[0].title == "Senior"  # 175000
-        assert sorted_vacancies[1].title == "Middle"  # 100000
+        # С тремя вакансиями порядок по максимальной зарплате:
+        # Lead: max=250,000, Senior: max=200,000, Middle: max=120,000
+        assert sorted_vacancies[0].title == "Lead"    # 250000 (максимум)
+        assert sorted_vacancies[1].title == "Senior"  # 200000
+        assert sorted_vacancies[2].title == "Middle"  # 120000
 
     def test_search_and_filter_combination(self):
         """Покрытие: комбинация поиска и фильтрации"""

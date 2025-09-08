@@ -134,8 +134,12 @@ class TestAPIDataFilter:
         ]
         
         result = filter_instance.filter_by_salary_range(data, min_salary=80000, max_salary=160000)
-        assert len(result) == 1  # Только Senior (175000 среднее НЕ попадает в диапазон), Middle (120000) попадает
-        assert result[0]["id"] == "3"  # Middle в диапазоне
+        # С новой правильной логикой: все вакансии подходят
+        # Junior: max=80,000 >= 80,000 И min=60,000 <= 160,000 ✅
+        # Senior: max=200,000 >= 80,000 И min=150,000 <= 160,000 ✅  
+        # Middle: max=140,000 >= 80,000 И min=100,000 <= 160,000 ✅
+        assert len(result) == 3  
+        assert {item["id"] for item in result} == {"1", "2", "3"}
 
     def test_filter_by_salary_range_no_max_salary(self):
         """Покрытие: фильтрация только по минимальной зарплате"""
