@@ -44,7 +44,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
         self.connector = APIConnector(api_config)
 
         # Настраиваем специфичные для SJ заголовки
-        api_key = EnvLoader.get_env_var("SUPERJOB_API_KEY", "v3.r.137440105.example.test_tool")
+        api_key = EnvLoader.get_env_var("SUPERJOB_API_KEY", "v3.r.137440105.example.test_tool") or "v3.r.137440105.example.test_tool"
         self.connector.headers.update({"X-Api-App-Id": api_key, "User-Agent": "VacancySearchApp/1.0"})
 
         # Инициализируем общие компоненты как в HH API
@@ -98,7 +98,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
         """
         try:
             # Делаем запрос к SuperJob API
-            data = self.connector.connect(url, params)
+            data = self.connector.connect(url, params or {})
             return data
 
         except Exception as e:
@@ -287,7 +287,8 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
                     try:
                         from src.utils.vacancy_stats import VacancyStats
 
-                        VacancyStats.display_company_stats(target_vacancies, "SuperJob - Целевые компании")
+                        stats = VacancyStats()
+                        stats.display_company_stats(target_vacancies)
                     except Exception as e:
                         logger.warning(f"Ошибка при отображении статистики: {e}")
 
