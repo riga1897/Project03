@@ -4,7 +4,6 @@
 """
 
 import logging
-import os
 from typing import Any, Optional
 
 from src.storage.db_connection_config import get_db_connection_params
