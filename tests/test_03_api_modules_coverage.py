@@ -112,8 +112,8 @@ class TestCachedAPI:
         # Тестируем метод через декоратор, используя простые типы для кэш-ключа
         # Передаем простые hashable параметры
         result = api._cached_api_request("http://test.com", "test_params", "test")
-        # Метод возвращает None если данных в кэше нет
-        assert result is None
+        # Метод возвращает пустой словарь если данных в кэше нет
+        assert result == {}
 
 
 class TestAPIConnector:
