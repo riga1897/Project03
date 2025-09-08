@@ -67,8 +67,8 @@ class CachedAPI(BaseJobAPI, ABC):
         Returns:
             Dict: Ответ API или None если данных нет в кэше
         """
-        # Возвращаем None - данных в кэше нет, нужно загрузить
-        return None
+        # Возвращаем пустой ответ - данных в кэше нет, нужно загрузить
+        return {}
 
     def _connect_to_api(self, url: str, params: Dict, api_prefix: str) -> Dict:
         """

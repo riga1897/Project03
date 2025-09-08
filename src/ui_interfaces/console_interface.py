@@ -20,9 +20,11 @@ from src.vacancies.models import Vacancy
 try:
     from src.storage.db_manager import DBManager
     from src.utils.db_manager_demo import DBManagerDemo
+    DBManager_class = DBManager
+    DBManagerDemo_class = DBManagerDemo
 except ImportError:
-    DBManager = None
-    DBManagerDemo = None
+    DBManager_class = None  # type: ignore
+    DBManagerDemo_class = None  # type: ignore
 
 
 logger = logging.getLogger(__name__)
@@ -65,10 +67,10 @@ class UserInterface:
 
         # DB Manager для демонстрации
         self.db_manager = db_manager
-        if self.db_manager and DBManagerDemo:
-            self.demo = DBManagerDemo(self.db_manager)
+        if self.db_manager and DBManagerDemo_class:
+            self.demo = DBManagerDemo_class(self.db_manager)
         else:
-            self.demo = None
+            self.demo = None  # type: ignore
 
     def run(self) -> None:
         """Основной цикл взаимодействия с пользователем"""

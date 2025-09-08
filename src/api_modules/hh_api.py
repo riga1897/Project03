@@ -189,7 +189,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             # Получаем все страницы
             if total_pages > 0:
                 results = self._paginator.paginate(
-                    fetch_func=lambda p: self.get_vacancies_page(search_query, p, **kwargs), total_pages=total_pages
+                    fetch_func=lambda p: self.get_vacancies_page(search_query or "", p, **kwargs), total_pages=total_pages
                 )
             else:
                 results = []

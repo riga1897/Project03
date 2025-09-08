@@ -361,13 +361,15 @@ class UnifiedAPI:
     def get_all_vacancies(self, query: str, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:
         """Получение всех вакансий из всех доступных источников"""
         # Используем переданные sources или все доступные по умолчанию
-        sources = kwargs.pop("sources", None)
-        if sources is None:
-            sources = self.get_available_sources()
-        elif not isinstance(sources, list):
-            sources = [sources] if isinstance(sources, str) else self.get_available_sources()
-        # Ensure sources is always List[str]
-        validated_sources: List[str] = sources if isinstance(sources, list) else self.get_available_sources()
+        sources_input = kwargs.pop("sources", None)
+        if sources_input is None:
+            validated_sources = self.get_available_sources()
+        elif isinstance(sources_input, list):
+            validated_sources = sources_input
+        elif isinstance(sources_input, str):
+            validated_sources = [sources_input]
+        else:
+            validated_sources = self.get_available_sources()
         return self.get_vacancies_from_sources(query, sources=validated_sources, **kwargs)
 
     def get_vacancies_from_all_sources(self, query: str, **kwargs: dict[str, Any]) -> List[Dict[str, Any]]:

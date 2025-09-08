@@ -60,15 +60,15 @@ class DatabaseConfig:
             Dict[str, str]: Параметры подключения
         """
         params = {
-            "host": self.default_config["host"],
-            "port": self.default_config["port"],
-            "database": self.default_config["database"],
-            "user": self.default_config["username"],
-            "password": self.default_config["password"],
+            "host": self.default_config["host"] or "localhost",
+            "port": self.default_config["port"] or "5432",
+            "database": self.default_config["database"] or "job_search_app",
+            "user": self.default_config["username"] or "postgres",
+            "password": self.default_config["password"] or "",
         }
 
         # Добавляем SSL параметры если они есть в конфигурации
-        if "sslmode" in self.default_config:
+        if "sslmode" in self.default_config and self.default_config["sslmode"]:
             params["sslmode"] = self.default_config["sslmode"]
 
         return params

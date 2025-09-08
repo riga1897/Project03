@@ -74,7 +74,7 @@ class SJAPIConfig:
         from src.utils.env_loader import EnvLoader
         api_key = EnvLoader.get_env_var("SUPERJOB_API_KEY", "")
         # Проверяем что ключ есть и не является тестовым 
-        return bool(api_key) and api_key != "test_tool_key" and len(api_key) > 10
+        return bool(api_key) and api_key != "test_tool_key" and len(api_key or "") > 10
 
     def save_token(self, token: str) -> None:
         """Сохранить токен в файл"""

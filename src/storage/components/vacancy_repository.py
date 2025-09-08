@@ -150,7 +150,9 @@ class VacancyRepository(AbstractVacancyStorage):
                         vacancy = Vacancy.from_dict(vacancy_data)
                         vacancies.append(vacancy)
 
-                    return vacancies
+                    # Type casting для совместимости с AbstractVacancy
+                    from typing import cast
+                    return cast(List[AbstractVacancy], vacancies)
 
         except Exception as e:
             logger.error(f"Ошибка получения вакансий: {e}")
