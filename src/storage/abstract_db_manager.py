@@ -5,6 +5,15 @@ from typing import Any, Dict, List, Optional, Tuple
 class AbstractDBManager(ABC):
     """Абстрактный класс для менеджеров базы данных"""
 
+    @abstractmethod  
+    def _get_connection(self) -> Any:
+        """Получить подключение к базе данных
+        
+        Returns:
+            Подключение к базе данных
+        """
+        pass
+
     @abstractmethod
     def get_companies_and_vacancies_count(self) -> List[Tuple[str, int]]:
         """
