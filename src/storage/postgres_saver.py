@@ -456,9 +456,10 @@ class PostgresSaver(AbstractVacancyStorage):
 
                 # Унифицированная обработка area для сохранения в БД
                 try:
-                    from utils.data_normalizers import normalize_area_data
-                except ImportError:
                     from src.utils.data_normalizers import normalize_area_data
+                except ImportError:
+                    # Fallback for backwards compatibility
+                    from utils.data_normalizers import normalize_area_data
                 area_str = normalize_area_data(vacancy.area)
 
                 # Обработка полей объектов в строки для БД
