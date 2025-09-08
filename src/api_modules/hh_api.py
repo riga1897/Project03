@@ -101,7 +101,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             search_query_lower = search_query.lower() if search_query else search_query
             params = self._config.hh_config.get_params(text=search_query_lower, page=page, **kwargs)
 
-            data = self._CachedAPI__connect_to_api(self.BASE_URL, params, "hh")
+            data = self._connect_to_api(self.BASE_URL, params, "hh")
             items = data.get("items", [])
 
             # Добавляем источник к каждой вакансии и валидируем
@@ -140,7 +140,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             initial_params = self._config.hh_config.get_params(
                 text=search_query.lower() if search_query else "", page=0, per_page=1, **kwargs
             )
-            initial_data = self._CachedAPI__connect_to_api(self.BASE_URL, initial_params, "hh")
+            initial_data = self._connect_to_api(self.BASE_URL, initial_params, "hh")
 
             found_vacancies = initial_data.get("found", 0)
             if not found_vacancies:
@@ -257,7 +257,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
 
             # Получаем метаданные для определения количества страниц
             initial_params = self._config.hh_config.get_params(text=search_query_lower, page=0, per_page=1, **kwargs)
-            initial_data = self._CachedAPI__connect_to_api(self.BASE_URL, initial_params, "hh")
+            initial_data = self._connect_to_api(self.BASE_URL, initial_params, "hh")
 
             found_vacancies = initial_data.get("found", 0)
             if not found_vacancies:
@@ -316,7 +316,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             search_query_lower = search_query.lower() if search_query else ""
             params = self._config.hh_config.get_params(text=search_query_lower, page=page, **kwargs)
 
-            data = self._CachedAPI__connect_to_api(self.BASE_URL, params, "hh")
+            data = self._connect_to_api(self.BASE_URL, params, "hh")
             items = data.get("items", [])
 
             # Добавляем источник к каждой вакансии и валидируем

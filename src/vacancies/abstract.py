@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 
 class AbstractVacancy(ABC):
@@ -9,6 +9,28 @@ class AbstractVacancy(ABC):
     Конкретные реализации должны предоставить все необходимые атрибуты
     как обычные поля или свойства.
     """
+
+    # Основные атрибуты интерфейса
+    id: str
+    vacancy_id: str
+    title: str
+    url: str
+    description: Optional[str]
+    requirements: Optional[str]
+    responsibilities: Optional[str]
+    
+    # Связанные объекты
+    employer: Optional[Any]
+    salary: Optional[Any]
+    experience: Optional[Any]
+    employment: Optional[Any]
+    schedule: Optional[Any]
+    
+    # Метаинформация
+    area: Optional[str]
+    source: Optional[str]
+    published_at: Optional[str]
+    company_id: Optional[int]
 
     @abstractmethod
     def __init__(self) -> None:

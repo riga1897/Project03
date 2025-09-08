@@ -863,7 +863,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 if company_name:
                     vacancy.company_name = company_name
                     # Для отладки - также сохраняем название компании напрямую
-                    vacancy._employer_name = company_name
+                    vacancy.employer_name = company_name
 
                 vacancies.append(vacancy)
 
