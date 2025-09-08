@@ -44,10 +44,19 @@ class TestSimpleDBAdapter:
 
     @patch.dict(os.environ, {}, clear=True)
     def test_init_without_database_url(self):
-        """Покрытие: ошибка при отсутствии DATABASE_URL"""
-        with pytest.raises(RuntimeError) as exc_info:
-            SimpleDBAdapter()
-        assert "DATABASE_URL не установлен" in str(exc_info.value)
+        """Покрытие: работа без DATABASE_URL с использованием конфигурации по умолчанию"""
+        # Теперь SimpleDBAdapter работает с универсальной конфигурацией БД
+        # и может создаваться без DATABASE_URL, используя параметры по умолчанию
+        adapter = SimpleDBAdapter()
+        
+        # Проверяем что адаптер создался и имеет необходимые атрибуты
+        assert hasattr(adapter, 'database_url')
+        assert hasattr(adapter, 'host')
+        assert hasattr(adapter, 'database')
+        
+        # Проверяем что database_url создался автоматически из параметров
+        assert adapter.database_url is not None
+        assert adapter.database_url.startswith('postgresql://')
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     def test_context_manager_enter(self):
