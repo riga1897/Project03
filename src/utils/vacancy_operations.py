@@ -304,7 +304,7 @@ class VacancyOperations:
 
     @staticmethod
     def search_vacancies_by_keyword(
-        self, vacancies: List[Vacancy], keyword: str, use_sql: bool = True
+        vacancies: List[Vacancy], keyword: str, use_sql: bool = True
     ) -> List[Vacancy]:
         """
         Поиск вакансий по ключевому слову в названии или описании

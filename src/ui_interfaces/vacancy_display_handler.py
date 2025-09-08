@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 from src.config.ui_config import ui_pagination_config
 from src.utils.ui_helpers import filter_vacancies_by_keyword, get_positive_integer
@@ -17,7 +18,7 @@ class VacancyDisplayHandler:
     сохраненных вакансий.
     """
 
-    def __init__(self, storage):
+    def __init__(self, storage: Any):
         """
         Инициализация обработчика отображения
 

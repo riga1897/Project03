@@ -37,7 +37,7 @@ class APIConfig:
         self.sj_config = SJAPIConfig()
         self.max_pages = max_pages
 
-    def get_pagination_params(self, **kwargs) -> Dict[str, Any]:
+    def get_pagination_params(self, **kwargs: Any) -> Dict[str, Any]:
         """
         Получение параметров пагинации
 
