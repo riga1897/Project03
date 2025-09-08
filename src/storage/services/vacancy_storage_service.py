@@ -618,3 +618,83 @@ class VacancyStorageService(AbstractVacancyStorageService):
     def check_connection(self) -> bool:
         """Проверяет подключение к БД"""
         return self.db_manager.check_connection()
+
+    def get_vacancies(self, filters: Optional[Dict[str, Any]] = None) -> List[Vacancy]:
+        """
+        Получает вакансии из хранилища с фильтрами
+        Реализует абстрактный метод
+        """
+        return self.load_vacancies(filters=filters)
+
+    def delete_vacancy(self, vacancy_id: str) -> bool:
+        """
+        Удаляет вакансию по ID
+        Реализует абстрактный метод
+        """
+        try:
+            with self.db_manager._get_connection() as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute("DELETE FROM vacancies WHERE vacancy_id = %s", (vacancy_id,))
+                    deleted_count = cursor.rowcount
+                    connection.commit()
+                    return deleted_count > 0
+        except Exception as e:
+            logger.error(f"Ошибка удаления вакансии {vacancy_id}: {e}")
+            return False
+
+    def update_vacancy(self, vacancy_id: str, updates: Dict[str, Any]) -> bool:
+        """
+        Обновляет вакансию по ID
+        Реализует абстрактный метод
+        """
+        if not updates:
+            return False
+            
+        try:
+            # Формируем SET часть запроса
+            set_parts = []
+            params = []
+            for key, value in updates.items():
+                set_parts.append(f"{key} = %s")
+                params.append(value)
+            
+            if not set_parts:
+                return False
+                
+            params.append(vacancy_id)
+            query = f"UPDATE vacancies SET {', '.join(set_parts)}, updated_at = CURRENT_TIMESTAMP WHERE vacancy_id = %s"
+            
+            with self.db_manager._get_connection() as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(query, params)
+                    updated_count = cursor.rowcount
+                    connection.commit()
+                    return updated_count > 0
+        except Exception as e:
+            logger.error(f"Ошибка обновления вакансии {vacancy_id}: {e}")
+            return False
+
+    def get_storage_stats(self) -> Dict[str, Any]:
+        """
+        Получает статистику хранилища
+        Реализует абстрактный метод
+        """
+        try:
+            total_vacancies = self.get_vacancies_count()
+            companies_stats = self.get_companies_and_vacancies_count()
+            
+            return {
+                "total_vacancies": total_vacancies,
+                "total_companies": len(companies_stats),
+                "companies_stats": companies_stats,
+                "connection_status": self.check_connection()
+            }
+        except Exception as e:
+            logger.error(f"Ошибка получения статистики хранилища: {e}")
+            return {
+                "total_vacancies": 0,
+                "total_companies": 0,
+                "companies_stats": [],
+                "connection_status": False,
+                "error": str(e)
+            }

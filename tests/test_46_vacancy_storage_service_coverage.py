@@ -15,6 +15,30 @@ from src.storage.services.vacancy_storage_service import VacancyStorageService
 from src.vacancies.models import Vacancy, Employer
 
 
+def create_test_vacancy(vacancy_id: str = "1", name: str = "Test Job", **kwargs) -> Vacancy:
+    """Создает тестовую вакансию с минимальными обязательными полями"""
+    defaults = {
+        "vacancy_id": vacancy_id,
+        "name": name,
+        "alternate_url": "http://test.com",
+        "employer": None,
+        "salary": None,
+        "experience": None,
+        "employment": None,
+        "schedule": None,
+        "published_at": None,
+        "updated_at": datetime.now(),
+        "area": None,
+        "source": "test",
+        "company_id": None,
+        "requirements": "",
+        "responsibilities": "",
+        "description": ""
+    }
+    defaults.update(kwargs)
+    return Vacancy(**defaults)
+
+
 class TestVacancyStorageServiceInit:
     """Покрытие инициализации и конфигурации"""
 
