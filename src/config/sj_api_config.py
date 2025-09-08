@@ -92,7 +92,8 @@ class SJAPIConfig:
         try:
             token_data = json_handler.read_json(self.token_file)
             if token_data and len(token_data) > 0:
-                return token_data[0].get("superjob_api_key")
+                result = token_data[0].get("superjob_api_key")
+                return result if isinstance(result, str) else None
             return None
 
         except Exception as e:

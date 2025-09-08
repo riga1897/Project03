@@ -91,7 +91,7 @@ class CachedAPI(BaseJobAPI, ABC):
         try:
             memory_result = self._cached_api_request(url, params, api_prefix)
             if memory_result is not None:
-                return memory_result
+                return memory_result if isinstance(memory_result, dict) else self._get_empty_response()
         except Exception as e:
             logger.warning(f"Ошибка кэша памяти: {e}. Переключаемся на файловый кэш")
 
@@ -100,7 +100,7 @@ class CachedAPI(BaseJobAPI, ABC):
         if cached_response is not None:
             logger.debug(f"Данные получены из файлового кэша для {api_prefix}")
             data = cached_response.get("data", self._get_empty_response())
-            return data
+            return data if isinstance(data, dict) else self._get_empty_response()
 
         # 3. Делаем реальный запрос к API с сохранением в оба кэша
         try:

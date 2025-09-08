@@ -423,7 +423,7 @@ class Vacancy(BaseModel, AbstractVacancy):
                 return datetime.fromisoformat(v.replace("Z", "+00:00"))
             except (ValueError, TypeError):
                 return None  # Возвращаем None, если не удалось распарсить
-        return v
+        return v if isinstance(v, datetime) else None
 
     @field_validator("salary", mode="before")
     @classmethod
@@ -442,8 +442,9 @@ class Vacancy(BaseModel, AbstractVacancy):
             return v
         # Если передан объект Salary, конвертируем в словарь
         if hasattr(v, "to_dict"):
-            return v.to_dict()
-        return v
+            result = v.to_dict()
+            return result if isinstance(result, dict) else None
+        return None if not isinstance(v, dict) else v
 
     # Примечание: Убираем model_validator для улучшения совместимости с Pydantic v2
     # Простая валидация происходит на уровне field_validator

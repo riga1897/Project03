@@ -117,7 +117,8 @@ class APIConnector:
                 return self.__connect(url, params, delay, show_progress, progress_desc)
 
             response.raise_for_status()
-            return response.json()
+            result = response.json()
+            return result if isinstance(result, dict) else {}
 
         except requests.Timeout as e:
             raise ConnectionError(f"Timeout error: {str(e)}")
