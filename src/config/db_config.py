@@ -73,7 +73,7 @@ class DatabaseConfig:
 
         return params
 
-    def _parse_database_url(self, database_url: str) -> Dict[str, Union[str, None]]:
+    def _parse_database_url(self, database_url: str) -> Dict[str, str]:
         """
         Парсит DATABASE_URL в формате postgresql://username:password@hostname:port/database
 

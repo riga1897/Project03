@@ -8,8 +8,8 @@ try:
 
     PsycopgError: type[Exception] = psycopg2.Error
 except ImportError:
-    psycopg2 = None
-    RealDictCursor = None
+    psycopg2 = None  # type: ignore
+    RealDictCursor = None  # type: ignore
     PsycopgError: type[Exception] = Exception
 
 from src.storage.abstract import AbstractVacancyStorage
@@ -44,11 +44,11 @@ class PostgresSaver(AbstractVacancyStorage):
             # Используем переменные окружения через EnvLoader (поддерживает .env и Secrets)
             from src.utils.env_loader import EnvLoader
 
-            self.host = EnvLoader.get_env_var("PGHOST", "localhost")
-            self.port = EnvLoader.get_env_var("PGPORT", "5432")
-            self.database = EnvLoader.get_env_var("PGDATABASE", "Project03")
-            self.username = EnvLoader.get_env_var("PGUSER", "postgres")
-            self.password = EnvLoader.get_env_var("PGPASSWORD", "")
+            self.host = EnvLoader.get_env_var("PGHOST", "localhost") or "localhost"
+            self.port = EnvLoader.get_env_var("PGPORT", "5432") or "5432"
+            self.database = EnvLoader.get_env_var("PGDATABASE", "Project03") or "Project03"
+            self.username = EnvLoader.get_env_var("PGUSER", "postgres") or "postgres"
+            self.password = EnvLoader.get_env_var("PGPASSWORD", "") or ""
 
         # Создание базы данных теперь делегируется DBManager
         # self._ensure_database_exists()  # Удалено - теперь используется DBManager

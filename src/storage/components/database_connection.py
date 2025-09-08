@@ -9,15 +9,15 @@ from typing import Any, Optional
 
 try:
     import psycopg2
+    from psycopg2.extras import RealDictCursor
 
     PsycopgError: type[Exception] = psycopg2.Error
+    PSYCOPG2_AVAILABLE = True
 except ImportError:
-    psycopg2 = None
+    psycopg2 = None  # type: ignore
+    RealDictCursor = None  # type: ignore
     PsycopgError: type[Exception] = Exception
-try:
-    from psycopg2.extras import RealDictCursor
-except ImportError:
-    RealDictCursor = None
+    PSYCOPG2_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 

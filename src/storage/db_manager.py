@@ -16,8 +16,8 @@ try:
     PsycopgError: type[Exception] = psycopg2.Error
 except ImportError:
     PSYCOPG2_AVAILABLE = False
-    psycopg2 = None
-    RealDictCursor = None
+    psycopg2 = None  # type: ignore
+    RealDictCursor = None  # type: ignore
     PsycopgError: type[Exception] = Exception  # Fallback для обработки исключений
     from .simple_db_adapter import get_db_adapter
 
