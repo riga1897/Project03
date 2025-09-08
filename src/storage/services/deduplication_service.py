@@ -6,7 +6,7 @@
 
 import logging
 from abc import ABC, abstractmethod
-from typing import List, Any
+from typing import Any, List
 
 try:
     from ..abstract_db_manager import AbstractDBManager
@@ -58,10 +58,12 @@ class SQLDeduplicationStrategy(DeduplicationStrategy):
 
         # Проверяем типы данных в вакансиях для диагностики
         for i, vacancy in enumerate(vacancies[:3]):  # Проверяем первые 3 вакансии
-            if hasattr(vacancy, 'employer') and vacancy.employer:
+            if hasattr(vacancy, "employer") and vacancy.employer:
                 if not isinstance(vacancy.employer, (dict, str)):
                     print(f"  ❌ ОШИБКА: Вакансия {i+1} - employer не словарь и не строка: {type(vacancy.employer)}")
-                    logger.warning(f"Вакансия {getattr(vacancy, 'vacancy_id', i)} имеет employer типа {type(vacancy.employer)}: {vacancy.employer}")
+                    logger.warning(
+                        f"Вакансия {getattr(vacancy, 'vacancy_id', i)} имеет employer типа {type(vacancy.employer)}: {vacancy.employer}"
+                    )
 
         try:
             connection = db_manager._get_connection()
@@ -85,7 +87,7 @@ class SQLDeduplicationStrategy(DeduplicationStrategy):
                 try:
                     normalized_title = self._normalize_text(vacancy.title or "")
                     normalized_employer = self._normalize_employer(vacancy.employer or "")
-                    vacancy_id = getattr(vacancy, 'vacancy_id', getattr(vacancy, 'id', f'unknown_{idx}'))
+                    vacancy_id = getattr(vacancy, "vacancy_id", getattr(vacancy, "id", f"unknown_{idx}"))
 
                     temp_data.append((vacancy_id, normalized_title, normalized_employer, idx))
                 except Exception as e:
@@ -166,7 +168,7 @@ class SQLDeduplicationStrategy(DeduplicationStrategy):
                 # Для других типов данных пытаемся преобразовать в строку
                 name = str(employer)
                 logger.debug(f"Employer преобразован из {type(employer)} в строку: {name}")
-            
+
             return self._normalize_text(name)
         except Exception as e:
             logger.warning(f"Ошибка нормализации employer {employer}: {e}")

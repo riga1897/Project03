@@ -4,7 +4,7 @@
 """
 
 import logging
-from typing import Dict, List, Tuple, Type, Union
+from typing import Dict, List
 
 from src.vacancies.abstract import AbstractVacancy
 

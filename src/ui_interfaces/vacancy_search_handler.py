@@ -221,7 +221,9 @@ class VacancySearchHandler:
 
         # Проверяем объект storage перед вызовом
         logger.debug(f"Тип storage объекта: {type(self.storage)}")
-        logger.debug(f"Имеет ли метод check_vacancies_exist_batch: {hasattr(self.storage, 'check_vacancies_exist_batch')}")
+        logger.debug(
+            f"Имеет ли метод check_vacancies_exist_batch: {hasattr(self.storage, 'check_vacancies_exist_batch')}"
+        )
 
         # Используем batch-метод для проверки дубликатов
         try:

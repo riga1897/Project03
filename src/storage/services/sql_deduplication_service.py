@@ -128,9 +128,13 @@ class SQLDeduplicationService(AbstractDeduplicationService):
                     else:
                         # Обработка объектов, которые не являются строкой или словарем
                         employer_name = str(vacancy.employer)
-                        logger.debug(f"Employer не является строкой или словарем: {type(vacancy.employer)} = {vacancy.employer}")
+                        logger.debug(
+                            f"Employer не является строкой или словарем: {type(vacancy.employer)} = {vacancy.employer}"
+                        )
                 except Exception as e:
-                    logger.warning(f"Ошибка обработки employer для вакансии {getattr(vacancy, 'vacancy_id', 'unknown')}: {e}")
+                    logger.warning(
+                        f"Ошибка обработки employer для вакансии {getattr(vacancy, 'vacancy_id', 'unknown')}: {e}"
+                    )
                     employer_name = "unknown"
 
             employer_normalized = self._normalize_text(employer_name)

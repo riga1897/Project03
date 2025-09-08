@@ -19,7 +19,7 @@ import uuid
 from datetime import datetime
 from typing import Any, Dict, Optional, Union
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from src.utils.salary import Salary
 
@@ -432,7 +432,7 @@ class Vacancy(BaseModel):
             return v.to_dict()
         return v
 
-# Примечание: Убираем model_validator для улучшения совместимости с Pydantic v2
+    # Примечание: Убираем model_validator для улучшения совместимости с Pydantic v2
     # Простая валидация происходит на уровне field_validator
 
     # Методы для работы с зарплатой (обратная совместимость)
@@ -573,7 +573,7 @@ class VacancyFactory:
             vacancy_id=str(data.get("id", str(uuid.uuid4()))),
             name=data.get("profession", ""),
             alternate_url=data.get("link", ""),
-            employer=(  
+            employer=(
                 Employer(
                     name=data.get("firm_name", "Не указана"),
                     id=str(data.get("id_client", "")) if data.get("id_client") else None,

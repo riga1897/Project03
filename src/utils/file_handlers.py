@@ -67,7 +67,7 @@ class FileOperations:
 
             # Атомарная замена файла
             temp_file.replace(file_path)
-            if hasattr(self.read_json, 'clear_cache'):
+            if hasattr(self.read_json, "clear_cache"):
                 self.read_json.clear_cache()  # Очищаем кэш
 
         except Exception as e:

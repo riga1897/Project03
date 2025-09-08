@@ -294,7 +294,9 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             logger.error(f"Ошибка получения вакансий компании {company_id}: {e}")
             return []
 
-    def get_vacancies_page_by_company(self, company_id: str, search_query: str, page: int = 0, **kwargs: Any) -> List[Dict]:
+    def get_vacancies_page_by_company(
+        self, company_id: str, search_query: str, page: int = 0, **kwargs: Any
+    ) -> List[Dict]:
         """
         Получение одной страницы вакансий конкретной компании
 
