@@ -13,12 +13,12 @@ try:
     from psycopg2.extras import RealDictCursor
 
     PSYCOPG2_AVAILABLE = True
-    PsycopgError = psycopg2.Error
+    PsycopgError: type[Exception] = psycopg2.Error
 except ImportError:
     PSYCOPG2_AVAILABLE = False
     psycopg2 = None
     RealDictCursor = None
-    PsycopgError = Exception  # Fallback для обработки исключений
+    PsycopgError: type[Exception] = Exception  # Fallback для обработки исключений
     from .simple_db_adapter import get_db_adapter
 
     print("⚠️  psycopg2 недоступен, используется простой DB адаптер")

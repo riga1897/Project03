@@ -10,10 +10,10 @@ from typing import Any, Optional
 try:
     import psycopg2
 
-    PsycopgError = psycopg2.Error
+    PsycopgError: type[Exception] = psycopg2.Error
 except ImportError:
     psycopg2 = None
-    PsycopgError = Exception
+    PsycopgError: type[Exception] = Exception
 try:
     from psycopg2.extras import RealDictCursor
 except ImportError:

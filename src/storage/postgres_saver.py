@@ -6,11 +6,11 @@ try:
     import psycopg2
     from psycopg2.extras import RealDictCursor
 
-    PsycopgError = psycopg2.Error
+    PsycopgError: type[Exception] = psycopg2.Error
 except ImportError:
     psycopg2 = None
     RealDictCursor = None
-    PsycopgError = Exception
+    PsycopgError: type[Exception] = Exception
 
 from src.storage.abstract import AbstractVacancyStorage
 from src.vacancies.abstract import AbstractVacancy
