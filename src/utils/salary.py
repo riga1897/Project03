@@ -20,6 +20,7 @@ class Salary:
     __slots__ = ("_salary_from", "_salary_to", "_currency", "gross", "period", "amount_from", "amount_to")
 
     def __init__(self, salary_data: Optional[Dict[str, Any]] = None):
+        """Инициализация объекта зарплаты с данными из различных источников."""
         if salary_data is None:
             salary_data = {}
 
@@ -136,14 +137,17 @@ class Salary:
 
     @property
     def salary_from(self) -> Optional[int]:
+        """Минимальная зарплата в диапазоне."""
         return self._salary_from
 
     @property
     def salary_to(self) -> Optional[int]:
+        """Максимальная зарплата в диапазоне."""
         return self._salary_to
 
     @property
     def currency(self) -> str:
+        """Валюта зарплаты."""
         return self._currency
 
     @property

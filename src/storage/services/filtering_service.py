@@ -227,7 +227,7 @@ class FilteringService:
         """
         return self.strategy.filter(vacancies, db_manager)
 
-    def set_strategy(self, strategy: FilteringStrategy):
+    def set_strategy(self, strategy: FilteringStrategy) -> None:
         """
         Изменяет стратегию фильтрации
 

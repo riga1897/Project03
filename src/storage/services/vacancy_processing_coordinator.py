@@ -100,7 +100,7 @@ class VacancyProcessingCoordinator(AbstractVacancyProcessor):
         """
         return self.process_vacancies(vacancies, apply_company_filter=False, apply_deduplication=True)
 
-    def get_target_company_stats(self):
+    def get_target_company_stats(self) -> tuple:
         """Получает статистику по целевым компаниям"""
         return self.id_filter_service.get_target_company_stats()
 

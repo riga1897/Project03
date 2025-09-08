@@ -54,7 +54,7 @@ class PostgresSaver(AbstractVacancyStorage):
         # self._ensure_database_exists()  # Удалено - теперь используется DBManager
         self._ensure_tables_exist()
 
-    def _get_connection(self, database=None):
+    def _get_connection(self, database=None) -> Any:
         """Создает подключение к базе данных"""
         db_name = database or self.database
         try:
@@ -73,7 +73,7 @@ class PostgresSaver(AbstractVacancyStorage):
             logger.error(f"Ошибка подключения к БД {db_name}: {e}")
             raise
 
-    def _ensure_companies_table_exists(self):
+    def _ensure_companies_table_exists(self) -> None:
         """Создает таблицу companies если она не существует"""
         connection = self._get_connection()
         try:
@@ -149,7 +149,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 except Exception:
                     pass
 
-    def _initialize_target_companies(self):
+    def _initialize_target_companies(self) -> None:
         """Инициализирует целевые компании в таблице companies"""
         try:
             from src.config.target_companies import TargetCompanies
@@ -203,7 +203,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 except Exception:
                     pass
 
-    def _ensure_tables_exist(self):
+    def _ensure_tables_exist(self) -> None:
         """Создает таблицы если они не существуют"""
         connection = self._get_connection()
         try:

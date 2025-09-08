@@ -13,6 +13,7 @@ class FileCache:
     """Класс для файлового кэширования API-ответов"""
 
     def __init__(self, cache_dir: str = "data/cache"):
+        """Инициализация файлового кэша с указанием директории для хранения."""
         self.cache_dir = Path(cache_dir)
         self._ensure_dir_exists()
 

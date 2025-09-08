@@ -45,6 +45,7 @@ class VacancyOperations:
         """
 
         def get_sort_key(vacancy: Vacancy) -> int:
+            """Локальная функция для получения ключа сортировки по зарплате."""
             if vacancy.salary:
                 # Обработка нового формата (словарь)
                 if isinstance(vacancy.salary, dict):

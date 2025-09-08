@@ -12,6 +12,7 @@ class HHParser(BaseParser):
     """Парсер для обработки данных вакансий с HeadHunter API"""
 
     def __init__(self, cache_dir: str = "data/cache/hh"):
+        """Инициализация парсера HeadHunter с настройкой кэша."""
         self.cache = FileCache(cache_dir)
         self.base_url = "https://api.hh.ru/vacancies"
 

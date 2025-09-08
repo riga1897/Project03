@@ -10,6 +10,7 @@ class SourceSelector:
     """Класс для выбора источников данных в пользовательском интерфейсе"""
 
     def __init__(self):
+        """Инициализация селектора источников данных."""
         self.source_manager = source_manager
 
     AVAILABLE_SOURCES = {"hh.ru": "HH.ru", "superjob.ru": "SuperJob.ru"}

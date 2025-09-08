@@ -376,7 +376,7 @@ class AdvancedSearch:
         """Инициализация продвинутого поиска"""
         pass
 
-    def search_with_and(self, vacancies, keywords):
+    def search_with_and(self, vacancies, keywords) -> list:
         """Поиск с оператором AND - ищет во всех текстовых полях включая search_query"""
         result = []
         for vacancy in vacancies:
@@ -390,7 +390,7 @@ class AdvancedSearch:
                 result.append(vacancy)
         return result
 
-    def search_with_or(self, vacancies, keywords):
+    def search_with_or(self, vacancies, keywords) -> list:
         """Поиск с оператором OR - ищет во всех текстовых полях включая search_query"""
         result = []
         for vacancy in vacancies:

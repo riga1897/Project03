@@ -182,7 +182,7 @@ class DeduplicationService:
         """
         return self.strategy.deduplicate(vacancies, db_manager)
 
-    def set_strategy(self, strategy: DeduplicationStrategy):
+    def set_strategy(self, strategy: DeduplicationStrategy) -> None:
         """
         Изменяет стратегию дедупликации
 

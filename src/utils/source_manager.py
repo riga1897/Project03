@@ -12,6 +12,7 @@ class SourceManager:
     """Менеджер для управления источниками данных"""
 
     def __init__(self):
+        """Инициализация менеджера источников с конфигурациями API."""
         self._sources_config = {
             "hh.ru": {
                 "name": "HeadHunter",
@@ -160,7 +161,7 @@ class SourceManager:
             return config.get("features", [])
         return []
 
-    def get_source_config_class(self, source: str):
+    def get_source_config_class(self, source: str) -> Optional[type]:
         """
         Получить класс конфигурации для источника
 
@@ -175,7 +176,7 @@ class SourceManager:
             return config.get("config_class")
         return None
 
-    def create_source_instance(self, source: str):
+    def create_source_instance(self, source: str) -> Optional[Any]:
         """
         Создать экземпляр API для источника
 
@@ -195,6 +196,7 @@ class DataSource:
     """Класс для представления источника данных"""
 
     def __init__(self, key: str, name: str, display_name: str):
+        """Инициализация источника данных с основными параметрами."""
         self.key = key
         self.name = name
         self.display_name = display_name

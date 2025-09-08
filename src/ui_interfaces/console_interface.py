@@ -380,6 +380,7 @@ class UserInterface:
         """
 
         def format_vacancy(vacancy, number=None) -> str:
+            """Локальная функция форматирования вакансии для пагинации."""
             return VacancyFormatter.format_vacancy_info(vacancy, number)
 
         quick_paginate(vacancies, formatter=format_vacancy, header="Вакансии", items_per_page=10)

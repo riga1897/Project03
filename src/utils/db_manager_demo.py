@@ -165,7 +165,7 @@ class DBManagerDemo:
             return
 
         # Сортируем вакансии: сначала по убыванию зарплаты, потом по названию
-        def get_salary_value(vacancy):
+        def get_salary_value(vacancy) -> int:
             """Извлекает числовое значение зарплаты для сортировки"""
             salary_info = vacancy.get("salary_info", "Не указана")
             if salary_info == "Не указана":
@@ -370,7 +370,7 @@ class DBManagerDemo:
             print(" Ошибка при получении статистики базы данных")
 
 
-def main():
+def main() -> None:
     """
     Главная функция для запуска демонстрации
     """

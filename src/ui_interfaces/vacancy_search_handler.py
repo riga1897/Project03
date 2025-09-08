@@ -145,6 +145,7 @@ class VacancySearchHandler:
             if show_vacancies:
 
                 def format_vacancy(vacancy: Vacancy, number: Optional[int] = None) -> str:
+                    """Локальная функция форматирования вакансии для отображения."""
                     if vacancy is None:
                         raise ValueError("Received a vacancy object of None type.")
                     return vacancy_formatter.format_vacancy_info(vacancy, number)

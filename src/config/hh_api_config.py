@@ -14,7 +14,8 @@ class HHAPIConfig:
     period: int = 15  # Период 15 дней по умолчанию
     custom_params: Dict[str, Any] = field(default_factory=dict)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
+        """Пост-инициализация dataclass для загрузки настроек из переменных окружения."""
         # Загружаем настройку фильтрации по зарплате из .env
         env_value = EnvLoader.get_env_var("FILTER_ONLY_WITH_SALARY", "false")
         self.only_with_salary = str(env_value).lower() in ("true", "1", "yes", "on")

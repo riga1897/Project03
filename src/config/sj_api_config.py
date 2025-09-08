@@ -26,6 +26,7 @@ class SJAPIConfig:
     filter_by_target_companies = True  # Фильтровать по целевым компаниям через SQL
 
     def __init__(self, token_file: Path = Path("token.json"), **kwargs):
+        """Инициализация конфигурации SuperJob API с загрузкой настроек."""
         self.token_file = token_file
         # Инициализация APIConfig, если он нужен (в данном случае не используется напрямую в SJAPIConfig)
         # self.api_config = APIConfig()
