@@ -637,15 +637,15 @@ class TestVacancyOperationsUncoveredLines:
         vacancies = [MockVacancy(title="Python Developer")]
         
         # Тестируем пустую строку
-        result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "")
+        result = VacancyOperations.search_vacancies_by_keyword(vacancies, "")
         assert result == []
         
         # Тестируем строку только с пробелами
-        result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "   ")
+        result = VacancyOperations.search_vacancies_by_keyword(vacancies, "   ")
         assert result == []
         
         # Тестируем None
-        result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, None)
+        result = VacancyOperations.search_vacancies_by_keyword(vacancies, None)
         assert result == []
 
     @patch('src.utils.vacancy_operations.logger')
@@ -660,7 +660,7 @@ class TestVacancyOperationsUncoveredLines:
             mock_postgres_instance.search_vacancies_batch.return_value = mock_results
             mock_postgres_class.return_value = mock_postgres_instance
             
-            result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "python", use_sql=True)
+            result = VacancyOperations.search_vacancies_by_keyword(vacancies, "python", use_sql=True)
             
             # Должен вернуть результаты SQL поиска
             assert result == mock_results
@@ -677,7 +677,7 @@ class TestVacancyOperationsUncoveredLines:
             mock_postgres_instance.search_vacancies_batch.return_value = []  # Пустой результат
             mock_postgres_class.return_value = mock_postgres_instance
             
-            result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "python", use_sql=True)
+            result = VacancyOperations.search_vacancies_by_keyword(vacancies, "python", use_sql=True)
             
             # Должен вернуть пустой результат через fallback
             assert result == []
@@ -691,7 +691,7 @@ class TestVacancyOperationsUncoveredLines:
         with patch('src.storage.postgres_saver.PostgresSaver') as mock_postgres_class:
             mock_postgres_class.side_effect = Exception("Database connection failed")
             
-            result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "python", use_sql=True)
+            result = VacancyOperations.search_vacancies_by_keyword(vacancies, "python", use_sql=True)
             
             # Должен вернуть пустой результат и залогировать ошибку
             assert result == []
@@ -703,7 +703,7 @@ class TestVacancyOperationsUncoveredLines:
         vacancies = [MockVacancy(title="Test")]
         
         # Отключаем SQL поиск
-        result = VacancyOperations.search_vacancies_by_keyword(None, vacancies, "python", use_sql=False)
+        result = VacancyOperations.search_vacancies_by_keyword(vacancies, "python", use_sql=False)
         
         # Должен сразу вернуть пустой результат
         assert result == []
