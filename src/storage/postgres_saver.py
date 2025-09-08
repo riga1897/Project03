@@ -9,7 +9,17 @@ from src.storage.db_psycopg2_compat import (
     is_available as psycopg2_available
 )
 
+# Получаем классы для использования в коде
+try:
+    PsycopgError = get_psycopg_error()
+    RealDictCursor = get_real_dict_cursor()
+except ImportError:
+    # Fallback для случаев когда psycopg2 недоступен
+    PsycopgError = Exception
+    RealDictCursor = None
+
 from src.storage.abstract import AbstractVacancyStorage
+from src.storage.db_connection_config import get_db_connection_params
 from src.vacancies.abstract import AbstractVacancy
 from src.vacancies.models import Vacancy
 
@@ -31,21 +41,14 @@ class PostgresSaver(AbstractVacancyStorage):
         Args:
             db_config: Конфигурация подключения к БД (опционально)
         """
-        if db_config:
-            self.host = db_config.get("host", "localhost")
-            self.port = db_config.get("port", "5432")
-            self.database = db_config.get("database", "Project03")
-            self.username = db_config.get("username", "postgres")
-            self.password = db_config.get("password", "")
-        else:
-            # Используем переменные окружения через EnvLoader (поддерживает .env и Secrets)
-            from src.utils.env_loader import EnvLoader
-
-            self.host = EnvLoader.get_env_var("PGHOST", "localhost") or "localhost"
-            self.port = EnvLoader.get_env_var("PGPORT", "5432") or "5432"
-            self.database = EnvLoader.get_env_var("PGDATABASE", "Project03") or "Project03"
-            self.username = EnvLoader.get_env_var("PGUSER", "postgres") or "postgres"
-            self.password = EnvLoader.get_env_var("PGPASSWORD", "") or ""
+        # Используем универсальный конфигуратор подключения
+        connection_params = get_db_connection_params(db_config)
+        
+        self.host = connection_params["host"]
+        self.port = connection_params["port"]
+        self.database = connection_params["database"]  
+        self.username = connection_params["user"]
+        self.password = connection_params["password"]
 
         # Создание базы данных теперь делегируется DBManager
         # self._ensure_database_exists()  # Удалено - теперь используется DBManager
@@ -70,7 +73,7 @@ class PostgresSaver(AbstractVacancyStorage):
             # Устанавливаем кодировку для соединения
             connection.set_client_encoding("UTF8")
             return connection
-        except get_psycopg_error() as e:
+        except PsycopgError as e:
             logger.error(f"Ошибка подключения к БД {db_name}: {e}")
             raise
 

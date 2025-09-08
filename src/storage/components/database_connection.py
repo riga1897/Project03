@@ -13,6 +13,7 @@ from src.storage.db_psycopg2_compat import (
     get_real_dict_cursor,
     is_available as psycopg2_available
 )
+from src.storage.db_connection_config import get_db_connection_params
 
 logger = logging.getLogger(__name__)
 
@@ -36,13 +37,8 @@ class DatabaseConnection:
 
     def _get_default_params(self) -> dict:
         """Получение параметров подключения из переменных окружения"""
-        return {
-            "host": os.getenv("PGHOST", "localhost"),
-            "port": os.getenv("PGPORT", "5432"),
-            "database": os.getenv("PGDATABASE", "postgres"),
-            "user": os.getenv("PGUSER", "postgres"),
-            "password": os.getenv("PGPASSWORD", ""),
-        }
+        # Используем универсальный конфигуратор который поддерживает DATABASE_URL и другие форматы
+        return get_db_connection_params()
 
     def get_connection(self) -> Any:
         """
