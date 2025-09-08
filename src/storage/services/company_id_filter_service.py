@@ -6,7 +6,6 @@
 """
 
 import logging
-from abc import ABC, abstractmethod
 from typing import List, Set, Tuple
 
 from src.config.target_companies import TargetCompanies
@@ -161,7 +160,8 @@ class CompanyIDFilterService(AbstractFilterService):
         # Если источник неизвестен, проверяем оба списка
         if hh_ids_list and sj_ids_list:
             query_parts.append(
-                f"(source NOT LIKE '%hh%' AND source NOT LIKE '%sj%' AND source NOT LIKE '%superjob%' AND (employer_id IN ({hh_ids_list}) OR employer_id IN ({sj_ids_list})))"
+                f"(source NOT LIKE '%hh%' AND source NOT LIKE '%sj%' AND "
+                f"source NOT LIKE '%superjob%' AND (employer_id IN ({hh_ids_list}) OR employer_id IN ({sj_ids_list})))"
             )
         elif hh_ids_list:
             query_parts.append(

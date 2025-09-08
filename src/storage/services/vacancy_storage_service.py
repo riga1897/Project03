@@ -8,12 +8,6 @@ import logging
 import os
 from typing import Any, Dict, List, Optional, Union
 
-import psycopg2
-
-try:
-    from psycopg2.extras import RealDictCursor
-except ImportError:
-    RealDictCursor = None
 
 try:
     from ..db_manager import DBManager

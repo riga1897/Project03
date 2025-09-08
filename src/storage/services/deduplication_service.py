@@ -6,9 +6,7 @@
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Set
-
-import psycopg2
+from typing import List
 
 try:
     from ..abstract_db_manager import AbstractDBManager

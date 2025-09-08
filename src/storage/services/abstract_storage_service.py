@@ -8,7 +8,6 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional
 
-from src.storage.abstract_db_manager import AbstractDBManager
 from src.vacancies.models import Vacancy
 
 logger = logging.getLogger(__name__)

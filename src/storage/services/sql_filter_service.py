@@ -6,8 +6,7 @@
 """
 
 import logging
-from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import List, Set, Tuple
 
 from src.config.target_companies import TargetCompanies
 from src.storage.abstract_db_manager import AbstractDBManager

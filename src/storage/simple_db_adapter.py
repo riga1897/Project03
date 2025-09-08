@@ -3,7 +3,6 @@
 Использует subprocess и psql для выполнения запросов
 """
 
-import json
 import logging
 import os
 import subprocess
