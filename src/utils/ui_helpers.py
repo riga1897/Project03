@@ -164,7 +164,7 @@ def _parse_search_query(query: str) -> dict:
         query: Поисковый запрос
 
     Returns:
-        dict: {"keywords": [список_слов], "operator": "AND"/"OR"}
+        dict | None: {"keywords": [список_слов], "operator": "AND"/"OR"} или None для пустого запроса
     """
     if not query or not query.strip():
         return None
