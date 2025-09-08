@@ -96,7 +96,7 @@ class VacancyRepository(AbstractVacancyStorage):
 
         except Exception as e:
             logger.error(f"Ошибка добавления вакансии {vacancy.vacancy_id}: {e}")
-            return False
+            raise  # Пробрасываем исключение дальше для корректной обработки
 
     def get_vacancies(self, filters: Optional[Dict[str, Any]] = None) -> List[AbstractVacancy]:
         """
