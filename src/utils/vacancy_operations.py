@@ -27,7 +27,7 @@ class VacancyOperations:
             if v.salary
             and (
                 (isinstance(v.salary, dict) and (v.salary.get("from") or v.salary.get("to")))
-                or (hasattr(v.salary, "amount_from") and (v.salary.amount_from or v.salary.amount_to))
+                or (hasattr(v.salary, "amount_from") and (getattr(v.salary, "amount_from", None) or getattr(v.salary, "amount_to", None)))
             )
         ]
 
@@ -87,8 +87,8 @@ class VacancyOperations:
                 salary_from = vacancy.salary.get("from")
                 salary_to = vacancy.salary.get("to")
             else:
-                salary_from = getattr(vacancy.salary, "salary_from", None)
-                salary_to = getattr(vacancy.salary, "salary_to", None)
+                salary_from = getattr(vacancy.salary, "amount_from", None)
+                salary_to = getattr(vacancy.salary, "amount_to", None)
 
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:
@@ -138,8 +138,8 @@ class VacancyOperations:
                 salary_from = vacancy.salary.get("from")
                 salary_to = vacancy.salary.get("to")
             else:
-                salary_from = getattr(vacancy.salary, "salary_from", None)
-                salary_to = getattr(vacancy.salary, "salary_to", None)
+                salary_from = getattr(vacancy.salary, "amount_from", None)
+                salary_to = getattr(vacancy.salary, "amount_to", None)
 
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:
@@ -190,8 +190,8 @@ class VacancyOperations:
                 salary_from = vacancy.salary.get("from")
                 salary_to = vacancy.salary.get("to")
             else:
-                salary_from = getattr(vacancy.salary, "salary_from", None)
-                salary_to = getattr(vacancy.salary, "salary_to", None)
+                salary_from = getattr(vacancy.salary, "amount_from", None)
+                salary_to = getattr(vacancy.salary, "amount_to", None)
 
             # Если нет ни одного значения зарплаты, пропускаем
             if not salary_from and not salary_to:
