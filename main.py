@@ -22,16 +22,18 @@
    LOG_LEVEL=INFO
 """
 
-import sys
 import os
+import sys
+
+from src.user_interface import main
+from src.utils.env_loader import EnvLoader
 
 # Добавляем корневую директорию в PYTHONPATH
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Загружаем переменные окружения из .env
-from src.utils.env_loader import EnvLoader
 EnvLoader.load_env_file()
 
 if __name__ == "__main__":
-    from src.user_interface import main
+
     main()
