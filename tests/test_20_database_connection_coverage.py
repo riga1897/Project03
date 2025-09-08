@@ -238,8 +238,11 @@ class TestDatabaseConnection:
     @patch('src.storage.components.database_connection.logger')
     def test_create_new_connection_success(self, mock_logger, mock_is_available, mock_real_dict_cursor, mock_get_psycopg2):
         """Покрытие успешного создания подключения"""
-        # Настройка proper exception classes на mock psycopg2
+        # Настройка модуля совместимости
+        mock_psycopg2 = Mock()
         mock_psycopg2.Error = MockError
+        mock_get_psycopg2.return_value = mock_psycopg2
+        mock_real_dict_cursor.return_value = Mock()
         
         mock_connection = Mock()
         mock_psycopg2.connect.return_value = mock_connection
@@ -259,8 +262,13 @@ class TestDatabaseConnection:
     @patch('src.storage.db_psycopg2_compat.get_real_dict_cursor')
     @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
     @patch('src.storage.components.database_connection.logger')
-    def test_create_new_connection_failure(self, mock_logger, mock_psycopg2):
+    def test_create_new_connection_failure(self, mock_logger, mock_is_available, mock_real_dict_cursor, mock_get_psycopg2):
         """Покрытие неудачного создания подключения"""
+        # Настройка модуля совместимости
+        mock_psycopg2 = Mock()
+        mock_get_psycopg2.return_value = mock_psycopg2
+        mock_real_dict_cursor.return_value = Mock()
+        
         # Имитируем PsycopgError 
         mock_psycopg2.connect.side_effect = MockPsycopgError("Connection failed")
         
@@ -276,7 +284,7 @@ class TestDatabaseConnection:
     @patch('src.storage.db_psycopg2_compat.get_real_dict_cursor')
     @patch('src.storage.db_psycopg2_compat.is_available', return_value=True)
     @patch('src.storage.components.database_connection.RealDictCursor')
-    def test_create_new_connection_with_cursor_factory(self, mock_real_dict_cursor, mock_psycopg2):
+    def test_create_new_connection_with_cursor_factory(self, mock_cursor_class, mock_is_available, mock_real_dict_cursor, mock_get_psycopg2):
         """Покрытие создания подключения с cursor_factory"""
         mock_connection = Mock()
         mock_psycopg2.connect.return_value = mock_connection

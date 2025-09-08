@@ -71,11 +71,12 @@ class DatabaseConnection:
         try:
             psycopg2 = get_psycopg2()
             RealDictCursor = get_real_dict_cursor()
-            
+
             # Фильтруем параметры для psycopg2 - убираем unsupported timeout параметры
-            db_params = {k: v for k, v in self._connection_params.items() 
-                        if k not in ('connect_timeout', 'command_timeout')}
-            
+            db_params = {
+                k: v for k, v in self._connection_params.items() if k not in ("connect_timeout", "command_timeout")
+            }
+
             connection = psycopg2.connect(**db_params, cursor_factory=RealDictCursor)
             self._connection = connection
             if self._connection is not None:
