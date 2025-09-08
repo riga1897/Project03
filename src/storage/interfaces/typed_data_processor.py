@@ -6,7 +6,7 @@
 """
 
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from src.config.target_companies import CompanyInfo
 from src.vacancies.models import Vacancy
@@ -84,7 +84,7 @@ class SQLDataProcessor(TypedDataProcessor, CompanyDataProcessor):
     Принцип Liskov Substitution - может заменить любой из родительских интерфейсов
     """
 
-    def __init__(self, sql_filter_service):
+    def __init__(self, sql_filter_service: Any):
         """
         Инициализация SQL процессора
 

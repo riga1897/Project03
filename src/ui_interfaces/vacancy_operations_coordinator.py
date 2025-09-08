@@ -273,7 +273,7 @@ class VacancyOperationsCoordinator:
             return []
 
     def get_vacancies_from_target_companies(
-        self, search_query: str = "", sources: List[str] = None, **kwargs
+        self, search_query: str = "", sources: Optional[List[str]] = None, **kwargs: Any
     ) -> List[Vacancy]:
         """
         Получение вакансий только от целевых компаний
