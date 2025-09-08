@@ -560,6 +560,8 @@ class VacancyStorageService(AbstractVacancyStorageService):
                     alternate_url=None
                 )
 
+            from datetime import datetime
+            
             vacancy = Vacancy(
                 vacancy_id=data.get("vacancy_id", ""),
                 name=data.get("title", ""),
@@ -574,6 +576,9 @@ class VacancyStorageService(AbstractVacancyStorageService):
                 employer=employer,
                 source=data.get("source", ""),
                 published_at=data.get("published_at"),
+                updated_at=datetime.now(),
+                area=data.get("area"),
+                company_id=data.get("raw_company_id")
             )
 
             # Дополнительные поля
