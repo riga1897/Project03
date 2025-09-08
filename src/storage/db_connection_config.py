@@ -67,7 +67,7 @@ class DatabaseConnectionConfig:
 
     def __init__(self) -> None:
         """Инициализация конфигуратора"""
-        self.config = {}
+        self.config: Dict[str, str] = {}
 
     def get_connection_params(
         self, db_config: Optional[Dict[str, Any]] = None, database_url: Optional[str] = None
