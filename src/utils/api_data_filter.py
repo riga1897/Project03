@@ -325,11 +325,13 @@ class APIDataFilter(AbstractDataFilter):
         # Проверяем employer (HH) или firm_name (SuperJob)
         employer = item.get("employer")
         if employer:
-            return normalize_employer_data(employer)
+            result = normalize_employer_data(employer)
+            return str(result) if result is not None else None
 
         # Для SuperJob создаем структуру как для employer
         firm_name = item.get("firm_name")
         if firm_name:
-            return normalize_employer_data({"name": firm_name})
+            result = normalize_employer_data({"name": firm_name})
+            return str(result) if result is not None else None
 
         return None

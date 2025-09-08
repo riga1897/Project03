@@ -590,7 +590,8 @@ class VacancyStorageService(AbstractVacancyStorageService):
             with self.db_manager._get_connection() as connection:
                 with connection.cursor() as cursor:
                     cursor.execute("SELECT COUNT(*) FROM vacancies")
-                    return cursor.fetchone()[0]
+                    result = cursor.fetchone()
+                    return int(result[0]) if result and result[0] is not None else 0
         except Exception as e:
             logger.error(f"Ошибка получения количества вакансий: {e}")
             return 0

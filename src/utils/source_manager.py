@@ -77,7 +77,8 @@ class SourceManager:
         """
         config = self.get_source_config(source)
         if config:
-            return config.get("display_name", source)
+            result = config.get("display_name", source)
+            return str(result) if result is not None else source
         return source
 
     def get_source_api_limits(self, source: str) -> Optional[Dict[str, Any]]:
@@ -131,7 +132,8 @@ class SourceManager:
         """
         config = self.get_source_config(source)
         if config:
-            return config.get("priority", 999)
+            result = config.get("priority", 999)
+            return int(result) if isinstance(result, (int, str)) else 999
         return 999
 
     def sort_sources_by_priority(self, sources: List[str]) -> List[str]:
@@ -158,7 +160,8 @@ class SourceManager:
         """
         config = self.get_source_config(source)
         if config:
-            return config.get("features", [])
+            result = config.get("features", [])
+            return list(result) if isinstance(result, (list, tuple)) else []
         return []
 
     def get_source_config_class(self, source: str) -> Optional[type]:

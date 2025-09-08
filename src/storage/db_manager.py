@@ -412,7 +412,7 @@ class DBManager(AbstractDBManager):
                     cursor.execute(query)
                     results = cursor.fetchall()
 
-                    return results
+                    return [(str(row[0]), int(row[1])) for row in results]
 
         except Exception as e:
             logger.error(f"Ошибка при получении списка компаний и количества вакансий: {e}")

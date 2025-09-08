@@ -97,7 +97,8 @@ class SQLDataProcessor(TypedDataProcessor, CompanyDataProcessor):
         """
         SQL обработка вакансий - фильтрация и дедупликация
         """
-        return self.sql_filter_service.filter_and_deduplicate_vacancies(vacancies)
+        result = self.sql_filter_service.filter_and_deduplicate_vacancies(vacancies)
+        return list(result) if isinstance(result, (list, tuple)) else []
 
     def validate_vacancy_data(self, vacancy: Vacancy) -> bool:
         """

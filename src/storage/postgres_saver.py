@@ -1073,7 +1073,7 @@ class PostgresSaver(AbstractVacancyStorage):
             query = f"DELETE FROM vacancies WHERE vacancy_id IN ({placeholders})"
 
             cursor.execute(query, vacancy_ids)
-            deleted_count = cursor.rowcount
+            deleted_count = int(cursor.rowcount) if cursor.rowcount is not None else 0
             connection.commit()
 
             if deleted_count > 0:
@@ -1192,7 +1192,8 @@ class PostgresSaver(AbstractVacancyStorage):
         try:
             cursor = connection.cursor()
             cursor.execute("SELECT COUNT(*) FROM vacancies")
-            count = cursor.fetchone()[0]
+            result = cursor.fetchone()
+            count = int(result[0]) if result and result[0] is not None else 0
             return count * 1024  # Примерный размер в байтах
         except PsycopgError as e:
             logger.error(f"Ошибка получения размера БД: {e}")
@@ -1247,7 +1248,8 @@ class PostgresSaver(AbstractVacancyStorage):
                 query += " WHERE " + " AND ".join(where_conditions)
 
             cursor.execute(query, params)
-            return cursor.fetchone()[0]
+            result = cursor.fetchone()
+            return int(result[0]) if result and result[0] is not None else 0
 
         except PsycopgError as e:
             logger.error(f"Ошибка подсчета вакансий: {e}")
