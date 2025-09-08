@@ -222,17 +222,17 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
         try:
             # SJ API не предоставляет прямой метод для получения компаний
             # Используем целевые компании из конфигурации
-            target_companies = TargetCompanies()
+            target_companies_list = TargetCompanies.get_all_companies()
             companies = []
-            for company_id, company_info in target_companies.companies.items():
+            for company_info in target_companies_list:
                 companies.append({
-                    "id": company_id,
-                    "name": company_info.get("name", f"Company {company_id}"),
+                    "id": company_info.sj_id,
+                    "name": company_info.name,
                     "source": "superjob.ru"
                 })
             return companies
         except Exception as e:
-            logger.error(f"Ошибка получения компаний с SuperJob: {e}")
+            logger.error(f"Ошибка получения компаний с SuperJob: {str(e)}")
             return []
 
     def _deduplicate_vacancies(self, vacancies: List[Dict], source: str = None) -> List[Dict]:
@@ -245,7 +245,15 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
         Returns:
             List[Dict]: Список уникальных вакансий от целевых компаний
         """
-        return super()._deduplicate_vacancies(vacancies, "sj")
+        # Базовая дедупликация без использования родительского метода
+        seen_ids = set()
+        unique_vacancies = []
+        for vacancy in vacancies:
+            vacancy_id = vacancy.get('id') or vacancy.get('link', '')
+            if vacancy_id and vacancy_id not in seen_ids:
+                seen_ids.add(vacancy_id)
+                unique_vacancies.append(vacancy)
+        return unique_vacancies
 
     def get_vacancies_with_deduplication(self, search_query: str, **kwargs: Any) -> List[Dict]:
         """
@@ -341,4 +349,4 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
         Удаляет все сохраненные ответы API из кэша для освобождения места
         и обеспечения получения актуальных данных при следующих запросах.
         """
-        super().clear_cache("sj")
+        super().clear_cache(api_prefix)

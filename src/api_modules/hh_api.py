@@ -133,10 +133,10 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
             # Используем целевые компании из конфигурации
             target_companies = TargetCompanies()
             companies = []
-            for company_id, company_info in target_companies.companies.items():
+            for company_info in target_companies.get_all_companies():
                 companies.append({
-                    "id": company_id,
-                    "name": company_info.get("name", f"Company {company_id}"),
+                    "id": company_info.hh_id,
+                    "name": company_info.name,
                     "source": "hh.ru"
                 })
             return companies
