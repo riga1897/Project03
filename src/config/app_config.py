@@ -5,7 +5,7 @@ from typing import Dict
 class AppConfig:
     """Класс для управления конфигурацией приложения"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Инициализация конфигурации приложения с настройками по умолчанию."""
         # По умолчанию используем PostgreSQL хранилище
         self.default_storage_type = "postgres"

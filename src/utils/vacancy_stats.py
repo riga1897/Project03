@@ -20,7 +20,7 @@ class VacancyStats:
     - Анализа маппинга компаний
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Инициализация статистики
 

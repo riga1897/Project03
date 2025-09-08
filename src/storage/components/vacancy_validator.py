@@ -39,7 +39,7 @@ class VacancyValidator:
         "source": (str, type(None)),
     }
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Инициализация валидатора"""
         self._validation_errors = []
 

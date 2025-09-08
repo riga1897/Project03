@@ -6,7 +6,7 @@ class AbstractVacancy(ABC):
     """Абстрактный класс для представления вакансии"""
 
     @abstractmethod
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Инициализация вакансии
         """

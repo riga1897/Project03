@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 class VacancyFormatter:
     """Класс для форматирования вакансий"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Инициализация форматировщика"""
         pass
 

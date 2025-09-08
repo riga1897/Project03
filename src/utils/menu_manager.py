@@ -1,5 +1,5 @@
 import logging
-from typing import Callable, Dict, List, Tuple
+from typing import Callable, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +12,7 @@ class MenuManager:
     интерактивных меню с динамической структурой пунктов.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Инициализация менеджера меню
 
@@ -22,7 +22,7 @@ class MenuManager:
         self.menu_items: Dict[str, Tuple[str, Callable]] = {}
         self.menu_order: List[str] = []
 
-    def add_menu_item(self, key: str, title: str, handler: Callable | None, position: int = None) -> None:
+    def add_menu_item(self, key: str, title: str, handler: Optional[Callable], position: Optional[int] = None) -> None:
         """
         Добавляет пункт меню
 
