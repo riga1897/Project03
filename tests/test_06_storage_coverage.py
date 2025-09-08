@@ -59,6 +59,10 @@ class ConcreteVacancyStorage(AbstractVacancyStorage):
 class ConcreteDBManager(AbstractDBManager):
     """Конкретная реализация для тестирования."""
     
+    def _get_connection(self):
+        """Mock реализация получения подключения."""
+        return MagicMock()
+    
     def get_companies_and_vacancies_count(self) -> List[tuple]:
         return [("Test Company", 5)]
     
