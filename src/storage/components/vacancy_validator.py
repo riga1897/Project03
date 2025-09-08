@@ -4,7 +4,7 @@
 """
 
 import logging
-from typing import Any, Dict, List, Tuple, Type, Union
+from typing import Dict, List, Tuple, Type, Union
 
 from src.vacancies.abstract import AbstractVacancy
 
@@ -28,11 +28,11 @@ class VacancyValidator:
     REQUIRED_FIELDS = {"vacancy_id": str, "title": str, "url": str}
 
     OPTIONAL_FIELDS = {
-        "salary": Any,
-        "description": str,
+        "salary": (dict, type(None)),  # Словарь или None для данных о зарплате
+        "description": (str, type(None)),
         "requirements": (str, type(None)),
         "responsibilities": (str, type(None)),
-        "employer": Any,
+        "employer": (dict, str, type(None)),  # Строка, словарь или объект работодателя, или None
         "experience": (str, type(None)),
         "employment": (str, type(None)),
         "area": (str, type(None)),
@@ -95,10 +95,19 @@ class VacancyValidator:
             if value is None:
                 continue
 
-            if not isinstance(value, expected_types):
-                self._validation_errors.append(
-                    f"Неверный тип поля {field_name}: ожидался {expected_types}, получен {type(value)}"
-                )
+            # Специальная обработка для поля salary
+            if field_name == "salary":
+                # Для salary принимаем dict, или объекты с атрибутами (Pydantic модели)
+                if not (isinstance(value, dict) or hasattr(value, "__dict__")):
+                    self._validation_errors.append(
+                        f"Неверный тип поля {field_name}: ожидался dict или объект, получен {type(value)}"
+                    )
+            else:
+                # Для остальных полей обычная проверка типов
+                if not isinstance(value, expected_types):
+                    self._validation_errors.append(
+                        f"Неверный тип поля {field_name}: ожидался {expected_types}, получен {type(value)}"
+                    )
 
         return len(self._validation_errors) == 0
 
