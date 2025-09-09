@@ -280,45 +280,26 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
 
     def get_vacancies_from_target_companies(self, search_query: str = "", **kwargs: Any) -> List[Dict]:
         """
-        Получение вакансий от целевых компаний через прямые запросы по employer_id
+        УНИФИЦИРОВАННАЯ ЛОГИКА: Получение всех вакансий одним потоком
         
-        HH API ПОДДЕРЖИВАЕТ фильтрацию по employer_id в запросе,
-        поэтому делаем отдельные запросы для каждой целевой компании.
+        ИЗМЕНЕНО: Теперь загружаем ВСЕ вакансии без фильтра по компаниям,
+        фильтрация будет выполняться централизованно в unified_api.py
 
         Args:
             search_query: Поисковый запрос (опционально)
             **kwargs: Дополнительные параметры поиска
 
         Returns:
-            List[Dict]: Список вакансий от целевых компаний
+            List[Dict]: Список всех вакансий (без фильтрации по компаниям)
         """
-        all_vacancies = []
+        logger.info(f"HH API: УНИФИЦИРОВАННАЯ загрузка всех вакансий одним потоком (без фильтра по компаниям)")
 
-        logger.info(f"HH API: Получение вакансий от {len(self._target_company_ids)} целевых компаний через прямые запросы по employer_id")
+        # Загружаем все вакансии единым запросом
+        all_vacancies = self.get_vacancies(search_query, **kwargs)
+        
+        logger.info(f"HH API: получено {len(all_vacancies)} вакансий для последующей фильтрации")
 
-        for company_id in self._target_company_ids:
-            try:
-                # Получаем вакансии конкретной компании
-                company_vacancies = self.get_vacancies_by_company(company_id, search_query, **kwargs)
-                if company_vacancies:
-                    all_vacancies.extend(company_vacancies)
-                    logger.debug(f"Получено {len(company_vacancies)} вакансий от компании {company_id}")
-            except Exception as e:
-                logger.warning(f"Ошибка получения вакансий от компании {company_id}: {e}")
-                continue
-
-        logger.info(f"Всего получено {len(all_vacancies)} вакансий от целевых компаний")
-
-        # Показываем статистику по компаниям (используем сырые данные)
-        if all_vacancies:
-            from src.utils.vacancy_stats import VacancyStats
-
-            stats = VacancyStats()
-            stats.display_company_stats(all_vacancies, "HH.ru - Целевые компании")
-            logger.info(f"Возвращаем {len(all_vacancies)} вакансий от целевых компаний")
-        else:
-            logger.warning("Получен пустой список вакансий от целевых компаний")
-
+        # НЕ показываем статистику здесь - она будет в unified_api после фильтрации
         return all_vacancies
 
     def get_vacancies_by_company(self, company_id: str, search_query: str = "", **kwargs: Any) -> List[Dict]:

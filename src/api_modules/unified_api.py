@@ -83,71 +83,132 @@ class UnifiedAPI:
             logger.info("Вакансии не найдены")
             return []
 
-        # Применяем фильтрацию и дедупликацию одним SQL-запросом
-        logger.info(f"Всего получено {len(all_vacancies)} вакансий, применяем фильтрацию и дедупликацию через SQL")
-        filtered_vacancies = self._filter_by_target_companies(all_vacancies)
+        # УНИФИЦИРОВАННАЯ фильтрация и дедупликация
+        logger.info(f"Унифицированная обработка: получено {len(all_vacancies)} вакансий всего")
+        
+        # 1. Фильтрация по целевым компаниям (едина для всех источников)  
+        filtered_vacancies = self._unified_filter_by_target_companies(all_vacancies)
+        
+        # 2. Единая дедупликация для всех источников
+        unique_vacancies = self._unified_deduplicate(filtered_vacancies)
 
-        if not filtered_vacancies:
-            logger.info("Не найдено вакансий от целевых компаний")
+        if unique_vacancies:
+            logger.info(f"Финальный результат: {len(unique_vacancies)} уникальных вакансий от целевых компаний")
+            return unique_vacancies
+        else:
+            logger.warning(f"После обработки не найдено вакансий от целевых компаний из {len(all_vacancies)} исходных")
             return []
 
-        logger.info(
-            f"После SQL-фильтрации и дедупликации: {len(filtered_vacancies)} уникальных вакансий от целевых компаний"
-        )
-
-        return filtered_vacancies
-
-    def _filter_by_target_companies(self, all_vacancies: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _unified_filter_by_target_companies(self, vacancies: List[Dict]) -> List[Dict]:
         """
-        Фильтрация вакансий по целевым компаниям через проверку ID работодателя
-
+        УНИФИЦИРОВАННАЯ фильтрация вакансий по целевым компаниям для ВСЕХ источников
+        
+        Логика:
+        - HH.ru: проверяем employer.id в hh_ids
+        - SuperJob: проверяем client.id/id_client в sj_ids
+        - Другие источники: можно добавить в будущем
+        
         Args:
-            all_vacancies: Все полученные вакансии
-
+            vacancies: Список всех вакансий от разных источников
+            
         Returns:
-            List[Dict]: Вакансии только от целевых компаний
+            List[Dict]: Отфильтрованный список вакансий от целевых компаний
         """
-        if not all_vacancies:
+        if not vacancies:
             return []
 
-        # Получаем ID целевых компаний
-        from src.config.target_companies import TargetCompanies
+        try:
+            # Получаем списки ID целевых компаний для разных источников
+            from src.config.target_companies import TargetCompanies
+            target_hh_ids = set(TargetCompanies.get_hh_ids())  
+            target_sj_ids = set(TargetCompanies.get_sj_ids())
 
-        target_companies = TargetCompanies.get_all_companies()
-        target_hh_ids = {str(comp.hh_id) for comp in target_companies if comp.hh_id}
-        target_sj_ids = {str(comp.sj_id) for comp in target_companies if comp.sj_id}
+            filtered_vacancies = []
 
-        filtered_vacancies = []
+            for vacancy in vacancies:
+                try:
+                    is_target_company = False
 
-        for vacancy_data in all_vacancies:
-            employer_id = None
-            source = vacancy_data.get("source", "").lower()
+                    # 1. HH.ru формат: employer.id
+                    if "employer" in vacancy and vacancy["employer"]:
+                        employer_id = str(vacancy["employer"].get("id", ""))
+                        if employer_id in target_hh_ids:
+                            is_target_company = True
 
-            # Извлекаем ID работодателя из разных форматов данных
-            if "employer" in vacancy_data and isinstance(vacancy_data["employer"], dict):
-                # Обработанные данные
-                employer_id = str(vacancy_data["employer"].get("id", ""))
-            elif "employer_id" in vacancy_data:
-                # Альтернативный формат
-                employer_id = str(vacancy_data["employer_id"])
-            elif "client" in vacancy_data and isinstance(vacancy_data["client"], dict):
-                # Сырые данные SuperJob с client.id
-                employer_id = str(vacancy_data["client"].get("id", ""))
-            elif "id_client" in vacancy_data:
-                # Fallback для SuperJob - id_client
-                employer_id = str(vacancy_data["id_client"])
+                    # 2. SuperJob формат: client.id или id_client
+                    if not is_target_company:
+                        # Используем SuperJob парсер для надежного извлечения ID
+                        from src.vacancies.parsers.sj_parser import SuperJobParser
+                        parser = SuperJobParser()
+                        try:
+                            company_id = parser._extract_company_id(vacancy)
+                            if company_id and company_id in target_sj_ids:
+                                is_target_company = True
+                        except:
+                            pass
 
-            if employer_id:
-                # Проверяем соответствие ID целевым компаниям
-                if (
-                    (source == "hh" and employer_id in target_hh_ids)
-                    or (source == "sj" and employer_id in target_sj_ids)
-                    or (employer_id in target_hh_ids or employer_id in target_sj_ids)
-                ):
-                    filtered_vacancies.append(vacancy_data)
+                    if is_target_company:
+                        filtered_vacancies.append(vacancy)
 
-        logger.info(f"Фильтрация по целевым компаниям: {len(all_vacancies)} -> {len(filtered_vacancies)} вакансий")
-        return filtered_vacancies
+                except Exception as e:
+                    logger.warning(f"Ошибка при проверке вакансии на целевую компанию: {e}")
+                    continue
+
+            logger.info(f"Унифицированная фильтрация: найдено {len(filtered_vacancies)} вакансий от целевых компаний из {len(vacancies)} исходных")
+            return filtered_vacancies
+
+        except Exception as e:
+            logger.error(f"Критическая ошибка при фильтрации по целевым компаниям: {e}")
+            return []
+
+    def _unified_deduplicate(self, vacancies: List[Dict]) -> List[Dict]:
+        """
+        ЕДИНАЯ дедупликация вакансий со всех источников
+        
+        Логика:
+        - Используем ID вакансий как ключи уникальности
+        - HH.ru: используем поле 'id'
+        - SuperJob: используем поле 'id'
+        
+        Args:
+            vacancies: Отфильтрованные вакансии от целевых компаний
+            
+        Returns:
+            List[Dict]: Дедуплицированный список вакансий
+        """
+        if not vacancies:
+            return []
+
+        try:
+            seen_ids = set()
+            unique_vacancies = []
+
+            for vacancy in vacancies:
+                try:
+                    # Извлекаем ID вакансии
+                    vacancy_id = vacancy.get('id')
+                    if not vacancy_id:
+                        continue
+
+                    # Создаем уникальный ключ с префиксом источника
+                    # Это позволяет иметь одинаковые ID у разных источников
+                    source_prefix = "hh" if "employer" in vacancy else "sj"
+                    unique_key = f"{source_prefix}_{vacancy_id}"
+
+                    if unique_key not in seen_ids:
+                        seen_ids.add(unique_key)
+                        unique_vacancies.append(vacancy)
+
+                except Exception as e:
+                    logger.warning(f"Ошибка при дедупликации вакансии: {e}")
+                    continue
+
+            logger.info(f"Единая дедупликация: осталось {len(unique_vacancies)} уникальных вакансий из {len(vacancies)} отфильтрованных")
+            return unique_vacancies
+
+        except Exception as e:
+            logger.error(f"Критическая ошибка при дедупликации: {e}")
+            return vacancies  # Возвращаем исходный список при ошибке
 
     def get_hh_vacancies(self, query: str, **kwargs: Any) -> List[Vacancy]:
         """Получение вакансий только с HH.ru с дедупликацией"""
@@ -319,24 +380,28 @@ class UnifiedAPI:
             except Exception as e:
                 logger.error(f"Ошибка получения вакансий от SuperJob: {e}")
 
-        # Фильтрация через проверку ID компаний
+        # УНИФИЦИРОВАННАЯ фильтрация и дедупликация
         if all_vacancies:
-            unique_vacancies = self._filter_by_target_companies(all_vacancies)
+            logger.info(f"Унифицированная обработка: получено {len(all_vacancies)} вакансий всего")
+            
+            # 1. Фильтрация по целевым компаниям (едина для всех источников)  
+            filtered_vacancies = self._unified_filter_by_target_companies(all_vacancies)
+            
+            # 2. Единая дедупликация для всех источников
+            unique_vacancies = self._unified_deduplicate(filtered_vacancies)
 
             if unique_vacancies:
-                logger.info(f"Всего найдено {len(unique_vacancies)} уникальных вакансий от целевых компаний")
+                logger.info(f"Финальный результат: {len(unique_vacancies)} уникальных вакансий от целевых компаний")
                 
-                # ИСПРАВЛЕНО: НЕ показываем статистику здесь - она будет после создания объектов Vacancy
-                # self._display_unified_stats(unique_vacancies, normalized_sources)
-                
+                # НЕ показываем статистику здесь - она будет после создания объектов Vacancy
                 return unique_vacancies
             else:
                 logger.warning(
-                    f"После фильтрации не найдено вакансий от целевых компаний из {len(all_vacancies)} исходных"
+                    f"После обработки не найдено вакансий от целевых компаний из {len(all_vacancies)} исходных"
                 )
                 return []
         else:
-            logger.info("Вакансии от целевых компаний не найдены")
+            logger.info("Вакансии не найдены")
             return []
 
     def clear_all_cache(self) -> None:

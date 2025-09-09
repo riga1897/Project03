@@ -23,7 +23,7 @@ class CompanyInfo:
 class TargetCompanies:
     """Класс для работы с целевыми компаниями"""
 
-    # Список целевых компаний - оптимизированный список из 12 компаний
+    # Список целевых компаний - оптимизированный список из 11 компаний
     COMPANIES = [
         # Компании с обоими API (7 шт.)
         CompanyInfo(
@@ -68,36 +68,30 @@ class TargetCompanies:
             sj_id="4887815",
             description="Государственное учреждение (4 вакансии в кэше)",
         ),
-        # Компании только с SuperJob ID (из реального кэша, 5 шт.)
+        # Дополнительные компании (из реального кэша, 4 шт.)
         CompanyInfo(
             name="Skyeng",
-            hh_id=None,
+            hh_id="1122462",
             sj_id="4922082",
-            description="Онлайн-школа английского языка (ID из реального кэша SuperJob)",
+            description="Онлайн-школа английского языка (249 вакансий на HH.ru, ID из реального кэша SuperJob)",
         ),
         CompanyInfo(
-            name="OZON: Старт карьеры",
-            hh_id=None,
+            name="OZON",
+            hh_id="2180",
             sj_id="4905942",
-            description="Маркетплейс и интернет-торговля (ID из реального кэша SuperJob)",
+            description="Маркетплейс и интернет-торговля (7587 вакансий на HH.ru, ID из реального кэша SuperJob)",
         ),
         CompanyInfo(
             name="Кредит Европа Банк",
-            hh_id=None,
+            hh_id="1947",
             sj_id="20194",
-            description="Коммерческий банк (ID из реального кэша SuperJob)",
-        ),
-        CompanyInfo(
-            name="Федеральное бюджетное учреждение, ВВУЗ",
-            hh_id=None,
-            sj_id="2339875",
-            description="Государственное образовательное учреждение (1 вакансия в кэше)",
+            description="Коммерческий банк (98 вакансий на HH.ru, ID из реального кэша SuperJob)",
         ),
         CompanyInfo(
             name="Азот-Взрыв",
-            hh_id=None,
+            hh_id="1413754",
             sj_id="4440050",
-            description="Промышленная компания (ID из реального кэша SuperJob)",
+            description="Промышленная компания (130 вакансий на HH.ru, ID из реального кэша SuperJob)",
         ),
     ]
 

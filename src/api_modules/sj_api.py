@@ -272,17 +272,17 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
 
     def get_vacancies_from_target_companies(self, search_query: str = "", **kwargs: Any) -> List[Dict]:
         """
-        Получение вакансий от целевых компаний через полную загрузку + фильтрацию
+        УНИФИЦИРОВАННАЯ ЛОГИКА: Получение всех вакансий одним потоком
         
-        SuperJob API НЕ ПОДДЕРЖИВАЕТ фильтрацию по client.id в запросе,
-        поэтому сначала загружаем все вакансии, потом фильтруем по ID.
+        ИЗМЕНЕНО: Теперь просто загружаем все вакансии без локальной фильтрации,
+        фильтрация будет выполняться централизованно в unified_api.py
 
         Args:
             search_query: Поисковый запрос (опционально)
             **kwargs: Дополнительные параметры поиска
 
         Returns:
-            List[Dict]: Список вакансий от целевых компаний
+            List[Dict]: Список всех вакансий (без фильтрации по компаниям)
         """
         try:
             # Проверяем наличие API ключа
@@ -291,55 +291,15 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
                 logger.warning("SuperJob API ключ не настроен, пропускаем")
                 return []
 
-            # SuperJob API НЕ поддерживает фильтрацию по client.id в запросе
-            # Поэтому используем стратегию: сначала все вакансии, потом фильтрация
-            logger.info("SuperJob API: загрузка всех вакансий для последующей фильтрации по client.id")
+            logger.info("SuperJob API: УНИФИЦИРОВАННАЯ загрузка всех вакансий одним потоком (без локальной фильтрации)")
 
+            # Загружаем все вакансии без фильтрации - фильтрация будет в unified_api
             all_vacancies = self.get_vacancies(search_query, **kwargs)
 
-            if not all_vacancies:
-                logger.info("SuperJob: не найдено вакансий для фильтрации")
-                return []
+            logger.info(f"SuperJob API: получено {len(all_vacancies)} вакансий для последующей фильтрации")
 
-            # Строгая фильтрация только по SuperJob ID целевых компаний
-            try:
-                target_sj_ids = TargetCompanies.get_sj_ids()
-                target_vacancies = []
-
-                # Используем парсер для извлечения ID компании
-                from src.vacancies.parsers.sj_parser import SuperJobParser
-                parser = SuperJobParser()
-                
-                for vacancy in all_vacancies:
-                    try:
-                        # Используем метод парсера для извлечения ID компании
-                        company_id = parser._extract_company_id(vacancy)
-                        
-                        # Отладочная информация для первых нескольких вакансий
-                        if len(target_vacancies) < 3:
-                            logger.debug(f"Вакансия {vacancy.get('id')}: company_id='{company_id}', в целевых: {company_id in target_sj_ids if company_id else False}")
-                            logger.debug(f"client: {vacancy.get('client', {})}")
-                            logger.debug(f"id_client: {vacancy.get('id_client')}")
-                        
-                        # Проверяем строгое совпадение с целевыми ID
-                        if company_id and company_id in target_sj_ids:
-                            target_vacancies.append(vacancy)
-                    except Exception as e:
-                        logger.warning(f"Ошибка при обработке вакансии: {e}")
-                        continue
-
-                logger.info(
-                    f"SuperJob: отфильтровано {len(target_vacancies)} вакансий от целевых компаний по строгому ID-matching"
-                )
-
-                # НЕ показываем статистику здесь - она будет в unified_api.py
-                # Это исправляет проблему с "Неизвестная компания"
-
-                return target_vacancies
-
-            except Exception as e:
-                logger.error(f"Ошибка при фильтрации по целевым компаниям: {e}")
-                return all_vacancies  # Возвращаем все вакансии если фильтрация не удалась
+            # НЕ фильтруем здесь - фильтрация будет централизованная в unified_api
+            return all_vacancies
 
         except Exception as e:
             if "403" in str(e) or "ключ" in str(e).lower():
