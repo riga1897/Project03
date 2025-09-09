@@ -303,10 +303,14 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
                 target_sj_ids = TargetCompanies.get_sj_ids()
                 target_vacancies = []
 
+                # Используем парсер для извлечения ID компании
+                from src.vacancies.parsers.sj_parser import SuperJobParser
+                parser = SuperJobParser()
+                
                 for vacancy in all_vacancies:
                     try:
-                        # Используем тот же алгоритм извлечения ID, что и в парсере
-                        company_id = self._extract_company_id_from_vacancy(vacancy)
+                        # Используем метод парсера для извлечения ID компании
+                        company_id = parser._extract_company_id(vacancy)
                         # Проверяем строгое совпадение с целевыми ID
                         if company_id and company_id in target_sj_ids:
                             target_vacancies.append(vacancy)
@@ -343,34 +347,6 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             else:
                 logger.error(f"Ошибка SuperJob API: {e}")
             return []
-
-    def _extract_company_id_from_vacancy(self, vacancy: Dict[str, Any]) -> str:
-        """
-        Извлекает ID компании из данных SuperJob вакансии для фильтрации
-        Использует тот же алгоритм, что и в SJ парсере
-        
-        Args:
-            vacancy: Данные вакансии от SuperJob API
-            
-        Returns:
-            str: ID компании или пустая строка
-        """
-        try:
-            # Приоритет 1: client.id (основной источник)
-            client = vacancy.get("client", {})
-            if isinstance(client, dict):
-                client_id = client.get("id")
-                if client_id is not None and str(client_id) != "0":
-                    return str(client_id)
-            
-            # Приоритет 2: id_client (fallback)
-            id_client = vacancy.get("id_client")
-            if id_client is not None and str(id_client) != "0":
-                return str(id_client)
-                
-            return ""
-        except Exception:
-            return ""
 
     def clear_cache(self, source: str) -> None:
         """
