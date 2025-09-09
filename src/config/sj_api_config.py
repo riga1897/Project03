@@ -54,14 +54,23 @@ class SJAPIConfig:
         # Обрабатываем пагинацию (SuperJob использует page, начиная с 0)
         if "page" in kwargs:
             params["page"] = kwargs["page"]
+            
+        # Обрабатываем поисковый запрос
+        if "keyword" in kwargs and kwargs["keyword"]:
+            params["keyword"] = kwargs["keyword"]
 
         # Город добавляем только если указан явно (по умолчанию поиск по всей России)
         if "town" in kwargs:
             params["town"] = kwargs["town"]
 
+        # Удаляем служебные параметры перед отправкой API запроса
+        filtered_kwargs = {k: v for k, v in kwargs.items() 
+                          if k not in ["max_pages", "count", "order_field", "order_direction", 
+                                      "published", "only_with_salary", "page", "keyword", "town"]}
+
         if self.custom_params:
             params.update(self.custom_params)
-        params.update(kwargs)
+        params.update(filtered_kwargs)
         return params
 
     def is_configured(self) -> bool:

@@ -305,6 +305,17 @@ class PostgresSaver(AbstractVacancyStorage):
             except PsycopgError as e:
                 logger.warning(f"Не удалось создать внешний ключ: {e}")
 
+            # Автоматически сбрасываем счетчики для пустых таблиц и корректируем для заполненных
+            try:
+                cursor.execute("SELECT reset_empty_table_sequences();")
+                reset_result = cursor.fetchone()[0]
+                logger.info("✓ Счетчики автоинкремента настроены:")
+                for line in reset_result.strip().split('\n'):
+                    if line.strip():
+                        logger.info(f"  {line.strip()}")
+            except Exception as e:
+                logger.warning(f"Не удалось настроить счетчики автоинкремента: {e}")
+
             connection.commit()
             logger.info("✓ Таблицы успешно созданы/проверены")
 
@@ -1153,9 +1164,12 @@ class PostgresSaver(AbstractVacancyStorage):
             """
             )
 
-            # Вставляем все ID для проверки
-            vacancy_ids = [(v.id,) for v in vacancies]
+            # Дедуплицируем ID перед вставкой (убираем дубликаты)
+            unique_vacancy_ids = list(set(v.id for v in vacancies))
+            vacancy_ids = [(v_id,) for v_id in unique_vacancy_ids]
             from psycopg2.extras import execute_values
+
+            logger.debug(f"Исходно {len(vacancies)} вакансий, уникальных ID: {len(unique_vacancy_ids)}")
 
             execute_values(
                 cursor,
@@ -1174,8 +1188,12 @@ class PostgresSaver(AbstractVacancyStorage):
             """
             )
 
-            result = {row[0]: row[1] for row in cursor.fetchall()}
-            logger.debug(f"Результат проверки: {len(result)} записей, тип: {type(result)}")
+            unique_results = {row[0]: row[1] for row in cursor.fetchall()}
+            
+            # Создаем результат для всех исходных вакансий (включая дубликаты)
+            result = {v.id: unique_results.get(v.id, False) for v in vacancies}
+            
+            logger.debug(f"Уникальных результатов: {len(unique_results)}, итоговых: {len(result)}")
 
             connection.commit()
             return result

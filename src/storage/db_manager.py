@@ -281,6 +281,17 @@ class DBManager(AbstractDBManager):
                     except Exception as e:
                         logger.warning(f"Не удалось создать внешний ключ: {e}")
 
+                    # Автоматически сбрасываем счетчики для пустых таблиц и корректируем для заполненных
+                    try:
+                        cursor.execute("SELECT reset_empty_table_sequences();")
+                        reset_result = cursor.fetchone()[0]
+                        logger.info("✓ Счетчики автоинкремента настроены:")
+                        for line in reset_result.strip().split('\n'):
+                            if line.strip():
+                                logger.info(f"  {line.strip()}")
+                    except Exception as e:
+                        logger.warning(f"Не удалось настроить счетчики автоинкремента: {e}")
+
                     logger.info("✓ Все таблицы и структуры успешно созданы/проверены")
 
         except Exception as e:

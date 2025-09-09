@@ -272,6 +272,34 @@ class VacancyOperationsCoordinator:
             print(f"Общая ошибка получения вакансий: {e}")
             return []
 
+    def _display_post_processing_stats(self, vacancies: List[Vacancy], sources: Optional[List[str]]) -> None:
+        """
+        Показывает статистику ПОСЛЕ создания объектов Vacancy с правильными названиями компаний
+        
+        Args:
+            vacancies: Готовые объекты Vacancy
+            sources: Источники данных
+        """
+        try:
+            from src.utils.vacancy_stats import VacancyStats
+            
+            # Определяем название для статистики
+            if sources and len(sources) == 1:
+                if sources[0].lower() in ["hh", "hh.ru", "headhunter"]:
+                    source_name = "HH.ru - Целевые компании"
+                elif sources[0].lower() in ["sj", "superjob", "superjob.ru"]:
+                    source_name = "SuperJob - Целевые компании"
+                else:
+                    source_name = f"{sources[0].upper()} - Целевые компании"
+            else:
+                source_name = "Все источники - Целевые компании"
+            
+            stats = VacancyStats()
+            stats.display_company_stats(vacancies, source_name)
+            
+        except Exception as e:
+            logger.warning(f"Ошибка при отображении статистики после обработки: {e}")
+
     def get_vacancies_from_target_companies(
         self, search_query: str = "", sources: Optional[List[str]] = None, **kwargs: Any
     ) -> List[Vacancy]:
@@ -354,6 +382,9 @@ class VacancyOperationsCoordinator:
 
             if vacancies:
                 print(f"Успешно конвертировано {len(vacancies)} вакансий в объекты Vacancy")
+                
+                # ИСПРАВЛЕНО: Показываем статистику ПОСЛЕ создания объектов с правильными названиями
+                self._display_post_processing_stats(vacancies, sources)
             else:
                 print("Не удалось создать объекты вакансий из полученных данных")
 

@@ -272,7 +272,10 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
 
     def get_vacancies_from_target_companies(self, search_query: str = "", **kwargs: Any) -> List[Dict]:
         """
-        Получение вакансий только от целевых компаний
+        Получение вакансий от целевых компаний через полную загрузку + фильтрацию
+        
+        SuperJob API НЕ ПОДДЕРЖИВАЕТ фильтрацию по client.id в запросе,
+        поэтому сначала загружаем все вакансии, потом фильтруем по ID.
 
         Args:
             search_query: Поисковый запрос (опционально)
@@ -288,9 +291,9 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
                 logger.warning("SuperJob API ключ не настроен, пропускаем")
                 return []
 
-            # SuperJob не имеет прямого фильтра по ID компаний в API
-            # Используем строгую фильтрацию только по ID целевых компаний
-            logger.info("SuperJob: получение всех вакансий для строгой ID-based фильтрации")
+            # SuperJob API НЕ поддерживает фильтрацию по client.id в запросе
+            # Поэтому используем стратегию: сначала все вакансии, потом фильтрация
+            logger.info("SuperJob API: загрузка всех вакансий для последующей фильтрации по client.id")
 
             all_vacancies = self.get_vacancies(search_query, **kwargs)
 
@@ -329,15 +332,8 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
                     f"SuperJob: отфильтровано {len(target_vacancies)} вакансий от целевых компаний по строгому ID-matching"
                 )
 
-                # Показываем статистику
-                if target_vacancies:
-                    try:
-                        from src.utils.vacancy_stats import VacancyStats
-
-                        stats = VacancyStats()
-                        stats.display_company_stats(target_vacancies)
-                    except Exception as e:
-                        logger.warning(f"Ошибка при отображении статистики: {e}")
+                # НЕ показываем статистику здесь - она будет в unified_api.py
+                # Это исправляет проблему с "Неизвестная компания"
 
                 return target_vacancies
 

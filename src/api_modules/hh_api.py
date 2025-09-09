@@ -280,7 +280,10 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
 
     def get_vacancies_from_target_companies(self, search_query: str = "", **kwargs: Any) -> List[Dict]:
         """
-        Получение вакансий только от целевых компаний
+        Получение вакансий от целевых компаний через прямые запросы по employer_id
+        
+        HH API ПОДДЕРЖИВАЕТ фильтрацию по employer_id в запросе,
+        поэтому делаем отдельные запросы для каждой целевой компании.
 
         Args:
             search_query: Поисковый запрос (опционально)
@@ -291,7 +294,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         """
         all_vacancies = []
 
-        logger.info(f"Получение вакансий от {len(self._target_company_ids)} целевых компаний")
+        logger.info(f"HH API: Получение вакансий от {len(self._target_company_ids)} целевых компаний через прямые запросы по employer_id")
 
         for company_id in self._target_company_ids:
             try:

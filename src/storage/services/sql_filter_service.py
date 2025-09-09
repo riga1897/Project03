@@ -108,6 +108,10 @@ class SQLFilterService:
                     employer_id = vacancy.employer.get_id()
                 if hasattr(vacancy.employer, "get_name"):
                     employer_name = vacancy.employer.get_name()
+                
+                # ИСПРАВЛЕНИЕ: Если есть ID но нет названия, получаем из БД
+                if employer_id and (not employer_name or employer_name == "Не указана"):
+                    employer_name = self._get_company_name_by_id(employer_id, getattr(vacancy, "source", "unknown"))
 
             # Парсим описание на требования и обязанности
             from src.utils.description_parser import DescriptionParser
@@ -199,6 +203,37 @@ class SQLFilterService:
                 filtered_vacancies.append(vacancy_map[vacancy_id])
 
         return filtered_vacancies
+
+    def _get_company_name_by_id(self, company_id: str, source: str) -> str:
+        """
+        Получить название компании по ID из базы данных
+        
+        Args:
+            company_id: ID компании
+            source: Источник (hh, sj)
+            
+        Returns:
+            str: Название компании или "Не указана"
+        """
+        try:
+            from src.config.target_companies import TargetCompanies
+            
+            # Для SuperJob ищем по sj_id
+            if source.lower() in ["sj", "superjob", "superjob.ru"]:
+                company = TargetCompanies.get_company_by_sj_id(company_id)
+                if company:
+                    return company.name
+                    
+            # Для HeadHunter ищем по hh_id  
+            elif source.lower() in ["hh", "hh.ru", "headhunter"]:
+                company = TargetCompanies.get_company_by_hh_id(company_id)
+                if company:
+                    return company.name
+                    
+            return "Не указана"
+        except Exception as e:
+            logger.warning(f"Ошибка получения названия компании по ID {company_id}: {e}")
+            return "Не указана"
 
     @staticmethod
     def _normalize_text(text: str) -> str:

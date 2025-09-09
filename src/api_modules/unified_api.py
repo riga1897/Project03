@@ -123,11 +123,19 @@ class UnifiedAPI:
             employer_id = None
             source = vacancy_data.get("source", "").lower()
 
-            # Извлекаем ID работодателя
+            # Извлекаем ID работодателя из разных форматов данных
             if "employer" in vacancy_data and isinstance(vacancy_data["employer"], dict):
+                # Обработанные данные
                 employer_id = str(vacancy_data["employer"].get("id", ""))
             elif "employer_id" in vacancy_data:
+                # Альтернативный формат
                 employer_id = str(vacancy_data["employer_id"])
+            elif "client" in vacancy_data and isinstance(vacancy_data["client"], dict):
+                # Сырые данные SuperJob с client.id
+                employer_id = str(vacancy_data["client"].get("id", ""))
+            elif "id_client" in vacancy_data:
+                # Fallback для SuperJob - id_client
+                employer_id = str(vacancy_data["id_client"])
 
             if employer_id:
                 # Проверяем соответствие ID целевым компаниям
@@ -317,6 +325,10 @@ class UnifiedAPI:
 
             if unique_vacancies:
                 logger.info(f"Всего найдено {len(unique_vacancies)} уникальных вакансий от целевых компаний")
+                
+                # ИСПРАВЛЕНО: НЕ показываем статистику здесь - она будет после создания объектов Vacancy
+                # self._display_unified_stats(unique_vacancies, normalized_sources)
+                
                 return unique_vacancies
             else:
                 logger.warning(
@@ -341,6 +353,34 @@ class UnifiedAPI:
             logger.info("Кэш SuperJob очищен")
         except Exception as e:
             logger.error(f"Ошибка очистки кэша SuperJob: {e}")
+
+    def _display_unified_stats(self, vacancies: List[Dict], sources: List[str]) -> None:
+        """
+        Показывает статистику вакансий ПОСЛЕ правильной фильтрации
+        
+        Args:
+            vacancies: Отфильтрованные вакансии от целевых компаний
+            sources: Источники данных
+        """
+        try:
+            from src.utils.vacancy_stats import VacancyStats
+            
+            # Определяем название для статистики
+            if len(sources) == 1:
+                if sources[0] == "hh":
+                    source_name = "HH.ru - Целевые компании"
+                elif sources[0] == "sj":
+                    source_name = "SuperJob - Целевые компании"
+                else:
+                    source_name = f"{sources[0].upper()} - Целевые компании"
+            else:
+                source_name = "Все источники - Целевые компании"
+            
+            stats = VacancyStats()
+            stats.display_company_stats(vacancies, source_name)
+            
+        except Exception as e:
+            logger.warning(f"Ошибка при отображении унифицированной статистики: {e}")
 
     @staticmethod
     def get_available_sources() -> List[str]:

@@ -263,14 +263,15 @@ class CachedAPI(BaseJobAPI, ABC):
             if not isinstance(data, dict):
                 return False
 
-            # Проверка наличия обязательных полей
-            if "items" not in data:
+            # Поддержка разных структур данных (HH: items, SJ: objects)
+            items_key = "items" if "items" in data else "objects" if "objects" in data else None
+            if items_key is None:
                 return False
 
-            items = data.get("items", [])
-            found = data.get("found", 0)
+            items = data.get(items_key, [])
+            found = data.get("found", data.get("total", 0))  # HH: found, SJ: total
             page = params.get("page", 0)
-            per_page = params.get("per_page", 20)
+            per_page = params.get("per_page", params.get("count", 20))  # HH: per_page, SJ: count
 
             # Если это не последняя страница, должно быть максимальное количество элементов
             if page == 0 and found > per_page and len(items) < per_page:
@@ -303,7 +304,12 @@ class CachedAPI(BaseJobAPI, ABC):
             if not isinstance(data, dict):
                 return False
 
-            items = data.get("items", [])
+            # Поддержка разных структур данных (HH: items, SJ: objects)
+            items_key = "items" if "items" in data else "objects" if "objects" in data else None
+            if items_key is None:
+                return False
+                
+            items = data.get(items_key, [])
             if not isinstance(items, list):
                 return False
 

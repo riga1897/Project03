@@ -113,49 +113,84 @@ class VacancyStats:
 
         print(f"Статистика по компаниям{' (' + source_name + ')' if source_name else ''}: {len(vacancies)} вакансий")
 
-        # Подсчитываем вакансии по компаниям
-        company_stats: Dict[str, int] = {}
+        # Подсчитываем вакансии по ID компаний
+        company_id_stats: Dict[str, int] = {}
         for vacancy in vacancies:
             try:
-                # Получаем имя работодателя из разных возможных структур
-                employer_name = None
+                # Получаем ID работодателя из разных возможных структур
+                employer_id = None
 
                 if isinstance(vacancy, dict):
                     # Обрабатываем словарь
                     employer = vacancy.get("employer")
                     if isinstance(employer, dict):
-                        employer_name = employer.get("name")
-                    elif hasattr(employer, "name") and employer is not None:
-                        employer_name = employer.name
-                    elif isinstance(employer, str):
-                        employer_name = employer
+                        employer_id = employer.get("id")
+                    elif hasattr(employer, "get_id") and employer is not None:
+                        employer_id = employer.get_id()
                 elif hasattr(vacancy, "employer"):
                     # Обрабатываем объект вакансии
                     employer = vacancy.employer
                     if isinstance(employer, dict):
-                        employer_name = employer.get("name")
-                    elif hasattr(employer, "name") and employer is not None:
-                        employer_name = employer.name
-                    elif isinstance(employer, str):
-                        employer_name = employer
+                        employer_id = employer.get("id")
+                    elif hasattr(employer, "get_id") and employer is not None:
+                        employer_id = employer.get_id()
 
-                if employer_name:
-                    company_stats[employer_name] = company_stats.get(employer_name, 0) + 1
+                if employer_id:
+                    company_id_stats[str(employer_id)] = company_id_stats.get(str(employer_id), 0) + 1
                 else:
-                    company_stats["Неизвестная компания"] = company_stats.get("Неизвестная компания", 0) + 1
+                    company_id_stats["unknown"] = company_id_stats.get("unknown", 0) + 1
 
             except Exception as e:
                 print(f"Ошибка обработки вакансии для статистики: {e}")
                 continue
 
-        # Выводим топ компаний
-        if company_stats:
+        # Преобразуем ID компаний в названия и выводим статистику
+        if company_id_stats:
             print("\nТоп компаний по количеству вакансий:")
-            sorted_companies = sorted(company_stats.items(), key=lambda x: x[1], reverse=True)
+            # Получаем названия компаний по ID из БД
+            company_stats_with_names = {}
+            
+            for company_id, count in company_id_stats.items():
+                if company_id == "unknown":
+                    company_name = "Неизвестная компания"
+                else:
+                    company_name = self._get_company_name_by_id(company_id)
+                
+                company_stats_with_names[company_name] = company_stats_with_names.get(company_name, 0) + count
+            
+            sorted_companies = sorted(company_stats_with_names.items(), key=lambda x: x[1], reverse=True)
             for company, count in sorted_companies[:10]:  # Показываем топ 10
                 print(f"  {company}: {count} вакансий")
         else:
             print("Не удалось определить статистику по компаниям")
+
+
+    def _get_company_name_by_id(self, company_id: str) -> str:
+        """
+        Получает название компании по ID из конфигурации целевых компаний
+        
+        Args:
+            company_id: ID компании
+            
+        Returns:
+            str: Название компании или "Неизвестная компания"
+        """
+        try:
+            from src.config.target_companies import TargetCompanies
+            
+            # Ищем компанию по SuperJob ID
+            company = TargetCompanies.get_company_by_sj_id(company_id)
+            if company:
+                return company.name
+                
+            # Ищем компанию по HeadHunter ID
+            company = TargetCompanies.get_company_by_hh_id(company_id)
+            if company:
+                return company.name
+                
+            return "Неизвестная компания"
+        except Exception:
+            return "Неизвестная компания"
 
 
 def calculate_statistics(vacancies: List[Any]) -> Dict[str, Any]:
