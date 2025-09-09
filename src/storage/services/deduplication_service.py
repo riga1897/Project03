@@ -60,7 +60,7 @@ class SQLDeduplicationStrategy(DeduplicationStrategy):
         for i, vacancy in enumerate(vacancies[:3]):  # Проверяем первые 3 вакансии
             if hasattr(vacancy, "employer") and vacancy.employer:
                 if not isinstance(vacancy.employer, (dict, str)):
-                    print(f"  ❌ ОШИБКА: Вакансия {i+1} - employer не словарь и не строка: {type(vacancy.employer)}")
+                    print(f"  ❌ ОШИБКА: Вакансия {i + 1} - employer не словарь и не строка: {type(vacancy.employer)}")
                     logger.warning(
                         f"Вакансия {getattr(vacancy, 'vacancy_id', i)} имеет employer типа {type(vacancy.employer)}: {vacancy.employer}"
                     )

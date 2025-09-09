@@ -85,10 +85,10 @@ class UnifiedAPI:
 
         # УНИФИЦИРОВАННАЯ фильтрация и дедупликация
         logger.info(f"Унифицированная обработка: получено {len(all_vacancies)} вакансий всего")
-        
-        # 1. Фильтрация по целевым компаниям (едина для всех источников)  
+
+        # 1. Фильтрация по целевым компаниям (едина для всех источников)
         filtered_vacancies = self._unified_filter_by_target_companies(all_vacancies)
-        
+
         # 2. Единая дедупликация для всех источников
         unique_vacancies = self._unified_deduplicate(filtered_vacancies)
 
@@ -102,15 +102,15 @@ class UnifiedAPI:
     def _unified_filter_by_target_companies(self, vacancies: List[Dict]) -> List[Dict]:
         """
         УНИФИЦИРОВАННАЯ фильтрация вакансий по целевым компаниям для ВСЕХ источников
-        
+
         Логика:
         - HH.ru: проверяем employer.id в hh_ids
         - SuperJob: проверяем client.id/id_client в sj_ids
         - Другие источники: можно добавить в будущем
-        
+
         Args:
             vacancies: Список всех вакансий от разных источников
-            
+
         Returns:
             List[Dict]: Отфильтрованный список вакансий от целевых компаний
         """
@@ -120,7 +120,8 @@ class UnifiedAPI:
         try:
             # Получаем списки ID целевых компаний для разных источников
             from src.config.target_companies import TargetCompanies
-            target_hh_ids = set(TargetCompanies.get_hh_ids())  
+
+            target_hh_ids = set(TargetCompanies.get_hh_ids())
             target_sj_ids = set(TargetCompanies.get_sj_ids())
 
             filtered_vacancies = []
@@ -139,12 +140,13 @@ class UnifiedAPI:
                     if not is_target_company:
                         # Используем SuperJob парсер для надежного извлечения ID
                         from src.vacancies.parsers.sj_parser import SuperJobParser
+
                         parser = SuperJobParser()
                         try:
                             company_id = parser._extract_company_id(vacancy)
                             if company_id and company_id in target_sj_ids:
                                 is_target_company = True
-                        except:
+                        except BaseException:
                             pass
 
                     if is_target_company:
@@ -154,7 +156,9 @@ class UnifiedAPI:
                     logger.warning(f"Ошибка при проверке вакансии на целевую компанию: {e}")
                     continue
 
-            logger.info(f"Унифицированная фильтрация: найдено {len(filtered_vacancies)} вакансий от целевых компаний из {len(vacancies)} исходных")
+            logger.info(
+                f"Унифицированная фильтрация: найдено {len(filtered_vacancies)} вакансий от целевых компаний из {len(vacancies)} исходных"
+            )
             return filtered_vacancies
 
         except Exception as e:
@@ -164,15 +168,15 @@ class UnifiedAPI:
     def _unified_deduplicate(self, vacancies: List[Dict]) -> List[Dict]:
         """
         ЕДИНАЯ дедупликация вакансий со всех источников
-        
+
         Логика:
         - Используем ID вакансий как ключи уникальности
         - HH.ru: используем поле 'id'
         - SuperJob: используем поле 'id'
-        
+
         Args:
             vacancies: Отфильтрованные вакансии от целевых компаний
-            
+
         Returns:
             List[Dict]: Дедуплицированный список вакансий
         """
@@ -186,7 +190,7 @@ class UnifiedAPI:
             for vacancy in vacancies:
                 try:
                     # Извлекаем ID вакансии
-                    vacancy_id = vacancy.get('id')
+                    vacancy_id = vacancy.get("id")
                     if not vacancy_id:
                         continue
 
@@ -203,7 +207,9 @@ class UnifiedAPI:
                     logger.warning(f"Ошибка при дедупликации вакансии: {e}")
                     continue
 
-            logger.info(f"Единая дедупликация: осталось {len(unique_vacancies)} уникальных вакансий из {len(vacancies)} отфильтрованных")
+            logger.info(
+                f"Единая дедупликация: осталось {len(unique_vacancies)} уникальных вакансий из {len(vacancies)} отфильтрованных"
+            )
             return unique_vacancies
 
         except Exception as e:
@@ -383,16 +389,16 @@ class UnifiedAPI:
         # УНИФИЦИРОВАННАЯ фильтрация и дедупликация
         if all_vacancies:
             logger.info(f"Унифицированная обработка: получено {len(all_vacancies)} вакансий всего")
-            
-            # 1. Фильтрация по целевым компаниям (едина для всех источников)  
+
+            # 1. Фильтрация по целевым компаниям (едина для всех источников)
             filtered_vacancies = self._unified_filter_by_target_companies(all_vacancies)
-            
+
             # 2. Единая дедупликация для всех источников
             unique_vacancies = self._unified_deduplicate(filtered_vacancies)
 
             if unique_vacancies:
                 logger.info(f"Финальный результат: {len(unique_vacancies)} уникальных вакансий от целевых компаний")
-                
+
                 # НЕ показываем статистику здесь - она будет после создания объектов Vacancy
                 return unique_vacancies
             else:
@@ -422,14 +428,14 @@ class UnifiedAPI:
     def _display_unified_stats(self, vacancies: List[Dict], sources: List[str]) -> None:
         """
         Показывает статистику вакансий ПОСЛЕ правильной фильтрации
-        
+
         Args:
             vacancies: Отфильтрованные вакансии от целевых компаний
             sources: Источники данных
         """
         try:
             from src.utils.vacancy_stats import VacancyStats
-            
+
             # Определяем название для статистики
             if len(sources) == 1:
                 if sources[0] == "hh":
@@ -440,10 +446,10 @@ class UnifiedAPI:
                     source_name = f"{sources[0].upper()} - Целевые компании"
             else:
                 source_name = "Все источники - Целевые компании"
-            
+
             stats = VacancyStats()
             stats.display_company_stats(vacancies, source_name)
-            
+
         except Exception as e:
             logger.warning(f"Ошибка при отображении унифицированной статистики: {e}")
 

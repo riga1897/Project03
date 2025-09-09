@@ -202,7 +202,7 @@ class SimpleCursor:
             if params:
                 # Простая замена параметров (не для продакшена!)
                 for i, param in enumerate(params):
-                    placeholder = f"${i+1}"
+                    placeholder = f"${i + 1}"
                     if isinstance(param, str):
                         query = query.replace(placeholder, f"'{param}'")
                     else:
@@ -245,7 +245,7 @@ class SimpleCursor:
             # Подготовка запроса с параметрами
             if params:
                 for i, param in enumerate(params):
-                    placeholder = f"${i+1}"
+                    placeholder = f"${i + 1}"
                     if isinstance(param, str):
                         query = query.replace(placeholder, f"'{param}'")
                     else:

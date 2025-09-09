@@ -220,7 +220,7 @@ class VacancySearchHandler:
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("Проверяем ID вакансий:")
             for i, v in enumerate(vacancies[:5]):  # Показываем первые 5
-                logger.debug(f"  {i+1}. vacancy.id = '{v.id}'")
+                logger.debug(f"  {i + 1}. vacancy.id = '{v.id}'")
             if len(vacancies) > 5:
                 logger.debug(f"  ... и еще {len(vacancies) - 5} вакансий")
 

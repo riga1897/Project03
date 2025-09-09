@@ -36,7 +36,7 @@ class HHAPIConfig:
     def get_hh_params(self, **kwargs: Any) -> Dict[str, Any]:
         """Get HH API params with overrides (для совместимости со старым интерфейсом)."""
         return self.get_params(**kwargs)
-    
+
     def get_pagination_params(self, **kwargs: Any) -> Dict[str, Any]:
         """Получение параметров пагинации для HH API"""
         return {"max_pages": kwargs.get("max_pages", 20)}

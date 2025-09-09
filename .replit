@@ -5,7 +5,7 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
-packages = ["glibcLocales", "libxcrypt", "zlib", "u-root-cmds"]
+packages = ["glibcLocales", "libxcrypt", "mypy", "u-root-cmds", "zlib", "python313Packages.flake8"]
 
 [workflows]
 runButton = "Project"

@@ -13,7 +13,7 @@ class AbstractVacancy(ABC):
 
     # Основные атрибуты интерфейса
     id: str
-    vacancy_id: str
+    vacancy_id: str  # Добавлено для MyPy совместимости
     title: str
     url: str
     description: Optional[str]
@@ -33,11 +33,8 @@ class AbstractVacancy(ABC):
     published_at: Optional[datetime]
     company_id: Optional[int]
 
-    @abstractmethod
-    def __init__(self) -> None:
-        """
-        Инициализация вакансии
-        """
+    # Убираем абстрактный __init__ - он конфликтует с Pydantic
+    # Конкретные реализации (например, Pydantic BaseModel) сами определяют конструктор
 
     @abstractmethod
     def to_dict(self) -> Dict[str, Any]:

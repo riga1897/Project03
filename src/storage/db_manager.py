@@ -171,7 +171,7 @@ class DBManager(AbstractDBManager):
                     """
                     )
                     logger.info("✓ Таблица companies создана/проверена")
-                    
+
                     # ИСПРАВЛЕНИЕ: Сбрасываем последовательность ID чтобы нумерация шла с 1
                     try:
                         cursor.execute("ALTER SEQUENCE companies_id_seq RESTART WITH 1;")
@@ -294,7 +294,7 @@ class DBManager(AbstractDBManager):
                         cursor.execute("SELECT reset_empty_table_sequences();")
                         reset_result = cursor.fetchone()[0]
                         logger.info("✓ Счетчики автоинкремента настроены:")
-                        for line in reset_result.strip().split('\n'):
+                        for line in reset_result.strip().split("\n"):
                             if line.strip():
                                 logger.info(f"  {line.strip()}")
                     except Exception as e:

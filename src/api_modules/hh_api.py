@@ -37,6 +37,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         self.config = config or HHAPIConfig()
         # Создаем APIConfig для APIConnector
         from src.config.api_config import APIConfig
+
         api_config = APIConfig()
         self.connector = APIConnector(api_config)
         self._paginator = Paginator()
@@ -126,54 +127,54 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
     def get_vacancies_by_employer_id(self, employer_id: str, **kwargs: Any) -> List[Dict]:
         """
         Получение вакансий по ID работодателя (только для HH API)
-        
+
         Args:
             employer_id: ID работодателя в системе HH.ru
             **kwargs: Дополнительные параметры поиска
-            
+
         Returns:
             List[Dict]: Список вакансий работодателя
-            
+
         Note:
             Эта функция доступна только для HH API.
             SuperJob API не поддерживает поиск по ID организации.
         """
         try:
             params = self.config.get_params(employer_id=employer_id, **kwargs)
-            
+
             all_vacancies = []
             page = 0
             max_pages = self.config.get_pagination_params(**kwargs)["max_pages"]
-            
+
             while page < max_pages:
-                params['page'] = page
+                params["page"] = page
                 data = self._connect_to_api(self.BASE_URL, params, "hh")
-                
-                if not data or 'items' not in data:
+
+                if not data or "items" not in data:
                     break
-                    
-                items = data.get('items', [])
+
+                items = data.get("items", [])
                 if not items:
                     break
-                
+
                 # Добавляем источник и валидируем
                 validated_items = []
                 for item in items:
                     item["source"] = "hh.ru"
                     if self._validate_vacancy(item):
                         validated_items.append(item)
-                
+
                 all_vacancies.extend(validated_items)
-                
+
                 # Проверяем, есть ли еще страницы
-                if len(items) < params.get('per_page', 50):
+                if len(items) < params.get("per_page", 50):
                     break
-                    
+
                 page += 1
-            
+
             logger.info(f"Получено {len(all_vacancies)} вакансий для работодателя {employer_id}")
             return all_vacancies
-            
+
         except Exception as e:
             logger.error(f"Ошибка получения вакансий по ID работодателя {employer_id}: {e}")
             return []
@@ -281,7 +282,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
     def get_vacancies_from_target_companies(self, search_query: str = "", **kwargs: Any) -> List[Dict]:
         """
         УНИФИЦИРОВАННАЯ ЛОГИКА: Получение всех вакансий одним потоком
-        
+
         ИЗМЕНЕНО: Теперь загружаем ВСЕ вакансии без фильтра по компаниям,
         фильтрация будет выполняться централизованно в unified_api.py
 
@@ -292,11 +293,11 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
         Returns:
             List[Dict]: Список всех вакансий (без фильтрации по компаниям)
         """
-        logger.info(f"HH API: УНИФИЦИРОВАННАЯ загрузка всех вакансий одним потоком (без фильтра по компаниям)")
+        logger.info("HH API: УНИФИЦИРОВАННАЯ загрузка всех вакансий одним потоком (без фильтра по компаниям)")
 
         # Загружаем все вакансии единым запросом
         all_vacancies = self.get_vacancies(search_query, **kwargs)
-        
+
         logger.info(f"HH API: получено {len(all_vacancies)} вакансий для последующей фильтрации")
 
         # НЕ показываем статистику здесь - она будет в unified_api после фильтрации
@@ -403,10 +404,10 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
     def is_target_company(self, company_id: str) -> bool:
         """
         Проверяет, является ли компания целевой
-        
+
         Args:
             company_id: ID компании для проверки
-            
+
         Returns:
             bool: True если компания целевая, False иначе
         """
@@ -415,7 +416,7 @@ class HeadHunterAPI(CachedAPI, BaseJobAPI):
     def get_target_company_ids(self) -> List[str]:
         """
         Возвращает список ID целевых компаний
-        
+
         Returns:
             List[str]: Список ID целевых компаний
         """

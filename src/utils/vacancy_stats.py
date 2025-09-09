@@ -148,46 +148,45 @@ class VacancyStats:
         if company_id_stats:
             print("\nТоп компаний по количеству вакансий:")
             # Получаем названия компаний по ID из БД
-            company_stats_with_names = {}
-            
+            company_stats_with_names: Dict[str, int] = {}
+
             for company_id, count in company_id_stats.items():
                 if company_id == "unknown":
                     company_name = "Неизвестная компания"
                 else:
                     company_name = self._get_company_name_by_id(company_id)
-                
+
                 company_stats_with_names[company_name] = company_stats_with_names.get(company_name, 0) + count
-            
+
             sorted_companies = sorted(company_stats_with_names.items(), key=lambda x: x[1], reverse=True)
             for company, count in sorted_companies[:10]:  # Показываем топ 10
                 print(f"  {company}: {count} вакансий")
         else:
             print("Не удалось определить статистику по компаниям")
 
-
     def _get_company_name_by_id(self, company_id: str) -> str:
         """
         Получает название компании по ID из конфигурации целевых компаний
-        
+
         Args:
             company_id: ID компании
-            
+
         Returns:
             str: Название компании или "Неизвестная компания"
         """
         try:
             from src.config.target_companies import TargetCompanies
-            
+
             # Ищем компанию по SuperJob ID
             company = TargetCompanies.get_company_by_sj_id(company_id)
             if company:
                 return company.name
-                
+
             # Ищем компанию по HeadHunter ID
             company = TargetCompanies.get_company_by_hh_id(company_id)
             if company:
                 return company.name
-                
+
             return "Неизвестная компания"
         except Exception:
             return "Неизвестная компания"
@@ -242,7 +241,7 @@ class VacancyStatsExtended:
             str: Название компании или "Неизвестная компания"
         """
         from src.config.target_companies import TargetCompanies
-        
+
         # ПРИОРИТЕТ 1: Объекты Vacancy - атрибут employer (новая структура)
         if hasattr(vacancy, "employer") and vacancy.employer:
             employer = vacancy.employer
@@ -260,7 +259,7 @@ class VacancyStatsExtended:
                         company = TargetCompanies.get_company_by_sj_id(str(employer_id))
                         if company:
                             return company.name
-                
+
                 # Fallback на name из employer
                 name = employer.get("name")
                 return str(name) if name and name != "None" else "Неизвестная компания"
@@ -271,7 +270,7 @@ class VacancyStatsExtended:
         # ПРИОРИТЕТ 2: Сырые данные - поиск по ID в зависимости от источника
         if isinstance(vacancy, dict):
             source = vacancy.get("source", "").lower()
-            
+
             # Для HH.ru ищем по HH ID
             if "hh" in source or "headhunter" in source:
                 employer = vacancy.get("employer", {})
@@ -285,7 +284,7 @@ class VacancyStatsExtended:
                     name = employer.get("name")
                     if name and str(name).strip() and str(name) != "None":
                         return str(name)
-                        
+
             # Для SuperJob ищем по SJ ID
             elif "superjob" in source or "sj" in source:
                 # Сначала пробуем извлечь ID компании
@@ -294,12 +293,12 @@ class VacancyStatsExtended:
                     company = TargetCompanies.get_company_by_sj_id(str(company_id))
                     if company:
                         return company.name
-                
+
                 # Fallback на firm_name
                 firm_name = vacancy.get("firm_name")
                 if firm_name and str(firm_name).strip() and str(firm_name) != "None":
                     return str(firm_name)
-                    
+
                 # Fallback на client.title/name
                 client = vacancy.get("client", {})
                 if isinstance(client, dict):
@@ -315,7 +314,7 @@ class VacancyStatsExtended:
                 return str(employer["name"])
             elif isinstance(employer, str) and employer.strip():
                 return employer
-                
+
             # SuperJob формат
             firm_name = vacancy.get("firm_name")
             if firm_name and str(firm_name).strip() and str(firm_name) != "None":
@@ -468,15 +467,15 @@ class VacancyStatsExtended:
 
             if len(analysis["employer_names"]) > 10:
                 print(f"  ... и еще {len(analysis['employer_names']) - 10} работодателей")
-    
+
     @staticmethod
     def _extract_company_id(vacancy: Dict[str, Any]) -> str:
         """
         Извлекает ID компании из данных SuperJob (аналогично методу в парсере)
-        
+
         Args:
             vacancy: Сырые данные вакансии от SuperJob API
-            
+
         Returns:
             str: ID компании или пустая строка
         """
@@ -487,12 +486,12 @@ class VacancyStatsExtended:
                 client_id = client.get("id")
                 if client_id is not None and str(client_id) != "0":
                     return str(client_id)
-            
+
             # Приоритет 2: id_client (fallback)
             id_client = vacancy.get("id_client")
             if id_client is not None and str(id_client) != "0":
                 return str(id_client)
-                
+
             return ""
         except Exception:
             return ""

@@ -296,7 +296,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
                 else:
                     employer_info = f"ОБЪЕКТ: {type(vacancy.employer)}"
 
-            print(f"  {i+1}. '{vacancy.title[:50]}...' | Зарплата: {salary_info} | Компания: {employer_info}")
+            print(f"  {i + 1}. '{vacancy.title[:50]}...' | Зарплата: {salary_info} | Компания: {employer_info}")
 
             if has_salary and len(salary_examples) < 3:
                 salary_examples.append(f"{vacancy.title}: {salary_info}")
@@ -304,7 +304,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
         print(f"\n📊 СТАТИСТИКА [{stage}]:")
         print(f"   С зарплатой: {with_salary}")
         print(f"   Без зарплаты: {without_salary}")
-        print(f"   Общий процент с зарплатой: {(with_salary/len(vacancies)*100):.1f}%")
+        print(f"   Общий процент с зарплатой: {(with_salary / len(vacancies) * 100):.1f}%")
 
         if salary_examples:
             print("\n💰 ПРИМЕРЫ ЗАРПЛАТ:")
@@ -559,9 +559,9 @@ class VacancyStorageService(AbstractVacancyStorageService):
             from datetime import datetime
 
             vacancy = Vacancy(
-                vacancy_id=data.get("vacancy_id", ""),
-                name=data.get("title", ""),
-                alternate_url=data.get("url", ""),
+                vacancy_id=data.get("vacancy_id", ""),  # используем реальное имя поля
+                name=data.get("title", ""),  # используем реальное имя поля
+                alternate_url=data.get("url", ""),  # используем реальное имя поля
                 salary=salary_data,
                 description=data.get("description", ""),
                 requirements=data.get("requirements", ""),

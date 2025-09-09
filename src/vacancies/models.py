@@ -176,7 +176,8 @@ class Experience(BaseModel):
 
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
-        return self.model_dump()
+        data = self.model_dump()
+        return dict(data) if isinstance(data, dict) else {}
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Experience":
@@ -223,7 +224,8 @@ class Employment(BaseModel):
 
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
-        return self.model_dump()
+        data = self.model_dump()
+        return dict(data) if isinstance(data, dict) else {}
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Employment":
@@ -270,7 +272,8 @@ class Schedule(BaseModel):
 
     def to_dict(self) -> Dict[str, Any]:
         """Преобразовать в словарь"""
-        return self.model_dump()
+        data = self.model_dump()
+        return dict(data) if isinstance(data, dict) else {}
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Schedule":
@@ -288,7 +291,7 @@ class Schedule(BaseModel):
 class Vacancy(BaseModel, AbstractVacancy):
     """Основная модель вакансии с Pydantic валидацией"""
 
-    # Основная информация
+    # Основная информация с псевдонимами для API совместимости
     id: str = Field(alias="vacancy_id", description="Идентификатор вакансии")
     title: str = Field(alias="name", description="Название вакансии")
     url: str = Field(alias="alternate_url", description="Ссылка на вакансии")
@@ -322,9 +325,12 @@ class Vacancy(BaseModel, AbstractVacancy):
     company_name: Optional[str] = Field(default=None, description="Название компании")
     employer_name: Optional[str] = Field(default=None, description="Внутреннее название работодателя")
 
-    # Property для совместимости с AbstractVacancy
     def get_vacancy_id(self) -> str:
-        """Альтернативный способ доступа к идентификатору вакансии"""
+        """Получить vacancy_id (совместимость с AbstractVacancy)"""
+        return self.id
+
+    def get_vacancy_id_prop(self) -> str:
+        """Получить vacancy_id как метод (избегаем конфликта с AbstractVacancy)"""
         return self.id
 
     @field_validator("title", mode="before")
@@ -531,7 +537,12 @@ class Vacancy(BaseModel, AbstractVacancy):
         """
         return f"Vacancy(id='{self.id}', title='{self.title}')"
 
-    model_config = ConfigDict(extra="ignore", use_enum_values=True, validate_assignment=True)
+    model_config = ConfigDict(
+        extra="ignore",
+        use_enum_values=True,
+        validate_assignment=True,
+        populate_by_name=True,  # Позволяет использовать как реальные имена, так и псевдонимы
+    )
 
 
 # Фабричные методы для создания объектов из API
@@ -548,9 +559,9 @@ class VacancyFactory:
         schedule_data = data.get("schedule", {})
 
         return Vacancy(
-            vacancy_id=str(data.get("id", str(uuid.uuid4()))),
-            name=data.get("name", ""),
-            alternate_url=data.get("alternate_url", ""),
+            vacancy_id=str(data.get("id", str(uuid.uuid4()))),  # используем реальное имя поля
+            name=data.get("name", ""),  # используем реальное имя поля
+            alternate_url=data.get("alternate_url", ""),  # используем реальное имя поля
             employer=Employer(**employer_data) if employer_data else None,
             salary=salary_data if salary_data else None,
             experience=Experience(**experience_data) if experience_data else None,
@@ -581,9 +592,9 @@ class VacancyFactory:
             }
 
         return Vacancy(
-            vacancy_id=str(data.get("id", str(uuid.uuid4()))),
-            name=data.get("profession", ""),
-            alternate_url=data.get("link", ""),
+            vacancy_id=str(data.get("id", str(uuid.uuid4()))),  # используем реальное имя поля
+            name=data.get("profession", ""),  # используем реальное имя поля
+            alternate_url=data.get("link", ""),  # используем реальное имя поля
             employer=(
                 Employer(
                     name=data.get("firm_name", "Не указана"),

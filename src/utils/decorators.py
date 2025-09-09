@@ -1,6 +1,6 @@
+import json
 import logging
 import time
-import json
 from functools import wraps
 from typing import Any, Callable, Dict, Optional, Tuple
 
@@ -10,14 +10,15 @@ from .env_loader import EnvLoader
 def _make_hashable_key(args: Tuple[Any, ...], kwargs: Dict[str, Any]) -> str:
     """
     Создает хешируемый ключ из аргументов функции, включая нехешируемые типы
-    
+
     Args:
         args: Позиционные аргументы
         kwargs: Именованные аргументы
-        
+
     Returns:
         str: Безопасный хешируемый ключ
     """
+
     def make_serializable(obj: Any) -> Any:
         """Рекурсивно преобразует объект в сериализуемый вид"""
         if isinstance(obj, (dict, list)):
@@ -36,20 +37,17 @@ def _make_hashable_key(args: Tuple[Any, ...], kwargs: Dict[str, Any]) -> str:
         else:
             # Для примитивных типов возвращаем как есть
             return obj
-    
+
     try:
         # Преобразуем все аргументы в сериализуемый вид
         safe_args = tuple(make_serializable(arg) for arg in args)
         safe_kwargs = {k: make_serializable(v) for k, v in kwargs.items()}
-        
+
         # Создаем единый ключ из всех данных
-        key_data = {
-            'args': safe_args,
-            'kwargs': safe_kwargs
-        }
-        
+        key_data = {"args": safe_args, "kwargs": safe_kwargs}
+
         return json.dumps(key_data, sort_keys=True, default=str)
-        
+
     except Exception as e:
         # Если все еще не получается, используем строковое представление
         logging.warning(f"Не удалось создать безопасный ключ кэша: {e}, использую строковое представление")

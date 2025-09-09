@@ -29,6 +29,8 @@ mypy = "^1.17.1"
 black = "^25.1.0"
 flake8 = "^7.3.0"
 isort = "^6.0.1"
+types-tqdm = "^4.67.0.20250809"
+types-requests = "^2.32.4.20250809"
 
 [tool.poetry.group.lint.dependencies]
 flake8 = "^7.3.0"

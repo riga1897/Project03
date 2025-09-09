@@ -12,7 +12,7 @@ import logging
 import time
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from src.utils.cache import FileCache
 from src.utils.decorators import simple_cache
@@ -56,7 +56,7 @@ class CachedAPI(BaseJobAPI, ABC):
         self.cache = FileCache(str(self.cache_dir))
 
     @simple_cache(ttl=300)  # 5 минут
-    def _cached_api_request(self, url: str, params: Dict, api_prefix: str) -> Dict:
+    def _cached_api_request(self, url: str, params: Dict, api_prefix: str) -> Optional[Dict]:
         """
         Кэшированный API запрос в памяти с использованием декоратора
 
@@ -66,7 +66,7 @@ class CachedAPI(BaseJobAPI, ABC):
             api_prefix: Префикс для логирования
 
         Returns:
-            Dict: Ответ API или None если данных нет в кэше
+            Optional[Dict]: Ответ API или None если данных нет в кэше
         """
         # ИСПРАВЛЕНО: Возвращаем None - данных в кэше нет, нужно загрузить
         # Пустой словарь {} != None и ломает логику!
@@ -309,7 +309,7 @@ class CachedAPI(BaseJobAPI, ABC):
             items_key = "items" if "items" in data else "objects" if "objects" in data else None
             if items_key is None:
                 return False
-                
+
             items = data.get(items_key, [])
             if not isinstance(items, list):
                 return False

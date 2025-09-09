@@ -92,7 +92,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 );
             """
             )
-            
+
             # ИСПРАВЛЕНИЕ: Сбрасываем последовательность ID чтобы нумерация шла с 1
             try:
                 cursor.execute("ALTER SEQUENCE companies_id_seq RESTART WITH 1;")
@@ -319,7 +319,7 @@ class PostgresSaver(AbstractVacancyStorage):
                 cursor.execute("SELECT reset_empty_table_sequences();")
                 reset_result = cursor.fetchone()[0]
                 logger.info("✓ Счетчики автоинкремента настроены:")
-                for line in reset_result.strip().split('\n'):
+                for line in reset_result.strip().split("\n"):
                     if line.strip():
                         logger.info(f"  {line.strip()}")
             except Exception as e:
@@ -461,8 +461,8 @@ class PostgresSaver(AbstractVacancyStorage):
                         salary_to = vacancy.salary.amount_to
                         salary_currency = vacancy.salary.currency
                     elif isinstance(vacancy.salary, dict):
-                        salary_from = vacancy.salary.get("from")
-                        salary_to = vacancy.salary.get("to")
+                        salary_from = vacancy.salary.get("from") or vacancy.salary.get("amount_from")
+                        salary_to = vacancy.salary.get("to") or vacancy.salary.get("amount_to")
                         salary_currency = vacancy.salary.get("currency")
                     # Если salary - boolean или что-то другое, оставляем None
 
@@ -855,8 +855,8 @@ class PostgresSaver(AbstractVacancyStorage):
                     )
 
                 vacancy = Vacancy(
-                    name=title,  # используем правильное имя поля
-                    alternate_url=url,  # используем правильное имя поля
+                    name=title,  # используем реальное имя поля
+                    alternate_url=url,  # используем реальное имя поля
                     salary=salary_data,
                     description=description,
                     requirements=requirements,
@@ -865,7 +865,7 @@ class PostgresSaver(AbstractVacancyStorage):
                     employment=employment,
                     schedule=schedule,
                     employer=employer_obj,
-                    vacancy_id=vacancy_id,
+                    vacancy_id=vacancy_id,  # используем реальное имя поля
                     published_at=published_at,
                     source=source or "unknown",
                     area=area,
@@ -1198,10 +1198,10 @@ class PostgresSaver(AbstractVacancyStorage):
             )
 
             unique_results = {row[0]: row[1] for row in cursor.fetchall()}
-            
+
             # Создаем результат для всех исходных вакансий (включая дубликаты)
             result = {v.id: unique_results.get(v.id, False) for v in vacancies}
-            
+
             logger.debug(f"Уникальных результатов: {len(unique_results)}, итоговых: {len(result)}")
 
             connection.commit()
@@ -1466,9 +1466,17 @@ class PostgresSaver(AbstractVacancyStorage):
                 # Создаем ключ дедупликации
                 title_norm = self._normalize_text(vacancy.title or "")
                 company_norm = self._normalize_text(employer_name or "")
-                salary_key = (
-                    f"{vacancy.salary.salary_from or 0}-{vacancy.salary.salary_to or 0}" if vacancy.salary else "0-0"
-                )
+                # Безопасное обращение к salary для создания ключа дедупликации
+                salary_key = "0-0"
+                if vacancy.salary:
+                    if isinstance(vacancy.salary, dict):
+                        salary_from_key = vacancy.salary.get("from") or vacancy.salary.get("salary_from") or 0
+                        salary_to_key = vacancy.salary.get("to") or vacancy.salary.get("salary_to") or 0
+                        salary_key = f"{salary_from_key}-{salary_to_key}"
+                    elif hasattr(vacancy.salary, "salary_from"):
+                        salary_key = f"{vacancy.salary.salary_from or 0}-{vacancy.salary.salary_to or 0}"
+                    elif hasattr(vacancy.salary, "amount_from"):
+                        salary_key = f"{vacancy.salary.amount_from or 0}-{vacancy.salary.amount_to or 0}"
                 area_norm = self._normalize_text(str(vacancy.area) if vacancy.area else "")
                 dedup_key = f"{title_norm}|{company_norm}|{salary_key}|{area_norm}"
 
@@ -1484,8 +1492,8 @@ class PostgresSaver(AbstractVacancyStorage):
                         salary_to = vacancy.salary.amount_to
                         salary_currency = vacancy.salary.currency
                     elif isinstance(vacancy.salary, dict):
-                        salary_from = vacancy.salary.get("from")
-                        salary_to = vacancy.salary.get("to")
+                        salary_from = vacancy.salary.get("from") or vacancy.salary.get("amount_from")
+                        salary_to = vacancy.salary.get("to") or vacancy.salary.get("amount_to")
                         salary_currency = vacancy.salary.get("currency")
                     # Если salary - boolean или что-то другое, оставляем None
 

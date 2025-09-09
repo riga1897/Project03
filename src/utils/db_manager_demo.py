@@ -144,7 +144,7 @@ class DBManagerDemo:
         )
         print(f"   • Всего вакансий от целевых компаний: {total_vacancies}")
         print(
-            f"   • Покрытие целевых компаний: {(companies_with_vacancies/len(TargetCompanies.get_all_companies())*100):.1f}%"
+            f"   • Покрытие целевых компаний: {(companies_with_vacancies / len(TargetCompanies.get_all_companies()) * 100):.1f}%"
         )
 
         if total_vacancies == 0:

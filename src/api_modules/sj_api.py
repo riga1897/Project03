@@ -40,6 +40,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
 
         # Используем общий APIConnector как в HH API
         from src.config.api_config import APIConfig
+
         api_config = APIConfig()
         self.connector = APIConnector(api_config)
 
@@ -273,7 +274,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
     def get_vacancies_from_target_companies(self, search_query: str = "", **kwargs: Any) -> List[Dict]:
         """
         УНИФИЦИРОВАННАЯ ЛОГИКА: Получение всех вакансий одним потоком
-        
+
         ИЗМЕНЕНО: Теперь просто загружаем все вакансии без локальной фильтрации,
         фильтрация будет выполняться централизованно в unified_api.py
 
@@ -291,7 +292,9 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
                 logger.warning("SuperJob API ключ не настроен, пропускаем")
                 return []
 
-            logger.info("SuperJob API: УНИФИЦИРОВАННАЯ загрузка всех вакансий одним потоком (без локальной фильтрации)")
+            logger.info(
+                "SuperJob API: УНИФИЦИРОВАННАЯ загрузка всех вакансий одним потоком (без локальной фильтрации)"
+            )
 
             # Загружаем все вакансии без фильтрации - фильтрация будет в unified_api
             all_vacancies = self.get_vacancies(search_query, **kwargs)

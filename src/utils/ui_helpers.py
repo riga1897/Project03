@@ -348,7 +348,7 @@ def debug_search_vacancies(vacancies: List[Vacancy], keyword: str) -> None:
     print(f"Всего вакансий: {len(vacancies)}")
 
     for i, vacancy in enumerate(vacancies[:5]):  # Показываем первые 5
-        print(f"\nВакансия {i+1}:")
+        print(f"\nВакансия {i + 1}:")
         debug_vacancy_search(vacancy, keyword)
 
 
