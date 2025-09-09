@@ -1,7 +1,6 @@
 import logging
 from typing import Any, Dict, List, Optional
 
-from src.config.api_config import APIConfig
 from src.config.sj_api_config import SJAPIConfig
 from src.config.target_companies import TargetCompanies
 from src.utils.env_loader import EnvLoader
@@ -25,7 +24,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
     - Автоматическая обработка API ключей
     """
 
-    BASE_URL = "https://api.superjob.ru/2.0/vacancies"
+    BASE_URL = "https://api.superjob.ru/2.0/vacancies/"
     DEFAULT_CACHE_DIR = "data/cache/sj"
     REQUIRED_VACANCY_FIELDS = {"profession", "link"}
 
@@ -40,6 +39,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
         self.config = config or SJAPIConfig()
 
         # Используем общий APIConnector как в HH API
+        from src.config.api_config import APIConfig
         api_config = APIConfig()
         self.connector = APIConnector(api_config)
 
@@ -70,7 +70,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
         Returns:
             Dict: Пустая структура ответа с полем 'objects'
         """
-        return {"objects": []}
+        return {"objects": [], "total": 0, "more": False}
 
     def _validate_vacancy(self, vacancy: Dict) -> bool:
         """
@@ -88,9 +88,9 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             and bool(vacancy.get("link"))  # У SJ это поле 'link'
         )
 
-    def __connect(self, url: str, params: Optional[Dict] = None) -> Dict:
+    def _connect(self, url: str, params: Optional[Dict] = None) -> Dict:
         """
-        Выполнение HTTP-запроса к API SuperJob
+        Выполнение HTTP-запроса к API SuperJob через CachedAPI (аналогично HH API)
 
         Args:
             url: URL для запроса
@@ -99,11 +99,12 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
         Returns:
             Dict: Ответ API или пустой ответ в случае ошибки
         """
+        if params is None:
+            params = {}
         try:
-            # Делаем запрос к SuperJob API
-            data = self.connector.connect(url, params or {})
+            # Делаем запрос к SuperJob API через CachedAPI (аналогично HH)
+            data = self._connect_to_api(url, params, "sj")
             return data
-
         except Exception as e:
             logger.error(f"Ошибка при подключении к API: {e}")
             return self._get_empty_response()
@@ -125,7 +126,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             search_query_lower = search_query.lower() if search_query else search_query
             params = self.config.get_params(keyword=search_query_lower, page=page, **kwargs)
 
-            data = self._connect_to_api(self.BASE_URL, params, "sj")
+            data = self._connect(self.BASE_URL, params)
             items = data.get("objects", [])
 
             # Добавляем источник и валидируем как в HH API
@@ -175,11 +176,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             # Получаем первую страницу для метаданных
             first_page_params = self.config.get_params(keyword=search_query_lower, page=0, **kwargs)
 
-            initial_data = self._connect_to_api(
-                self.BASE_URL,
-                first_page_params,  # Минимальные данные сначала
-                "sj",
-            )
+            initial_data = self._connect(self.BASE_URL, first_page_params)
 
             if not initial_data or not initial_data.get("total", 0):
                 logger.info("No vacancies found for query")
@@ -215,6 +212,11 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
     def get_companies(self, **kwargs: Any) -> List[Dict]:
         """
         Получение списка компаний с SuperJob
+
+        Note:
+            SuperJob API НЕ поддерживает поиск по ID организации.
+            Используется список целевых компаний из конфигурации.
+            Для поиска по ID организации используйте HeadHunter API.
 
         Args:
             **kwargs: Дополнительные параметры поиска
@@ -303,9 +305,10 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
 
                 for vacancy in all_vacancies:
                     try:
-                        company_id = str(vacancy.get("id_client", ""))
+                        # Используем тот же алгоритм извлечения ID, что и в парсере
+                        company_id = self._extract_company_id_from_vacancy(vacancy)
                         # Проверяем строгое совпадение с целевыми ID
-                        if company_id in target_sj_ids:
+                        if company_id and company_id in target_sj_ids:
                             target_vacancies.append(vacancy)
                     except Exception as e:
                         logger.warning(f"Ошибка при обработке вакансии: {e}")
@@ -340,6 +343,34 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             else:
                 logger.error(f"Ошибка SuperJob API: {e}")
             return []
+
+    def _extract_company_id_from_vacancy(self, vacancy: Dict[str, Any]) -> str:
+        """
+        Извлекает ID компании из данных SuperJob вакансии для фильтрации
+        Использует тот же алгоритм, что и в SJ парсере
+        
+        Args:
+            vacancy: Данные вакансии от SuperJob API
+            
+        Returns:
+            str: ID компании или пустая строка
+        """
+        try:
+            # Приоритет 1: client.id (основной источник)
+            client = vacancy.get("client", {})
+            if isinstance(client, dict):
+                client_id = client.get("id")
+                if client_id is not None and str(client_id) != "0":
+                    return str(client_id)
+            
+            # Приоритет 2: id_client (fallback)
+            id_client = vacancy.get("id_client")
+            if id_client is not None and str(id_client) != "0":
+                return str(id_client)
+                
+            return ""
+        except Exception:
+            return ""
 
     def clear_cache(self, source: str) -> None:
         """
