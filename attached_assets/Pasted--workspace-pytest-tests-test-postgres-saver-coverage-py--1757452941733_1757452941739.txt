@@ -1,0 +1,385 @@
+~/workspace$ pytest tests/test_postgres_saver_coverage.py
+============================================ test session starts =============================================
+platform linux -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: cov-6.2.1, mock-3.15.0
+collected 46 items                                                                                           
+
+tests/test_postgres_saver_coverage.py .F....FFF...FFFF..............................                   [100%]
+
+================================================== FAILURES ==================================================
+________________________________ TestPostgresSaver.test_init_with_env_loader _________________________________
+
+self = <tests.test_postgres_saver_coverage.TestPostgresSaver object at 0x7f48e0d25310>
+mock_get_psycopg2 = <MagicMock name='get_psycopg2' id='139951039861072'>
+
+    @patch.dict('os.environ', {
+        'PGHOST': 'test_host',
+        'PGPORT': '5433',
+        'PGDATABASE': 'test_db',
+        'PGUSER': 'test_user',
+        'PGPASSWORD': 'test_pass',
+        'DATABASE_URL': ''  # Очищаем DATABASE_URL для использования PG* переменных
+    }, clear=True)
+    @patch('src.storage.db_psycopg2_compat.get_psycopg2')
+    def test_init_with_env_loader(self, mock_get_psycopg2):
+        """Покрытие: инициализация через универсальный конфигуратор"""
+        # Настраиваем мок для psycopg2
+        mock_psycopg2 = Mock()
+        mock_get_psycopg2.return_value = mock_psycopg2
+    
+        # Мокируем методы создания таблиц
+>       with patch.object(PostgresSaver, '_ensure_tables_exist') as mock_ensure_tables:
+
+tests/test_postgres_saver_coverage.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f48e0582190>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <class 'src.storage.postgres_saver.PostgresSaver'> does not have the attribute '_ensure_tables_exist'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+________________________ TestPostgresSaver.test_ensure_companies_table_exists_success ________________________
+
+self = <tests.test_postgres_saver_coverage.TestPostgresSaver object at 0x7f48e0d273d0>
+mock_logger = <MagicMock name='logger' id='139950970150288'>
+mock_psycopg2 = <MagicMock name='psycopg2' id='139950970155984'>
+
+    @patch('src.storage.postgres_saver.psycopg2')
+    @patch('src.storage.postgres_saver.logger')
+    def test_ensure_companies_table_exists_success(self, mock_logger, mock_psycopg2):
+        """Покрытие: успешное создание таблицы companies"""
+        # Настраиваем моки
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_connection.cursor.return_value = mock_cursor
+        # Исправляем проблему с encoding для execute_values
+        mock_cursor.connection = mock_connection
+        mock_connection.encoding = 'UTF8'
+    
+        # Мокируем что поля не существуют
+        mock_cursor.fetchone.side_effect = [None, None]  # hh_id и sj_id не найдены
+    
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+    
+        with patch.object(saver, '_get_connection', return_value=mock_connection):
+            with patch.object(saver, '_initialize_target_companies') as mock_init_companies:
+>               saver._ensure_companies_table_exists()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'PostgresSaver' object has no attribute '_ensure_companies_table_exists'
+
+tests/test_postgres_saver_coverage.py:165: AttributeError
+_________________ TestPostgresSaver.test_ensure_companies_table_exists_with_existing_fields __________________
+
+self = <tests.test_postgres_saver_coverage.TestPostgresSaver object at 0x7f48e0d27a50>
+mock_logger = <MagicMock name='logger' id='139950978700368'>
+mock_psycopg2 = <MagicMock name='psycopg2' id='139950978707408'>
+
+    @patch('src.storage.postgres_saver.psycopg2')
+    @patch('src.storage.postgres_saver.logger')
+    def test_ensure_companies_table_exists_with_existing_fields(self, mock_logger, mock_psycopg2):
+        """Покрытие: проверка существующих полей в таблице companies"""
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_connection.cursor.return_value = mock_cursor
+        # Исправляем проблему с encoding для execute_values
+        mock_cursor.connection = mock_connection
+        mock_connection.encoding = 'UTF8'
+    
+        # Мокируем что поля уже существуют
+        mock_cursor.fetchone.side_effect = [("hh_id",), ("sj_id",)]  # поля найдены
+    
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+    
+        with patch.object(saver, '_get_connection', return_value=mock_connection):
+            with patch.object(saver, '_initialize_target_companies'):
+>               saver._ensure_companies_table_exists()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'PostgresSaver' object has no attribute '_ensure_companies_table_exists'
+
+tests/test_postgres_saver_coverage.py:195: AttributeError
+_________________________ TestPostgresSaver.test_ensure_companies_table_exists_error _________________________
+
+self = <tests.test_postgres_saver_coverage.TestPostgresSaver object at 0x7f48e0d2c110>
+mock_logger = <MagicMock name='logger' id='139950956855056'>
+mock_psycopg2 = <MagicMock name='psycopg2' id='139950956848976'>
+
+    @patch('src.storage.postgres_saver.psycopg2')
+    @patch('src.storage.postgres_saver.logger')
+    def test_ensure_companies_table_exists_error(self, mock_logger, mock_psycopg2):
+        """Покрытие: ошибка при создании таблицы companies"""
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_connection.cursor.return_value = mock_cursor
+        # Исправляем проблему с encoding для execute_values
+        mock_cursor.connection = mock_connection
+        mock_connection.encoding = 'UTF8'
+        mock_connection.closed = False
+    
+        from src.storage.postgres_saver import PsycopgError
+        mock_cursor.execute.side_effect = PsycopgError("Table creation failed")
+    
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+    
+        with patch.object(saver, '_get_connection', return_value=mock_connection):
+            with pytest.raises(PsycopgError):
+>               saver._ensure_companies_table_exists()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'PostgresSaver' object has no attribute '_ensure_companies_table_exists'
+
+tests/test_postgres_saver_coverage.py:222: AttributeError
+_____________________________ TestPostgresSaver.test_ensure_tables_exist_success _____________________________
+
+self = <tests.test_postgres_saver_coverage.TestPostgresSaver object at 0x7f48e0d2da50>
+mock_logger = <MagicMock name='logger' id='139950973594704'>
+mock_psycopg2 = <MagicMock name='psycopg2' id='139950973588944'>
+
+    @patch('src.storage.postgres_saver.psycopg2')
+    @patch('src.storage.postgres_saver.logger')
+    def test_ensure_tables_exist_success(self, mock_logger, mock_psycopg2):
+        """Покрытие: успешное создание таблиц"""
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_connection.cursor.return_value = mock_cursor
+        # Исправляем проблему с encoding для execute_values
+        mock_cursor.connection = mock_connection
+        mock_connection.encoding = 'UTF8'
+    
+        # Мокируем что поля не существуют
+        mock_cursor.fetchone.side_effect = [None] * 20  # Все поля не найдены
+    
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+    
+        with patch.object(saver, '_get_connection', return_value=mock_connection):
+>           with patch.object(saver, '_ensure_companies_table_exists') as mock_ensure_companies:
+
+tests/test_postgres_saver_coverage.py:327: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f48e013a710>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <src.storage.postgres_saver.PostgresSaver object at 0x7f48e0159410> does not have the attribute '_ensure_companies_table_exists'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+______________________ TestPostgresSaver.test_ensure_tables_exist_with_existing_fields _______________________
+
+self = <tests.test_postgres_saver_coverage.TestPostgresSaver object at 0x7f48e0d2e0d0>
+mock_logger = <MagicMock name='logger' id='139950969943056'>
+mock_psycopg2 = <MagicMock name='psycopg2' id='139950969932688'>
+
+    @patch('src.storage.postgres_saver.psycopg2')
+    @patch('src.storage.postgres_saver.logger')
+    def test_ensure_tables_exist_with_existing_fields(self, mock_logger, mock_psycopg2):
+        """Покрытие: проверка существующих полей в таблице vacancies"""
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_connection.cursor.return_value = mock_cursor
+        # Исправляем проблему с encoding для execute_values
+        mock_cursor.connection = mock_connection
+        mock_connection.encoding = 'UTF8'
+    
+        # Мокируем что все поля уже существуют
+        mock_cursor.fetchone.side_effect = [("url", "text"), ("salary_from", "integer")] * 10
+    
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+    
+        with patch.object(saver, '_get_connection', return_value=mock_connection):
+>           with patch.object(saver, '_ensure_companies_table_exists'):
+
+tests/test_postgres_saver_coverage.py:353: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f48dfda84d0>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <src.storage.postgres_saver.PostgresSaver object at 0x7f48dfdf5b50> does not have the attribute '_ensure_companies_table_exists'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+______________________ TestPostgresSaver.test_ensure_tables_exist_foreign_key_creation _______________________
+
+self = <tests.test_postgres_saver_coverage.TestPostgresSaver object at 0x7f48e0d2e750>
+mock_logger = <MagicMock name='logger' id='139950978295824'>
+mock_psycopg2 = <MagicMock name='psycopg2' id='139950978298000'>
+
+    @patch('src.storage.postgres_saver.psycopg2')
+    @patch('src.storage.postgres_saver.logger')
+    def test_ensure_tables_exist_foreign_key_creation(self, mock_logger, mock_psycopg2):
+        """Покрытие: создание внешнего ключа"""
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_connection.cursor.return_value = mock_cursor
+        # Исправляем проблему с encoding для execute_values
+        mock_cursor.connection = mock_connection
+        mock_connection.encoding = 'UTF8'
+    
+        # Мокируем что внешний ключ не существует
+        call_count = 0
+        def mock_fetchone():
+            nonlocal call_count
+            call_count += 1
+            if "constraint_name" in str(mock_cursor.execute.call_args_list[-1]):
+                return None  # Внешний ключ не найден
+            else:
+                return None  # Поля не найдены
+    
+        mock_cursor.fetchone.side_effect = mock_fetchone
+    
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+    
+        with patch.object(saver, '_get_connection', return_value=mock_connection):
+>           with patch.object(saver, '_ensure_companies_table_exists'):
+
+tests/test_postgres_saver_coverage.py:388: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1446: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f48e059ca90>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <src.storage.postgres_saver.PostgresSaver object at 0x7f48e05b3190> does not have the attribute '_ensure_companies_table_exists'
+
+/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/unittest/mock.py:1419: AttributeError
+______________________________ TestPostgresSaver.test_ensure_tables_exist_error ______________________________
+
+self = <tests.test_postgres_saver_coverage.TestPostgresSaver object at 0x7f48e0d2edd0>
+mock_logger = <MagicMock name='logger' id='139950978627216'>
+mock_psycopg2 = <MagicMock name='psycopg2' id='139950978617360'>
+
+    @patch('src.storage.postgres_saver.psycopg2')
+    @patch('src.storage.postgres_saver.logger')
+    def test_ensure_tables_exist_error(self, mock_logger, mock_psycopg2):
+        """Покрытие: ошибка при создании таблиц"""
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_connection.cursor.return_value = mock_cursor
+        # Исправляем проблему с encoding для execute_values
+        mock_cursor.connection = mock_connection
+        mock_connection.encoding = 'UTF8'
+        mock_connection.closed = False
+    
+        from src.storage.postgres_saver import PsycopgError
+        mock_cursor.execute.side_effect = PsycopgError("Table creation failed")
+    
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+    
+        with patch.object(saver, '_get_connection', return_value=mock_connection):
+>           with pytest.raises(PsycopgError):
+E           Failed: DID NOT RAISE <class 'psycopg2.Error'>
+
+tests/test_postgres_saver_coverage.py:415: Failed
+========================================== short test summary info ===========================================
+FAILED tests/test_postgres_saver_coverage.py::TestPostgresSaver::test_init_with_env_loader - AttributeError: <class 'src.storage.postgres_saver.PostgresSaver'> does not have the attribute '_ensure_t...
+FAILED tests/test_postgres_saver_coverage.py::TestPostgresSaver::test_ensure_companies_table_exists_success - AttributeError: 'PostgresSaver' object has no attribute '_ensure_companies_table_exists'
+FAILED tests/test_postgres_saver_coverage.py::TestPostgresSaver::test_ensure_companies_table_exists_with_existing_fields - AttributeError: 'PostgresSaver' object has no attribute '_ensure_companies_table_exists'
+FAILED tests/test_postgres_saver_coverage.py::TestPostgresSaver::test_ensure_companies_table_exists_error - AttributeError: 'PostgresSaver' object has no attribute '_ensure_companies_table_exists'
+FAILED tests/test_postgres_saver_coverage.py::TestPostgresSaver::test_ensure_tables_exist_success - AttributeError: <src.storage.postgres_saver.PostgresSaver object at 0x7f48e0159410> does not have the att...
+FAILED tests/test_postgres_saver_coverage.py::TestPostgresSaver::test_ensure_tables_exist_with_existing_fields - AttributeError: <src.storage.postgres_saver.PostgresSaver object at 0x7f48dfdf5b50> does not have the att...
+FAILED tests/test_postgres_saver_coverage.py::TestPostgresSaver::test_ensure_tables_exist_foreign_key_creation - AttributeError: <src.storage.postgres_saver.PostgresSaver object at 0x7f48e05b3190> does not have the att...
+FAILED tests/test_postgres_saver_coverage.py::TestPostgresSaver::test_ensure_tables_exist_error - Failed: DID NOT RAISE <class 'psycopg2.Error'>
+======================================== 8 failed, 38 passed in 0.73s ========================================
+~/workspace$ 

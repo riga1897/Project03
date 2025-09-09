@@ -63,8 +63,8 @@ class TestPostgresSaverExceptionHandling:
         
         from src.storage.postgres_saver import PostgresSaver
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч  
+        saver = PostgresSaver({"host": "test"})
         
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             # Мокируем target_companies как пустой список
@@ -98,8 +98,8 @@ class TestPostgresSaverExceptionHandling:
         
         from src.storage.postgres_saver import PostgresSaver
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч  
+        saver = PostgresSaver({"host": "test"})
         
         mock_vacancy = MagicMock()
         mock_vacancy.id = "test_id"
@@ -176,8 +176,8 @@ class TestPostgresSaverFilterAndDeduplicateEdgeCases:
             "keywords": ["python", "django", "development"]  # Множественные ключевые слова
         }
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч  
+        saver = PostgresSaver({"host": "test"})
         
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             with patch.object(saver, '_normalize_text', side_effect=lambda x: x.lower() if x else ""):
@@ -212,8 +212,8 @@ class TestPostgresSaverFilterAndDeduplicateEdgeCases:
         mock_vacancy.employer = {"name": "Company", "id": "comp1"}
         mock_vacancy.salary = None
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч  
+        saver = PostgresSaver({"host": "test"})
         
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             with patch('psycopg2.extras.execute_values'):
@@ -238,8 +238,8 @@ class TestPostgresSaverEdgeCases:
         
         from src.storage.postgres_saver import PostgresSaver
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч  
+        saver = PostgresSaver({"host": "test"})
         
         # Тестируем различные типы employer данных
         test_cases = [
@@ -274,8 +274,8 @@ class TestPostgresSaverEdgeCases:
         
         from src.storage.postgres_saver import PostgresSaver
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч  
+        saver = PostgresSaver({"host": "test"})
         
         # Тестируем различные комбинации фильтров для покрытия строк 728-747
         complex_filters = {
@@ -308,8 +308,8 @@ class TestPostgresSaverEdgeCases:
         """Покрытие: edge cases нормализации даты"""
         from src.storage.postgres_saver import PostgresSaver
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч  
+        saver = PostgresSaver({"host": "test"})
         
         # Тестируем различные форматы дат
         test_dates = [
@@ -342,8 +342,8 @@ class TestPostgresSaverRemainingCoverage:
         """Покрытие: различные условия ошибок"""
         from src.storage.postgres_saver import PostgresSaver
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч  
+        saver = PostgresSaver({"host": "test"})
         
         # Тестируем различные методы с ошибками для покрытия exception handling
         with patch.object(saver, '_get_connection', side_effect=Exception("Connection failed")):

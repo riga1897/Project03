@@ -80,6 +80,15 @@ class ConcreteDBManager(AbstractDBManager):
     
     def get_database_stats(self) -> Dict[str, Any]:
         return {"total_vacancies": 10, "total_companies": 3}
+    
+    def create_tables(self) -> bool:
+        return True
+    
+    def populate_companies_table(self) -> bool:
+        return True
+    
+    def check_connection(self) -> bool:
+        return True
 
 
 class TestConcreteImplementations:

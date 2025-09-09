@@ -292,15 +292,12 @@ class TestDisplayCompanyStats:
     @patch('builtins.print')
     def test_vacancy_with_exception(self, mock_print):
         """Покрытие исключения при обработке вакансии."""
-        # Создаем mock объект, который будет вызывать исключение при доступе к employer.name
+        # Создаем mock объект, который будет вызывать исключение при доступе к employer.get_id()
         mock_vacancy = Mock()
         mock_employer = Mock()
         
-        # Настраиваем property name чтобы вызывал исключение при обращении
-        def raise_error():
-            raise Exception("Test error")
-        
-        type(mock_employer).name = property(lambda self: raise_error())
+        # Настраиваем get_id() чтобы вызывал исключение при обращении
+        mock_employer.get_id.side_effect = Exception("Test error")
         mock_vacancy.employer = mock_employer
         
         stats = VacancyStats()

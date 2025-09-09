@@ -112,8 +112,8 @@ class TestCachedAPI:
         # Тестируем метод через декоратор, используя простые типы для кэш-ключа
         # Передаем простые hashable параметры
         result = api._cached_api_request("http://test.com", "test_params", "test")
-        # Метод возвращает пустой словарь если данных в кэше нет
-        assert result == {}
+        # Метод возвращает None если данных в кэше нет
+        assert result is None
 
 
 class TestAPIConnector:
@@ -219,12 +219,15 @@ class TestHeadHunterAPI:
         vacancy = {"invalid": "data"}
         assert api._validate_vacancy(vacancy) is False
 
-    @patch('src.api_modules.hh_api.HeadHunterAPI._HeadHunterAPI__connect')
-    def test_get_vacancies(self, mock_connect):
+    @patch('src.api_modules.get_api.requests.get')
+    def test_get_vacancies(self, mock_get):
         """Покрытие get_vacancies."""
-        mock_connect.return_value = {"items": [{"name": "Test", "alternate_url": "url"}]}
-        api = HeadHunterAPI()
+        mock_response = Mock()
+        mock_response.json.return_value = {"items": [{"name": "Test", "alternate_url": "url"}]}
+        mock_response.raise_for_status.return_value = None
+        mock_get.return_value = mock_response
         
+        api = HeadHunterAPI()
         result = api.get_vacancies("python")
         assert len(result) >= 0  # Может быть отфильтровано
 

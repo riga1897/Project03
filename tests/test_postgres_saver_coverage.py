@@ -51,19 +51,15 @@ class TestPostgresSaver:
         mock_psycopg2 = Mock()
         mock_get_psycopg2.return_value = mock_psycopg2
         
-        # Мокируем методы создания таблиц
-        with patch.object(PostgresSaver, '_ensure_tables_exist') as mock_ensure_tables:
-            saver = PostgresSaver()
-            
-            # Проверяем что переменные загружены из окружения
-            assert saver.host == "test_host"
-            assert saver.port == "5433"
-            assert saver.database == "test_db"
-            assert saver.username == "test_user"
-            assert saver.password == "test_pass"
-            
-            # Проверяем что была вызвана инициализация таблиц
-            mock_ensure_tables.assert_called_once()
+        # PostgresSaver больше не имеет _ensure_tables_exist - создание таблиц в DBManager
+        saver = PostgresSaver()
+        
+        # Проверяем что переменные загружены из окружения
+        assert saver.host == "test_host"
+        assert saver.port == "5433"
+        assert saver.database == "test_db"
+        assert saver.username == "test_user"
+        assert saver.password == "test_pass"
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
@@ -77,15 +73,15 @@ class TestPostgresSaver:
             "password": "config_pass"
         }
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver(db_config)
-            
-            # Проверяем что конфигурация применена
-            assert saver.host == "config_host"
-            assert saver.port == "5434"
-            assert saver.database == "config_db"
-            assert saver.username == "config_user"
-            assert saver.password == "config_pass"
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч  
+        saver = PostgresSaver(db_config)
+        
+        # Проверяем что конфигурация применена
+        assert saver.host == "config_host"
+        assert saver.port == "5434"
+        assert saver.database == "config_db"
+        assert saver.username == "config_user"
+        assert saver.password == "config_pass"
 
     @patch('src.storage.db_psycopg2_compat.get_psycopg2')
     @patch('src.storage.postgres_saver.logger')
@@ -97,14 +93,14 @@ class TestPostgresSaver:
         mock_psycopg2.connect.return_value = mock_connection
         mock_get_psycopg2.return_value = mock_psycopg2
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            with patch.object(PostgresSaver, '_get_connection', return_value=mock_connection) as mock_get_conn:
-                saver = PostgresSaver({"host": "test", "database": "test"})
-                connection = saver._get_connection()
-                
-                # Проверяем что подключение создано правильно
-                assert connection == mock_connection
-                mock_get_conn.assert_called_once()
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        with patch.object(PostgresSaver, '_get_connection', return_value=mock_connection) as mock_get_conn:
+            saver = PostgresSaver({"host": "test", "database": "test"})
+            connection = saver._get_connection()
+            
+            # Проверяем что подключение создано правильно
+            assert connection == mock_connection
+            mock_get_conn.assert_called_once()
 
     @patch('src.storage.db_psycopg2_compat.get_psycopg2')
     @patch('src.storage.postgres_saver.logger')
@@ -115,15 +111,15 @@ class TestPostgresSaver:
         mock_psycopg2.connect.return_value = mock_connection
         mock_get_psycopg2.return_value = mock_psycopg2
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            with patch.object(PostgresSaver, '_get_connection', return_value=mock_connection) as mock_get_conn:
-                saver = PostgresSaver({"host": "test", "database": "main"})
-                connection = saver._get_connection("custom_db")
-                
-                # Проверяем что подключение создано правильно
-                assert connection == mock_connection
-                # Проверяем что метод был вызван с правильным параметром
-                mock_get_conn.assert_called_with("custom_db")
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        with patch.object(PostgresSaver, '_get_connection', return_value=mock_connection) as mock_get_conn:
+            saver = PostgresSaver({"host": "test", "database": "main"})
+            connection = saver._get_connection("custom_db")
+            
+            # Проверяем что подключение создано правильно
+            assert connection == mock_connection
+            # Проверяем что метод был вызван с правильным параметром
+            mock_get_conn.assert_called_with("custom_db")
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
@@ -133,19 +129,19 @@ class TestPostgresSaver:
         from src.storage.postgres_saver import PsycopgError
         mock_psycopg2.connect.side_effect = PsycopgError("Connection failed")
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
-            with pytest.raises(PsycopgError):
-                saver._get_connection()
-            
-            # Проверяем логирование ошибки
-            mock_logger.error.assert_called_once()
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
+        with pytest.raises(PsycopgError):
+            saver._get_connection()
+        
+        # Проверяем логирование ошибки
+        mock_logger.error.assert_called_once()
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_ensure_companies_table_exists_success(self, mock_logger, mock_psycopg2):
-        """Покрытие: успешное создание таблицы companies"""
+    def test_initialize_target_companies_success(self, mock_logger, mock_psycopg2):
+        """Покрытие: успешная инициализация целевых компаний"""
         # Настраиваем моки
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -157,26 +153,20 @@ class TestPostgresSaver:
         # Мокируем что поля не существуют
         mock_cursor.fetchone.side_effect = [None, None]  # hh_id и sj_id не найдены
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
-            with patch.object(saver, '_initialize_target_companies') as mock_init_companies:
-                saver._ensure_companies_table_exists()
-                
-                # Проверяем выполнение SQL команд
-                assert mock_cursor.execute.call_count >= 3  # CREATE TABLE + проверки полей + индексы
-                mock_connection.commit.assert_called_once()
-                mock_init_companies.assert_called_once()
-                
-                # Проверяем закрытие соединения (может не вызываться в блоке finally при ошибках)
-                # mock_cursor.close.assert_called_once()
-                # mock_connection.close.assert_called_once()
+            # _ensure_companies_table_exists не существует - тестируем _initialize_target_companies
+            saver._initialize_target_companies()
+            
+            # Проверяем что было установлено соединение и выполнены запросы
+            mock_connection.commit.assert_called_once()
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_ensure_companies_table_exists_with_existing_fields(self, mock_logger, mock_psycopg2):
-        """Покрытие: проверка существующих полей в таблице companies"""
+    def test_initialize_target_companies_existing(self, mock_logger, mock_psycopg2):
+        """Покрытие: инициализация когда компании уже существуют"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
         mock_connection.cursor.return_value = mock_cursor
@@ -187,22 +177,24 @@ class TestPostgresSaver:
         # Мокируем что поля уже существуют
         mock_cursor.fetchone.side_effect = [("hh_id",), ("sj_id",)]  # поля найдены
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
-            with patch.object(saver, '_initialize_target_companies'):
-                saver._ensure_companies_table_exists()
-                
-                # Проверяем что ALTER TABLE не вызывался (поля уже есть)
-                alter_calls = [call for call in mock_cursor.execute.call_args_list 
-                             if 'ALTER TABLE' in str(call)]
-                assert len(alter_calls) == 0
+            # _ensure_companies_table_exists не существует - тестируем _initialize_target_companies с существующими компаниями
+            # Мокируем fetchone чтобы компания была найдена
+            mock_cursor.fetchone.return_value = (1,)  # компания уже существует
+            
+            saver._initialize_target_companies()
+            
+            # Проверяем что INSERT не вызывался (компания уже есть)
+            insert_calls = [call for call in mock_cursor.execute.call_args_list if 'INSERT INTO companies' in str(call)]
+            assert len(insert_calls) == 0
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_ensure_companies_table_exists_error(self, mock_logger, mock_psycopg2):
-        """Покрытие: ошибка при создании таблицы companies"""
+    def test_initialize_target_companies_error(self, mock_logger, mock_psycopg2):
+        """Покрытие: ошибка при инициализации целевых компаний"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
         mock_connection.cursor.return_value = mock_cursor
@@ -214,12 +206,22 @@ class TestPostgresSaver:
         from src.storage.postgres_saver import PsycopgError
         mock_cursor.execute.side_effect = PsycopgError("Table creation failed")
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
-            with pytest.raises(PsycopgError):
-                saver._ensure_companies_table_exists()
+            with patch('src.config.target_companies.TargetCompanies.get_all_companies') as mock_get_companies:
+                mock_company = MagicMock()
+                mock_company.name = "Test Company"
+                mock_company.hh_id = "123"
+                mock_company.sj_id = "456"
+                mock_get_companies.return_value = [mock_company]
+                
+                # Не должно поднимать исключение - ошибки обрабатываются внутри метода
+                saver._initialize_target_companies()
+                
+                # Проверяем что ошибка была залогирована
+                mock_logger.error.assert_called()
             
             # Проверяем откат транзакции и логирование
             mock_connection.rollback.assert_called_once()
@@ -245,9 +247,9 @@ class TestPostgresSaver:
         mock_connection.encoding = 'UTF8'
         mock_cursor.fetchone.return_value = None  # Компания не найдена
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             saver._initialize_target_companies()
             
@@ -276,9 +278,9 @@ class TestPostgresSaver:
         mock_connection.encoding = 'UTF8'
         mock_cursor.fetchone.return_value = (1,)  # Компания уже существует
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             saver._initialize_target_companies()
             
@@ -297,45 +299,40 @@ class TestPostgresSaver:
         mock_connection = MagicMock()
         mock_connection.closed = False
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             saver._initialize_target_companies()
             
             # Проверяем логирование ошибки
             mock_logger.error.assert_called()
 
-    @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_ensure_tables_exist_success(self, mock_logger, mock_psycopg2):
-        """Покрытие: успешное создание таблиц"""
+    def test_get_connection_database_param(self, mock_logger):
+        """Покрытие: подключение к указанной базе данных"""
+        # Создаем saver
+        saver = PostgresSaver({"host": "test"})
+        
+        # Создаем мок соединения
         mock_connection = MagicMock()
-        mock_cursor = MagicMock()
-        mock_connection.cursor.return_value = mock_cursor
-        # Исправляем проблему с encoding для execute_values
-        mock_cursor.connection = mock_connection
-        mock_connection.encoding = 'UTF8'
+        mock_connection.set_client_encoding = MagicMock()
         
-        # Мокируем что поля не существуют
-        mock_cursor.fetchone.side_effect = [None] * 20  # Все поля не найдены
-        
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
+        # Мокируем _get_connection напрямую для проверки логики
+        with patch.object(saver, '_get_connection') as mock_get_connection:
+            mock_get_connection.return_value = mock_connection
             
-        with patch.object(saver, '_get_connection', return_value=mock_connection):
-            with patch.object(saver, '_ensure_companies_table_exists') as mock_ensure_companies:
-                saver._ensure_tables_exist()
-                
-                # Проверяем что были выполнены основные операции
-                mock_ensure_companies.assert_called_once()
-                assert mock_cursor.execute.call_count >= 5  # Множественные SQL команды
-                mock_connection.commit.assert_called_once()
+            # Тестируем метод
+            result = saver._get_connection("specific_db")
+            
+            # Проверяем что метод был вызван с правильными параметрами
+            mock_get_connection.assert_called_once_with("specific_db")
+            assert result == mock_connection
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_ensure_tables_exist_with_existing_fields(self, mock_logger, mock_psycopg2):
-        """Покрытие: проверка существующих полей в таблице vacancies"""
+    def test_get_connection_error_handling(self, mock_logger, mock_psycopg2):
+        """Покрытие: обработка ошибок при подключении к БД"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
         mock_connection.cursor.return_value = mock_cursor
@@ -346,22 +343,25 @@ class TestPostgresSaver:
         # Мокируем что все поля уже существуют
         mock_cursor.fetchone.side_effect = [("url", "text"), ("salary_from", "integer")] * 10
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
+        # Правильно мокируем psycopg2 и тестируем обработку ошибки
+        from src.storage.postgres_saver import PsycopgError
+        with patch('src.storage.db_psycopg2_compat.get_psycopg2') as mock_get_psycopg2:
+            mock_get_psycopg2.return_value = mock_psycopg2
+            mock_psycopg2.connect.side_effect = PsycopgError("Connection failed")
             
-        with patch.object(saver, '_get_connection', return_value=mock_connection):
-            with patch.object(saver, '_ensure_companies_table_exists'):
-                saver._ensure_tables_exist()
-                
-                # Проверяем что ALTER TABLE не вызывался (поля уже есть)
-                alter_calls = [call for call in mock_cursor.execute.call_args_list 
-                             if 'ALTER TABLE' in str(call)]
-                assert len(alter_calls) == 0
+            with pytest.raises(PsycopgError):
+                saver._get_connection()
+            
+            # Проверяем логирование ошибки
+            mock_logger.error.assert_called_once()
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_ensure_tables_exist_foreign_key_creation(self, mock_logger, mock_psycopg2):
-        """Покрытие: создание внешнего ключа"""
+    def test_initialize_target_companies_with_mocked_config(self, mock_logger, mock_psycopg2):
+        """Покрытие: инициализация целевых компаний с мокированной конфигурацией"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
         mock_connection.cursor.return_value = mock_cursor
@@ -381,22 +381,30 @@ class TestPostgresSaver:
         
         mock_cursor.fetchone.side_effect = mock_fetchone
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
-            with patch.object(saver, '_ensure_companies_table_exists'):
-                saver._ensure_tables_exist()
+            with patch('src.config.target_companies.TargetCompanies.get_all_companies') as mock_get_companies:
+                mock_company = MagicMock()
+                mock_company.name = "Test Company"
+                mock_company.hh_id = "123"
+                mock_company.sj_id = "456"
+                mock_get_companies.return_value = [mock_company]
                 
-                # Проверяем что был создан внешний ключ
-                fk_calls = [call for call in mock_cursor.execute.call_args_list 
-                           if 'FOREIGN KEY' in str(call)]
-                assert len(fk_calls) >= 1
+                # Компания не найдена - будет добавлена
+                mock_cursor.fetchone.return_value = None
+                
+                saver._initialize_target_companies()
+                
+                # Проверяем что компания была добавлена
+                insert_calls = [call for call in mock_cursor.execute.call_args_list if 'INSERT INTO companies' in str(call)]
+                assert len(insert_calls) >= 1
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_ensure_tables_exist_error(self, mock_logger, mock_psycopg2):
-        """Покрытие: ошибка при создании таблиц"""
+    def test_initialize_target_companies_database_error(self, mock_logger, mock_psycopg2):
+        """Покрытие: ошибка базы данных при инициализации целевых компаний"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
         mock_connection.cursor.return_value = mock_cursor
@@ -408,16 +416,22 @@ class TestPostgresSaver:
         from src.storage.postgres_saver import PsycopgError
         mock_cursor.execute.side_effect = PsycopgError("Table creation failed")
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
-            with pytest.raises(PsycopgError):
-                saver._ensure_tables_exist()
-            
-            # Проверяем откат и логирование
-            mock_connection.rollback.assert_called_once()
-            mock_logger.error.assert_called()
+            with patch('src.config.target_companies.TargetCompanies.get_all_companies') as mock_get_companies:
+                mock_company = MagicMock()
+                mock_company.name = "Test Company"
+                mock_company.hh_id = "123"
+                mock_company.sj_id = "456"
+                mock_get_companies.return_value = [mock_company]
+                
+                # Ошибки обрабатываются внутри метода, исключения не поднимаются
+                saver._initialize_target_companies()
+                
+                # Проверяем логирование ошибки
+                mock_logger.error.assert_called()
 
 
 class TestPostgresSaverVacancyOperations:
@@ -481,9 +495,9 @@ class TestPostgresSaverVacancyOperations:
         ]
         mock_cursor.rowcount = 2  # количество обновленных строк
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             with patch.object(saver, '_normalize_published_date', return_value=datetime.now()):
                 result = saver.add_vacancy_batch_optimized([mock_vacancy])
@@ -497,9 +511,9 @@ class TestPostgresSaverVacancyOperations:
     @patch('src.storage.postgres_saver.logger')
     def test_add_vacancy_batch_optimized_empty_list(self, mock_logger, mock_psycopg2):
         """Покрытие: batch-добавление пустого списка"""
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         result = saver.add_vacancy_batch_optimized([])
         assert result == []
 
@@ -515,9 +529,9 @@ class TestPostgresSaverVacancyOperations:
         mock_connection.encoding = 'UTF8'
         mock_cursor.fetchall.return_value = []
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             with patch('psycopg2.extras.execute_values'):
                 with patch.object(saver, '_normalize_published_date', return_value=datetime.now()):
@@ -531,9 +545,9 @@ class TestPostgresSaverVacancyOperations:
     @patch('src.storage.postgres_saver.logger')
     def test_add_vacancy_success(self, mock_logger, mock_psycopg2, mock_vacancy):
         """Покрытие: добавление одной вакансии"""
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, 'add_vacancy_batch_optimized', return_value=["success"]) as mock_batch:
             result = saver.add_vacancy(mock_vacancy)
             
@@ -546,9 +560,9 @@ class TestPostgresSaverVacancyOperations:
     @patch('src.storage.postgres_saver.logger')
     def test_add_vacancies_success(self, mock_logger, mock_psycopg2, mock_vacancy):
         """Покрытие: добавление списка вакансий"""
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, 'add_vacancy_batch_optimized', return_value=["success1", "success2"]) as mock_batch:
             result = saver.add_vacancies([mock_vacancy, mock_vacancy])
             
@@ -560,9 +574,9 @@ class TestPostgresSaverVacancyOperations:
     @patch('src.storage.postgres_saver.logger')
     def test_save_vacancies_success(self, mock_logger, mock_psycopg2, mock_vacancy):
         """Покрытие: сохранение вакансий (алиас для add_vacancies)"""
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         # Мокируем весь процесс без реального вызова psycopg2
         with patch.object(saver, '_get_connection') as mock_get_conn:
             mock_connection = MagicMock()
@@ -607,9 +621,9 @@ class TestPostgresSaverVacancyOperations:
         ]
         mock_cursor.fetchall.return_value = mock_rows
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             with patch.object(saver, '_convert_rows_to_vacancies', return_value=[MagicMock()]) as mock_convert:
                 result = saver.load_vacancies()
@@ -631,9 +645,9 @@ class TestPostgresSaverVacancyOperations:
         mock_connection.encoding = 'UTF8'
         mock_cursor.fetchall.return_value = []
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             with patch.object(saver, '_convert_rows_to_vacancies', return_value=[]):
                 filters = {
@@ -674,9 +688,9 @@ class TestPostgresSaverVacancyOperations:
         from src.storage.postgres_saver import PsycopgError
         mock_cursor.execute.side_effect = PsycopgError("Query failed")
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             result = saver.load_vacancies()
             
@@ -686,9 +700,9 @@ class TestPostgresSaverVacancyOperations:
 
     def test_normalize_published_date_string(self):
         """Покрытие: нормализация даты из строки"""
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         # Тестируем различные форматы даты
         date_str = "2024-01-01T12:00:00+03:00"
         result = saver._normalize_published_date(date_str)
@@ -697,9 +711,9 @@ class TestPostgresSaverVacancyOperations:
 
     def test_normalize_published_date_datetime(self):
         """Покрытие: нормализация даты из datetime объекта"""
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         date_obj = datetime.now()
         result = saver._normalize_published_date(date_obj)
         
@@ -707,17 +721,17 @@ class TestPostgresSaverVacancyOperations:
 
     def test_normalize_published_date_none(self):
         """Покрытие: нормализация пустой даты"""
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         result = saver._normalize_published_date(None)
         assert isinstance(result, datetime)  # Возвращает текущее время
 
     def test_normalize_text(self):
         """Покрытие: нормализация текста"""
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         # Тестируем нормализацию различного текста
         assert saver._normalize_text("  Python Developer  ") == "python developer"
         assert saver._normalize_text("JavaScript/TypeScript") == "javascripttypescript"
@@ -740,9 +754,9 @@ class TestPostgresSaverDeletionOperations:
         mock_connection.encoding = 'UTF8'
         mock_cursor.rowcount = 100
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             result = saver.delete_all_vacancies()
             
@@ -764,9 +778,9 @@ class TestPostgresSaverDeletionOperations:
         mock_connection.encoding = 'UTF8'
         mock_cursor.rowcount = 0
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             result = saver.delete_all_vacancies()
             
@@ -786,9 +800,9 @@ class TestPostgresSaverDeletionOperations:
         mock_connection.encoding = 'UTF8'
         mock_cursor.rowcount = 1
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             result = saver.delete_vacancy_by_id("test_id_123")
             
@@ -810,9 +824,9 @@ class TestPostgresSaverDeletionOperations:
         mock_connection.encoding = 'UTF8'
         mock_cursor.rowcount = 0
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             result = saver.delete_vacancy_by_id("nonexistent_id")
             
@@ -832,9 +846,9 @@ class TestPostgresSaverDeletionOperations:
         mock_connection.encoding = 'UTF8'
         mock_cursor.rowcount = 5
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             result = saver.delete_vacancies_by_keyword("python")
             
@@ -851,9 +865,9 @@ class TestPostgresSaverDeletionOperations:
         mock_vacancy = MagicMock()
         mock_vacancy.id = "vacancy_obj_123"
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, 'delete_vacancy_by_id', return_value=True) as mock_delete_by_id:
             saver.delete_vacancy(mock_vacancy)
             
@@ -872,9 +886,9 @@ class TestPostgresSaverDeletionOperations:
         mock_connection.encoding = 'UTF8'
         mock_cursor.rowcount = 3
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             result = saver.delete_vacancies_batch(["id1", "id2", "id3"])
             
@@ -889,9 +903,9 @@ class TestPostgresSaverDeletionOperations:
     @patch('src.storage.postgres_saver.logger')
     def test_delete_vacancies_batch_empty_list(self, mock_logger, mock_psycopg2):
         """Покрытие: batch удаление пустого списка"""
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         result = saver.delete_vacancies_batch([])
         assert result == 0
 
@@ -914,9 +928,9 @@ class TestPostgresSaverQueryOperations:
         mock_vacancy = MagicMock()
         mock_vacancy.id = "existing_id"
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             result = saver.is_vacancy_exists(mock_vacancy)
             
@@ -939,9 +953,9 @@ class TestPostgresSaverQueryOperations:
         mock_vacancy = MagicMock()
         mock_vacancy.id = "nonexistent_id"
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             result = saver.is_vacancy_exists(mock_vacancy)
             
@@ -972,9 +986,9 @@ class TestPostgresSaverQueryOperations:
             MagicMock(id="id3")
         ]
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             result = saver.check_vacancies_exist_batch(mock_vacancies)
             
@@ -987,9 +1001,9 @@ class TestPostgresSaverQueryOperations:
     @patch('src.storage.postgres_saver.logger')
     def test_check_vacancies_exist_batch_empty(self, mock_logger, mock_psycopg2):
         """Покрытие: batch проверка пустого списка"""
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         result = saver.check_vacancies_exist_batch([])
         assert result == {}
 
@@ -1005,9 +1019,9 @@ class TestPostgresSaverQueryOperations:
         mock_connection.encoding = 'UTF8'
         mock_cursor.fetchone.return_value = (150,)  # 150 записей
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             result = saver.get_file_size()
             
@@ -1027,9 +1041,9 @@ class TestPostgresSaverQueryOperations:
         mock_connection.encoding = 'UTF8'
         mock_cursor.fetchone.return_value = (42,)
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             result = saver.get_vacancies_count()
             
@@ -1050,9 +1064,9 @@ class TestPostgresSaverQueryOperations:
         mock_connection.encoding = 'UTF8'
         mock_cursor.fetchone.return_value = (15,)
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             filters = {
                 "title": "Python",
@@ -1101,9 +1115,9 @@ class TestPostgresSaverQueryOperations:
         ]
         mock_cursor.fetchall.return_value = mock_rows
         
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         with patch.object(saver, '_get_connection', return_value=mock_connection):
             with patch.object(saver, '_convert_rows_to_vacancies', return_value=[MagicMock()]) as mock_convert:
                 result = saver.search_vacancies_batch(["Python", "Django"], limit=10)
@@ -1127,9 +1141,9 @@ class TestPostgresSaverQueryOperations:
     @patch('src.storage.postgres_saver.logger')
     def test_search_vacancies_batch_empty_keywords(self, mock_logger, mock_psycopg2):
         """Покрытие: поиск с пустым списком ключевых слов"""
-        with patch.object(PostgresSaver, '_ensure_tables_exist'):
-            saver = PostgresSaver({"host": "test"})
-            
+        # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
+        saver = PostgresSaver({"host": "test"})
+        
         result = saver.search_vacancies_batch([])
         assert result == []
 

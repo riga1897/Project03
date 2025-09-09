@@ -5,7 +5,7 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
-packages = ["glibcLocales", "libxcrypt", "mypy", "python313Packages.flake8", "u-root-cmds", "zlib"]
+packages = ["cargo", "glibcLocales", "libiconv", "libxcrypt", "mypy", "postgresql", "python313Packages.flake8", "rustc", "u-root-cmds", "zlib"]
 
 [workflows]
 runButton = "Project"
@@ -22,6 +22,10 @@ args = "pytest"
 [[workflows.workflow.tasks]]
 task = "workflow.run"
 args = "app"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Console App"
 
 [[workflows.workflow]]
 name = "pytest"
@@ -41,6 +45,17 @@ author = "agent"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "poetry run python main.py"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[workflows.workflow]]
+name = "Console App"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
 
 [workflows.workflow.metadata]
 outputType = "console"

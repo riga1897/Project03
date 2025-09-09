@@ -166,14 +166,14 @@ class TestTargetCompanies:
         companies = TargetCompanies.COMPANIES
         assert len(companies) > 0
         
-        # Найдем компанию напрямую из списка
-        yandex_found = False
+        # Найдем первую компанию из списка
+        first_company_found = False
         for company in companies:
-            if company.name == "Яндекс":
-                yandex_found = True
-                assert company.hh_id == "1740"
+            if company.name == "СБЕР":  # Используем реальную компанию из конфигурации
+                first_company_found = True
+                assert company.hh_id == "3529"
                 break
-        assert yandex_found
+        assert first_company_found
 
     def test_target_companies_constants(self):
         """Покрытие констант."""

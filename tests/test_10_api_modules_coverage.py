@@ -281,7 +281,9 @@ class TestAPIIntegration:
         
         # Проверяем что HH API использует конфигурацию
         assert hasattr(hh_api, 'config')
-        assert isinstance(hh_api.config, APIConfig)
+        # hh_api.config является экземпляром HHAPIConfig, который наследует от APIConfig
+        from src.config.hh_api_config import HHAPIConfig
+        assert isinstance(hh_api.config, HHAPIConfig)
         
         # Проверяем что SuperJob API инициализирован
         assert sj_api is not None

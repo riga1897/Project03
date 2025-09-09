@@ -62,8 +62,15 @@ class TestPaginatorBasicFunctionality:
         assert result == test_data
         mock_fetch_func.assert_called_once_with(0)
         
-        # Проверяем работу с progress bar
-        mock_tqdm.assert_called_once_with(total=1, desc="Fetching pages", unit="page", dynamic_ncols=True)
+        # Проверяем работу с progress bar (параметры соответствуют реальному коду)
+        mock_tqdm.assert_called_once_with(
+            total=1, 
+            desc="Fetching pages", 
+            unit="page", 
+            ncols=80,
+            leave=False,
+            bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]"
+        )
         mock_pbar.set_postfix.assert_called_once_with(vacancies=1)
         mock_pbar.update.assert_called_once_with(1)
     
@@ -93,8 +100,15 @@ class TestPaginatorBasicFunctionality:
         assert mock_fetch_func.call_count == 3
         mock_fetch_func.assert_has_calls([call(0), call(1), call(2)])
         
-        # Проверяем progress bar
-        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", dynamic_ncols=True)
+        # Проверяем progress bar (параметры соответствуют реальному коду)
+        mock_tqdm.assert_called_once_with(
+            total=3, 
+            desc="Fetching pages", 
+            unit="page", 
+            ncols=80,
+            leave=False,
+            bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]"
+        )
         assert mock_pbar.update.call_count == 3
         assert mock_pbar.set_postfix.call_count == 3
     
@@ -121,7 +135,7 @@ class TestPaginatorBasicFunctionality:
         mock_fetch_func.assert_has_calls([call(0), call(1), call(2)])
         
         # Progress bar должен показать 3 страницы
-        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", dynamic_ncols=True)
+        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", ncols=80, leave=False, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")
     
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
@@ -145,7 +159,7 @@ class TestPaginatorBasicFunctionality:
         mock_fetch_func.assert_has_calls([call(2), call(3), call(4)])
         
         # Progress bar: total = 5-2 = 3 страницы
-        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", dynamic_ncols=True)
+        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", ncols=80, leave=False, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")
 
 
 class TestPaginatorEdgeCases:
@@ -213,7 +227,7 @@ class TestPaginatorEdgeCases:
         
         # Должно обработать только 2 страницы
         assert mock_fetch_func.call_count == 2
-        mock_tqdm.assert_called_once_with(total=2, desc="Fetching pages", unit="page", dynamic_ncols=True)
+        mock_tqdm.assert_called_once_with(total=2, desc="Fetching pages", unit="page", ncols=80, leave=False, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")
     
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
@@ -234,7 +248,7 @@ class TestPaginatorEdgeCases:
         
         # Должно обработать все 3 страницы
         assert mock_fetch_func.call_count == 3
-        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", dynamic_ncols=True)
+        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", ncols=80, leave=False, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")
 
 
 class TestPaginatorDataHandling:
@@ -405,7 +419,7 @@ class TestPaginatorProgressBar:
             total=2,  # min(5, 3) - 1 = 3 - 1 = 2
             desc="Fetching pages",
             unit="page",
-            dynamic_ncols=True
+            ncols=80, leave=False, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]"
         )
     
     @patch('src.utils.paginator.tqdm')
@@ -500,7 +514,7 @@ class TestPaginatorIntegration:
         mock_logger.warning.assert_called_once()  # Wrong data type
         
         # Проверяем progress bar - total должен быть 3 (range от 1 до 4)
-        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", dynamic_ncols=True)
+        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", ncols=80, leave=False, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")
         assert mock_pbar.update.call_count == 3
         # Postfix может вызываться для разного количества успешных страниц в зависимости от обработки ошибок
         assert mock_pbar.set_postfix.call_count >= 1
@@ -521,4 +535,4 @@ class TestPaginatorIntegration:
         # По умолчанию: total_pages=1, start_page=0, max_pages=None
         assert result == test_data
         mock_fetch_func.assert_called_once_with(0)
-        mock_tqdm.assert_called_once_with(total=1, desc="Fetching pages", unit="page", dynamic_ncols=True)
+        mock_tqdm.assert_called_once_with(total=1, desc="Fetching pages", unit="page", ncols=80, leave=False, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")

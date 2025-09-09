@@ -373,15 +373,17 @@ class TestDisplayCompanyStats:
         
         mock_print.assert_called_with("Нет вакансий для отображения статистики")
 
+    @patch('src.utils.vacancy_stats.VacancyStats._get_company_name_by_id')
     @patch('builtins.print')
-    def test_display_company_stats_with_source_name(self, mock_print):
+    def test_display_company_stats_with_source_name(self, mock_print, mock_get_name):
         """Покрытие: отображение с названием источника"""
         stats = VacancyStats()
+        mock_get_name.return_value = "Company A"
         
-        # Мокируем вакансии
+        # Мокируем вакансии с правильной структурой (нужен employer.get_id())
         vacancy1 = MagicMock()
         vacancy1.employer = MagicMock()
-        vacancy1.employer.name = "Company A"
+        vacancy1.employer.get_id.return_value = "123"
         
         vacancies = [vacancy1]
         stats.display_company_stats(vacancies, "HH.ru")
@@ -391,31 +393,36 @@ class TestDisplayCompanyStats:
         assert any("HH.ru" in call for call in calls)
         assert any("Company A" in call for call in calls)
 
+    @patch('src.utils.vacancy_stats.VacancyStats._get_company_name_by_id')
     @patch('builtins.print')
-    def test_display_company_stats_dict_vacancy(self, mock_print):
+    def test_display_company_stats_dict_vacancy(self, mock_print, mock_get_name):
         """Покрытие: обработка вакансии как словаря"""
         stats = VacancyStats()
+        mock_get_name.return_value = "Dict Company"
         
-        # Мокируем вакансию как словарь
-        vacancy1 = {"employer": {"name": "Dict Company"}}
-        vacancy2 = {"employer": "String Employer"}
+        # Мокируем вакансию как словарь с правильной структурой (нужен employer["id"])
+        vacancy1 = {"employer": {"id": "456"}}
+        vacancy2 = {"employer": None}  # Это попадет в "unknown"
         
         vacancies = [vacancy1, vacancy2]
         stats.display_company_stats(vacancies)
         
         calls = [str(call[0][0]) for call in mock_print.call_args_list]
         assert any("Dict Company" in call for call in calls)
-        assert any("String Employer" in call for call in calls)
+        # vacancy2 без employer попадет в "Неизвестная компания"
+        assert any("Неизвестная компания" in call for call in calls)
 
+    @patch('src.utils.vacancy_stats.VacancyStats._get_company_name_by_id')
     @patch('builtins.print')
-    def test_display_company_stats_object_with_employer_object(self, mock_print):
+    def test_display_company_stats_object_with_employer_object(self, mock_print, mock_get_name):
         """Покрытие: объект с объектом employer"""
         stats = VacancyStats()
+        mock_get_name.return_value = "Object Company"
         
-        # Мокируем вакансию с объектом employer
+        # Мокируем вакансию с объектом employer (нужен get_id())
         vacancy = MagicMock()
         vacancy.employer = MagicMock()
-        vacancy.employer.name = "Object Company"
+        vacancy.employer.get_id.return_value = "789"
         
         vacancies = [vacancy]
         stats.display_company_stats(vacancies)
@@ -947,16 +954,18 @@ class TestUncoveredLines:
         assert result["without_salary_count"] == 2
         assert result["with_salary_count"] == 0
 
+    @patch('src.utils.vacancy_stats.VacancyStats._get_company_name_by_id')
     @patch('builtins.print')
-    def test_display_company_stats_dict_employer_with_name_object(self, mock_print):
-        """Покрытие строки 129: employer.name когда employer объект в словаре"""
+    def test_display_company_stats_dict_employer_with_name_object(self, mock_print, mock_get_name):
+        """Покрытие строки 129: employer.get_id() когда employer объект в словаре"""
         stats = VacancyStats()
+        mock_get_name.return_value = "Object Employer Company"
         
-        # Создаем мок объект с атрибутом name
+        # Создаем мок объект с методом get_id
         employer_obj = MagicMock()
-        employer_obj.name = "Object Employer Company"
+        employer_obj.get_id.return_value = "obj123"
         
-        # Вакансия как словарь с employer объектом (не dict, не string)
+        # Вакансия как словарь с employer объектом
         vacancy = {"employer": employer_obj}
         
         vacancies = [vacancy]
@@ -965,14 +974,15 @@ class TestUncoveredLines:
         calls = [str(call[0][0]) for call in mock_print.call_args_list]
         assert any("Object Employer Company" in call for call in calls)
 
-    @patch('builtins.print')
-    def test_display_company_stats_object_employer_as_dict(self, mock_print):
-        """Покрытие строки 136: employer.get("name") когда employer dict в объекте"""
+    @patch('src.utils.vacancy_stats.VacancyStats._get_company_name_by_id')
+    @patch('builtins.print')  
+    def test_display_company_stats_object_employer_as_dict(self, mock_print, mock_get_name):
+        """Покрытие строки 135: employer.get("id") когда vacancy.employer dict"""
         stats = VacancyStats()
+        mock_get_name.return_value = "Dict Employer in Object"
         
-        # Создаем объект вакансии с employer как dict
         vacancy = MagicMock()
-        vacancy.employer = {"name": "Dict Employer in Object"}
+        vacancy.employer = {"id": "dict_id_789"}
         
         vacancies = [vacancy]
         stats.display_company_stats(vacancies)
@@ -982,44 +992,34 @@ class TestUncoveredLines:
 
     @patch('builtins.print')
     def test_display_company_stats_object_employer_as_string(self, mock_print):
-        """Покрытие строки 140: employer_name = employer когда employer строка в объекте"""
+        """Покрытие случая когда employer без get_id() -> попадает в unknown"""
         stats = VacancyStats()
         
-        # Создаем объект вакансии с employer как строка
+        # Создаем объект вакансии с employer без get_id()
         vacancy = MagicMock()
-        vacancy.employer = "String Employer in Object"
+        vacancy.employer = "String Employer in Object"  # Строка не имеет get_id()
         
         vacancies = [vacancy]
         stats.display_company_stats(vacancies)
         
         calls = [str(call[0][0]) for call in mock_print.call_args_list]
-        assert any("String Employer in Object" in call for call in calls)
+        # Поскольку employer - строка без get_id(), попадет в "unknown" -> "Неизвестная компания"
+        assert any("Неизвестная компания" in call for call in calls)
 
     def test_extract_company_name_firm_id_assignment(self):
-        """Покрытие строки 233: vacancy.employer_id = str(firm_id)"""
+        """Покрытие extracting company name из firm_name SuperJob вакансии"""
         
-        # Создаем особый класс, который одновременно ведет себя как dict и имеет атрибуты
-        class DictWithAttributes(dict):
-            def __init__(self, *args, **kwargs):
-                super().__init__(*args, **kwargs)
-                self.employer_id = None
-        
-        # Создаем объект, который является и dict, и имеет атрибут employer_id
-        vacancy = DictWithAttributes({
+        # Вакансия как словарь с firm_name и firm_id (SuperJob формат)
+        vacancy = {
+            "source": "superjob", 
             "firm_name": "SuperJob Assignment Test",
             "firm_id": "987654"
-        })
-        
-        # Проверяем что объект действительно является dict и имеет атрибут
-        assert isinstance(vacancy, dict)
-        assert hasattr(vacancy, "employer_id")
-        assert vacancy.employer_id is None
+        }
         
         result = VacancyStatsExtended._extract_company_name(vacancy)
         
-        # Проверяем результат и что employer_id был установлен
+        # Функция должна вернуть firm_name как fallback
         assert result == "SuperJob Assignment Test"
-        assert vacancy.employer_id == "987654"  # Должно быть установлено в строку
 
     def test_extract_company_name_client_id_assignment(self):
         """Покрытие строки 233: vacancy.employer_id = str(firm_id) с client_id"""

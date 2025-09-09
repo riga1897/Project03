@@ -27,15 +27,20 @@ class TestUserInterface:
     def test_main_success(self, mock_db_manager_class, mock_app_config, 
                          mock_storage_factory, mock_ui):
         """Покрытие успешного выполнения main()."""
-        # Настраиваем мок БД
+        # Настраиваем мок БД с контекстным менеджером
         mock_db_manager = Mock()
-        mock_db_manager._ensure_database_exists.return_value = None
-        mock_db_manager.check_connection.return_value = True
-        mock_db_manager.create_tables.return_value = None
-        mock_db_manager.populate_companies_table.return_value = None
-        mock_db_manager.get_companies_and_vacancies_count.return_value = [
-            ("Company1", 10), ("Company2", 5)
-        ]
+        mock_db_manager.check_connection.return_value = True  
+        mock_db_manager.initialize_database.return_value = True
+        mock_db_manager.get_companies_and_vacancies_count.return_value = [("Company1", 10)]
+        
+        # Настраиваем контекстный менеджер для _get_connection()
+        from unittest.mock import MagicMock
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_cursor.fetchone.return_value = [5]  # count результат 
+        mock_connection.cursor.return_value = mock_cursor
+        mock_db_manager._get_connection.return_value = mock_connection
+        
         mock_db_manager_class.return_value = mock_db_manager
         
         # Настраиваем мок конфигурации
@@ -54,10 +59,10 @@ class TestUserInterface:
         # Выполняем функцию
         src.user_interface.main()
         
-        # Проверяем что компоненты инициализированы
+        # Проверяем что компоненты инициализированы согласно реальному коду
         mock_db_manager_class.assert_called_once()
-        mock_app_config.assert_called_once()
-        mock_storage_factory.create_storage.assert_called_once()
+        mock_db_manager.check_connection.assert_called_once()
+        mock_db_manager.initialize_database.assert_called_once()
         mock_ui.assert_called_once()
         mock_ui_instance.run.assert_called_once()
 
@@ -318,13 +323,20 @@ class TestUserInterfaceIntegration:
         """Покрытие полного потока интеграции компонентов."""
         # Настраиваем все моки для успешного сценария
         mock_db_manager = Mock()
-        mock_db_manager._ensure_database_exists.return_value = None
         mock_db_manager.check_connection.return_value = True
-        mock_db_manager.create_tables.return_value = None
-        mock_db_manager.populate_companies_table.return_value = None
+        mock_db_manager.initialize_database.return_value = True
         mock_db_manager.get_companies_and_vacancies_count.return_value = [
             ("Company1", 10), ("Company2", 5), ("Company3", 3)
         ]
+        
+        # Настраиваем контекстный менеджер для _get_connection()
+        from unittest.mock import MagicMock
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_cursor.fetchone.return_value = [3]  # count результат 
+        mock_connection.cursor.return_value = mock_cursor
+        mock_db_manager._get_connection.return_value = mock_connection
+        
         mock_db_manager_class.return_value = mock_db_manager
         
         mock_config = Mock()
@@ -342,10 +354,8 @@ class TestUserInterfaceIntegration:
         
         # Проверяем порядок вызовов
         mock_logger.info.assert_called()
-        mock_db_manager._ensure_database_exists.assert_called_once()
         mock_db_manager.check_connection.assert_called_once()
-        mock_db_manager.create_tables.assert_called_once()
-        mock_db_manager.populate_companies_table.assert_called_once()
+        mock_db_manager.initialize_database.assert_called_once()
         mock_db_manager.get_companies_and_vacancies_count.assert_called_once()
         mock_storage_factory.create_storage.assert_called_once_with(mock_config.default_storage_type)
         mock_ui.assert_called_once_with(mock_storage, db_manager=mock_db_manager)
