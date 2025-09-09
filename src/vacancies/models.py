@@ -324,6 +324,7 @@ class Vacancy(BaseModel, AbstractVacancy):
     benefits: Optional[str] = Field(default=None, description="Льготы и бонусы")
     company_name: Optional[str] = Field(default=None, description="Название компании")
     employer_name: Optional[str] = Field(default=None, description="Внутреннее название работодателя")
+    raw_data: Optional[Dict[str, Any]] = Field(default=None, description="Сырые данные от API")
 
     def get_vacancy_id(self) -> str:
         """Получить vacancy_id (совместимость с AbstractVacancy)"""

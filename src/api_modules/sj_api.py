@@ -127,7 +127,7 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
             search_query_lower = search_query.lower() if search_query else search_query
             params = self.config.get_params(keyword=search_query_lower, page=page, **kwargs)
 
-            data = self._connect(self.BASE_URL, params)
+            data = self._connect_to_api(self.BASE_URL, params, "sj")
             items = data.get("objects", [])
 
             # Добавляем источник и валидируем как в HH API

@@ -1,0 +1,3117 @@
+{
+  "timestamp": 1757444540.198718,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 50,
+      "only_with_salary": true,
+      "period": 3,
+      "text": "python",
+      "page": 13
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "124342110",
+        "premium": false,
+        "name": "IT-рекрутер",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 60000,
+          "to": 150000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": 150000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "TWICE_PER_MONTH",
+            "name": "Два раза в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": null,
+          "building": null,
+          "lat": 55.708841,
+          "lng": 37.622621,
+          "description": null,
+          "raw": "Москва",
+          "metro": {
+            "station_name": "ЗИЛ",
+            "line_name": "МЦК",
+            "station_id": "95.531",
+            "line_id": "95",
+            "lat": 55.698333,
+            "lng": 37.648333
+          },
+          "metro_stations": [
+            {
+              "station_name": "ЗИЛ",
+              "line_name": "МЦК",
+              "station_id": "95.531",
+              "line_id": "95",
+              "lat": 55.698333,
+              "lng": 37.648333
+            },
+            {
+              "station_name": "Серпуховская",
+              "line_name": "Серпуховско-Тимирязевская",
+              "station_id": "9.37",
+              "line_id": "9",
+              "lat": 55.726548,
+              "lng": 37.624792
+            },
+            {
+              "station_name": "Тульская",
+              "line_name": "Серпуховско-Тимирязевская",
+              "station_id": "9.142",
+              "line_id": "9",
+              "lat": 55.70961,
+              "lng": 37.622569
+            },
+            {
+              "station_name": "Шаболовская",
+              "line_name": "Калужско-Рижская",
+              "station_id": "6.157",
+              "line_id": "6",
+              "lat": 55.718828,
+              "lng": 37.607892
+            }
+          ],
+          "id": "17919525"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T18:09:04+0300",
+        "created_at": "2025-09-08T18:09:04+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124342110",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124342110?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124342110",
+        "relations": [],
+        "employer": {
+          "id": "1669941",
+          "name": "Social Media Holding",
+          "url": "https://api.hh.ru/employers/1669941",
+          "alternate_url": "https://hh.ru/employer/1669941",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/383799.png",
+            "90": "https://img.hhcdn.ru/employer-logo/1977454.png",
+            "240": "https://img.hhcdn.ru/employer-logo/1977455.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=1669941",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Boolean/X-Ray search, креативные методы поиска. Умеешь работать быстро, держать KPI и SLA. Любишь технологии и используешь AI, чтобы...",
+          "responsibility": "Использование разных каналов: LinkedIn, GitHub, Telegram, профильные сообщества. Подбор и по «нестандартным» направлениям (например, маркетинг). Взаимодействие с менеджерами: быстро понимать..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "118",
+            "name": "Специалист по подбору персонала"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124159134",
+        "premium": false,
+        "name": "Архитектор систем",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "118",
+          "name": "Донецк",
+          "url": "https://api.hh.ru/areas/118"
+        },
+        "salary": {
+          "from": 7000,
+          "to": null,
+          "currency": "USD",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 7000,
+          "to": null,
+          "currency": "USD",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "WEEKLY",
+            "name": "Раз в неделю"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T10:58:00+0300",
+        "created_at": "2025-09-08T10:58:00+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124159134",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124159134?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124159134",
+        "relations": [],
+        "employer": {
+          "id": "3228236",
+          "name": "Таранов Антон Юрьевич",
+          "url": "https://api.hh.ru/employers/3228236",
+          "alternate_url": "https://hh.ru/employer/3228236",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/739101.png",
+            "90": "https://img.hhcdn.ru/employer-logo/3397381.png",
+            "240": "https://img.hhcdn.ru/employer-logo/3397382.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3228236",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Архитектура:: практический опыт, понимание паттернов и подходов: CQRS, Event Sourcing, Stateless Services. Облака & данные: GCP (BigQuery, Pub/Sub). ",
+          "responsibility": "Любишь вызовы и реальные челленджи, где решения — не слайды, а прод. Ты будешь первым архитектором и задашь общую логику системы. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_9",
+            "name": "9 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "OTHER",
+            "name": "Другое"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "14",
+            "name": "Архитектор"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123949447",
+        "premium": false,
+        "name": "Инженер выходного контроля производства (электроника)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": null,
+          "to": 300000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": null,
+          "to": 300000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Долгопрудный",
+          "street": "Лихачёвский проезд",
+          "building": "6с1",
+          "lat": 55.922076,
+          "lng": 37.513529,
+          "description": null,
+          "raw": "Долгопрудный, Лихачёвский проезд, 6с1",
+          "metro": {
+            "station_name": "Новодачная",
+            "line_name": "МЦД-1",
+            "station_id": "131.692",
+            "line_id": "131",
+            "lat": 55.924459,
+            "lng": 37.527877
+          },
+          "metro_stations": [
+            {
+              "station_name": "Новодачная",
+              "line_name": "МЦД-1",
+              "station_id": "131.692",
+              "line_id": "131",
+              "lat": 55.924459,
+              "lng": 37.527877
+            }
+          ],
+          "id": "5280212"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T12:52:46+0300",
+        "created_at": "2025-09-08T12:52:46+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123949447",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123949447?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123949447",
+        "relations": [],
+        "employer": {
+          "id": "1995794",
+          "name": "Wiren Board",
+          "url": "https://api.hh.ru/employers/1995794",
+          "alternate_url": "https://hh.ru/employer/1995794",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1437356.png",
+            "90": "https://img.hhcdn.ru/employer-logo/7369056.png",
+            "240": "https://img.hhcdn.ru/employer-logo/7369057.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=1995794",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Английский на уровне чтения документации. Будет плюсом: опыт программирования на <highlighttext>Python</highlighttext>, опыт программирования микроконтроллеров и/или ПЛК, навык ремонта электроники...",
+          "responsibility": "Разработка/доработка стендов выходного контроля на производстве (определение состава тестов для проверяемого изделия, способов тестирования, подбор оборудования для стенда, подготовка..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "44",
+            "name": "Инженер по качеству"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123927202",
+        "premium": false,
+        "name": "Преподаватель IT в детскую онлайн-школу",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": true
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": true,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T08:21:52+0300",
+        "created_at": "2025-09-08T08:21:52+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123927202",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123927202?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123927202",
+        "relations": [],
+        "employer": {
+          "id": "11404585",
+          "name": "Спринг",
+          "url": "https://api.hh.ru/employers/11404585",
+          "alternate_url": "https://hh.ru/employer/11404585",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1341247.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/6984930.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/6984931.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=11404585",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Уверенное владение минимум тремя преподаваемыми дисциплинами. Грамотная речь и хорошая дикция. Умение находить подход к детям и поддерживать их интерес. ",
+          "responsibility": "Программирование: <highlighttext>Python</highlighttext>. Разработка игр: Scratch, Roblox, Minecraft, Unity. Веб-разработка: HTML, CSS, JavaScript. 3D-моделирование: Blender, Tinkercad. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_2",
+            "name": "2 часа"
+          },
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "По договорённости"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "132",
+            "name": "Учитель, преподаватель, педагог"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124978767",
+        "premium": false,
+        "name": "Преподаватель программирования в онлайн-школу Roblox/Scrath/3D",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "212",
+          "name": "Тольятти",
+          "url": "https://api.hh.ru/areas/212"
+        },
+        "salary": {
+          "from": 50000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 50000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-07T15:30:45+0300",
+        "created_at": "2025-09-07T15:30:45+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124978767",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124978767?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124978767",
+        "relations": [],
+        "employer": {
+          "id": "9122127",
+          "name": "Велкид",
+          "url": "https://api.hh.ru/employers/9122127",
+          "alternate_url": "https://hh.ru/employer/9122127",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1350557.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/7022166.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/7022167.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=9122127",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "...и стабильным интернетом. Ответственность, пунктуальность. Опыт преподавания — будет плюсом, но не обязателен. Базовые знания <highlighttext>Python</highlighttext>/Scrath, желание учиться и развиваться.",
+          "responsibility": "Проведение онлайн -занятий для детей 7–12 лет. Ведение в основном групповых уроков (до 10 учеников). При желании — проведение индивидуальных..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_6",
+            "name": "6 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "40",
+            "name": "Другое"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124996370",
+        "premium": false,
+        "name": "Преподаватель программирования в онлайн-школу (Construct, Unity, Python Backend)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "26",
+          "name": "Воронеж",
+          "url": "https://api.hh.ru/areas/26"
+        },
+        "salary": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T10:03:27+0300",
+        "created_at": "2025-09-08T10:03:27+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124996370",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124996370?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124996370",
+        "relations": [],
+        "employer": {
+          "id": "8977564",
+          "name": "EasyCode",
+          "url": "https://api.hh.ru/employers/8977564",
+          "alternate_url": "https://hh.ru/employer/8977564",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1224516.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6518505.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6518506.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=8977564",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Есть опыт в преподавании ТРЕХ или БОЛЕЕ наших дисциплин: Scratch&Roblox, <highlighttext>Python</highlighttext>, <highlighttext>Python</highlighttext> Backend, Unity, HTML + CSS + JavaScript...",
+          "responsibility": "Разработка на Minecraft (Minecraft Education и MакеCode, применение <highlighttext>Python</highlighttext> в Minecraft). Мобильная разработка (MIT App Inventor). Мобильная разработка (Figma, Kotlin..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_6",
+            "name": "6 часов"
+          },
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "132",
+            "name": "Учитель, преподаватель, педагог"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124978768",
+        "premium": false,
+        "name": "Преподаватель программирования в онлайн-школу Roblox/Scrath/3D",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "26",
+          "name": "Воронеж",
+          "url": "https://api.hh.ru/areas/26"
+        },
+        "salary": {
+          "from": 50000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 50000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-07T15:30:45+0300",
+        "created_at": "2025-09-07T15:30:45+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124978768",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124978768?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124978768",
+        "relations": [],
+        "employer": {
+          "id": "9122127",
+          "name": "Велкид",
+          "url": "https://api.hh.ru/employers/9122127",
+          "alternate_url": "https://hh.ru/employer/9122127",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1350557.jpg",
+            "90": "https://img.hhcdn.ru/employer-logo/7022166.jpeg",
+            "240": "https://img.hhcdn.ru/employer-logo/7022167.jpeg"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=9122127",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "...и стабильным интернетом. Ответственность, пунктуальность. Опыт преподавания — будет плюсом, но не обязателен. Базовые знания <highlighttext>Python</highlighttext>/Scrath, желание учиться и развиваться.",
+          "responsibility": "Проведение онлайн -занятий для детей 7–12 лет. Ведение в основном групповых уроков (до 10 учеников). При желании — проведение индивидуальных..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_6",
+            "name": "6 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "40",
+            "name": "Другое"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124980084",
+        "premium": false,
+        "name": "Преподаватель программирования и робототехники",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 20000,
+          "to": 50000,
+          "currency": "RUR",
+          "gross": true
+        },
+        "salary_range": {
+          "from": 20000,
+          "to": 50000,
+          "currency": "RUR",
+          "gross": true,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": {
+            "id": "MONTHLY",
+            "name": "Раз в месяц"
+          }
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Подольск",
+          "street": "улица 43-й Армии",
+          "building": "17А",
+          "lat": 55.422053,
+          "lng": 37.494018,
+          "description": null,
+          "raw": "Подольск, улица 43-й Армии, 17А",
+          "metro": {
+            "station_name": "Подольск",
+            "line_name": "МЦД-2",
+            "station_id": "132.743",
+            "line_id": "132",
+            "lat": 55.431667,
+            "lng": 37.565
+          },
+          "metro_stations": [
+            {
+              "station_name": "Подольск",
+              "line_name": "МЦД-2",
+              "station_id": "132.743",
+              "line_id": "132",
+              "lat": 55.431667,
+              "lng": 37.565
+            }
+          ],
+          "id": "11324003"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-07T17:18:37+0300",
+        "created_at": "2025-09-07T17:18:37+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124980084",
+        "show_logo_in_search": null,
+        "show_contacts": true,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124980084?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124980084",
+        "relations": [],
+        "employer": {
+          "id": "3518049",
+          "name": "Школа программирования и робототехники Пиксель",
+          "url": "https://api.hh.ru/employers/3518049",
+          "alternate_url": "https://hh.ru/employer/3518049",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/891581.png",
+            "90": "https://img.hhcdn.ru/employer-logo/4007011.png",
+            "240": "https://img.hhcdn.ru/employer-logo/4007012.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=3518049",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Готовность к бесплатному дистанционному обучению по программам, которые будете преподавать. Любовь к преподаванию и детям. Ответственность и пунктуальность. ",
+          "responsibility": "Проведение занятий. Взаимодействие с родителями учеников в рамках рабочих дней(информирование о структуре урока, успеваемости ученика по запросу)."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [
+          {
+            "id": "only_saturday_and_sunday",
+            "name": "По субботам и воскресеньям"
+          }
+        ],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "132",
+            "name": "Учитель, преподаватель, педагог"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124996372",
+        "premium": false,
+        "name": "Преподаватель программирования в онлайн-школу (Construct, Unity, Python Backend)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "79",
+          "name": "Саратов",
+          "url": "https://api.hh.ru/areas/79"
+        },
+        "salary": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T10:03:27+0300",
+        "created_at": "2025-09-08T10:03:27+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124996372",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124996372?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124996372",
+        "relations": [],
+        "employer": {
+          "id": "8977564",
+          "name": "EasyCode",
+          "url": "https://api.hh.ru/employers/8977564",
+          "alternate_url": "https://hh.ru/employer/8977564",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1224516.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6518505.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6518506.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=8977564",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Есть опыт в преподавании ТРЕХ или БОЛЕЕ наших дисциплин: Scratch&Roblox, <highlighttext>Python</highlighttext>, <highlighttext>Python</highlighttext> Backend, Unity, HTML + CSS + JavaScript...",
+          "responsibility": "Разработка на Minecraft (Minecraft Education и MакеCode, применение <highlighttext>Python</highlighttext> в Minecraft). Мобильная разработка (MIT App Inventor). Мобильная разработка (Figma, Kotlin..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_6",
+            "name": "6 часов"
+          },
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "132",
+            "name": "Учитель, преподаватель, педагог"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "115792803",
+        "premium": false,
+        "name": "Senior fullstack java developer",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "2",
+          "name": "Санкт-Петербург",
+          "url": "https://api.hh.ru/areas/2"
+        },
+        "salary": {
+          "from": 200000,
+          "to": 300000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 200000,
+          "to": 300000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Санкт-Петербург",
+          "street": "Коломяжский проспект",
+          "building": "33к2",
+          "lat": 60.014014,
+          "lng": 30.296114,
+          "description": null,
+          "raw": "Санкт-Петербург, Коломяжский проспект, 33к2",
+          "metro": null,
+          "metro_stations": [],
+          "id": "2721374"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T17:17:42+0300",
+        "created_at": "2025-09-08T17:17:42+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=115792803",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/115792803?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/115792803",
+        "relations": [],
+        "employer": {
+          "id": "14809",
+          "name": "Бизнес Технологии",
+          "url": "https://api.hh.ru/employers/14809",
+          "alternate_url": "https://hh.ru/employer/14809",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1237495.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6570413.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6570414.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=14809",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Уверенное знание Java SE (Готовы рассмотреть переход с других языков, таких как <highlighttext>Python</highlighttext>, NodeJs, С++, Delphi). Уверенное знание ООП или...",
+          "responsibility": "Разработка нового функционала, исправление ошибок, рефакторинг. Развитии архитектуры и проектировании решений. Участие в процессе улучшения качества продукта и производительности команды. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          },
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          },
+          {
+            "id": "HYBRID",
+            "name": "Гибрид"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "96",
+            "name": "Программист, разработчик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "moreThan6",
+          "name": "Более 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124304067",
+        "premium": false,
+        "name": "Преподаватель программирования в онлайн-школу (Unity, HTML/CSS/JS)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "4",
+          "name": "Новосибирск",
+          "url": "https://api.hh.ru/areas/4"
+        },
+        "salary": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T08:00:29+0300",
+        "created_at": "2025-09-08T08:00:29+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124304067",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124304067?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124304067",
+        "relations": [],
+        "employer": {
+          "id": "8977564",
+          "name": "EasyCode",
+          "url": "https://api.hh.ru/employers/8977564",
+          "alternate_url": "https://hh.ru/employer/8977564",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1224516.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6518505.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6518506.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=8977564",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Есть опыт в преподавании ТРЕХ или БОЛЕЕ наших дисциплин: Scratch&Roblox, <highlighttext>Python</highlighttext>, <highlighttext>Python</highlighttext> Backend, Unity, HTML + CSS + JavaScript...",
+          "responsibility": "Разработка на Minecraft (Minecraft Education и MакеCode, применение <highlighttext>Python</highlighttext> в Minecraft). Мобильная разработка (MIT App Inventor). Мобильная разработка (Figma, Kotlin..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_6",
+            "name": "6 часов"
+          },
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "132",
+            "name": "Учитель, преподаватель, педагог"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123932320",
+        "premium": false,
+        "name": "Ведущий разработчик Bitrix24",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "26",
+          "name": "Воронеж",
+          "url": "https://api.hh.ru/areas/26"
+        },
+        "salary": {
+          "from": 250000,
+          "to": 250000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 250000,
+          "to": 250000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T09:32:56+0300",
+        "created_at": "2025-09-08T09:32:56+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123932320",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123932320?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123932320",
+        "relations": [],
+        "employer": {
+          "id": "5973277",
+          "name": "Евразия Консалтинг",
+          "url": "https://api.hh.ru/employers/5973277",
+          "alternate_url": "https://hh.ru/employer/5973277",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1148760.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6215506.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6215507.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=5973277",
+          "accredited_it_employer": false,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Уверенное владение REST API, GIT, JS, кастомизация публичной части. Опыт администрирования Bitrix24. Опыт интеграции с 1С, знание <highlighttext>Python</highlighttext>. ",
+          "responsibility": "Разработка и интеграция программного кода в системе Bitrix24, включая создание новых модулей и интеграцию с внешними ИТ-системами. "
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "155",
+            "name": "Методолог"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between3And6",
+          "name": "От 3 до 6 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124996371",
+        "premium": false,
+        "name": "Преподаватель программирования в онлайн-школу (Scratch, Roblox , Unity)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "76",
+          "name": "Ростов-на-Дону",
+          "url": "https://api.hh.ru/areas/76"
+        },
+        "salary": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T10:03:27+0300",
+        "created_at": "2025-09-08T10:03:27+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124996371",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124996371?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124996371",
+        "relations": [],
+        "employer": {
+          "id": "8977564",
+          "name": "EasyCode",
+          "url": "https://api.hh.ru/employers/8977564",
+          "alternate_url": "https://hh.ru/employer/8977564",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1224516.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6518505.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6518506.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=8977564",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Есть опыт в преподавании ТРЕХ или БОЛЕЕ наших дисциплин: Scratch&Roblox, <highlighttext>Python</highlighttext>, <highlighttext>Python</highlighttext> Backend, Unity, HTML + CSS + JavaScript...",
+          "responsibility": "Разработка на Minecraft (Minecraft Education и MакеCode, применение <highlighttext>Python</highlighttext> в Minecraft). Мобильная разработка (MIT App Inventor). Мобильная разработка (Figma, Kotlin..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_6",
+            "name": "6 часов"
+          },
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "132",
+            "name": "Учитель, преподаватель, педагог"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123929287",
+        "premium": false,
+        "name": "Преподаватель Scratch / Roblox / Unity в онлайн-школу",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "3",
+          "name": "Екатеринбург",
+          "url": "https://api.hh.ru/areas/3"
+        },
+        "salary": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T08:59:58+0300",
+        "created_at": "2025-09-08T08:59:58+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123929287",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123929287?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123929287",
+        "relations": [],
+        "employer": {
+          "id": "8977564",
+          "name": "EasyCode",
+          "url": "https://api.hh.ru/employers/8977564",
+          "alternate_url": "https://hh.ru/employer/8977564",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1224516.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6518505.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6518506.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=8977564",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Есть опыт в преподавании ТРЕХ или БОЛЕЕ наших дисциплин: Scratch&Roblox, <highlighttext>Python</highlighttext>, <highlighttext>Python</highlighttext> Backend, Unity, HTML + CSS + JavaScript...",
+          "responsibility": "Разработка на Minecraft (Minecraft Education и MакеCode, применение <highlighttext>Python</highlighttext> в Minecraft). Мобильная разработка (MIT App Inventor). Мобильная разработка (Figma, Kotlin..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_6",
+            "name": "6 часов"
+          },
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "132",
+            "name": "Учитель, преподаватель, педагог"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124304069",
+        "premium": false,
+        "name": "Преподаватель программирования в онлайн-школу (Construct, Unity, Python Backend)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "78",
+          "name": "Самара",
+          "url": "https://api.hh.ru/areas/78"
+        },
+        "salary": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T08:00:29+0300",
+        "created_at": "2025-09-08T08:00:29+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124304069",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124304069?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124304069",
+        "relations": [],
+        "employer": {
+          "id": "8977564",
+          "name": "EasyCode",
+          "url": "https://api.hh.ru/employers/8977564",
+          "alternate_url": "https://hh.ru/employer/8977564",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1224516.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6518505.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6518506.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=8977564",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Есть опыт в преподавании ТРЕХ или БОЛЕЕ наших дисциплин: Scratch&Roblox, <highlighttext>Python</highlighttext>, <highlighttext>Python</highlighttext> Backend, Unity, HTML + CSS + JavaScript...",
+          "responsibility": "Разработка на Minecraft (Minecraft Education и MакеCode, применение <highlighttext>Python</highlighttext> в Minecraft). Мобильная разработка (MIT App Inventor). Мобильная разработка (Figma, Kotlin..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_6",
+            "name": "6 часов"
+          },
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "132",
+            "name": "Учитель, преподаватель, педагог"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123929286",
+        "premium": false,
+        "name": "Преподаватель Scratch / Roblox / Unity в онлайн-школу",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T08:59:58+0300",
+        "created_at": "2025-09-08T08:59:58+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123929286",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123929286?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123929286",
+        "relations": [],
+        "employer": {
+          "id": "8977564",
+          "name": "EasyCode",
+          "url": "https://api.hh.ru/employers/8977564",
+          "alternate_url": "https://hh.ru/employer/8977564",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1224516.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6518505.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6518506.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=8977564",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Есть опыт в преподавании ТРЕХ или БОЛЕЕ наших дисциплин: Scratch&Roblox, <highlighttext>Python</highlighttext>, <highlighttext>Python</highlighttext> Backend, Unity, HTML + CSS + JavaScript...",
+          "responsibility": "Разработка на Minecraft (Minecraft Education и MакеCode, применение <highlighttext>Python</highlighttext> в Minecraft). Мобильная разработка (MIT App Inventor). Мобильная разработка (Figma, Kotlin..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_6",
+            "name": "6 часов"
+          },
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "132",
+            "name": "Учитель, преподаватель, педагог"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123929288",
+        "premium": false,
+        "name": "Преподаватель Scratch / Roblox / Unity в онлайн-школу",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "88",
+          "name": "Казань",
+          "url": "https://api.hh.ru/areas/88"
+        },
+        "salary": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T08:59:58+0300",
+        "created_at": "2025-09-08T08:59:58+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123929288",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123929288?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123929288",
+        "relations": [],
+        "employer": {
+          "id": "8977564",
+          "name": "EasyCode",
+          "url": "https://api.hh.ru/employers/8977564",
+          "alternate_url": "https://hh.ru/employer/8977564",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1224516.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6518505.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6518506.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=8977564",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Есть опыт в преподавании ТРЕХ или БОЛЕЕ наших дисциплин: Scratch&Roblox, <highlighttext>Python</highlighttext>, <highlighttext>Python</highlighttext> Backend, Unity, HTML + CSS + JavaScript...",
+          "responsibility": "Разработка на Minecraft (Minecraft Education и MакеCode, применение <highlighttext>Python</highlighttext> в Minecraft). Мобильная разработка (MIT App Inventor). Мобильная разработка (Figma, Kotlin..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_6",
+            "name": "6 часов"
+          },
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "132",
+            "name": "Учитель, преподаватель, педагог"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124304064",
+        "premium": false,
+        "name": "Преподаватель Scratch / Roblox / Unity в онлайн-школу",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "2",
+          "name": "Санкт-Петербург",
+          "url": "https://api.hh.ru/areas/2"
+        },
+        "salary": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T08:00:29+0300",
+        "created_at": "2025-09-08T08:00:29+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124304064",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124304064?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124304064",
+        "relations": [],
+        "employer": {
+          "id": "8977564",
+          "name": "EasyCode",
+          "url": "https://api.hh.ru/employers/8977564",
+          "alternate_url": "https://hh.ru/employer/8977564",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1224516.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6518505.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6518506.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=8977564",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Есть опыт в преподавании ТРЕХ или БОЛЕЕ наших дисциплин: Scratch&Roblox, <highlighttext>Python</highlighttext>, <highlighttext>Python</highlighttext> Backend, Unity, HTML + CSS + JavaScript...",
+          "responsibility": "Разработка на Minecraft (Minecraft Education и MакеCode, применение <highlighttext>Python</highlighttext> в Minecraft). Мобильная разработка (MIT App Inventor). Мобильная разработка (Figma, Kotlin..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_6",
+            "name": "6 часов"
+          },
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "132",
+            "name": "Учитель, преподаватель, педагог"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "123929289",
+        "premium": false,
+        "name": "Преподаватель Scratch / Roblox / Unity в онлайн-школу",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "104",
+          "name": "Челябинск",
+          "url": "https://api.hh.ru/areas/104"
+        },
+        "salary": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T08:59:58+0300",
+        "created_at": "2025-09-08T08:59:58+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=123929289",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/123929289?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/123929289",
+        "relations": [],
+        "employer": {
+          "id": "8977564",
+          "name": "EasyCode",
+          "url": "https://api.hh.ru/employers/8977564",
+          "alternate_url": "https://hh.ru/employer/8977564",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1224516.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6518505.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6518506.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=8977564",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Есть опыт в преподавании ТРЕХ или БОЛЕЕ наших дисциплин: Scratch&Roblox, <highlighttext>Python</highlighttext>, <highlighttext>Python</highlighttext> Backend, Unity, HTML + CSS + JavaScript...",
+          "responsibility": "Разработка на Minecraft (Minecraft Education и MакеCode, применение <highlighttext>Python</highlighttext> в Minecraft). Мобильная разработка (MIT App Inventor). Мобильная разработка (Figma, Kotlin..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_6",
+            "name": "6 часов"
+          },
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "132",
+            "name": "Учитель, преподаватель, педагог"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124304065",
+        "premium": false,
+        "name": "Преподаватель программирования в онлайн-школу (геймдизайн)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "66",
+          "name": "Нижний Новгород",
+          "url": "https://api.hh.ru/areas/66"
+        },
+        "salary": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T08:00:29+0300",
+        "created_at": "2025-09-08T08:00:29+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124304065",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124304065?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124304065",
+        "relations": [],
+        "employer": {
+          "id": "8977564",
+          "name": "EasyCode",
+          "url": "https://api.hh.ru/employers/8977564",
+          "alternate_url": "https://hh.ru/employer/8977564",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1224516.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6518505.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6518506.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=8977564",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Есть опыт в преподавании ТРЕХ или БОЛЕЕ наших дисциплин: Scratch&Roblox, <highlighttext>Python</highlighttext>, <highlighttext>Python</highlighttext> Backend, Unity, HTML + CSS + JavaScript...",
+          "responsibility": "Разработка на Minecraft (Minecraft Education и MакеCode, применение <highlighttext>Python</highlighttext> в Minecraft). Мобильная разработка (MIT App Inventor). Мобильная разработка (Figma, Kotlin..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_6",
+            "name": "6 часов"
+          },
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "132",
+            "name": "Учитель, преподаватель, педагог"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124304068",
+        "premium": false,
+        "name": "Преподаватель Scratch / Roblox / Unity в онлайн-школу",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "53",
+          "name": "Краснодар",
+          "url": "https://api.hh.ru/areas/53"
+        },
+        "salary": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T08:00:29+0300",
+        "created_at": "2025-09-08T08:00:29+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124304068",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124304068?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124304068",
+        "relations": [],
+        "employer": {
+          "id": "8977564",
+          "name": "EasyCode",
+          "url": "https://api.hh.ru/employers/8977564",
+          "alternate_url": "https://hh.ru/employer/8977564",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1224516.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6518505.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6518506.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=8977564",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Есть опыт в преподавании ТРЕХ или БОЛЕЕ наших дисциплин: Scratch&Roblox, <highlighttext>Python</highlighttext>, <highlighttext>Python</highlighttext> Backend, Unity, HTML + CSS + JavaScript...",
+          "responsibility": "Разработка на Minecraft (Minecraft Education и MакеCode, применение <highlighttext>Python</highlighttext> в Minecraft). Мобильная разработка (MIT App Inventor). Мобильная разработка (Figma, Kotlin..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_6",
+            "name": "6 часов"
+          },
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "132",
+            "name": "Учитель, преподаватель, педагог"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      },
+      {
+        "id": "124304066",
+        "premium": false,
+        "name": "Преподаватель программирования в онлайн-школу (Unity, Kotlin)",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "99",
+          "name": "Уфа",
+          "url": "https://api.hh.ru/areas/99"
+        },
+        "salary": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 60000,
+          "to": 90000,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": null,
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-08T08:00:29+0300",
+        "created_at": "2025-09-08T08:00:29+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=124304066",
+        "branding": {
+          "type": "MAKEUP",
+          "tariff": null
+        },
+        "show_logo_in_search": true,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/124304066?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/124304066",
+        "relations": [],
+        "employer": {
+          "id": "8977564",
+          "name": "EasyCode",
+          "url": "https://api.hh.ru/employers/8977564",
+          "alternate_url": "https://hh.ru/employer/8977564",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/1224516.png",
+            "90": "https://img.hhcdn.ru/employer-logo/6518505.png",
+            "240": "https://img.hhcdn.ru/employer-logo/6518506.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=8977564",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Есть опыт в преподавании ТРЕХ или БОЛЕЕ наших дисциплин: Scratch&Roblox, <highlighttext>Python</highlighttext>, <highlighttext>Python</highlighttext> Backend, Unity, HTML + CSS + JavaScript...",
+          "responsibility": "Разработка на Minecraft (Minecraft Education и MакеCode, применение <highlighttext>Python</highlighttext> в Minecraft). Мобильная разработка (MIT App Inventor). Мобильная разработка (Figma, Kotlin..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "remote",
+          "name": "Удаленная работа"
+        },
+        "working_days": [],
+        "working_time_intervals": [
+          {
+            "id": "from_four_to_six_hours_in_a_day",
+            "name": "Можно сменами по 4-6 часов в день"
+          }
+        ],
+        "working_time_modes": [],
+        "accept_temporary": true,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "REMOTE",
+            "name": "Удалённо"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_4",
+            "name": "4 часа"
+          },
+          {
+            "id": "HOURS_6",
+            "name": "6 часов"
+          },
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          },
+          {
+            "id": "WEEKEND",
+            "name": "По выходным"
+          },
+          {
+            "id": "FLEXIBLE",
+            "name": "Свободный"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "132",
+            "name": "Учитель, преподаватель, педагог"
+          }
+        ],
+        "accept_incomplete_resumes": true,
+        "experience": {
+          "id": "noExperience",
+          "name": "Нет опыта"
+        },
+        "employment": {
+          "id": "part",
+          "name": "Частичная занятость"
+        },
+        "employment_form": {
+          "id": "PART",
+          "name": "Частичная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 682,
+    "pages": 14,
+    "page": 13,
+    "per_page": 50,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&enable_snippets=true&items_on_page=50&label=with_salary&only_with_salary=true&page=13&search_period=3&text=python"
+  }
+}

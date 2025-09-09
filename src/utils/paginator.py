@@ -43,7 +43,14 @@ class Paginator:
             logger.warning("No pages to process (start_page >= total_pages)")
             return results
 
-        with tqdm(total=actual_max - start_page, desc="Fetching pages", unit="page", dynamic_ncols=True) as pbar:
+        with tqdm(
+            total=actual_max - start_page, 
+            desc="Fetching pages", 
+            unit="page", 
+            ncols=80,
+            leave=False,
+            bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]"
+        ) as pbar:
             for page in range(start_page, actual_max):
                 try:
                     page_data = fetch_func(page)

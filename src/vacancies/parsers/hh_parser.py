@@ -99,6 +99,9 @@ class HHParser(BaseParser):
                 if "name" in item:
                     item["title"] = item["name"]
 
+                # Сохраняем сырые данные API для статистики и анализа
+                item["raw_data"] = item.copy()  # сохраняем полную копию сырых данных
+                
                 # Создаем объект вакансии из данных API
                 vacancy = Vacancy.from_dict(item)
 

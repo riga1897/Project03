@@ -35,5 +35,4 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 EnvLoader.load_env_file()
 
 if __name__ == "__main__":
-
     main()

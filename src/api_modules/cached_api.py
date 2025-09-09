@@ -66,11 +66,23 @@ class CachedAPI(BaseJobAPI, ABC):
             api_prefix: Префикс для логирования
 
         Returns:
-            Optional[Dict]: Ответ API или None если данных нет в кэше
+            Optional[Dict]: Ответ API или None если произошла ошибка
         """
-        # ИСПРАВЛЕНО: Возвращаем None - данных в кэше нет, нужно загрузить
-        # Пустой словарь {} != None и ломает логику!
-        return None
+        try:
+            # Делаем реальный API запрос - результат будет закэширован декоратором
+            data = self.connector.connect(url, params)
+            logger.debug(f"API запрос выполнен и закэширован в памяти для {api_prefix}")
+            
+            # ИСПРАВЛЕНО: Также сохраняем в файловый кэш при получении новых данных
+            if data and data != self._get_empty_response() and self._is_complete_response(data, params):
+                if self._validate_response_structure(data):
+                    self.cache.save_response(api_prefix, params, data)
+                    logger.debug(f"RAW данные API сохранены в файловый кэш data/cache/ для {api_prefix}")
+                    
+            return data if data and data != self._get_empty_response() else None
+        except Exception as e:
+            logger.error(f"Ошибка API запроса в кэшированном методе {api_prefix}: {e}")
+            return None
 
     def _connect_to_api(self, url: str, params: Dict, api_prefix: str) -> Dict:
         """
@@ -103,40 +115,33 @@ class CachedAPI(BaseJobAPI, ABC):
         Returns:
             Dict: Ответ API или пустая структура при ошибке
         """
-        # 1. Проверяем кэш в памяти (быстрее всего)
+        # 1. Проверяем кэш в памяти (быстрее всего) и делаем API запрос через него
         try:
+            # Кэшированный метод сам проверяет память и делает запрос если нужно
             memory_result = self._cached_api_request(url, params, api_prefix)
-            if memory_result is not None and memory_result:  # ИСПРАВЛЕНО: проверяем что результат не пустой
+            if memory_result is not None and memory_result:
+                logger.debug(f"Данные получены из кэша памяти для {api_prefix}")
                 return memory_result if isinstance(memory_result, dict) else self._get_empty_response()
         except Exception as e:
-            logger.warning(f"Ошибка кэша памяти: {e}. Переключаемся на файловый кэш")
+            logger.warning(f"Ошибка кэшированного запроса: {e}. Переключаемся на файловый кэш")
 
-        # 2. Проверяем файловый кэш
+        # 2. Проверяем файловый кэш (fallback если память не сработала)
         cached_response = self.cache.load_response(api_prefix, params)
         if cached_response is not None:
             logger.debug(f"Данные получены из файлового кэша для {api_prefix}")
             data = cached_response.get("data", self._get_empty_response())
             return data if isinstance(data, dict) else self._get_empty_response()
 
-        # 3. Делаем реальный запрос к API с сохранением в оба кэша
+        # 3. Последний fallback - прямой запрос к API с сохранением в файловый кэш
         try:
-            # Делаем прямой запрос к API
             data = self.connector.connect(url, params)
-            logger.debug(f"Данные получены из API для {api_prefix}")
+            logger.debug(f"Данные получены из API (fallback) для {api_prefix}")
 
-            # Кэш в памяти управляется декоратором автоматически
-
-            # Проверяем целостность полученных данных перед файловым кэшированием
+            # Сохраняем только в файловый кэш (память управляется декоратором)
             if data and data != self._get_empty_response() and self._is_complete_response(data, params):
-                # Дополнительная валидация структуры данных
                 if self._validate_response_structure(data):
-                    # Сохраняем в файловый кэш только полные и валидные данные
                     self.cache.save_response(api_prefix, params, data)
-                    logger.debug(f"Данные сохранены в файловый кэш data/cache/ для {api_prefix}")
-                else:
-                    logger.warning(f"Данные не прошли валидацию структуры, кэширование пропущено для {api_prefix}")
-            elif data and data != self._get_empty_response():
-                logger.warning(f"Данные неполные или повреждены, кэширование пропущено для {api_prefix}")
+                    logger.debug(f"Данные сохранены в файловый кэш для {api_prefix}")
 
             return data
 

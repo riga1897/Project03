@@ -237,13 +237,13 @@ class TestSuperJobAPI:
         """Покрытие инициализации."""
         mock_env.return_value = "test_key"
         api = SuperJobAPI()
-        assert api.BASE_URL == "https://api.superjob.ru/2.0/vacancies"
+        assert api.BASE_URL == "https://api.superjob.ru/2.0/vacancies/"
 
     def test_get_empty_response(self):
         """Покрытие _get_empty_response."""
         api = SuperJobAPI()
         result = api._get_empty_response()
-        assert result == {"objects": []}
+        assert result == {"objects": [], "total": 0, "more": False}
 
     def test_validate_vacancy_valid(self):
         """Покрытие валидации валидной вакансии."""

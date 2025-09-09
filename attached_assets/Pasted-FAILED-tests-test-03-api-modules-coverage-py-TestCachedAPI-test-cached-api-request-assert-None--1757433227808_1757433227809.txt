@@ -1,0 +1,47 @@
+FAILED tests/test_03_api_modules_coverage.py::TestCachedAPI::test_cached_api_request - assert None == {}
+FAILED tests/test_03_api_modules_coverage.py::TestHeadHunterAPI::test_get_vacancies - AttributeError: <class 'src.api_modules.hh_api.HeadHunterAPI'> does not have the attrib...
+FAILED tests/test_03_api_modules_coverage.py::TestSuperJobAPI::test_init - AssertionError: assert 'https://api.....0/vacancies/' == 'https://api....2.0/vacancies'
+FAILED tests/test_03_api_modules_coverage.py::TestSuperJobAPI::test_get_empty_response - AssertionError: assert {'more': Fals...], 'total': 0} == {'objects': []}
+FAILED tests/test_09_config_simple.py::TestTargetCompanies::test_target_companies_search_functionality - assert False
+FAILED tests/test_10_api_modules_coverage.py::TestHeadHunterAPI::test_hh_api_init - AssertionError: assert False
+FAILED tests/test_10_api_modules_coverage.py::TestHeadHunterAPI::test_hh_api_init_with_config - AttributeError: 'HeadHunterAPI' object has no attribute '_config'
+FAILED tests/test_10_api_modules_coverage.py::TestAPIIntegration::test_api_config_integration - AssertionError: assert False
+FAILED tests/test_14_vacancy_stats_coverage.py::TestDisplayCompanyStats::test_vacancy_with_exception - AssertionError: print('Ошибка обработки вакансии для статистики: Test error') call not ...
+FAILED tests/test_17_real_business_logic_coverage.py::TestUnifiedAPIBusinessLogic::test_get_vacancies_from_sources_hh_only - AttributeError: <src.api_modules.unified_api.UnifiedAPI object at 0x7f0a35d13910> does ...
+FAILED tests/test_17_real_business_logic_coverage.py::TestUnifiedAPIBusinessLogic::test_get_vacancies_error_handling - AttributeError: <src.api_modules.unified_api.UnifiedAPI object at 0x7f0a35ebe150> does ...
+FAILED tests/test_17_real_business_logic_coverage.py::TestRealWorldIntegration::test_complete_vacancy_workflow_integration - AttributeError: <src.api_modules.unified_api.UnifiedAPI object at 0x7f0a367636d0> does ...
+FAILED tests/test_24_target_companies_coverage.py::TestTargetCompanies::test_companies_count_expected - AssertionError: assert 11 == 12
+FAILED tests/test_24_target_companies_coverage.py::TestTargetCompanies::test_get_all_companies_returns_copy - AssertionError: assert 11 == 12
+FAILED tests/test_24_target_companies_coverage.py::TestTargetCompanies::test_get_hh_ids_all_present - AssertionError: assert 11 == 12
+FAILED tests/test_24_target_companies_coverage.py::TestTargetCompanies::test_get_hh_ids_specific_values - AssertionError: assert '1740' in ['3529', '78638', '4496', '2987', '2381', '15478', ...]
+FAILED tests/test_24_target_companies_coverage.py::TestTargetCompanies::test_get_sj_ids_specific_values - AssertionError: assert '19421' in ['16134', '2324', '4922670', '3046437', '4189', '4904...
+FAILED tests/test_24_target_companies_coverage.py::TestTargetCompanies::test_get_company_names_all_present - AssertionError: assert 11 == 12
+FAILED tests/test_24_target_companies_coverage.py::TestTargetCompanies::test_get_company_names_specific_values - AssertionError: assert 'Яндекс' in ['СБЕР', 'Тинькофф', 'МТС Финтех', 'КРОК', 'Softline...
+FAILED tests/test_24_target_companies_coverage.py::TestTargetCompanies::test_get_company_by_hh_id_specific_companies - assert None is not None
+FAILED tests/test_24_target_companies_coverage.py::TestTargetCompanies::test_get_company_by_sj_id_specific_companies - assert None is not None
+FAILED tests/test_24_target_companies_coverage.py::TestTargetCompanies::test_is_target_company_hh_id - AssertionError: assert False
+FAILED tests/test_24_target_companies_coverage.py::TestTargetCompanies::test_is_target_company_sj_id - AssertionError: assert False
+FAILED tests/test_24_target_companies_coverage.py::TestTargetCompanies::test_find_company_by_exact_name_found - assert None is not None
+FAILED tests/test_24_target_companies_coverage.py::TestTargetCompanies::test_find_company_by_exact_name_case_insensitive - assert None is not None
+FAILED tests/test_24_target_companies_coverage.py::TestTargetCompanies::test_get_company_count - assert 11 == 12
+FAILED tests/test_24_target_companies_coverage.py::TestTargetCompaniesLegacyConstants::test_target_companies_constant_structure - AssertionError: assert 11 == 12
+FAILED tests/test_24_target_companies_coverage.py::TestTargetCompaniesLegacyConstants::test_target_companies_constant_values - AssertionError: assert 'СБЕР' == 'Яндекс'
+FAILED tests/test_24_target_companies_coverage.py::TestLegacyFunctions::test_get_target_company_ids_function - AssertionError: assert 11 == 12
+FAILED tests/test_24_target_companies_coverage.py::TestLegacyFunctions::test_get_target_company_names_function - AssertionError: assert 11 == 12
+FAILED tests/test_24_target_companies_coverage.py::TestLegacyFunctions::test_legacy_functions_specific_values - AssertionError: assert '1740' in ['3529', '78638', '4496', '2987', '2381', '15478', ...]
+FAILED tests/test_29_sj_api_config_coverage.py::TestSJAPIConfigGetParams::test_get_params_with_kwargs_override - AssertionError: assert {'count': 100...'salary', ...} == {'count': 100...': 'asc', ...}
+FAILED tests/test_29_sj_api_config_coverage.py::TestSJAPIConfigGetParams::test_get_params_kwargs_priority_over_custom - assert 999 == 200
+FAILED tests/test_29_sj_api_config_coverage.py::TestSJAPIConfigGetParams::test_get_params_complex_scenario - AssertionError: assert {'catalogues'...: 'desc', ...} == {'catalogues'...': False, ...}
+FAILED tests/test_29_sj_api_config_coverage.py::TestSJAPIConfigIntegration::test_full_workflow_scenario - AssertionError: assert {'catalogues'...: 'desc', ...} == {'catalogues'...': False, ...}
+FAILED tests/test_47_vacancy_stats_coverage.py::TestDisplayCompanyStats::test_display_company_stats_with_source_name - assert False
+FAILED tests/test_47_vacancy_stats_coverage.py::TestDisplayCompanyStats::test_display_company_stats_dict_vacancy - assert False
+FAILED tests/test_47_vacancy_stats_coverage.py::TestDisplayCompanyStats::test_display_company_stats_object_with_employer_object - assert False
+FAILED tests/test_47_vacancy_stats_coverage.py::TestUncoveredLines::test_display_company_stats_dict_employer_with_name_object - assert False
+FAILED tests/test_47_vacancy_stats_coverage.py::TestUncoveredLines::test_display_company_stats_object_employer_as_dict - assert False
+FAILED tests/test_47_vacancy_stats_coverage.py::TestUncoveredLines::test_display_company_stats_object_employer_as_string - assert False
+FAILED tests/test_47_vacancy_stats_coverage.py::TestUncoveredLines::test_extract_company_name_firm_id_assignment - AssertionError: assert None == '987654'
+FAILED tests/test_vacancies_abstract_coverage.py::TestAbstractVacancy::test_class_is_abstract - AssertionError: assert 2 == 3
+FAILED tests/test_vacancies_abstract_coverage.py::TestAbstractVacancy::test_abstract_init_method_signature - AssertionError: assert False
+FAILED tests/test_vacancies_abstract_coverage.py::TestAbstractVacancy::test_abstract_methods_docstrings - AssertionError: assert 'Инициализация вакансии' in 'Initialize self.  See help(type(sel...
+FAILED tests/test_vacancies_abstract_coverage.py::TestAbstractMethodsEnforcement::test_missing_init_method_fails - Failed: DID NOT RAISE <class 'TypeError'>
+FAILED tests/test_vacancies_abstract_coverage.py::TestAbstractMethodsEnforcement::test_all_methods_must_be_implemented - assert '__init__' in "Can't instantiate abstract class EmptyVacancy with abstract metho...

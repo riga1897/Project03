@@ -85,7 +85,7 @@ class TestUnifiedAPIBusinessLogic:
         api = UnifiedAPI()
 
         # Мокаем фильтрацию
-        with patch.object(api, '_filter_by_target_companies') as mock_filter:
+        with patch.object(api, '_unified_filter_by_target_companies') as mock_filter:
             mock_filter.return_value = [{"id": "1", "name": "HH Job", "employer": {"name": "HH Company"}}]
 
             result = api.get_vacancies_from_sources("Python", sources=["hh"])
@@ -106,7 +106,7 @@ class TestUnifiedAPIBusinessLogic:
 
         api = UnifiedAPI()
 
-        with patch.object(api, '_filter_by_target_companies') as mock_filter:
+        with patch.object(api, '_unified_filter_by_target_companies') as mock_filter:
             mock_filter.return_value = []
 
             result = api.get_vacancies_from_sources("Python", sources=["hh"])
@@ -460,7 +460,7 @@ class TestRealWorldIntegration:
         api = UnifiedAPI()
 
         # Мокаем фильтрацию
-        with patch.object(api, '_filter_by_target_companies') as mock_filter:
+        with patch.object(api, '_unified_filter_by_target_companies') as mock_filter:
             mock_filter.return_value = [{"id": "1", "name": "Python Developer", "employer": {"name": "Яндекс"}}]
 
             # Получаем вакансии

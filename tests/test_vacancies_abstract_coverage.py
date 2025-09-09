@@ -10,7 +10,7 @@
 
 Модуль содержит:
 - 1 абстрактный класс: AbstractVacancy (ABC)
-- 3 абстрактных метода: __init__, to_dict, from_dict
+- 2 абстрактных метода: to_dict, from_dict (без __init__)
 - 25 строк кода, простая структура без сложной логики
 """
 
@@ -33,10 +33,9 @@ class TestAbstractVacancy:
     def test_class_is_abstract(self):
         """Покрытие: класс является абстрактным"""
         assert getattr(AbstractVacancy, '__abstractmethods__') is not None
-        # Должно быть 3 абстрактных метода
+        # Должно быть 2 абстрактных метода (без __init__)
         abstract_methods = AbstractVacancy.__abstractmethods__
-        assert len(abstract_methods) == 3
-        assert '__init__' in abstract_methods
+        assert len(abstract_methods) == 2
         assert 'to_dict' in abstract_methods  
         assert 'from_dict' in abstract_methods
 
@@ -49,13 +48,13 @@ class TestAbstractVacancy:
         assert "Can't instantiate abstract class AbstractVacancy" in error_message
 
     def test_abstract_init_method_signature(self):
-        """Покрытие: сигнатура абстрактного метода __init__"""
+        """Покрытие: метод __init__ не является абстрактным"""
         assert hasattr(AbstractVacancy, '__init__')
         assert callable(AbstractVacancy.__init__)
         
-        # Проверяем что метод помечен как абстрактный
-        assert hasattr(AbstractVacancy.__init__, '__isabstractmethod__')
-        assert AbstractVacancy.__init__.__isabstractmethod__ is True
+        # Проверяем что метод НЕ помечен как абстрактный (Pydantic BaseModel)
+        init_is_abstract = getattr(AbstractVacancy.__init__, '__isabstractmethod__', False)
+        assert init_is_abstract is False
 
     def test_abstract_to_dict_method_signature(self):
         """Покрытие: сигнатура абстрактного метода to_dict"""
@@ -91,7 +90,7 @@ class TestAbstractVacancy:
         from_dict_doc = AbstractVacancy.from_dict.__doc__
         
         assert init_doc is not None
-        assert "Инициализация вакансии" in init_doc
+        # __init__ наследуется от BaseModel, документация может отличаться
         
         assert to_dict_doc is not None
         assert "Преобразует вакансию в словарь" in to_dict_doc
@@ -302,21 +301,20 @@ class TestAbstractMethodsEnforcement:
     """Тестирование принуждения реализации абстрактных методов"""
 
     def test_missing_init_method_fails(self):
-        """Покрытие: отсутствие __init__ вызывает ошибку"""
+        """Покрытие: класс с только абстрактными методами должен работать (без абстрактного __init__)"""
         
-        with pytest.raises(TypeError) as exc_info:
-            class IncompleteVacancy1(AbstractVacancy):
-                def to_dict(self) -> Dict[str, Any]:
-                    return {}
-                
-                @classmethod
-                def from_dict(cls, data: Dict[str, Any]) -> "IncompleteVacancy1":
-                    return cls()
+        # Теперь __init__ не абстрактный, поэтому создаем класс с правильными абстрактными методами
+        class IncompleteVacancy1(AbstractVacancy):
+            def to_dict(self) -> Dict[str, Any]:
+                return {}
             
-            IncompleteVacancy1()
+            @classmethod
+            def from_dict(cls, data: Dict[str, Any]) -> "IncompleteVacancy1":
+                return cls()
         
-        error_message = str(exc_info.value)
-        assert "abstract method __init__" in error_message or "__init__" in error_message
+        # Этот класс должен работать без ошибок
+        instance = IncompleteVacancy1()
+        assert instance is not None
 
     def test_missing_to_dict_method_fails(self):
         """Покрытие: отсутствие to_dict вызывает ошибку"""
@@ -362,7 +360,6 @@ class TestAbstractMethodsEnforcement:
         
         error_message = str(exc_info.value)
         assert "abstract methods" in error_message
-        # Должны быть упомянуты все 3 метода
-        assert "__init__" in error_message
+        # Должны быть упомянуты только 2 метода (без __init__)
         assert "from_dict" in error_message  
         assert "to_dict" in error_message

@@ -1,0 +1,178 @@
+{
+  "timestamp": 1757444445.4821193,
+  "meta": {
+    "params": {
+      "area": 113,
+      "per_page": 1,
+      "only_with_salary": true,
+      "period": 1,
+      "text": "python",
+      "page": 0
+    }
+  },
+  "data": {
+    "items": [
+      {
+        "id": "125102333",
+        "premium": false,
+        "name": "Специалист по тестированию ПО",
+        "department": null,
+        "has_test": false,
+        "response_letter_required": false,
+        "area": {
+          "id": "1",
+          "name": "Москва",
+          "url": "https://api.hh.ru/areas/1"
+        },
+        "salary": {
+          "from": 120000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false
+        },
+        "salary_range": {
+          "from": 120000,
+          "to": null,
+          "currency": "RUR",
+          "gross": false,
+          "mode": {
+            "id": "MONTH",
+            "name": "За месяц"
+          },
+          "frequency": null
+        },
+        "type": {
+          "id": "open",
+          "name": "Открытая"
+        },
+        "address": {
+          "city": "Москва",
+          "street": "Протопоповский переулок",
+          "building": "9",
+          "lat": 55.780476,
+          "lng": 37.638494,
+          "description": null,
+          "raw": "Москва, Протопоповский переулок, 9",
+          "metro": {
+            "station_name": "Проспект Мира",
+            "line_name": "Кольцевая",
+            "station_id": "5.119",
+            "line_id": "5",
+            "lat": 55.779584,
+            "lng": 37.633646
+          },
+          "metro_stations": [
+            {
+              "station_name": "Проспект Мира",
+              "line_name": "Кольцевая",
+              "station_id": "5.119",
+              "line_id": "5",
+              "lat": 55.779584,
+              "lng": 37.633646
+            },
+            {
+              "station_name": "Проспект Мира",
+              "line_name": "Калужско-Рижская",
+              "station_id": "6.120",
+              "line_id": "6",
+              "lat": 55.781827,
+              "lng": 37.633199
+            }
+          ],
+          "id": "797359"
+        },
+        "response_url": null,
+        "sort_point_distance": null,
+        "published_at": "2025-09-09T13:54:54+0300",
+        "created_at": "2025-09-09T13:54:54+0300",
+        "archived": false,
+        "apply_alternate_url": "https://hh.ru/applicant/vacancy_response?vacancyId=125102333",
+        "show_logo_in_search": null,
+        "show_contacts": false,
+        "insider_interview": null,
+        "url": "https://api.hh.ru/vacancies/125102333?host=hh.ru",
+        "alternate_url": "https://hh.ru/vacancy/125102333",
+        "relations": [],
+        "employer": {
+          "id": "2784570",
+          "name": "ИнфоДиалог",
+          "url": "https://api.hh.ru/employers/2784570",
+          "alternate_url": "https://hh.ru/employer/2784570",
+          "logo_urls": {
+            "original": "https://img.hhcdn.ru/employer-logo-original/410391.png",
+            "90": "https://img.hhcdn.ru/employer-logo/2083638.png",
+            "240": "https://img.hhcdn.ru/employer-logo/2083639.png"
+          },
+          "vacancies_url": "https://api.hh.ru/vacancies?employer_id=2784570",
+          "accredited_it_employer": true,
+          "trusted": true
+        },
+        "snippet": {
+          "requirement": "Знание английского (технический английский). Базовые знания языков ООП: C#, VB.Net, <highlighttext>Python</highlighttext>. HTML. JavaScript. Способность к самообучению. Активность. Вежливость. Ответственность. ",
+          "responsibility": "Разработка test-case-ов. Ведение git-репозитория test-case-ов. Функциональное тестирование ПО. Описание найденных ошибок. Постановка задач на их..."
+        },
+        "contacts": null,
+        "schedule": {
+          "id": "fullDay",
+          "name": "Полный день"
+        },
+        "working_days": [],
+        "working_time_intervals": [],
+        "working_time_modes": [],
+        "accept_temporary": false,
+        "fly_in_fly_out_duration": [],
+        "work_format": [
+          {
+            "id": "ON_SITE",
+            "name": "На месте работодателя"
+          }
+        ],
+        "working_hours": [
+          {
+            "id": "HOURS_8",
+            "name": "8 часов"
+          }
+        ],
+        "work_schedule_by_days": [
+          {
+            "id": "FIVE_ON_TWO_OFF",
+            "name": "5/2"
+          }
+        ],
+        "night_shifts": false,
+        "professional_roles": [
+          {
+            "id": "124",
+            "name": "Тестировщик"
+          }
+        ],
+        "accept_incomplete_resumes": false,
+        "experience": {
+          "id": "between1And3",
+          "name": "От 1 года до 3 лет"
+        },
+        "employment": {
+          "id": "full",
+          "name": "Полная занятость"
+        },
+        "employment_form": {
+          "id": "FULL",
+          "name": "Полная"
+        },
+        "internship": false,
+        "adv_response_url": null,
+        "is_adv_vacancy": false,
+        "adv_context": null
+      }
+    ],
+    "found": 264,
+    "pages": 264,
+    "page": 0,
+    "per_page": 1,
+    "clusters": null,
+    "arguments": null,
+    "fixes": null,
+    "suggests": null,
+    "alternate_url": "https://hh.ru/search/vacancy?area=113&enable_snippets=true&items_on_page=1&label=with_salary&only_with_salary=true&search_period=1&text=python"
+  }
+}

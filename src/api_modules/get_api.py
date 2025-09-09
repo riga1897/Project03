@@ -47,8 +47,9 @@ class APIConnector:
             total=total,
             desc=desc,
             unit="req",
-            bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]",
-            dynamic_ncols=True,
+            ncols=80,
+            leave=False,
+            bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]",
             disable=os.getenv("DISABLE_TQDM") == "1",
         )
 

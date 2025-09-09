@@ -75,6 +75,9 @@ class SuperJobParser(BaseParser):
             try:
                 # ИСПРАВЛЕНИЕ: Преобразуем сырые данные SuperJob в формат Vacancy
                 processed_data = self.parse_vacancy(vacancy_data)
+                
+                # Сохраняем сырые данные API для статистики и анализа
+                processed_data["raw_data"] = vacancy_data.copy()  # сохраняем полную копию сырых данных
 
                 # Создаем объект вакансии из обработанных данных
                 vacancy = Vacancy.from_dict(processed_data)

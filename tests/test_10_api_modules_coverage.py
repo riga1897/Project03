@@ -111,7 +111,7 @@ class TestHeadHunterAPI:
         """Покрытие инициализации HeadHunterAPI."""
         api = HeadHunterAPI()
         assert api is not None
-        assert hasattr(api, '_config')
+        assert hasattr(api, 'config')
         assert hasattr(api, 'connector')
         assert hasattr(api, '_paginator')
 
@@ -119,7 +119,7 @@ class TestHeadHunterAPI:
         """Покрытие инициализации с конфигурацией."""
         config = APIConfig(user_agent="TestAgent")
         api = HeadHunterAPI(config)
-        assert api._config.user_agent == "TestAgent"
+        assert api.config.user_agent == "TestAgent"
 
     def test_hh_api_constants(self):
         """Покрытие констант класса."""
@@ -280,15 +280,13 @@ class TestAPIIntegration:
         sj_api = SuperJobAPI()
         
         # Проверяем что HH API использует конфигурацию
-        assert hasattr(hh_api, '_config')
-        assert isinstance(hh_api._config, APIConfig)
+        assert hasattr(hh_api, 'config')
+        assert isinstance(hh_api.config, APIConfig)
         
         # Проверяем что SuperJob API инициализирован
         assert sj_api is not None
         # У SuperJobAPI может быть другая структура конфигурации
-        if hasattr(sj_api, '_config'):
-            assert isinstance(sj_api._config, APIConfig)
-        elif hasattr(sj_api, 'config'):
+        if hasattr(sj_api, 'config'):
             assert sj_api.config is not None
 
 

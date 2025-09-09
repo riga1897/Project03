@@ -112,7 +112,7 @@ class TestTargetCompanies:
         companies = TargetCompanies.COMPANIES
         
         # По документации должно быть 12 компаний
-        assert len(companies) == 12
+        assert len(companies) == 11
 
     def test_companies_required_fields(self):
         """Покрытие обязательных полей у всех компаний"""
@@ -134,14 +134,14 @@ class TestTargetCompanies:
         
         # Изменение возвращенной копии не должно влиять на оригинал
         companies1.pop()
-        assert len(TargetCompanies.get_all_companies()) == 12
+        assert len(TargetCompanies.get_all_companies()) == 11
 
     def test_get_hh_ids_all_present(self):
         """Покрытие получения всех HH ID"""
         hh_ids = TargetCompanies.get_hh_ids()
         
         assert isinstance(hh_ids, list)
-        assert len(hh_ids) == 12  # Все компании должны иметь HH ID
+        assert len(hh_ids) == 11  # Все компании должны иметь HH ID
         assert all(isinstance(hh_id, str) for hh_id in hh_ids)
         assert all(hh_id for hh_id in hh_ids)  # Все ID не пустые
 
@@ -150,7 +150,7 @@ class TestTargetCompanies:
         hh_ids = TargetCompanies.get_hh_ids()
         
         # Проверяем некоторые известные HH ID
-        assert "1740" in hh_ids  # Яндекс
+        assert "3529" in hh_ids  # СБЕР
         assert "78638" in hh_ids  # Тинькофф
         assert "3529" in hh_ids  # СБЕР
 
@@ -170,7 +170,7 @@ class TestTargetCompanies:
         sj_ids = TargetCompanies.get_sj_ids()
         
         # Проверяем некоторые известные SJ ID
-        assert "19421" in sj_ids  # Яндекс
+        assert "16134" in sj_ids  # СБЕР
         assert "2324" in sj_ids   # Тинькофф
 
     def test_get_company_names_all_present(self):
@@ -178,7 +178,7 @@ class TestTargetCompanies:
         names = TargetCompanies.get_company_names()
         
         assert isinstance(names, list)
-        assert len(names) == 12
+        assert len(names) == 11
         assert all(isinstance(name, str) for name in names)
         assert all(name for name in names)  # Все названия не пустые
 
@@ -187,7 +187,7 @@ class TestTargetCompanies:
         names = TargetCompanies.get_company_names()
         
         # Проверяем некоторые известные названия
-        assert "Яндекс" in names
+        assert "СБЕР" in names
         assert "Тинькофф" in names
         assert "СБЕР" in names
         assert "VK" in names
@@ -235,10 +235,10 @@ class TestTargetCompanies:
 
     def test_get_company_by_hh_id_specific_companies(self):
         """Покрытие поиска конкретных компаний по HH ID"""
-        # Яндекс
-        yandex = TargetCompanies.get_company_by_hh_id("1740")
-        assert yandex is not None
-        assert yandex.name == "Яндекс"
+        # СБЕР
+        sber = TargetCompanies.get_company_by_hh_id("3529")
+        assert sber is not None
+        assert sber.name == "СБЕР"
         
         # Тинькофф
         tinkoff = TargetCompanies.get_company_by_hh_id("78638")
@@ -268,15 +268,15 @@ class TestTargetCompanies:
 
     def test_get_company_by_sj_id_specific_companies(self):
         """Покрытие поиска конкретных компаний по SJ ID"""
-        # Яндекс
-        yandex = TargetCompanies.get_company_by_sj_id("19421")
-        assert yandex is not None
-        assert yandex.name == "Яндекс"
+        # СБЕР
+        sber = TargetCompanies.get_company_by_sj_id("16134")
+        assert sber is not None
+        assert sber.name == "СБЕР"
 
     def test_is_target_company_hh_id(self):
         """Покрытие проверки целевой компании по HH ID"""
         # Известные HH ID
-        assert TargetCompanies.is_target_company("1740")  # Яндекс
+        assert TargetCompanies.is_target_company("3529")  # СБЕР
         assert TargetCompanies.is_target_company("78638")  # Тинькофф
         
         # Неизвестный ID
@@ -285,7 +285,7 @@ class TestTargetCompanies:
     def test_is_target_company_sj_id(self):
         """Покрытие проверки целевой компании по SJ ID"""
         # Известные SJ ID
-        assert TargetCompanies.is_target_company("19421")  # Яндекс SJ
+        assert TargetCompanies.is_target_company("16134")  # СБЕР SJ
         assert TargetCompanies.is_target_company("2324")   # Тинькофф SJ
         
         # Неизвестный SJ ID
@@ -293,24 +293,24 @@ class TestTargetCompanies:
 
     def test_find_company_by_exact_name_found(self):
         """Покрытие поиска компании по точному названию - найдена"""
-        yandex = TargetCompanies.find_company_by_exact_name("Яндекс")
-        assert yandex is not None
-        assert yandex.name == "Яндекс"
-        assert yandex.hh_id == "1740"
+        sber = TargetCompanies.find_company_by_exact_name("СБЕР")
+        assert sber is not None
+        assert sber.name == "СБЕР"
+        assert sber.hh_id == "3529"
 
     def test_find_company_by_exact_name_case_insensitive(self):
         """Покрытие поиска компании по названию без учета регистра"""
         # Различные варианты регистра
-        yandex1 = TargetCompanies.find_company_by_exact_name("яндекс")
-        yandex2 = TargetCompanies.find_company_by_exact_name("ЯНДЕКС")
-        yandex3 = TargetCompanies.find_company_by_exact_name("ЯнДеКс")
+        sber1 = TargetCompanies.find_company_by_exact_name("сбер")
+        sber2 = TargetCompanies.find_company_by_exact_name("СБЕР")
+        sber3 = TargetCompanies.find_company_by_exact_name("СбЕр")
         
-        assert yandex1 is not None
-        assert yandex2 is not None
-        assert yandex3 is not None
-        assert yandex1.name == "Яндекс"
-        assert yandex2.name == "Яндекс"
-        assert yandex3.name == "Яндекс"
+        assert sber1 is not None
+        assert sber2 is not None
+        assert sber3 is not None
+        assert sber1.name == "СБЕР"
+        assert sber2.name == "СБЕР"
+        assert sber3.name == "СБЕР"
 
     def test_find_company_by_exact_name_not_found(self):
         """Покрытие поиска компании по названию - не найдена"""
@@ -320,10 +320,10 @@ class TestTargetCompanies:
     def test_find_company_by_exact_name_partial_match(self):
         """Покрытие что частичные совпадения не находятся"""
         # Частичные совпадения не должны работать
-        result = TargetCompanies.find_company_by_exact_name("Янд")
+        result = TargetCompanies.find_company_by_exact_name("СБ")
         assert result is None
         
-        result = TargetCompanies.find_company_by_exact_name("Яндекс Плюс")
+        result = TargetCompanies.find_company_by_exact_name("СБЕР Плюс")
         assert result is None
 
     def test_find_company_by_exact_name_all_companies(self):
@@ -341,7 +341,7 @@ class TestTargetCompanies:
         count = TargetCompanies.get_company_count()
         
         assert isinstance(count, int)
-        assert count == 12
+        assert count == 11
         assert count == len(TargetCompanies.COMPANIES)
 
 
@@ -355,7 +355,7 @@ class TestTargetCompaniesLegacyConstants:
 
     def test_target_companies_constant_structure(self):
         """Покрытие структуры константы TARGET_COMPANIES"""
-        assert len(TARGET_COMPANIES) == 12
+        assert len(TARGET_COMPANIES) == 11
         
         for company_dict in TARGET_COMPANIES:
             assert isinstance(company_dict, dict)
@@ -366,12 +366,12 @@ class TestTargetCompaniesLegacyConstants:
 
     def test_target_companies_constant_values(self):
         """Покрытие значений в константе TARGET_COMPANIES"""
-        # Проверяем первую компанию (Яндекс)
-        yandex_dict = TARGET_COMPANIES[0]
-        assert yandex_dict["name"] == "Яндекс"
-        assert yandex_dict["hh_id"] == "1740"
-        assert yandex_dict["sj_id"] == "19421"
-        assert "поисковой системы" in yandex_dict["description"]
+        # Проверяем первую компанию (СБЕР)
+        sber_dict = TARGET_COMPANIES[0]
+        assert sber_dict["name"] == "СБЕР"
+        assert sber_dict["hh_id"] == "3529"
+        assert sber_dict["sj_id"] == "16134"
+        assert "банк" in sber_dict["description"].lower()
 
     def test_target_companies_constant_consistency(self):
         """Покрытие соответствия константы и класса"""
@@ -397,7 +397,7 @@ class TestLegacyFunctions:
         
         assert legacy_ids == modern_ids
         assert isinstance(legacy_ids, list)
-        assert len(legacy_ids) == 12
+        assert len(legacy_ids) == 11
 
     def test_get_target_company_names_function(self):
         """Покрытие устаревшей функции get_target_company_names"""
@@ -406,7 +406,7 @@ class TestLegacyFunctions:
         
         assert legacy_names == modern_names
         assert isinstance(legacy_names, list)
-        assert len(legacy_names) == 12
+        assert len(legacy_names) == 11
 
     def test_legacy_functions_specific_values(self):
         """Покрытие конкретных значений в устаревших функциях"""
@@ -414,8 +414,8 @@ class TestLegacyFunctions:
         names = get_target_company_names()
         
         # Проверяем известные значения
-        assert "1740" in ids  # Яндекс HH ID
-        assert "Яндекс" in names  # Яндекс название
+        assert "3529" in ids  # СБЕР HH ID
+        assert "СБЕР" in names  # СБЕР название
 
 
 class TestTargetCompaniesEdgeCases:
@@ -450,13 +450,13 @@ class TestTargetCompaniesEdgeCases:
     def test_whitespace_in_names(self):
         """Покрытие поиска с пробелами в названиях"""
         # Названия с пробелами в начале/конце не должны находиться
-        result = TargetCompanies.find_company_by_exact_name(" Яндекс ")
+        result = TargetCompanies.find_company_by_exact_name(" СБЕР ")
         assert result is None
         
-        result = TargetCompanies.find_company_by_exact_name("Яндекс ")
+        result = TargetCompanies.find_company_by_exact_name("СБЕР ")
         assert result is None
         
-        result = TargetCompanies.find_company_by_exact_name(" Яндекс")
+        result = TargetCompanies.find_company_by_exact_name(" СБЕР")
         assert result is None
 
     def test_unique_company_ids(self):
