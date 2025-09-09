@@ -311,6 +311,13 @@ class SuperJobAPI(CachedAPI, BaseJobAPI):
                     try:
                         # Используем метод парсера для извлечения ID компании
                         company_id = parser._extract_company_id(vacancy)
+                        
+                        # Отладочная информация для первых нескольких вакансий
+                        if len(target_vacancies) < 3:
+                            logger.debug(f"Вакансия {vacancy.get('id')}: company_id='{company_id}', в целевых: {company_id in target_sj_ids if company_id else False}")
+                            logger.debug(f"client: {vacancy.get('client', {})}")
+                            logger.debug(f"id_client: {vacancy.get('id_client')}")
+                        
                         # Проверяем строгое совпадение с целевыми ID
                         if company_id and company_id in target_sj_ids:
                             target_vacancies.append(vacancy)
