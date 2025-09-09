@@ -1,3 +1,11 @@
+"""
+Парсер для обработки данных вакансий с SuperJob API.
+
+Модуль содержит класс SuperJobParser для преобразования сырых данных
+из API SuperJob в структурированные объекты Vacancy.
+Поддерживает различные форматы ответов API.
+"""
+
 import logging
 from typing import Any, Dict, List
 
@@ -75,7 +83,7 @@ class SuperJobParser(BaseParser):
             try:
                 # ИСПРАВЛЕНИЕ: Преобразуем сырые данные SuperJob в формат Vacancy
                 processed_data = self.parse_vacancy(vacancy_data)
-                
+
                 # Сохраняем сырые данные API для статистики и анализа
                 processed_data["raw_data"] = vacancy_data.copy()  # сохраняем полную копию сырых данных
 

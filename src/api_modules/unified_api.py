@@ -248,12 +248,12 @@ class UnifiedAPI:
                 print("Конвертация вакансий SuperJob в унифицированный формат...")
 
                 with tqdm(
-                    total=len(sj_vacancies_raw), 
-                    desc="Конвертация SJ", 
+                    total=len(sj_vacancies_raw),
+                    desc="Конвертация SJ",
                     unit="вакансия",
                     ncols=80,
                     leave=False,
-                    bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}"
+                    bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}",
                 ) as pbar:
                     for sj_vac in sj_vacancies_raw:
                         try:

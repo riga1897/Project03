@@ -76,3 +76,18 @@ class AbstractDBManager(ABC):
             Dict[str, Any]: Статистика базы данных
         """
         pass
+
+    @abstractmethod
+    def create_tables(self) -> bool:
+        """Создать таблицы в базе данных"""
+        pass
+
+    @abstractmethod
+    def populate_companies_table(self) -> bool:
+        """Заполнить таблицу компаний"""
+        pass
+
+    @abstractmethod
+    def check_connection(self) -> bool:
+        """Проверить подключение к базе данных"""
+        pass

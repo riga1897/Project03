@@ -1,3 +1,10 @@
+"""
+Утилита для постраничного получения данных с визуализацией прогресса.
+
+Модуль предоставляет класс Paginator для эффективного получения больших
+объемов данных с API с отслеживанием прогресса и обработкой ошибок.
+"""
+
 import logging
 from typing import Callable, Dict, List, Optional
 
@@ -44,12 +51,12 @@ class Paginator:
             return results
 
         with tqdm(
-            total=actual_max - start_page, 
-            desc="Fetching pages", 
-            unit="page", 
+            total=actual_max - start_page,
+            desc="Fetching pages",
+            unit="page",
             ncols=80,
             leave=False,
-            bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]"
+            bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]",
         ) as pbar:
             for page in range(start_page, actual_max):
                 try:

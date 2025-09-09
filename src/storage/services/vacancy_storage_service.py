@@ -6,12 +6,13 @@
 
 import logging
 import os
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Union
 
 try:
     from ..db_manager import DBManager
 except ImportError:
     from src.storage.db_manager import DBManager
+from src.storage.abstract_db_manager import AbstractDBManager
 
 try:
     from .deduplication_service import DeduplicationService, SQLDeduplicationStrategy
@@ -64,14 +65,14 @@ class VacancyStorageService(AbstractVacancyStorageService):
     - Оптимизированное сохранение в базу
     """
 
-    def __init__(self, db_manager: Optional[DBManager] = None):
+    def __init__(self, db_manager: Optional[AbstractDBManager] = None):
         """
         Инициализация сервиса
 
         Args:
             db_manager: Менеджер базы данных. Если None, создается по умолчанию
         """
-        self.db_manager = db_manager or DBManager()
+        self.db_manager: AbstractDBManager = db_manager or DBManager()
 
         # Инициализируем новый координатор обработки (заменяет старые сервисы)
         self.processing_coordinator = VacancyProcessingCoordinator(self.db_manager)
@@ -349,11 +350,19 @@ class VacancyStorageService(AbstractVacancyStorageService):
                     insert_data = []
                     for vacancy in vacancies:
                         try:
+                            # Убеждаемся что это объект Vacancy, не кортеж
+                            if isinstance(vacancy, tuple):
+                                continue
                             data = self._prepare_vacancy_data(vacancy, company_mapping, search_query)
                             if data:
                                 insert_data.append(data)
                         except Exception as e:
-                            logger.warning(f"Ошибка подготовки данных вакансии {vacancy.vacancy_id}: {e}")
+                            vacancy_id = (
+                                getattr(vacancy, "vacancy_id", "unknown")
+                                if hasattr(vacancy, "vacancy_id")
+                                else "unknown"
+                            )
+                            logger.warning(f"Ошибка подготовки данных вакансии {vacancy_id}: {e}")
 
                     if insert_data:
                         # Используем ON CONFLICT DO UPDATE для обработки дубликатов
@@ -456,7 +465,11 @@ class VacancyStorageService(AbstractVacancyStorageService):
                     try:
                         from datetime import datetime
 
-                        published_at = datetime.fromisoformat(vacancy.published_at.replace("Z", "+00:00"))
+                        # Исправляем timezone в строковой дате
+                        date_str: str = vacancy.published_at
+                        if "Z" in date_str:
+                            date_str = date_str.replace("Z", "+00:00")
+                        published_at = datetime.fromisoformat(date_str)
                     except Exception:
                         published_at = None
 
@@ -611,7 +624,7 @@ class VacancyStorageService(AbstractVacancyStorageService):
         """Заполняет таблицу компаний"""
         return self.db_manager.populate_companies_table()
 
-    def get_companies_and_vacancies_count(self) -> List[Tuple[Any, ...]]:
+    def get_companies_and_vacancies_count(self) -> list:
         """Получает статистику по компаниям"""
         return self.db_manager.get_companies_and_vacancies_count()
 

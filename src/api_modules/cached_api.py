@@ -72,13 +72,13 @@ class CachedAPI(BaseJobAPI, ABC):
             # Делаем реальный API запрос - результат будет закэширован декоратором
             data = self.connector.connect(url, params)
             logger.debug(f"API запрос выполнен и закэширован в памяти для {api_prefix}")
-            
+
             # ИСПРАВЛЕНО: Также сохраняем в файловый кэш при получении новых данных
             if data and data != self._get_empty_response() and self._is_complete_response(data, params):
                 if self._validate_response_structure(data):
                     self.cache.save_response(api_prefix, params, data)
                     logger.debug(f"RAW данные API сохранены в файловый кэш data/cache/ для {api_prefix}")
-                    
+
             return data if data and data != self._get_empty_response() else None
         except Exception as e:
             logger.error(f"Ошибка API запроса в кэшированном методе {api_prefix}: {e}")

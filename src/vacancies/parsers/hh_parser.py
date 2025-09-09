@@ -1,3 +1,10 @@
+"""
+Парсер для обработки данных вакансий с HeadHunter API.
+
+Модуль содержит класс HHParser для преобразования сырых данных
+из API HeadHunter в структурированные объекты Vacancy.
+"""
+
 import logging
 from typing import Any, Dict, List
 
@@ -101,7 +108,7 @@ class HHParser(BaseParser):
 
                 # Сохраняем сырые данные API для статистики и анализа
                 item["raw_data"] = item.copy()  # сохраняем полную копию сырых данных
-                
+
                 # Создаем объект вакансии из данных API
                 vacancy = Vacancy.from_dict(item)
 
