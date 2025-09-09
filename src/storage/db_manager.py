@@ -153,8 +153,18 @@ class DBManager(AbstractDBManager):
         Автоматически создает таблицы если они не существуют и добавляет
         недостающие поля в существующие таблицы.
         """
+        # Сначала убеждаемся, что база данных существует
         try:
-            with self._get_connection() as conn:
+            if not self._ensure_database_exists():
+                logger.error("Не удалось создать или подключиться к базе данных")
+                return False
+        except Exception as db_error:
+            logger.error(f"Ошибка при создании базы данных: {db_error}")
+            return False
+            
+        try:
+            conn = self._get_connection()
+            try:
                 with conn.cursor() as cursor:
                     # Устанавливаем кодировку сессии
                     cursor.execute("SET client_encoding TO 'UTF8'")
@@ -207,6 +217,7 @@ class DBManager(AbstractDBManager):
                         );
                     """
                     )
+                    logger.info("✓ Таблица vacancies создана/проверена")
 
                     # Проверяем и исправляем тип company_id если нужно
                     cursor.execute(
@@ -289,18 +300,80 @@ class DBManager(AbstractDBManager):
                     except Exception as e:
                         logger.warning(f"Не удалось создать внешний ключ: {e}")
 
+                    # Создаем функцию для сброса счетчиков пустых таблиц
+                    cursor.execute("""
+                        CREATE OR REPLACE FUNCTION reset_empty_table_sequences()
+                        RETURNS TEXT AS $$
+                        DECLARE
+                            result_text TEXT := '';
+                            rec RECORD;
+                            seq_name TEXT;
+                            table_count INT;
+                        BEGIN
+                            -- Проверяем все таблицы с SERIAL полями
+                            FOR rec IN
+                                SELECT schemaname, tablename, attname,
+                                       pg_get_serial_sequence(schemaname||'.'||tablename, attname) as sequence_name
+                                FROM pg_attribute
+                                JOIN pg_class ON pg_attribute.attrelid = pg_class.oid
+                                JOIN pg_namespace ON pg_class.relnamespace = pg_namespace.oid
+                                WHERE atttypid = 'serial'::regtype::oid
+                                AND schemaname = 'public'
+                                AND tablename IN ('companies', 'vacancies')
+                            LOOP
+                                IF rec.sequence_name IS NOT NULL THEN
+                                    seq_name := rec.sequence_name;
+
+                                    -- Получаем количество записей в таблице
+                                    EXECUTE format('SELECT COUNT(*) FROM %I.%I', rec.schemaname, rec.tablename)
+                                        INTO table_count;
+
+                                    IF table_count = 0 THEN
+                                        -- Таблица пустая - сбрасываем счетчик на 1
+                                        EXECUTE format('ALTER SEQUENCE %s RESTART WITH 1', seq_name);
+                                        result_text := result_text ||
+                                            format('Таблица %s пустая: счетчик %s сброшен на 1',
+                                                   rec.tablename, seq_name) || E'\n';
+                                    ELSE
+                                        -- Таблица не пустая - корректируем счетчик по максимальному ID
+                                        EXECUTE format('SELECT setval(%L, COALESCE((SELECT MAX(%I) FROM %I.%I), 1), true)',
+                                            seq_name, rec.attname, rec.schemaname, rec.tablename);
+                                        result_text := result_text ||
+                                            format('Таблица %s (%d записей): счетчик %s скорректирован',
+                                                   rec.tablename, table_count, seq_name) || E'\n';
+                                    END IF;
+                                END IF;
+                            END LOOP;
+
+                            RETURN result_text;
+                        END;
+                        $$ LANGUAGE plpgsql;
+                    """)
+
                     # Автоматически сбрасываем счетчики для пустых таблиц и корректируем для заполненных
                     try:
                         cursor.execute("SELECT reset_empty_table_sequences();")
-                        reset_result = cursor.fetchone()[0]
-                        logger.info("✓ Счетчики автоинкремента настроены:")
-                        for line in reset_result.strip().split("\n"):
-                            if line.strip():
-                                logger.info(f"  {line.strip()}")
+                        reset_result = cursor.fetchone()
+                        if reset_result and reset_result[0]:
+                            logger.info("✓ Счетчики автоинкремента настроены:")
+                            for line in reset_result[0].strip().split("\n"):
+                                if line.strip():
+                                    logger.info(f"  {line.strip()}")
                     except Exception as e:
                         logger.warning(f"Не удалось настроить счетчики автоинкремента: {e}")
+                        # Fallback - сбрасываем вручную для пустых таблиц
+                        try:
+                            cursor.execute("SELECT COUNT(*) FROM vacancies")
+                            if cursor.fetchone()[0] == 0:
+                                cursor.execute("ALTER SEQUENCE vacancies_id_seq RESTART WITH 1;")
+                                logger.info("✓ Последовательность vacancies_id_seq сброшена на 1 (fallback)")
+                        except Exception:
+                            pass
 
                     logger.info("✓ Все таблицы и структуры успешно созданы/проверены")
+                    conn.commit()  # Подтверждаем изменения
+            finally:
+                conn.close()
 
         except Exception as e:
             logger.error(f"Ошибка при создании таблиц: {e}")
@@ -416,6 +489,28 @@ class DBManager(AbstractDBManager):
 
             with self._get_connection() as conn:
                 with conn.cursor() as cursor:
+                    # Сначала проверяем, существуют ли необходимые таблицы
+                    cursor.execute("""
+                        SELECT EXISTS (
+                            SELECT FROM information_schema.tables 
+                            WHERE table_name = 'companies'
+                        );
+                    """)
+                    companies_table_exists = cursor.fetchone()[0]
+                    
+                    cursor.execute("""
+                        SELECT EXISTS (
+                            SELECT FROM information_schema.tables 
+                            WHERE table_name = 'vacancies'
+                        );
+                    """)
+                    vacancies_table_exists = cursor.fetchone()[0]
+                    
+                    # Если таблицы не существуют, возвращаем компании с нулевым количеством вакансий
+                    if not companies_table_exists or not vacancies_table_exists:
+                        logger.info("Таблицы companies или vacancies еще не созданы, возвращаем пустой результат")
+                        return [(company.name, 0) for company in TARGET_COMPANIES]
+
                     # Основной SQL-запрос с использованием LEFT JOIN для получения статистики по компаниям
                     query = """
                     -- Получение списка всех компаний и количества вакансий у каждой компании
@@ -435,7 +530,12 @@ class DBManager(AbstractDBManager):
                     return [(str(row[0]), int(row[1])) for row in results]
 
         except Exception as e:
-            logger.error(f"Ошибка при получении списка компаний и количества вакансий: {e}")
+            # Проверяем, является ли это ошибкой отсутствия таблицы
+            error_message = str(e).lower()
+            if any(keyword in error_message for keyword in ["does not exist", "relation", "не существует"]):
+                logger.info("Таблицы базы данных еще не созданы, возвращаем компании с нулевым количеством")
+            else:
+                logger.error(f"Ошибка при получении списка компаний и количества вакансий: {e}")
             # В случае ошибки возвращаем все целевые компании с нулями
             return [(company.name, 0) for company in TARGET_COMPANIES]
 

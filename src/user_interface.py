@@ -47,12 +47,51 @@ def main() -> None:
 
         # Инициализируем базу данных (создание таблиц + заполнение компаний)
         logger.info("Инициализация структуры базы данных...")
+        print("🔧 Создание таблиц в базе данных...")
         try:
-            db_manager.create_tables()
-            db_manager.populate_companies_table()
-        except Exception as init_error:
-            logger.error(f"Ошибка при инициализации структуры БД: {init_error}")
-            raise Exception(f"Не удалось инициализировать структуру базы данных: {init_error}")
+            # Создание базы данных если не существует
+            if hasattr(db_manager, '_ensure_database_exists'):
+                db_manager._ensure_database_exists()
+
+            # Создание таблиц
+            tables_created = db_manager.create_tables()
+            if not tables_created:
+                print("❌ Ошибка при создании таблиц")
+                return
+
+            # Проверяем, что таблицы действительно созданы
+            connection_test = db_manager.check_connection()
+            if not connection_test:
+                print("❌ Нет подключения к базе данных")
+                return
+
+            print("✅ Таблицы успешно созданы")
+
+            # Заполнение таблицы компаний
+            print("📋 Заполнение таблицы компаний...")
+            companies_populated = db_manager.populate_companies_table()
+            if companies_populated:
+                print("✅ Компании загружены в базу данных")
+            else:
+                print("⚠️ Проблема при загрузке компаний (возможно, уже загружены)")
+
+            # Финальная проверка: считаем количество компаний
+            try:
+                with db_manager._get_connection() as conn:
+                    with conn.cursor() as cursor:
+                        cursor.execute("SELECT COUNT(*) FROM companies")
+                        companies_count = cursor.fetchone()[0]
+                        cursor.execute("SELECT COUNT(*) FROM vacancies")
+                        vacancies_count = cursor.fetchone()[0]
+                        print(f"📊 В базе данных: {companies_count} компаний, {vacancies_count} вакансий")
+            except Exception as check_error:
+                print(f"❌ Ошибка проверки таблиц: {check_error}")
+                return
+
+        except Exception as e:
+            logger.error(f"Ошибка при создании таблиц: {e}")
+            print(f"❌ Ошибка при создании таблиц: {e}")
+            return
 
         # Проверка корректности инициализации
         try:
