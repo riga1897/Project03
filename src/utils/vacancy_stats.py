@@ -198,7 +198,7 @@ class VacancyStatsExtended:
     @staticmethod
     def _extract_company_name(vacancy: Dict[str, Any]) -> str:
         """
-        Извлечь название компании из данных вакансии (приоритет - сырые данные API)
+        Извлечь название компании из данных вакансии с поиском по ID в БД целевых компаний
 
         Args:
             vacancy: Данные вакансии (сырые данные API или объект Vacancy)
@@ -206,32 +206,84 @@ class VacancyStatsExtended:
         Returns:
             str: Название компании или "Неизвестная компания"
         """
+        from src.config.target_companies import TargetCompanies
+        
         # ПРИОРИТЕТ 1: Объекты Vacancy - атрибут employer (новая структура)
         if hasattr(vacancy, "employer") and vacancy.employer:
             employer = vacancy.employer
             if isinstance(employer, dict):
-                name = employer.get("name", "Неизвестная компания")
-                return str(name) if name else "Неизвестная компания"
+                # Проверяем есть ли ID для поиска в БД
+                employer_id = employer.get("id")
+                if employer_id:
+                    # Определяем источник и ищем по соответствующему ID
+                    source = getattr(vacancy, "source", "").lower()
+                    if "hh" in source or "headhunter" in source:
+                        company = TargetCompanies.get_company_by_hh_id(str(employer_id))
+                        if company:
+                            return company.name
+                    elif "superjob" in source or "sj" in source:
+                        company = TargetCompanies.get_company_by_sj_id(str(employer_id))
+                        if company:
+                            return company.name
+                
+                # Fallback на name из employer
+                name = employer.get("name")
+                return str(name) if name and name != "None" else "Неизвестная компания"
             elif isinstance(employer, str):
                 return employer
             return str(employer)
 
-        # ПРИОРИТЕТ 2: Сырые данные HH.ru - employer.name
-        if isinstance(vacancy, dict) and "employer" in vacancy:
-            employer = vacancy["employer"]
+        # ПРИОРИТЕТ 2: Сырые данные - поиск по ID в зависимости от источника
+        if isinstance(vacancy, dict):
+            source = vacancy.get("source", "").lower()
+            
+            # Для HH.ru ищем по HH ID
+            if "hh" in source or "headhunter" in source:
+                employer = vacancy.get("employer", {})
+                if isinstance(employer, dict):
+                    employer_id = employer.get("id")
+                    if employer_id:
+                        company = TargetCompanies.get_company_by_hh_id(str(employer_id))
+                        if company:
+                            return company.name
+                    # Fallback на name
+                    name = employer.get("name")
+                    if name and str(name).strip() and str(name) != "None":
+                        return str(name)
+                        
+            # Для SuperJob ищем по SJ ID
+            elif "superjob" in source or "sj" in source:
+                # Сначала пробуем извлечь ID компании
+                company_id = VacancyStatsExtended._extract_company_id(vacancy)
+                if company_id:
+                    company = TargetCompanies.get_company_by_sj_id(str(company_id))
+                    if company:
+                        return company.name
+                
+                # Fallback на firm_name
+                firm_name = vacancy.get("firm_name")
+                if firm_name and str(firm_name).strip() and str(firm_name) != "None":
+                    return str(firm_name)
+                    
+                # Fallback на client.title/name
+                client = vacancy.get("client", {})
+                if isinstance(client, dict):
+                    title = client.get("title") or client.get("name")
+                    if title and str(title).strip() and str(title) != "None":
+                        return str(title)
+
+        # ПРИОРИТЕТ 3: Fallback - общий поиск названия без ID
+        if isinstance(vacancy, dict):
+            # HH формат
+            employer = vacancy.get("employer")
             if isinstance(employer, dict) and "name" in employer and employer["name"]:
                 return str(employer["name"])
             elif isinstance(employer, str) and employer.strip():
                 return employer
-
-        # ПРИОРИТЕТ 3: Сырые данные SuperJob - firm_name (с сохранением ID)
-        if isinstance(vacancy, dict) and "firm_name" in vacancy:
+                
+            # SuperJob формат
             firm_name = vacancy.get("firm_name")
             if firm_name and str(firm_name).strip() and str(firm_name) != "None":
-                # Дополнительно сохраняем ID работодателя если есть
-                firm_id = vacancy.get("firm_id") or vacancy.get("client_id")
-                if firm_id and hasattr(vacancy, "employer_id"):
-                    vacancy.employer_id = str(firm_id)
                 return str(firm_name)
 
         # ПРИОРИТЕТ 4: Объекты Vacancy - raw_data
@@ -381,3 +433,31 @@ class VacancyStatsExtended:
 
             if len(analysis["employer_names"]) > 10:
                 print(f"  ... и еще {len(analysis['employer_names']) - 10} работодателей")
+    
+    @staticmethod
+    def _extract_company_id(vacancy: Dict[str, Any]) -> str:
+        """
+        Извлекает ID компании из данных SuperJob (аналогично методу в парсере)
+        
+        Args:
+            vacancy: Сырые данные вакансии от SuperJob API
+            
+        Returns:
+            str: ID компании или пустая строка
+        """
+        try:
+            # Приоритет 1: client.id (основной источник)
+            client = vacancy.get("client", {})
+            if isinstance(client, dict):
+                client_id = client.get("id")
+                if client_id is not None and str(client_id) != "0":
+                    return str(client_id)
+            
+            # Приоритет 2: id_client (fallback)
+            id_client = vacancy.get("id_client")
+            if id_client is not None and str(id_client) != "0":
+                return str(id_client)
+                
+            return ""
+        except Exception:
+            return ""
