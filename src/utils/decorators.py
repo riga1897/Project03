@@ -1,9 +1,59 @@
 import logging
 import time
+import json
 from functools import wraps
 from typing import Any, Callable, Dict, Optional, Tuple
 
 from .env_loader import EnvLoader
+
+
+def _make_hashable_key(args: Tuple[Any, ...], kwargs: Dict[str, Any]) -> str:
+    """
+    Создает хешируемый ключ из аргументов функции, включая нехешируемые типы
+    
+    Args:
+        args: Позиционные аргументы
+        kwargs: Именованные аргументы
+        
+    Returns:
+        str: Безопасный хешируемый ключ
+    """
+    def make_serializable(obj: Any) -> Any:
+        """Рекурсивно преобразует объект в сериализуемый вид"""
+        if isinstance(obj, (dict, list)):
+            # Для словарей и списков используем JSON сериализацию
+            try:
+                return json.dumps(obj, sort_keys=True, default=str)
+            except (TypeError, ValueError):
+                # Если JSON не работает, конвертируем в строку
+                return str(obj)
+        elif isinstance(obj, (set, frozenset, tuple)):
+            # Для множеств и кортежей сортируем и преобразуем элементы
+            try:
+                return tuple(sorted(make_serializable(item) for item in obj))
+            except TypeError:
+                return str(obj)
+        else:
+            # Для примитивных типов возвращаем как есть
+            return obj
+    
+    try:
+        # Преобразуем все аргументы в сериализуемый вид
+        safe_args = tuple(make_serializable(arg) for arg in args)
+        safe_kwargs = {k: make_serializable(v) for k, v in kwargs.items()}
+        
+        # Создаем единый ключ из всех данных
+        key_data = {
+            'args': safe_args,
+            'kwargs': safe_kwargs
+        }
+        
+        return json.dumps(key_data, sort_keys=True, default=str)
+        
+    except Exception as e:
+        # Если все еще не получается, используем строковое представление
+        logging.warning(f"Не удалось создать безопасный ключ кэша: {e}, использую строковое представление")
+        return str((args, kwargs))
 
 
 def simple_cache(ttl: Optional[int] = None, max_size: int = 1000) -> Callable[[Callable[..., Any]], Any]:
@@ -16,8 +66,8 @@ def simple_cache(ttl: Optional[int] = None, max_size: int = 1000) -> Callable[[C
 
     def decorator(func: Callable[..., Any]) -> Any:
         """Внутренняя функция-декоратор для кэширования."""
-        cache: Dict[Tuple, Tuple[float, Any]] = {}
-        access_times: Dict[Tuple, float] = {}  # Для LRU очистки
+        cache: Dict[str, Tuple[float, Any]] = {}  # ИСПРАВЛЕНО: ключи теперь строки
+        access_times: Dict[str, float] = {}  # Для LRU очистки
 
         @wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -26,7 +76,8 @@ def simple_cache(ttl: Optional[int] = None, max_size: int = 1000) -> Callable[[C
             actual_ttl = ttl if ttl is not None else EnvLoader.get_env_var_int("CACHE_TTL", 3600)
             current_time = time.time()
 
-            cache_key = (args, frozenset(kwargs.items()))
+            # ИСПРАВЛЕНО: Создаем безопасный ключ кэша для нехешируемых типов
+            cache_key = _make_hashable_key(args, kwargs)
 
             # Проверяем существующий кэш
             if cache_key in cache:

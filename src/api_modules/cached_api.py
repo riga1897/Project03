@@ -68,8 +68,9 @@ class CachedAPI(BaseJobAPI, ABC):
         Returns:
             Dict: Ответ API или None если данных нет в кэше
         """
-        # Возвращаем пустой ответ - данных в кэше нет, нужно загрузить
-        return {}
+        # ИСПРАВЛЕНО: Возвращаем None - данных в кэше нет, нужно загрузить
+        # Пустой словарь {} != None и ломает логику!
+        return None
 
     def _connect_to_api(self, url: str, params: Dict, api_prefix: str) -> Dict:
         """
@@ -105,7 +106,7 @@ class CachedAPI(BaseJobAPI, ABC):
         # 1. Проверяем кэш в памяти (быстрее всего)
         try:
             memory_result = self._cached_api_request(url, params, api_prefix)
-            if memory_result is not None:
+            if memory_result is not None and memory_result:  # ИСПРАВЛЕНО: проверяем что результат не пустой
                 return memory_result if isinstance(memory_result, dict) else self._get_empty_response()
         except Exception as e:
             logger.warning(f"Ошибка кэша памяти: {e}. Переключаемся на файловый кэш")

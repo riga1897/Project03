@@ -92,6 +92,15 @@ class PostgresSaver(AbstractVacancyStorage):
                 );
             """
             )
+            
+            # ИСПРАВЛЕНИЕ: Сбрасываем последовательность ID чтобы нумерация шла с 1
+            try:
+                cursor.execute("ALTER SEQUENCE companies_id_seq RESTART WITH 1;")
+                logger.info("✓ Последовательность companies_id_seq сброшена на 1")
+            except PsycopgError as seq_error:
+                # Последовательность может не существовать при первом создании
+                logger.debug(f"Не удалось сбросить последовательность companies_id_seq: {seq_error}")
+                pass
 
             # Проверяем и добавляем недостающие поля hh_id и sj_id
             required_fields = [("hh_id", "VARCHAR(50)"), ("sj_id", "VARCHAR(50)")]

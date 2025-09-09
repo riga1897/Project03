@@ -171,6 +171,14 @@ class DBManager(AbstractDBManager):
                     """
                     )
                     logger.info("✓ Таблица companies создана/проверена")
+                    
+                    # ИСПРАВЛЕНИЕ: Сбрасываем последовательность ID чтобы нумерация шла с 1
+                    try:
+                        cursor.execute("ALTER SEQUENCE companies_id_seq RESTART WITH 1;")
+                        logger.info("✓ Последовательность companies_id_seq сброшена на 1")
+                    except Exception as seq_error:
+                        # Последовательность может не существовать при первом создании
+                        logger.debug(f"Не удалось сбросить последовательность companies_id_seq: {seq_error}")
 
                     # Создаем полную таблицу вакансий сразу с правильными типами
                     cursor.execute(
