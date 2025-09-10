@@ -31,7 +31,7 @@ class TestDBManagerDemoInit:
     """Тесты инициализации DBManagerDemo"""
     
     @patch('src.utils.db_manager_demo.DBManager')
-    def test_init_with_db_manager(self, mock_db_manager_class):
+    def test_init_with_db_manager(self, mock_db_manager_class: Any) -> None:
         """Тест инициализации с предоставленным DBManager"""
         mock_db_manager = MagicMock()
         
@@ -42,7 +42,7 @@ class TestDBManagerDemoInit:
         mock_db_manager_class.assert_not_called()
     
     @patch('src.utils.db_manager_demo.DBManager')
-    def test_init_without_db_manager(self, mock_db_manager_class):
+    def test_init_without_db_manager(self, mock_db_manager_class: Any) -> None:
         """Тест инициализации без DBManager (создается новый)"""
         mock_db_manager = MagicMock()
         mock_db_manager_class.return_value = mock_db_manager
@@ -89,7 +89,7 @@ class TestDBManagerDemoTargetCompanies:
     """Тесты показа целевых компаний"""
     
     @patch('src.config.target_companies.TargetCompanies')
-    def test_show_target_companies_full_data(self, mock_target_companies):
+    def test_show_target_companies_full_data(self, mock_target_companies: Any) -> None:
         """Тест показа полных данных целевых компаний"""
         # Создаем моки компаний с различными данными
         mock_company1 = MagicMock()
@@ -131,7 +131,7 @@ class TestDBManagerDemoCompaniesAndVacanciesCount:
     """Тесты анализа компаний и вакансий"""
     
     @patch('src.config.target_companies.TargetCompanies')  
-    def test_demo_companies_and_vacancies_count_with_data(self, mock_target_companies):
+    def test_demo_companies_and_vacancies_count_with_data(self, mock_target_companies: Any) -> None:
         """Тест анализа компаний с данными"""
         # Мок данных компаний
         mock_companies = [MagicMock() for _ in range(3)]  # 3 компании для тестирования
@@ -310,7 +310,7 @@ class TestDBManagerDemoHigherSalary:
         mock_print.assert_any_call("• Все вакансии имеют зарплату ниже или равную средней")
     
     @patch('src.utils.db_manager_demo.logger')
-    def test_demo_vacancies_with_higher_salary_exception(self, mock_logger):
+    def test_demo_vacancies_with_higher_salary_exception(self, mock_logger: Any) -> None:
         """Тест обработки исключений при получении высокооплачиваемых вакансий"""
         mock_db_manager = MagicMock()
         mock_db_manager.get_vacancies_with_higher_salary.side_effect = Exception("Database error")
@@ -382,7 +382,7 @@ class TestDBManagerDemoKeywordSearch:
         mock_print.assert_any_call(" Вакансии по ключевому слову 'java' не найдены.")
     
     @patch('src.utils.db_manager_demo.logger')
-    def test_demo_vacancies_with_keyword_exception(self, mock_logger):
+    def test_demo_vacancies_with_keyword_exception(self, mock_logger: Any) -> None:
         """Тест обработки исключений при поиске по ключевым словам"""
         mock_db_manager = MagicMock()
         mock_db_manager.get_vacancies_with_keyword.side_effect = Exception("Search error")
@@ -552,7 +552,7 @@ class TestDBManagerDemoMainFunction:
     """Тесты главной функции и модуля"""
     
     @patch('src.utils.db_manager_demo.DBManagerDemo')
-    def test_main_function_success(self, mock_demo_class):
+    def test_main_function_success(self, mock_demo_class: Any) -> None:
         """Тест успешного выполнения main()"""
         mock_demo = MagicMock()
         mock_demo_class.return_value = mock_demo
@@ -564,7 +564,7 @@ class TestDBManagerDemoMainFunction:
     
     @patch('src.utils.db_manager_demo.DBManagerDemo')
     @patch('src.utils.db_manager_demo.logger')
-    def test_main_function_exception(self, mock_logger, mock_demo_class):
+    def test_main_function_exception(self, mock_logger: Any, mock_demo_class: Any) -> None:
         """Тест обработки исключения в main()"""
         mock_demo_class.side_effect = Exception("Demo initialization failed")
         

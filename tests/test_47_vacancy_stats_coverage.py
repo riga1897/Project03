@@ -30,14 +30,14 @@ from src.utils.vacancy_stats import (
 class TestVacancyStatsInit:
     """100% покрытие инициализации VacancyStats"""
 
-    def test_init(self):
+    def test_init(self) -> None:
         """Покрытие: инициализация VacancyStats"""
         stats = VacancyStats()
         
         # Проверяем, что объект создан успешно
         assert isinstance(stats, VacancyStats)
 
-    def test_multiple_instances(self):
+    def test_multiple_instances(self) -> None:
         """Покрытие: создание нескольких экземпляров"""
         stats1 = VacancyStats()
         stats2 = VacancyStats()
@@ -50,7 +50,7 @@ class TestVacancyStatsInit:
 class TestCalculateSalaryStatistics:
     """100% покрытие метода calculate_salary_statistics"""
 
-    def test_calculate_salary_statistics_empty_list(self):
+    def test_calculate_salary_statistics_empty_list(self) -> None:
         """Покрытие: пустой список вакансий"""
         stats = VacancyStats()
         
@@ -62,7 +62,7 @@ class TestCalculateSalaryStatistics:
         }
         assert result == expected
 
-    def test_calculate_salary_statistics_with_salary_from(self):
+    def test_calculate_salary_statistics_with_salary_from(self) -> None:
         """Покрытие: вакансии с salary_from"""
         stats = VacancyStats()
         
@@ -87,7 +87,7 @@ class TestCalculateSalaryStatistics:
         assert result["with_salary_count"] == 2
         assert result["without_salary_count"] == 0
 
-    def test_calculate_salary_statistics_with_salary_to(self):
+    def test_calculate_salary_statistics_with_salary_to(self) -> None:
         """Покрытие: вакансии с salary_to (без salary_from)"""
         stats = VacancyStats()
         
@@ -112,7 +112,7 @@ class TestCalculateSalaryStatistics:
         assert result["with_salary_count"] == 2
         assert result["without_salary_count"] == 0
 
-    def test_calculate_salary_statistics_mixed_salaries(self):
+    def test_calculate_salary_statistics_mixed_salaries(self) -> None:
         """Покрытие: смешанные вакансии с разными типами зарплат"""
         stats = VacancyStats()
         
@@ -141,7 +141,7 @@ class TestCalculateSalaryStatistics:
         assert result["with_salary_count"] == 2
         assert result["without_salary_count"] == 1
 
-    def test_calculate_salary_statistics_no_salary_attribute(self):
+    def test_calculate_salary_statistics_no_salary_attribute(self) -> None:
         """Покрытие: вакансии без атрибута salary"""
         stats = VacancyStats()
         
@@ -161,7 +161,7 @@ class TestCalculateSalaryStatistics:
         }
         assert result == expected
 
-    def test_calculate_salary_statistics_invalid_salary_types(self):
+    def test_calculate_salary_statistics_invalid_salary_types(self) -> None:
         """Покрытие: невалидные типы зарплат"""
         stats = VacancyStats()
         
@@ -190,7 +190,7 @@ class TestCalculateSalaryStatistics:
         }
         assert result == expected
 
-    def test_calculate_salary_statistics_exception_handling(self):
+    def test_calculate_salary_statistics_exception_handling(self) -> None:
         """Покрытие: обработка исключений"""
         stats = VacancyStats()
         
@@ -214,7 +214,7 @@ class TestCalculateSalaryStatistics:
         assert result["with_salary_count"] == 1
         assert result["without_salary_count"] == 1
 
-    def test_calculate_salary_statistics_no_valid_salaries(self):
+    def test_calculate_salary_statistics_no_valid_salaries(self) -> None:
         """Покрытие: случай когда есть вакансии, но нет валидных зарплат"""
         stats = VacancyStats()
         
@@ -240,7 +240,7 @@ class TestCalculateSalaryStatistics:
 class TestGetTopEmployers:
     """100% покрытие метода get_top_employers"""
 
-    def test_get_top_employers_normal(self):
+    def test_get_top_employers_normal(self) -> None:
         """Покрытие: получение топ работодателей"""
         stats = VacancyStats()
         
@@ -264,7 +264,7 @@ class TestGetTopEmployers:
         assert result[0] == ("Company A", 2)  # Первый по количеству
         assert result[1] == ("Company B", 1)
 
-    def test_get_top_employers_with_limit(self):
+    def test_get_top_employers_with_limit(self) -> None:
         """Покрытие: ограничение количества топ работодателей"""
         stats = VacancyStats()
         
@@ -280,7 +280,7 @@ class TestGetTopEmployers:
         
         assert len(result) == 5  # Ограничено 5
 
-    def test_get_top_employers_no_employer(self):
+    def test_get_top_employers_no_employer(self) -> None:
         """Покрытие: вакансии без работодателей"""
         stats = VacancyStats()
         
@@ -306,7 +306,7 @@ class TestGetTopEmployers:
         
         assert result == []  # Нет валидных работодателей
 
-    def test_get_top_employers_empty_list(self):
+    def test_get_top_employers_empty_list(self) -> None:
         """Покрытие: пустой список вакансий"""
         stats = VacancyStats()
         
@@ -318,7 +318,7 @@ class TestGetTopEmployers:
 class TestGetSourceDistribution:
     """100% покрытие метода get_source_distribution"""
 
-    def test_get_source_distribution_normal(self):
+    def test_get_source_distribution_normal(self) -> None:
         """Покрытие: получение распределения источников"""
         stats = VacancyStats()
         
@@ -337,7 +337,7 @@ class TestGetSourceDistribution:
         
         assert result == {"hh.ru": 2, "superjob.ru": 1}
 
-    def test_get_source_distribution_empty_list(self):
+    def test_get_source_distribution_empty_list(self) -> None:
         """Покрытие: пустой список вакансий"""
         stats = VacancyStats()
         
@@ -345,7 +345,7 @@ class TestGetSourceDistribution:
         
         assert result == {}
 
-    def test_get_source_distribution_single_source(self):
+    def test_get_source_distribution_single_source(self) -> None:
         """Покрытие: один источник"""
         stats = VacancyStats()
         
@@ -481,7 +481,7 @@ class TestDisplayCompanyStats:
 class TestCalculateStatisticsFunction:
     """100% покрытие функции calculate_statistics"""
 
-    def test_calculate_statistics_normal(self):
+    def test_calculate_statistics_normal(self) -> None:
         """Покрытие: нормальный расчет статистики"""
         # Мокируем вакансии
         vacancy1 = MagicMock()
@@ -509,7 +509,7 @@ class TestCalculateStatisticsFunction:
         assert result["total_count"] == 2
         assert result["source_distribution"] == {"hh.ru": 1, "superjob.ru": 1}
 
-    def test_calculate_statistics_empty_list(self):
+    def test_calculate_statistics_empty_list(self) -> None:
         """Покрытие: пустой список вакансий"""
         result = calculate_statistics([])
         
@@ -526,7 +526,7 @@ class TestCalculateStatisticsFunction:
 class TestVacancyStatsExtendedGetCompanyDistribution:
     """100% покрытие метода get_company_distribution"""
 
-    def test_get_company_distribution_normal(self):
+    def test_get_company_distribution_normal(self) -> None:
         """Покрытие: нормальное получение распределения компаний"""
         # Мокируем вакансии
         vacancy1 = {"employer": {"name": "Company A"}}
@@ -538,13 +538,13 @@ class TestVacancyStatsExtendedGetCompanyDistribution:
         
         assert result == {"Company A": 2, "Company B": 1}
 
-    def test_get_company_distribution_empty_list(self):
+    def test_get_company_distribution_empty_list(self) -> None:
         """Покрытие: пустой список вакансий"""
         result = VacancyStatsExtended.get_company_distribution([])
         
         assert result == {}
 
-    def test_get_company_distribution_with_unknown_companies(self):
+    def test_get_company_distribution_with_unknown_companies(self) -> None:
         """Покрытие: вакансии с неизвестными компаниями"""
         # Мокируем вакансии без работодателей
         vacancy1 = {}  # Пустая вакансия
@@ -561,7 +561,7 @@ class TestVacancyStatsExtendedGetCompanyDistribution:
 class TestVacancyStatsExtendedExtractCompanyName:
     """100% покрытие метода _extract_company_name"""
 
-    def test_extract_company_name_priority1_object_dict_employer(self):
+    def test_extract_company_name_priority1_object_dict_employer(self) -> None:
         """Покрытие: приоритет 1 - объект с dict employer"""
         vacancy = MagicMock()
         vacancy.employer = {"name": "Priority 1 Company"}
@@ -570,7 +570,7 @@ class TestVacancyStatsExtendedExtractCompanyName:
         
         assert result == "Priority 1 Company"
 
-    def test_extract_company_name_priority1_object_string_employer(self):
+    def test_extract_company_name_priority1_object_string_employer(self) -> None:
         """Покрытие: приоритет 1 - объект с string employer"""
         vacancy = MagicMock()
         vacancy.employer = "String Company"
@@ -579,7 +579,7 @@ class TestVacancyStatsExtendedExtractCompanyName:
         
         assert result == "String Company"
 
-    def test_extract_company_name_priority1_object_other_employer(self):
+    def test_extract_company_name_priority1_object_other_employer(self) -> None:
         """Покрытие: приоритет 1 - объект с другим типом employer"""
         vacancy = MagicMock()
         vacancy.employer = 12345  # Число
@@ -588,7 +588,7 @@ class TestVacancyStatsExtendedExtractCompanyName:
         
         assert result == "12345"
 
-    def test_extract_company_name_priority2_dict_with_employer(self):
+    def test_extract_company_name_priority2_dict_with_employer(self) -> None:
         """Покрытие: приоритет 2 - словарь с employer.name"""
         vacancy = {"employer": {"name": "Priority 2 Company"}}
         
@@ -596,7 +596,7 @@ class TestVacancyStatsExtendedExtractCompanyName:
         
         assert result == "Priority 2 Company"
 
-    def test_extract_company_name_priority2_dict_with_string_employer(self):
+    def test_extract_company_name_priority2_dict_with_string_employer(self) -> None:
         """Покрытие: приоритет 2 - словарь с string employer"""
         vacancy = {"employer": "Dict String Company"}
         
@@ -604,7 +604,7 @@ class TestVacancyStatsExtendedExtractCompanyName:
         
         assert result == "Dict String Company"
 
-    def test_extract_company_name_priority3_firm_name(self):
+    def test_extract_company_name_priority3_firm_name(self) -> None:
         """Покрытие: приоритет 3 - firm_name"""
         vacancy = {"firm_name": "SuperJob Company"}
         
@@ -612,7 +612,7 @@ class TestVacancyStatsExtendedExtractCompanyName:
         
         assert result == "SuperJob Company"
 
-    def test_extract_company_name_priority3_firm_name_with_id(self):
+    def test_extract_company_name_priority3_firm_name_with_id(self) -> None:
         """Покрытие: приоритет 3 - firm_name с ID"""
         vacancy = MagicMock()
         vacancy.employer_id = None
@@ -624,7 +624,7 @@ class TestVacancyStatsExtendedExtractCompanyName:
             
             assert result == "SJ Company"
 
-    def test_extract_company_name_priority3_firm_name_none(self):
+    def test_extract_company_name_priority3_firm_name_none(self) -> None:
         """Покрытие: приоритет 3 - firm_name как None"""
         vacancy = {"firm_name": None}
         
@@ -632,7 +632,7 @@ class TestVacancyStatsExtendedExtractCompanyName:
         
         assert result == "Неизвестная компания"
 
-    def test_extract_company_name_priority4_raw_data(self):
+    def test_extract_company_name_priority4_raw_data(self) -> None:
         """Покрытие: приоритет 4 - raw_data"""
         vacancy = MagicMock()
         vacancy.employer = None  # Нет employer
@@ -642,7 +642,7 @@ class TestVacancyStatsExtendedExtractCompanyName:
         
         assert result == "Raw Data Company"
 
-    def test_extract_company_name_priority5_company_field(self):
+    def test_extract_company_name_priority5_company_field(self) -> None:
         """Покрытие: приоритет 5 - поле company"""
         vacancy = {"company": "legacy company"}
         
@@ -650,7 +650,7 @@ class TestVacancyStatsExtendedExtractCompanyName:
         
         assert result == "Legacy Company"  # Должно быть с title()
 
-    def test_extract_company_name_priority5_company_none(self):
+    def test_extract_company_name_priority5_company_none(self) -> None:
         """Покрытие: приоритет 5 - company как None"""
         vacancy = {"company": None}
         
@@ -658,7 +658,7 @@ class TestVacancyStatsExtendedExtractCompanyName:
         
         assert result == "Неизвестная компания"
 
-    def test_extract_company_name_unknown_company(self):
+    def test_extract_company_name_unknown_company(self) -> None:
         """Покрытие: случай неизвестной компании"""
         vacancy = {}  # Пустой словарь
         
@@ -666,7 +666,7 @@ class TestVacancyStatsExtendedExtractCompanyName:
         
         assert result == "Неизвестная компания"
 
-    def test_extract_company_name_priority2_empty_name(self):
+    def test_extract_company_name_priority2_empty_name(self) -> None:
         """Покрытие: приоритет 2 - пустое имя в employer"""
         vacancy = {"employer": {"name": ""}}
         
@@ -674,7 +674,7 @@ class TestVacancyStatsExtendedExtractCompanyName:
         
         assert result == "Неизвестная компания"
 
-    def test_extract_company_name_priority3_client_id(self):
+    def test_extract_company_name_priority3_client_id(self) -> None:
         """Покрытие: приоритет 3 - client_id вместо firm_id"""
         vacancy = MagicMock()
         vacancy.employer_id = None
@@ -777,7 +777,7 @@ class TestVacancyStatsExtendedDisplayMethods:
 class TestVacancyStatsExtendedAnalyzeMethods:
     """100% покрытие методов анализа VacancyStatsExtended"""
 
-    def test_analyze_company_mapping_normal(self):
+    def test_analyze_company_mapping_normal(self) -> None:
         """Покрытие: нормальный анализ маппинга компаний"""
         vacancies = [
             {"employer": {"name": "Company A"}},
@@ -796,7 +796,7 @@ class TestVacancyStatsExtendedAnalyzeMethods:
         assert "Company A" in result["employer_names"]
         assert "Company B" in result["employer_names"]
 
-    def test_analyze_company_mapping_empty_list(self):
+    def test_analyze_company_mapping_empty_list(self) -> None:
         """Покрытие: анализ пустого списка"""
         result = VacancyStatsExtended.analyze_company_mapping([])
         
@@ -807,7 +807,7 @@ class TestVacancyStatsExtendedAnalyzeMethods:
         assert result["unique_employers"] == 0
         assert result["employer_names"] == []
 
-    def test_analyze_company_mapping_no_valid_employers(self):
+    def test_analyze_company_mapping_no_valid_employers(self) -> None:
         """Покрытие: нет валидных работодателей"""
         vacancies = [{}, {"company": None}]
         
@@ -864,7 +864,7 @@ class TestVacancyStatsExtendedAnalyzeMethods:
 class TestEdgeCasesAndIntegration:
     """Тесты для граничных случаев и интеграции"""
 
-    def test_all_methods_with_empty_data(self):
+    def test_all_methods_with_empty_data(self) -> None:
         """Покрытие: все методы с пустыми данными"""
         stats = VacancyStats()
         
@@ -880,7 +880,7 @@ class TestEdgeCasesAndIntegration:
         assert VacancyStatsExtended.get_company_distribution([]) == {}
         assert VacancyStatsExtended.analyze_company_mapping([])["total_vacancies"] == 0
 
-    def test_complex_integration_scenario(self):
+    def test_complex_integration_scenario(self) -> None:
         """Покрытие: сложный интеграционный сценарий"""
         # Создаем комплексный набор данных
         vacancies = []
@@ -914,7 +914,7 @@ class TestEdgeCasesAndIntegration:
 class TestUncoveredLines:
     """Тесты для покрытия непокрытых строк (57-60, 129, 136, 140, 233)"""
 
-    def test_calculate_salary_statistics_hasattr_exception(self):
+    def test_calculate_salary_statistics_hasattr_exception(self) -> None:
         """Покрытие строк 57-60: except (AttributeError, TypeError)"""
         stats = VacancyStats()
         
@@ -1006,7 +1006,7 @@ class TestUncoveredLines:
         # Поскольку employer - строка без get_id(), попадет в "unknown" -> "Неизвестная компания"
         assert any("Неизвестная компания" in call for call in calls)
 
-    def test_extract_company_name_firm_id_assignment(self):
+    def test_extract_company_name_firm_id_assignment(self) -> None:
         """Покрытие extracting company name из firm_name SuperJob вакансии"""
         
         # Вакансия как словарь с firm_name и firm_id (SuperJob формат)
@@ -1021,7 +1021,7 @@ class TestUncoveredLines:
         # Функция должна вернуть firm_name как fallback
         assert result == "SuperJob Assignment Test"
 
-    def test_extract_company_name_client_id_assignment(self):
+    def test_extract_company_name_client_id_assignment(self) -> None:
         """Покрытие строки 233: vacancy.employer_id = str(firm_id) с client_id"""
         # Создаем мок объект
         vacancy_mock = MagicMock()

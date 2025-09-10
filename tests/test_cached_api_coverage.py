@@ -19,7 +19,7 @@ import json
 import logging
 import time
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Any
 from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
@@ -31,7 +31,7 @@ from src.api_modules.cached_api import CachedAPI
 class TestCachedAPI:
     """100% покрытие класса CachedAPI"""
 
-    def test_class_exists(self):
+    def test_class_exists(self) -> None:
         """Покрытие: существование класса"""
         assert CachedAPI is not None
         # Проверяем наследование
@@ -40,7 +40,7 @@ class TestCachedAPI:
         assert issubclass(CachedAPI, BaseJobAPI)
         assert issubclass(CachedAPI, ABC)
 
-    def test_class_is_abstract(self):
+    def test_class_is_abstract(self) -> None:
         """Покрытие: класс является абстрактным"""
         assert getattr(CachedAPI, '__abstractmethods__') is not None
         # Должно быть 4 абстрактных метода + унаследованные от BaseJobAPI
@@ -53,7 +53,7 @@ class TestCachedAPI:
         }
         assert expected_methods.issubset(abstract_methods)
 
-    def test_cannot_instantiate_abstract_class(self):
+    def test_cannot_instantiate_abstract_class(self) -> None:
         """Покрытие: нельзя создать экземпляр абстрактного класса"""
         with pytest.raises(TypeError) as exc_info:
             CachedAPI("/mock/cache")
@@ -84,7 +84,7 @@ class TestCachedAPIImplementation:
         
         return ConcreteCachedAPI
 
-    def test_init_successful(self, mock_concrete_api):
+    def test_init_successful(self, mock_concrete_api: Any) -> None:
         """Покрытие: успешная инициализация"""
         # Простая проверка создания класса
         with patch('src.api_modules.base_api.BaseJobAPI.__init__', return_value=None):
@@ -94,7 +94,7 @@ class TestCachedAPIImplementation:
                     # Проверяем что объект создался
                     assert api is not None
 
-    def test_init_cache_method(self, mock_concrete_api):
+    def test_init_cache_method(self, mock_concrete_api: Any) -> None:
         """Покрытие: метод _init_cache()"""
         # Простая проверка _init_cache через создание объекта
         with patch('src.api_modules.base_api.BaseJobAPI.__init__', return_value=None):
@@ -106,7 +106,7 @@ class TestCachedAPIImplementation:
 
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_cached_api_request_decorator(self, mock_file_cache, mock_path, mock_concrete_api):
+    def test_cached_api_request_decorator(self, mock_file_cache: Any, mock_path: Any, mock_concrete_api: Any) -> None:
         """Покрытие: метод _cached_api_request с декоратором @simple_cache"""
         mock_path_instance = MagicMock()
         mock_path.return_value = mock_path_instance
@@ -125,7 +125,7 @@ class TestCachedAPIImplementation:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_connect_to_api_memory_cache_hit(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_connect_to_api_memory_cache_hit(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: __connect_to_api с попаданием в кэш памяти"""
         mock_path_instance = MagicMock()
         mock_path.return_value = mock_path_instance
@@ -144,7 +144,7 @@ class TestCachedAPIImplementation:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path') 
     @patch('src.api_modules.cached_api.FileCache')
-    def test_connect_to_api_memory_cache_exception(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_connect_to_api_memory_cache_exception(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: __connect_to_api с ошибкой в кэше памяти"""
         mock_path_instance = MagicMock()
         mock_path.return_value = mock_path_instance
@@ -173,7 +173,7 @@ class TestCachedAPIImplementation:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_connect_to_api_file_cache_hit(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_connect_to_api_file_cache_hit(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: __connect_to_api с попаданием в файловый кэш"""
         mock_path_instance = MagicMock()
         mock_path.return_value = mock_path_instance
@@ -197,7 +197,7 @@ class TestCachedAPIImplementation:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_connect_to_api_real_request_success(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_connect_to_api_real_request_success(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: __connect_to_api с реальным запросом к API (успешно)"""
         mock_path_instance = MagicMock()
         mock_path.return_value = mock_path_instance
@@ -230,7 +230,7 @@ class TestCachedAPIImplementation:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_connect_to_api_incomplete_response(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_connect_to_api_incomplete_response(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: __connect_to_api с неполным ответом API"""
         mock_path_instance = MagicMock()
         mock_path.return_value = mock_path_instance
@@ -260,7 +260,7 @@ class TestCachedAPIImplementation:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_connect_to_api_invalid_structure(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_connect_to_api_invalid_structure(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: __connect_to_api с невалидной структурой данных"""
         mock_path_instance = MagicMock()
         mock_path.return_value = mock_path_instance
@@ -290,7 +290,7 @@ class TestCachedAPIImplementation:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_connect_to_api_connection_error(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_connect_to_api_connection_error(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: __connect_to_api с ошибкой соединения"""
         mock_path_instance = MagicMock()
         mock_path.return_value = mock_path_instance
@@ -317,7 +317,7 @@ class TestCachedAPIImplementation:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_connect_to_api_timeout_error(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_connect_to_api_timeout_error(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: __connect_to_api с ошибкой таймаута"""
         mock_path_instance = MagicMock()
         mock_path.return_value = mock_path_instance
@@ -343,7 +343,7 @@ class TestCachedAPIImplementation:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_connect_to_api_unknown_error(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_connect_to_api_unknown_error(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: __connect_to_api с неизвестной ошибкой"""
         mock_path_instance = MagicMock()
         mock_path.return_value = mock_path_instance
@@ -390,7 +390,7 @@ class TestCachedAPIClearCache:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_clear_cache_success_with_memory_cache(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_clear_cache_success_with_memory_cache(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: успешная очистка кэша с кэшем в памяти"""
         mock_path_instance = MagicMock()
         mock_path.return_value = mock_path_instance
@@ -420,7 +420,7 @@ class TestCachedAPIClearCache:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_clear_cache_success_without_memory_cache(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_clear_cache_success_without_memory_cache(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: очистка кэша без кэша в памяти"""
         mock_path_instance = MagicMock()
         mock_path.return_value = mock_path_instance
@@ -445,7 +445,7 @@ class TestCachedAPIClearCache:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_clear_cache_exception(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_clear_cache_exception(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: ошибка при очистке кэша"""
         mock_path_instance = MagicMock()
         mock_path.return_value = mock_path_instance
@@ -487,7 +487,7 @@ class TestCachedAPICacheStatus:
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
     @patch('src.api_modules.cached_api.time.time')
-    def test_get_cache_status_comprehensive(self, mock_time, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_get_cache_status_comprehensive(self, mock_time: Any, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: полный статус кэша с файлами"""
         # Мокируем текущее время
         mock_time.return_value = 1000000.0
@@ -563,7 +563,7 @@ class TestCachedAPICacheStatus:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_get_cache_status_empty_cache(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_get_cache_status_empty_cache(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: статус пустого кэша"""
         mock_cache_dir = MagicMock()
         mock_cache_dir.exists.return_value = True
@@ -594,7 +594,7 @@ class TestCachedAPICacheStatus:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_get_cache_status_invalid_files(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_get_cache_status_invalid_files(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: статус с невалидными файлами кэша"""
         mock_cache_dir = MagicMock()
         mock_cache_dir.exists.return_value = True
@@ -639,7 +639,7 @@ class TestCachedAPICacheStatus:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_get_cache_status_exception(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_get_cache_status_exception(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: ошибка при получении статуса кэша"""
         mock_cache_dir = MagicMock()
         mock_cache_dir.exists.side_effect = Exception("File system error")
@@ -680,7 +680,7 @@ class TestCachedAPIValidationMethods:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_is_complete_response_valid(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_is_complete_response_valid(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: _is_complete_response с валидным ответом"""
         with patch('src.api_modules.base_api.BaseJobAPI.__init__', return_value=None):
             api = mock_concrete_api("/cache")
@@ -700,7 +700,7 @@ class TestCachedAPIValidationMethods:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_is_complete_response_not_dict(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_is_complete_response_not_dict(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: _is_complete_response с не словарем"""
         with patch('src.api_modules.base_api.BaseJobAPI.__init__', return_value=None):
             api = mock_concrete_api("/cache")
@@ -711,7 +711,7 @@ class TestCachedAPIValidationMethods:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_is_complete_response_no_items(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_is_complete_response_no_items(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: _is_complete_response без поля items"""
         with patch('src.api_modules.base_api.BaseJobAPI.__init__', return_value=None):
             api = mock_concrete_api("/cache")
@@ -723,7 +723,7 @@ class TestCachedAPIValidationMethods:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_is_complete_response_incomplete_first_page(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_is_complete_response_incomplete_first_page(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: _is_complete_response с неполной первой страницей"""
         with patch('src.api_modules.base_api.BaseJobAPI.__init__', return_value=None):
             api = mock_concrete_api("/cache")
@@ -743,7 +743,7 @@ class TestCachedAPIValidationMethods:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_is_complete_response_empty_with_found(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_is_complete_response_empty_with_found(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: _is_complete_response с пустым списком при found > 0"""
         with patch('src.api_modules.base_api.BaseJobAPI.__init__', return_value=None):
             api = mock_concrete_api("/cache")
@@ -762,7 +762,7 @@ class TestCachedAPIValidationMethods:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_is_complete_response_exception(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_is_complete_response_exception(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: _is_complete_response с исключением"""
         with patch('src.api_modules.base_api.BaseJobAPI.__init__', return_value=None):
             api = mock_concrete_api("/cache")
@@ -782,7 +782,7 @@ class TestCachedAPIValidationMethods:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_validate_response_structure_valid(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_validate_response_structure_valid(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: _validate_response_structure с валидными данными"""
         with patch('src.api_modules.base_api.BaseJobAPI.__init__', return_value=None):
             api = mock_concrete_api("/cache")
@@ -801,7 +801,7 @@ class TestCachedAPIValidationMethods:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_validate_response_structure_not_dict(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_validate_response_structure_not_dict(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: _validate_response_structure с не словарем"""
         with patch('src.api_modules.base_api.BaseJobAPI.__init__', return_value=None):
             api = mock_concrete_api("/cache")
@@ -812,7 +812,7 @@ class TestCachedAPIValidationMethods:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_validate_response_structure_items_not_list(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_validate_response_structure_items_not_list(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: _validate_response_structure с items не списком"""
         with patch('src.api_modules.base_api.BaseJobAPI.__init__', return_value=None):
             api = mock_concrete_api("/cache")
@@ -824,7 +824,7 @@ class TestCachedAPIValidationMethods:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_validate_response_structure_invalid_vacancy(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_validate_response_structure_invalid_vacancy(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: _validate_response_structure с невалидной вакансией"""
         with patch('src.api_modules.base_api.BaseJobAPI.__init__', return_value=None):
             api = mock_concrete_api("/cache")
@@ -843,7 +843,7 @@ class TestCachedAPIValidationMethods:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_validate_response_structure_exception(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_validate_response_structure_exception(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: _validate_response_structure с исключением"""
         with patch('src.api_modules.base_api.BaseJobAPI.__init__', return_value=None):
             api = mock_concrete_api("/cache")
@@ -859,7 +859,7 @@ class TestCachedAPIValidationMethods:
     @patch('src.api_modules.cached_api.logger')
     @patch('src.api_modules.cached_api.Path')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_validate_response_structure_large_sample(self, mock_file_cache, mock_path, mock_logger, mock_concrete_api):
+    def test_validate_response_structure_large_sample(self, mock_file_cache: Any, mock_path: Any, mock_logger: Any, mock_concrete_api: Any) -> None:
         """Покрытие: _validate_response_structure с большим количеством вакансий (проверяется только 3)"""
         with patch('src.api_modules.base_api.BaseJobAPI.__init__', return_value=None):
             api = mock_concrete_api("/cache")
@@ -883,7 +883,7 @@ class TestCachedAPIValidationMethods:
 class TestAbstractMethods:
     """Тестирование абстрактных методов"""
 
-    def test_abstract_methods_enforcement(self):
+    def test_abstract_methods_enforcement(self) -> None:
         """Покрытие: принуждение реализации абстрактных методов"""
         
         # Проверяем что отсутствие _get_empty_response вызывает ошибку
@@ -902,7 +902,7 @@ class TestAbstractMethods:
         
         assert "_get_empty_response" in str(exc_info.value) or "abstract" in str(exc_info.value)
 
-    def test_all_abstract_methods_must_be_implemented(self):
+    def test_all_abstract_methods_must_be_implemented(self) -> None:
         """Покрытие: все абстрактные методы должны быть реализованы"""
         
         with pytest.raises(TypeError) as exc_info:

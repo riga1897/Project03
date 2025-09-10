@@ -8,6 +8,7 @@
 
 from unittest.mock import MagicMock, patch
 import pytest
+from typing import Any
 from src.utils.db_manager_demo import DBManagerDemo
 
 
@@ -15,7 +16,7 @@ class TestDBManagerDemoAdvancedCoverage:
     """Дополнительные тесты для покрытия оставшихся строк"""
     
     @patch('src.config.target_companies.TargetCompanies')  
-    def test_show_target_companies_edge_cases(self, mock_target_companies):
+    def test_show_target_companies_edge_cases(self, mock_target_companies: Any) -> None:
         """Покрытие: различные комбинации данных компаний (строки 85-103)"""
         # Создаем компании с различными комбинациями полей
         mock_company1 = MagicMock()
@@ -49,7 +50,7 @@ class TestDBManagerDemoAdvancedCoverage:
         mock_target_companies.get_all_companies.assert_called_once()
     
     @patch('src.config.target_companies.TargetCompanies')
-    def test_demo_companies_detailed_processing(self, mock_target_companies):
+    def test_demo_companies_detailed_processing(self, mock_target_companies: Any) -> None:
         """Покрытие: детальная обработка в demo_companies_and_vacancies_count (строки 124-155)"""
         # 5 компаний для полного покрытия логики
         mock_companies = [MagicMock() for _ in range(5)]
@@ -77,7 +78,7 @@ class TestDBManagerDemoAdvancedCoverage:
         mock_print.assert_any_call("   • Всего вакансий от целевых компаний: 40")
         mock_print.assert_any_call("   • Покрытие целевых компаний: 60.0%")
     
-    def test_demo_vacancies_with_higher_salary_large_list(self):
+    def test_demo_vacancies_with_higher_salary_large_list(self) -> None:
         """Покрытие: обработка большого списка высокооплачиваемых вакансий (строки 253-256)"""
         # Создаем больше 15 вакансий для тестирования обрезки
         large_vacancy_list = []
@@ -98,7 +99,7 @@ class TestDBManagerDemoAdvancedCoverage:
         # Проверяем что показано сообщение об обрезке (строки 253-254)
         mock_print.assert_any_call("... и еще 5 вакансий")
     
-    def test_demo_vacancies_with_higher_salary_detailed_exception(self):
+    def test_demo_vacancies_with_higher_salary_detailed_exception(self) -> None:
         """Покрытие: детальная обработка исключений (строки 264-273)"""
         mock_db_manager = MagicMock()
         mock_db_manager.get_vacancies_with_higher_salary.side_effect = Exception("Detailed error")
@@ -118,7 +119,7 @@ class TestDBManagerDemoAdvancedCoverage:
         # Проверяем что был хотя бы один print вызов для покрытия exception блока
         assert mock_print.call_count >= 1
     
-    def test_demo_vacancies_with_keyword_large_list(self):
+    def test_demo_vacancies_with_keyword_large_list(self) -> None:
         """Покрытие: обработка большого списка по ключевым словам (строки 303-305)"""
         # Создаем больше 15 вакансий для первого ключевого слова
         large_vacancy_list = []
@@ -145,7 +146,7 @@ class TestDBManagerDemoAdvancedCoverage:
         # Проверяем сообщение об обрезке для python (строки 303-304)
         mock_print.assert_any_call("... и еще 5 вакансий")
     
-    def test_demo_vacancies_with_keyword_detailed_exception(self):
+    def test_demo_vacancies_with_keyword_detailed_exception(self) -> None:
         """Покрытие: детальная обработка исключений поиска (строки 311-316)"""
         mock_db_manager = MagicMock()
         mock_db_manager.get_vacancies_with_keyword.side_effect = Exception("Search failed")
@@ -161,7 +162,7 @@ class TestDBManagerDemoAdvancedCoverage:
         # Проверяем что было достаточно print вызовов для покрытия exception блоков
         assert mock_print.call_count >= 10  # По несколько вызовов для каждого ключевого слова
     
-    def test_module_level_execution_coverage(self):
+    def test_module_level_execution_coverage(self) -> None:
         """Покрытие: выполнение модуля на уровне __main__ (строка 386)"""
         # Тестируем блок if __name__ == "__main__":
         with patch('src.utils.db_manager_demo.main') as mock_main:
@@ -191,7 +192,7 @@ class TestDBManagerDemoAdvancedCoverage:
 class TestDBManagerDemoCompleteScenarios:
     """Полные сценарии для 100% покрытия"""
     
-    def test_complete_demo_workflow_with_all_data(self):
+    def test_complete_demo_workflow_with_all_data(self) -> None:
         """Комплексный тест всего workflow с реальными данными"""
         mock_db_manager = MagicMock()
         

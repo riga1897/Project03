@@ -46,7 +46,7 @@ class TestVacancyStorageServiceInit:
     @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
     @patch('src.storage.services.vacancy_storage_service.DeduplicationService')
     @patch('src.storage.services.vacancy_storage_service.TargetCompanies')
-    def test_init_with_default_db_manager(self, mock_target_companies, mock_dedup, mock_coordinator, mock_db_manager):
+    def test_init_with_default_db_manager(self, mock_target_companies: Any, mock_dedup: Any, mock_coordinator: Any, mock_db_manager: Any) -> None:
         """Покрытие: инициализация с db_manager=None"""
         mock_target_companies.get_all_companies.return_value = ["Company1", "Company2"]
         mock_db_instance = Mock()
@@ -63,7 +63,7 @@ class TestVacancyStorageServiceInit:
     @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
     @patch('src.storage.services.vacancy_storage_service.DeduplicationService')
     @patch('src.storage.services.vacancy_storage_service.TargetCompanies')
-    def test_init_with_custom_db_manager(self, mock_target_companies, mock_dedup, mock_coordinator):
+    def test_init_with_custom_db_manager(self, mock_target_companies: Any, mock_dedup: Any, mock_coordinator: Any) -> None:
         """Покрытие: инициализация с кастомным db_manager"""
         mock_target_companies.get_all_companies.return_value = []
         custom_db_manager = Mock()
@@ -78,7 +78,7 @@ class TestVacancyStorageServiceInit:
     @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
     @patch('src.storage.services.vacancy_storage_service.DeduplicationService')
     @patch('src.storage.services.vacancy_storage_service.TargetCompanies')
-    def test_should_filter_by_salary_true_cases(self, mock_target, mock_dedup, mock_coord, mock_db):
+    def test_should_filter_by_salary_true_cases(self, mock_target: Any, mock_dedup: Any, mock_coord: Any, mock_db: Any) -> None:
         """Покрытие: _should_filter_by_salary возвращает True"""
         mock_target.get_all_companies.return_value = []
         service = VacancyStorageService()
@@ -90,7 +90,7 @@ class TestVacancyStorageServiceInit:
     @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
     @patch('src.storage.services.vacancy_storage_service.DeduplicationService')
     @patch('src.storage.services.vacancy_storage_service.TargetCompanies')
-    def test_should_filter_by_salary_false_cases(self, mock_target, mock_dedup, mock_coord, mock_db):
+    def test_should_filter_by_salary_false_cases(self, mock_target: Any, mock_dedup: Any, mock_coord: Any, mock_db: Any) -> None:
         """Покрытие: _should_filter_by_salary возвращает False"""
         mock_target.get_all_companies.return_value = []
         service = VacancyStorageService()
@@ -102,7 +102,7 @@ class TestVacancyStorageServiceProcessing:
     """Покрытие методов обработки и фильтрации вакансий"""
 
     @patch('src.storage.services.vacancy_storage_service.logger')
-    def test_filter_and_deduplicate_empty_list(self, mock_logger):
+    def test_filter_and_deduplicate_empty_list(self, mock_logger: Any) -> None:
         """Покрытие: обработка пустого списка вакансий"""
         service = VacancyStorageService()
         result = service.filter_and_deduplicate_vacancies([])
@@ -111,7 +111,7 @@ class TestVacancyStorageServiceProcessing:
         mock_logger.info.assert_called_with("Получен пустой список вакансий")
 
     @patch('src.storage.services.vacancy_storage_service.logger')
-    def test_filter_and_deduplicate_success_path(self, mock_logger):
+    def test_filter_and_deduplicate_success_path(self, mock_logger: Any) -> None:
         """Покрытие: успешная обработка вакансий"""
         service = VacancyStorageService()
         
@@ -135,7 +135,7 @@ class TestVacancyStorageServiceProcessing:
                 )
 
     @patch('src.storage.services.vacancy_storage_service.logger')
-    def test_filter_and_deduplicate_coordinator_error_fallback(self, mock_logger):
+    def test_filter_and_deduplicate_coordinator_error_fallback(self, mock_logger: Any) -> None:
         """Покрытие: ошибка в координаторе, использование fallback"""
         service = VacancyStorageService()
         vacancy1 = create_test_vacancy("1", "Test")
@@ -154,7 +154,7 @@ class TestVacancyStorageServiceProcessing:
                 mock_legacy.assert_called_once_with(test_vacancies)
 
     @patch('src.storage.services.vacancy_storage_service.logger')
-    def test_legacy_filter_and_deduplicate_success(self, mock_logger):
+    def test_legacy_filter_and_deduplicate_success(self, mock_logger: Any) -> None:
         """Покрытие: успешная legacy обработка"""
         service = VacancyStorageService()
         vacancy1 = create_test_vacancy("1", "Test")
@@ -176,7 +176,7 @@ class TestVacancyStorageServiceCompanyData:
     """Покрытие методов работы с данными компаний"""
 
     @patch('src.storage.services.vacancy_storage_service.logger')
-    def test_enrich_with_company_data_success(self, mock_logger):
+    def test_enrich_with_company_data_success(self, mock_logger: Any) -> None:
         """Покрытие: успешное обогащение данными компаний"""
         service = VacancyStorageService()
         
@@ -194,7 +194,7 @@ class TestVacancyStorageServiceCompanyData:
                 assert result[0].company_id == 456
 
     @patch('src.storage.services.vacancy_storage_service.logger')
-    def test_get_company_id_mapping_success(self, mock_logger):
+    def test_get_company_id_mapping_success(self, mock_logger: Any) -> None:
         """Покрытие: успешное получение соответствий ID компаний"""
         service = VacancyStorageService()
         
@@ -223,7 +223,7 @@ class TestVacancyStorageServiceCompanyData:
             expected = {"hh123": 1, "sj456": 2}
             assert result == expected
 
-    def test_find_company_id_with_dict_employer(self):
+    def test_find_company_id_with_dict_employer(self) -> None:
         """Покрытие: поиск ID компании с employer как словарь"""
         service = VacancyStorageService()
         
@@ -235,7 +235,7 @@ class TestVacancyStorageServiceCompanyData:
         
         assert result == 456
 
-    def test_find_company_id_no_employer(self):
+    def test_find_company_id_no_employer(self) -> None:
         """Покрытие: поиск ID компании без employer"""
         service = VacancyStorageService()
         
@@ -251,7 +251,7 @@ class TestVacancyStorageServiceSaving:
     """Покрытие методов сохранения вакансий"""
 
     @patch('src.storage.services.vacancy_storage_service.logger')
-    def test_add_vacancy_batch_optimized_empty_list(self, mock_logger):
+    def test_add_vacancy_batch_optimized_empty_list(self, mock_logger: Any) -> None:
         """Покрытие: пакетное добавление пустого списка"""
         service = VacancyStorageService()
         
@@ -260,7 +260,7 @@ class TestVacancyStorageServiceSaving:
         assert result == []
 
     @patch('src.storage.services.vacancy_storage_service.logger')
-    def test_add_vacancy_batch_optimized_success(self, mock_logger):
+    def test_add_vacancy_batch_optimized_success(self, mock_logger: Any) -> None:
         """Покрытие: успешное пакетное сохранение"""
         service = VacancyStorageService()
         
@@ -296,7 +296,7 @@ class TestVacancyStorageServiceSaving:
                     assert len(result) == 1
                     assert "Успешно сохранено 1 вакансий" in result[0]
 
-    def test_save_vacancies_single_vacancy(self):
+    def test_save_vacancies_single_vacancy(self) -> None:
         """Покрытие: сохранение одной вакансии"""
         service = VacancyStorageService()
         
@@ -315,7 +315,7 @@ class TestVacancyStorageServiceLoading:
     """Покрытие методов загрузки и конвертации данных"""
 
     @patch('src.storage.services.vacancy_storage_service.logger')
-    def test_load_vacancies_success(self, mock_logger):
+    def test_load_vacancies_success(self, mock_logger: Any) -> None:
         """Покрытие: успешная загрузка вакансий"""
         service = VacancyStorageService()
         
@@ -340,7 +340,7 @@ class TestVacancyStorageServiceLoading:
                 assert result[0] == mock_vacancy
 
     @patch('src.storage.services.vacancy_storage_service.logger')
-    def test_convert_dict_to_vacancy_full_data(self, mock_logger):
+    def test_convert_dict_to_vacancy_full_data(self, mock_logger: Any) -> None:
         """Покрытие: конвертация полных данных в Vacancy"""
         service = VacancyStorageService()
         
@@ -374,7 +374,7 @@ class TestVacancyStorageServiceUtilityMethods:
     """Покрытие служебных и делегирующих методов"""
 
     @patch('src.storage.services.vacancy_storage_service.logger')
-    def test_get_vacancies_count_success(self, mock_logger):
+    def test_get_vacancies_count_success(self, mock_logger: Any) -> None:
         """Покрытие: успешное получение количества вакансий"""
         service = VacancyStorageService()
         
@@ -399,7 +399,7 @@ class TestVacancyStorageServiceUtilityMethods:
             
             assert result == 42
 
-    def test_create_tables_delegate(self):
+    def test_create_tables_delegate(self) -> None:
         """Покрытие: делегирование create_tables к DBManager"""
         service = VacancyStorageService()
         
@@ -411,7 +411,7 @@ class TestVacancyStorageServiceUtilityMethods:
             assert result is True
             mock_create.assert_called_once()
 
-    def test_delete_vacancy_success(self):
+    def test_delete_vacancy_success(self) -> None:
         """Покрытие: успешное удаление вакансии"""
         service = VacancyStorageService()
         
@@ -436,7 +436,7 @@ class TestVacancyStorageServiceUtilityMethods:
             
             assert result is True
 
-    def test_get_storage_stats_success(self):
+    def test_get_storage_stats_success(self) -> None:
         """Покрытие: получение статистики хранилища"""
         service = VacancyStorageService()
         
@@ -455,7 +455,7 @@ class TestVacancyStorageServiceUtilityMethods:
                     assert result["total_companies"] == 2
                     assert result["connection_status"] is True
 
-    def test_get_vacancies_abstract_method(self):
+    def test_get_vacancies_abstract_method(self) -> None:
         """Покрытие: абстрактный метод get_vacancies"""
         service = VacancyStorageService()
         
@@ -467,7 +467,7 @@ class TestVacancyStorageServiceUtilityMethods:
             assert result == []
             mock_load.assert_called_once_with(filters=None)
 
-    def test_update_vacancy_success(self):
+    def test_update_vacancy_success(self) -> None:
         """Покрытие: успешное обновление вакансии"""
         service = VacancyStorageService()
         
@@ -492,7 +492,7 @@ class TestVacancyStorageServiceUtilityMethods:
             
             assert result is True
 
-    def test_update_vacancy_no_updates(self):
+    def test_update_vacancy_no_updates(self) -> None:
         """Покрытие: обновление вакансии без изменений"""
         service = VacancyStorageService()
         
@@ -504,7 +504,7 @@ class TestVacancyStorageServiceUtilityMethods:
 class TestVacancyStorageServiceDiagnostics:
     """Покрытие метода диагностики зарплат"""
 
-    def test_log_salary_diagnostics_empty_list(self, capsys):
+    def test_log_salary_diagnostics_empty_list(self, capsys: Any) -> None:
         """Покрытие: диагностика пустого списка вакансий"""
         service = VacancyStorageService()
         
@@ -513,7 +513,7 @@ class TestVacancyStorageServiceDiagnostics:
         captured = capsys.readouterr()
         assert "🔍 [TEST_STAGE] Список вакансий пуст" in captured.out
 
-    def test_log_salary_diagnostics_with_dict_salary(self, capsys):
+    def test_log_salary_diagnostics_with_dict_salary(self, capsys: Any) -> None:
         """Покрытие: диагностика вакансий с зарплатой как словарь"""
         service = VacancyStorageService()
         
@@ -530,7 +530,7 @@ class TestVacancyStorageServiceDiagnostics:
         assert "🔍 [WITH_SALARY] Анализ 1 вакансий:" in captured.out
         assert "от 100,000 до 150,000 RUR" in captured.out
 
-    def test_log_salary_diagnostics_no_salary(self, capsys):
+    def test_log_salary_diagnostics_no_salary(self, capsys: Any) -> None:
         """Покрытие: диагностика вакансий без зарплаты"""
         service = VacancyStorageService()
         

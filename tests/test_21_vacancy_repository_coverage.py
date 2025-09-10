@@ -15,8 +15,7 @@
 """
 
 import pytest
-from typing import Optional, Dict, Any, List
-from unittest.mock import patch, MagicMock, Mock
+from unittest.mock import patch, Mock
 
 # Импорты из реального кода для покрытия
 from src.storage.components.vacancy_repository import VacancyRepository
@@ -41,26 +40,26 @@ class MockAbstractVacancy:
 
 class MockDatabaseConnection:
     """Mock объект для DatabaseConnection"""
-    def __init__(self):
+    def __init__(self) -> None:
         self.get_connection = Mock()
         self.connection = Mock()
         self.cursor = Mock()
-        
+
         # Настройка контекстного менеджера для подключения
         self.connection.__enter__ = Mock(return_value=self.connection)
         self.connection.__exit__ = Mock(return_value=None)
-        
+
         # Настройка контекстного менеджера для курсора
         self.cursor.__enter__ = Mock(return_value=self.cursor)
         self.cursor.__exit__ = Mock(return_value=None)
-        
+
         self.connection.cursor.return_value = self.cursor
         self.get_connection.return_value = self.connection
 
 
 class MockVacancyValidator:
     """Mock объект для VacancyValidator"""
-    def __init__(self):
+    def __init__(self) -> None:
         self.validate_vacancy = Mock(return_value=True)
         self.get_validation_errors = Mock(return_value=[])
         self.validate_batch = Mock(return_value={})
@@ -69,13 +68,13 @@ class MockVacancyValidator:
 class TestVacancyRepository:
     """100% покрытие VacancyRepository класса"""
 
-    def test_init_with_dependencies(self):
+    def test_init_with_dependencies(self) -> None:
         """Покрытие инициализации с зависимостями"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         repo = VacancyRepository(db_connection, validator)
-        
+
         assert repo._db_connection == db_connection
         assert repo._validator == validator
 
@@ -86,21 +85,21 @@ class TestVacancyRepository:
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
         validator.validate_vacancy.return_value = True
-        
+
         vacancy = MockAbstractVacancy("test_id_1")
-        
+
         repo = VacancyRepository(db_connection, validator)
         repo.add_vacancy(vacancy)
-        
+
         # Проверяем, что валидация была вызвана
         validator.validate_vacancy.assert_called_once_with(vacancy)
-        
+
         # Проверяем, что execute был вызван
         db_connection.cursor.execute.assert_called_once()
-        
+
         # Проверяем, что commit был вызван
         db_connection.connection.commit.assert_called_once()
-        
+
         # Проверяем логирование
         mock_logger.debug.assert_called()
 
@@ -111,14 +110,14 @@ class TestVacancyRepository:
         validator = MockVacancyValidator()
         validator.validate_vacancy.return_value = False
         validator.get_validation_errors.return_value = ["Ошибка 1", "Ошибка 2"]
-        
+
         vacancy = MockAbstractVacancy("test_id_1")
-        
+
         repo = VacancyRepository(db_connection, validator)
-        
+
         with pytest.raises(ValueError, match="Вакансия не прошла валидацию"):
             repo.add_vacancy(vacancy)
-        
+
         # Проверяем, что валидация была вызвана
         validator.validate_vacancy.assert_called_once_with(vacancy)
         validator.get_validation_errors.assert_called_once()
@@ -129,17 +128,17 @@ class TestVacancyRepository:
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
         validator.validate_vacancy.return_value = True
-        
+
         # Имитируем ошибку базы данных
         db_connection.cursor.execute.side_effect = Exception("Database error")
-        
+
         vacancy = MockAbstractVacancy("test_id_1")
-        
+
         repo = VacancyRepository(db_connection, validator)
-        
+
         with pytest.raises(Exception, match="Database error"):
             repo.add_vacancy(vacancy)
-        
+
         mock_logger.error.assert_called()
 
     @patch('src.storage.components.vacancy_repository.logger')
@@ -148,7 +147,7 @@ class TestVacancyRepository:
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
         validator.validate_vacancy.return_value = True
-        
+
         vacancy = MockAbstractVacancy("test_id_1")
         # Добавляем объект зарплаты
         salary_mock = Mock()
@@ -156,10 +155,10 @@ class TestVacancyRepository:
         salary_mock.salary_to = 150000
         salary_mock.currency = "RUB"
         vacancy.salary = salary_mock
-        
+
         repo = VacancyRepository(db_connection, validator)
         repo.add_vacancy(vacancy)
-        
+
         # Проверяем, что данные зарплаты были переданы в execute
         db_connection.cursor.execute.assert_called_once()
         call_args = db_connection.cursor.execute.call_args[0]
@@ -175,21 +174,21 @@ class TestVacancyRepository:
         """Покрытие получения вакансий без фильтров"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         # Настройка mock для результата базы данных
         mock_rows = [
             {'vacancy_id': '1', 'title': 'Job 1'},
             {'vacancy_id': '2', 'title': 'Job 2'}
         ]
         db_connection.cursor.fetchall.return_value = mock_rows
-        
+
         # Настройка mock для Vacancy.from_dict
         mock_vacancy_instance = Mock()
         mock_vacancy_class.from_dict.return_value = mock_vacancy_instance
-        
+
         repo = VacancyRepository(db_connection, validator)
         result = repo.get_vacancies()
-        
+
         assert len(result) == 2
         db_connection.cursor.execute.assert_called_once()
         # Проверяем, что базовый запрос был выполнен
@@ -202,31 +201,31 @@ class TestVacancyRepository:
         """Покрытие получения вакансий с фильтрами"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         # Настройка mock для результата базы данных
         mock_rows = [{'vacancy_id': '1', 'title': 'Job 1'}]
         db_connection.cursor.fetchall.return_value = mock_rows
-        
+
         mock_vacancy_instance = Mock()
         mock_vacancy_class.from_dict.return_value = mock_vacancy_instance
-        
+
         filters = {
             "company_id": 123,
             "min_salary": 100000,
             "source": "hh.ru"
         }
-        
+
         repo = VacancyRepository(db_connection, validator)
         result = repo.get_vacancies(filters)
-        
+
         assert len(result) == 1
         db_connection.cursor.execute.assert_called_once()
-        
+
         # Проверяем, что фильтры были применены
         call_args = db_connection.cursor.execute.call_args[0]
         query = call_args[0]
         params = call_args[1]
-        
+
         assert "WHERE" in query
         assert "company_id = %s" in query
         assert "salary_from >= %s OR salary_to >= %s" in query
@@ -240,15 +239,15 @@ class TestVacancyRepository:
         """Покрытие ошибки базы данных при получении вакансий"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         # Имитируем ошибку базы данных
         db_connection.cursor.execute.side_effect = Exception("Database error")
-        
+
         repo = VacancyRepository(db_connection, validator)
-        
+
         with pytest.raises(Exception, match="Database error"):
             repo.get_vacancies()
-        
+
         mock_logger.error.assert_called()
 
     @patch('src.storage.components.vacancy_repository.logger')
@@ -256,20 +255,20 @@ class TestVacancyRepository:
         """Покрытие успешного удаления вакансии"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         # Имитируем успешное удаление (1 строка затронута)
         db_connection.cursor.rowcount = 1
-        
+
         vacancy = MockAbstractVacancy("test_id_1")
-        
+
         repo = VacancyRepository(db_connection, validator)
         repo.delete_vacancy(vacancy)
-        
+
         db_connection.cursor.execute.assert_called_once()
         call_args = db_connection.cursor.execute.call_args[0]
         assert "DELETE FROM vacancies WHERE vacancy_id = %s" in call_args[0]
         assert "test_id_1" in call_args[1]
-        
+
         db_connection.connection.commit.assert_called_once()
         mock_logger.debug.assert_called()
 
@@ -278,15 +277,15 @@ class TestVacancyRepository:
         """Покрытие удаления несуществующей вакансии"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         # Имитируем неуспешное удаление (0 строк затронуто)
         db_connection.cursor.rowcount = 0
-        
+
         vacancy = MockAbstractVacancy("nonexistent_id")
-        
+
         repo = VacancyRepository(db_connection, validator)
         repo.delete_vacancy(vacancy)
-        
+
         db_connection.cursor.execute.assert_called_once()
         db_connection.connection.commit.assert_called_once()
         mock_logger.warning.assert_called()
@@ -296,59 +295,59 @@ class TestVacancyRepository:
         """Покрытие ошибки базы данных при удалении"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         # Имитируем ошибку базы данных
         db_connection.cursor.execute.side_effect = Exception("Database error")
-        
+
         vacancy = MockAbstractVacancy("test_id_1")
-        
+
         repo = VacancyRepository(db_connection, validator)
-        
+
         with pytest.raises(Exception, match="Database error"):
             repo.delete_vacancy(vacancy)
-        
+
         mock_logger.error.assert_called()
 
-    def test_check_vacancies_exist_batch_empty_list(self):
+    def test_check_vacancies_exist_batch_empty_list(self) -> None:
         """Покрытие проверки существования пустого списка"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         repo = VacancyRepository(db_connection, validator)
         result = repo.check_vacancies_exist_batch([])
-        
+
         assert result == {}
         # Убеждаемся, что база данных не вызывалась
         db_connection.cursor.execute.assert_not_called()
 
-    def test_check_vacancies_exist_batch_success(self):
+    def test_check_vacancies_exist_batch_success(self) -> None:
         """Покрытие успешной проверки существования вакансий"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         # Настройка mock для результата базы данных
         mock_rows = [
             {'vacancy_id': 'id_1'},
             {'vacancy_id': 'id_3'}
         ]
         db_connection.cursor.fetchall.return_value = mock_rows
-        
+
         vacancies = [
             MockAbstractVacancy("id_1"),
             MockAbstractVacancy("id_2"),
             MockAbstractVacancy("id_3")
         ]
-        
+
         repo = VacancyRepository(db_connection, validator)
         result = repo.check_vacancies_exist_batch(vacancies)
-        
+
         expected = {
             "id_1": True,
-            "id_2": False, 
+            "id_2": False,
             "id_3": True
         }
         assert result == expected
-        
+
         db_connection.cursor.execute.assert_called_once()
         call_args = db_connection.cursor.execute.call_args[0]
         assert "SELECT vacancy_id FROM vacancies WHERE vacancy_id IN" in call_args[0]
@@ -361,27 +360,27 @@ class TestVacancyRepository:
         """Покрытие ошибки базы данных при проверке существования"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         # Имитируем ошибку базы данных
         db_connection.cursor.execute.side_effect = Exception("Database error")
-        
+
         vacancies = [MockAbstractVacancy("id_1")]
-        
+
         repo = VacancyRepository(db_connection, validator)
-        
+
         with pytest.raises(Exception, match="Database error"):
             repo.check_vacancies_exist_batch(vacancies)
-        
+
         mock_logger.error.assert_called()
 
-    def test_add_vacancy_batch_optimized_empty_list(self):
+    def test_add_vacancy_batch_optimized_empty_list(self) -> None:
         """Покрытие пакетного добавления пустого списка"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         repo = VacancyRepository(db_connection, validator)
         result = repo.add_vacancy_batch_optimized([])
-        
+
         assert result == []
         # Убеждаемся, что валидация не вызывалась
         validator.validate_batch.assert_not_called()
@@ -391,21 +390,21 @@ class TestVacancyRepository:
         """Покрытие пакетного добавления без валидных вакансий"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         # Все вакансии невалидны
         validator.validate_batch.return_value = {
             "id_1": False,
             "id_2": False
         }
-        
+
         vacancies = [
             MockAbstractVacancy("id_1"),
             MockAbstractVacancy("id_2")
         ]
-        
+
         repo = VacancyRepository(db_connection, validator)
         result = repo.add_vacancy_batch_optimized(vacancies)
-        
+
         assert result == []
         validator.validate_batch.assert_called_once_with(vacancies)
         mock_logger.warning.assert_called()
@@ -416,23 +415,23 @@ class TestVacancyRepository:
         """Покрытие успешного пакетного добавления"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         # Часть вакансий валидна
         validator.validate_batch.return_value = {
             "id_1": True,
             "id_2": False,
             "id_3": True
         }
-        
+
         vacancies = [
             MockAbstractVacancy("id_1"),
             MockAbstractVacancy("id_2"),
             MockAbstractVacancy("id_3")
         ]
-        
+
         repo = VacancyRepository(db_connection, validator)
         result = repo.add_vacancy_batch_optimized(vacancies)
-        
+
         assert result == ["id_1", "id_3"]
         validator.validate_batch.assert_called_once_with(vacancies)
         mock_execute_values.assert_called_once()
@@ -445,9 +444,9 @@ class TestVacancyRepository:
         """Покрытие пакетного добавления с зарплатой"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         validator.validate_batch.return_value = {"id_1": True}
-        
+
         vacancy = MockAbstractVacancy("id_1")
         # Добавляем объект зарплаты
         salary_mock = Mock()
@@ -455,13 +454,13 @@ class TestVacancyRepository:
         salary_mock.salary_to = 120000
         salary_mock.currency = "USD"
         vacancy.salary = salary_mock
-        
+
         repo = VacancyRepository(db_connection, validator)
         result = repo.add_vacancy_batch_optimized([vacancy])
-        
+
         assert result == ["id_1"]
         mock_execute_values.assert_called_once()
-        
+
         # Проверяем, что данные зарплаты были переданы
         call_args = mock_execute_values.call_args[0]
         insert_data = call_args[2]  # Третий аргумент - данные для вставки
@@ -477,37 +476,37 @@ class TestVacancyRepository:
         """Покрытие ошибки базы данных при пакетном добавлении"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         validator.validate_batch.return_value = {"id_1": True}
-        
+
         # Имитируем ошибку базы данных
         mock_execute_values.side_effect = Exception("Database error")
-        
+
         vacancies = [MockAbstractVacancy("id_1")]
-        
+
         repo = VacancyRepository(db_connection, validator)
-        
+
         with pytest.raises(Exception, match="Database error"):
             repo.add_vacancy_batch_optimized(vacancies)
-        
+
         mock_logger.error.assert_called()
 
 
 class TestVacancyRepositoryEdgeCases:
     """Покрытие граничных случаев и особых сценариев"""
 
-    def test_vacancy_with_none_salary(self):
+    def test_vacancy_with_none_salary(self) -> None:
         """Покрытие обработки вакансии без зарплаты"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
         validator.validate_vacancy.return_value = True
-        
+
         vacancy = MockAbstractVacancy("test_id_1")
         vacancy.salary = None  # Явно устанавливаем None
-        
+
         repo = VacancyRepository(db_connection, validator)
         repo.add_vacancy(vacancy)
-        
+
         # Проверяем, что вызов прошел без ошибок
         db_connection.cursor.execute.assert_called_once()
         call_args = db_connection.cursor.execute.call_args[0]
@@ -515,12 +514,12 @@ class TestVacancyRepositoryEdgeCases:
         # Salary поля должны быть None
         assert None in params
 
-    def test_vacancy_with_missing_attributes(self):
+    def test_vacancy_with_missing_attributes(self) -> None:
         """Покрытие обработки вакансии с отсутствующими атрибутами"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
         validator.validate_vacancy.return_value = True
-        
+
         # Создаем минимальную вакансию
         vacancy = Mock()
         vacancy.vacancy_id = "minimal_id"
@@ -528,44 +527,44 @@ class TestVacancyRepositoryEdgeCases:
         vacancy.url = "https://minimal.com"
         vacancy.salary = None
         # Не устанавливаем остальные атрибуты
-        
+
         repo = VacancyRepository(db_connection, validator)
         repo.add_vacancy(vacancy)
-        
+
         # Проверяем, что getattr с None по умолчанию работает
         db_connection.cursor.execute.assert_called_once()
 
-    def test_get_vacancies_empty_result(self):
+    def test_get_vacancies_empty_result(self) -> None:
         """Покрытие получения пустого результата"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         # Пустой результат из базы данных
         db_connection.cursor.fetchall.return_value = []
-        
+
         repo = VacancyRepository(db_connection, validator)
         result = repo.get_vacancies()
-        
+
         assert result == []
         db_connection.cursor.execute.assert_called_once()
 
-    def test_get_vacancies_filters_with_none_values(self):
+    def test_get_vacancies_filters_with_none_values(self) -> None:
         """Покрытие фильтров с None значениями"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         db_connection.cursor.fetchall.return_value = []
-        
+
         filters = {
             "company_id": None,    # Должен игнорироваться
             "min_salary": 0,       # Должен игнорироваться (falsy)
             "source": "",          # Должен игнорироваться (falsy)
             "other_filter": "value" # Должен игнорироваться (не обрабатывается)
         }
-        
+
         repo = VacancyRepository(db_connection, validator)
         result = repo.get_vacancies(filters)
-        
+
         # Проверяем, что WHERE условий нет
         call_args = db_connection.cursor.execute.call_args[0]
         query = call_args[0]
@@ -581,48 +580,48 @@ class TestVacancyRepositoryIntegration:
         """Покрытие полного рабочего процесса"""
         db_connection = MockDatabaseConnection()
         validator = MockVacancyValidator()
-        
+
         # Настройка для различных операций
         validator.validate_vacancy.return_value = True
         validator.validate_batch.return_value = {"id_1": True, "id_2": True}
-        
+
         # Настройка для get_vacancies
         mock_rows = [{'vacancy_id': '1', 'title': 'Job 1'}]
         db_connection.cursor.fetchall.return_value = mock_rows
         mock_vacancy_instance = Mock()
         mock_vacancy_class.from_dict.return_value = mock_vacancy_instance
-        
+
         # Настройка для check_vacancies_exist_batch
         def cursor_execute_side_effect(query, params=None):
             if "SELECT vacancy_id FROM vacancies WHERE vacancy_id IN" in query:
                 db_connection.cursor.fetchall.return_value = [{'vacancy_id': 'id_1'}]
-        
+
         db_connection.cursor.execute.side_effect = cursor_execute_side_effect
         db_connection.cursor.rowcount = 1
-        
+
         repo = VacancyRepository(db_connection, validator)
-        
+
         # 1. Добавление одной вакансии
         vacancy = MockAbstractVacancy("id_1")
         repo.add_vacancy(vacancy)
-        
+
         # 2. Получение вакансий
         vacancies = repo.get_vacancies()
         assert len(vacancies) == 1
-        
+
         # 3. Проверка существования
         exists_result = repo.check_vacancies_exist_batch([vacancy])
         assert exists_result["id_1"] is True
-        
+
         # 4. Пакетное добавление
         batch_vacancies = [MockAbstractVacancy("id_1"), MockAbstractVacancy("id_2")]
         with patch('psycopg2.extras.execute_values') as mock_execute_values:
             added_ids = repo.add_vacancy_batch_optimized(batch_vacancies)
             assert added_ids == ["id_1", "id_2"]
-        
+
         # 5. Удаление
         repo.delete_vacancy(vacancy)
-        
+
         # Проверяем, что все операции были выполнены
         assert db_connection.cursor.execute.call_count >= 4
         assert db_connection.connection.commit.call_count >= 2

@@ -14,13 +14,11 @@
 
 import logging
 import os
-from unittest.mock import patch, Mock, MagicMock
-import pytest
-from typing import List, Dict, Any
+from unittest.mock import patch, Mock
 
 # Импорты для реальной бизнес-логики
 from src.api_modules.unified_api import UnifiedAPI
-from src.storage.services.vacancy_storage_service import VacancyStorageService, AbstractVacancyStorageService
+from src.storage.services.vacancy_storage_service import AbstractVacancyStorageService
 from src.utils.vacancy_operations import VacancyOperations
 from src.vacancies.models import Vacancy, Employer
 
@@ -128,7 +126,7 @@ class TestVacancyOperationsBusinessLogic:
             salary=salary_data
         )
 
-    def test_get_vacancies_with_salary_dict_format(self):
+    def test_get_vacancies_with_salary_dict_format(self) -> None:
         """Покрытие фильтрации вакансий с зарплатой (новый формат dict)"""
         vacancies = [
             self.create_test_vacancy("Job1", {"from": 100000, "to": 150000}),
@@ -143,7 +141,7 @@ class TestVacancyOperationsBusinessLogic:
         assert result[0].title == "Job1"
         assert result[1].title == "Job3"
 
-    def test_sort_vacancies_by_salary_descending(self):
+    def test_sort_vacancies_by_salary_descending(self) -> None:
         """Покрытие сортировки вакансий по зарплате (по убыванию)"""
         vacancies = [
             self.create_test_vacancy("Low", {"from": 50000, "to": 70000}),
@@ -157,7 +155,7 @@ class TestVacancyOperationsBusinessLogic:
         assert result[1].title == "Medium"
         assert result[2].title == "Low"
 
-    def test_sort_vacancies_by_salary_ascending(self):
+    def test_sort_vacancies_by_salary_ascending(self) -> None:
         """Покрытие сортировки вакансий по зарплате (по возрастанию)"""
         vacancies = [
             self.create_test_vacancy("High", {"from": 150000}),
@@ -169,7 +167,7 @@ class TestVacancyOperationsBusinessLogic:
         assert result[0].title == "Low"
         assert result[1].title == "High"
 
-    def test_filter_vacancies_by_min_salary(self):
+    def test_filter_vacancies_by_min_salary(self) -> None:
         """Покрытие фильтрации вакансий по минимальной зарплате"""
         vacancies = [
             self.create_test_vacancy("High", {"from": 120000, "to": 150000}),
@@ -187,7 +185,7 @@ class TestVacancyOperationsBusinessLogic:
         assert "Low" not in titles
         assert "NoSalary" not in titles
 
-    def test_search_vacancies_advanced(self):
+    def test_search_vacancies_advanced(self) -> None:
         """Покрытие продвинутого поиска вакансий"""
         vacancies = [
             self.create_test_vacancy("Python Developer"),
@@ -203,7 +201,7 @@ class TestVacancyOperationsBusinessLogic:
         assert "Python Developer" in titles
         assert "Senior Python Engineer" in titles
 
-    def test_filter_vacancies_by_max_salary(self):
+    def test_filter_vacancies_by_max_salary(self) -> None:
         """Покрытие фильтрации вакансий по максимальной зарплате"""
         vacancies = [
             self.create_test_vacancy("High", {"from": 150000, "to": 200000}),
@@ -224,7 +222,7 @@ class TestVacancyOperationsBusinessLogic:
 class ConcreteVacancyStorageService(AbstractVacancyStorageService):
     """Конкретная реализация для тестирования"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Инициализируем базовый класс с моками
         super().__init__()
         self.db_manager = Mock()
@@ -329,7 +327,7 @@ class TestVacancyStorageServiceBusinessLogic:
         mock_coordinator.return_value = mock_coordinator_instance
 
         service = ConcreteVacancyStorageService()
-        
+
         # Настраиваем мок координатора
         service.processing_coordinator.process_and_save_raw_vacancy_data.return_value = ["vacancy1"]
 
@@ -355,7 +353,7 @@ class TestVacancyStorageServiceBusinessLogic:
         mock_coordinator.return_value = mock_coordinator_instance
 
         service = ConcreteVacancyStorageService()
-        
+
         # Настраиваем мок координатора с ошибкой
         service.processing_coordinator.process_and_save_raw_vacancy_data.side_effect = Exception("DB Error")
 
@@ -469,7 +467,7 @@ class TestRealWorldIntegration:
             assert len(vacancies_data) == 1
             assert vacancies_data[0]["name"] == "Python Developer"
 
-    def test_vacancy_operations_chain(self):
+    def test_vacancy_operations_chain(self) -> None:
         """Покрытие цепочки операций с вакансиями"""
         # Создаем тестовые вакансии
         vacancies = [

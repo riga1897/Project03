@@ -17,7 +17,7 @@
 
 import pytest
 from unittest.mock import patch, MagicMock
-from typing import Callable, Dict, List, Tuple
+from typing import Callable, Dict, List, Tuple, Any
 
 from src.utils.menu_manager import (
     MenuManager,
@@ -30,7 +30,7 @@ from src.utils.menu_manager import (
 class TestMenuManagerInit:
     """100% покрытие инициализации MenuManager"""
 
-    def test_init(self):
+    def test_init(self) -> None:
         """Покрытие: инициализация MenuManager"""
         menu = MenuManager()
         
@@ -40,7 +40,7 @@ class TestMenuManagerInit:
         assert len(menu.menu_items) == 0
         assert len(menu.menu_order) == 0
 
-    def test_multiple_instances_independence(self):
+    def test_multiple_instances_independence(self) -> None:
         """Покрытие: независимость нескольких экземпляров"""
         menu1 = MenuManager()
         menu2 = MenuManager()
@@ -58,7 +58,7 @@ class TestMenuManagerInit:
 class TestAddMenuItem:
     """100% покрытие метода add_menu_item"""
 
-    def test_add_menu_item_basic(self):
+    def test_add_menu_item_basic(self) -> None:
         """Покрытие: базовое добавление пункта меню"""
         menu = MenuManager()
         handler = lambda: "test_handler"
@@ -69,7 +69,7 @@ class TestAddMenuItem:
         assert menu.menu_items["1"] == ("Test Item", handler)
         assert menu.menu_order == ["1"]
 
-    def test_add_menu_item_multiple(self):
+    def test_add_menu_item_multiple(self) -> None:
         """Покрытие: добавление нескольких пунктов"""
         menu = MenuManager()
         handler1 = lambda: "handler1"
@@ -84,7 +84,7 @@ class TestAddMenuItem:
         assert menu.menu_order == ["1", "2", "3"]
         assert menu.menu_items["2"] == ("Item 2", handler2)
 
-    def test_add_menu_item_with_none_handler(self):
+    def test_add_menu_item_with_none_handler(self) -> None:
         """Покрытие: добавление пункта с None обработчиком"""
         menu = MenuManager()
         
@@ -93,7 +93,7 @@ class TestAddMenuItem:
         assert menu.menu_items["1"] == ("Test Item", None)
         assert menu.menu_order == ["1"]
 
-    def test_add_menu_item_with_position_beginning(self):
+    def test_add_menu_item_with_position_beginning(self) -> None:
         """Покрытие: добавление в начало (position=0)"""
         menu = MenuManager()
         
@@ -109,7 +109,7 @@ class TestAddMenuItem:
         assert menu.menu_items["0"][0] == "New First"
         assert menu.menu_items["0"][1] is handler
 
-    def test_add_menu_item_with_position_middle(self):
+    def test_add_menu_item_with_position_middle(self) -> None:
         """Покрытие: добавление в середину"""
         menu = MenuManager()
         
@@ -122,7 +122,7 @@ class TestAddMenuItem:
         
         assert menu.menu_order == ["1", "1.5", "2", "3"]
 
-    def test_add_menu_item_with_position_end(self):
+    def test_add_menu_item_with_position_end(self) -> None:
         """Покрытие: добавление в конец через position"""
         menu = MenuManager()
         
@@ -134,7 +134,7 @@ class TestAddMenuItem:
         
         assert menu.menu_order == ["1", "2", "3"]
 
-    def test_add_menu_item_with_position_out_of_bounds(self):
+    def test_add_menu_item_with_position_out_of_bounds(self) -> None:
         """Покрытие: position больше длины списка"""
         menu = MenuManager()
         
@@ -145,7 +145,7 @@ class TestAddMenuItem:
         
         assert menu.menu_order == ["1", "2"]
 
-    def test_add_menu_item_with_negative_position(self):
+    def test_add_menu_item_with_negative_position(self) -> None:
         """Покрытие: отрицательная position"""
         menu = MenuManager()
         
@@ -156,7 +156,7 @@ class TestAddMenuItem:
         
         assert menu.menu_order == ["1", "2"]
 
-    def test_add_menu_item_replace_existing_key(self):
+    def test_add_menu_item_replace_existing_key(self) -> None:
         """Покрытие: замена существующего ключа"""
         menu = MenuManager()
         
@@ -175,7 +175,7 @@ class TestAddMenuItem:
 class TestRemoveMenuItem:
     """100% покрытие метода remove_menu_item"""
 
-    def test_remove_menu_item_existing(self):
+    def test_remove_menu_item_existing(self) -> None:
         """Покрытие: удаление существующего пункта"""
         menu = MenuManager()
         
@@ -190,7 +190,7 @@ class TestRemoveMenuItem:
         assert menu.menu_order == ["1", "3"]
         assert len(menu.menu_items) == 2
 
-    def test_remove_menu_item_nonexistent(self):
+    def test_remove_menu_item_nonexistent(self) -> None:
         """Покрытие: удаление несуществующего пункта"""
         menu = MenuManager()
         
@@ -202,7 +202,7 @@ class TestRemoveMenuItem:
         assert len(menu.menu_items) == 1
         assert menu.menu_order == ["1"]
 
-    def test_remove_menu_item_empty_menu(self):
+    def test_remove_menu_item_empty_menu(self) -> None:
         """Покрытие: удаление из пустого меню"""
         menu = MenuManager()
         
@@ -212,7 +212,7 @@ class TestRemoveMenuItem:
         assert len(menu.menu_items) == 0
         assert len(menu.menu_order) == 0
 
-    def test_remove_menu_item_single_item(self):
+    def test_remove_menu_item_single_item(self) -> None:
         """Покрытие: удаление единственного пункта"""
         menu = MenuManager()
         
@@ -223,7 +223,7 @@ class TestRemoveMenuItem:
         assert len(menu.menu_items) == 0
         assert len(menu.menu_order) == 0
 
-    def test_remove_menu_item_all_items(self):
+    def test_remove_menu_item_all_items(self) -> None:
         """Покрытие: удаление всех пунктов последовательно"""
         menu = MenuManager()
         
@@ -243,7 +243,7 @@ class TestRemoveMenuItem:
 class TestGetMenuItems:
     """100% покрытие метода get_menu_items"""
 
-    def test_get_menu_items_empty(self):
+    def test_get_menu_items_empty(self) -> None:
         """Покрытие: получение пунктов пустого меню"""
         menu = MenuManager()
         
@@ -251,7 +251,7 @@ class TestGetMenuItems:
         
         assert items == []
 
-    def test_get_menu_items_single(self):
+    def test_get_menu_items_single(self) -> None:
         """Покрытие: получение одного пункта"""
         menu = MenuManager()
         
@@ -260,7 +260,7 @@ class TestGetMenuItems:
         
         assert items == [("1", "Single Item")]
 
-    def test_get_menu_items_multiple_ordered(self):
+    def test_get_menu_items_multiple_ordered(self) -> None:
         """Покрытие: получение множественных пунктов в правильном порядке"""
         menu = MenuManager()
         
@@ -273,7 +273,7 @@ class TestGetMenuItems:
         # Должен вернуть в порядке добавления
         assert items == [("3", "Third"), ("1", "First"), ("2", "Second")]
 
-    def test_get_menu_items_with_positions(self):
+    def test_get_menu_items_with_positions(self) -> None:
         """Покрытие: получение пунктов с учетом позиций"""
         menu = MenuManager()
         
@@ -285,7 +285,7 @@ class TestGetMenuItems:
         
         assert items == [("1", "First"), ("2", "Second"), ("3", "Third")]
 
-    def test_get_menu_items_with_inconsistent_order(self):
+    def test_get_menu_items_with_inconsistent_order(self) -> None:
         """Покрытие: получение пунктов когда order содержит несуществующие ключи"""
         menu = MenuManager()
         
@@ -300,7 +300,7 @@ class TestGetMenuItems:
         # Должен фильтровать только существующие ключи
         assert items == [("1", "Item 1"), ("2", "Item 2")]
 
-    def test_get_menu_items_after_removal(self):
+    def test_get_menu_items_after_removal(self) -> None:
         """Покрытие: получение пунктов после удаления"""
         menu = MenuManager()
         
@@ -317,7 +317,7 @@ class TestGetMenuItems:
 class TestGetHandler:
     """100% покрытие метода get_handler"""
 
-    def test_get_handler_existing(self):
+    def test_get_handler_existing(self) -> None:
         """Покрытие: получение существующего обработчика"""
         menu = MenuManager()
         handler = lambda: "test_result"
@@ -328,7 +328,7 @@ class TestGetHandler:
         assert retrieved_handler is handler
         assert retrieved_handler() == "test_result"
 
-    def test_get_handler_nonexistent(self):
+    def test_get_handler_nonexistent(self) -> None:
         """Покрытие: получение несуществующего обработчика"""
         menu = MenuManager()
         
@@ -336,7 +336,7 @@ class TestGetHandler:
         
         assert retrieved_handler is None
 
-    def test_get_handler_none_handler(self):
+    def test_get_handler_none_handler(self) -> None:
         """Покрытие: получение None обработчика"""
         menu = MenuManager()
         
@@ -345,7 +345,7 @@ class TestGetHandler:
         
         assert retrieved_handler is None
 
-    def test_get_handler_empty_menu(self):
+    def test_get_handler_empty_menu(self) -> None:
         """Покрытие: получение обработчика из пустого меню"""
         menu = MenuManager()
         
@@ -353,7 +353,7 @@ class TestGetHandler:
         
         assert retrieved_handler is None
 
-    def test_get_handler_multiple_items(self):
+    def test_get_handler_multiple_items(self) -> None:
         """Покрытие: получение разных обработчиков"""
         menu = MenuManager()
         
@@ -376,7 +376,7 @@ class TestDisplayMenu:
 
     @patch('builtins.print')
     @patch('src.utils.menu_manager.print_menu_separator')
-    def test_display_menu_empty(self, mock_separator, mock_print):
+    def test_display_menu_empty(self, mock_separator: Any, mock_print: Any) -> None:
         """Покрытие: отображение пустого меню"""
         menu = MenuManager()
         
@@ -395,7 +395,7 @@ class TestDisplayMenu:
 
     @patch('builtins.print')
     @patch('src.utils.menu_manager.print_menu_separator')
-    def test_display_menu_with_items(self, mock_separator, mock_print):
+    def test_display_menu_with_items(self, mock_separator: Any, mock_print: Any) -> None:
         """Покрытие: отображение меню с пунктами"""
         menu = MenuManager()
         
@@ -414,7 +414,7 @@ class TestDisplayMenu:
 
     @patch('builtins.print')
     @patch('src.utils.menu_manager.print_menu_separator')
-    def test_display_menu_with_complex_titles(self, mock_separator, mock_print):
+    def test_display_menu_with_complex_titles(self, mock_separator: Any, mock_print: Any) -> None:
         """Покрытие: отображение меню со сложными заголовками"""
         menu = MenuManager()
         
@@ -431,7 +431,7 @@ class TestDisplayMenu:
 class TestCreateMainMenu:
     """100% покрытие функции create_main_menu"""
 
-    def test_create_main_menu_structure(self):
+    def test_create_main_menu_structure(self) -> None:
         """Покрытие: создание главного меню"""
         menu = create_main_menu()
         
@@ -447,7 +447,7 @@ class TestCreateMainMenu:
         actual_keys = [item[0] for item in items]
         assert actual_keys == expected_keys
 
-    def test_create_main_menu_items_content(self):
+    def test_create_main_menu_items_content(self) -> None:
         """Покрытие: содержимое пунктов главного меню"""
         menu = create_main_menu()
         items = menu.get_menu_items()
@@ -465,7 +465,7 @@ class TestCreateMainMenu:
         assert "Настройка SuperJob API" in items_dict["9"]
         assert "Демонстрация DBManager" in items_dict["10"]
 
-    def test_create_main_menu_handlers_are_none(self):
+    def test_create_main_menu_handlers_are_none(self) -> None:
         """Покрытие: все обработчики главного меню None"""
         menu = create_main_menu()
         
@@ -473,7 +473,7 @@ class TestCreateMainMenu:
             handler = menu.get_handler(str(i))
             assert handler is None
 
-    def test_create_main_menu_independence(self):
+    def test_create_main_menu_independence(self) -> None:
         """Покрытие: независимость множественных вызовов"""
         menu1 = create_main_menu()
         menu2 = create_main_menu()
@@ -487,35 +487,35 @@ class TestPrintMenuSeparator:
     """100% покрытие функции print_menu_separator"""
 
     @patch('builtins.print')
-    def test_print_menu_separator_default_width(self, mock_print):
+    def test_print_menu_separator_default_width(self, mock_print: Any) -> None:
         """Покрытие: разделитель с шириной по умолчанию"""
         print_menu_separator()
         
         mock_print.assert_called_once_with("-" * 40)
 
     @patch('builtins.print')
-    def test_print_menu_separator_custom_width(self, mock_print):
+    def test_print_menu_separator_custom_width(self, mock_print: Any) -> None:
         """Покрытие: разделитель с заданной шириной"""
         print_menu_separator(20)
         
         mock_print.assert_called_once_with("-" * 20)
 
     @patch('builtins.print')
-    def test_print_menu_separator_zero_width(self, mock_print):
+    def test_print_menu_separator_zero_width(self, mock_print: Any) -> None:
         """Покрытие: разделитель нулевой ширины"""
         print_menu_separator(0)
         
         mock_print.assert_called_once_with("")
 
     @patch('builtins.print')
-    def test_print_menu_separator_large_width(self, mock_print):
+    def test_print_menu_separator_large_width(self, mock_print: Any) -> None:
         """Покрытие: разделитель большой ширины"""
         print_menu_separator(100)
         
         mock_print.assert_called_once_with("-" * 100)
 
     @patch('builtins.print')
-    def test_print_menu_separator_multiple_calls(self, mock_print):
+    def test_print_menu_separator_multiple_calls(self, mock_print: Any) -> None:
         """Покрытие: множественные вызовы разделителя"""
         print_menu_separator(10)
         print_menu_separator(15)
@@ -536,7 +536,7 @@ class TestPrintSectionHeader:
     """100% покрытие функции print_section_header"""
 
     @patch('builtins.print')
-    def test_print_section_header_default_width(self, mock_print):
+    def test_print_section_header_default_width(self, mock_print: Any) -> None:
         """Покрытие: заголовок секции с шириной по умолчанию"""
         print_section_header("Test Header")
         
@@ -551,7 +551,7 @@ class TestPrintSectionHeader:
         assert actual_calls == expected_calls
 
     @patch('builtins.print')
-    def test_print_section_header_custom_width(self, mock_print):
+    def test_print_section_header_custom_width(self, mock_print: Any) -> None:
         """Покрытие: заголовок секции с заданной шириной"""
         print_section_header("Custom Header", 30)
         
@@ -565,7 +565,7 @@ class TestPrintSectionHeader:
         assert actual_calls == expected_calls
 
     @patch('builtins.print')
-    def test_print_section_header_empty_title(self, mock_print):
+    def test_print_section_header_empty_title(self, mock_print: Any) -> None:
         """Покрытие: заголовок секции с пустым заголовком"""
         print_section_header("", 25)
         
@@ -579,7 +579,7 @@ class TestPrintSectionHeader:
         assert actual_calls == expected_calls
 
     @patch('builtins.print')
-    def test_print_section_header_long_title(self, mock_print):
+    def test_print_section_header_long_title(self, mock_print: Any) -> None:
         """Покрытие: заголовок секции с длинным заголовком"""
         long_title = "Very Long Section Header That Exceeds Normal Width"
         print_section_header(long_title, 20)
@@ -594,7 +594,7 @@ class TestPrintSectionHeader:
         assert actual_calls == expected_calls
 
     @patch('builtins.print')
-    def test_print_section_header_unicode_title(self, mock_print):
+    def test_print_section_header_unicode_title(self, mock_print: Any) -> None:
         """Покрытие: заголовок секции с Unicode символами"""
         unicode_title = "Заголовок Секции с Unicode 🚀"
         print_section_header(unicode_title, 35)
@@ -609,7 +609,7 @@ class TestPrintSectionHeader:
         assert actual_calls == expected_calls
 
     @patch('builtins.print')
-    def test_print_section_header_zero_width(self, mock_print):
+    def test_print_section_header_zero_width(self, mock_print: Any) -> None:
         """Покрытие: заголовок секции с нулевой шириной"""
         print_section_header("Test", 0)
         
@@ -626,7 +626,7 @@ class TestPrintSectionHeader:
 class TestIntegrationScenarios:
     """Интеграционные тесты для проверки совместной работы методов"""
 
-    def test_full_menu_lifecycle(self):
+    def test_full_menu_lifecycle(self) -> None:
         """Покрытие: полный жизненный цикл меню"""
         menu = MenuManager()
         
@@ -654,7 +654,7 @@ class TestIntegrationScenarios:
 
     @patch('builtins.print')
     @patch('src.utils.menu_manager.print_menu_separator')
-    def test_menu_display_integration(self, mock_separator, mock_print):
+    def test_menu_display_integration(self, mock_separator: Any, mock_print: Any) -> None:
         """Покрытие: интеграция отображения меню"""
         menu = MenuManager()
         
@@ -672,7 +672,7 @@ class TestIntegrationScenarios:
         assert any("c. Gamma" in call for call in print_calls)
         assert any("0. Выход" in call for call in print_calls)
 
-    def test_create_main_menu_integration(self):
+    def test_create_main_menu_integration(self) -> None:
         """Покрытие: интеграция создания главного меню"""
         menu = create_main_menu()
         
@@ -691,7 +691,7 @@ class TestIntegrationScenarios:
         assert menu.get_handler("11")() == "custom"
 
     @patch('builtins.print')
-    def test_print_functions_integration(self, mock_print):
+    def test_print_functions_integration(self, mock_print: Any) -> None:
         """Покрытие: интеграция функций печати"""
         # Печатаем заголовок секции
         print_section_header("Test Section", 30)
@@ -710,7 +710,7 @@ class TestIntegrationScenarios:
         actual_calls = [call[0] for call in mock_print.call_args_list]
         assert actual_calls == expected_calls
 
-    def test_menu_edge_cases_integration(self):
+    def test_menu_edge_cases_integration(self) -> None:
         """Покрытие: граничные случаи работы с меню"""
         menu = MenuManager()
         
@@ -736,7 +736,7 @@ class TestIntegrationScenarios:
 class TestErrorHandlingAndEdgeCases:
     """Тесты для обработки ошибок и граничных случаев"""
 
-    def test_menu_with_complex_handlers(self):
+    def test_menu_with_complex_handlers(self) -> None:
         """Покрытие: меню со сложными обработчиками"""
         menu = MenuManager()
         
@@ -759,7 +759,7 @@ class TestErrorHandlingAndEdgeCases:
         assert menu.get_handler("3")() == "class_handler"
         assert menu.get_handler("4") is None
 
-    def test_menu_order_consistency(self):
+    def test_menu_order_consistency(self) -> None:
         """Покрытие: консистентность порядка меню"""
         menu = MenuManager()
         
@@ -773,7 +773,7 @@ class TestErrorHandlingAndEdgeCases:
         
         assert keys == ["a", "m", "z"]
 
-    def test_menu_with_special_characters(self):
+    def test_menu_with_special_characters(self) -> None:
         """Покрытие: меню со специальными символами"""
         menu = MenuManager()
         

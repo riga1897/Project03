@@ -5,9 +5,7 @@
 """
 
 import pytest
-from pathlib import Path
-from unittest.mock import patch, Mock
-from typing import Any, Dict, List, Optional
+from unittest.mock import patch
 
 # Импорты из реального кода для покрытия
 from src.config.api_config import APIConfig
@@ -21,7 +19,7 @@ from src.config.ui_config import UIConfig, UIPaginationConfig
 class TestAPIConfig:
     """100% покрытие APIConfig."""
 
-    def test_api_config_init_default(self):
+    def test_api_config_init_default(self) -> None:
         """Покрытие инициализации по умолчанию."""
         config = APIConfig()
         assert config.user_agent == "MyVacancyApp/1.0"
@@ -29,7 +27,7 @@ class TestAPIConfig:
         assert config.request_delay == 0.5
         assert config.max_pages == 20
 
-    def test_api_config_init_params(self):
+    def test_api_config_init_params(self) -> None:
         """Покрытие инициализации с параметрами."""
         config = APIConfig(
             user_agent="TestAgent",
@@ -41,13 +39,13 @@ class TestAPIConfig:
         assert config.timeout == 30
         assert config.max_pages == 50
 
-    def test_api_config_get_pagination_params(self):
+    def test_api_config_get_pagination_params(self) -> None:
         """Покрытие метода get_pagination_params."""
         config = APIConfig()
-        
+
         params = config.get_pagination_params()
         assert params == {"max_pages": 20}
-        
+
         params_override = config.get_pagination_params(max_pages=100)
         assert params_override == {"max_pages": 100}
 
@@ -55,32 +53,32 @@ class TestAPIConfig:
 class TestAppConfig:
     """100% покрытие AppConfig."""
 
-    def test_app_config_init(self):
+    def test_app_config_init(self) -> None:
         """Покрытие инициализации."""
         config = AppConfig()
         assert config.default_storage_type == "postgres"
         assert config.storage_type == "postgres"
 
-    def test_app_config_storage_methods(self):
+    def test_app_config_storage_methods(self) -> None:
         """Покрытие методов работы с типом хранилища."""
         config = AppConfig()
-        
+
         assert config.get_storage_type() == "postgres"
-        
+
         config.set_storage_type("postgres")
         assert config.get_storage_type() == "postgres"
-        
+
         with pytest.raises(ValueError):
             config.set_storage_type("invalid_type")
 
-    def test_app_config_db_methods(self):
+    def test_app_config_db_methods(self) -> None:
         """Покрытие методов работы с БД."""
         config = AppConfig()
-        
+
         db_config = config.get_db_config()
         assert isinstance(db_config, dict)
         assert "host" in db_config
-        
+
         new_config = {"test_key": "test_value"}
         config.set_db_config(new_config)
         updated_config = config.get_db_config()
@@ -90,7 +88,7 @@ class TestAppConfig:
 class TestHHAPIConfig:
     """100% покрытие HHAPIConfig."""
 
-    def test_hh_config_init(self):
+    def test_hh_config_init(self) -> None:
         """Покрытие инициализации."""
         config = HHAPIConfig()
         assert config.area == 113
@@ -104,21 +102,21 @@ class TestHHAPIConfig:
         config = HHAPIConfig()
         assert isinstance(config.only_with_salary, bool)
 
-    def test_hh_config_get_params(self):
+    def test_hh_config_get_params(self) -> None:
         """Покрытие метода get_params."""
         config = HHAPIConfig()
         params = config.get_params()
-        
+
         assert "area" in params
         assert "per_page" in params
         assert "only_with_salary" in params
         assert "period" in params
 
-    def test_hh_config_get_hh_params(self):
+    def test_hh_config_get_hh_params(self) -> None:
         """Покрытие метода get_hh_params."""
         config = HHAPIConfig()
         params = config.get_hh_params(area=1, per_page=100)
-        
+
         assert params["area"] == 1
         assert params["per_page"] == 100
 
@@ -126,7 +124,7 @@ class TestHHAPIConfig:
 class TestSJAPIConfig:
     """100% покрытие SJAPIConfig."""
 
-    def test_sj_config_init(self):
+    def test_sj_config_init(self) -> None:
         """Покрытие инициализации."""
         config = SJAPIConfig()
         assert config.count == 500
@@ -140,11 +138,11 @@ class TestSJAPIConfig:
         config = SJAPIConfig()
         assert isinstance(config.only_with_salary, bool)
 
-    def test_sj_config_get_params(self):
+    def test_sj_config_get_params(self) -> None:
         """Покрытие метода get_params."""
         config = SJAPIConfig()
         params = config.get_params()
-        
+
         assert "count" in params
         assert "order_field" in params
         assert "published" in params
@@ -154,18 +152,18 @@ class TestSJAPIConfig:
 class TestTargetCompanies:
     """100% покрытие TargetCompanies."""
 
-    def test_target_companies_class_methods(self):
+    def test_target_companies_class_methods(self) -> None:
         """Покрытие методов класса."""
         count = TargetCompanies.get_company_count()
         assert isinstance(count, int)
         assert count > 0
 
-    def test_target_companies_search_functionality(self):
+    def test_target_companies_search_functionality(self) -> None:
         """Покрытие функциональности поиска."""
         # Тестируем что можем получить доступ к списку компаний
         companies = TargetCompanies.COMPANIES
         assert len(companies) > 0
-        
+
         # Найдем первую компанию из списка
         first_company_found = False
         for company in companies:
@@ -175,13 +173,13 @@ class TestTargetCompanies:
                 break
         assert first_company_found
 
-    def test_target_companies_constants(self):
+    def test_target_companies_constants(self) -> None:
         """Покрытие констант."""
         assert hasattr(TargetCompanies, 'COMPANIES')
         assert len(TargetCompanies.COMPANIES) > 0
         assert isinstance(TargetCompanies.COMPANIES[0], CompanyInfo)
 
-    def test_company_info_class(self):
+    def test_company_info_class(self) -> None:
         """Покрытие класса CompanyInfo."""
         company = CompanyInfo(
             name="Test Company",
@@ -197,35 +195,35 @@ class TestTargetCompanies:
 class TestUIConfig:
     """100% покрытие UIConfig."""
 
-    def test_ui_pagination_config_init(self):
+    def test_ui_pagination_config_init(self) -> None:
         """Покрытие UIPaginationConfig."""
         config = UIPaginationConfig()
         assert config.default_items_per_page == 10
         assert config.search_results_per_page == 5
 
-    def test_ui_pagination_get_items_per_page(self):
+    def test_ui_pagination_get_items_per_page(self) -> None:
         """Покрытие метода get_items_per_page."""
         config = UIPaginationConfig()
-        
+
         assert config.get_items_per_page() == 10
         assert config.get_items_per_page("search") == 5
         assert config.get_items_per_page("saved") == 10
 
-    def test_ui_pagination_validate(self):
+    def test_ui_pagination_validate(self) -> None:
         """Покрытие метода validate_items_per_page."""
         config = UIPaginationConfig()
-        
+
         assert config.validate_items_per_page(25) == 25
         assert config.validate_items_per_page(0) == 1
         assert config.validate_items_per_page(100) == 50
 
-    def test_ui_config_init(self):
+    def test_ui_config_init(self) -> None:
         """Покрытие UIConfig."""
         config = UIConfig()
         assert hasattr(config, 'items_per_page')
         assert hasattr(config, 'max_display_items')
 
-    def test_ui_config_basic_functionality(self):
+    def test_ui_config_basic_functionality(self) -> None:
         """Покрытие базовой функциональности UIConfig."""
         config = UIConfig()
         assert hasattr(config, 'items_per_page')
@@ -237,7 +235,7 @@ class TestUIConfig:
 class TestDatabaseConfig:
     """100% покрытие DatabaseConfig."""
 
-    def test_database_config_init(self):
+    def test_database_config_init(self) -> None:
         """Покрытие инициализации DatabaseConfig."""
         from src.config.db_config import DatabaseConfig
         config = DatabaseConfig()
@@ -248,7 +246,7 @@ class TestDatabaseConfig:
     def test_database_config_env_vars(self, mock_get_env):
         """Покрытие загрузки переменных окружения."""
         from src.config.db_config import DatabaseConfig
-        
+
         mock_get_env.side_effect = lambda key, default=None: {
             'DATABASE_URL': None,
             'PGHOST': 'test_host',
@@ -257,15 +255,15 @@ class TestDatabaseConfig:
             'PGUSER': 'test_user',
             'PGPASSWORD': 'test_pass'
         }.get(key, default)
-        
+
         config = DatabaseConfig()
         result = config.get_config()
         assert isinstance(result, dict)
 
-    def test_database_config_custom_config(self):
+    def test_database_config_custom_config(self) -> None:
         """Покрытие пользовательской конфигурации."""
         from src.config.db_config import DatabaseConfig
-        
+
         config = DatabaseConfig()
         custom_config = {'host': 'custom_host'}
         result = config.get_config(custom_config)
@@ -276,11 +274,11 @@ class TestDatabaseConfig:
     def test_database_url_parsing(self, mock_get_env):
         """Покрытие парсинга DATABASE_URL."""
         from src.config.db_config import DatabaseConfig
-        
+
         mock_get_env.side_effect = lambda key, default=None: {
             'DATABASE_URL': 'postgresql://user:pass@localhost:5432/test_db'
         }.get(key, default)
-        
+
         config = DatabaseConfig()
         # Вызываем _parse_database_url через get_config
         result = config.get_config()
@@ -290,7 +288,7 @@ class TestDatabaseConfig:
 class TestConfigIntegration:
     """100% покрытие интеграции конфигураций."""
 
-    def test_api_config_with_nested_configs(self):
+    def test_api_config_with_nested_configs(self) -> None:
         """Покрытие создания вложенных конфигураций."""
         config = APIConfig()
         assert config.hh_config is not None
@@ -298,7 +296,7 @@ class TestConfigIntegration:
         assert isinstance(config.hh_config, HHAPIConfig)
         assert isinstance(config.sj_config, SJAPIConfig)
 
-    def test_configs_basic_functionality(self):
+    def test_configs_basic_functionality(self) -> None:
         """Покрытие базовой функциональности всех конфигураций."""
         api_config = APIConfig()
         app_config = AppConfig()
@@ -306,20 +304,20 @@ class TestConfigIntegration:
         sj_config = SJAPIConfig()
         target_companies = TargetCompanies()
         ui_config = UIConfig()
-        
+
         # Проверяем что все создались успешно
         configs = [api_config, app_config, hh_config, sj_config, target_companies, ui_config]
         for config in configs:
             assert config is not None
 
-    def test_target_companies_global_constant(self):
+    def test_target_companies_global_constant(self) -> None:
         """Покрытие глобальной константы TARGET_COMPANIES."""
         from src.config.target_companies import TARGET_COMPANIES
         assert isinstance(TARGET_COMPANIES, list)
         assert len(TARGET_COMPANIES) > 0
         assert isinstance(TARGET_COMPANIES[0], dict)
 
-    def test_ui_config_global_instances(self):
+    def test_ui_config_global_instances(self) -> None:
         """Покрытие глобальных экземпляров UI конфигурации."""
         from src.config.ui_config import ui_pagination_config, ui_config
         assert ui_pagination_config is not None

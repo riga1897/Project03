@@ -8,6 +8,7 @@
 
 from unittest.mock import MagicMock, patch
 import pytest
+from typing import Any
 from src.storage.db_manager import DBManager
 
 
@@ -15,7 +16,7 @@ class TestDBManagerMinimal:
     """Минимальные тесты для максимального покрытия"""
     
     @patch('src.storage.db_manager.get_db_connection_params')
-    def test_init_basic(self, mock_get_params):
+    def test_init_basic(self, mock_get_params: Any) -> None:
         """Базовая инициализация"""
         mock_get_params.return_value = {
             "host": "localhost", "port": "5432", "database": "test", 
@@ -26,7 +27,7 @@ class TestDBManagerMinimal:
         assert db_manager.host == "localhost"
     
     @patch('src.storage.db_manager.get_db_connection_params')
-    def test_init_with_config(self, mock_get_params):
+    def test_init_with_config(self, mock_get_params: Any) -> None:
         """Инициализация с конфигом"""
         mock_get_params.return_value = {
             "host": "custom", "port": "5433", "database": "custom_db", 
@@ -41,7 +42,7 @@ class TestDBManagerMinimal:
     @patch('src.storage.db_manager.get_db_connection_params')
     @patch('src.storage.db_manager.psycopg2_available', return_value=True)
     @patch('src.storage.db_manager.get_psycopg2')
-    def test_get_connection_psycopg2(self, mock_get_psycopg2, mock_available, mock_get_params):
+    def test_get_connection_psycopg2(self, mock_get_psycopg2: Any, mock_available: Any, mock_get_params: Any) -> None:
         """Подключение через psycopg2"""
         mock_get_params.return_value = {
             "host": "test", "port": "5432", "database": "test", 
@@ -61,7 +62,7 @@ class TestDBManagerMinimal:
     
     @patch('src.storage.db_manager.get_db_connection_params')
     @patch('src.storage.db_manager.psycopg2_available', return_value=False)
-    def test_get_connection_exception_handling(self, mock_available, mock_get_params):
+    def test_get_connection_exception_handling(self, mock_available: Any, mock_get_params: Any) -> None:
         """Покрытие exception в _get_connection"""
         mock_get_params.return_value = {
             "host": "test", "port": "5432", "database": "test", 
@@ -74,7 +75,7 @@ class TestDBManagerMinimal:
             db_manager._get_connection()
     
     @patch('src.storage.db_manager.get_db_connection_params')
-    def test_create_tables_method_exists(self, mock_get_params):
+    def test_create_tables_method_exists(self, mock_get_params: Any) -> None:
         """Проверяем что create_tables метод существует"""
         mock_get_params.return_value = {
             "host": "test", "port": "5432", "database": "test", 
@@ -87,7 +88,7 @@ class TestDBManagerMinimal:
         assert callable(db_manager.create_tables)
     
     @patch('src.storage.db_manager.get_db_connection_params')
-    def test_create_tables_exception_returns_false(self, mock_get_params):
+    def test_create_tables_exception_returns_false(self, mock_get_params: Any) -> None:
         """create_tables возвращает False при исключении"""
         mock_get_params.return_value = {
             "host": "test", "port": "5432", "database": "test", 
@@ -106,7 +107,7 @@ class TestDBManagerMinimal:
                 pass
     
     @patch('src.storage.db_manager.get_db_connection_params')
-    def test_get_all_vacancies_exception_returns_empty(self, mock_get_params):
+    def test_get_all_vacancies_exception_returns_empty(self, mock_get_params: Any) -> None:
         """get_all_vacancies возвращает [] при исключении"""
         mock_get_params.return_value = {
             "host": "test", "port": "5432", "database": "test", 
@@ -120,7 +121,7 @@ class TestDBManagerMinimal:
             assert result == []
     
     @patch('src.storage.db_manager.get_db_connection_params')
-    def test_get_avg_salary_exception_returns_none(self, mock_get_params):
+    def test_get_avg_salary_exception_returns_none(self, mock_get_params: Any) -> None:
         """get_avg_salary возвращает None при исключении"""
         mock_get_params.return_value = {
             "host": "test", "port": "5432", "database": "test", 
@@ -134,7 +135,7 @@ class TestDBManagerMinimal:
             assert result is None
     
     @patch('src.storage.db_manager.get_db_connection_params')  
-    def test_get_vacancies_with_higher_salary_no_avg(self, mock_get_params):
+    def test_get_vacancies_with_higher_salary_no_avg(self, mock_get_params: Any) -> None:
         """get_vacancies_with_higher_salary без средней зарплаты"""
         mock_get_params.return_value = {
             "host": "test", "port": "5432", "database": "test", 
@@ -149,7 +150,7 @@ class TestDBManagerMinimal:
             assert result == []
     
     @patch('src.storage.db_manager.get_db_connection_params')
-    def test_get_vacancies_with_keyword_empty_keyword(self, mock_get_params):
+    def test_get_vacancies_with_keyword_empty_keyword(self, mock_get_params: Any) -> None:
         """get_vacancies_with_keyword с пустым ключевым словом"""
         mock_get_params.return_value = {
             "host": "test", "port": "5432", "database": "test", 
@@ -164,7 +165,7 @@ class TestDBManagerMinimal:
         assert db_manager.get_vacancies_with_keyword("") == []
     
     @patch('src.storage.db_manager.get_db_connection_params')
-    def test_get_database_stats_exception_returns_zeros(self, mock_get_params):
+    def test_get_database_stats_exception_returns_zeros(self, mock_get_params: Any) -> None:
         """get_database_stats возвращает нули при исключении"""
         mock_get_params.return_value = {
             "host": "test", "port": "5432", "database": "test", 
@@ -185,7 +186,7 @@ class TestDBManagerMinimal:
                 pass
     
     @patch('src.storage.db_manager.get_db_connection_params')
-    def test_check_connection_method_exists(self, mock_get_params):
+    def test_check_connection_method_exists(self, mock_get_params: Any) -> None:
         """Проверяем что check_connection метод существует"""
         mock_get_params.return_value = {
             "host": "test", "port": "5432", "database": "test", 
@@ -198,7 +199,7 @@ class TestDBManagerMinimal:
         assert callable(db_manager.check_connection)
     
     @patch('src.storage.db_manager.get_db_connection_params')
-    def test_check_connection_failure(self, mock_get_params):
+    def test_check_connection_failure(self, mock_get_params: Any) -> None:
         """check_connection при ошибке"""
         mock_get_params.return_value = {
             "host": "test", "port": "5432", "database": "test", 
@@ -212,7 +213,7 @@ class TestDBManagerMinimal:
             assert result is False
     
     @patch('src.storage.db_manager.get_db_connection_params')
-    def test_get_companies_and_vacancies_count(self, mock_get_params):
+    def test_get_companies_and_vacancies_count(self, mock_get_params: Any) -> None:
         """Тест реального метода get_companies_and_vacancies_count"""
         mock_get_params.return_value = {
             "host": "test", "port": "5432", "database": "test", 
@@ -226,7 +227,7 @@ class TestDBManagerMinimal:
         assert callable(db_manager.get_companies_and_vacancies_count)
     
     @patch('src.storage.db_manager.get_db_connection_params')
-    def test_get_target_companies_analysis(self, mock_get_params):
+    def test_get_target_companies_analysis(self, mock_get_params: Any) -> None:
         """Тест реального метода get_target_companies_analysis"""
         mock_get_params.return_value = {
             "host": "test", "port": "5432", "database": "test", 
@@ -240,7 +241,7 @@ class TestDBManagerMinimal:
         assert callable(db_manager.get_target_companies_analysis)
     
     @patch('src.storage.db_manager.get_db_connection_params')
-    def test_initialize_database_method_exists(self, mock_get_params):
+    def test_initialize_database_method_exists(self, mock_get_params: Any) -> None:
         """Проверяем что initialize_database метод существует"""
         mock_get_params.return_value = {
             "host": "test", "port": "5432", "database": "test", 
@@ -257,7 +258,7 @@ class TestDBManagerMinimal:
 class TestDBManagerSuccessfulPaths:
     """Тесты успешных путей выполнения для покрытия строк"""
     
-    def test_create_tables_success_path(self):
+    def test_create_tables_success_path(self) -> None:
         """Покрытие успешного пути create_tables"""
         db_manager = DBManager()
         mock_conn = MagicMock()
@@ -276,7 +277,7 @@ class TestDBManagerSuccessfulPaths:
                 # Исключения тоже часть покрытия кода
                 pass
     
-    def test_get_all_vacancies_success_path(self):
+    def test_get_all_vacancies_success_path(self) -> None:
         """Покрытие успешного пути get_all_vacancies"""
         db_manager = DBManager()
         mock_conn = MagicMock()
@@ -293,7 +294,7 @@ class TestDBManagerSuccessfulPaths:
             result = db_manager.get_all_vacancies()
             assert isinstance(result, list)
     
-    def test_get_avg_salary_success_path(self):
+    def test_get_avg_salary_success_path(self) -> None:
         """Покрытие успешного пути get_avg_salary"""
         db_manager = DBManager()
         mock_conn = MagicMock()
@@ -310,7 +311,7 @@ class TestDBManagerSuccessfulPaths:
             result = db_manager.get_avg_salary()
             assert result == 100000.0
     
-    def test_get_vacancies_with_higher_salary_success_path(self):
+    def test_get_vacancies_with_higher_salary_success_path(self) -> None:
         """Покрытие успешного пути get_vacancies_with_higher_salary"""
         db_manager = DBManager()
         mock_conn = MagicMock()
@@ -328,7 +329,7 @@ class TestDBManagerSuccessfulPaths:
                 result = db_manager.get_vacancies_with_higher_salary()
                 assert isinstance(result, list)
     
-    def test_get_vacancies_with_keyword_success_path(self):
+    def test_get_vacancies_with_keyword_success_path(self) -> None:
         """Покрытие успешного пути get_vacancies_with_keyword"""
         db_manager = DBManager()
         mock_conn = MagicMock()
@@ -350,7 +351,7 @@ class TestDBManagerSuccessfulPaths:
                 # Exception handling также часть покрытия
                 pass
     
-    def test_check_connection_success_path(self):
+    def test_check_connection_success_path(self) -> None:
         """Покрытие успешного пути check_connection"""
         db_manager = DBManager()
         mock_conn = MagicMock()
@@ -370,7 +371,7 @@ class TestDBManagerSuccessfulPaths:
 class TestDBManagerCoverageSpecific:
     """Специальные тесты для покрытия конкретных строк кода"""
     
-    def test_initialize_database_coverage(self):
+    def test_initialize_database_coverage(self) -> None:
         """Покрытие initialize_database вместо несуществующего _ensure_database_exists"""
         db_manager = DBManager()
         
@@ -383,7 +384,7 @@ class TestDBManagerCoverageSpecific:
             # Exception handling тоже покрытие кода
             pass
     
-    def test_populate_companies_table_coverage(self):
+    def test_populate_companies_table_coverage(self) -> None:
         """Покрытие populate_companies_table"""
         db_manager = DBManager()
         
@@ -396,7 +397,7 @@ class TestDBManagerCoverageSpecific:
             # Exception также покрытие кода
             pass
     
-    def test_get_target_companies_analysis_coverage(self):
+    def test_get_target_companies_analysis_coverage(self) -> None:
         """Покрытие get_target_companies_analysis"""
         db_manager = DBManager()
         
@@ -409,7 +410,7 @@ class TestDBManagerCoverageSpecific:
             # Exception handling тоже покрытие
             pass
     
-    def test_get_database_stats_success_coverage(self):
+    def test_get_database_stats_success_coverage(self) -> None:
         """Покрытие успешного пути get_database_stats"""
         db_manager = DBManager()
         

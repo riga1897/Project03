@@ -19,10 +19,10 @@ from src.api_modules.unified_api import UnifiedAPI
 
 class ConcreteJobAPI(BaseJobAPI):
     """Конкретная реализация для тестирования BaseJobAPI."""
-    
+
     def get_vacancies(self, search_query: str, **kwargs):
         return [{"name": "Test Vacancy", "alternate_url": "https://test.com"}]
-    
+
     def _validate_vacancy(self, vacancy):
         return isinstance(vacancy, dict) and "name" in vacancy
 
@@ -37,9 +37,9 @@ class TestBaseJobAPI:
         """Покрытие clear_cache с существующей директорией."""
         mock_exists.return_value = True
         api = ConcreteJobAPI()
-        
+
         api.clear_cache("hh")
-        
+
         mock_rmtree.assert_called_once()
         mock_makedirs.assert_called_once()
 
@@ -49,9 +49,9 @@ class TestBaseJobAPI:
         """Покрытие clear_cache с несуществующей директорией."""
         mock_exists.return_value = False
         api = ConcreteJobAPI()
-        
+
         api.clear_cache("sj")
-        
+
         mock_makedirs.assert_called_once()
 
     @patch('os.makedirs')
@@ -60,14 +60,14 @@ class TestBaseJobAPI:
         """Покрытие clear_cache с исключением."""
         mock_exists.side_effect = Exception("Test error")
         api = ConcreteJobAPI()
-        
+
         with pytest.raises(Exception):
             api.clear_cache("test")
 
-    def test_abstract_methods(self):
+    def test_abstract_methods(self) -> None:
         """Покрытие абстрактных методов через конкретную реализацию."""
         api = ConcreteJobAPI()
-        
+
         vacancies = api.get_vacancies("python")
         assert len(vacancies) == 1
         assert api._validate_vacancy({"name": "test"}) is True
@@ -76,16 +76,16 @@ class TestBaseJobAPI:
 
 class ConcreteCachedAPI(CachedAPI):
     """Конкретная реализация для тестирования CachedAPI."""
-    
+
     def _get_empty_response(self) -> Dict:
         return {"items": [], "found": 0}
-    
+
     def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs) -> List[Dict]:
         return []
-    
+
     def get_vacancies(self, search_query: str, **kwargs):
         return [{"name": "Cached Vacancy"}]
-    
+
     def _validate_vacancy(self, vacancy):
         return True
 
@@ -98,7 +98,7 @@ class TestCachedAPI:
     def test_init_cache(self, mock_file_cache, mock_mkdir):
         """Покрытие инициализации кэша."""
         api = ConcreteCachedAPI("test_cache")
-        
+
         # mkdir может вызываться несколько раз (для родительских директорий и самой директории)
         assert mock_mkdir.call_count >= 1
         mock_file_cache.assert_called_once_with("test_cache")
@@ -108,7 +108,7 @@ class TestCachedAPI:
     def test_cached_api_request(self, mock_mkdir, mock_file_cache):
         """Покрытие кэшированного запроса."""
         api = ConcreteCachedAPI("test_cache")
-        
+
         # Тестируем метод через декоратор, используя простые типы для кэш-ключа
         # Передаем простые hashable параметры
         result = api._cached_api_request("http://test.com", "test_params", "test")
@@ -119,13 +119,13 @@ class TestCachedAPI:
 class TestAPIConnector:
     """100% покрытие APIConnector."""
 
-    def test_init_default(self):
+    def test_init_default(self) -> None:
         """Покрытие инициализации с параметрами по умолчанию."""
         connector = APIConnector()
         assert connector.config is not None
         assert "User-Agent" in connector.headers
 
-    def test_init_with_config(self):
+    def test_init_with_config(self) -> None:
         """Покрытие инициализации с конфигурацией."""
         mock_config = Mock()
         mock_config.user_agent = "TestAgent"
@@ -133,7 +133,7 @@ class TestAPIConnector:
         assert connector.config == mock_config
 
     @patch.dict('os.environ', {'DISABLE_TQDM': '1'})
-    def test_init_progress_disabled(self):
+    def test_init_progress_disabled(self) -> None:
         """Покрытие инициализации прогресса с отключенным tqdm."""
         connector = APIConnector()
         connector._init_progress(10, "test")
@@ -146,7 +146,7 @@ class TestAPIConnector:
         mock_response.status_code = 200
         mock_response.json.return_value = {"success": True}
         mock_get.return_value = mock_response
-        
+
         connector = APIConnector()
         result = connector.connect("http://test.com", {})
         assert result == {"success": True}
@@ -158,7 +158,7 @@ class TestAPIConnector:
         mock_response.status_code = 429
         mock_response.headers = {"Retry-After": "1"}
         mock_get.return_value = mock_response
-        
+
         connector = APIConnector()
         # Мокаем рекурсивный вызов чтобы избежать бесконечного цикла
         with patch.object(connector, '_APIConnector__connect', return_value={"retried": True}):
@@ -169,19 +169,19 @@ class TestAPIConnector:
     def test_connect_timeout(self, mock_get):
         """Покрытие обработки таймаута."""
         mock_get.side_effect = requests.Timeout("Timeout")
-        
+
         connector = APIConnector()
         with pytest.raises(ConnectionError, match="Timeout error"):
             connector.connect("http://test.com", {})
 
-    def test_update_progress(self):
+    def test_update_progress(self) -> None:
         """Покрытие обновления прогресса."""
         connector = APIConnector()
         connector._progress = Mock()
         connector._update_progress()
         # Проверяем что метод выполняется без ошибок
 
-    def test_close_progress(self):
+    def test_close_progress(self) -> None:
         """Покрытие закрытия прогресса."""
         connector = APIConnector()
         connector._progress = Mock()
@@ -207,13 +207,13 @@ class TestHeadHunterAPI:
         result = api._get_empty_response()
         assert result == {"items": []}
 
-    def test_validate_vacancy_valid(self):
+    def test_validate_vacancy_valid(self) -> None:
         """Покрытие валидации валидной вакансии."""
         api = HeadHunterAPI()
         vacancy = {"name": "Test Job", "alternate_url": "https://test.com"}
         assert api._validate_vacancy(vacancy) is True
 
-    def test_validate_vacancy_invalid(self):
+    def test_validate_vacancy_invalid(self) -> None:
         """Покрытие валидации невалидной вакансии."""
         api = HeadHunterAPI()
         vacancy = {"invalid": "data"}
@@ -226,7 +226,7 @@ class TestHeadHunterAPI:
         mock_response.json.return_value = {"items": [{"name": "Test", "alternate_url": "url"}]}
         mock_response.raise_for_status.return_value = None
         mock_get.return_value = mock_response
-        
+
         api = HeadHunterAPI()
         result = api.get_vacancies("python")
         assert len(result) >= 0  # Может быть отфильтровано
@@ -242,19 +242,19 @@ class TestSuperJobAPI:
         api = SuperJobAPI()
         assert api.BASE_URL == "https://api.superjob.ru/2.0/vacancies/"
 
-    def test_get_empty_response(self):
+    def test_get_empty_response(self) -> None:
         """Покрытие _get_empty_response."""
         api = SuperJobAPI()
         result = api._get_empty_response()
         assert result == {"objects": [], "total": 0, "more": False}
 
-    def test_validate_vacancy_valid(self):
+    def test_validate_vacancy_valid(self) -> None:
         """Покрытие валидации валидной вакансии."""
         api = SuperJobAPI()
         vacancy = {"profession": "Test Job", "link": "https://test.com"}
         assert api._validate_vacancy(vacancy) is True
 
-    def test_validate_vacancy_invalid(self):
+    def test_validate_vacancy_invalid(self) -> None:
         """Покрытие валидации невалидной вакансии."""
         api = SuperJobAPI()
         vacancy = {"invalid": "data"}
@@ -272,20 +272,20 @@ class TestUnifiedAPI:
         assert "hh" in api.apis
         assert "sj" in api.apis
 
-    def test_get_available_sources(self):
+    def test_get_available_sources(self) -> None:
         """Покрытие get_available_sources."""
         api = UnifiedAPI()
         sources = api.get_available_sources()
         assert "hh" in sources
         assert "sj" in sources
 
-    def test_validate_sources_valid(self):
+    def test_validate_sources_valid(self) -> None:
         """Покрытие validate_sources с валидными источниками."""
         api = UnifiedAPI()
         result = api.validate_sources(["hh", "sj"])
         assert result == ["hh", "sj"]
 
-    def test_validate_sources_invalid(self):
+    def test_validate_sources_invalid(self) -> None:
         """Покрытие validate_sources с невалидными источниками."""
         api = UnifiedAPI()
         result = api.validate_sources(["invalid", "hh"])
@@ -297,12 +297,12 @@ class TestUnifiedAPI:
         """Покрытие get_vacancies_from_sources."""
         mock_hh_get.return_value = [{"source": "hh", "name": "HH Job"}]
         mock_sj_get.return_value = [{"source": "sj", "profession": "SJ Job"}]
-        
+
         api = UnifiedAPI()
         result = api.get_vacancies_from_sources("python", ["hh", "sj"])
         assert len(result) >= 0  # Результат может быть отфильтрован
 
-    def test_clear_all_cache(self):
+    def test_clear_all_cache(self) -> None:
         """Покрытие clear_all_cache."""
         api = UnifiedAPI()
         with patch.object(api.hh_api, 'clear_cache') as mock_hh_clear, \
