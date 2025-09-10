@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 # Глобальные моки для предотвращения реальных I/O операций
 @pytest.fixture(autouse=True)
-def mock_io_operations():
+def mock_io_operations() -> None:
     """Автоматически мокает все I/O операции во всех тестах."""
     with patch('builtins.input') as mock_input, \
          patch('requests.get') as mock_get, \
@@ -26,7 +26,7 @@ def mock_io_operations():
          patch('pathlib.Path.exists') as mock_exists, \
          patch('pathlib.Path.write_text') as mock_write, \
          patch('pathlib.Path.read_text') as mock_read:
-        
+
         # Настраиваем базовые возвращаемые значения
         mock_input.return_value = "test_input"
         mock_get.return_value.json.return_value = {"items": []}
@@ -35,7 +35,7 @@ def mock_io_operations():
         mock_post.return_value.status_code = 200
         mock_exists.return_value = True
         mock_read.return_value = "{}"
-        
+
         yield {
             'input': mock_input,
             'get': mock_get,
@@ -49,7 +49,7 @@ def mock_io_operations():
         }
 
 @pytest.fixture
-def mock_database():
+def mock_database() -> None:
     """Мок для всех операций с базой данных."""
     with patch('psycopg2.connect') as mock_connect:
         mock_conn = MagicMock()
@@ -60,8 +60,8 @@ def mock_database():
         mock_connect.return_value = mock_conn
         yield mock_cursor
 
-@pytest.fixture  
-def sample_vacancy_data():
+@pytest.fixture
+def sample_vacancy_data() -> None:
     """Образец данных вакансии для тестов."""
     return {
         "id": "test_123",

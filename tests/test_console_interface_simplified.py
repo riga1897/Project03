@@ -7,7 +7,6 @@
 """
 
 from unittest.mock import MagicMock, patch
-import pytest
 from src.ui_interfaces.console_interface import UserInterface
 
 
@@ -120,7 +119,7 @@ class TestUserInterfaceBasic:
 
         mock_paginate.assert_called_once()
 
-    def _create_ui(self):
+    def _create_ui(self) -> None:
         """Создает UI с минимальными моками"""
         with patch('src.storage.storage_factory.StorageFactory') as mock_sf:
             with patch('src.api_modules.unified_api.UnifiedAPI'):
@@ -155,7 +154,7 @@ class TestUserInterfaceAdvancedMethods:
         mock_paginate.assert_called_once()
 
     @patch('builtins.input', side_effect=['1', '100000'])
-    @patch('src.ui_interfaces.console_interface.quick_paginate')  
+    @patch('src.ui_interfaces.console_interface.quick_paginate')
     @patch('src.ui_interfaces.console_interface.VacancyFormatter')
     @patch('builtins.print')
     def test_filter_by_salary_minimum(self, mock_print, mock_formatter, mock_paginate, mock_input):
@@ -169,7 +168,7 @@ class TestUserInterfaceAdvancedMethods:
 
         ui._filter_saved_vacancies_by_salary()
 
-        # Основная цель - покрытие кода  
+        # Основная цель - покрытие кода
         ui.vacancy_ops.filter_vacancies_by_min_salary.assert_called_once()
         mock_paginate.assert_called_once()
 
@@ -178,7 +177,7 @@ class TestUserInterfaceAdvancedMethods:
     @patch('src.ui_interfaces.console_interface.quick_paginate')
     @patch('src.ui_interfaces.console_interface.VacancyFormatter')
     @patch('builtins.print')
-    def test_filter_by_salary_range(self, mock_print, mock_formatter, mock_paginate, 
+    def test_filter_by_salary_range(self, mock_print, mock_formatter, mock_paginate,
                                    mock_parse, mock_input):
         """Тест фильтрации по диапазону зарплат"""
         ui = self._create_ui()
@@ -213,7 +212,7 @@ class TestUserInterfaceAdvancedMethods:
         # Проверяем что метод отработал
         assert mock_print.call_count >= 5  # Множество print вызовов
 
-    def _create_ui(self):
+    def _create_ui(self) -> None:
         """Создает UI с минимальными моками"""
         with patch('src.storage.storage_factory.StorageFactory') as mock_sf:
             with patch('src.api_modules.unified_api.UnifiedAPI'):
@@ -282,7 +281,7 @@ class TestUserInterfaceEdgeCases:
         assert result == 15  # По умолчанию
         mock_print.assert_any_call("Некорректный период. Используется 15 дней по умолчанию.")
 
-    def _create_ui(self):
+    def _create_ui(self) -> None:
         """Создает UI с минимальными моками"""
         with patch('src.storage.storage_factory.StorageFactory') as mock_sf:
             with patch('src.api_modules.unified_api.UnifiedAPI'):
@@ -331,7 +330,7 @@ class TestUserInterfaceRemainingMethods:
 
         assert result == 45
 
-    def _create_ui(self):
+    def _create_ui(self) -> None:
         """Создает UI с минимальными моками"""
         with patch('src.storage.storage_factory.StorageFactory') as mock_sf:
             with patch('src.api_modules.unified_api.UnifiedAPI'):

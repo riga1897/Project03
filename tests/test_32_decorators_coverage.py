@@ -278,7 +278,7 @@ class TestRetryOnFailure:
         call_count = 0
 
         @retry_on_failure(max_attempts=3, delay=0.5)
-        def test_func():
+        def test_func() -> str:
             nonlocal call_count
             call_count += 1
             if call_count <= 2:
@@ -317,7 +317,7 @@ class TestRetryOnFailure:
         call_count = 0
 
         @retry_on_failure(max_attempts=4, delay=0.1)
-        def test_func():
+        def test_func() -> str:
             nonlocal call_count
             call_count += 1
             if call_count == 1:
@@ -332,12 +332,12 @@ class TestRetryOnFailure:
         assert result == "finally success"
         assert call_count == 4
 
-    def test_retry_default_parameters(self):
+    def test_retry_default_parameters(self) -> None:
         """Покрытие значений по умолчанию"""
         call_count = 0
 
         @retry_on_failure()  # Используем параметры по умолчанию
-        def test_func():
+        def test_func() -> None:
             nonlocal call_count
             call_count += 1
             if call_count <= 3:
@@ -427,7 +427,7 @@ class TestTimeExecution:
         mock_time.time.side_effect = [150.0, 150.0]  # Одинаковое время
 
         @time_execution
-        def test_func():
+        def test_func() -> None:
             return "instant"
 
         result = test_func()

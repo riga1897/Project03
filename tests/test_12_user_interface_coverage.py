@@ -10,8 +10,8 @@
 """
 
 import logging
+from typing import Any
 from unittest.mock import patch, Mock, MagicMock
-import pytest
 
 # Импорты из реального кода для покрытия
 import src.user_interface
@@ -24,19 +24,18 @@ class TestUserInterface:
     @patch('src.user_interface.StorageFactory')
     @patch('src.user_interface.AppConfig')
     @patch('src.storage.db_manager.DBManager')
-    def test_main_success(self, mock_db_manager_class, mock_app_config, 
-                         mock_storage_factory, mock_ui):
+    def test_main_success(self, mock_db_manager_class: Any, mock_app_config: Any, mock_storage_factory: Any, mock_ui: Any) -> None:
         """Покрытие успешного выполнения main()."""
         # Настраиваем мок БД с контекстным менеджером
         mock_db_manager = Mock()
-        mock_db_manager.check_connection.return_value = True  
+        mock_db_manager.check_connection.return_value = True
         mock_db_manager.initialize_database.return_value = True
         mock_db_manager.get_companies_and_vacancies_count.return_value = [("Company1", 10)]
 
         # Настраиваем контекстный менеджер для _get_connection()
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
-        mock_cursor.fetchone.return_value = [5]  # count результат 
+        mock_cursor.fetchone.return_value = [5]  # count результат
         mock_connection.cursor.return_value = mock_cursor
         mock_db_manager._get_connection.return_value = mock_connection
 
@@ -67,7 +66,7 @@ class TestUserInterface:
 
     @patch('src.storage.db_manager.DBManager')
     @patch('builtins.print')
-    def test_main_database_creation_error(self, mock_print, mock_db_manager_class):
+    def test_main_database_creation_error(self, mock_print: Any, mock_db_manager_class: Any) -> None:
         """Покрытие ошибки создания базы данных."""
         # Настраиваем мок для ошибки создания БД
         mock_db_manager = Mock()
@@ -84,7 +83,7 @@ class TestUserInterface:
 
     @patch('src.storage.db_manager.DBManager')
     @patch('builtins.print')
-    def test_main_connection_error(self, mock_print, mock_db_manager_class):
+    def test_main_connection_error(self, mock_print: Any, mock_db_manager_class: Any) -> None:
         """Покрытие ошибки подключения к базе данных."""
         # Настраиваем мок для ошибки подключения
         mock_db_manager = Mock()
@@ -104,7 +103,7 @@ class TestUserInterface:
 
     @patch('src.storage.db_manager.DBManager')
     @patch('builtins.print')
-    def test_main_table_creation_error(self, mock_print, mock_db_manager_class):
+    def test_main_table_creation_error(self, mock_print: Any, mock_db_manager_class: Any) -> None:
         """Покрытие ошибки создания таблиц."""
         # Настраиваем мок для ошибки создания таблиц
         mock_db_manager = Mock()
@@ -123,7 +122,7 @@ class TestUserInterface:
 
     @patch('src.storage.db_manager.DBManager')
     @patch('builtins.print')
-    def test_main_populate_companies_error(self, mock_print, mock_db_manager_class):
+    def test_main_populate_companies_error(self, mock_print: Any, mock_db_manager_class: Any) -> None:
         """Покрытие ошибки заполнения таблицы компаний."""
         # Настраиваем мок для ошибки заполнения компаний
         mock_db_manager = Mock()
@@ -143,7 +142,7 @@ class TestUserInterface:
 
     @patch('src.storage.db_manager.DBManager')
     @patch('builtins.print')
-    def test_main_validation_error(self, mock_print, mock_db_manager_class):
+    def test_main_validation_error(self, mock_print: Any, mock_db_manager_class: Any) -> None:
         """Покрытие ошибки валидации инициализации БД."""
         # Настраиваем мок для ошибки валидации
         mock_db_manager = Mock()
@@ -163,12 +162,12 @@ class TestUserInterface:
         mock_print.assert_called()
 
     @patch('src.user_interface.UserInterface')
-    @patch('src.user_interface.StorageFactory')  
+    @patch('src.user_interface.StorageFactory')
     @patch('src.user_interface.AppConfig')
     @patch('src.storage.db_manager.DBManager')
     @patch('builtins.print')
-    def test_main_storage_error(self, mock_print, mock_db_manager_class, mock_app_config, 
-                               mock_storage_factory, mock_ui):
+    def test_main_storage_error(self, mock_print: Any, mock_db_manager_class: Any, mock_app_config: Any,
+                               mock_storage_factory: Any, mock_ui: Any) -> None:
         """Покрытие ошибки создания хранилища."""
         # Настраиваем мок БД для успешного выполнения
         mock_db_manager = Mock()
@@ -198,8 +197,8 @@ class TestUserInterface:
     @patch('src.user_interface.AppConfig')
     @patch('src.storage.db_manager.DBManager')
     @patch('builtins.print')
-    def test_main_ui_error(self, mock_print, mock_db_manager_class, mock_app_config, 
-                          mock_storage_factory, mock_ui):
+    def test_main_ui_error(self, mock_print: Any, mock_db_manager_class: Any, mock_app_config: Any,
+                          mock_storage_factory: Any, mock_ui: Any) -> None:
         """Покрытие ошибки создания пользовательского интерфейса."""
         # Настраиваем моки для успешного выполнения до UI
         mock_db_manager = Mock()
@@ -232,8 +231,8 @@ class TestUserInterface:
     @patch('src.user_interface.AppConfig')
     @patch('src.storage.db_manager.DBManager')
     @patch('builtins.print')
-    def test_main_ui_run_error(self, mock_print, mock_db_manager_class, mock_app_config,
-                              mock_storage_factory, mock_ui):
+    def test_main_ui_run_error(self, mock_print: Any, mock_db_manager_class: Any, mock_app_config: Any,
+                              mock_storage_factory: Any, mock_ui: Any) -> None:
         """Покрытие ошибки запуска пользовательского интерфейса."""
         # Настраиваем моки для успешного выполнения до запуска UI
         mock_db_manager = Mock()
@@ -272,7 +271,7 @@ class TestUserInterface:
 
     @patch('src.storage.db_manager.DBManager')
     @patch('builtins.print')
-    def test_main_general_exception(self, mock_print, mock_db_manager):
+    def test_main_general_exception(self, mock_print: Any, mock_db_manager: Any) -> None:
         """Покрытие общего исключения в try-except блоке main()."""
         # Мокаем чтобы вызвать общее исключение в начале функции
         mock_db_manager.side_effect = Exception("General Error")
@@ -294,7 +293,7 @@ class TestUserInterfaceImports:
         # Проверяем что все необходимые импорты доступны
         assert hasattr(src.user_interface, 'logging')
         assert hasattr(src.user_interface, 'AppConfig')
-        assert hasattr(src.user_interface, 'StorageFactory')  
+        assert hasattr(src.user_interface, 'StorageFactory')
         assert hasattr(src.user_interface, 'UserInterface')
         assert hasattr(src.user_interface, 'main')
         assert hasattr(src.user_interface, 'logger')
@@ -317,8 +316,8 @@ class TestUserInterfaceIntegration:
     @patch('src.user_interface.StorageFactory')
     @patch('src.user_interface.UserInterface')
     @patch('src.user_interface.logger')
-    def test_full_integration_flow(self, mock_logger, mock_ui, mock_storage_factory,
-                                  mock_app_config, mock_db_manager_class, mock_logging_config):
+    def test_full_integration_flow(self, mock_logger: Any, mock_ui: Any, mock_storage_factory: Any,
+                                  mock_app_config: Any, mock_db_manager_class: Any, mock_logging_config: Any) -> None:
         """Покрытие полного потока интеграции компонентов."""
         # Настраиваем все моки для успешного сценария
         mock_db_manager = Mock()
@@ -332,7 +331,7 @@ class TestUserInterfaceIntegration:
         from unittest.mock import MagicMock
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
-        mock_cursor.fetchone.return_value = [3]  # count результат 
+        mock_cursor.fetchone.return_value = [3]  # count результат
         mock_connection.cursor.return_value = mock_cursor
         mock_db_manager._get_connection.return_value = mock_connection
 

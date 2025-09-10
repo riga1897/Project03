@@ -152,7 +152,7 @@ class TestEnvLoader:
 class TestDecorators:
     """100% покрытие decorators утилиты."""
 
-    def test_simple_cache_basic(self):
+    def test_simple_cache_basic(self) -> None:
         """Покрытие базового кэширования."""
         call_count = 0
 
@@ -204,7 +204,7 @@ class TestDecorators:
         assert result2 == 9
         assert call_count == 1  # Из-за мока time время не истекло
 
-    def test_simple_cache_max_size(self):
+    def test_simple_cache_max_size(self) -> None:
         """Покрытие ограничения размера кэша."""
         @simple_cache(max_size=2)
         def test_function(x):
@@ -226,7 +226,7 @@ class TestDecorators:
         call_count = 0
 
         @retry_on_failure(max_attempts=3, delay=0.1)
-        def failing_function():
+        def failing_function() -> None:
             nonlocal call_count
             call_count += 1
             if call_count < 3:
@@ -237,12 +237,12 @@ class TestDecorators:
         assert result == "success"
         assert call_count == 3
 
-    def test_time_execution(self):
+    def test_time_execution(self) -> None:
         """Покрытие time_execution декоратора."""
         from src.utils.decorators import time_execution
 
         @time_execution
-        def test_function():
+        def test_function() -> None:
             return "completed"
 
         # Проверяем что декоратор не нарушает выполнение

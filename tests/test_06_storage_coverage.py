@@ -57,7 +57,7 @@ class ConcreteVacancyStorage(AbstractVacancyStorage):
 class ConcreteDBManager(AbstractDBManager):
     """Конкретная реализация для тестирования."""
 
-    def _get_connection(self):
+    def _get_connection(self) -> None:
         """Mock реализация получения подключения."""
         return MagicMock()
 

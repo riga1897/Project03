@@ -260,7 +260,7 @@ class ConcreteVacancyStorageService(AbstractVacancyStorageService):
         """Конкретная реализация для тестов"""
         return True
 
-    def get_storage_stats(self):
+    def get_storage_stats(self) -> None:
         """Конкретная реализация для тестов"""
         return {"total": 0}
 
@@ -268,7 +268,7 @@ class ConcreteVacancyStorageService(AbstractVacancyStorageService):
         """Конкретная реализация для тестов"""
         return vacancies
 
-    def get_companies_and_vacancies_count(self):
+    def get_companies_and_vacancies_count(self) -> None:
         """Конкретная реализация для тестов"""
         return []
 

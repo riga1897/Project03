@@ -6,8 +6,8 @@
 
 import pytest
 import requests
-from typing import Dict, List
-from unittest.mock import patch, MagicMock, Mock
+from typing import Dict, List, Any
+from unittest.mock import patch, Mock
 
 from src.api_modules.base_api import BaseJobAPI
 from src.api_modules.cached_api import CachedAPI
@@ -20,7 +20,7 @@ from src.api_modules.unified_api import UnifiedAPI
 class ConcreteJobAPI(BaseJobAPI):
     """Конкретная реализация для тестирования BaseJobAPI."""
 
-    def get_vacancies(self, search_query: str, **kwargs):
+    def get_vacancies(self, search_query: str, **kwargs) -> Any:
         return [{"name": "Test Vacancy", "alternate_url": "https://test.com"}]
 
     def _validate_vacancy(self, vacancy):
@@ -83,7 +83,7 @@ class ConcreteCachedAPI(CachedAPI):
     def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs) -> List[Dict]:
         return []
 
-    def get_vacancies(self, search_query: str, **kwargs):
+    def get_vacancies(self, search_query: str, **kwargs) -> List:
         return [{"name": "Cached Vacancy"}]
 
     def _validate_vacancy(self, vacancy):

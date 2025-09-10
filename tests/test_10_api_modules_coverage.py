@@ -118,9 +118,10 @@ class TestHeadHunterAPI:
 
     def test_hh_api_init_with_config(self) -> None:
         """Покрытие инициализации с конфигурацией."""
-        config = HHAPIConfig(user_agent="TestAgent")
+        config = HHAPIConfig(area=1, per_page=20)
         api = HeadHunterAPI(config)
-        assert api.config.user_agent == "TestAgent"
+        assert api.config.area == 1
+        assert api.config.per_page == 20
 
     def test_hh_api_constants(self) -> None:
         """Покрытие констант класса."""

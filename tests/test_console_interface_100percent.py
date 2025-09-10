@@ -7,8 +7,8 @@
 """
 
 from unittest.mock import MagicMock, patch
-import pytest
 from src.ui_interfaces.console_interface import UserInterface
+from typing import Any
 
 
 class TestConsoleInterface100Percent:
@@ -36,7 +36,7 @@ class TestConsoleInterface100Percent:
                                         assert ui.demo is not None
 
     @patch('src.ui_interfaces.console_interface.DBManager', None)
-    @patch('src.ui_interfaces.console_interface.DBManagerDemo', None)  
+    @patch('src.ui_interfaces.console_interface.DBManagerDemo', None)
     def test_init_without_db_imports(self) -> None:
         """Покрытие строк 23-25: когда DBManager не импортируется"""
         with patch('src.storage.storage_factory.StorageFactory') as mock_sf:
@@ -57,10 +57,10 @@ class TestConsoleInterface100Percent:
     @patch('src.ui_interfaces.console_interface.print_section_header')
     @patch('builtins.input', side_effect=['10', '0'])  # DB demo choice, затем выход
     @patch('builtins.print')
-    def test_dbmanager_demo_branch(self, mock_print, mock_input, mock_header):
+    def test_dbmanager_demo_branch(self, mock_print: Any, mock_input: Any, mock_header: Any):
         """Покрытие строк 103-107: запуск DB Manager demo"""
         ui = self._create_ui()
-        ui.db_manager = MagicMock()  
+        ui.db_manager = MagicMock()
         ui.demo = MagicMock()
 
         ui.run()
@@ -73,7 +73,7 @@ class TestConsoleInterface100Percent:
     @patch('src.ui_interfaces.console_interface.logger')
     @patch('time.sleep', return_value=None)
     @patch('builtins.print')
-    def test_run_exception_handler(self, mock_print, mock_sleep, mock_logger, mock_header):
+    def test_run_exception_handler(self, mock_print: Any, mock_sleep: Any, mock_logger: Any, mock_header: Any):
         """Покрытие строк 121-127: exception handler в run()"""
         ui = self._create_ui()
 
@@ -88,10 +88,10 @@ class TestConsoleInterface100Percent:
         mock_sleep.assert_called_with(0.1)
 
     @patch('src.ui_interfaces.console_interface.get_user_input', return_value="test AND keyword")
-    @patch('src.ui_interfaces.console_interface.quick_paginate') 
+    @patch('src.ui_interfaces.console_interface.quick_paginate')
     @patch('src.ui_interfaces.console_interface.VacancyFormatter')
     @patch('builtins.print')
-    def test_advanced_search_and_operator(self, mock_print, mock_formatter, mock_paginate, mock_input):
+    def test_advanced_search_and_operator(self, mock_print: Any, mock_formatter: Any, mock_paginate: Any, mock_input: Any):
         """Покрытие строк 202-203: advanced search с AND"""
         ui = self._create_ui()
         ui.storage.get_vacancies.return_value = [MagicMock()]
@@ -105,7 +105,7 @@ class TestConsoleInterface100Percent:
 
     @patch('src.ui_interfaces.console_interface.get_user_input', return_value="nosuchkeyword")
     @patch('builtins.print')
-    def test_advanced_search_no_results(self, mock_print, mock_input):
+    def test_advanced_search_no_results(self, mock_print: Any, mock_input: Any):
         """Покрытие строк 206-207: нет результатов поиска"""
         ui = self._create_ui()
         ui.storage.get_vacancies.return_value = [MagicMock()]
@@ -115,8 +115,8 @@ class TestConsoleInterface100Percent:
 
         mock_print.assert_any_call("Вакансии по указанным критериям не найдены.")
 
-    @patch('builtins.print')  
-    def test_salary_filter_no_vacancies(self, mock_print):
+    @patch('builtins.print')
+    def test_salary_filter_no_vacancies(self, mock_print: Any):
         """Покрытие строк 233-234: нет сохраненных вакансий"""
         ui = self._create_ui()
         ui.storage.get_vacancies.return_value = []
@@ -127,7 +127,7 @@ class TestConsoleInterface100Percent:
 
     @patch('builtins.input', side_effect=['2', 'not_a_number'])
     @patch('builtins.print')
-    def test_salary_filter_max_value_error(self, mock_print, mock_input):
+    def test_salary_filter_max_value_error(self, mock_print: Any, mock_input: Any):
         """Покрытие строк 259-261: ValueError в max salary"""
         ui = self._create_ui()
         ui.storage.get_vacancies.return_value = [MagicMock()]
@@ -138,7 +138,7 @@ class TestConsoleInterface100Percent:
 
     @patch('builtins.input', side_effect=['3', ''])
     @patch('src.ui_interfaces.console_interface.parse_salary_range', return_value=None)
-    def test_salary_filter_range_parse_fail(self, mock_parse, mock_input):
+    def test_salary_filter_range_parse_fail(self, mock_parse: Any, mock_input: Any):
         """Покрытие строки 273: return при неудачном parse"""
         ui = self._create_ui()
         ui.storage.get_vacancies.return_value = [MagicMock()]
@@ -150,7 +150,7 @@ class TestConsoleInterface100Percent:
 
     @patch('builtins.input', side_effect=['1', '999999'])
     @patch('builtins.print')
-    def test_salary_filter_no_matching_results(self, mock_print, mock_input):
+    def test_salary_filter_no_matching_results(self, mock_print: Any, mock_input: Any):
         """Покрытие строк 280-281: нет подходящих вакансий"""
         ui = self._create_ui()
         ui.storage.get_vacancies.return_value = [MagicMock()]
@@ -162,7 +162,7 @@ class TestConsoleInterface100Percent:
 
     @patch('builtins.input', side_effect=['6', '0'])  # Неверный период -> 0 дней
     @patch('builtins.print')
-    def test_period_choice_out_of_range(self, mock_print, mock_input):
+    def test_period_choice_out_of_range(self, mock_print: Any, mock_input: Any):
         """Покрытие строк 344-348: период вне диапазона"""
         result = UserInterface._get_period_choice()
 
@@ -170,8 +170,8 @@ class TestConsoleInterface100Percent:
         mock_print.assert_any_call("Некорректный период. Используется 15 дней по умолчанию.")
 
     @patch('builtins.input', side_effect=['6', 'abc'])
-    @patch('builtins.print') 
-    def test_period_choice_value_error(self, mock_print, mock_input):
+    @patch('builtins.print')
+    def test_period_choice_value_error(self, mock_print: Any, mock_input: Any):
         """Покрытие строк 346-348: ValueError при вводе"""
         result = UserInterface._get_period_choice()
 
@@ -180,7 +180,7 @@ class TestConsoleInterface100Percent:
 
     @patch('builtins.input', return_value='invalid_choice')
     @patch('builtins.print')
-    def test_period_choice_else_branch(self, mock_print, mock_input):
+    def test_period_choice_else_branch(self, mock_print: Any, mock_input: Any):
         """Покрытие строк 350-351: else ветка"""
         result = UserInterface._get_period_choice()
 
@@ -189,14 +189,14 @@ class TestConsoleInterface100Percent:
 
     @patch('builtins.input', side_effect=KeyboardInterrupt())
     @patch('builtins.print')
-    def test_period_choice_keyboard_interrupt(self, mock_print, mock_input):
+    def test_period_choice_keyboard_interrupt(self, mock_print: Any, mock_input: Any):
         """Покрытие строк 353-355: KeyboardInterrupt"""
         result = UserInterface._get_period_choice()
 
         assert result is None
         mock_print.assert_any_call("\nВыбор периода отменен.")
 
-    def _create_ui(self):
+    def _create_ui(self) -> None:
         """Создает UI с замоканными зависимостями"""
         with patch('src.storage.storage_factory.StorageFactory') as mock_sf:
             with patch('src.api_modules.unified_api.UnifiedAPI'):
@@ -214,15 +214,15 @@ class TestConsoleInterfaceMenuChoices:
 
     @patch('src.ui_interfaces.console_interface.print_section_header')
     @patch('builtins.input', side_effect=['1', '0'])
-    def test_menu_choice_1(self, mock_input, mock_header):
+    def test_menu_choice_1(self, mock_input: Any, mock_header: Any):
         """Покрытие строки 82"""
         ui = self._create_ui()
         ui.run()
         ui.operations_coordinator.handle_vacancy_search.assert_called_once()
 
-    @patch('src.ui_interfaces.console_interface.print_section_header') 
+    @patch('src.ui_interfaces.console_interface.print_section_header')
     @patch('builtins.input', side_effect=['2', '0'])
-    def test_menu_choice_2(self, mock_input, mock_header):
+    def test_menu_choice_2(self, mock_input: Any, mock_header: Any):
         """Покрытие строки 84"""
         ui = self._create_ui()
         ui.run()
@@ -230,23 +230,23 @@ class TestConsoleInterfaceMenuChoices:
 
     @patch('src.ui_interfaces.console_interface.print_section_header')
     @patch('builtins.input', side_effect=['3', '0'])
-    def test_menu_choice_3(self, mock_input, mock_header):
-        """Покрытие строки 86"""  
+    def test_menu_choice_3(self, mock_input: Any, mock_header: Any):
+        """Покрытие строки 86"""
         ui = self._create_ui()
         ui.run()
         ui.operations_coordinator.handle_top_vacancies_by_salary.assert_called_once()
 
     @patch('src.ui_interfaces.console_interface.print_section_header')
     @patch('builtins.input', side_effect=['4', '0'])
-    def test_menu_choice_4(self, mock_input, mock_header):
+    def test_menu_choice_4(self, mock_input: Any, mock_header: Any):
         """Покрытие строки 88"""
         ui = self._create_ui()
         ui.run()
         ui.operations_coordinator.handle_search_saved_by_keyword.assert_called_once()
 
     @patch('src.ui_interfaces.console_interface.print_section_header')
-    @patch('builtins.input', side_effect=['7', '0'])  
-    def test_menu_choice_7(self, mock_input, mock_header):
+    @patch('builtins.input', side_effect=['7', '0'])
+    def test_menu_choice_7(self, mock_input: Any, mock_header: Any):
         """Покрытие строки 94"""
         ui = self._create_ui()
         ui.run()
@@ -254,13 +254,13 @@ class TestConsoleInterfaceMenuChoices:
 
     @patch('src.ui_interfaces.console_interface.print_section_header')
     @patch('builtins.input', side_effect=['8', '0'])
-    def test_menu_choice_8(self, mock_input, mock_header):
+    def test_menu_choice_8(self, mock_input: Any, mock_header: Any):
         """Покрытие строки 97"""
         ui = self._create_ui()
         ui.run()
         ui.operations_coordinator.handle_cache_cleanup.assert_called_once()
 
-    def _create_ui(self):
+    def _create_ui(self) -> None:
         """Создает UI с замоканными зависимостями"""
         with patch('src.storage.storage_factory.StorageFactory') as mock_sf:
             with patch('src.api_modules.unified_api.UnifiedAPI'):

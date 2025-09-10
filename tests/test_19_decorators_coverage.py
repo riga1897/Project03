@@ -134,7 +134,7 @@ class TestSimpleCacheDecorator:
         assert result2 == "1_2_{}"
         assert result3 == "1_None_{'z': 3}"
 
-    def test_simple_cache_clear_cache_method(self):
+    def test_simple_cache_clear_cache_method(self) -> None:
         """Покрытие метода clear_cache"""
         @simple_cache()
         def test_func(x):
@@ -175,7 +175,7 @@ class TestRetryOnFailureDecorator:
     def test_retry_success_on_first_attempt(self, mock_sleep):
         """Покрытие успешного выполнения с первой попытки"""
         @retry_on_failure(max_attempts=3, delay=1.0)
-        def test_func():
+        def test_func() -> str:
             return "success"
 
         result = test_func()
@@ -188,7 +188,7 @@ class TestRetryOnFailureDecorator:
         call_count = [0]
 
         @retry_on_failure(max_attempts=3, delay=0.1)
-        def test_func():
+        def test_func() -> str:
             call_count[0] += 1
             if call_count[0] < 3:
                 raise Exception(f"Attempt {call_count[0]} failed")
@@ -251,7 +251,7 @@ class TestRetryOnFailureDecorator:
         call_count = [0]
 
         @retry_on_failure()  # Параметры по умолчанию
-        def test_func():
+        def test_func() -> str:
             call_count[0] += 1
             if call_count[0] < 2:
                 raise Exception("Fail")
@@ -272,7 +272,7 @@ class TestTimeExecutionDecorator:
         mock_time.side_effect = [1000.0, 1000.5]
 
         @time_execution
-        def test_func():
+        def test_func() -> str:
             return "result"
 
         result = test_func()
@@ -322,7 +322,7 @@ class TestTimeExecutionDecorator:
         mock_time.side_effect = [5000.0, 5000.001]
 
         @time_execution
-        def test_func():
+        def test_func() -> str:
             return "fast_result"
 
         result = test_func()
@@ -343,7 +343,7 @@ class TestLogErrorsDecorator:
         mock_get_logger.return_value = mock_logger
 
         @log_errors
-        def test_func():
+        def test_func() -> str:
             return "success"
 
         result = test_func()
@@ -440,7 +440,7 @@ class TestDecoratorsIntegration:
 
         assert result2 == result3
 
-    def test_decorator_preservation_of_function_metadata(self):
+    def test_decorator_preservation_of_function_metadata(self) -> None:
         """Покрытие сохранения метаданных функции"""
         @time_execution
         @retry_on_failure()

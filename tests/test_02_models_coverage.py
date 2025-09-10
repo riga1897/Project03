@@ -214,7 +214,7 @@ class TestVacancy:
             published_at="2024-01-01",
             source="test_source",
             updated_at="2024-01-02",
-            company_id="comp123"
+            company_id=123
         )
 
         assert vacancy.id == "456"

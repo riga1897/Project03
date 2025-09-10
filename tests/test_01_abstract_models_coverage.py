@@ -4,8 +4,7 @@
 Покрывает все строки кода в src/vacancies/abstract_models.py без лишних проверок.
 """
 
-import pytest
-from unittest.mock import patch, MagicMock
+from typing import Any
 
 from src.vacancies.abstract_models import AbstractEmployerMixin, AbstractExperienceMixin, AbstractEmploymentMixin
 
@@ -19,16 +18,16 @@ class ConcreteEmployer(AbstractEmployerMixin):
         self.trusted = trusted
         self.url = url
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self.name
 
-    def get_id(self):
+    def get_id(self) -> Any:
         return self.id
 
-    def is_trusted(self):
+    def is_trusted(self) -> Any:
         return self.trusted
 
-    def get_url(self):
+    def get_url(self) -> Any:
         return self.url
 
 
@@ -39,10 +38,10 @@ class ConcreteExperience(AbstractExperienceMixin):
         self.name = name
         self.id = id
 
-    def get_name(self):
+    def get_name(self) -> Any:
         return self.name
 
-    def get_id(self):
+    def get_id(self) -> Any:
         return self.id
 
 
@@ -53,10 +52,10 @@ class ConcreteEmployment(AbstractEmploymentMixin):
         self.name = name
         self.id = id
 
-    def get_name(self):
+    def get_name(self) -> Any:
         return self.name
 
-    def get_id(self):
+    def get_id(self) -> Any:
         return self.id
 
 
