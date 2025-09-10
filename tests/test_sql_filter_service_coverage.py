@@ -18,6 +18,7 @@
 import pytest
 from unittest.mock import MagicMock, patch, call
 import logging
+from typing import Any
 
 from src.storage.services.sql_filter_service import SQLFilterService
 
@@ -25,7 +26,7 @@ from src.storage.services.sql_filter_service import SQLFilterService
 class MockVacancy:
     """Мок-объект вакансии для тестирования"""
     
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         self.vacancy_id = kwargs.get('vacancy_id', 'test_id')
         self.title = kwargs.get('title', 'Test Job')
         self.description = kwargs.get('description', 'Test description')
@@ -42,21 +43,21 @@ class MockVacancy:
 class MockEmployer:
     """Мок-объект работодателя"""
     
-    def __init__(self, id_value=None, name_value=None):
+    def __init__(self, id_value: Any = None, name_value: Any = None) -> None:
         self._id = id_value
         self._name = name_value
     
-    def get_id(self):
+    def get_id(self) -> Any:
         return self._id
     
-    def get_name(self):
+    def get_name(self) -> Any:
         return self._name
 
 
 class MockSalary:
     """Мок-объект зарплаты"""
     
-    def __init__(self, salary_from=None, salary_to=None):
+    def __init__(self, salary_from: Any = None, salary_to: Any = None) -> None:
         self.salary_from = salary_from
         self.salary_to = salary_to
 
@@ -64,7 +65,7 @@ class MockSalary:
 class MockCompany:
     """Мок-объект компании"""
     
-    def __init__(self, hh_id=None, sj_id=None):
+    def __init__(self, hh_id: Any = None, sj_id: Any = None) -> None:
         self.hh_id = hh_id
         self.sj_id = sj_id
 
@@ -72,13 +73,13 @@ class MockCompany:
 class TestSQLFilterService:
     """100% покрытие класса SQLFilterService"""
 
-    def test_class_exists(self):
+    def test_class_exists(self) -> None:
         """Покрытие: существование класса"""
         assert SQLFilterService is not None
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
     @patch('src.storage.services.sql_filter_service.logger')
-    def test_init_successful(self, mock_logger, mock_target_companies):
+    def test_init_successful(self, mock_logger: Any, mock_target_companies: Any) -> None:
         """Покрытие: успешная инициализация"""
         # Мокируем db_manager
         mock_db_manager = MagicMock()
@@ -103,7 +104,7 @@ class TestSQLFilterService:
         mock_logger.info.assert_called_once()
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
-    def test_load_target_company_ids_hh(self, mock_target_companies):
+    def test_load_target_company_ids_hh(self, mock_target_companies: Any) -> None:
         """Покрытие: загрузка HH ID компаний"""
         mock_db_manager = MagicMock()
         mock_companies = [
@@ -119,7 +120,7 @@ class TestSQLFilterService:
         assert hh_ids == {'123', '789'}
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
-    def test_load_target_company_ids_sj(self, mock_target_companies):
+    def test_load_target_company_ids_sj(self, mock_target_companies: Any) -> None:
         """Покрытие: загрузка SJ ID компаний"""
         mock_db_manager = MagicMock()
         mock_companies = [
@@ -135,7 +136,7 @@ class TestSQLFilterService:
         assert sj_ids == {'456', '321'}
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
-    def test_load_target_company_ids_unknown_source(self, mock_target_companies):
+    def test_load_target_company_ids_unknown_source(self, mock_target_companies: Any) -> None:
         """Покрытие: неизвестный источник"""
         mock_db_manager = MagicMock()
         mock_companies = [MockCompany(hh_id='123', sj_id='456')]
@@ -147,7 +148,7 @@ class TestSQLFilterService:
         assert unknown_ids == set()
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
-    def test_load_target_company_ids_empty_companies(self, mock_target_companies):
+    def test_load_target_company_ids_empty_companies(self, mock_target_companies: Any) -> None:
         """Покрытие: пустой список компаний"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = []
@@ -159,7 +160,7 @@ class TestSQLFilterService:
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
     @patch('src.storage.services.sql_filter_service.logger')
-    def test_filter_and_deduplicate_empty_vacancies(self, mock_logger, mock_target_companies):
+    def test_filter_and_deduplicate_empty_vacancies(self, mock_logger: Any, mock_target_companies: Any) -> None:
         """Покрытие: пустой список вакансий"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = []
@@ -171,7 +172,7 @@ class TestSQLFilterService:
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
     @patch('src.storage.services.sql_filter_service.logger')
-    def test_filter_and_deduplicate_successful(self, mock_logger, mock_target_companies):
+    def test_filter_and_deduplicate_successful(self, mock_logger: Any, mock_target_companies: Any) -> None:
         """Покрытие: успешная фильтрация и дедупликация"""
         # Настройка моков
         mock_db_manager = MagicMock()
@@ -207,7 +208,7 @@ class TestSQLFilterService:
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
     @patch('src.storage.services.sql_filter_service.logger')
-    def test_filter_and_deduplicate_exception(self, mock_logger, mock_target_companies):
+    def test_filter_and_deduplicate_exception(self, mock_logger: Any, mock_target_companies: Any) -> None:
         """Покрытие: исключение при фильтрации"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = []
@@ -229,7 +230,7 @@ class TestSQLFilterServiceTempTable:
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
     @patch('src.utils.description_parser.DescriptionParser')
     @patch('src.storage.services.sql_filter_service.logger')
-    def test_create_temp_vacancy_table_complete(self, mock_logger, mock_description_parser, mock_target_companies):
+    def test_create_temp_vacancy_table_complete(self, mock_logger: Any, mock_description_parser: Any, mock_target_companies: Any) -> None:
         """Покрытие: создание временной таблицы с полными данными"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = []
@@ -287,7 +288,7 @@ class TestSQLFilterServiceTempTable:
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
     @patch('src.utils.description_parser.DescriptionParser')
-    def test_create_temp_vacancy_table_no_employer(self, mock_description_parser, mock_target_companies):
+    def test_create_temp_vacancy_table_no_employer(self, mock_description_parser: Any, mock_target_companies: Any) -> None:
         """Покрытие: вакансия без работодателя"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = []
@@ -310,7 +311,7 @@ class TestSQLFilterServiceTempTable:
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
     @patch('src.utils.description_parser.DescriptionParser')
-    def test_create_temp_vacancy_table_employer_without_methods(self, mock_description_parser, mock_target_companies):
+    def test_create_temp_vacancy_table_employer_without_methods(self, mock_description_parser: Any, mock_target_companies: Any) -> None:
         """Покрытие: работодатель без методов get_id/get_name"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = []
@@ -341,7 +342,7 @@ class TestSQLFilterServiceFilterQuery:
     
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
     @patch('src.storage.services.sql_filter_service.logger')
-    def test_execute_filter_query_with_results(self, mock_logger, mock_target_companies):
+    def test_execute_filter_query_with_results(self, mock_logger: Any, mock_target_companies: Any) -> None:
         """Покрытие: выполнение запроса с результатами"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = [
@@ -364,7 +365,7 @@ class TestSQLFilterServiceFilterQuery:
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
     @patch('src.storage.services.sql_filter_service.logger')
-    def test_execute_filter_query_no_results(self, mock_logger, mock_target_companies):
+    def test_execute_filter_query_no_results(self, mock_logger: Any, mock_target_companies: Any) -> None:
         """Покрытие: запрос без результатов"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = [
@@ -384,7 +385,7 @@ class TestSQLFilterServiceFilterQuery:
         mock_logger.info.assert_called()
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
-    def test_execute_filter_query_empty_target_ids(self, mock_target_companies):
+    def test_execute_filter_query_empty_target_ids(self, mock_target_companies: Any) -> None:
         """Покрытие: пустые списки целевых ID"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = []
@@ -405,7 +406,7 @@ class TestSQLFilterServiceBuildResults:
     """100% покрытие метода _build_filtered_vacancies"""
     
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
-    def test_build_filtered_vacancies_all_found(self, mock_target_companies):
+    def test_build_filtered_vacancies_all_found(self, mock_target_companies: Any) -> None:
         """Покрытие: все ID найдены в исходном списке"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = []
@@ -424,7 +425,7 @@ class TestSQLFilterServiceBuildResults:
         assert result[1] == vacancy2
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
-    def test_build_filtered_vacancies_partial_found(self, mock_target_companies):
+    def test_build_filtered_vacancies_partial_found(self, mock_target_companies: Any) -> None:
         """Покрытие: не все ID найдены"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = []
@@ -442,7 +443,7 @@ class TestSQLFilterServiceBuildResults:
         assert result[0] == vacancy1
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
-    def test_build_filtered_vacancies_none_found(self, mock_target_companies):
+    def test_build_filtered_vacancies_none_found(self, mock_target_companies: Any) -> None:
         """Покрытие: ни один ID не найден"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = []
@@ -461,27 +462,27 @@ class TestSQLFilterServiceBuildResults:
 class TestSQLFilterServiceNormalizeText:
     """100% покрытие статического метода _normalize_text"""
     
-    def test_normalize_text_normal_string(self):
+    def test_normalize_text_normal_string(self) -> None:
         """Покрытие: обычная строка"""
         result = SQLFilterService._normalize_text("Python Developer")
         assert result == "python developer"
 
-    def test_normalize_text_empty_string(self):
+    def test_normalize_text_empty_string(self) -> None:
         """Покрытие: пустая строка"""
         result = SQLFilterService._normalize_text("")
         assert result == ""
 
-    def test_normalize_text_none(self):
+    def test_normalize_text_none(self) -> None:
         """Покрытие: None"""
         result = SQLFilterService._normalize_text(None)
         assert result == ""
 
-    def test_normalize_text_with_spaces(self):
+    def test_normalize_text_with_spaces(self) -> None:
         """Покрытие: строка с пробелами по краям"""
         result = SQLFilterService._normalize_text("  Senior Python  ")
         assert result == "senior python"
 
-    def test_normalize_text_mixed_case(self):
+    def test_normalize_text_mixed_case(self) -> None:
         """Покрытие: смешанный регистр"""
         result = SQLFilterService._normalize_text("PyThOn DeVeLoPeR")
         assert result == "python developer"
@@ -492,7 +493,7 @@ class TestSQLFilterServiceCompanyStats:
     
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
     @patch('src.storage.services.sql_filter_service.logger')
-    def test_get_companies_vacancy_count_success(self, mock_logger, mock_target_companies):
+    def test_get_companies_vacancy_count_success(self, mock_logger: Any, mock_target_companies: Any) -> None:
         """Покрытие: успешное получение статистики"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = [
@@ -517,7 +518,7 @@ class TestSQLFilterServiceCompanyStats:
         mock_cursor.execute.assert_called_once()
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
-    def test_get_companies_vacancy_count_no_target_companies(self, mock_target_companies):
+    def test_get_companies_vacancy_count_no_target_companies(self, mock_target_companies: Any) -> None:
         """Покрытие: нет целевых компаний"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = []
@@ -529,7 +530,7 @@ class TestSQLFilterServiceCompanyStats:
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
     @patch('src.storage.services.sql_filter_service.logger')
-    def test_get_companies_vacancy_count_exception(self, mock_logger, mock_target_companies):
+    def test_get_companies_vacancy_count_exception(self, mock_logger: Any, mock_target_companies: Any) -> None:
         """Покрытие: исключение при получении статистики"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = [
@@ -551,7 +552,7 @@ class TestSQLFilterServiceComplexScenarios:
     
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
     @patch('src.utils.description_parser.DescriptionParser')
-    def test_vacancy_without_description_and_source_attributes(self, mock_description_parser, mock_target_companies):
+    def test_vacancy_without_description_and_source_attributes(self, mock_description_parser: Any, mock_target_companies: Any) -> None:
         """Покрытие: вакансия без атрибутов description и source"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = []
@@ -578,7 +579,7 @@ class TestSQLFilterServiceComplexScenarios:
         assert data_row[8] == ''  # description по умолчанию через getattr
 
     @patch('src.storage.services.sql_filter_service.TargetCompanies')
-    def test_company_stats_with_mixed_ids(self, mock_target_companies):
+    def test_company_stats_with_mixed_ids(self, mock_target_companies: Any) -> None:
         """Покрытие: статистика с смешанными HH и SJ ID"""
         mock_db_manager = MagicMock()
         mock_target_companies.get_all_companies.return_value = [

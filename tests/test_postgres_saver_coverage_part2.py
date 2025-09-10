@@ -30,7 +30,7 @@ class TestPostgresSaverAdvanced:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_get_vacancies_success(self, mock_logger, mock_psycopg2):
+    def test_get_vacancies_success(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: get_vacancies с контекстным менеджером"""
         # Создаем мок для контекстного менеджера
         mock_context_manager = MagicMock()
@@ -84,7 +84,7 @@ class TestPostgresSaverAdvanced:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_get_vacancies_error_handling(self, mock_logger, mock_psycopg2):
+    def test_get_vacancies_error_handling(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: обработка ошибок в get_vacancies"""
         # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч  
         saver = PostgresSaver({"host": "test"})
@@ -98,7 +98,7 @@ class TestPostgresSaverAdvanced:
 
     @patch('src.storage.postgres_saver.psycopg2') 
     @patch('src.storage.postgres_saver.logger')
-    def test_convert_rows_to_vacancies_success(self, mock_logger, mock_psycopg2):
+    def test_convert_rows_to_vacancies_success(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: успешная конвертация строк БД в вакансии"""
         # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч  
         saver = PostgresSaver({"host": "test"})
@@ -134,7 +134,7 @@ class TestPostgresSaverAdvanced:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_convert_rows_to_vacancies_with_errors(self, mock_logger, mock_psycopg2):
+    def test_convert_rows_to_vacancies_with_errors(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: обработка ошибок при конвертации строк"""
         # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч  
         saver = PostgresSaver({"host": "test"})
@@ -155,7 +155,7 @@ class TestPostgresSaverAdvanced:
     @patch('psycopg2.extras.execute_values')
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger') 
-    def test_filter_and_deduplicate_vacancies_success(self, mock_logger, mock_psycopg2, mock_execute_values):
+    def test_filter_and_deduplicate_vacancies_success(self, mock_logger: Any, mock_psycopg2: Any, mock_execute_values: Any) -> None:
         """Покрытие: успешная фильтрация и дедупликация"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -215,7 +215,7 @@ class TestPostgresSaverAdvanced:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_filter_and_deduplicate_vacancies_empty_list(self, mock_logger, mock_psycopg2):
+    def test_filter_and_deduplicate_vacancies_empty_list(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: фильтрация пустого списка"""
         # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч  
         saver = PostgresSaver({"host": "test"})
@@ -225,7 +225,7 @@ class TestPostgresSaverAdvanced:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_filter_and_deduplicate_vacancies_with_filters(self, mock_logger, mock_psycopg2):
+    def test_filter_and_deduplicate_vacancies_with_filters(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: фильтрация с дополнительными фильтрами"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -268,7 +268,7 @@ class TestPostgresSaverAdvanced:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_filter_and_deduplicate_vacancies_error(self, mock_logger, mock_psycopg2):
+    def test_filter_and_deduplicate_vacancies_error(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: ошибка при фильтрации и дедупликации"""
         mock_connection = MagicMock()
         mock_connection.closed = False
@@ -295,7 +295,7 @@ class TestPostgresSaverAdvanced:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_add_vacancy_batch_optimized_error_handling(self, mock_logger, mock_psycopg2):
+    def test_add_vacancy_batch_optimized_error_handling(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: обработка ошибок в batch-операциях"""
         mock_connection = MagicMock()
         mock_connection.closed = False
@@ -322,7 +322,7 @@ class TestPostgresSaverAdvanced:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_initialize_target_companies_index_error(self, mock_logger, mock_psycopg2):
+    def test_initialize_target_companies_index_error(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: ошибка при инициализации с индексами"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -331,7 +331,7 @@ class TestPostgresSaverAdvanced:
         
         from src.storage.postgres_saver import PsycopgError
         # Мокируем ошибку при создании индекса
-        def mock_execute(query, *args):
+        def mock_execute(query: Any, *args: Any) -> None:
             if "CREATE INDEX" in query:
                 raise PsycopgError("Index creation failed")
         
@@ -356,14 +356,14 @@ class TestPostgresSaverAdvanced:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_initialize_target_companies_foreign_key_existing(self, mock_logger, mock_psycopg2):
+    def test_initialize_target_companies_foreign_key_existing(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: внешний ключ уже существует"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
         mock_connection.cursor.return_value = mock_cursor
         
         # Мокируем что внешний ключ уже существует
-        def mock_fetchone():
+        def mock_fetchone() -> Any:
             query_str = str(mock_cursor.execute.call_args)
             if "constraint_name" in query_str and "FOREIGN KEY" in query_str:
                 return ("fk_vacancies_company_id",)  # Внешний ключ найден
@@ -389,7 +389,7 @@ class TestPostgresSaverAdvanced:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_initialize_target_companies_creation_error(self, mock_logger, mock_psycopg2):
+    def test_initialize_target_companies_creation_error(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: ошибка при создании внешнего ключа"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -397,7 +397,7 @@ class TestPostgresSaverAdvanced:
         
         from src.storage.postgres_saver import PsycopgError
         
-        def mock_execute(query, *args):
+        def mock_execute(query: Any, *args: Any) -> None:
             if "FOREIGN KEY" in query and "ALTER TABLE" in query:
                 raise PsycopgError("Foreign key creation failed")
         

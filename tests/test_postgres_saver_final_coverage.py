@@ -24,7 +24,7 @@ class TestPostgresSaverCriticalPaths:
     @patch('psycopg2.extras.execute_values')
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_filter_and_deduplicate_full_processing_path(self, mock_logger, mock_psycopg2, mock_execute_values):
+    def test_filter_and_deduplicate_full_processing_path(self, mock_logger: Any, mock_psycopg2: Any, mock_execute_values: Any) -> None:
         """Покрытие: полный путь обработки в filter_and_deduplicate (строки 1477-1553)"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -108,7 +108,7 @@ class TestPostgresSaverCriticalPaths:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_initialize_target_companies_exception_handling(self, mock_logger, mock_psycopg2):
+    def test_initialize_target_companies_exception_handling(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: exception handling в _ensure_tables_exist (строки 314-377)"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -149,7 +149,7 @@ class TestPostgresSaverCriticalPaths:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_add_vacancy_batch_complex_employer_processing(self, mock_logger, mock_psycopg2):
+    def test_add_vacancy_batch_complex_employer_processing(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: сложная обработка employer в batch операциях (строки 398-484)"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -206,7 +206,7 @@ class TestPostgresSaverCriticalPaths:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_various_initialization_errors(self, mock_logger, mock_psycopg2):
+    def test_various_initialization_errors(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: различные ошибки инициализации (строки 123-149)"""
         from src.storage.postgres_saver import PostgresSaver
         
@@ -226,7 +226,7 @@ class TestPostgresSaverCriticalPaths:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_edge_case_methods_coverage(self, mock_logger, mock_psycopg2):
+    def test_edge_case_methods_coverage(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: различные edge cases и завершающие строки"""
         from src.storage.postgres_saver import PostgresSaver
         
@@ -253,7 +253,7 @@ class TestPostgresSaverCriticalPaths:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_final_lines_coverage(self, mock_logger, mock_psycopg2):
+    def test_final_lines_coverage(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: завершающие строки файла (1630-1634)"""
         from src.storage.postgres_saver import PostgresSaver
         
@@ -280,7 +280,7 @@ class TestPostgresSaverRemainingEdgeCases:
     
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_complex_sql_operations_coverage(self, mock_logger, mock_psycopg2):
+    def test_complex_sql_operations_coverage(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: сложные SQL операции и их обработка"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock() 

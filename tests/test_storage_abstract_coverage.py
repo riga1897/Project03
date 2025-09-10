@@ -223,7 +223,7 @@ class TestConcreteStorageImplementation:
         """Покрытие: батчевые операции"""
         
         class MockVacancy(AbstractVacancy):
-            def __init__(self, vacancy_id="test", title="Test"):
+            def __init__(self, vacancy_id: str = "test", title: str = "Test") -> None:
                 self.id = vacancy_id
                 self.title = title
             
@@ -307,7 +307,7 @@ class TestInheritanceAndPolymorphism:
         """Покрытие: несколько реализаций хранилища"""
         
         class MockVacancy(AbstractVacancy):
-            def __init__(self, vacancy_id="test"):
+            def __init__(self, vacancy_id: str = "test") -> None:
                 self.id = vacancy_id
             
             def to_dict(self) -> Dict[str, Any]:
@@ -496,7 +496,7 @@ class TestEdgeCases:
         """Покрытие: обработка пустых фильтров"""
         
         class MockVacancy(AbstractVacancy):
-            def __init__(self, vacancy_id="test"):
+            def __init__(self, vacancy_id: str = "test") -> None:
                 self.id = vacancy_id
             
             def to_dict(self) -> Dict[str, Any]:

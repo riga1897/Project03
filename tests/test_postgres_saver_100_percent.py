@@ -23,7 +23,7 @@ import pytest
 class TestPostgresSaverImportError:
     """Тесты для случая отсутствия psycopg2"""
     
-    def test_psycopg2_import_error(self):
+    def test_psycopg2_import_error(self) -> None:
         """Покрытие: обработка ImportError при отсутствии psycopg2 (строки 10-13)"""
         # Упрощенный тест - проверяем что импорт работает и есть fallback для ImportError
         try:
@@ -49,7 +49,7 @@ class TestPostgresSaverExceptionHandling:
     
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_initialize_target_companies_connection_close_error(self, mock_logger, mock_psycopg2):
+    def test_initialize_target_companies_connection_close_error(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: ошибка при закрытии соединения в finally (строки 190-204)"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -84,7 +84,7 @@ class TestPostgresSaverExceptionHandling:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_add_vacancy_batch_optimized_connection_errors(self, mock_logger, mock_psycopg2):
+    def test_add_vacancy_batch_optimized_connection_errors(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: ошибки подключения в batch операциях (строки 623-630)"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -126,7 +126,7 @@ class TestPostgresSaverFilterAndDeduplicateEdgeCases:
     @patch('psycopg2.extras.execute_values')
     @patch('src.storage.postgres_saver.psycopg2') 
     @patch('src.storage.postgres_saver.logger')
-    def test_filter_and_deduplicate_complex_filters(self, mock_logger, mock_psycopg2, mock_execute_values):
+    def test_filter_and_deduplicate_complex_filters(self, mock_logger: Any, mock_psycopg2: Any, mock_execute_values: Any) -> None:
         """Покрытие: сложные фильтры в filter_and_deduplicate (строки 1514-1553)"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -195,7 +195,7 @@ class TestPostgresSaverFilterAndDeduplicateEdgeCases:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger') 
-    def test_filter_and_deduplicate_no_target_companies(self, mock_logger, mock_psycopg2):
+    def test_filter_and_deduplicate_no_target_companies(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: случай когда нет целевых компаний (строка 1471)"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -230,7 +230,7 @@ class TestPostgresSaverEdgeCases:
     
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_add_vacancy_with_complex_employer_data(self, mock_logger, mock_psycopg2):
+    def test_add_vacancy_with_complex_employer_data(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: сложные случаи обработки данных работодателя (строки 398-406)"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -265,7 +265,7 @@ class TestPostgresSaverEdgeCases:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')  
-    def test_load_vacancies_complex_filters(self, mock_logger, mock_psycopg2):
+    def test_load_vacancies_complex_filters(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: сложные фильтры в load_vacancies (строки 728-747)"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -304,7 +304,7 @@ class TestPostgresSaverEdgeCases:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_normalize_published_date_edge_cases(self, mock_logger, mock_psycopg2):
+    def test_normalize_published_date_edge_cases(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: edge cases нормализации даты"""
         from src.storage.postgres_saver import PostgresSaver
         
@@ -338,7 +338,7 @@ class TestPostgresSaverRemainingCoverage:
     
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_various_error_conditions(self, mock_logger, mock_psycopg2):
+    def test_various_error_conditions(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: различные условия ошибок"""
         from src.storage.postgres_saver import PostgresSaver
         

@@ -17,45 +17,15 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "pytest"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "app"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
 args = "Console App"
-
-[[workflows.workflow]]
-name = "pytest"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "poetry run pytest -v"
-
-[workflows.workflow.metadata]
-outputType = "console"
-
-[[workflows.workflow]]
-name = "app"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "poetry run python main.py"
-
-[workflows.workflow.metadata]
-outputType = "console"
 
 [[workflows.workflow]]
 name = "Console App"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python main.py"
-
 [workflows.workflow.metadata]
 outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "poetry run python main.py"

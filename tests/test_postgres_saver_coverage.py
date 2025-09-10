@@ -29,7 +29,7 @@ from src.storage.postgres_saver import PostgresSaver
 class TestPostgresSaver:
     """100% покрытие класса PostgresSaver"""
 
-    def test_class_exists(self):
+    def test_class_exists(self) -> None:
         """Покрытие: существование класса"""
         assert PostgresSaver is not None
         # Проверяем наследование от AbstractVacancyStorage
@@ -45,7 +45,7 @@ class TestPostgresSaver:
         'DATABASE_URL': ''  # Очищаем DATABASE_URL для использования PG* переменных
     }, clear=True)
     @patch('src.storage.db_psycopg2_compat.get_psycopg2')
-    def test_init_with_env_loader(self, mock_get_psycopg2):
+    def test_init_with_env_loader(self, mock_get_psycopg2: Any) -> None:
         """Покрытие: инициализация через универсальный конфигуратор"""
         # Настраиваем мок для psycopg2
         mock_psycopg2 = Mock()
@@ -63,7 +63,7 @@ class TestPostgresSaver:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_init_with_db_config(self, mock_logger, mock_psycopg2):
+    def test_init_with_db_config(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: инициализация с явной конфигурацией БД"""
         db_config = {
             "host": "config_host",
@@ -85,7 +85,7 @@ class TestPostgresSaver:
 
     @patch('src.storage.db_psycopg2_compat.get_psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_get_connection_success(self, mock_logger, mock_get_psycopg2):
+    def test_get_connection_success(self, mock_logger: Any, mock_get_psycopg2: Any) -> None:
         """Покрытие: успешное создание подключения к БД"""
         # Настраиваем мок соединения
         mock_connection = MagicMock()
@@ -104,7 +104,7 @@ class TestPostgresSaver:
 
     @patch('src.storage.db_psycopg2_compat.get_psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_get_connection_with_custom_database(self, mock_logger, mock_get_psycopg2):
+    def test_get_connection_with_custom_database(self, mock_logger: Any, mock_get_psycopg2: Any) -> None:
         """Покрытие: создание подключения к кастомной БД"""
         mock_connection = MagicMock()
         mock_psycopg2 = MagicMock()
@@ -123,7 +123,7 @@ class TestPostgresSaver:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_get_connection_error(self, mock_logger, mock_psycopg2):
+    def test_get_connection_error(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: ошибка подключения к БД"""
         # Настраиваем мок для ошибки подключения
         from src.storage.postgres_saver import PsycopgError
@@ -140,7 +140,7 @@ class TestPostgresSaver:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_initialize_target_companies_success(self, mock_logger, mock_psycopg2):
+    def test_initialize_target_companies_success(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: успешная инициализация целевых компаний"""
         # Настраиваем моки
         mock_connection = MagicMock()
@@ -165,7 +165,7 @@ class TestPostgresSaver:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_initialize_target_companies_existing(self, mock_logger, mock_psycopg2):
+    def test_initialize_target_companies_existing(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: инициализация когда компании уже существуют"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -193,7 +193,7 @@ class TestPostgresSaver:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_initialize_target_companies_error(self, mock_logger, mock_psycopg2):
+    def test_initialize_target_companies_error(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: ошибка при инициализации целевых компаний"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -230,7 +230,7 @@ class TestPostgresSaver:
     @patch('src.config.target_companies.TargetCompanies.get_all_companies')
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_initialize_target_companies_success(self, mock_logger, mock_psycopg2, mock_get_companies):
+    def test_initialize_target_companies_success(self, mock_logger: Any, mock_psycopg2: Any, mock_get_companies: Any) -> None:
         """Покрытие: успешная инициализация целевых компаний"""
         # Создаем мок компании
         mock_company = MagicMock()
@@ -262,7 +262,7 @@ class TestPostgresSaver:
     @patch('src.config.target_companies.TargetCompanies.get_all_companies')
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_initialize_target_companies_existing(self, mock_logger, mock_psycopg2, mock_get_companies):
+    def test_initialize_target_companies_existing(self, mock_logger: Any, mock_psycopg2: Any, mock_get_companies: Any) -> None:
         """Покрытие: инициализация с существующими компаниями"""
         mock_company = MagicMock()
         mock_company.name = "Existing Company"
@@ -292,7 +292,7 @@ class TestPostgresSaver:
     @patch('src.config.target_companies.TargetCompanies.get_all_companies')
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_initialize_target_companies_error(self, mock_logger, mock_psycopg2, mock_get_companies):
+    def test_initialize_target_companies_error(self, mock_logger: Any, mock_psycopg2: Any, mock_get_companies: Any) -> None:
         """Покрытие: ошибка при инициализации целевых компаний"""
         mock_get_companies.side_effect = Exception("Config error")
         
@@ -309,7 +309,7 @@ class TestPostgresSaver:
             mock_logger.error.assert_called()
 
     @patch('src.storage.postgres_saver.logger')
-    def test_get_connection_database_param(self, mock_logger):
+    def test_get_connection_database_param(self, mock_logger: Any) -> None:
         """Покрытие: подключение к указанной базе данных"""
         # Создаем saver
         saver = PostgresSaver({"host": "test"})
@@ -331,7 +331,7 @@ class TestPostgresSaver:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_get_connection_error_handling(self, mock_logger, mock_psycopg2):
+    def test_get_connection_error_handling(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: обработка ошибок при подключении к БД"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -360,7 +360,7 @@ class TestPostgresSaver:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_initialize_target_companies_with_mocked_config(self, mock_logger, mock_psycopg2):
+    def test_initialize_target_companies_with_mocked_config(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: инициализация целевых компаний с мокированной конфигурацией"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -371,7 +371,7 @@ class TestPostgresSaver:
         
         # Мокируем что внешний ключ не существует
         call_count = 0
-        def mock_fetchone():
+        def mock_fetchone() -> Any:
             nonlocal call_count
             call_count += 1
             if "constraint_name" in str(mock_cursor.execute.call_args_list[-1]):
@@ -403,7 +403,7 @@ class TestPostgresSaver:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_initialize_target_companies_database_error(self, mock_logger, mock_psycopg2):
+    def test_initialize_target_companies_database_error(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: ошибка базы данных при инициализации целевых компаний"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -438,7 +438,7 @@ class TestPostgresSaverVacancyOperations:
     """Тестирование операций с вакансиями"""
 
     @pytest.fixture
-    def mock_vacancy(self):
+    def mock_vacancy(self) -> None:
         """Создание мок-вакансии для тестирования"""
         vacancy = MagicMock()
         vacancy.id = "test_id_123"
@@ -477,7 +477,7 @@ class TestPostgresSaverVacancyOperations:
     @patch('psycopg2.extras.execute_values')
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_add_vacancy_batch_optimized_success(self, mock_logger, mock_psycopg2, mock_execute_values, mock_normalize_area, mock_vacancy):
+    def test_add_vacancy_batch_optimized_success(self, mock_logger: Any, mock_psycopg2: Any, mock_execute_values: Any, mock_normalize_area: Any, mock_vacancy: Any) -> None:
         """Покрытие: успешное batch-добавление вакансий"""
         mock_normalize_area.return_value = "Москва"
         
@@ -509,7 +509,7 @@ class TestPostgresSaverVacancyOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_add_vacancy_batch_optimized_empty_list(self, mock_logger, mock_psycopg2):
+    def test_add_vacancy_batch_optimized_empty_list(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: batch-добавление пустого списка"""
         # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
         saver = PostgresSaver({"host": "test"})
@@ -519,7 +519,7 @@ class TestPostgresSaverVacancyOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_add_vacancy_batch_optimized_nested_list(self, mock_logger, mock_psycopg2, mock_vacancy):
+    def test_add_vacancy_batch_optimized_nested_list(self, mock_logger: Any, mock_psycopg2: Any, mock_vacancy: Any) -> None:
         """Покрытие: исправление двойной вложенности списков"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -543,7 +543,7 @@ class TestPostgresSaverVacancyOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_add_vacancy_success(self, mock_logger, mock_psycopg2, mock_vacancy):
+    def test_add_vacancy_success(self, mock_logger: Any, mock_psycopg2: Any, mock_vacancy: Any) -> None:
         """Покрытие: добавление одной вакансии"""
         # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
         saver = PostgresSaver({"host": "test"})
@@ -558,7 +558,7 @@ class TestPostgresSaverVacancyOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_add_vacancies_success(self, mock_logger, mock_psycopg2, mock_vacancy):
+    def test_add_vacancies_success(self, mock_logger: Any, mock_psycopg2: Any, mock_vacancy: Any) -> None:
         """Покрытие: добавление списка вакансий"""
         # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
         saver = PostgresSaver({"host": "test"})
@@ -572,7 +572,7 @@ class TestPostgresSaverVacancyOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_save_vacancies_success(self, mock_logger, mock_psycopg2, mock_vacancy):
+    def test_save_vacancies_success(self, mock_logger: Any, mock_psycopg2: Any, mock_vacancy: Any) -> None:
         """Покрытие: сохранение вакансий (алиас для add_vacancies)"""
         # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
         saver = PostgresSaver({"host": "test"})
@@ -604,7 +604,7 @@ class TestPostgresSaverVacancyOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_load_vacancies_success(self, mock_logger, mock_psycopg2):
+    def test_load_vacancies_success(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: загрузка вакансий из БД"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -635,7 +635,7 @@ class TestPostgresSaverVacancyOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_load_vacancies_with_filters(self, mock_logger, mock_psycopg2):
+    def test_load_vacancies_with_filters(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: загрузка вакансий с фильтрами"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -676,7 +676,7 @@ class TestPostgresSaverVacancyOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')  
     @patch('src.storage.postgres_saver.logger')
-    def test_load_vacancies_error(self, mock_logger, mock_psycopg2):
+    def test_load_vacancies_error(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: ошибка при загрузке вакансий"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -698,7 +698,7 @@ class TestPostgresSaverVacancyOperations:
             assert result == []
             mock_logger.error.assert_called()
 
-    def test_normalize_published_date_string(self):
+    def test_normalize_published_date_string(self) -> None:
         """Покрытие: нормализация даты из строки"""
         # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
         saver = PostgresSaver({"host": "test"})
@@ -709,7 +709,7 @@ class TestPostgresSaverVacancyOperations:
         
         assert isinstance(result, datetime)
 
-    def test_normalize_published_date_datetime(self):
+    def test_normalize_published_date_datetime(self) -> None:
         """Покрытие: нормализация даты из datetime объекта"""
         # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
         saver = PostgresSaver({"host": "test"})
@@ -719,7 +719,7 @@ class TestPostgresSaverVacancyOperations:
         
         assert result == date_obj
 
-    def test_normalize_published_date_none(self):
+    def test_normalize_published_date_none(self) -> None:
         """Покрытие: нормализация пустой даты"""
         # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
         saver = PostgresSaver({"host": "test"})
@@ -727,7 +727,7 @@ class TestPostgresSaverVacancyOperations:
         result = saver._normalize_published_date(None)
         assert isinstance(result, datetime)  # Возвращает текущее время
 
-    def test_normalize_text(self):
+    def test_normalize_text(self) -> None:
         """Покрытие: нормализация текста"""
         # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
         saver = PostgresSaver({"host": "test"})
@@ -744,7 +744,7 @@ class TestPostgresSaverDeletionOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_delete_all_vacancies_success(self, mock_logger, mock_psycopg2):
+    def test_delete_all_vacancies_success(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: успешное удаление всех вакансий"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -768,7 +768,7 @@ class TestPostgresSaverDeletionOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_delete_all_vacancies_no_records(self, mock_logger, mock_psycopg2):
+    def test_delete_all_vacancies_no_records(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: удаление из пустой таблицы"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -790,7 +790,7 @@ class TestPostgresSaverDeletionOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_delete_vacancy_by_id_success(self, mock_logger, mock_psycopg2):
+    def test_delete_vacancy_by_id_success(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: успешное удаление вакансии по ID"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -814,7 +814,7 @@ class TestPostgresSaverDeletionOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_delete_vacancy_by_id_not_found(self, mock_logger, mock_psycopg2):
+    def test_delete_vacancy_by_id_not_found(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: удаление несуществующей вакансии"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -836,7 +836,7 @@ class TestPostgresSaverDeletionOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_delete_vacancies_by_keyword_success(self, mock_logger, mock_psycopg2):
+    def test_delete_vacancies_by_keyword_success(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: успешное удаление по ключевому слову"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -860,7 +860,7 @@ class TestPostgresSaverDeletionOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger') 
-    def test_delete_vacancy_object(self, mock_logger, mock_psycopg2):
+    def test_delete_vacancy_object(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: удаление объекта вакансии"""
         mock_vacancy = MagicMock()
         mock_vacancy.id = "vacancy_obj_123"
@@ -876,7 +876,7 @@ class TestPostgresSaverDeletionOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_delete_vacancies_batch_success(self, mock_logger, mock_psycopg2):
+    def test_delete_vacancies_batch_success(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: успешное batch удаление вакансий"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -901,7 +901,7 @@ class TestPostgresSaverDeletionOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_delete_vacancies_batch_empty_list(self, mock_logger, mock_psycopg2):
+    def test_delete_vacancies_batch_empty_list(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: batch удаление пустого списка"""
         # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
         saver = PostgresSaver({"host": "test"})
@@ -915,7 +915,7 @@ class TestPostgresSaverQueryOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_is_vacancy_exists_true(self, mock_logger, mock_psycopg2):
+    def test_is_vacancy_exists_true(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: проверка существования вакансии (найдена)"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -940,7 +940,7 @@ class TestPostgresSaverQueryOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_is_vacancy_exists_false(self, mock_logger, mock_psycopg2):
+    def test_is_vacancy_exists_false(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: проверка существования вакансии (не найдена)"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -964,7 +964,7 @@ class TestPostgresSaverQueryOperations:
     @patch('psycopg2.extras.execute_values')
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_check_vacancies_exist_batch_success(self, mock_logger, mock_psycopg2, mock_execute_values):
+    def test_check_vacancies_exist_batch_success(self, mock_logger: Any, mock_psycopg2: Any, mock_execute_values: Any) -> None:
         """Покрытие: batch проверка существования вакансий"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -999,7 +999,7 @@ class TestPostgresSaverQueryOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_check_vacancies_exist_batch_empty(self, mock_logger, mock_psycopg2):
+    def test_check_vacancies_exist_batch_empty(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: batch проверка пустого списка"""
         # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
         saver = PostgresSaver({"host": "test"})
@@ -1009,7 +1009,7 @@ class TestPostgresSaverQueryOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_get_file_size_success(self, mock_logger, mock_psycopg2):
+    def test_get_file_size_success(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: получение размера БД"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -1031,7 +1031,7 @@ class TestPostgresSaverQueryOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_get_vacancies_count_without_filters(self, mock_logger, mock_psycopg2):
+    def test_get_vacancies_count_without_filters(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: подсчет вакансий без фильтров"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -1054,7 +1054,7 @@ class TestPostgresSaverQueryOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_get_vacancies_count_with_filters(self, mock_logger, mock_psycopg2):
+    def test_get_vacancies_count_with_filters(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: подсчет вакансий с фильтрами"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -1098,7 +1098,7 @@ class TestPostgresSaverQueryOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_search_vacancies_batch_success(self, mock_logger, mock_psycopg2):
+    def test_search_vacancies_batch_success(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: batch поиск вакансий"""
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -1139,7 +1139,7 @@ class TestPostgresSaverQueryOperations:
 
     @patch('src.storage.postgres_saver.psycopg2')
     @patch('src.storage.postgres_saver.logger')
-    def test_search_vacancies_batch_empty_keywords(self, mock_logger, mock_psycopg2):
+    def test_search_vacancies_batch_empty_keywords(self, mock_logger: Any, mock_psycopg2: Any) -> None:
         """Покрытие: поиск с пустым списком ключевых слов"""
         # PostgresSaver не имеет _ensure_tables_exist, убираем ненужный патч
         saver = PostgresSaver({"host": "test"})

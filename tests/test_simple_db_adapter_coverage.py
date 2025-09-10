@@ -32,18 +32,18 @@ from src.storage.simple_db_adapter import (
 class TestSimpleDBAdapter:
     """100% покрытие класса SimpleDBAdapter"""
 
-    def test_class_exists(self):
+    def test_class_exists(self) -> None:
         """Покрытие: существование класса"""
         assert SimpleDBAdapter is not None
 
     @patch.dict(os.environ, {"DATABASE_URL": "postgresql://user:pass@host:port/db"})
-    def test_init_with_database_url(self):
+    def test_init_with_database_url(self) -> None:
         """Покрытие: инициализация с DATABASE_URL"""
         adapter = SimpleDBAdapter()
         assert adapter.database_url == "postgresql://user:pass@host:port/db"
 
     @patch.dict(os.environ, {}, clear=True)
-    def test_init_without_database_url(self):
+    def test_init_without_database_url(self) -> None:
         """Покрытие: работа без DATABASE_URL с использованием конфигурации по умолчанию"""
         # Теперь SimpleDBAdapter работает с универсальной конфигурацией БД
         # и может создаваться без DATABASE_URL, используя параметры по умолчанию
@@ -59,20 +59,20 @@ class TestSimpleDBAdapter:
         assert adapter.database_url.startswith('postgresql://')
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
-    def test_context_manager_enter(self):
+    def test_context_manager_enter(self) -> None:
         """Покрытие: вход в контекстный менеджер"""
         adapter = SimpleDBAdapter()
         assert adapter.__enter__() == adapter
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
-    def test_context_manager_exit(self):
+    def test_context_manager_exit(self) -> None:
         """Покрытие: выход из контекстного менеджера"""
         adapter = SimpleDBAdapter()
         result = adapter.__exit__(None, None, None)
         assert result is None
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
-    def test_cursor_creation(self):
+    def test_cursor_creation(self) -> None:
         """Покрытие: создание курсора"""
         adapter = SimpleDBAdapter()
         cursor = adapter.cursor()
@@ -80,7 +80,7 @@ class TestSimpleDBAdapter:
         assert cursor.adapter == adapter
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
-    def test_cursor_with_factory(self):
+    def test_cursor_with_factory(self) -> None:
         """Покрытие: создание курсора с фабрикой"""
         adapter = SimpleDBAdapter()
         mock_factory = MagicMock()
@@ -89,7 +89,7 @@ class TestSimpleDBAdapter:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_test_connection_success(self, mock_run):
+    def test_test_connection_success(self, mock_run: Any) -> None:
         """Покрытие: успешная проверка соединения"""
         adapter = SimpleDBAdapter()
         
@@ -110,7 +110,7 @@ class TestSimpleDBAdapter:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_test_connection_failure(self, mock_run):
+    def test_test_connection_failure(self, mock_run: Any) -> None:
         """Покрытие: неуспешная проверка соединения"""
         adapter = SimpleDBAdapter()
         
@@ -125,7 +125,7 @@ class TestSimpleDBAdapter:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_test_connection_exception(self, mock_run):
+    def test_test_connection_exception(self, mock_run: Any) -> None:
         """Покрытие: исключение при проверке соединения"""
         adapter = SimpleDBAdapter()
         
@@ -141,7 +141,7 @@ class TestSimpleCursor:
     """100% покрытие класса SimpleCursor"""
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
-    def test_cursor_init(self):
+    def test_cursor_init(self) -> None:
         """Покрытие: инициализация курсора"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -150,7 +150,7 @@ class TestSimpleCursor:
         assert cursor._last_results == []
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
-    def test_cursor_context_manager_enter(self):
+    def test_cursor_context_manager_enter(self) -> None:
         """Покрытие: вход в контекстный менеджер курсора"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -158,7 +158,7 @@ class TestSimpleCursor:
         assert cursor.__enter__() == cursor
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
-    def test_cursor_context_manager_exit(self):
+    def test_cursor_context_manager_exit(self) -> None:
         """Покрытие: выход из контекстного менеджера курсора"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -173,7 +173,7 @@ class TestSimpleCursorExecute:
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
     @patch('src.storage.simple_db_adapter.logger')
-    def test_execute_select_success(self, mock_logger, mock_run):
+    def test_execute_select_success(self, mock_logger: Any, mock_run: Any) -> None:
         """Покрытие: успешное выполнение SELECT запроса"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -202,7 +202,7 @@ class TestSimpleCursorExecute:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_execute_non_select_success(self, mock_run):
+    def test_execute_non_select_success(self, mock_run: Any) -> None:
         """Покрытие: успешное выполнение INSERT запроса"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -219,7 +219,7 @@ class TestSimpleCursorExecute:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_execute_with_string_params(self, mock_run):
+    def test_execute_with_string_params(self, mock_run: Any) -> None:
         """Покрытие: выполнение запроса с строковыми параметрами"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -236,7 +236,7 @@ class TestSimpleCursorExecute:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_execute_with_none_params(self, mock_run):
+    def test_execute_with_none_params(self, mock_run: Any) -> None:
         """Покрытие: выполнение запроса с None параметрами"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -253,7 +253,7 @@ class TestSimpleCursorExecute:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_execute_with_numeric_params(self, mock_run):
+    def test_execute_with_numeric_params(self, mock_run: Any) -> None:
         """Покрытие: выполнение запроса с числовыми параметрами"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -271,7 +271,7 @@ class TestSimpleCursorExecute:
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
     @patch('src.storage.simple_db_adapter.logger')
-    def test_execute_subprocess_error(self, mock_logger, mock_run):
+    def test_execute_subprocess_error(self, mock_logger: Any, mock_run: Any) -> None:
         """Покрытие: ошибка subprocess при выполнении"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -290,7 +290,7 @@ class TestSimpleCursorExecute:
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
     @patch('src.storage.simple_db_adapter.logger')
-    def test_execute_timeout(self, mock_logger, mock_run):
+    def test_execute_timeout(self, mock_logger: Any, mock_run: Any) -> None:
         """Покрытие: тайм-аут при выполнении"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -306,7 +306,7 @@ class TestSimpleCursorExecute:
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
     @patch('src.storage.simple_db_adapter.logger')
-    def test_execute_general_exception(self, mock_logger, mock_run):
+    def test_execute_general_exception(self, mock_logger: Any, mock_run: Any) -> None:
         """Покрытие: общее исключение при выполнении"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -321,7 +321,7 @@ class TestSimpleCursorExecute:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_execute_select_with_empty_lines(self, mock_run):
+    def test_execute_select_with_empty_lines(self, mock_run: Any) -> None:
         """Покрытие: SELECT с пустыми строками в результате"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -342,7 +342,7 @@ class TestSimpleCursorFetch:
     """100% покрытие методов fetchone и fetchall"""
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
-    def test_fetchone_with_results(self):
+    def test_fetchone_with_results(self) -> None:
         """Покрытие: fetchone с результатами"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -354,7 +354,7 @@ class TestSimpleCursorFetch:
         assert result == (1, "John", 25)
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
-    def test_fetchone_with_float_conversion(self):
+    def test_fetchone_with_float_conversion(self) -> None:
         """Покрытие: fetchone с конвертацией в float"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -365,7 +365,7 @@ class TestSimpleCursorFetch:
         assert result == (1, "John", 95.5, "test")
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
-    def test_fetchone_empty_results(self):
+    def test_fetchone_empty_results(self) -> None:
         """Покрытие: fetchone без результатов"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -376,7 +376,7 @@ class TestSimpleCursorFetch:
         assert result is None
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
-    def test_fetchall_with_results(self):
+    def test_fetchall_with_results(self) -> None:
         """Покрытие: fetchall с результатами"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -388,7 +388,7 @@ class TestSimpleCursorFetch:
         assert result == expected_results
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
-    def test_fetchall_empty_results(self):
+    def test_fetchall_empty_results(self) -> None:
         """Покрытие: fetchall без результатов"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -404,7 +404,7 @@ class TestSimpleCursorExecuteQuery:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_execute_query_success(self, mock_run):
+    def test_execute_query_success(self, mock_run: Any) -> None:
         """Покрытие: успешное выполнение execute_query"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -424,7 +424,7 @@ class TestSimpleCursorExecuteQuery:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_execute_query_with_params(self, mock_run):
+    def test_execute_query_with_params(self, mock_run: Any) -> None:
         """Покрытие: execute_query с параметрами ($1, $2)"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -444,7 +444,7 @@ class TestSimpleCursorExecuteQuery:
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
     @patch('src.storage.simple_db_adapter.logger')
-    def test_execute_query_subprocess_error(self, mock_logger, mock_run):
+    def test_execute_query_subprocess_error(self, mock_logger: Any, mock_run: Any) -> None:
         """Покрытие: ошибка subprocess в execute_query"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -462,7 +462,7 @@ class TestSimpleCursorExecuteQuery:
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
     @patch('src.storage.simple_db_adapter.logger')
-    def test_execute_query_timeout(self, mock_logger, mock_run):
+    def test_execute_query_timeout(self, mock_logger: Any, mock_run: Any) -> None:
         """Покрытие: тайм-аут в execute_query"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -477,7 +477,7 @@ class TestSimpleCursorExecuteQuery:
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
     @patch('src.storage.simple_db_adapter.logger')
-    def test_execute_query_general_exception(self, mock_logger, mock_run):
+    def test_execute_query_general_exception(self, mock_logger: Any, mock_run: Any) -> None:
         """Покрытие: общее исключение в execute_query"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -491,7 +491,7 @@ class TestSimpleCursorExecuteQuery:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_execute_query_empty_output(self, mock_run):
+    def test_execute_query_empty_output(self, mock_run: Any) -> None:
         """Покрытие: пустой вывод execute_query"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -507,7 +507,7 @@ class TestSimpleCursorExecuteQuery:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_execute_query_parse_exception(self, mock_run):
+    def test_execute_query_parse_exception(self, mock_run: Any) -> None:
         """Покрытие: исключение парсинга в execute_query"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -529,7 +529,7 @@ class TestSimpleCursorExecuteUpdate:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_execute_update_insert_success(self, mock_run):
+    def test_execute_update_insert_success(self, mock_run: Any) -> None:
         """Покрытие: успешный INSERT"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -548,7 +548,7 @@ class TestSimpleCursorExecuteUpdate:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_execute_update_update_success(self, mock_run):
+    def test_execute_update_update_success(self, mock_run: Any) -> None:
         """Покрытие: успешный UPDATE с парсингом количества строк"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -564,7 +564,7 @@ class TestSimpleCursorExecuteUpdate:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_execute_update_delete_success(self, mock_run):
+    def test_execute_update_delete_success(self, mock_run: Any) -> None:
         """Покрытие: успешный DELETE"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -580,7 +580,7 @@ class TestSimpleCursorExecuteUpdate:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_execute_update_no_affected_rows_info(self, mock_run):
+    def test_execute_update_no_affected_rows_info(self, mock_run: Any) -> None:
         """Покрытие: успешное выполнение без информации о количестве строк"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -597,7 +597,7 @@ class TestSimpleCursorExecuteUpdate:
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
     @patch('src.storage.simple_db_adapter.logger')
-    def test_execute_update_subprocess_error(self, mock_logger, mock_run):
+    def test_execute_update_subprocess_error(self, mock_logger: Any, mock_run: Any) -> None:
         """Покрытие: ошибка subprocess в execute_update"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -615,7 +615,7 @@ class TestSimpleCursorExecuteUpdate:
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
     @patch('src.storage.simple_db_adapter.logger')
-    def test_execute_update_exception(self, mock_logger, mock_run):
+    def test_execute_update_exception(self, mock_logger: Any, mock_run: Any) -> None:
         """Покрытие: исключение в execute_update"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -635,7 +635,7 @@ class TestSimpleCursorTestConnection:
     """100% покрытие метода test_connection курсора"""
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
-    def test_cursor_test_connection_success(self):
+    def test_cursor_test_connection_success(self) -> None:
         """Покрытие: успешная проверка соединения курсора"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -650,7 +650,7 @@ class TestSimpleCursorTestConnection:
             mock_execute_query.assert_called_once_with("SELECT 1 as test")
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
-    def test_cursor_test_connection_empty_result(self):
+    def test_cursor_test_connection_empty_result(self) -> None:
         """Покрытие: проверка соединения с пустым результатом"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -663,7 +663,7 @@ class TestSimpleCursorTestConnection:
             assert result is False
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
-    def test_cursor_test_connection_exception(self):
+    def test_cursor_test_connection_exception(self) -> None:
         """Покрытие: исключение при проверке соединения курсора"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -679,12 +679,12 @@ class TestSimpleCursorTestConnection:
 class TestGlobalFunctions:
     """100% покрытие глобальных функций и переменных"""
 
-    def test_global_db_adapter_exists(self):
+    def test_global_db_adapter_exists(self) -> None:
         """Покрытие: существование глобального адаптера"""
         assert db_adapter is not None
         assert isinstance(db_adapter, SimpleDBAdapter)
 
-    def test_get_db_adapter_function(self):
+    def test_get_db_adapter_function(self) -> None:
         """Покрытие: функция get_db_adapter"""
         adapter = get_db_adapter()
         assert adapter == db_adapter
@@ -696,7 +696,7 @@ class TestComplexScenarios:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_full_workflow_select_and_fetch(self, mock_run):
+    def test_full_workflow_select_and_fetch(self, mock_run: Any) -> None:
         """Покрытие: полный workflow SELECT -> fetchone -> fetchall"""
         adapter = SimpleDBAdapter()
         
@@ -719,7 +719,7 @@ class TestComplexScenarios:
                 assert len(all_rows) == 2
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})  
-    def test_cursor_number_conversion_edge_cases(self):
+    def test_cursor_number_conversion_edge_cases(self) -> None:
         """Покрытие: граничные случаи конвертации чисел в fetchone"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
@@ -736,7 +736,7 @@ class TestComplexScenarios:
 
     @patch.dict(os.environ, {"DATABASE_URL": "test_url"})
     @patch('src.storage.simple_db_adapter.subprocess.run')
-    def test_parameter_substitution_edge_cases(self, mock_run):
+    def test_parameter_substitution_edge_cases(self, mock_run: Any) -> None:
         """Покрытие: граничные случаи замены параметров"""
         adapter = SimpleDBAdapter()
         cursor = SimpleCursor(adapter)
