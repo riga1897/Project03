@@ -6,18 +6,16 @@
 """
 
 import pytest
-import os
-import tempfile
-import time
 from pathlib import Path
-from unittest.mock import patch, MagicMock, Mock, mock_open
-from typing import Any, Dict, List
+from unittest.mock import patch, Mock, mock_open
+from typing import Any, List
+
 
 # Импорты из реального кода для покрытия
 from src.utils.salary import Salary
 from src.utils.env_loader import EnvLoader
 from src.utils.decorators import simple_cache
-from src.utils.file_handlers import json_handler, FileOperations
+from src.utils.file_handlers import FileOperations
 from src.utils.cache import FileCache
 from src.utils.paginator import Paginator
 
@@ -42,9 +40,10 @@ class TestSalary:
 
     def test_init_with_string(self) -> None:
         """Покрытие инициализации со строкой."""
-        salary = Salary("от 50000 до 80000")
+        salary = Salary({"salary_range": "от 50000 до 80000"})
         # Проверяем что парсинг строки работает
-        assert isinstance(salary, Salary)
+        assert salary.salary_from == 50000
+        assert salary.salary_to == 80000
 
     def test_validate_salary_value(self) -> None:
         """Покрытие валидации значений зарплаты."""
@@ -83,7 +82,7 @@ class TestSalary:
         result5 = Salary._parse_salary_range_string("invalid")
         assert result5 == {}
 
-        result6 = Salary._parse_salary_range_string(None)
+        result6 = Salary._parse_salary_range_string(None)  # type: ignore[arg-type]
         assert result6 == {}
 
     def test_properties(self) -> None:
@@ -124,7 +123,7 @@ class TestEnvLoader:
 
     @patch('os.path.exists')
     @patch('builtins.open', mock_open(read_data='TEST_BOOL=true\nOTHER_VAR=value'))
-    def test_load_env_file_success(self, mock_exists):
+    def test_load_env_file_success(self, mock_exists: Any) -> None:
         """Покрытие успешной загрузки .env файла."""
         mock_exists.return_value = True
         EnvLoader._loaded = False  # Сбрасываем флаг
@@ -132,7 +131,7 @@ class TestEnvLoader:
         assert EnvLoader._loaded is True
 
     @patch('os.path.exists')
-    def test_load_env_file_not_found(self, mock_exists):
+    def test_load_env_file_not_found(self, mock_exists: Any) -> None:
         """Покрытие случая отсутствия .env файла."""
         mock_exists.return_value = False
         EnvLoader._loaded = False
@@ -141,7 +140,7 @@ class TestEnvLoader:
 
     @patch('os.path.exists')
     @patch('builtins.open', side_effect=Exception("Read error"))
-    def test_load_env_file_error(self, mock_open, mock_exists):
+    def test_load_env_file_error(self, mock_open: Any, mock_exists: Any) -> None:
         """Покрытие ошибки при чтении файла."""
         mock_exists.return_value = True
         EnvLoader._loaded = False
@@ -157,7 +156,7 @@ class TestDecorators:
         call_count = 0
 
         @simple_cache(ttl=300)
-        def test_function(x):
+        def test_function(x: int) -> int:
             nonlocal call_count
             call_count += 1
             return x * 2
@@ -179,17 +178,18 @@ class TestDecorators:
         # Очищаем кэш
         test_function.clear_cache()
         result3 = test_function(5)
+        assert result3 == 10
         assert call_count == 2
 
     @patch('time.time')
-    def test_simple_cache_expired(self, mock_time):
+    def test_simple_cache_expired(self, mock_time: Any) -> None:
         """Покрытие истечения кэша."""
         mock_time.side_effect = [0, 100, 400]  # Начальное время, проверка, истечение
 
         call_count = 0
 
         @simple_cache(ttl=300)
-        def test_function(x):
+        def test_function(x: int) -> int:
             nonlocal call_count
             call_count += 1
             return x * 3
@@ -207,7 +207,7 @@ class TestDecorators:
     def test_simple_cache_max_size(self) -> None:
         """Покрытие ограничения размера кэша."""
         @simple_cache(max_size=2)
-        def test_function(x):
+        def test_function(x: int) -> int:
             return x * 2
 
         # Заполняем кэш до лимита
@@ -219,14 +219,14 @@ class TestDecorators:
         assert cache_info["size"] <= 2
 
     @patch('src.utils.decorators.time.sleep')
-    def test_retry_on_failure(self, mock_sleep):
+    def test_retry_on_failure(self, mock_sleep: Any) -> None:
         """Покрытие retry_on_failure декоратора."""
         from src.utils.decorators import retry_on_failure
 
         call_count = 0
 
         @retry_on_failure(max_attempts=3, delay=0.1)
-        def failing_function() -> None:
+        def failing_function() -> str | None:
             nonlocal call_count
             call_count += 1
             if call_count < 3:
@@ -242,7 +242,7 @@ class TestDecorators:
         from src.utils.decorators import time_execution
 
         @time_execution
-        def test_function() -> None:
+        def test_function() -> str | None:
             return "completed"
 
         # Проверяем что декоратор не нарушает выполнение
@@ -320,7 +320,7 @@ class TestFileHandlers:
         """Покрытие успешной записи JSON."""
         test_data = [{"key": "value"}]
 
-        with patch('pathlib.Path.open', mock_open()) as mock_file, \
+        with patch('pathlib.Path.open', mock_open()), \
              patch('pathlib.Path.mkdir') as mock_mkdir, \
              patch('pathlib.Path.replace') as mock_replace, \
              patch('pathlib.Path.exists', return_value=False):
@@ -338,7 +338,7 @@ class TestFileHandlers:
         with patch('pathlib.Path.open', side_effect=Exception("Write error")), \
              patch('pathlib.Path.mkdir'), \
              patch('pathlib.Path.exists', return_value=False), \
-             patch('pathlib.Path.unlink') as mock_unlink:
+             patch('pathlib.Path.unlink'):
 
             operations = FileOperations()
             with pytest.raises(Exception, match="Write error"):
@@ -349,7 +349,7 @@ class TestCache:
     """100% покрытие cache утилиты."""
 
     @patch('pathlib.Path.mkdir')
-    def test_file_cache_init(self, mock_mkdir):
+    def test_file_cache_init(self, mock_mkdir: Any) -> None:
         """Покрытие инициализации FileCache."""
         cache = FileCache("test_cache_dir")
         assert cache.cache_dir == Path("test_cache_dir")
@@ -366,7 +366,7 @@ class TestCache:
     @patch('builtins.open', mock_open())
     @patch('json.dump')
     @patch('time.time', return_value=1000)
-    def test_save_response_valid(self, mock_time, mock_json_dump, mock_mkdir):
+    def test_save_response_valid(self, mock_time: Any, mock_json_dump: Any, mock_mkdir: Any) -> None:
         """Покрытие сохранения валидного ответа."""
         cache = FileCache("test_cache")
 
@@ -377,11 +377,11 @@ class TestCache:
         mock_json_dump.assert_called_once()
 
     @patch('pathlib.Path.mkdir')
-    def test_save_response_invalid(self, mock_mkdir):
+    def test_save_response_invalid(self, mock_mkdir: Any) -> None:
         """Покрытие пропуска сохранения невалидного ответа."""
         cache = FileCache("test_cache")
 
-        # Пустые данные на странице > 0 не должны сохраняться  
+        # Пустые данные на странице > 0 не должны сохраняться
         data = {"items": [], "found": 0}
         params = {"query": "test", "page": 1}  # page > 0
 
@@ -390,7 +390,7 @@ class TestCache:
             mock_open_file.assert_not_called()
 
     @patch('pathlib.Path.mkdir')
-    def test_is_valid_response(self, mock_mkdir):
+    def test_is_valid_response(self, mock_mkdir: Any) -> None:
         """Покрытие валидации ответов."""
         cache = FileCache("test_cache")
 
@@ -400,7 +400,7 @@ class TestCache:
         assert cache._is_valid_response(valid_data, valid_params) is True
 
         # Невалидный ответ - не словарь
-        assert cache._is_valid_response("invalid", valid_params) is False
+        assert cache._is_valid_response("invalid", valid_params) is False  # type: ignore[arg-type]
 
         # Невалидный ответ - пустые items на странице > 0
         invalid_data = {"items": [], "found": 0}
@@ -412,7 +412,7 @@ class TestCache:
     @patch('builtins.open', mock_open(read_data='{"timestamp": 1000, "data": {"items": [{"id": 1}]}}'))
     @patch('pathlib.Path.exists', return_value=True)
     @patch('time.time', return_value=2000)
-    def test_load_response_valid(self, mock_time, mock_exists, mock_stat, mock_mkdir):
+    def test_load_response_valid(self, mock_time: Any, mock_exists: Any, mock_stat: Any, mock_mkdir: Any) -> None:
         """Покрытие загрузки валидного ответа из кэша."""
         mock_stat.return_value.st_size = 100  # Файл достаточно большой
 
@@ -425,7 +425,7 @@ class TestCache:
 
     @patch('pathlib.Path.mkdir')
     @patch('pathlib.Path.exists', return_value=False)
-    def test_load_response_not_found(self, mock_exists, mock_mkdir):
+    def test_load_response_not_found(self, mock_exists: Any, mock_mkdir: Any) -> None:
         """Покрытие отсутствующего кэша."""
         cache = FileCache("test_cache")
 
@@ -439,14 +439,14 @@ class TestPaginator:
     """100% покрытие Paginator утилиты."""
 
     @patch('tqdm.tqdm')
-    def test_paginate_success(self, mock_tqdm):
+    def test_paginate_success(self, mock_tqdm: Any) -> None:
         """Покрытие успешной пагинации."""
         # Настройка мока tqdm
         mock_progress = Mock()
         mock_tqdm.return_value.__enter__ = Mock(return_value=mock_progress)
         mock_tqdm.return_value.__exit__ = Mock(return_value=None)
 
-        def mock_fetch_func(page):
+        def mock_fetch_func(page: Any) -> List:
             return [{"id": page, "name": f"item_{page}"}]
 
         result = Paginator.paginate(
@@ -461,9 +461,9 @@ class TestPaginator:
         assert result[1]["id"] == 1
 
     @patch('tqdm.tqdm')
-    def test_paginate_no_pages(self, mock_tqdm):
+    def test_paginate_no_pages(self, mock_tqdm: Any) -> None:
         """Покрытие случая когда нет страниц для обработки."""
-        def mock_fetch_func(page):
+        def mock_fetch_func(page: Any) -> List:
             return [{"id": page}]
 
         result = Paginator.paginate(
@@ -476,13 +476,13 @@ class TestPaginator:
         assert result == []
 
     @patch('tqdm.tqdm')
-    def test_paginate_with_errors(self, mock_tqdm):
+    def test_paginate_with_errors(self, mock_tqdm: Any) -> None:
         """Покрытие обработки ошибок при пагинации."""
         mock_progress = Mock()
         mock_tqdm.return_value.__enter__ = Mock(return_value=mock_progress)
         mock_tqdm.return_value.__exit__ = Mock(return_value=None)
 
-        def error_fetch_func(page):
+        def error_fetch_func(page: Any) -> List:
             if page == 1:
                 raise Exception("API Error")
             return [{"id": page}]
@@ -500,13 +500,13 @@ class TestPaginator:
         assert result[1]["id"] == 2
 
     @patch('tqdm.tqdm')
-    def test_paginate_keyboard_interrupt(self, mock_tqdm):
+    def test_paginate_keyboard_interrupt(self, mock_tqdm: Any) -> None:
         """Покрытие прерывания с клавиатуры."""
         mock_progress = Mock()
         mock_tqdm.return_value.__enter__ = Mock(return_value=mock_progress)
         mock_tqdm.return_value.__exit__ = Mock(return_value=None)
 
-        def interrupt_fetch_func(page):
+        def interrupt_fetch_func(page: Any) -> List:
             if page == 1:
                 raise KeyboardInterrupt("User interrupt")
             return [{"id": page}]
@@ -520,15 +520,15 @@ class TestPaginator:
             )
 
     @patch('tqdm.tqdm')
-    def test_paginate_invalid_page_data(self, mock_tqdm):
+    def test_paginate_invalid_page_data(self, mock_tqdm: Any) -> None:
         """Покрытие некорректных данных страницы."""
         mock_progress = Mock()
         mock_tqdm.return_value.__enter__ = Mock(return_value=mock_progress)
         mock_tqdm.return_value.__exit__ = Mock(return_value=None)
 
-        def invalid_fetch_func(page):
+        def invalid_fetch_func(page: int) -> list[dict[str, int]]:
             if page == 1:
-                return "not a list"  # Некорректный тип данных
+                return "not a list"  # type: ignore[return-value] # Некорректный тип данных для тестирования
             return [{"id": page}]
 
         result = Paginator.paginate(

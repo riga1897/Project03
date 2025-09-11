@@ -4,39 +4,36 @@
 Покрывает все методы и сценарии работы с вакансиями через сервисный слой
 """
 
-import os
 from datetime import datetime
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, Mock, patch, call
+from typing import Any
+from unittest.mock import MagicMock, Mock, patch
 
-import pytest
 
 from src.storage.services.vacancy_storage_service import VacancyStorageService
-from src.vacancies.models import Vacancy, Employer
+from src.vacancies.models import Vacancy
 
 
-def create_test_vacancy(vacancy_id: str = "1", name: str = "Test Job", **kwargs) -> Vacancy:
+def create_test_vacancy(vacancy_id: str = "1", name: str = "Test Job", **kwargs: Any) -> Vacancy:
     """Создает тестовую вакансию с минимальными обязательными полями"""
-    defaults = {
-        "vacancy_id": vacancy_id,
-        "name": name,
-        "alternate_url": "http://test.com",
-        "employer": None,
-        "salary": None,
-        "experience": None,
-        "employment": None,
-        "schedule": None,
-        "published_at": None,
-        "updated_at": datetime.now(),
-        "area": None,
-        "source": "test",
-        "company_id": None,
-        "requirements": "",
-        "responsibilities": "",
-        "description": ""
-    }
-    defaults.update(kwargs)
-    return Vacancy(**defaults)
+    # Create Vacancy directly with proper field aliases and types
+    return Vacancy(
+        vacancy_id=kwargs.get("vacancy_id", vacancy_id),
+        name=kwargs.get("name", name),
+        alternate_url=kwargs.get("alternate_url", "http://test.com"),
+        employer=kwargs.get("employer", None),
+        salary=kwargs.get("salary", None),
+        experience=kwargs.get("experience", None),
+        employment=kwargs.get("employment", None),
+        schedule=kwargs.get("schedule", None),
+        published_at=kwargs.get("published_at", None),
+        updated_at=kwargs.get("updated_at", datetime.now()),
+        area=kwargs.get("area", None),
+        source=kwargs.get("source", "test"),
+        company_id=kwargs.get("company_id", None),
+        requirements=kwargs.get("requirements", ""),
+        responsibilities=kwargs.get("responsibilities", ""),
+        description=kwargs.get("description", "")
+    )
 
 
 class TestVacancyStorageServiceInit:

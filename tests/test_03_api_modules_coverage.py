@@ -20,10 +20,10 @@ from src.api_modules.unified_api import UnifiedAPI
 class ConcreteJobAPI(BaseJobAPI):
     """Конкретная реализация для тестирования BaseJobAPI."""
 
-    def get_vacancies(self, search_query: str, **kwargs) -> Any:
+    def get_vacancies(self, search_query: str, **kwargs: Dict) -> Any:
         return [{"name": "Test Vacancy", "alternate_url": "https://test.com"}]
 
-    def _validate_vacancy(self, vacancy):
+    def _validate_vacancy(self, vacancy: Dict) -> bool:
         return isinstance(vacancy, dict) and "name" in vacancy
 
 
@@ -33,7 +33,7 @@ class TestBaseJobAPI:
     @patch('shutil.rmtree')
     @patch('os.makedirs')
     @patch('os.path.exists')
-    def test_clear_cache_existing_dir(self, mock_exists, mock_makedirs, mock_rmtree):
+    def test_clear_cache_existing_dir(self, mock_exists: Any, mock_makedirs: Any, mock_rmtree: Any) -> None:
         """Покрытие clear_cache с существующей директорией."""
         mock_exists.return_value = True
         api = ConcreteJobAPI()
@@ -45,7 +45,7 @@ class TestBaseJobAPI:
 
     @patch('os.makedirs')
     @patch('os.path.exists')
-    def test_clear_cache_nonexisting_dir(self, mock_exists, mock_makedirs):
+    def test_clear_cache_nonexisting_dir(self, mock_exists: Any, mock_makedirs: Any) -> None:
         """Покрытие clear_cache с несуществующей директорией."""
         mock_exists.return_value = False
         api = ConcreteJobAPI()
@@ -56,7 +56,7 @@ class TestBaseJobAPI:
 
     @patch('os.makedirs')
     @patch('os.path.exists')
-    def test_clear_cache_exception(self, mock_exists, mock_makedirs):
+    def test_clear_cache_exception(self, mock_exists: Any, mock_makedirs: Any) -> None:
         """Покрытие clear_cache с исключением."""
         mock_exists.side_effect = Exception("Test error")
         api = ConcreteJobAPI()
@@ -80,13 +80,13 @@ class ConcreteCachedAPI(CachedAPI):
     def _get_empty_response(self) -> Dict:
         return {"items": [], "found": 0}
 
-    def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs) -> List[Dict]:
+    def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs: Dict) -> List[Dict]:
         return []
 
-    def get_vacancies(self, search_query: str, **kwargs) -> List:
+    def get_vacancies(self, search_query: str, **kwargs: Dict) -> List:
         return [{"name": "Cached Vacancy"}]
 
-    def _validate_vacancy(self, vacancy):
+    def _validate_vacancy(self, vacancy: Dict) -> bool:
         return True
 
 
@@ -95,9 +95,10 @@ class TestCachedAPI:
 
     @patch('pathlib.Path.mkdir')
     @patch('src.api_modules.cached_api.FileCache')
-    def test_init_cache(self, mock_file_cache, mock_mkdir):
+    def test_init_cache(self, mock_file_cache: Any, mock_mkdir: Any) -> None:
         """Покрытие инициализации кэша."""
         api = ConcreteCachedAPI("test_cache")
+        assert api.cache_dir == "test_cache"
 
         # mkdir может вызываться несколько раз (для родительских директорий и самой директории)
         assert mock_mkdir.call_count >= 1
@@ -105,7 +106,7 @@ class TestCachedAPI:
 
     @patch('src.api_modules.cached_api.FileCache')
     @patch('pathlib.Path.mkdir')
-    def test_cached_api_request(self, mock_mkdir, mock_file_cache):
+    def test_cached_api_request(self, mock_mkdir: Any, mock_file_cache: Any) -> None:
         """Покрытие кэшированного запроса."""
         api = ConcreteCachedAPI("test_cache")
 
@@ -140,7 +141,7 @@ class TestAPIConnector:
         # Проверяем что прогресс инициализируется без ошибок
 
     @patch('requests.get')
-    def test_connect_success(self, mock_get):
+    def test_connect_success(self, mock_get: Any) -> None:
         """Покрытие успешного подключения."""
         mock_response = Mock()
         mock_response.status_code = 200
@@ -152,7 +153,7 @@ class TestAPIConnector:
         assert result == {"success": True}
 
     @patch('requests.get')
-    def test_connect_rate_limit(self, mock_get):
+    def test_connect_rate_limit(self, mock_get: Any) -> None:
         """Покрытие обработки rate limit."""
         mock_response = Mock()
         mock_response.status_code = 429
@@ -166,7 +167,7 @@ class TestAPIConnector:
             assert result == {"retried": True}
 
     @patch('requests.get')
-    def test_connect_timeout(self, mock_get):
+    def test_connect_timeout(self, mock_get: Any) -> None:
         """Покрытие обработки таймаута."""
         mock_get.side_effect = requests.Timeout("Timeout")
 
@@ -194,13 +195,13 @@ class TestHeadHunterAPI:
 
     @patch('src.api_modules.get_api.APIConnector')
     @patch('src.utils.paginator.Paginator')
-    def test_init(self, mock_paginator, mock_connector):
+    def test_init(self, mock_paginator: Any, mock_connector: Any) -> None:
         """Покрытие инициализации."""
         api = HeadHunterAPI()
         assert api.BASE_URL == "https://api.hh.ru/vacancies"
 
     @patch('src.api_modules.cached_api.CachedAPI.__init__')
-    def test_get_empty_response(self, mock_super_init):
+    def test_get_empty_response(self, mock_super_init: Any) -> None:
         """Покрытие _get_empty_response."""
         mock_super_init.return_value = None
         api = HeadHunterAPI()
@@ -220,7 +221,7 @@ class TestHeadHunterAPI:
         assert api._validate_vacancy(vacancy) is False
 
     @patch('src.api_modules.get_api.requests.get')
-    def test_get_vacancies(self, mock_get):
+    def test_get_vacancies(self, mock_get: Any) -> None:
         """Покрытие get_vacancies."""
         mock_response = Mock()
         mock_response.json.return_value = {"items": [{"name": "Test", "alternate_url": "url"}]}
@@ -236,7 +237,7 @@ class TestSuperJobAPI:
     """100% покрытие SuperJobAPI."""
 
     @patch('src.utils.env_loader.EnvLoader.get_env_var')
-    def test_init(self, mock_env):
+    def test_init(self, mock_env: Any) -> None:
         """Покрытие инициализации."""
         mock_env.return_value = "test_key"
         api = SuperJobAPI()
@@ -266,7 +267,7 @@ class TestUnifiedAPI:
 
     @patch('src.api_modules.unified_api.SuperJobAPI')
     @patch('src.api_modules.unified_api.HeadHunterAPI')
-    def test_init(self, mock_hh, mock_sj):
+    def test_init(self, mock_hh: Any, mock_sj: Any) -> None:
         """Покрытие инициализации."""
         api = UnifiedAPI()
         assert "hh" in api.apis
@@ -293,7 +294,7 @@ class TestUnifiedAPI:
 
     @patch('src.api_modules.unified_api.HeadHunterAPI.get_vacancies')
     @patch('src.api_modules.unified_api.SuperJobAPI.get_vacancies')
-    def test_get_vacancies_from_sources(self, mock_sj_get, mock_hh_get):
+    def test_get_vacancies_from_sources(self, mock_sj_get: Any, mock_hh_get: Any) -> None:
         """Покрытие get_vacancies_from_sources."""
         mock_hh_get.return_value = [{"source": "hh", "name": "HH Job"}]
         mock_sj_get.return_value = [{"source": "sj", "profession": "SJ Job"}]

@@ -4,12 +4,12 @@
 Покрывает все строки кода в src/vacancies/models.py с использованием реальных импортов.
 """
 
-import pytest
-from unittest.mock import patch, MagicMock
 from datetime import datetime
+from unittest.mock import patch
 
 from src.utils.salary import Salary
-from src.vacancies.models import Employer, Experience, Employment, Vacancy
+from src.vacancies.models import Employer, Experience, Employment, Vacancy, Schedule
+from typing import Any
 
 
 class TestSalary:
@@ -96,7 +96,7 @@ class TestEmployer:
 
     def test_init_minimal(self) -> None:
         """Покрытие минимальной инициализации."""
-        employer = Employer(name="Minimal Company")
+        employer = Employer(name="Minimal Company", id=None, trusted=None, alternate_url=None)
         assert employer.name == "Minimal Company"
         assert employer.id is None
         assert employer.trusted is None
@@ -180,18 +180,32 @@ class TestVacancy:
 
     @patch('src.vacancies.models.uuid.uuid4')
     @patch('src.vacancies.models.datetime')
-    def test_init_minimal(self, mock_datetime, mock_uuid):
+    def test_init_minimal(self, mock_datetime: Any, mock_uuid: Any) -> None:
         """Покрытие минимальной инициализации."""
         mock_uuid.return_value.hex = "test_uuid"
         mock_datetime.now.return_value.isoformat.return_value = "2024-01-01T12:00:00"
 
-        vacancy = Vacancy(vacancy_id="123", name="Test Job", alternate_url="https://test.com")
+        vacancy = Vacancy(
+            vacancy_id="123", 
+            name="Test Job", 
+            alternate_url="https://test.com",
+            employer=None,
+            salary=None,
+            experience=None,
+            employment=None,
+            schedule=None,
+            published_at=None,
+            updated_at=None,
+            area=None,
+            source=None,
+            company_id=None
+        )
         assert vacancy.id == "123"
         assert vacancy.title == "Test Job" 
         assert vacancy.url == "https://test.com"
 
     @patch('src.vacancies.models.uuid.uuid4')
-    def test_init_full(self, mock_uuid):
+    def test_init_full(self, mock_uuid: Any) -> None:
         """Покрытие полной инициализации."""
         mock_uuid.return_value.hex = "test_uuid"
 
@@ -206,14 +220,14 @@ class TestVacancy:
             description="Great job",
             requirements="Python skills",
             responsibilities="Coding",
-            employer=employer_data,
+            employer=Employer.from_dict(employer_data),
             area="Moscow",
-            experience={"name": "3-6 лет", "id": "exp123"},
-            employment={"name": "Полная занятость", "id": "emp123"},
-            schedule={"name": "Полный день", "id": "sch123"},
-            published_at="2024-01-01",
+            experience=Experience.from_dict({"name": "3-6 лет", "id": "exp123"}),
+            employment=Employment.from_dict({"name": "Полная занятость", "id": "emp123"}),
+            schedule=Schedule.from_dict({"name": "Полный день", "id": "sch123"}),
+            published_at=datetime.fromisoformat("2024-01-01T00:00:00"),
             source="test_source",
-            updated_at="2024-01-02",
+            updated_at=datetime.fromisoformat("2024-01-02T00:00:00"),
             company_id=123
         )
 
@@ -225,28 +239,70 @@ class TestVacancy:
         assert isinstance(vacancy.employment, Employment)
 
     @patch('src.vacancies.models.uuid.uuid4')
-    def test_salary_property(self, mock_uuid):
+    def test_salary_property(self, mock_uuid: Any) -> None:
         """Покрытие свойства salary."""
         mock_uuid.return_value.hex = "test_uuid"
 
-        vacancy = Vacancy(vacancy_id="123", name="Test", alternate_url="url", salary={"from": 50000})
+        vacancy = Vacancy(
+            vacancy_id="123", 
+            name="Test", 
+            alternate_url="url", 
+            salary={"from": 50000},
+            employer=None,
+            experience=None,
+            employment=None,
+            schedule=None,
+            published_at=None,
+            updated_at=None,
+            area=None,
+            source=None,
+            company_id=None
+        )
         assert isinstance(vacancy.salary, dict)
 
     @patch('src.vacancies.models.uuid.uuid4')
-    def test_employer_property(self, mock_uuid):
+    def test_employer_property(self, mock_uuid: Any) -> None:
         """Покрытие свойства employer."""
         mock_uuid.return_value.hex = "test_uuid"
 
         employer_data = {"name": "Dict Company", "id": "dict123"}
-        vacancy = Vacancy(vacancy_id="123", name="Test", alternate_url="url", employer=employer_data)
+        vacancy = Vacancy(
+            vacancy_id="123", 
+            name="Test", 
+            alternate_url="url", 
+            employer=Employer.from_dict(employer_data),
+            salary=None,
+            experience=None,
+            employment=None,
+            schedule=None,
+            published_at=None,
+            updated_at=None,
+            area=None,
+            source=None,
+            company_id=None
+        )
         assert isinstance(vacancy.employer, Employer)
 
     @patch('src.vacancies.models.uuid.uuid4')
-    def test_all_methods(self, mock_uuid):
+    def test_all_methods(self, mock_uuid: Any) -> None:
         """Покрытие всех методов Vacancy."""
         mock_uuid.return_value.hex = "test_uuid"
 
-        vacancy = Vacancy(vacancy_id="method_test", name="Method Test", alternate_url="https://method.com")
+        vacancy = Vacancy(
+            vacancy_id="method_test", 
+            name="Method Test", 
+            alternate_url="https://method.com",
+            employer=None,
+            salary=None,
+            experience=None,
+            employment=None,
+            schedule=None,
+            published_at=None,
+            updated_at=None,
+            area=None,
+            source=None,
+            company_id=None
+        )
 
         # Покрываем все поля модели
         assert vacancy.id == "method_test"

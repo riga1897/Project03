@@ -4,9 +4,9 @@
 Покрывает все строки кода в src/config/ с использованием моков для I/O операций.
 """
 
-import pytest
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
+from typing import Any
 
 from src.config.api_config import APIConfig
 from src.config.hh_api_config import HHAPIConfig
@@ -115,7 +115,7 @@ class TestSJAPIConfig:
 
     @patch('src.utils.file_handlers.json_handler.write_json')
     @patch('src.utils.file_handlers.json_handler.read_json')
-    def test_save_load_token(self, mock_read_json, mock_write_json):
+    def test_save_load_token(self, mock_read_json: Any, mock_write_json: Any) -> None:
         """Покрытие save_token и load_token."""
         config = SJAPIConfig(token_file=Path("test_token.json"))
 

@@ -6,14 +6,12 @@
 """
 
 import pytest
-import json
-from pathlib import Path
-from unittest.mock import patch, MagicMock, Mock, mock_open
-from typing import Any, Dict, List, Optional
+from unittest.mock import patch
+from typing import Any
 
 # Импорты из реального кода для покрытия
 from src.api_modules.base_api import BaseJobAPI
-from src.api_modules.cached_api import CachedAPI  
+from src.api_modules.cached_api import CachedAPI
 from src.api_modules.get_api import APIConnector
 from src.api_modules.hh_api import HeadHunterAPI
 from src.api_modules.sj_api import SuperJobAPI
@@ -34,7 +32,7 @@ class TestBaseJobAPI:
     def test_base_job_api_instantiation_error(self) -> None:
         """Покрытие ошибки создания абстрактного класса."""
         with pytest.raises(TypeError):
-            BaseJobAPI() # Ожидаем ошибку, так как BaseJobAPI абстрактный
+            BaseJobAPI()  # type: ignore[abstract]
 
 
 class TestCachedAPI:
@@ -57,9 +55,9 @@ class TestCachedAPI:
         assert api.cache_dir.name == 'hh'
 
     @patch('src.api_modules.cached_api.Path.mkdir')
-    def test_cached_api_cache_directory(self, mock_mkdir):
+    def test_cached_api_cache_directory(self, mock_mkdir: Any) -> None:
         """Покрытие создания директории кеша."""
-        api = HeadHunterAPI()
+        HeadHunterAPI()
         # mkdir должен был быть вызван при инициализации
         mock_mkdir.assert_called()
 
@@ -170,7 +168,7 @@ class TestSuperJobAPI:
         assert hasattr(api, 'config')
 
     @patch.object(SuperJobAPI, 'get_vacancies')
-    def test_sj_api_get_vacancies(self, mock_get_vacancies):
+    def test_sj_api_get_vacancies(self, mock_get_vacancies: Any) -> None:
         """Покрытие получения вакансий."""
         api = SuperJobAPI()
 
@@ -209,14 +207,14 @@ class TestUnifiedAPI:
         assert isinstance(api.apis["hh"], HeadHunterAPI)
         assert isinstance(api.apis["sj"], SuperJobAPI)
 
-    @patch.object(HeadHunterAPI, 'get_vacancies')  
+    @patch.object(HeadHunterAPI, 'get_vacancies')
     @patch.object(SuperJobAPI, 'get_vacancies')
-    def test_unified_api_get_vacancies_from_sources(self, mock_sj, mock_hh):
+    def test_unified_api_get_vacancies_from_sources(self, mock_sj: Any, mock_hh: Any) -> None:
         """Покрытие получения вакансий из источников."""
         api = UnifiedAPI()
 
         mock_hh.return_value = [{"id": "hh1", "source": "hh"}]
-        mock_sj.return_value = [{"id": "sj1", "source": "sj"}] 
+        mock_sj.return_value = [{"id": "sj1", "source": "sj"}]
 
         result = api.get_vacancies_from_sources("Python developer")
         assert isinstance(result, list)
@@ -265,7 +263,7 @@ class TestAPIIntegration:
             assert isinstance(unified_api.sj_api, SuperJobAPI)
 
     @patch('src.api_modules.cached_api.Path.exists')
-    def test_api_caching_integration(self, mock_exists):
+    def test_api_caching_integration(self, mock_exists: Any) -> None:
         """Покрытие интеграции кеширования."""
         mock_exists.return_value = False
 

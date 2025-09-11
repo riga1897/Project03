@@ -15,6 +15,7 @@
 - Методы для анализа зарплат, компаний, источников
 """
 
+from typing import Any, Dict, List
 from unittest.mock import patch, MagicMock
 
 from src.utils.vacancy_stats import (
@@ -362,7 +363,7 @@ class TestDisplayCompanyStats:
     """100% покрытие метода display_company_stats"""
 
     @patch('builtins.print')
-    def test_display_company_stats_empty_list(self, mock_print):
+    def test_display_company_stats_empty_list(self, mock_print: Any) -> None:
         """Покрытие: пустой список вакансий"""
         stats = VacancyStats()
 
@@ -372,7 +373,7 @@ class TestDisplayCompanyStats:
 
     @patch('src.utils.vacancy_stats.VacancyStats._get_company_name_by_id')
     @patch('builtins.print')
-    def test_display_company_stats_with_source_name(self, mock_print, mock_get_name):
+    def test_display_company_stats_with_source_name(self, mock_print: Any, mock_get_name: Any) -> None:
         """Покрытие: отображение с названием источника"""
         stats = VacancyStats()
         mock_get_name.return_value = "Company A"
@@ -392,7 +393,7 @@ class TestDisplayCompanyStats:
 
     @patch('src.utils.vacancy_stats.VacancyStats._get_company_name_by_id')
     @patch('builtins.print')
-    def test_display_company_stats_dict_vacancy(self, mock_print, mock_get_name):
+    def test_display_company_stats_dict_vacancy(self, mock_print: Any, mock_get_name: Any) -> None:
         """Покрытие: обработка вакансии как словаря"""
         stats = VacancyStats()
         mock_get_name.return_value = "Dict Company"
@@ -411,7 +412,7 @@ class TestDisplayCompanyStats:
 
     @patch('src.utils.vacancy_stats.VacancyStats._get_company_name_by_id')
     @patch('builtins.print')
-    def test_display_company_stats_object_with_employer_object(self, mock_print, mock_get_name):
+    def test_display_company_stats_object_with_employer_object(self, mock_print: Any, mock_get_name: Any) -> None:
         """Покрытие: объект с объектом employer"""
         stats = VacancyStats()
         mock_get_name.return_value = "Object Company"
@@ -428,7 +429,7 @@ class TestDisplayCompanyStats:
         assert any("Object Company" in call for call in calls)
 
     @patch('builtins.print')
-    def test_display_company_stats_unknown_company(self, mock_print):
+    def test_display_company_stats_unknown_company(self, mock_print: Any) -> None:
         """Покрытие: неизвестная компания"""
         stats = VacancyStats()
 
@@ -436,7 +437,7 @@ class TestDisplayCompanyStats:
         vacancy1 = MagicMock()
         vacancy1.employer = None
 
-        vacancy2 = {}  # Пустой словарь
+        vacancy2: Dict = {}  # Пустой словарь
 
         vacancies = [vacancy1, vacancy2]
         stats.display_company_stats(vacancies)
@@ -445,7 +446,7 @@ class TestDisplayCompanyStats:
         assert any("Неизвестная компания" in call for call in calls)
 
     @patch('builtins.print')
-    def test_display_company_stats_exception_handling(self, mock_print):
+    def test_display_company_stats_exception_handling(self, mock_print: Any) -> None:
         """Покрытие: обработка исключений"""
         stats = VacancyStats()
 
@@ -460,7 +461,7 @@ class TestDisplayCompanyStats:
             assert any("Ошибка обработки вакансии для статистики" in call for call in calls)
 
     @patch('builtins.print')
-    def test_display_company_stats_no_valid_companies(self, mock_print):
+    def test_display_company_stats_no_valid_companies(self, mock_print: Any) -> None:
         """Покрытие: случай когда нет валидных компаний"""
         stats = VacancyStats()
 
@@ -470,9 +471,8 @@ class TestDisplayCompanyStats:
             vacancies = [vacancy]
             stats.display_company_stats(vacancies)
 
-            # Должно показать сообщение о невозможности определить статистику
-            calls = [str(call[0][0]) for call in mock_print.call_args_list]
-            # Может быть любое сообщение, главное что не крашится
+        # Проверяем что метод был вызван без ошибок
+        mock_print.assert_called()
 
 
 class TestCalculateStatisticsFunction:
@@ -544,8 +544,8 @@ class TestVacancyStatsExtendedGetCompanyDistribution:
     def test_get_company_distribution_with_unknown_companies(self) -> None:
         """Покрытие: вакансии с неизвестными компаниями"""
         # Мокируем вакансии без работодателей
-        vacancy1 = {}  # Пустая вакансия
-        vacancy2 = {"employer": {"name": "Known Company"}}
+        vacancy1: Dict = {}  # Пустая вакансия
+        vacancy2: Dict = {"employer": {"name": "Known Company"}}
 
         vacancies = [vacancy1, vacancy2]
         result = VacancyStatsExtended.get_company_distribution(vacancies)
@@ -657,7 +657,7 @@ class TestVacancyStatsExtendedExtractCompanyName:
 
     def test_extract_company_name_unknown_company(self) -> None:
         """Покрытие: случай неизвестной компании"""
-        vacancy = {}  # Пустой словарь
+        vacancy: Dict = {}  # Пустой словарь
 
         result = VacancyStatsExtended._extract_company_name(vacancy)
 
@@ -687,14 +687,14 @@ class TestVacancyStatsExtendedDisplayMethods:
     """100% покрытие методов отображения VacancyStatsExtended"""
 
     @patch('builtins.print')
-    def test_display_company_stats_empty_list(self, mock_print):
+    def test_display_company_stats_empty_list(self, mock_print: Any) -> None:
         """Покрытие: отображение статистики для пустого списка"""
         VacancyStatsExtended.display_company_stats([])
 
         mock_print.assert_called_with("Нет вакансий для отображения статистики")
 
     @patch('builtins.print')
-    def test_display_company_stats_no_companies(self, mock_print):
+    def test_display_company_stats_no_companies(self, mock_print: Any) -> None:
         """Покрытие: нет компаний для извлечения"""
         # Мокируем get_company_distribution чтобы вернуть пустой результат
         with patch.object(VacancyStatsExtended, 'get_company_distribution', return_value={}):
@@ -704,7 +704,7 @@ class TestVacancyStatsExtendedDisplayMethods:
             mock_print.assert_called_with("Не удалось извлечь информацию о компаниях")
 
     @patch('builtins.print')
-    def test_display_company_stats_normal(self, mock_print):
+    def test_display_company_stats_normal(self, mock_print: Any) -> None:
         """Покрытие: нормальное отображение статистики"""
         vacancies = [{"employer": {"name": "Test Company"}}]
         VacancyStatsExtended.display_company_stats(vacancies, "Test Source")
@@ -713,7 +713,7 @@ class TestVacancyStatsExtendedDisplayMethods:
         assert mock_print.call_count > 0
 
     @patch('builtins.print')
-    def test_display_company_distribution(self, mock_print):
+    def test_display_company_distribution(self, mock_print: Any) -> None:
         """Покрытие: отображение распределения компаний"""
         company_stats = {"Company A": 5, "Company B": 3, "Company C": 2}
         total_vacancies = 10
@@ -727,7 +727,7 @@ class TestVacancyStatsExtendedDisplayMethods:
         assert any("Company A: 5 вакансий (50.0%)" in call for call in calls)
 
     @patch('builtins.print')
-    def test_display_company_distribution_no_source_name(self, mock_print):
+    def test_display_company_distribution_no_source_name(self, mock_print: Any) -> None:
         """Покрытие: отображение без названия источника"""
         company_stats = {"Company A": 2}
         total_vacancies = 2
@@ -738,14 +738,14 @@ class TestVacancyStatsExtendedDisplayMethods:
         assert any("Распределение вакансий по компаниям:" in call for call in calls)
 
     @patch('builtins.print')
-    def test_display_source_stats_empty(self, mock_print):
+    def test_display_source_stats_empty(self, mock_print: Any) -> None:
         """Покрытие: отображение статистики источников - пустые списки"""
         VacancyStatsExtended.display_source_stats([], [])
 
         mock_print.assert_called_with("Нет вакансий для отображения статистики")
 
     @patch('builtins.print')
-    def test_display_source_stats_normal(self, mock_print):
+    def test_display_source_stats_normal(self, mock_print: Any) -> None:
         """Покрытие: нормальное отображение статистики источников"""
         hh_vacancies = [{"employer": {"name": "HH Company"}}]
         sj_vacancies = [{"employer": {"name": "SJ Company"}}]
@@ -759,10 +759,10 @@ class TestVacancyStatsExtendedDisplayMethods:
         assert any("SuperJob: 1 вакансий" in call for call in calls)
 
     @patch('builtins.print')
-    def test_display_source_stats_only_hh(self, mock_print):
+    def test_display_source_stats_only_hh(self, mock_print: Any) -> None:
         """Покрытие: только HH вакансии"""
-        hh_vacancies = [{"employer": {"name": "HH Company"}}]
-        sj_vacancies = []
+        hh_vacancies: List = [{"employer": {"name": "HH Company"}}]
+        sj_vacancies: List = []
 
         VacancyStatsExtended.display_source_stats(hh_vacancies, sj_vacancies)
 
@@ -817,7 +817,7 @@ class TestVacancyStatsExtendedAnalyzeMethods:
         assert result["unique_employers"] == 0
 
     @patch('builtins.print')
-    def test_display_company_mapping_analysis_normal(self, mock_print):
+    def test_display_company_mapping_analysis_normal(self, mock_print: Any) -> None:
         """Покрытие: отображение анализа маппинга"""
         vacancies = [
             {"employer": {"name": "Company A"}},
@@ -834,7 +834,7 @@ class TestVacancyStatsExtendedAnalyzeMethods:
         assert any("Уникальных работодателей: 2" in call for call in calls)
 
     @patch('builtins.print')
-    def test_display_company_mapping_analysis_many_employers(self, mock_print):
+    def test_display_company_mapping_analysis_many_employers(self, mock_print: Any) -> None:
         """Покрытие: анализ с большим количеством работодателей"""
         vacancies = []
         for i in range(15):
@@ -847,9 +847,9 @@ class TestVacancyStatsExtendedAnalyzeMethods:
         assert any("... и еще 5 работодателей" in call for call in calls)
 
     @patch('builtins.print')
-    def test_display_company_mapping_analysis_no_employers(self, mock_print):
+    def test_display_company_mapping_analysis_no_employers(self, mock_print: Any) -> None:
         """Покрытие: анализ без работодателей"""
-        vacancies = [{}, {}]
+        vacancies: List = [{}, {}]
 
         VacancyStatsExtended.display_company_mapping_analysis(vacancies)
 
@@ -917,7 +917,7 @@ class TestUncoveredLines:
 
         # Создаем объект с salary, который вызывает AttributeError при getattr
         class ProblematicSalary:
-            def __getattribute__(self, name):
+            def __getattribute__(self, name: Any) -> Any:
                 if name in ("amount_from", "amount_to"):
                     raise AttributeError("Forced AttributeError on salary attribute")
                 return super().__getattribute__(name)
@@ -953,7 +953,7 @@ class TestUncoveredLines:
 
     @patch('src.utils.vacancy_stats.VacancyStats._get_company_name_by_id')
     @patch('builtins.print')
-    def test_display_company_stats_dict_employer_with_name_object(self, mock_print, mock_get_name):
+    def test_display_company_stats_dict_employer_with_name_object(self, mock_print: Any, mock_get_name: Any) -> None:
         """Покрытие строки 129: employer.get_id() когда employer объект в словаре"""
         stats = VacancyStats()
         mock_get_name.return_value = "Object Employer Company"
@@ -973,7 +973,7 @@ class TestUncoveredLines:
 
     @patch('src.utils.vacancy_stats.VacancyStats._get_company_name_by_id')
     @patch('builtins.print')
-    def test_display_company_stats_object_employer_as_dict(self, mock_print, mock_get_name):
+    def test_display_company_stats_object_employer_as_dict(self, mock_print: Any, mock_get_name: Any) -> None:
         """Покрытие строки 135: employer.get("id") когда vacancy.employer dict"""
         stats = VacancyStats()
         mock_get_name.return_value = "Dict Employer in Object"
@@ -988,7 +988,7 @@ class TestUncoveredLines:
         assert any("Dict Employer in Object" in call for call in calls)
 
     @patch('builtins.print')
-    def test_display_company_stats_object_employer_as_string(self, mock_print):
+    def test_display_company_stats_object_employer_as_string(self, mock_print: Any) -> None:
         """Покрытие случая когда employer без get_id() -> попадает в unknown"""
         stats = VacancyStats()
 
@@ -1032,8 +1032,8 @@ class TestUncoveredLines:
 
         # Патчим hasattr чтобы вернуть True для employer_id
         with patch('builtins.hasattr', side_effect=lambda obj, attr: attr == 'employer_id' and obj is vacancy_mock):
-            vacancy_dict_with_attr = type('MockVacancy', (), vacancy_dict)
-            vacancy_dict_with_attr.employer_id = None
+            vacancy_dict_with_attr = type('MockVacancy', (), vacancy_dict)()
+            setattr(vacancy_dict_with_attr, 'employer_id', None)  # Use setattr to avoid type checking issues
 
             result = VacancyStatsExtended._extract_company_name(vacancy_dict)
 

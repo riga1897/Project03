@@ -74,10 +74,9 @@ class TestUserInterface:
         mock_db_manager_class.return_value = mock_db_manager
 
         # Выполняем функцию (она не должна вызывать исключение, а обработать его)
-        result = src.user_interface.main()
+        src.user_interface.main()
 
-        # Проверяем что функция завершилась gracefully (return None)
-        assert result is None
+        # Проверяем что функция завершилась gracefully
         # Проверяем что была выведена ошибка
         mock_print.assert_called()
 
@@ -92,10 +91,9 @@ class TestUserInterface:
         mock_db_manager_class.return_value = mock_db_manager
 
         # Выполняем функцию (она обрабатывает ошибку gracefully)
-        result = src.user_interface.main()
+        src.user_interface.main()
 
         # Проверяем что функция завершилась gracefully
-        assert result is None
         # Проверяем что попытка подключения была сделана
         mock_db_manager.check_connection.assert_called_once()
         # Проверяем что была выведена ошибка
@@ -113,10 +111,9 @@ class TestUserInterface:
         mock_db_manager_class.return_value = mock_db_manager
 
         # Выполняем функцию (она обрабатывает ошибку gracefully)
-        result = src.user_interface.main()
+        src.user_interface.main()
 
         # Проверяем что функция завершилась gracefully
-        assert result is None
         # Проверяем что была выведена ошибка
         mock_print.assert_called()
 
@@ -133,10 +130,9 @@ class TestUserInterface:
         mock_db_manager_class.return_value = mock_db_manager
 
         # Выполняем функцию (она обрабатывает ошибку gracefully)
-        result = src.user_interface.main()
+        src.user_interface.main()
 
         # Проверяем что функция завершилась gracefully
-        assert result is None
         # Проверяем что была выведена ошибка
         mock_print.assert_called()
 
@@ -154,10 +150,9 @@ class TestUserInterface:
         mock_db_manager_class.return_value = mock_db_manager
 
         # Выполняем функцию (она обрабатывает ошибку gracefully)
-        result = src.user_interface.main()
+        src.user_interface.main()
 
         # Проверяем что функция завершилась gracefully
-        assert result is None
         # Проверяем что была выведена ошибка
         mock_print.assert_called()
 
@@ -185,10 +180,9 @@ class TestUserInterface:
         mock_storage_factory.create_storage.side_effect = Exception("Storage Error")
 
         # Выполняем функцию (она обрабатывает ошибку gracefully)
-        result = src.user_interface.main()
+        src.user_interface.main()
 
         # Проверяем что функция завершилась gracefully
-        assert result is None
         # Проверяем что была выведена ошибка
         mock_print.assert_called()
 
@@ -219,10 +213,9 @@ class TestUserInterface:
         mock_ui.side_effect = Exception("UI Error")
 
         # Выполняем функцию (она обрабатывает ошибку gracefully)
-        result = src.user_interface.main()
+        src.user_interface.main()
 
         # Проверяем что функция завершилась gracefully
-        assert result is None
         # Проверяем что была выведена ошибка
         mock_print.assert_called()
 
@@ -255,10 +248,9 @@ class TestUserInterface:
         mock_ui.return_value = mock_ui_instance
 
         # Выполняем функцию (она обрабатывает ошибку gracefully)
-        result = src.user_interface.main()
+        src.user_interface.main()
 
         # Проверяем что функция завершилась gracefully
-        assert result is None
         # Проверяем что была выведена ошибка
         mock_print.assert_called()
 
@@ -277,10 +269,9 @@ class TestUserInterface:
         mock_db_manager.side_effect = Exception("General Error")
 
         # Выполняем функцию (она обрабатывает ошибку gracefully)
-        result = src.user_interface.main()
+        src.user_interface.main()
 
         # Проверяем что функция завершилась gracefully
-        assert result is None
         # Проверяем что была выведена ошибка
         mock_print.assert_called()
 

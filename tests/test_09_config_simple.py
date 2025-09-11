@@ -6,6 +6,7 @@
 
 import pytest
 from unittest.mock import patch
+from typing import Any
 
 # Импорты из реального кода для покрытия
 from src.config.api_config import APIConfig
@@ -96,7 +97,7 @@ class TestHHAPIConfig:
         assert config.period == 15
 
     @patch('src.config.hh_api_config.EnvLoader.get_env_var')
-    def test_hh_config_post_init(self, mock_get_env):
+    def test_hh_config_post_init(self, mock_get_env: Any) -> None:
         """Покрытие __post_init__ метода."""
         mock_get_env.return_value = "true"
         config = HHAPIConfig()
@@ -132,7 +133,7 @@ class TestSJAPIConfig:
         assert config.per_page == 100
 
     @patch('src.config.sj_api_config.EnvLoader.get_env_var')
-    def test_sj_config_env_loading(self, mock_get_env):
+    def test_sj_config_env_loading(self, mock_get_env: Any) -> None:
         """Покрытие загрузки env переменных."""
         mock_get_env.return_value = "true"
         config = SJAPIConfig()
@@ -243,7 +244,7 @@ class TestDatabaseConfig:
         assert hasattr(config, 'default_config')
 
     @patch('src.config.db_config.EnvLoader.get_env_var')
-    def test_database_config_env_vars(self, mock_get_env):
+    def test_database_config_env_vars(self, mock_get_env: Any) -> None:
         """Покрытие загрузки переменных окружения."""
         from src.config.db_config import DatabaseConfig
 
@@ -271,7 +272,7 @@ class TestDatabaseConfig:
         assert result['host'] == 'custom_host'
 
     @patch('src.config.db_config.EnvLoader.get_env_var')
-    def test_database_url_parsing(self, mock_get_env):
+    def test_database_url_parsing(self, mock_get_env: Any) -> None:
         """Покрытие парсинга DATABASE_URL."""
         from src.config.db_config import DatabaseConfig
 

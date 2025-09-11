@@ -6,6 +6,7 @@
 
 import os
 import sys
+from typing import Generator, Any
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -13,9 +14,10 @@ import pytest
 # Добавляем src в PATH для импорта модулей
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
+
 # Глобальные моки для предотвращения реальных I/O операций
 @pytest.fixture(autouse=True)
-def mock_io_operations() -> None:
+def mock_io_operations() -> Generator[dict[str, MagicMock], None, None]:
     """Автоматически мокает все I/O операции во всех тестах."""
     with patch('builtins.input') as mock_input, \
          patch('requests.get') as mock_get, \
@@ -48,8 +50,9 @@ def mock_io_operations() -> None:
             'read': mock_read
         }
 
+
 @pytest.fixture
-def mock_database() -> None:
+def mock_database() -> Generator[Any, None, None]:
     """Мок для всех операций с базой данных."""
     with patch('psycopg2.connect') as mock_connect:
         mock_conn = MagicMock()
@@ -60,8 +63,9 @@ def mock_database() -> None:
         mock_connect.return_value = mock_conn
         yield mock_cursor
 
+
 @pytest.fixture
-def sample_vacancy_data() -> None:
+def sample_vacancy_data() -> dict[str, Any]:
     """Образец данных вакансии для тестов."""
     return {
         "id": "test_123",

@@ -15,6 +15,7 @@
 import logging
 import os
 from unittest.mock import patch, Mock
+from typing import Any
 
 # Импорты для реальной бизнес-логики
 from src.api_modules.unified_api import UnifiedAPI
@@ -30,7 +31,7 @@ class TestUnifiedAPIBusinessLogic:
 
     @patch('src.api_modules.unified_api.HeadHunterAPI')
     @patch('src.api_modules.unified_api.SuperJobAPI')
-    def test_unified_api_initialization(self, mock_sj_api, mock_hh_api):
+    def test_unified_api_initialization(self, mock_sj_api: Any, mock_hh_api: Any) -> None:
         """Покрытие инициализации UnifiedAPI"""
         api = UnifiedAPI()
 
@@ -42,7 +43,7 @@ class TestUnifiedAPIBusinessLogic:
 
     @patch('src.api_modules.unified_api.HeadHunterAPI')
     @patch('src.api_modules.unified_api.SuperJobAPI')
-    def test_get_available_sources(self, mock_sj_api, mock_hh_api):
+    def test_get_available_sources(self, mock_sj_api: Any, mock_hh_api: Any) -> None:
         """Покрытие получения доступных источников"""
         api = UnifiedAPI()
         sources = api.get_available_sources()
@@ -53,7 +54,7 @@ class TestUnifiedAPIBusinessLogic:
 
     @patch('src.api_modules.unified_api.HeadHunterAPI')
     @patch('src.api_modules.unified_api.SuperJobAPI')
-    def test_validate_sources(self, mock_sj_api, mock_hh_api):
+    def test_validate_sources(self, mock_sj_api: Any, mock_hh_api: Any) -> None:
         """Покрытие валидации источников"""
         api = UnifiedAPI()
 
@@ -71,7 +72,7 @@ class TestUnifiedAPIBusinessLogic:
     @patch('src.api_modules.unified_api.logger')
     @patch('src.api_modules.unified_api.HeadHunterAPI')
     @patch('src.api_modules.unified_api.SuperJobAPI')
-    def test_get_vacancies_from_sources_hh_only(self, mock_sj_api, mock_hh_api, mock_logger):
+    def test_get_vacancies_from_sources_hh_only(self, mock_sj_api: Any, mock_hh_api: Any, mock_logger: Any) -> None:
         """Покрытие получения вакансий только из HH"""
         # Мокаем API
         mock_hh_instance = Mock()
@@ -95,7 +96,7 @@ class TestUnifiedAPIBusinessLogic:
     @patch('src.api_modules.unified_api.logger')
     @patch('src.api_modules.unified_api.HeadHunterAPI')
     @patch('src.api_modules.unified_api.SuperJobAPI')
-    def test_get_vacancies_error_handling(self, mock_sj_api, mock_hh_api, mock_logger):
+    def test_get_vacancies_error_handling(self, mock_sj_api: Any, mock_hh_api: Any, mock_logger: Any) -> None:
         """Покрытие обработки ошибок API"""
         # Мокаем API с ошибкой
         mock_hh_instance = Mock()
@@ -116,14 +117,22 @@ class TestUnifiedAPIBusinessLogic:
 class TestVacancyOperationsBusinessLogic:
     """100% покрытие реальной бизнес-логики VacancyOperations"""
 
-    def create_test_vacancy(self, title="Test Job", salary_data=None):
+    def create_test_vacancy(self, title: str="Test Job", salary_data: Any=None) -> Vacancy:
         """Создает тестовую вакансию"""
         return Vacancy(
             vacancy_id="test_123",
             name=title,
             alternate_url="https://test.com",
-            employer=Employer(name="Test Company"),
-            salary=salary_data
+            employer=Employer(name="Test Company", id=None, trusted=None, alternate_url=None),
+            salary=salary_data,
+            experience=None,
+            employment=None,
+            schedule=None,
+            published_at=None,
+            updated_at=None,
+            area=None,
+            source=None,
+            company_id=None
         )
 
     def test_get_vacancies_with_salary_dict_format(self) -> None:
@@ -228,17 +237,17 @@ class ConcreteVacancyStorageService(AbstractVacancyStorageService):
         self.db_manager = Mock()
         self.processing_coordinator = Mock()
         self.filtering_service = Mock()
-        self.target_companies = []
+        self.target_companies: list[str] = []
 
     def _should_filter_by_salary(self) -> bool:
         """Проверка включения фильтра по зарплате"""
         return os.getenv('ENABLE_SALARY_FILTER', 'false').lower() == 'true'
 
-    def _enrich_with_company_data(self, vacancies):
+    def _enrich_with_company_data(self, vacancies: Any) -> Any:
         """Обогащение данными о компаниях"""
         return vacancies
 
-    def process_and_save_vacancies(self, raw_vacancies):
+    def process_and_save_vacancies(self, raw_vacancies: Any) -> Any:
         """Обработка и сохранение вакансий"""
         try:
             # Используем координатор для обработки
@@ -252,7 +261,7 @@ class ConcreteVacancyStorageService(AbstractVacancyStorageService):
             logger.error(f"Ошибка при обработке вакансий: {e}")
             return []
 
-    def get_vacancies(self, **kwargs):
+    def get_vacancies(self, filters: dict[str, Any] | None = None) -> list[Vacancy]:
         """Конкретная реализация для тестов"""
         return []
 
@@ -260,21 +269,21 @@ class ConcreteVacancyStorageService(AbstractVacancyStorageService):
         """Конкретная реализация для тестов"""
         return True
 
-    def get_storage_stats(self) -> None:
+    def get_storage_stats(self) -> dict[str, Any]:
         """Конкретная реализация для тестов"""
         return {"total": 0}
 
-    def filter_and_deduplicate_vacancies(self, vacancies):
+    def filter_and_deduplicate_vacancies(self, vacancies: Any) -> list[Vacancy]:
         """Конкретная реализация для тестов"""
-        return vacancies
+        return vacancies or []
 
-    def get_companies_and_vacancies_count(self) -> None:
+    def get_companies_and_vacancies_count(self) -> list[tuple[Any, ...]]:
         """Конкретная реализация для тестов"""
         return []
 
-    def save_vacancies(self, vacancies):
+    def save_vacancies(self, vacancies: Any) -> int:
         """Конкретная реализация для тестов"""
-        return True
+        return 1
 
 
 class TestVacancyStorageServiceBusinessLogic:
@@ -282,7 +291,7 @@ class TestVacancyStorageServiceBusinessLogic:
 
     @patch('src.storage.services.vacancy_storage_service.DBManager')
     @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
-    def test_storage_service_initialization(self, mock_coordinator, mock_db_manager):
+    def test_storage_service_initialization(self, mock_coordinator: Any, mock_db_manager: Any) -> None:
         """Покрытие инициализации VacancyStorageService"""
         service = ConcreteVacancyStorageService()
 
@@ -293,7 +302,7 @@ class TestVacancyStorageServiceBusinessLogic:
 
     @patch('src.storage.services.vacancy_storage_service.DBManager')
     @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
-    def test_should_filter_by_salary_enabled(self, mock_coordinator, mock_db_manager):
+    def test_should_filter_by_salary_enabled(self, mock_coordinator: Any, mock_db_manager: Any) -> None:
         """Покрытие проверки фильтра по зарплате (включен)"""
         with patch.dict('os.environ', {'ENABLE_SALARY_FILTER': 'true'}):
             service = ConcreteVacancyStorageService()
@@ -303,7 +312,7 @@ class TestVacancyStorageServiceBusinessLogic:
 
     @patch('src.storage.services.vacancy_storage_service.DBManager')
     @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
-    def test_should_filter_by_salary_disabled(self, mock_coordinator, mock_db_manager):
+    def test_should_filter_by_salary_disabled(self, mock_coordinator: Any, mock_db_manager: Any) -> None:
         """Покрытие проверки фильтра по зарплате (отключен)"""
         with patch.dict('os.environ', {'ENABLE_SALARY_FILTER': 'false'}, clear=True):
             service = ConcreteVacancyStorageService()
@@ -314,7 +323,7 @@ class TestVacancyStorageServiceBusinessLogic:
     @patch('src.storage.services.vacancy_storage_service.logger')
     @patch('src.storage.services.vacancy_storage_service.DBManager')
     @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
-    def test_process_and_save_vacancies_success(self, mock_coordinator, mock_db_manager, mock_logger):
+    def test_process_and_save_vacancies_success(self, mock_coordinator: Any, mock_db_manager: Any, mock_logger: Any) -> None:
         """Покрытие успешной обработки и сохранения вакансий"""
         # Создаем тестовые данные
         raw_vacancies = [
@@ -343,7 +352,7 @@ class TestVacancyStorageServiceBusinessLogic:
     @patch('src.storage.services.vacancy_storage_service.logger')
     @patch('src.storage.services.vacancy_storage_service.DBManager')
     @patch('src.storage.services.vacancy_storage_service.VacancyProcessingCoordinator')
-    def test_process_and_save_vacancies_error(self, mock_coordinator, mock_db_manager, mock_logger):
+    def test_process_and_save_vacancies_error(self, mock_coordinator: Any, mock_db_manager: Any, mock_logger: Any) -> None:
         """Покрытие обработки ошибок при сохранении вакансий"""
         raw_vacancies = [{"id": "1", "name": "Test Job"}]
 
@@ -369,7 +378,7 @@ class TestVacancyOperationsCoordinatorBusinessLogic:
     @patch('src.ui_interfaces.vacancy_operations_coordinator.VacancySearchHandler')
     @patch('src.ui_interfaces.vacancy_operations_coordinator.VacancyDisplayHandler')
     @patch('src.ui_interfaces.vacancy_operations_coordinator.SourceSelector')
-    def test_coordinator_initialization(self, mock_source_selector, mock_display_handler, mock_search_handler):
+    def test_coordinator_initialization(self, mock_source_selector: Any, mock_display_handler: Any, mock_search_handler: Any) -> None:
         """Покрытие инициализации координатора"""
         from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
 
@@ -387,7 +396,7 @@ class TestVacancyOperationsCoordinatorBusinessLogic:
     @patch('src.ui_interfaces.vacancy_operations_coordinator.VacancySearchHandler')
     @patch('src.ui_interfaces.vacancy_operations_coordinator.VacancyDisplayHandler')
     @patch('src.ui_interfaces.vacancy_operations_coordinator.SourceSelector')
-    def test_handle_vacancy_search(self, mock_source_selector, mock_display_handler, mock_search_handler):
+    def test_handle_vacancy_search(self, mock_source_selector: Any, mock_display_handler: Any, mock_search_handler: Any) -> None:
         """Покрытие координации поиска вакансий"""
         from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
 
@@ -404,7 +413,7 @@ class TestVacancyOperationsCoordinatorBusinessLogic:
     @patch('src.ui_interfaces.vacancy_operations_coordinator.VacancySearchHandler')
     @patch('src.ui_interfaces.vacancy_operations_coordinator.VacancyDisplayHandler')
     @patch('src.ui_interfaces.vacancy_operations_coordinator.SourceSelector')
-    def test_handle_show_saved_vacancies(self, mock_source_selector, mock_display_handler, mock_search_handler):
+    def test_handle_show_saved_vacancies(self, mock_source_selector: Any, mock_display_handler: Any, mock_search_handler: Any) -> None:
         """Покрытие отображения сохраненных вакансий"""
         from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
 
@@ -422,7 +431,7 @@ class TestVacancyOperationsCoordinatorBusinessLogic:
     @patch('src.ui_interfaces.vacancy_operations_coordinator.VacancySearchHandler')
     @patch('src.ui_interfaces.vacancy_operations_coordinator.VacancyDisplayHandler')
     @patch('src.ui_interfaces.vacancy_operations_coordinator.SourceSelector')
-    def test_handle_cache_cleanup_error(self, mock_source_selector, mock_display_handler, mock_search_handler, mock_logger):
+    def test_handle_cache_cleanup_error(self, mock_source_selector: Any, mock_display_handler: Any, mock_search_handler: Any, mock_logger: Any) -> None:
         """Покрытие обработки ошибок при очистке кэша"""
         from src.ui_interfaces.vacancy_operations_coordinator import VacancyOperationsCoordinator
 
@@ -445,7 +454,7 @@ class TestRealWorldIntegration:
 
     @patch('src.api_modules.unified_api.HeadHunterAPI')
     @patch('src.storage.services.vacancy_storage_service.DBManager')
-    def test_complete_vacancy_workflow_integration(self, mock_db_manager, mock_hh_api):
+    def test_complete_vacancy_workflow_integration(self, mock_db_manager: Any, mock_hh_api: Any) -> None:
         """Покрытие полного цикла работы с вакансиями"""
         # Мокаем данные от API
         mock_hh_instance = Mock()
@@ -475,15 +484,31 @@ class TestRealWorldIntegration:
                 vacancy_id="1",
                 name="Senior Python Developer",
                 alternate_url="https://test.com/1",
-                employer=Employer(name="Яндекс"),
-                salary={"from": 150000, "to": 200000}
+                employer=Employer(name="Яндекс", id=None, trusted=None, alternate_url=None),
+                salary={"from": 150000, "to": 200000},
+                experience=None,
+                employment=None,
+                schedule=None,
+                published_at=None,
+                updated_at=None,
+                area=None,
+                source=None,
+                company_id=None
             ),
             Vacancy(
                 vacancy_id="2",
                 name="Junior Java Developer",
                 alternate_url="https://test.com/2",
-                employer=Employer(name="Google"),
-                salary={"from": 60000, "to": 80000}
+                employer=Employer(name="Google", id=None, trusted=None, alternate_url=None),
+                salary={"from": 60000, "to": 80000},
+                experience=None,
+                employment=None,
+                schedule=None,
+                published_at=None,
+                updated_at=None,
+                area=None,
+                source=None,
+                company_id=None
             ),
         ]
 

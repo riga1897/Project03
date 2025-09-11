@@ -12,13 +12,13 @@ from src.vacancies.abstract_models import AbstractEmployerMixin, AbstractExperie
 class ConcreteEmployer(AbstractEmployerMixin):
     """Конкретная реализация для тестирования абстрактного миксина."""
 
-    def __init__(self, name="Test Name", id=None, trusted=None, url=None):
+    def __init__(self, name: str = "Test Name", id: Any = None, trusted: Any = None, url: Any = None) -> None:
         self.name = name
         self.id = id
         self.trusted = trusted
         self.url = url
 
-    def get_name(self) -> str:
+    def get_name(self) -> Any:
         return self.name
 
     def get_id(self) -> Any:
@@ -34,7 +34,7 @@ class ConcreteEmployer(AbstractEmployerMixin):
 class ConcreteExperience(AbstractExperienceMixin):
     """Конкретная реализация для тестирования Experience миксина."""
 
-    def __init__(self, name="Test Experience", id=None):
+    def __init__(self, name: Any = "Test Experience", id: Any = None) -> None:
         self.name = name
         self.id = id
 
@@ -48,7 +48,7 @@ class ConcreteExperience(AbstractExperienceMixin):
 class ConcreteEmployment(AbstractEmploymentMixin):
     """Конкретная реализация для тестирования Employment миксина."""
 
-    def __init__(self, name="Test Employment", id=None):
+    def __init__(self, name: str = "Test Employment", id: Any = None) -> None:
         self.name = name
         self.id = id
 

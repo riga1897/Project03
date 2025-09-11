@@ -22,7 +22,7 @@ class TestAbstractVacancyStorage:
         """Покрытие проверки абстрактных методов."""
         # Абстрактный класс не должен создаваться напрямую
         with pytest.raises(TypeError):
-            AbstractVacancyStorage()
+            AbstractVacancyStorage()  # type: ignore[abstract]
 
 
 class TestAbstractDBManager:
@@ -32,14 +32,14 @@ class TestAbstractDBManager:
         """Покрытие проверки абстрактных методов."""
         # Абстрактный класс не должен создаваться напрямую
         with pytest.raises(TypeError):
-            AbstractDBManager()
+            AbstractDBManager()  # type: ignore[abstract]
 
 
 class ConcreteVacancyStorage(AbstractVacancyStorage):
     """Конкретная реализация для тестирования."""
 
-    def add_vacancy(self, vacancy: AbstractVacancy) -> None:
-        pass
+    def add_vacancy(self, vacancy: AbstractVacancy) -> bool:
+        return True
 
     def get_vacancies(self, filters: Optional[Dict[str, Any]] = None) -> List[AbstractVacancy]:
         return []
@@ -50,14 +50,14 @@ class ConcreteVacancyStorage(AbstractVacancyStorage):
     def check_vacancies_exist_batch(self, vacancies: List[AbstractVacancy]) -> Dict[str, bool]:
         return {}
 
-    def add_vacancy_batch_optimized(self, vacancies: List[AbstractVacancy]) -> None:
-        pass
+    def add_vacancy_batch_optimized(self, vacancies: List[AbstractVacancy], search_query: Optional[str] = None) -> List[str]:
+        return []
 
 
 class ConcreteDBManager(AbstractDBManager):
     """Конкретная реализация для тестирования."""
 
-    def _get_connection(self) -> None:
+    def _get_connection(self) -> Any:
         """Mock реализация получения подключения."""
         return MagicMock()
 
@@ -135,7 +135,7 @@ class TestVacancyValidator:
     """100% покрытие VacancyValidator."""
 
     @patch('src.storage.components.vacancy_validator.VacancyValidator')
-    def test_vacancy_validator_init(self, mock_validator_class):
+    def test_vacancy_validator_init(self, mock_validator_class: Any) -> None:
         """Покрытие инициализации валидатора."""
         mock_validator = Mock()
         mock_validator_class.return_value = mock_validator
@@ -144,7 +144,7 @@ class TestVacancyValidator:
         assert validator is not None
 
     @patch('src.storage.components.vacancy_validator.VacancyValidator')
-    def test_vacancy_validation(self, mock_validator_class):
+    def test_vacancy_validation(self, mock_validator_class: Any) -> None:
         """Покрытие процесса валидации."""
         mock_validator = Mock()
         mock_validator.validate_vacancy.return_value = True
@@ -165,7 +165,7 @@ class TestDatabaseConnection:
     """100% покрытие DatabaseConnection."""
 
     @patch('src.storage.components.database_connection.DatabaseConnection')
-    def test_database_connection_init(self, mock_connection_class):
+    def test_database_connection_init(self, mock_connection_class: Any) -> None:
         """Покрытие инициализации подключения к БД."""
         mock_connection = Mock()
         mock_connection_class.return_value = mock_connection
@@ -174,7 +174,7 @@ class TestDatabaseConnection:
         assert connection is not None
 
     @patch('src.storage.components.database_connection.DatabaseConnection')
-    def test_get_connection(self, mock_connection_class):
+    def test_get_connection(self, mock_connection_class: Any) -> None:
         """Покрытие получения подключения."""
         mock_connection = Mock()
         mock_db_conn = Mock()
@@ -191,7 +191,7 @@ class TestVacancyRepository:
     """100% покрытие VacancyRepository."""
 
     @patch('src.storage.components.vacancy_repository.VacancyRepository')
-    def test_vacancy_repository_init(self, mock_repo_class):
+    def test_vacancy_repository_init(self, mock_repo_class: Any) -> None:
         """Покрытие инициализации репозитория."""
         mock_repo = Mock()
         mock_repo_class.return_value = mock_repo
@@ -203,7 +203,7 @@ class TestVacancyRepository:
         assert repo is not None
 
     @patch('src.storage.components.vacancy_repository.VacancyRepository')
-    def test_add_vacancy(self, mock_repo_class):
+    def test_add_vacancy(self, mock_repo_class: Any) -> None:
         """Покрытие добавления вакансии."""
         mock_repo = Mock()
         mock_repo_class.return_value = mock_repo
@@ -219,7 +219,7 @@ class TestVacancyRepository:
         repo.add_vacancy.assert_called_once_with(mock_vacancy)
 
     @patch('src.storage.components.vacancy_repository.VacancyRepository')
-    def test_get_vacancies(self, mock_repo_class):
+    def test_get_vacancies(self, mock_repo_class: Any) -> None:
         """Покрытие получения вакансий."""
         mock_repo = Mock()
         mock_repo.get_vacancies.return_value = []
@@ -239,7 +239,7 @@ class TestStorageServices:
     """100% покрытие сервисов хранения."""
 
     @patch('src.storage.services.deduplication_service.DeduplicationService')
-    def test_deduplication_service(self, mock_service_class):
+    def test_deduplication_service(self, mock_service_class: Any) -> None:
         """Покрытие сервиса дедупликации."""
         mock_service = Mock()
         mock_service.deduplicate.return_value = []
@@ -250,7 +250,7 @@ class TestStorageServices:
         assert result == []
 
     @patch('src.storage.services.filtering_service.FilteringService')
-    def test_filtering_service(self, mock_service_class):
+    def test_filtering_service(self, mock_service_class: Any) -> None:
         """Покрытие сервиса фильтрации."""
         mock_service = Mock()
         mock_service.filter_vacancies.return_value = []
@@ -261,7 +261,7 @@ class TestStorageServices:
         assert result == []
 
     @patch('src.storage.services.vacancy_storage_service.VacancyStorageService')
-    def test_storage_service(self, mock_service_class):
+    def test_storage_service(self, mock_service_class: Any) -> None:
         """Покрытие сервиса хранения."""
         mock_service = Mock()
         mock_service.save_vacancies.return_value = True

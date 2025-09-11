@@ -9,8 +9,7 @@
 - Тестирование всех веток логики пользовательского интерфейса
 """
 
-import logging
-from unittest.mock import patch, Mock, MagicMock, call
+from unittest.mock import patch, Mock
 from typing import Any
 
 # Импорты из реального кода для покрытия  
@@ -39,7 +38,7 @@ class TestConsoleInterface:
     @patch('src.ui_interfaces.console_interface.UnifiedAPI')
     @patch('src.ui_interfaces.console_interface.StorageFactory')
     def test_user_interface_init(self, mock_storage_factory: Any, mock_unified_api: Any,
-                                mock_display_handler: Any, mock_search_handler: Any):
+                                mock_display_handler: Any, mock_search_handler: Any) -> None:
         """Покрытие инициализации пользовательского интерфейса."""
         mock_storage = Mock()
         mock_db_manager = Mock()
@@ -54,7 +53,7 @@ class TestConsoleInterface:
 
     @patch('builtins.input')
     @patch('builtins.print')
-    def test_run_main_menu_exit(self, mock_print: Any, mock_input: Any):
+    def test_run_main_menu_exit(self, mock_print: Any, mock_input: Any) -> None:
         """Покрытие главного меню с выходом."""
         mock_input.return_value = "0"
         mock_storage = Mock()
@@ -73,7 +72,7 @@ class TestConsoleInterface:
 
     @patch('builtins.input')
     @patch('builtins.print')
-    def test_run_main_menu_invalid_choice(self, mock_print: Any, mock_input: Any):
+    def test_run_main_menu_invalid_choice(self, mock_print: Any, mock_input: Any) -> None:
         """Покрытие неверного выбора в главном меню."""
         mock_input.side_effect = ["invalid", "0"]
         mock_storage = Mock()
@@ -164,7 +163,7 @@ class TestConsoleInterface:
 
     @patch('builtins.input')
     @patch('builtins.print')
-    def test_run_statistics_empty(self, mock_print: Any, mock_input: Any):
+    def test_run_statistics_empty(self, mock_print: Any, mock_input: Any) -> None:
         """Покрытие пустой статистики."""
         mock_input.side_effect = ["4", "0"]  # Статистика, затем выход
         mock_storage = Mock()
@@ -180,7 +179,7 @@ class TestConsoleInterface:
 
     @patch('builtins.input')
     @patch('builtins.print')
-    def test_run_statistics_error(self, mock_print: Any, mock_input: Any):
+    def test_run_statistics_error(self, mock_print: Any, mock_input: Any) -> None:
         """Покрытие ошибки статистики."""
         mock_input.side_effect = ["4", "0"]  # Статистика, затем выход
         mock_storage = Mock()
@@ -196,7 +195,7 @@ class TestConsoleInterface:
 
     @patch('builtins.input')
     @patch('builtins.print')
-    def test_run_keyboard_interrupt(self, mock_print: Any, mock_input: Any):
+    def test_run_keyboard_interrupt(self, mock_print: Any, mock_input: Any) -> None:
         """Покрытие прерывания с клавиатуры."""
         mock_input.side_effect = KeyboardInterrupt()
         mock_storage = Mock()
@@ -209,7 +208,7 @@ class TestConsoleInterface:
 
     @patch('builtins.input')
     @patch('builtins.print')
-    def test_run_general_exception(self, mock_print: Any, mock_input: Any):
+    def test_run_general_exception(self, mock_print: Any, mock_input: Any) -> None:
         """Покрытие общего исключения."""
         mock_input.side_effect = Exception("General error")
         mock_storage = Mock()
@@ -276,7 +275,7 @@ class TestVacancyDisplayHandler:
         assert handler.storage is mock_storage
 
     @patch('builtins.print')
-    def test_display_saved_vacancies_empty(self, mock_print: Any):
+    def test_display_saved_vacancies_empty(self, mock_print: Any) -> None:
         """Покрытие отображения пустого списка вакансий."""
         mock_storage = Mock()
         mock_storage.get_vacancies.return_value = []
@@ -288,7 +287,7 @@ class TestVacancyDisplayHandler:
         mock_print.assert_called()
 
     @patch('builtins.print')
-    def test_display_saved_vacancies_with_data(self, mock_print: Any):
+    def test_display_saved_vacancies_with_data(self, mock_print: Any) -> None:
         """Покрытие отображения вакансий с данными."""
         mock_vacancy = Mock()
         mock_vacancy.title = "Python Developer"
@@ -307,7 +306,7 @@ class TestVacancyDisplayHandler:
         mock_print.assert_called()
 
     @patch('builtins.print')
-    def test_display_saved_vacancies_error(self, mock_print: Any):
+    def test_display_saved_vacancies_error(self, mock_print: Any) -> None:
         """Покрытие ошибки при отображении вакансий."""
         mock_storage = Mock()
         mock_storage.get_vacancies.side_effect = Exception("Storage error")
@@ -336,7 +335,7 @@ class TestVacancySearchHandler:
 
     @patch('builtins.input')
     @patch('builtins.print')
-    def test_handle_search_success(self, mock_print: Any, mock_input: Any):
+    def test_handle_search_success(self, mock_print: Any, mock_input: Any) -> None:
         """Покрытие успешного поиска вакансий."""
         mock_input.side_effect = ["Python developer"]
 
@@ -354,7 +353,7 @@ class TestVacancySearchHandler:
 
     @patch('builtins.input')
     @patch('builtins.print')
-    def test_handle_search_empty_query(self, mock_print: Any, mock_input: Any):
+    def test_handle_search_empty_query(self, mock_print: Any, mock_input: Any) -> None:
         """Покрытие пустого поискового запроса."""
         mock_input.return_value = ""
 
@@ -380,7 +379,7 @@ class TestVacancyOperationsCoordinator:
 
     @patch('builtins.input')
     @patch('builtins.print')
-    def test_coordinate_operations_back(self, mock_print: Any, mock_input: Any):
+    def test_coordinate_operations_back(self, mock_print: Any, mock_input: Any) -> None:
         """Покрытие возврата в главное меню."""
         mock_input.return_value = "0"
 
@@ -446,7 +445,7 @@ class TestUIInterfacesErrorHandling:
     """100% покрытие обработки ошибок в UI интерфейсах."""
 
     @patch('builtins.print')
-    def test_error_handling_in_display(self, mock_print: Any):
+    def test_error_handling_in_display(self, mock_print: Any) -> None:
         """Покрытие обработки ошибок в отображении."""
         mock_storage = Mock()
         mock_storage.get_vacancies.side_effect = Exception("Storage error")
@@ -461,7 +460,7 @@ class TestUIInterfacesErrorHandling:
 
     @patch('builtins.input')
     @patch('builtins.print')
-    def test_error_handling_in_menu(self, mock_print: Any, mock_input: Any):
+    def test_error_handling_in_menu(self, mock_print: Any, mock_input: Any) -> None:
         """Покрытие обработки ошибок в меню."""
         mock_input.side_effect = Exception("Input error")
 
