@@ -162,7 +162,7 @@ class TestUserInterface:
     @patch('src.storage.db_manager.DBManager')
     @patch('builtins.print')
     def test_main_storage_error(self, mock_print: Any, mock_db_manager_class: Any, mock_app_config: Any,
-                               mock_storage_factory: Any, mock_ui: Any) -> None:
+                                mock_storage_factory: Any, mock_ui: Any) -> None:
         """Покрытие ошибки создания хранилища."""
         # Настраиваем мок БД для успешного выполнения
         mock_db_manager = Mock()
@@ -192,7 +192,7 @@ class TestUserInterface:
     @patch('src.storage.db_manager.DBManager')
     @patch('builtins.print')
     def test_main_ui_error(self, mock_print: Any, mock_db_manager_class: Any, mock_app_config: Any,
-                          mock_storage_factory: Any, mock_ui: Any) -> None:
+                           mock_storage_factory: Any, mock_ui: Any) -> None:
         """Покрытие ошибки создания пользовательского интерфейса."""
         # Настраиваем моки для успешного выполнения до UI
         mock_db_manager = Mock()
@@ -225,7 +225,7 @@ class TestUserInterface:
     @patch('src.storage.db_manager.DBManager')
     @patch('builtins.print')
     def test_main_ui_run_error(self, mock_print: Any, mock_db_manager_class: Any, mock_app_config: Any,
-                              mock_storage_factory: Any, mock_ui: Any) -> None:
+                               mock_storage_factory: Any, mock_ui: Any) -> None:
         """Покрытие ошибки запуска пользовательского интерфейса."""
         # Настраиваем моки для успешного выполнения до запуска UI
         mock_db_manager = Mock()
@@ -308,7 +308,8 @@ class TestUserInterfaceIntegration:
     @patch('src.user_interface.UserInterface')
     @patch('src.user_interface.logger')
     def test_full_integration_flow(self, mock_logger: Any, mock_ui: Any, mock_storage_factory: Any,
-                                  mock_app_config: Any, mock_db_manager_class: Any, mock_logging_config: Any) -> None:
+                                   mock_app_config: Any, mock_db_manager_class: Any,
+                                   mock_logging_config: Any) -> None:
         """Покрытие полного потока интеграции компонентов."""
         # Настраиваем все моки для успешного сценария
         mock_db_manager = Mock()
