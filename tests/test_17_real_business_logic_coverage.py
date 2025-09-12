@@ -117,7 +117,7 @@ class TestUnifiedAPIBusinessLogic:
 class TestVacancyOperationsBusinessLogic:
     """100% покрытие реальной бизнес-логики VacancyOperations"""
 
-    def create_test_vacancy(self, title: str="Test Job", salary_data: Any=None) -> Vacancy:
+    def create_test_vacancy(self, title: str = "Test Job", salary_data: Any = None) -> Vacancy:
         """Создает тестовую вакансию"""
         return Vacancy(
             vacancy_id="test_123",

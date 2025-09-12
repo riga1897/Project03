@@ -53,7 +53,7 @@ class TestCachedAPI:
     def test_cannot_instantiate_abstract_class(self) -> None:
         """Покрытие: нельзя создать экземпляр абстрактного класса"""
         with pytest.raises(TypeError) as exc_info:
-            CachedAPI("/mock/cache")
+            CachedAPI("/mock/cache")  # type: ignore[abstract]
 
         error_message = str(exc_info.value)
         assert "Can't instantiate abstract class CachedAPI" in error_message
@@ -73,10 +73,10 @@ class TestCachedAPIImplementation:
                 required_fields = ["id", "name", "employer"]
                 return all(field in vacancy for field in required_fields)
 
-            def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs) -> List[Dict]:
+            def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs: Any) -> List[Dict]:
                 return []
 
-            def get_vacancies(self, search_query: str, **kwargs) -> List[Dict]:
+            def get_vacancies(self, search_query: str, **kwargs: Any) -> List[Dict]:
                 return []
 
         return ConcreteCachedAPI
@@ -85,8 +85,8 @@ class TestCachedAPIImplementation:
         """Покрытие: успешная инициализация"""
         # Простая проверка создания класса
         with patch('src.api_modules.base_api.BaseJobAPI.__init__', return_value=None):
-            with patch('src.api_modules.cached_api.Path') as mock_path:
-                with patch('src.api_modules.cached_api.FileCache') as mock_cache:
+            with patch('src.api_modules.cached_api.Path'):
+                with patch('src.api_modules.cached_api.FileCache'):
                     api = mock_concrete_api("/test/cache")
                     # Проверяем что объект создался
                     assert api is not None
@@ -376,10 +376,10 @@ class TestCachedAPIClearCache:
             def _validate_vacancy(self, vacancy: Dict) -> bool:
                 return True
 
-            def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs) -> List[Dict]:
+            def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs: Any) -> List[Dict]:
                 return []
 
-            def get_vacancies(self, search_query: str, **kwargs) -> List[Dict]:
+            def get_vacancies(self, search_query: str, **kwargs: Any) -> List[Dict]:
                 return []
 
         return ConcreteCachedAPI
@@ -429,7 +429,7 @@ class TestCachedAPIClearCache:
             api = mock_concrete_api("/cache")
 
             # Мокируем отсутствие clear_cache у декоратора
-            with patch.object(api, '_cached_api_request') as mock_cached_method:
+            with patch.object(api, '_cached_api_request'):
                 # Не устанавливаем clear_cache
                 pass
 
@@ -472,10 +472,10 @@ class TestCachedAPICacheStatus:
             def _validate_vacancy(self, vacancy: Dict) -> bool:
                 return True
 
-            def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs) -> List[Dict]:
+            def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs: Any) -> List[Dict]:
                 return []
 
-            def get_vacancies(self, search_query: str, **kwargs) -> List[Dict]:
+            def get_vacancies(self, search_query: str, **kwargs: Any) -> List[Dict]:
                 return []
 
         return ConcreteCachedAPI
@@ -492,7 +492,7 @@ class TestCachedAPICacheStatus:
         # Настраиваем Path и его методы
         mock_cache_dir = MagicMock()
         mock_cache_dir.exists.return_value = True
-        mock_cache_dir.__str__ = MagicMock(return_value="/cache")  # Возвращаем строку
+        mock_cache_dir.configure_mock(__str__=MagicMock(return_value="/cache"))  # Правильная настройка метода
         mock_path.return_value = mock_cache_dir
 
         # Создаем мок файлы кэша
@@ -666,10 +666,10 @@ class TestCachedAPIValidationMethods:
                 required = ["id", "name", "employer"]
                 return all(field in vacancy for field in required)
 
-            def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs) -> List[Dict]:
+            def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs: Any) -> List[Dict]:
                 return []
 
-            def get_vacancies(self, search_query: str, **kwargs) -> List[Dict]:
+            def get_vacancies(self, search_query: str, **kwargs: Any) -> List[Dict]:
                 return []
 
         return ConcreteCachedAPI
@@ -889,13 +889,13 @@ class TestAbstractMethods:
                 def _validate_vacancy(self, vacancy: Dict) -> bool:
                     return True
 
-                def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs) -> List[Dict]:
+                def get_vacancies_page(self, search_query: str, page: int = 0, **kwargs: Any) -> List[Dict]:
                     return []
 
-                def get_vacancies(self, search_query: str, **kwargs) -> List[Dict]:
+                def get_vacancies(self, search_query: str, **kwargs: Any) -> List[Dict]:
                     return []
 
-            IncompleteAPI1("/cache")
+            IncompleteAPI1("/cache")  # type: ignore[abstract]
 
         assert "_get_empty_response" in str(exc_info.value) or "abstract" in str(exc_info.value)
 
@@ -906,7 +906,7 @@ class TestAbstractMethods:
             class EmptyAPI(CachedAPI):
                 pass
 
-            EmptyAPI("/cache")
+            EmptyAPI("/cache")  # type: ignore[abstract]
 
         error_message = str(exc_info.value)
         assert "abstract" in error_message

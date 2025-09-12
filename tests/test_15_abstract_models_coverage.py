@@ -5,13 +5,12 @@
 """
 
 import pytest
-from unittest.mock import Mock, patch
-from typing import Dict, Any, Optional
+from typing import Optional
 
 # Импорты из реального кода для покрытия
 from src.vacancies.abstract_models import (
     AbstractEmployerMixin,
-    AbstractExperienceMixin, 
+    AbstractExperienceMixin,
     AbstractEmploymentMixin,
     AbstractScheduleMixin,
     AbstractSalaryMixin,
@@ -21,7 +20,7 @@ from src.vacancies.abstract_models import (
     AbstractSchedule,
     AbstractSalary
 )
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
 
 
 # Конкретные реализации для тестирования абстрактных классов
@@ -133,7 +132,7 @@ class TestAbstractEmployerMixin:
         """Проверка что все абстрактные методы определены"""
         # Проверяем что миксин нельзя инстанцировать напрямую
         with pytest.raises(TypeError):
-            AbstractEmployerMixin()
+            AbstractEmployerMixin()  # type: ignore[abstract]
 
     def test_concrete_implementation(self) -> None:
         """Тестирование через конкретную реализацию"""
@@ -151,7 +150,7 @@ class TestAbstractExperienceMixin:
     def test_abstract_methods_defined(self) -> None:
         """Проверка что все абстрактные методы определены"""
         with pytest.raises(TypeError):
-            AbstractExperienceMixin()
+            AbstractExperienceMixin()  # type: ignore[abstract]
 
     def test_concrete_implementation(self) -> None:
         """Тестирование через конкретную реализацию"""
@@ -167,7 +166,7 @@ class TestAbstractEmploymentMixin:
     def test_abstract_methods_defined(self) -> None:
         """Проверка что все абстрактные методы определены"""
         with pytest.raises(TypeError):
-            AbstractEmploymentMixin()
+            AbstractEmploymentMixin()  # type: ignore[abstract]
 
     def test_concrete_implementation(self) -> None:
         """Тестирование через конкретную реализацию"""
@@ -183,7 +182,7 @@ class TestAbstractScheduleMixin:
     def test_abstract_methods_defined(self) -> None:
         """Проверка что все абстрактные методы определены"""
         with pytest.raises(TypeError):
-            AbstractScheduleMixin()
+            AbstractScheduleMixin()  # type: ignore[abstract]
 
     def test_concrete_implementation(self) -> None:
         """Тестирование через конкретную реализацию"""
@@ -199,7 +198,7 @@ class TestAbstractSalaryMixin:
     def test_abstract_methods_defined(self) -> None:
         """Проверка что все абстрактные методы определены"""
         with pytest.raises(TypeError):
-            AbstractSalaryMixin()
+            AbstractSalaryMixin()  # type: ignore[abstract]
 
     def test_concrete_implementation(self) -> None:
         """Тестирование через конкретную реализацию"""
@@ -218,7 +217,7 @@ class TestAbstractSalaryMixin:
         assert salary_from.get_average() == 100000.0
         assert salary_from.is_specified() is True
 
-        # Только to  
+        # Только to
         salary_to = ConcreteSalary(amount_from=None, amount_to=150000)
         assert salary_to.get_average() == 150000.0
         assert salary_to.is_specified() is True
@@ -235,7 +234,7 @@ class TestAbstractEmployer:
     def test_cannot_instantiate_directly(self) -> None:
         """Проверка что абстрактный класс нельзя создать напрямую"""
         with pytest.raises(TypeError):
-            AbstractEmployer()
+            AbstractEmployer()  # type: ignore[abstract]
 
     def test_concrete_employer_to_dict(self) -> None:
         """Покрытие метода to_dict через конкретную реализацию"""
@@ -251,17 +250,23 @@ class TestAbstractEmployer:
         data = {"name": "Dict Company", "employer_id": "dict_123"}
         employer = ConcreteEmployer.from_dict(data)
 
-        assert employer.name == "Dict Company"
-        assert employer.employer_id == "dict_123"
+        # Используем геттеры вместо прямого обращения к атрибутам
+        assert employer.get_name() == "Dict Company"
+        assert employer.get_id() == "dict_123"
 
     def test_pydantic_config(self) -> None:
         """Проверка конфигурации Pydantic"""
-        employer = ConcreteEmployer(name="Test", extra_field="ignored")
+        # Создаем с правильными параметрами ConcreteEmployer
+        employer = ConcreteEmployer(name="Test")
+        assert employer.get_name() == "Test"
 
-        # extra="ignore" должно работать
-        assert employer.name == "Test"
+        # extra="ignore" должно работать - проверяем что можем создать с лишними полями
+        data_with_extra = {"name": "Test Extra", "extra_field": "ignored"}
+        employer_extra = ConcreteEmployer.from_dict(data_with_extra)
+
         # extra_field должно быть проигнорировано
-        assert not hasattr(employer, "extra_field")
+        assert not hasattr(employer_extra, "extra_field")
+        assert employer_extra.get_name() == "Test Extra"
 
 
 class TestAbstractExperience:
@@ -270,7 +275,7 @@ class TestAbstractExperience:
     def test_cannot_instantiate_directly(self) -> None:
         """Проверка что абстрактный класс нельзя создать напрямую"""
         with pytest.raises(TypeError):
-            AbstractExperience()
+            AbstractExperience()  # type: ignore[abstract]
 
     def test_concrete_experience_to_dict(self) -> None:
         """Покрытие метода to_dict"""
@@ -286,8 +291,9 @@ class TestAbstractExperience:
         data = {"name": "3-6 лет", "experience_id": "exp_456"}
         experience = ConcreteExperience.from_dict(data)
 
-        assert experience.name == "3-6 лет"
-        assert experience.experience_id == "exp_456"
+        # Используем геттеры вместо прямого обращения к атрибутам
+        assert experience.get_name() == "3-6 лет"
+        assert experience.get_id() == "exp_456"
 
     def test_concrete_experience_from_string(self) -> None:
         """Покрытие абстрактного метода from_string"""
@@ -303,7 +309,7 @@ class TestAbstractEmployment:
     def test_cannot_instantiate_directly(self) -> None:
         """Проверка что абстрактный класс нельзя создать напрямую"""
         with pytest.raises(TypeError):
-            AbstractEmployment()
+            AbstractEmployment()  # type: ignore[abstract]
 
     def test_concrete_employment_to_dict(self) -> None:
         """Покрытие метода to_dict"""
@@ -318,8 +324,9 @@ class TestAbstractEmployment:
         data = {"name": "Частичная занятость", "employment_id": "part_time"}
         employment = ConcreteEmployment.from_dict(data)
 
-        assert employment.name == "Частичная занятость"
-        assert employment.employment_id == "part_time"
+        # Используем геттеры вместо прямого обращения к атрибутам
+        assert employment.get_name() == "Частичная занятость"
+        assert employment.get_id() == "part_time"
 
     def test_concrete_employment_from_string(self) -> None:
         """Покрытие абстрактного метода from_string"""
@@ -335,7 +342,7 @@ class TestAbstractSchedule:
     def test_cannot_instantiate_directly(self) -> None:
         """Проверка что абстрактный класс нельзя создать напрямую"""
         with pytest.raises(TypeError):
-            AbstractSchedule()
+            AbstractSchedule()  # type: ignore[abstract]
 
     def test_concrete_schedule_to_dict(self) -> None:
         """Покрытие метода to_dict"""
@@ -350,8 +357,9 @@ class TestAbstractSchedule:
         data = {"name": "Гибкий график", "schedule_id": "flexible"}
         schedule = ConcreteSchedule.from_dict(data)
 
-        assert schedule.name == "Гибкий график"
-        assert schedule.schedule_id == "flexible"
+        # Используем геттеры вместо прямого обращения к атрибутам
+        assert schedule.get_name() == "Гибкий график"
+        assert schedule.get_id() == "flexible"
 
     def test_concrete_schedule_from_string(self) -> None:
         """Покрытие абстрактного метода from_string"""
@@ -367,7 +375,7 @@ class TestAbstractSalary:
     def test_cannot_instantiate_directly(self) -> None:
         """Проверка что абстрактный класс нельзя создать напрямую"""
         with pytest.raises(TypeError):
-            AbstractSalary()
+            AbstractSalary()  # type: ignore[abstract]
 
     def test_concrete_salary_to_dict(self) -> None:
         """Покрытие метода to_dict"""
@@ -384,9 +392,10 @@ class TestAbstractSalary:
         data = {"amount_from": 80000, "amount_to": 120000, "currency": "USD"}
         salary = ConcreteSalary.from_dict(data)
 
-        assert salary.amount_from == 80000
-        assert salary.amount_to == 120000
-        assert salary.currency == "USD"
+        # Используем геттеры вместо прямого обращения к атрибутам
+        assert salary.get_from_amount() == 80000
+        assert salary.get_to_amount() == 120000
+        assert salary.get_currency() == "USD"
 
 
 class TestPydanticIntegration:
@@ -417,8 +426,8 @@ class TestPydanticIntegration:
             "another_extra": 123
         }
 
-        employer = ConcreteEmployer(**data)
-        assert employer.name == "Test"
+        employer = ConcreteEmployer.from_dict(data)
+        assert employer.get_name() == "Test"
         # Дополнительные поля должны быть проигнорированы
         assert not hasattr(employer, "unknown_field")
         assert not hasattr(employer, "another_extra")
@@ -433,13 +442,13 @@ class TestModuleExports:
 
         expected_exports = [
             "AbstractEmployerMixin",
-            "AbstractExperienceMixin", 
+            "AbstractExperienceMixin",
             "AbstractEmploymentMixin",
             "AbstractScheduleMixin",
             "AbstractSalaryMixin",
             "AbstractEmployer",
             "AbstractExperience",
-            "AbstractEmployment", 
+            "AbstractEmployment",
             "AbstractSchedule",
             "AbstractSalary",
         ]
@@ -487,15 +496,17 @@ class TestClassMethods:
         data = {"name": "Test", "employer_id": None}
         employer = ConcreteEmployer.from_dict(data)
 
-        assert employer.name == "Test"
-        assert employer.employer_id is None
+        # Используем геттеры вместо прямого обращения к атрибутам
+        assert employer.get_name() == "Test"
+        assert employer.get_id() is None
 
     def test_from_dict_with_missing_fields(self) -> None:
         """Покрытие from_dict с отсутствующими полями"""
         data = {"name": "Minimal"}
         employer = ConcreteEmployer.from_dict(data)
 
-        assert employer.name == "Minimal"
+        # Используем геттеры вместо прямого обращения к атрибутам
+        assert employer.get_name() == "Minimal"
         # Остальные поля должны иметь значения по умолчанию
 
     def test_from_string_implementations(self) -> None:
@@ -505,7 +516,7 @@ class TestClassMethods:
         sch = ConcreteSchedule.from_string("Night Shift")
 
         assert exp.name == "Senior Level"
-        assert emp.name == "Contract"  
+        assert emp.name == "Contract"
         assert sch.name == "Night Shift"
 
         # Проверяем что ID генерируются
