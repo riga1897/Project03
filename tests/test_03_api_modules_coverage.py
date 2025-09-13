@@ -98,7 +98,7 @@ class TestCachedAPI:
     def test_init_cache(self, mock_file_cache: Any, mock_mkdir: Any) -> None:
         """Покрытие инициализации кэша."""
         api = ConcreteCachedAPI("test_cache")
-        assert api.cache_dir == "test_cache"
+        assert str(api.cache_dir) == "test_cache"
 
         # mkdir может вызываться несколько раз (для родительских директорий и самой директории)
         assert mock_mkdir.call_count >= 1

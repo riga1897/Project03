@@ -43,7 +43,7 @@ class TestSalaryInit:
 
     def test_init_string_data(self) -> None:
         """Покрытие инициализации со строкой"""
-        salary = Salary("от 50000 до 100000")
+        salary = Salary("от 50000 до 100000")  # type: ignore[arg-type]
 
         assert salary.salary_from == 50000
         assert salary.salary_to == 100000
@@ -192,13 +192,13 @@ class TestSalaryParseSalaryRangeString:
 
     def test_parse_none_or_empty(self) -> None:
         """Покрытие None и пустых значений"""
-        assert Salary._parse_salary_range_string(None) == {}
+        assert Salary._parse_salary_range_string(None) == {}  # type: ignore[arg-type]
         assert Salary._parse_salary_range_string("") == {}
         assert Salary._parse_salary_range_string("   ") == {}
 
     def test_parse_not_string(self) -> None:
         """Покрытие не-строкового значения"""
-        assert Salary._parse_salary_range_string(123) == {}
+        assert Salary._parse_salary_range_string(123) == {}  # type: ignore[arg-type]
 
     def test_parse_from_to_format(self) -> None:
         """Покрытие формата 'от X до Y'"""
@@ -284,7 +284,7 @@ class TestSalaryValidateAndSet:
     def test_validate_and_set_not_dict(self) -> None:
         """Покрытие не-словарных данных"""
         salary = Salary()
-        salary._validate_and_set("not a dict")
+        salary._validate_and_set("not a dict")  # type: ignore[arg-type]
 
         # Должны остаться значения по умолчанию
         assert salary.amount_from == 0
@@ -613,7 +613,7 @@ class TestSalaryIntegration:
     def test_string_parsing_priority(self) -> None:
         """Покрытие приоритета парсинга строк"""
         # Если передается строка, она должна парситься независимо от других данных
-        salary = Salary("от 50000 до 80000")
+        salary = Salary("от 50000 до 80000")  # type: ignore[arg-type]
 
         assert salary.salary_from == 50000
         assert salary.salary_to == 80000
@@ -652,7 +652,7 @@ class TestSalaryIntegration:
 
         # Попытка добавить новый атрибут должна вызвать ошибку
         with pytest.raises(AttributeError):
-            salary.new_attribute = "test"
+            salary.new_attribute = "test"  # type: ignore[attr-defined]
 
     def test_regex_patterns_comprehensive(self) -> None:
         """Покрытие всех regex паттернов парсинга"""

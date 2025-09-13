@@ -12,6 +12,7 @@
 """
 
 from unittest.mock import patch, mock_open
+from typing import Any
 
 # Импорты из реального кода для покрытия
 from src.utils.env_loader import EnvLoader
@@ -26,7 +27,7 @@ class TestEnvLoaderLoadEnvFile:
 
     @patch('src.utils.env_loader.os.path.exists')
     @patch('src.utils.env_loader.logger')
-    def test_load_env_file_already_loaded(self, mock_logger, mock_exists) -> None:
+    def test_load_env_file_already_loaded(self, mock_logger: Any, mock_exists: Any) -> None:
         """Покрытие случая когда файл уже загружен"""
         EnvLoader._loaded = True
 
@@ -38,7 +39,7 @@ class TestEnvLoaderLoadEnvFile:
 
     @patch('src.utils.env_loader.os.path.exists')
     @patch('src.utils.env_loader.logger')
-    def test_load_env_file_not_found(self, mock_logger, mock_exists) -> None:
+    def test_load_env_file_not_found(self, mock_logger: Any, mock_exists: Any) -> None:
         """Покрытие случая когда .env файл не найден"""
         mock_exists.return_value = False
 
@@ -51,7 +52,7 @@ class TestEnvLoaderLoadEnvFile:
 
     @patch('src.utils.env_loader.os.path.exists')
     @patch('src.utils.env_loader.logger')
-    def test_load_env_file_custom_path_not_found(self, mock_logger, mock_exists) -> None:
+    def test_load_env_file_custom_path_not_found(self, mock_logger: Any, mock_exists: Any) -> None:
         """Покрытие случая когда кастомный .env файл не найден"""
         mock_exists.return_value = False
         custom_path = "/custom/.env"
@@ -66,7 +67,7 @@ class TestEnvLoaderLoadEnvFile:
     @patch('src.utils.env_loader.os.environ', {})
     @patch('builtins.open', mock_open(read_data="KEY1=value1\nKEY2=value2\n"))
     @patch('src.utils.env_loader.logger')
-    def test_load_env_file_success(self, mock_logger, mock_exists) -> None:
+    def test_load_env_file_success(self, mock_logger: Any, mock_exists: Any) -> None:
         """Покрытие успешной загрузки .env файла"""
         mock_exists.return_value = True
 
@@ -79,7 +80,7 @@ class TestEnvLoaderLoadEnvFile:
     @patch('src.utils.env_loader.os.path.exists')
     @patch('builtins.open', mock_open(read_data='KEY1="quoted value"\nKEY2=\'single quoted\'\n'))
     @patch('src.utils.env_loader.logger')
-    def test_load_env_file_quoted_values(self, mock_logger, mock_exists) -> None:
+    def test_load_env_file_quoted_values(self, mock_logger: Any, mock_exists: Any) -> None:
         """Покрытие парсинга значений в кавычках"""
         mock_exists.return_value = True
 
@@ -93,7 +94,7 @@ class TestEnvLoaderLoadEnvFile:
     @patch('src.utils.env_loader.os.path.exists')
     @patch('builtins.open', mock_open(read_data="# Comment line\n\nKEY1=value1\n  \n"))
     @patch('src.utils.env_loader.logger')
-    def test_load_env_file_skip_comments_and_empty(self, mock_logger, mock_exists) -> None:
+    def test_load_env_file_skip_comments_and_empty(self, mock_logger: Any, mock_exists: Any) -> None:
         """Покрытие пропуска комментариев и пустых строк"""
         mock_exists.return_value = True
 
@@ -108,7 +109,7 @@ class TestEnvLoaderLoadEnvFile:
     @patch('src.utils.env_loader.os.environ', {})
     @patch('builtins.open', mock_open(read_data="INVALID_LINE_WITHOUT_EQUALS\nKEY1=value1\n"))
     @patch('src.utils.env_loader.logger')
-    def test_load_env_file_invalid_format_warning(self, mock_logger, mock_exists) -> None:
+    def test_load_env_file_invalid_format_warning(self, mock_logger: Any, mock_exists: Any) -> None:
         """Покрытие предупреждения о неверном формате строки"""
         mock_exists.return_value = True
 
@@ -120,7 +121,7 @@ class TestEnvLoaderLoadEnvFile:
     @patch('src.utils.env_loader.os.path.exists')
     @patch('builtins.open', mock_open(read_data="KEY1=new_value\nKEY2=value2\n"))
     @patch('src.utils.env_loader.logger')
-    def test_load_env_file_preserve_existing_env_vars(self, mock_logger, mock_exists) -> None:
+    def test_load_env_file_preserve_existing_env_vars(self, mock_logger: Any, mock_exists: Any) -> None:
         """Покрытие сохранения уже существующих переменных окружения"""
         mock_exists.return_value = True
 
@@ -134,7 +135,7 @@ class TestEnvLoaderLoadEnvFile:
     @patch('src.utils.env_loader.os.path.exists')
     @patch('builtins.open', side_effect=IOError("Permission denied"))
     @patch('src.utils.env_loader.logger')
-    def test_load_env_file_file_read_error(self, mock_logger, mock_open, mock_exists) -> None:
+    def test_load_env_file_file_read_error(self, mock_logger: Any, mock_open: Any, mock_exists: Any) -> None:
         """Покрытие ошибки чтения файла"""
         mock_exists.return_value = True
 
@@ -146,7 +147,7 @@ class TestEnvLoaderLoadEnvFile:
     @patch('src.utils.env_loader.os.path.exists')
     @patch('builtins.open', side_effect=UnicodeDecodeError('utf-8', b'', 0, 1, 'invalid start byte'))
     @patch('src.utils.env_loader.logger')
-    def test_load_env_file_encoding_error(self, mock_logger, mock_open, mock_exists) -> None:
+    def test_load_env_file_encoding_error(self, mock_logger: Any, mock_open: Any, mock_exists: Any) -> None:
         """Покрытие ошибки кодировки файла"""
         mock_exists.return_value = True
 
@@ -161,7 +162,7 @@ class TestEnvLoaderLoadEnvFile:
     @patch('src.utils.env_loader.os.path.exists')
     @patch('builtins.open', mock_open(read_data="KEY1=value with=multiple equals\n"))
     @patch('src.utils.env_loader.logger')
-    def test_load_env_file_value_with_equals(self, mock_logger, mock_exists) -> None:
+    def test_load_env_file_value_with_equals(self, mock_logger: Any, mock_exists: Any) -> None:
         """Покрытие значения со знаками равенства"""
         mock_exists.return_value = True
 
@@ -174,7 +175,7 @@ class TestEnvLoaderLoadEnvFile:
     @patch('src.utils.env_loader.os.path.exists')
     @patch('builtins.open', mock_open(read_data="  KEY1  =  value1  \n"))
     @patch('src.utils.env_loader.logger')
-    def test_load_env_file_whitespace_trimming(self, mock_logger, mock_exists) -> None:
+    def test_load_env_file_whitespace_trimming(self, mock_logger: Any, mock_exists: Any) -> None:
         """Покрытие обрезки пробелов вокруг ключей и значений"""
         mock_exists.return_value = True
 
@@ -186,7 +187,7 @@ class TestEnvLoaderLoadEnvFile:
     @patch('src.utils.env_loader.os.path.exists')
     @patch('builtins.open', mock_open(read_data='KEY1=""\nKEY2=\'\'\n'))
     @patch('src.utils.env_loader.logger')
-    def test_load_env_file_empty_quoted_values(self, mock_logger, mock_exists) -> None:
+    def test_load_env_file_empty_quoted_values(self, mock_logger: Any, mock_exists: Any) -> None:
         """Покрытие пустых значений в кавычках"""
         mock_exists.return_value = True
 
@@ -199,7 +200,7 @@ class TestEnvLoaderLoadEnvFile:
     @patch('src.utils.env_loader.os.path.exists')
     @patch('builtins.open', mock_open(read_data='KEY1="value with spaces"\n'))
     @patch('src.utils.env_loader.logger')
-    def test_load_env_file_debug_logging(self, mock_logger, mock_exists) -> None:
+    def test_load_env_file_debug_logging(self, mock_logger: Any, mock_exists: Any) -> None:
         """Покрытие debug логирования загруженных переменных"""
         mock_exists.return_value = True
 
@@ -275,7 +276,7 @@ class TestEnvLoaderGetEnvVarInt:
             assert result == 100
 
     @patch('src.utils.env_loader.logger')
-    def test_get_env_var_int_invalid_value(self, mock_logger) -> None:
+    def test_get_env_var_int_invalid_value(self, mock_logger: Any) -> None:
         """Покрытие случая с невалидным значением для int"""
         with patch.dict('os.environ', {'INVALID_KEY': 'not_a_number'}):
             result = EnvLoader.get_env_var_int("INVALID_KEY", 50)
@@ -286,7 +287,7 @@ class TestEnvLoaderGetEnvVarInt:
             )
 
     @patch('src.utils.env_loader.logger')
-    def test_get_env_var_int_float_value(self, mock_logger) -> None:
+    def test_get_env_var_int_float_value(self, mock_logger: Any) -> None:
         """Покрытие случая с float значением"""
         with patch.dict('os.environ', {'FLOAT_KEY': '42.5'}):
             result = EnvLoader.get_env_var_int("FLOAT_KEY", 25)
@@ -295,7 +296,7 @@ class TestEnvLoaderGetEnvVarInt:
             mock_logger.warning.assert_called_once()
 
     @patch('src.utils.env_loader.logger')
-    def test_get_env_var_int_empty_string(self, mock_logger) -> None:
+    def test_get_env_var_int_empty_string(self, mock_logger: Any) -> None:
         """Покрытие случая с пустой строкой"""
         with patch.dict('os.environ', {'EMPTY_KEY': ''}):
             result = EnvLoader.get_env_var_int("EMPTY_KEY", 75)
@@ -333,7 +334,7 @@ class TestEnvLoaderIntegration:
     @patch('src.utils.env_loader.os.path.exists')
     @patch('builtins.open', mock_open(read_data="DATABASE_URL=postgres://user:pass@host:5432/db\nDEBUG=true\nPORT=8080\n"))
     @patch('src.utils.env_loader.logger')
-    def test_full_workflow_scenario(self, mock_logger, mock_exists) -> None:
+    def test_full_workflow_scenario(self, mock_logger: Any, mock_exists: Any) -> None:
         """Покрытие полного рабочего сценария"""
         mock_exists.return_value = True
 
@@ -377,7 +378,7 @@ class TestEnvLoaderIntegration:
     @patch('src.utils.env_loader.os.path.exists')
     @patch('builtins.open', mock_open(read_data="KEY1=value1\nKEY2=value2\n"))
     @patch('src.utils.env_loader.logger')
-    def test_multiple_file_paths_logic(self, mock_logger, mock_exists) -> None:
+    def test_multiple_file_paths_logic(self, mock_logger: Any, mock_exists: Any) -> None:
         """Покрытие логики поиска файла в нескольких путях"""
         mock_exists.return_value = True
         custom_path = "custom.env"
@@ -406,7 +407,7 @@ class TestEnvLoaderIntegration:
     @patch('src.utils.env_loader.os.path.exists')
     @patch('builtins.open', mock_open(read_data="# Database config\nDB_HOST=localhost\n\n# API settings\nAPI_KEY=secret\n"))
     @patch('src.utils.env_loader.logger')
-    def test_complex_env_file_parsing(self, mock_logger, mock_exists) -> None:
+    def test_complex_env_file_parsing(self, mock_logger: Any, mock_exists: Any) -> None:
         """Покрытие сложного парсинга .env файла с комментариями"""
         mock_exists.return_value = True
 

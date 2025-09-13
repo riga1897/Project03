@@ -1,0 +1,80 @@
+~/workspace$ mypy tests/test_22_vacancy_validator_coverage.py 
+tests/test_22_vacancy_validator_coverage.py:59: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:70: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:82: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:94: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:104: error: Incompatible types in assignment (expression has type "int", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:104: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:106: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:116: error: Incompatible types in assignment (expression has type "int", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:116: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:118: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:128: error: Incompatible types in assignment (expression has type "None", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:128: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:130: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:141: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:152: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:164: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:175: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:186: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:198: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:209: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:221: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:239: error: Incompatible types in assignment (expression has type "None", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:239: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:241: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:252: error: Incompatible types in assignment (expression has type "None", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:252: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:254: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:268: error: Invalid "type: ignore" comment  [syntax]
+tests/test_22_vacancy_validator_coverage.py:270: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:277: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:299: error: Argument 1 to "validate_batch" of "VacancyValidator" has incompatible type "list[MockAbstractVacancy]"; expected "list[AbstractVacancy]"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:324: error: Incompatible types in assignment (expression has type "None", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:324: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:328: error: Argument 1 to "validate_batch" of "VacancyValidator" has incompatible type "list[MockAbstractVacancy]"; expected "list[AbstractVacancy]"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:354: error: Returning Any from function declared to return "None"  [no-any-return]
+tests/test_22_vacancy_validator_coverage.py:358: error: List item 0 has incompatible type "ProblematicVacancy"; expected "AbstractVacancy"  [list-item]
+tests/test_22_vacancy_validator_coverage.py:373: error: List item 0 has incompatible type "VacancyWithoutId"; expected "AbstractVacancy"  [list-item]
+tests/test_22_vacancy_validator_coverage.py:389: error: Argument 1 to "validate_batch" of "VacancyValidator" has incompatible type "list[MockAbstractVacancy]"; expected "list[AbstractVacancy]"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:405: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:416: error: Incompatible types in assignment (expression has type "None", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:416: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:418: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:431: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:442: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:452: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:462: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:475: error: Incompatible types in assignment (expression has type "None", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:475: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:477: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:489: error: Incompatible types in assignment (expression has type "int", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:489: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:490: error: Incompatible types in assignment (expression has type "int", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:490: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:492: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:508: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:515: error: Incompatible types in assignment (expression has type "int", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:515: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:517: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:528: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:537: error: Incompatible types in assignment (expression has type "None", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:537: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:540: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:582: error: Incompatible types in assignment (expression has type "None", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:582: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:583: error: Incompatible types in assignment (expression has type "None", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:583: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:588: error: Incompatible types in assignment (expression has type "None", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:588: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:598: error: Incompatible types in assignment (expression has type "int", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:598: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:602: error: Argument 1 to "validate_batch" of "VacancyValidator" has incompatible type "list[MockAbstractVacancy]"; expected "list[AbstractVacancy]"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:626: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:632: error: Incompatible types in assignment (expression has type "None", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:632: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:633: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+tests/test_22_vacancy_validator_coverage.py:647: error: Incompatible types in assignment (expression has type "None", variable has type "str")  [assignment]
+tests/test_22_vacancy_validator_coverage.py:647: note: Error code "assignment" not covered by "type: ignore" comment
+tests/test_22_vacancy_validator_coverage.py:649: error: Argument 1 to "validate_vacancy" of "VacancyValidator" has incompatible type "MockAbstractVacancy"; expected "AbstractVacancy"  [arg-type]
+Found 60 errors in 1 file (checked 1 source file)

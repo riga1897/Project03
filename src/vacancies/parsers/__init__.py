@@ -3,86 +3,19 @@
 """
 
 import abc
+from typing import List
 
-
-class AbstractVacancy(abc.ABC):
-    """
-    Абстрактный класс для представления вакансии.
-    """
-
-    @abc.abstractmethod
-    def get_title(self) -> str:
-        """Получить название вакансии."""
-        pass
-
-    @abc.abstractmethod
-    def get_salary(self) -> str:
-        """Получить информацию о зарплате."""
-        pass
-
-    @abc.abstractmethod
-    def get_url(self) -> str:
-        """Получить ссылку на вакансию."""
-        pass
-
-    @abc.abstractmethod
-    def get_description(self) -> str:
-        """Получить описание вакансии."""
-        pass
-
-    @abc.abstractmethod
-    def get_city(self) -> str:
-        """Получить город размещения вакансии."""
-        pass
-
-
-class Vacancy(AbstractVacancy):
-    """Конкретная реализация вакансии."""
-
-    def __init__(self, title: str, salary: str, url: str, description: str, city: str):
-        """
-        Инициализировать вакансию.
-
-        Args:
-            title: Название вакансии
-            salary: Информация о зарплате
-            url: Ссылка на вакансию
-            description: Описание вакансии
-            city: Город размещения
-        """
-
-        self.title = title
-        self.salary = salary
-        self.url = url
-        self.description = description
-        self.city = city
-
-    def get_title(self) -> str:
-        """Получить название вакансии."""
-        return self.title
-
-    def get_salary(self) -> str:
-        """Получить информацию о зарплате."""
-        return self.salary
-
-    def get_url(self) -> str:
-        """Получить ссылку на вакансию."""
-        return self.url
-
-    def get_description(self) -> str:
-        """Получить описание вакансии."""
-        return self.description
-
-    def get_city(self) -> str:
-        """Получить город размещения вакансии."""
-        return self.city
+# Импортируем каноническую версию AbstractVacancy
+from src.vacancies.abstract import AbstractVacancy
+# Импортируем основную модель Vacancy
+from src.vacancies.models import Vacancy
 
 
 class BaseJobAPI(abc.ABC):
     """Базовый класс для работы с API поиска работы."""
 
     @abc.abstractmethod
-    def get_jobs(self, search_query: str) -> list[AbstractVacancy]:
+    def get_jobs(self, search_query: str) -> List[Vacancy]:
         """Получить список вакансий по поисковому запросу."""
         pass
 
@@ -91,7 +24,7 @@ class BaseParser(abc.ABC):
     """Базовый класс для парсинга вакансий."""
 
     @abc.abstractmethod
-    def parse(self, html_content: str) -> list[AbstractVacancy]:
+    def parse(self, html_content: str) -> List[Vacancy]:
         """Распарсить HTML контент и извлечь вакансии."""
         pass
 
@@ -105,7 +38,7 @@ class BaseDBManager(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_vacancies(self, search_params: dict) -> list[AbstractVacancy]:
+    def get_vacancies(self, search_params: dict) -> List[AbstractVacancy]:
         """Получить вакансии из базы данных по параметрам поиска."""
         pass
 

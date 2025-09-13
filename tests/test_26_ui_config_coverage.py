@@ -24,7 +24,7 @@ from src.config.ui_config import (
 class TestUIPaginationConfig:
     """100% покрытие UIPaginationConfig dataclass"""
 
-    def test_default_initialization(self)  -> None:
+    def test_default_initialization(self) -> None:
         """Покрытие инициализации с настройками по умолчанию"""
         config = UIPaginationConfig()
 
@@ -36,7 +36,7 @@ class TestUIPaginationConfig:
         assert config.max_items_per_page == 50
         assert config.min_items_per_page == 1
 
-    def test_custom_initialization(self)  -> None:
+    def test_custom_initialization(self) -> None:
         """Покрытие инициализации с кастомными значениями"""
         config = UIPaginationConfig(
             default_items_per_page=15,
@@ -54,7 +54,7 @@ class TestUIPaginationConfig:
         assert config.max_items_per_page == 100
         assert config.min_items_per_page == 5
 
-    def test_get_items_per_page_search_context(self)  -> None:
+    def test_get_items_per_page_search_context(self) -> None:
         """Покрытие получения элементов на странице для контекста 'search'"""
         config = UIPaginationConfig()
 
@@ -63,7 +63,7 @@ class TestUIPaginationConfig:
         assert result == 5  # search_results_per_page
         assert result == config.search_results_per_page
 
-    def test_get_items_per_page_saved_context(self)  -> None:
+    def test_get_items_per_page_saved_context(self) -> None:
         """Покрытие получения элементов на странице для контекста 'saved'"""
         config = UIPaginationConfig()
 
@@ -72,7 +72,7 @@ class TestUIPaginationConfig:
         assert result == 10  # saved_vacancies_per_page
         assert result == config.saved_vacancies_per_page
 
-    def test_get_items_per_page_top_context(self)  -> None:
+    def test_get_items_per_page_top_context(self) -> None:
         """Покрытие получения элементов на странице для контекста 'top'"""
         config = UIPaginationConfig()
 
@@ -81,7 +81,7 @@ class TestUIPaginationConfig:
         assert result == 10  # top_vacancies_per_page
         assert result == config.top_vacancies_per_page
 
-    def test_get_items_per_page_none_context(self)  -> None:
+    def test_get_items_per_page_none_context(self) -> None:
         """Покрытие получения элементов на странице для None контекста"""
         config = UIPaginationConfig()
 
@@ -90,7 +90,7 @@ class TestUIPaginationConfig:
         assert result == 10  # default_items_per_page
         assert result == config.default_items_per_page
 
-    def test_get_items_per_page_unknown_context(self)  -> None:
+    def test_get_items_per_page_unknown_context(self) -> None:
         """Покрытие получения элементов на странице для неизвестного контекста"""
         config = UIPaginationConfig()
 
@@ -99,7 +99,7 @@ class TestUIPaginationConfig:
         assert result == 10  # default_items_per_page
         assert result == config.default_items_per_page
 
-    def test_get_items_per_page_empty_string_context(self)  -> None:
+    def test_get_items_per_page_empty_string_context(self) -> None:
         """Покрытие получения элементов на странице для пустого контекста"""
         config = UIPaginationConfig()
 
@@ -108,7 +108,7 @@ class TestUIPaginationConfig:
         assert result == 10  # default_items_per_page
         assert result == config.default_items_per_page
 
-    def test_get_items_per_page_custom_values(self)  -> None:
+    def test_get_items_per_page_custom_values(self) -> None:
         """Покрытие получения элементов с кастомными значениями"""
         config = UIPaginationConfig(
             search_results_per_page=7,
@@ -122,7 +122,7 @@ class TestUIPaginationConfig:
         assert config.get_items_per_page("top") == 25
         assert config.get_items_per_page("unknown") == 20
 
-    def test_validate_items_per_page_valid_value(self)  -> None:
+    def test_validate_items_per_page_valid_value(self) -> None:
         """Покрытие валидации корректного значения"""
         config = UIPaginationConfig()
 
@@ -130,7 +130,7 @@ class TestUIPaginationConfig:
 
         assert result == 25  # Значение в допустимых пределах
 
-    def test_validate_items_per_page_below_minimum(self)  -> None:
+    def test_validate_items_per_page_below_minimum(self) -> None:
         """Покрытие валидации значения ниже минимума"""
         config = UIPaginationConfig()
 
@@ -139,7 +139,7 @@ class TestUIPaginationConfig:
         assert result == 1  # min_items_per_page
         assert result == config.min_items_per_page
 
-    def test_validate_items_per_page_negative_value(self)  -> None:
+    def test_validate_items_per_page_negative_value(self) -> None:
         """Покрытие валидации отрицательного значения"""
         config = UIPaginationConfig()
 
@@ -148,7 +148,7 @@ class TestUIPaginationConfig:
         assert result == 1  # min_items_per_page
         assert result == config.min_items_per_page
 
-    def test_validate_items_per_page_above_maximum(self)  -> None:
+    def test_validate_items_per_page_above_maximum(self) -> None:
         """Покрытие валидации значения выше максимума"""
         config = UIPaginationConfig()
 
@@ -157,7 +157,7 @@ class TestUIPaginationConfig:
         assert result == 50  # max_items_per_page
         assert result == config.max_items_per_page
 
-    def test_validate_items_per_page_at_boundaries(self)  -> None:
+    def test_validate_items_per_page_at_boundaries(self) -> None:
         """Покрытие валидации граничных значений"""
         config = UIPaginationConfig()
 
@@ -167,7 +167,7 @@ class TestUIPaginationConfig:
         # Проверяем максимальное значение
         assert config.validate_items_per_page(50) == 50
 
-    def test_validate_items_per_page_custom_limits(self)  -> None:
+    def test_validate_items_per_page_custom_limits(self) -> None:
         """Покрытие валидации с кастомными лимитами"""
         config = UIPaginationConfig(
             min_items_per_page=5,
@@ -187,14 +187,14 @@ class TestUIPaginationConfig:
 class TestUIConfig:
     """100% покрытие UIConfig dataclass"""
 
-    def test_default_initialization(self)  -> None:
+    def test_default_initialization(self) -> None:
         """Покрытие инициализации с настройками по умолчанию"""
         config = UIConfig()
 
         assert config.items_per_page == 5
         assert config.max_display_items == 20
 
-    def test_custom_initialization(self)  -> None:
+    def test_custom_initialization(self) -> None:
         """Покрытие инициализации с кастомными значениями"""
         config = UIConfig(
             items_per_page=10,
@@ -204,7 +204,7 @@ class TestUIConfig:
         assert config.items_per_page == 10
         assert config.max_display_items == 50
 
-    def test_get_pagination_settings_defaults(self)  -> None:
+    def test_get_pagination_settings_defaults(self) -> None:
         """Покрытие получения настроек пагинации по умолчанию"""
         config = UIConfig()
 
@@ -216,7 +216,7 @@ class TestUIConfig:
         }
         assert settings == expected
 
-    def test_get_pagination_settings_with_overrides(self)  -> None:
+    def test_get_pagination_settings_with_overrides(self) -> None:
         """Покрытие получения настроек пагинации с переопределением"""
         config = UIConfig()
 
@@ -231,7 +231,7 @@ class TestUIConfig:
         }
         assert settings == expected
 
-    def test_get_pagination_settings_partial_override(self)  -> None:
+    def test_get_pagination_settings_partial_override(self) -> None:
         """Покрытие получения настроек с частичным переопределением"""
         config = UIConfig()
 
@@ -243,7 +243,7 @@ class TestUIConfig:
         }
         assert settings == expected
 
-    def test_get_pagination_settings_custom_config(self)  -> None:
+    def test_get_pagination_settings_custom_config(self) -> None:
         """Покрытие получения настроек с кастомной конфигурацией"""
         config = UIConfig(items_per_page=8, max_display_items=25)
 
@@ -255,7 +255,7 @@ class TestUIConfig:
         }
         assert settings == expected
 
-    def test_get_pagination_settings_extra_kwargs(self)  -> None:
+    def test_get_pagination_settings_extra_kwargs(self) -> None:
         """Покрытие получения настроек с дополнительными kwargs"""
         config = UIConfig()
 
@@ -271,7 +271,7 @@ class TestUIConfig:
         }
         assert settings == expected
 
-    def test_get_pagination_settings_zero_values(self)  -> None:
+    def test_get_pagination_settings_zero_values(self) -> None:
         """Покрытие получения настроек с нулевыми значениями"""
         config = UIConfig()
 
@@ -286,7 +286,7 @@ class TestUIConfig:
         }
         assert settings == expected
 
-    def test_get_pagination_settings_negative_values(self)  -> None:
+    def test_get_pagination_settings_negative_values(self) -> None:
         """Покрытие получения настроек с отрицательными значениями"""
         config = UIConfig()
 
@@ -305,7 +305,7 @@ class TestUIConfig:
 class TestGlobalInstances:
     """Покрытие глобальных экземпляров конфигурации"""
 
-    def test_ui_pagination_config_instance(self)  -> None:
+    def test_ui_pagination_config_instance(self) -> None:
         """Покрытие глобального экземпляра ui_pagination_config"""
         # Проверяем что экземпляр создан
         assert ui_pagination_config is not None
@@ -319,7 +319,7 @@ class TestGlobalInstances:
         assert ui_pagination_config.max_items_per_page == 50
         assert ui_pagination_config.min_items_per_page == 1
 
-    def test_ui_config_instance(self)  -> None:
+    def test_ui_config_instance(self) -> None:
         """Покрытие глобального экземпляра ui_config"""
         # Проверяем что экземпляр создан
         assert ui_config is not None
@@ -329,7 +329,7 @@ class TestGlobalInstances:
         assert ui_config.items_per_page == 5
         assert ui_config.max_display_items == 20
 
-    def test_global_instances_functionality(self)  -> None:
+    def test_global_instances_functionality(self) -> None:
         """Покрытие функциональности глобальных экземпляров"""
         # Тестируем методы глобального экземпляра пагинации
         search_items = ui_pagination_config.get_items_per_page("search")
@@ -343,7 +343,7 @@ class TestGlobalInstances:
         expected = {"items_per_page": 5, "max_display_items": 20}
         assert pagination_settings == expected
 
-    def test_global_instances_independence(self)  -> None:
+    def test_global_instances_independence(self) -> None:
         """Покрытие независимости глобальных экземпляров"""
         # Создаем новые экземпляры
         new_pagination_config = UIPaginationConfig()
@@ -361,7 +361,7 @@ class TestGlobalInstances:
 class TestUIConfigEdgeCases:
     """Покрытие граничных случаев и особых сценариев"""
 
-    def test_pagination_config_extreme_values(self)  -> None:
+    def test_pagination_config_extreme_values(self) -> None:
         """Покрытие экстремальных значений в UIPaginationConfig"""
         config = UIPaginationConfig(
             default_items_per_page=0,
@@ -380,7 +380,7 @@ class TestUIConfigEdgeCases:
         assert config.max_items_per_page == 1000000
         assert config.min_items_per_page == 0
 
-    def test_ui_config_extreme_values(self)  -> None:
+    def test_ui_config_extreme_values(self) -> None:
         """Покрытие экстремальных значений в UIConfig"""
         config = UIConfig(
             items_per_page=0,
@@ -390,7 +390,7 @@ class TestUIConfigEdgeCases:
         assert config.items_per_page == 0
         assert config.max_display_items == -100
 
-    def test_context_mapping_coverage(self)  -> None:
+    def test_context_mapping_coverage(self) -> None:
         """Покрытие всех веток в context_mapping"""
         config = UIPaginationConfig(
             search_results_per_page=1,
@@ -408,7 +408,7 @@ class TestUIConfigEdgeCases:
         assert config.get_items_per_page("unknown") == 4
         assert config.get_items_per_page(None) == 4
 
-    def test_validate_boundary_conditions(self)  -> None:
+    def test_validate_boundary_conditions(self) -> None:
         """Покрытие граничных условий валидации"""
         config = UIPaginationConfig(min_items_per_page=10, max_items_per_page=20)
 
@@ -420,7 +420,7 @@ class TestUIConfigEdgeCases:
         assert config.validate_items_per_page(9) == 10
         assert config.validate_items_per_page(21) == 20
 
-    def test_equal_min_max_limits(self)  -> None:
+    def test_equal_min_max_limits(self) -> None:
         """Покрытие случая когда min == max"""
         config = UIPaginationConfig(min_items_per_page=15, max_items_per_page=15)
 
@@ -433,7 +433,7 @@ class TestUIConfigEdgeCases:
 class TestUIConfigIntegration:
     """Интеграционные тесты и комплексные сценарии"""
 
-    def test_pagination_config_workflow(self)  -> None:
+    def test_pagination_config_workflow(self) -> None:
         """Покрытие полного рабочего процесса UIPaginationConfig"""
         config = UIPaginationConfig(
             search_results_per_page=3,
@@ -453,7 +453,7 @@ class TestUIConfigIntegration:
         validated = config.validate_items_per_page(search_items)
         assert validated == 3
 
-    def test_ui_config_workflow(self)  -> None:
+    def test_ui_config_workflow(self) -> None:
         """Покрытие полного рабочего процесса UIConfig"""
         config = UIConfig(items_per_page=7, max_display_items=35)
 
@@ -467,7 +467,7 @@ class TestUIConfigIntegration:
         assert custom_settings["items_per_page"] == 14
         assert custom_settings["max_display_items"] == 35
 
-    def test_cross_class_compatibility(self)  -> None:
+    def test_cross_class_compatibility(self) -> None:
         """Покрытие совместимости между классами"""
         pagination_config = UIPaginationConfig()
         ui_config = UIConfig()
@@ -482,7 +482,7 @@ class TestUIConfigIntegration:
         validated_max = pagination_config.validate_items_per_page(ui_config.max_display_items)
         assert validated_max <= pagination_config.max_items_per_page
 
-    def test_dataclass_behavior(self)  -> None:
+    def test_dataclass_behavior(self) -> None:
         """Покрытие поведения dataclass"""
         config1 = UIPaginationConfig(default_items_per_page=10)
         config2 = UIPaginationConfig(default_items_per_page=10)

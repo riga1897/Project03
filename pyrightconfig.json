@@ -1,0 +1,22 @@
+{
+    "pythonVersion": "3.12",
+    "pythonPlatform": "Linux",
+    "executionEnvironments": [
+        {
+            "root": ".",
+            "pythonVersion": "3.12",
+            "pythonPlatform": "Linux",
+            "extraPaths": [
+                "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages"
+            ]
+        }
+    ],
+    "include": [
+        "src",
+        "tests"
+    ],
+    "exclude": [
+        "**/node_modules",
+        "**/__pycache__"
+    ]
+}

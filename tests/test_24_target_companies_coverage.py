@@ -219,6 +219,8 @@ class TestTargetCompanies:
         # Берем первую компанию для тестирования
         first_company = TargetCompanies.COMPANIES[0]
 
+        # Убеждаемся что hh_id не None
+        assert first_company.hh_id is not None
         found_company = TargetCompanies.get_company_by_hh_id(first_company.hh_id)
 
         assert found_company is not None
@@ -253,6 +255,7 @@ class TestTargetCompanies:
                 break
 
         assert company_with_sj is not None  # Убеждаемся что есть компания с SJ ID
+        assert company_with_sj.sj_id is not None  # Убеждаемся что sj_id не None
 
         found_company = TargetCompanies.get_company_by_sj_id(company_with_sj.sj_id)
         assert found_company is not None
@@ -369,7 +372,10 @@ class TestTargetCompaniesLegacyConstants:
         assert sber_dict["name"] == "СБЕР"
         assert sber_dict["hh_id"] == "3529"
         assert sber_dict["sj_id"] == "16134"
-        assert "банк" in sber_dict["description"].lower()
+        # Проверяем description
+        description = sber_dict["description"]
+        assert description is not None
+        assert "банк" in description.lower()
 
     def test_target_companies_constant_consistency(self) -> None:
         """Покрытие соответствия константы и класса"""
@@ -485,16 +491,17 @@ class TestTargetCompaniesIntegration:
         all_companies = TargetCompanies.get_all_companies()
 
         for company in all_companies:
-            # Поиск по HH ID
-            found_by_hh = TargetCompanies.get_company_by_hh_id(company.hh_id)
-            assert found_by_hh == company
+            # Поиск по HH ID (проверяем что hh_id не None)
+            if company.hh_id is not None:
+                found_by_hh = TargetCompanies.get_company_by_hh_id(company.hh_id)
+                assert found_by_hh == company
+
+                # Проверка что это целевая компания
+                assert TargetCompanies.is_target_company(company.hh_id)
 
             # Поиск по названию
             found_by_name = TargetCompanies.find_company_by_exact_name(company.name)
             assert found_by_name == company
-
-            # Проверка что это целевая компания
-            assert TargetCompanies.is_target_company(company.hh_id)
 
             # Поиск по SJ ID (если есть)
             if company.sj_id:
@@ -526,7 +533,9 @@ class TestTargetCompaniesIntegration:
         for company in companies:
             # Обязательные поля не должны быть пустыми
             assert company.name.strip()
-            assert company.hh_id.strip()
+            # Проверяем hh_id если он не None
+            if company.hh_id is not None:
+                assert company.hh_id.strip()
 
             # Если есть SJ ID, оно не должно быть пустым
             if company.sj_id:

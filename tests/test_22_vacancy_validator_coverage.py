@@ -15,26 +15,67 @@
 """
 
 from unittest.mock import patch, Mock
+from typing import Any, Dict
 
 # Импорты из реального кода для покрытия
 from src.storage.components.vacancy_validator import VacancyValidator
+from src.vacancies.abstract import AbstractVacancy
 
 
-class MockAbstractVacancy:
+class MockAbstractVacancy(AbstractVacancy):
     """Mock объект для AbstractVacancy"""
     def __init__(self, vacancy_id: str = "test_id", title: str = "Test Job", url: str = "https://example.com/job"):
+        # Основные атрибуты
+        self.id = vacancy_id
         self.vacancy_id = vacancy_id
         self.title = title
         self.url = url
-        self.salary = None
         self.description = "Test description"
         self.requirements = "Test requirements"
         self.responsibilities = "Test responsibilities"
-        self.experience = "middle"
-        self.employment = "full_time"
+
+        # Связанные объекты
+        self.employer = None
+        self.salary = None
+        self.experience = None
+        self.employment = None
+        self.schedule = None
+
+        # Метаинформация
         self.area = "Moscow"
         self.source = "test"
-        self.employer = "Test Company"
+        self.published_at = None
+        self.company_id = None
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Преобразует вакансию в словарь"""
+        return {
+            "id": self.id,
+            "vacancy_id": self.vacancy_id,
+            "title": self.title,
+            "url": self.url,
+            "description": self.description,
+            "requirements": self.requirements,
+            "responsibilities": self.responsibilities,
+            "employer": self.employer,
+            "salary": self.salary,
+            "experience": self.experience,
+            "employment": self.employment,
+            "schedule": self.schedule,
+            "area": self.area,
+            "source": self.source,
+            "published_at": self.published_at,
+            "company_id": self.company_id,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "MockAbstractVacancy":
+        """Создает объект вакансии из словаря"""
+        return cls(
+            vacancy_id=data.get("vacancy_id", "test_id"),
+            title=data.get("title", "Test Job"),
+            url=data.get("url", "https://example.com/job")
+        )
 
 
 class TestVacancyValidator:
@@ -100,7 +141,7 @@ class TestVacancyValidator:
         """Покрытие валидации с неверным типом обязательного поля"""
         validator = VacancyValidator()
         vacancy = MockAbstractVacancy()
-        vacancy.title = 123  # Число вместо строки
+        vacancy.title = 123  # type: ignore[assignment]  # Число вместо строки
 
         result = validator.validate_vacancy(vacancy)
 
@@ -112,7 +153,7 @@ class TestVacancyValidator:
         """Покрытие валидации с неверным типом опционального поля"""
         validator = VacancyValidator()
         vacancy = MockAbstractVacancy()
-        vacancy.description = 123  # Число вместо строки
+        vacancy.description = 123    # type: ignore[assignment]  # Число вместо строки
 
         result = validator.validate_vacancy(vacancy)
 
@@ -124,7 +165,7 @@ class TestVacancyValidator:
         """Покрытие валидации с None в опциональном поле"""
         validator = VacancyValidator()
         vacancy = MockAbstractVacancy()
-        vacancy.description = None  # None разрешен в опциональных полях
+        vacancy.description = None  # Опциональное поле, None разрешен
 
         result = validator.validate_vacancy(vacancy)
 
@@ -235,7 +276,7 @@ class TestVacancyValidator:
         """Покрытие получения списка ошибок"""
         validator = VacancyValidator()
         vacancy = MockAbstractVacancy()
-        vacancy.title = None  # Вызовет ошибку
+        vacancy.title = None  # type: ignore[assignment]  # Вызовет ошибку
 
         validator.validate_vacancy(vacancy)
         errors = validator.get_validation_errors()
@@ -248,7 +289,7 @@ class TestVacancyValidator:
         """Покрытие того, что get_validation_errors возвращает копию"""
         validator = VacancyValidator()
         vacancy = MockAbstractVacancy()
-        vacancy.title = None  # Вызовет ошибку
+        vacancy.title = None  # type: ignore[assignment]  # Вызовет ошибку
 
         validator.validate_vacancy(vacancy)
         errors1 = validator.get_validation_errors()
@@ -264,7 +305,7 @@ class TestVacancyValidator:
 
         # Первая валидация с ошибкой
         invalid_vacancy = MockAbstractVacancy()
-        invalid_vacancy.title = None
+        invalid_vacancy.title = None  # type: ignore[assignment]
 
         result1 = validator.validate_vacancy(invalid_vacancy)
         assert result1 is False
@@ -286,7 +327,7 @@ class TestVacancyValidator:
         assert result == {}
 
     @patch('src.storage.components.vacancy_validator.logger')
-    def test_validate_batch_success(self, mock_logger):
+    def test_validate_batch_success(self, mock_logger: Any) -> None:
         """Покрытие успешной пакетной валидации"""
         validator = VacancyValidator()
         vacancies = [
@@ -295,7 +336,7 @@ class TestVacancyValidator:
             MockAbstractVacancy("id_3", "Job 3")
         ]
 
-        result = validator.validate_batch(vacancies)
+        result = validator.validate_batch(vacancies)  # type: ignore[arg-type]
 
         expected = {
             "id_1": True,
@@ -307,7 +348,7 @@ class TestVacancyValidator:
         mock_logger.warning.assert_not_called()
 
     @patch('src.storage.components.vacancy_validator.logger')
-    def test_validate_batch_mixed_results(self, mock_logger):
+    def test_validate_batch_mixed_results(self, mock_logger: Any) -> None:
         """Покрытие пакетной валидации со смешанными результатами"""
         validator = VacancyValidator()
 
@@ -320,11 +361,11 @@ class TestVacancyValidator:
 
         # Невалидная вакансия (отсутствует заголовок)
         missing_title_vacancy = MockAbstractVacancy("missing_title_id")
-        missing_title_vacancy.title = None
+        missing_title_vacancy.title = None  # type: ignore[assignment]
 
         vacancies = [valid_vacancy, invalid_vacancy, missing_title_vacancy]
 
-        result = validator.validate_batch(vacancies)
+        result = validator.validate_batch(vacancies)  # type: ignore[arg-type]
 
         expected = {
             "valid_id": True,
@@ -337,20 +378,46 @@ class TestVacancyValidator:
         assert mock_logger.warning.call_count == 2
 
     @patch('src.storage.components.vacancy_validator.logger')
-    def test_validate_batch_exception_handling(self, mock_logger):
+    def test_validate_batch_exception_handling(self, mock_logger: Any) -> None:
         """Покрытие обработки исключений в пакетной валидации"""
         validator = VacancyValidator()
 
         # Создаем объект, который вызовет исключение при валидации, но имеет работающий vacancy_id
-        class ProblematicVacancy:
+        class ProblematicVacancy(AbstractVacancy):
             def __init__(self) -> None:
                 self.vacancy_id = "problem_id"
+                self.id = "problem_id"
+                # Устанавливаем проблемное значение для title
+                self._title = "Problem"
+                self.url = "https://example.com"
+                self.description = None
+                self.requirements = None
+                self.responsibilities = None
+                self.employer = None
+                self.salary = None
+                self.experience = None
+                self.employment = None
+                self.schedule = None
+                self.area = None
+                self.source = None
+                self.published_at = None
+                self.company_id = None
 
-            def __getattr__(self, name):
-                # Вызываем исключение при попытке доступа к любому другому атрибуту
-                if name != "vacancy_id":
-                    raise Exception("Test exception during attribute access")
-                return super().__getattribute__(name)
+            @property
+            def title(self) -> str:
+                # Вызываем исключение при попытке доступа к title во время валидации
+                raise Exception("Test exception during title access")
+
+            @title.setter
+            def title(self, value: str) -> None:  # type: ignore[arg-type]
+                self._title = value
+
+            def to_dict(self) -> Dict[str, Any]:
+                return {"vacancy_id": self.vacancy_id}
+
+            @classmethod
+            def from_dict(cls, data: Dict[str, Any]) -> "ProblematicVacancy":
+                return cls()
 
         problematic_vacancy = ProblematicVacancy()
 
@@ -364,8 +431,31 @@ class TestVacancyValidator:
         validator = VacancyValidator()
 
         # Создаем объект без атрибута vacancy_id
-        class VacancyWithoutId:
-            pass
+        class VacancyWithoutId(AbstractVacancy):
+            def __init__(self) -> None:
+                self.id = "no_id"
+                self.title = "No ID"
+                self.url = "https://example.com"
+                self.description = None
+                self.requirements = None
+                self.responsibilities = None
+                self.employer = None
+                self.salary = None
+                self.experience = None
+                self.employment = None
+                self.schedule = None
+                self.area = None
+                self.source = None
+                self.published_at = None
+                self.company_id = None
+                # Не устанавливаем vacancy_id для теста
+
+            def to_dict(self) -> Dict[str, Any]:
+                return {"id": self.id}
+
+            @classmethod
+            def from_dict(cls, data: Dict[str, Any]) -> "VacancyWithoutId":
+                return cls()
 
         vacancy_without_id = VacancyWithoutId()
 
@@ -385,7 +475,7 @@ class TestVacancyValidator:
 
         vacancies = [valid_vacancy, invalid_vacancy]
 
-        result = validator.validate_batch(vacancies)
+        result = validator.validate_batch(vacancies)  # type: ignore[arg-type]
 
         # Последняя вакансия должна перезаписать результат
         assert "duplicate_id" in result
@@ -412,7 +502,7 @@ class TestVacancyValidatorHelperMethods:
         # Устанавливаем корректные типы для опциональных полей
         vacancy.description = "Valid description"
         vacancy.requirements = "Valid requirements"
-        vacancy.responsibilities = None  # None разрешен
+        vacancy.responsibilities = None  # Опциональное поле, None разрешен
 
         result = validator.validate_vacancy(vacancy)
         assert result is True
@@ -471,7 +561,7 @@ class TestVacancyValidatorEdgeCases:
         vacancy = MockAbstractVacancy()
 
         # Устанавливаем ошибки, которые будут проверены в разных методах
-        vacancy.title = None  # Отсутствует обязательное поле (остановит _validate_required_fields)
+        vacancy.title = None  # type: ignore[assignment]  # Отсутствует обязательное поле (остановит _validate_required_fields)
 
         result = validator.validate_vacancy(vacancy)
 
@@ -485,8 +575,8 @@ class TestVacancyValidatorEdgeCases:
         vacancy = MockAbstractVacancy()
 
         # Ошибки типов данных в опциональных полях
-        vacancy.description = 123  # Неверный тип
-        vacancy.requirements = 456  # Неверный тип
+        vacancy.description = 123  # type: ignore[assignment]  # Неверный тип
+        vacancy.requirements = 456  # type: ignore[assignment]  # Неверный тип
 
         result = validator.validate_vacancy(vacancy)
 
@@ -511,7 +601,7 @@ class TestVacancyValidatorEdgeCases:
         """Покрытие валидации с числовым ID"""
         validator = VacancyValidator()
         vacancy = MockAbstractVacancy()
-        vacancy.vacancy_id = 12345  # Числовой ID (будет преобразован в строку)
+        vacancy.vacancy_id = 12345  # type: ignore[assignment]  # Числовой ID (будет преобразован в строку)
 
         result = validator.validate_vacancy(vacancy)
         assert result is False  # Числовой тип недопустим для ID
@@ -533,7 +623,7 @@ class TestVacancyValidatorEdgeCases:
         vacancy = MockAbstractVacancy()
 
         # Проверяем поля, которые могут быть str или None
-        vacancy.requirements = None  # Первый тип из кортежа (str, type(None))
+        vacancy.requirements = None  # Опциональное поле, None разрешен
         vacancy.responsibilities = "Valid responsibilities"  # Второй тип
 
         result = validator.validate_vacancy(vacancy)
@@ -563,7 +653,7 @@ class TestVacancyValidatorIntegration:
     """Интеграционные тесты и комплексные сценарии"""
 
     @patch('src.storage.components.vacancy_validator.logger')
-    def test_comprehensive_validation_workflow(self, mock_logger):
+    def test_comprehensive_validation_workflow(self, mock_logger: Any) -> None:
         """Покрытие комплексного рабочего процесса валидации"""
         validator = VacancyValidator()
 
@@ -578,13 +668,13 @@ class TestVacancyValidatorIntegration:
 
         # 2. Валидная минималистичная вакансия
         minimal_vacancy = MockAbstractVacancy("minimal_1", "Simple Job")
-        minimal_vacancy.description = None
-        minimal_vacancy.requirements = None
+        minimal_vacancy.description = None   # Опциональное поле
+        minimal_vacancy.requirements = None  # Опциональное поле
         vacancies.append(minimal_vacancy)
 
         # 3. Вакансия с ошибками в обязательных полях
         missing_title = MockAbstractVacancy("error_1")
-        missing_title.title = None
+        missing_title.title = None  # type: ignore[assignment]
         vacancies.append(missing_title)
 
         # 4. Вакансия с ошибками в бизнес-правилах
@@ -594,11 +684,11 @@ class TestVacancyValidatorIntegration:
 
         # 5. Вакансия с ошибками типов данных
         wrong_types = MockAbstractVacancy("error_3")
-        wrong_types.description = 123  # Неверный тип
+        wrong_types.description = 123  # type: ignore[assignment]  # Неверный тип
         vacancies.append(wrong_types)
 
         # Пакетная валидация
-        batch_results = validator.validate_batch(vacancies)
+        batch_results = validator.validate_batch(vacancies)  # type: ignore[arg-type]
 
         expected_results = {
             "perfect_1": True,
@@ -628,7 +718,7 @@ class TestVacancyValidatorIntegration:
             else:
                 # Невалидная вакансия
                 vacancy = MockAbstractVacancy(f"invalid_{i}")
-                vacancy.title = None
+                vacancy.title = None  # type: ignore[assignment]
                 result = validator.validate_vacancy(vacancy)
                 assert result is False
                 assert len(validator.get_validation_errors()) > 0
@@ -643,7 +733,7 @@ class TestVacancyValidatorIntegration:
             vacancy = MockAbstractVacancy(f"concurrent_{i}", f"Concurrent Job {i}")
 
             if i == 1:
-                vacancy.title = None  # Делаем одну невалидной
+                vacancy.title = None  # type: ignore[assignment]  # Делаем одну невалидной
 
             result = validator.validate_vacancy(vacancy)
 

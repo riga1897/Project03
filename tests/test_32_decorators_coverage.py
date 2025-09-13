@@ -13,6 +13,7 @@
 
 import pytest
 from unittest.mock import patch, MagicMock, call
+from typing import Any, Optional
 
 # Импорты из реального кода для покрытия
 from src.utils.decorators import simple_cache, retry_on_failure, time_execution, log_errors
@@ -23,13 +24,13 @@ class TestSimpleCache:
 
     @patch('src.utils.decorators.EnvLoader')
     @patch('src.utils.decorators.time')
-    def test_cache_basic_functionality(self, mock_time, mock_env_loader):
+    def test_cache_basic_functionality(self, mock_time: Any, mock_env_loader: Any) -> None:
         """Покрытие базовой функциональности кэширования"""
         mock_time.time.side_effect = [100.0, 105.0, 110.0]  # Разные времена для вызовов
         mock_env_loader.get_env_var_int.return_value = 3600
 
         @simple_cache(ttl=300, max_size=10)
-        def test_func(x, y):
+        def test_func(x: int, y: int) -> int:
             return x + y
 
         # Первый вызов - вычисляется
@@ -42,7 +43,7 @@ class TestSimpleCache:
 
     @patch('src.utils.decorators.EnvLoader')
     @patch('src.utils.decorators.time')
-    def test_cache_ttl_expiration(self, mock_time, mock_env_loader):
+    def test_cache_ttl_expiration(self, mock_time: Any, mock_env_loader: Any) -> None:
         """Покрытие истечения TTL кэша"""
         mock_time.time.side_effect = [100.0, 105.0, 500.0, 505.0]  # TTL истек
         mock_env_loader.get_env_var_int.return_value = 3600
@@ -50,7 +51,7 @@ class TestSimpleCache:
         call_count = 0
 
         @simple_cache(ttl=300, max_size=10)
-        def test_func(x):
+        def test_func(x: int) -> int:
             nonlocal call_count
             call_count += 1
             return x * 2
@@ -72,7 +73,7 @@ class TestSimpleCache:
 
     @patch('src.utils.decorators.EnvLoader')
     @patch('src.utils.decorators.time')
-    def test_cache_max_size_lru(self, mock_time, mock_env_loader):
+    def test_cache_max_size_lru(self, mock_time: Any, mock_env_loader: Any) -> None:
         """Покрытие LRU удаления при превышении размера"""
         mock_time.time.side_effect = [i * 10.0 for i in range(20)]  # Последовательные времена
         mock_env_loader.get_env_var_int.return_value = 3600
@@ -80,7 +81,7 @@ class TestSimpleCache:
         call_count = 0
 
         @simple_cache(ttl=1000, max_size=2)  # Маленький размер для теста
-        def test_func(x):
+        def test_func(x: int) -> int:
             nonlocal call_count
             call_count += 1
             return x ** 2
@@ -106,7 +107,7 @@ class TestSimpleCache:
 
     @patch('src.utils.decorators.EnvLoader')
     @patch('src.utils.decorators.time')
-    def test_cache_with_kwargs(self, mock_time, mock_env_loader):
+    def test_cache_with_kwargs(self, mock_time: Any, mock_env_loader: Any) -> None:
         """Покрытие кэширования с именованными аргументами"""
         mock_time.time.return_value = 100.0
         mock_env_loader.get_env_var_int.return_value = 3600
@@ -114,7 +115,7 @@ class TestSimpleCache:
         call_count = 0
 
         @simple_cache(ttl=300, max_size=10)
-        def test_func(x, y=1, z=2):
+        def test_func(x: int, y: int = 1, z: int = 2) -> int:
             nonlocal call_count
             call_count += 1
             return x + y + z
@@ -136,13 +137,13 @@ class TestSimpleCache:
 
     @patch('src.utils.decorators.EnvLoader')
     @patch('src.utils.decorators.time')
-    def test_cache_none_ttl_uses_env(self, mock_time, mock_env_loader):
+    def test_cache_none_ttl_uses_env(self, mock_time: Any, mock_env_loader: Any) -> None:
         """Покрытие использования TTL из переменных окружения"""
         mock_time.time.return_value = 100.0
         mock_env_loader.get_env_var_int.return_value = 1800  # Значение из env
 
         @simple_cache(ttl=None, max_size=10)  # ttl=None
-        def test_func(x):
+        def test_func(x: int) -> int:
             return x * 3
 
         result = test_func(5)
@@ -153,7 +154,7 @@ class TestSimpleCache:
 
     @patch('src.utils.decorators.EnvLoader')
     @patch('src.utils.decorators.time')
-    def test_cache_clear_function(self, mock_time, mock_env_loader):
+    def test_cache_clear_function(self, mock_time: Any, mock_env_loader: Any) -> None:
         """Покрытие функции очистки кэша"""
         mock_time.time.return_value = 100.0
         mock_env_loader.get_env_var_int.return_value = 3600
@@ -161,7 +162,7 @@ class TestSimpleCache:
         call_count = 0
 
         @simple_cache(ttl=300, max_size=10)
-        def test_func(x):
+        def test_func(x: int) -> int:
             nonlocal call_count
             call_count += 1
             return x * 2
@@ -186,13 +187,13 @@ class TestSimpleCache:
 
     @patch('src.utils.decorators.EnvLoader')
     @patch('src.utils.decorators.time')
-    def test_cache_info_function(self, mock_time, mock_env_loader):
+    def test_cache_info_function(self, mock_time: Any, mock_env_loader: Any) -> None:
         """Покрытие функции информации о кэше"""
         mock_time.time.return_value = 100.0
         mock_env_loader.get_env_var_int.return_value = 1200
 
         @simple_cache(ttl=600, max_size=50)
-        def test_func(x):
+        def test_func(x: int) -> int:
             return x ** 2
 
         # Проверяем информацию о пустом кэше
@@ -219,13 +220,13 @@ class TestSimpleCache:
 
     @patch('src.utils.decorators.EnvLoader')
     @patch('src.utils.decorators.time')
-    def test_cache_info_with_none_ttl(self, mock_time, mock_env_loader):
+    def test_cache_info_with_none_ttl(self, mock_time: Any, mock_env_loader: Any) -> None:
         """Покрытие cache_info с ttl=None"""
         mock_time.time.return_value = 100.0
         mock_env_loader.get_env_var_int.return_value = 2400
 
         @simple_cache(ttl=None, max_size=25)  # ttl из env
-        def test_func(x):
+        def test_func(x: int) -> int:
             return x + 10
 
         info = test_func.cache_info()
@@ -238,13 +239,13 @@ class TestSimpleCache:
 
     @patch('src.utils.decorators.EnvLoader')
     @patch('src.utils.decorators.time')
-    def test_cache_access_time_update(self, mock_time, mock_env_loader):
+    def test_cache_access_time_update(self, mock_time: Any, mock_env_loader: Any) -> None:
         """Покрытие обновления времени доступа при попадании в кэш"""
         mock_time.time.side_effect = [100.0, 200.0, 300.0]
         mock_env_loader.get_env_var_int.return_value = 3600
 
         @simple_cache(ttl=1000, max_size=10)
-        def test_func(x):
+        def test_func(x: int) -> int:
             return x * 5
 
         # Первый вызов - кэширование
@@ -260,10 +261,10 @@ class TestRetryOnFailure:
     """100% покрытие декоратора retry_on_failure"""
 
     @patch('src.utils.decorators.time')
-    def test_retry_success_first_attempt(self, mock_time):
+    def test_retry_success_first_attempt(self, mock_time: Any) -> None:
         """Покрытие успешного выполнения с первой попытки"""
         @retry_on_failure(max_attempts=3, delay=0.1)
-        def test_func(x):
+        def test_func(x: int) -> int:
             return x * 2
 
         result = test_func(5)
@@ -273,7 +274,7 @@ class TestRetryOnFailure:
         mock_time.sleep.assert_not_called()
 
     @patch('src.utils.decorators.time')
-    def test_retry_success_after_failures(self, mock_time):
+    def test_retry_success_after_failures(self, mock_time: Any) -> None:
         """Покрытие успешного выполнения после неудач"""
         call_count = 0
 
@@ -294,7 +295,7 @@ class TestRetryOnFailure:
         mock_time.sleep.assert_has_calls(expected_calls)
 
     @patch('src.utils.decorators.time')
-    def test_retry_final_failure(self, mock_time):
+    def test_retry_final_failure(self, mock_time: Any) -> None:
         """Покрытие финальной неудачи после всех попыток"""
         call_count = 0
 
@@ -312,7 +313,7 @@ class TestRetryOnFailure:
         mock_time.sleep.assert_called_once_with(0.2)
 
     @patch('src.utils.decorators.time')
-    def test_retry_different_exceptions(self, mock_time):
+    def test_retry_different_exceptions(self, mock_time: Any) -> None:
         """Покрытие разных типов исключений"""
         call_count = 0
 
@@ -337,7 +338,7 @@ class TestRetryOnFailure:
         call_count = 0
 
         @retry_on_failure()  # Используем параметры по умолчанию
-        def test_func() -> None:
+        def test_func() -> str:
             nonlocal call_count
             call_count += 1
             if call_count <= 3:
@@ -351,12 +352,12 @@ class TestRetryOnFailure:
         assert call_count == 3
 
     @patch('src.utils.decorators.time')
-    def test_retry_with_args_kwargs(self, mock_time):
+    def test_retry_with_args_kwargs(self, mock_time: Any) -> None:
         """Покрытие передачи аргументов в декорированную функцию"""
         call_count = 0
 
         @retry_on_failure(max_attempts=2, delay=0.1)
-        def test_func(x, y, z=10):
+        def test_func(x: int, y: int, z: int = 10) -> int:
             nonlocal call_count
             call_count += 1
             if call_count == 1:
@@ -368,7 +369,7 @@ class TestRetryOnFailure:
         assert call_count == 2
 
     @patch('src.utils.decorators.time')
-    def test_retry_return_none_path(self, mock_time):
+    def test_retry_return_none_path(self, mock_time: Any) -> None:
         """Покрытие возврата None (хотя код никогда не дойдет до этой строки)"""
         # Этот тест покрывает строку 87: return None
         # Хотя логически эта строка недостижима из-за raise в строке 85
@@ -386,12 +387,12 @@ class TestTimeExecution:
 
     @patch('src.utils.decorators.time')
     @patch('builtins.print')
-    def test_time_execution_basic(self, mock_print, mock_time):
+    def test_time_execution_basic(self, mock_print: Any, mock_time: Any) -> None:
         """Покрытие базовой функциональности измерения времени"""
         mock_time.time.side_effect = [100.0, 100.5]  # Начало и конец выполнения
 
         @time_execution
-        def test_func(x, y):
+        def test_func(x: int, y: int) -> int:
             return x * y
 
         result = test_func(3, 4)
@@ -403,7 +404,7 @@ class TestTimeExecution:
 
     @patch('src.utils.decorators.time')
     @patch('builtins.print')
-    def test_time_execution_with_exception(self, mock_print, mock_time):
+    def test_time_execution_with_exception(self, mock_print: Any, mock_time: Any) -> None:
         """Покрытие измерения времени при возникновении исключения"""
         mock_time.time.side_effect = [200.0, 200.25]
 
@@ -422,12 +423,12 @@ class TestTimeExecution:
 
     @patch('src.utils.decorators.time')
     @patch('builtins.print')
-    def test_time_execution_zero_time(self, mock_print, mock_time):
+    def test_time_execution_zero_time(self, mock_print: Any, mock_time: Any) -> None:
         """Покрытие случая с нулевым временем выполнения"""
         mock_time.time.side_effect = [150.0, 150.0]  # Одинаковое время
 
         @time_execution
-        def test_func() -> None:
+        def test_func() -> str:
             return "instant"
 
         result = test_func()
@@ -436,12 +437,12 @@ class TestTimeExecution:
 
     @patch('src.utils.decorators.time')
     @patch('builtins.print')
-    def test_time_execution_with_args(self, mock_print, mock_time):
+    def test_time_execution_with_args(self, mock_print: Any, mock_time: Any) -> None:
         """Покрытие передачи аргументов в декорированную функцию"""
         mock_time.time.side_effect = [300.0, 301.234]
 
         @time_execution
-        def test_func(a, b, c=None):
+        def test_func(a: int, b: int, c: None = None) -> str:
             return f"{a}-{b}-{c}"
 
         result = test_func("hello", "world", c="test")
@@ -453,13 +454,13 @@ class TestLogErrors:
     """100% покрытие декоратора log_errors"""
 
     @patch('src.utils.decorators.logging')
-    def test_log_errors_success(self, mock_logging):
+    def test_log_errors_success(self, mock_logging: Any) -> None:
         """Покрытие успешного выполнения без ошибок"""
         mock_logger = MagicMock()
         mock_logging.getLogger.return_value = mock_logger
 
         @log_errors
-        def test_func(x, y):
+        def test_func(x: int, y: int) -> int:
             return x + y
 
         result = test_func(5, 3)
@@ -469,7 +470,7 @@ class TestLogErrors:
         mock_logger.error.assert_not_called()
 
     @patch('src.utils.decorators.logging')
-    def test_log_errors_with_exception(self, mock_logging):
+    def test_log_errors_with_exception(self, mock_logging: Any) -> None:
         """Покрытие логирования ошибок"""
         mock_logger = MagicMock()
         mock_logging.getLogger.return_value = mock_logger
@@ -489,13 +490,13 @@ class TestLogErrors:
         mock_logger.error.assert_called_once_with("Ошибка в функции test_func: Тестовое исключение")
 
     @patch('src.utils.decorators.logging')
-    def test_log_errors_different_exception_types(self, mock_logging):
+    def test_log_errors_different_exception_types(self, mock_logging: Any) -> None:
         """Покрытие различных типов исключений"""
         mock_logger = MagicMock()
         mock_logging.getLogger.return_value = mock_logger
 
         @log_errors
-        def test_func(error_type):
+        def test_func(error_type: Any) -> str:
             if error_type == "value":
                 raise ValueError("Value error message")
             elif error_type == "key":
@@ -527,21 +528,20 @@ class TestLogErrors:
         assert mock_logger2.error.called
 
     @patch('src.utils.decorators.logging')
-    def test_log_errors_with_args_kwargs(self, mock_logging):
+    def test_log_errors_with_args_kwargs(self, mock_logging: Any) -> None:
         """Покрытие передачи аргументов в декорированную функцию"""
         mock_logger = MagicMock()
         mock_logging.getLogger.return_value = mock_logger
 
         @log_errors
-        def test_func(a, b, c=None):
+        def test_func(a: int, b: int, c: Optional[int] = None) -> Any:
             if c is None:
                 raise RuntimeError("c is None")
-            return a + b + c
 
-        # Успешный вызов
-        result = test_func(1, 2, c=3)
-        assert result == 6
-        mock_logger.error.assert_not_called()
+            # Успешный вызов
+            result = test_func(1, 2, c=3)
+            assert result == 6
+            mock_logger.error.assert_not_called()
 
         # Вызов с ошибкой
         with pytest.raises(RuntimeError, match="c is None"):
@@ -550,7 +550,7 @@ class TestLogErrors:
         mock_logger.error.assert_called_once_with("Ошибка в функции test_func: c is None")
 
     @patch('src.utils.decorators.logging')
-    def test_log_errors_preserves_exception(self, mock_logging):
+    def test_log_errors_preserves_exception(self, mock_logging: Any) -> None:
         """Покрытие сохранения оригинального исключения"""
         mock_logger = MagicMock()
         mock_logging.getLogger.return_value = mock_logger
@@ -576,7 +576,7 @@ class TestDecoratorsIntegration:
     @patch('src.utils.decorators.EnvLoader')
     @patch('builtins.print')
     @patch('src.utils.decorators.logging')
-    def test_combined_decorators(self, mock_logging, mock_print, mock_env_loader, mock_time):
+    def test_combined_decorators(self, mock_logging: Any, mock_print: Any, mock_env_loader: Any, mock_time: Any) -> None:
         """Покрытие комбинирования нескольких декораторов"""
         # Добавляем больше времён для всех возможных вызовов
         mock_time.time.side_effect = [100.0 + i * 0.5 for i in range(20)]
@@ -591,7 +591,7 @@ class TestDecoratorsIntegration:
         @time_execution
         @retry_on_failure(max_attempts=2, delay=0.1)
         @log_errors
-        def test_func(x):
+        def test_func(x: int) -> str:
             nonlocal call_count
             call_count += 1
             if call_count == 1 and x == "fail":
@@ -614,13 +614,13 @@ class TestDecoratorsIntegration:
 
     @patch('src.utils.decorators.EnvLoader')
     @patch('src.utils.decorators.time')
-    def test_cache_edge_cases(self, mock_time, mock_env_loader):
+    def test_cache_edge_cases(self, mock_time: Any, mock_env_loader: Any) -> None:
         """Покрытие граничных случаев кэширования"""
         mock_time.time.side_effect = [i * 100.0 for i in range(10)]
         mock_env_loader.get_env_var_int.return_value = 3600
 
         @simple_cache(ttl=50, max_size=1)  # Очень маленький кэш
-        def test_func(x):
+        def test_func(x: int) -> int:
             return x ** 3
 
         # Заполняем единственное место в кэше
@@ -640,4 +640,3 @@ class TestDecoratorsIntegration:
 # Вспомогательный класс для тестов
 class CustomException(Exception):
     """Пользовательское исключение для тестов"""
-    pass
