@@ -34,7 +34,7 @@ class TestBaseFormatterAbstractClass:
     def test_cannot_instantiate_abstract_class(self) -> None:
         """Покрытие: нельзя создать экземпляр абстрактного класса"""
         with pytest.raises(TypeError, match="Can't instantiate abstract class"):
-            BaseFormatter()
+            BaseFormatter()  # type: ignore[abstract]
 
     def test_base_formatter_is_abstract(self) -> None:
         """Покрытие: проверка что BaseFormatter наследует от ABC"""
@@ -99,7 +99,7 @@ class TestBaseFormatterMethodSignatures:
         assert 'vacancy' in annotations
         assert 'number' in annotations
         assert 'return' in annotations
-        assert annotations['return'] == str
+        assert annotations['return'] is str
 
     def test_format_salary_signature(self) -> None:
         """Покрытие сигнатуры format_salary"""
@@ -107,7 +107,7 @@ class TestBaseFormatterMethodSignatures:
         annotations = getattr(method, '__annotations__', {})
 
         assert 'salary' in annotations
-        assert annotations['return'] == str
+        assert annotations['return'] is str
 
     def test_format_currency_signature(self) -> None:
         """Покрытие сигнатуры format_currency"""
@@ -115,8 +115,8 @@ class TestBaseFormatterMethodSignatures:
         annotations = getattr(method, '__annotations__', {})
 
         assert 'currency' in annotations
-        assert annotations['currency'] == str
-        assert annotations['return'] == str
+        assert annotations['currency'] is str
+        assert annotations['return'] is str
 
     def test_format_text_signature(self) -> None:
         """Покрытие сигнатуры format_text"""
@@ -124,10 +124,10 @@ class TestBaseFormatterMethodSignatures:
         annotations = getattr(method, '__annotations__', {})
 
         assert 'text' in annotations
-        assert annotations['text'] == str
+        assert annotations['text'] is str
         assert 'max_length' in annotations
-        assert annotations['max_length'] == int
-        assert annotations['return'] == str
+        assert annotations['max_length'] is int
+        assert annotations['return'] is str
 
     def test_format_date_signature(self) -> None:
         """Покрытие сигнатуры format_date"""
@@ -135,8 +135,8 @@ class TestBaseFormatterMethodSignatures:
         annotations = getattr(method, '__annotations__', {})
 
         assert 'date_str' in annotations
-        assert annotations['date_str'] == str
-        assert annotations['return'] == str
+        assert annotations['date_str'] is str
+        assert annotations['return'] is str
 
     def test_format_experience_signature(self) -> None:
         """Покрытие сигнатуры format_experience"""
@@ -144,8 +144,8 @@ class TestBaseFormatterMethodSignatures:
         annotations = getattr(method, '__annotations__', {})
 
         assert 'experience' in annotations
-        assert annotations['experience'] == str
-        assert annotations['return'] == str
+        assert annotations['experience'] is str
+        assert annotations['return'] is str
 
     def test_format_employment_type_signature(self) -> None:
         """Покрытие сигнатуры format_employment_type"""
@@ -153,8 +153,8 @@ class TestBaseFormatterMethodSignatures:
         annotations = getattr(method, '__annotations__', {})
 
         assert 'employment' in annotations
-        assert annotations['employment'] == str
-        assert annotations['return'] == str
+        assert annotations['employment'] is str
+        assert annotations['return'] is str
 
     def test_format_schedule_signature(self) -> None:
         """Покрытие сигнатуры format_schedule"""
@@ -162,8 +162,8 @@ class TestBaseFormatterMethodSignatures:
         annotations = getattr(method, '__annotations__', {})
 
         assert 'schedule' in annotations
-        assert annotations['schedule'] == str
-        assert annotations['return'] == str
+        assert annotations['schedule'] is str
+        assert annotations['return'] is str
 
     def test_format_company_name_signature(self) -> None:
         """Покрытие сигнатуры format_company_name"""
@@ -171,7 +171,7 @@ class TestBaseFormatterMethodSignatures:
         annotations = getattr(method, '__annotations__', {})
 
         assert 'company' in annotations
-        assert annotations['return'] == str
+        assert annotations['return'] is str
 
     def test_clean_html_tags_signature(self) -> None:
         """Покрытие сигнатуры clean_html_tags"""
@@ -179,8 +179,8 @@ class TestBaseFormatterMethodSignatures:
         annotations = getattr(method, '__annotations__', {})
 
         assert 'text' in annotations
-        assert annotations['text'] == str
-        assert annotations['return'] == str
+        assert annotations['text'] is str
+        assert annotations['return'] is str
 
     def test_format_number_signature(self) -> None:
         """Покрытие сигнатуры format_number"""
@@ -188,8 +188,8 @@ class TestBaseFormatterMethodSignatures:
         annotations = getattr(method, '__annotations__', {})
 
         assert 'number' in annotations
-        assert annotations['number'] == int
-        assert annotations['return'] == str
+        assert annotations['number'] is int
+        assert annotations['return'] is str
 
 
 class ConcreteFormatter(BaseFormatter):
@@ -370,7 +370,7 @@ class TestBaseFormatterPartialImplementation:
 
         # Попытка создать экземпляр должна вызвать TypeError
         with pytest.raises(TypeError, match="Can't instantiate abstract class"):
-            PartialFormatter()
+            PartialFormatter()  # type: ignore[abstract]
 
     def test_empty_implementation_raises_error(self) -> None:
         """Покрытие: пустая реализация должна вызывать ошибку"""
@@ -381,7 +381,7 @@ class TestBaseFormatterPartialImplementation:
 
         # Попытка создать экземпляр должна вызвать TypeError
         with pytest.raises(TypeError, match="Can't instantiate abstract class"):
-            EmptyFormatter()
+            EmptyFormatter()  # type: ignore[abstract]
 
 
 class TestBaseFormatterAbstractMethodsCoverage:

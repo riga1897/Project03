@@ -27,7 +27,6 @@ class AbstractDataFilter(ABC):
         Returns:
             List[Dict[str, Any]]: Отфильтрованный список данных
         """
-        pass
 
     @abstractmethod
     def filter_by_salary(
@@ -44,7 +43,6 @@ class AbstractDataFilter(ABC):
         Returns:
             List[Dict[str, Any]]: Отфильтрованный список данных
         """
-        pass
 
     @abstractmethod
     def filter_by_location(self, data: List[Dict[str, Any]], locations: List[str]) -> List[Dict[str, Any]]:
@@ -58,7 +56,7 @@ class AbstractDataFilter(ABC):
         Returns:
             List[Dict[str, Any]]: Отфильтрованный список данных
         """
-        pass
+
 
     @abstractmethod
     def filter_by_experience(self, data: List[Dict[str, Any]], experience_levels: List[str]) -> List[Dict[str, Any]]:
@@ -72,7 +70,7 @@ class AbstractDataFilter(ABC):
         Returns:
             List[Dict[str, Any]]: Отфильтрованный список данных
         """
-        pass
+
 
     def filter_by_multiple_criteria(self, data: List[Dict[str, Any]], **filters: Any) -> List[Dict[str, Any]]:
         """

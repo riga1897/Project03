@@ -11,6 +11,7 @@
 
 import pytest
 from unittest.mock import patch, MagicMock, call
+from typing import Any
 
 # Импорты из реального кода для покрытия
 from src.utils.paginator import Paginator
@@ -44,7 +45,7 @@ class TestPaginatorBasicFunctionality:
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_single_page_success(self, mock_logger, mock_tqdm):
+    def test_paginate_single_page_success(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие успешной пагинации одной страницы"""
         # Мокируем tqdm progress bar
         mock_pbar = MagicMock()
@@ -75,7 +76,7 @@ class TestPaginatorBasicFunctionality:
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_multiple_pages_success(self, mock_logger, mock_tqdm):
+    def test_paginate_multiple_pages_success(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие успешной пагинации множественных страниц"""
         mock_pbar = MagicMock()
         mock_tqdm.return_value.__enter__.return_value = mock_pbar
@@ -92,7 +93,7 @@ class TestPaginatorBasicFunctionality:
 
         # Проверяем результат - все данные объединены
         expected = [{"id": 1, "title": "Job 1"}, {"id": 2, "title": "Job 2"},
-                   {"id": 3, "title": "Job 3"}, {"id": 4, "title": "Job 4"}]
+                    {"id": 3, "title": "Job 3"}, {"id": 4, "title": "Job 4"}]
         assert result == expected
 
         # Проверяем вызовы функции для каждой страницы
@@ -113,7 +114,7 @@ class TestPaginatorBasicFunctionality:
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_with_max_pages_limit(self, mock_logger, mock_tqdm):
+    def test_paginate_with_max_pages_limit(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие пагинации с ограничением max_pages"""
         mock_pbar = MagicMock()
         mock_tqdm.return_value.__enter__.return_value = mock_pbar
@@ -122,7 +123,7 @@ class TestPaginatorBasicFunctionality:
         mock_fetch_func = MagicMock(return_value=test_data)
 
         # total_pages=10, но max_pages=3
-        result = Paginator.paginate(
+        Paginator.paginate(
             mock_fetch_func,
             total_pages=10,
             start_page=0,
@@ -134,11 +135,12 @@ class TestPaginatorBasicFunctionality:
         mock_fetch_func.assert_has_calls([call(0), call(1), call(2)])
 
         # Progress bar должен показать 3 страницы
-        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", ncols=80, leave=False, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")
+        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", ncols=80, leave=False,
+                                          bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_with_start_page_offset(self, mock_logger, mock_tqdm):
+    def test_paginate_with_start_page_offset(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие пагинации с начальной страницы"""
         mock_pbar = MagicMock()
         mock_tqdm.return_value.__enter__.return_value = mock_pbar
@@ -147,7 +149,7 @@ class TestPaginatorBasicFunctionality:
         mock_fetch_func = MagicMock(return_value=test_data)
 
         # Начинаем с 2-й страницы, всего 5 страниц
-        result = Paginator.paginate(
+        Paginator.paginate(
             mock_fetch_func,
             total_pages=5,
             start_page=2
@@ -158,7 +160,8 @@ class TestPaginatorBasicFunctionality:
         mock_fetch_func.assert_has_calls([call(2), call(3), call(4)])
 
         # Progress bar: total = 5-2 = 3 страницы
-        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", ncols=80, leave=False, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")
+        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", ncols=80, leave=False,
+                                          bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")
 
 
 class TestPaginatorEdgeCases:
@@ -166,7 +169,7 @@ class TestPaginatorEdgeCases:
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_no_pages_to_process(self, mock_logger, mock_tqdm):
+    def test_paginate_no_pages_to_process(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие: start_page >= total_pages"""
         mock_fetch_func = MagicMock()
 
@@ -191,7 +194,7 @@ class TestPaginatorEdgeCases:
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_equal_start_and_total_pages(self, mock_logger, mock_tqdm):
+    def test_paginate_equal_start_and_total_pages(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие: start_page == total_pages"""
         mock_fetch_func = MagicMock()
 
@@ -208,7 +211,7 @@ class TestPaginatorEdgeCases:
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_max_pages_smaller_than_total(self, mock_logger, mock_tqdm):
+    def test_paginate_max_pages_smaller_than_total(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие: max_pages < total_pages"""
         mock_pbar = MagicMock()
         mock_tqdm.return_value.__enter__.return_value = mock_pbar
@@ -217,7 +220,7 @@ class TestPaginatorEdgeCases:
         mock_fetch_func = MagicMock(return_value=test_data)
 
         # total_pages=100, max_pages=2
-        result = Paginator.paginate(
+        Paginator.paginate(
             mock_fetch_func,
             total_pages=100,
             start_page=0,
@@ -226,11 +229,12 @@ class TestPaginatorEdgeCases:
 
         # Должно обработать только 2 страницы
         assert mock_fetch_func.call_count == 2
-        mock_tqdm.assert_called_once_with(total=2, desc="Fetching pages", unit="page", ncols=80, leave=False, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")
+        mock_tqdm.assert_called_once_with(total=2, desc="Fetching pages", unit="page", ncols=80, leave=False,
+                                          bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_max_pages_none(self, mock_logger, mock_tqdm):
+    def test_paginate_max_pages_none(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие: max_pages=None (по умолчанию)"""
         mock_pbar = MagicMock()
         mock_tqdm.return_value.__enter__.return_value = mock_pbar
@@ -238,7 +242,7 @@ class TestPaginatorEdgeCases:
         test_data = [{"id": 1}]
         mock_fetch_func = MagicMock(return_value=test_data)
 
-        result = Paginator.paginate(
+        Paginator.paginate(
             mock_fetch_func,
             total_pages=3,
             start_page=0
@@ -247,7 +251,8 @@ class TestPaginatorEdgeCases:
 
         # Должно обработать все 3 страницы
         assert mock_fetch_func.call_count == 3
-        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", ncols=80, leave=False, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")
+        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", ncols=80, leave=False,
+                                          bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")
 
 
 class TestPaginatorDataHandling:
@@ -255,7 +260,7 @@ class TestPaginatorDataHandling:
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_non_list_data_handling(self, mock_logger, mock_tqdm):
+    def test_paginate_non_list_data_handling(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие: функция возвращает не список"""
         mock_pbar = MagicMock()
         mock_tqdm.return_value.__enter__.return_value = mock_pbar
@@ -275,7 +280,7 @@ class TestPaginatorDataHandling:
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_empty_list_data(self, mock_logger, mock_tqdm):
+    def test_paginate_empty_list_data(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие: функция возвращает пустой список"""
         mock_pbar = MagicMock()
         mock_tqdm.return_value.__enter__.return_value = mock_pbar
@@ -296,7 +301,7 @@ class TestPaginatorDataHandling:
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_mixed_data_types(self, mock_logger, mock_tqdm):
+    def test_paginate_mixed_data_types(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие: смешанные типы данных на разных страницах"""
         mock_pbar = MagicMock()
         mock_tqdm.return_value.__enter__.return_value = mock_pbar
@@ -324,7 +329,7 @@ class TestPaginatorErrorHandling:
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_general_exception_handling(self, mock_logger, mock_tqdm):
+    def test_paginate_general_exception_handling(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие обработки общих исключений"""
         mock_pbar = MagicMock()
         mock_tqdm.return_value.__enter__.return_value = mock_pbar
@@ -352,7 +357,7 @@ class TestPaginatorErrorHandling:
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_keyboard_interrupt_handling(self, mock_logger, mock_tqdm):
+    def test_paginate_keyboard_interrupt_handling(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие обработки KeyboardInterrupt"""
         mock_pbar = MagicMock()
         mock_tqdm.return_value.__enter__.return_value = mock_pbar
@@ -375,7 +380,7 @@ class TestPaginatorErrorHandling:
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_multiple_exceptions(self, mock_logger, mock_tqdm):
+    def test_paginate_multiple_exceptions(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие множественных исключений"""
         mock_pbar = MagicMock()
         mock_tqdm.return_value.__enter__.return_value = mock_pbar
@@ -404,7 +409,7 @@ class TestPaginatorProgressBar:
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_progress_bar_configuration(self, mock_logger, mock_tqdm):
+    def test_paginate_progress_bar_configuration(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие конфигурации progress bar"""
         mock_pbar = MagicMock()
         mock_tqdm.return_value.__enter__.return_value = mock_pbar
@@ -423,7 +428,7 @@ class TestPaginatorProgressBar:
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_progress_bar_postfix_updates(self, mock_logger, mock_tqdm):
+    def test_paginate_progress_bar_postfix_updates(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие обновлений postfix в progress bar"""
         mock_pbar = MagicMock()
         mock_tqdm.return_value.__enter__.return_value = mock_pbar
@@ -436,7 +441,7 @@ class TestPaginatorProgressBar:
         ]
         mock_fetch_func = MagicMock(side_effect=page_data)
 
-        result = Paginator.paginate(mock_fetch_func, total_pages=3, start_page=0)
+        Paginator.paginate(mock_fetch_func, total_pages=3, start_page=0)
 
         # Проверяем обновления postfix с накопительным счетом
         expected_postfix_calls = [
@@ -448,7 +453,7 @@ class TestPaginatorProgressBar:
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_progress_bar_updates_with_errors(self, mock_logger, mock_tqdm):
+    def test_paginate_progress_bar_updates_with_errors(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие обновлений progress bar при ошибках"""
         mock_pbar = MagicMock()
         mock_tqdm.return_value.__enter__.return_value = mock_pbar
@@ -460,7 +465,7 @@ class TestPaginatorProgressBar:
             [{"id": 2}]
         ])
 
-        result = Paginator.paginate(mock_fetch_func, total_pages=3, start_page=0)
+        Paginator.paginate(mock_fetch_func, total_pages=3, start_page=0)
 
         # Progress bar должен обновиться для всех страниц, включая ошибочную
         assert mock_pbar.update.call_count == 3
@@ -478,7 +483,7 @@ class TestPaginatorIntegration:
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_complete_workflow(self, mock_logger, mock_tqdm):
+    def test_paginate_complete_workflow(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие полного workflow пагинации"""
         mock_pbar = MagicMock()
         mock_tqdm.return_value.__enter__.return_value = mock_pbar
@@ -513,14 +518,15 @@ class TestPaginatorIntegration:
         mock_logger.warning.assert_called_once()  # Wrong data type
 
         # Проверяем progress bar - total должен быть 3 (range от 1 до 4)
-        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", ncols=80, leave=False, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")
+        mock_tqdm.assert_called_once_with(total=3, desc="Fetching pages", unit="page", ncols=80, leave=False,
+                                          bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")
         assert mock_pbar.update.call_count == 3
         # Postfix может вызываться для разного количества успешных страниц в зависимости от обработки ошибок
         assert mock_pbar.set_postfix.call_count >= 1
 
     @patch('src.utils.paginator.tqdm')
     @patch('src.utils.paginator.logger')
-    def test_paginate_default_parameters(self, mock_logger, mock_tqdm):
+    def test_paginate_default_parameters(self, mock_logger: Any, mock_tqdm: Any) -> None:
         """Покрытие вызова с параметрами по умолчанию"""
         mock_pbar = MagicMock()
         mock_tqdm.return_value.__enter__.return_value = mock_pbar
@@ -534,4 +540,5 @@ class TestPaginatorIntegration:
         # По умолчанию: total_pages=1, start_page=0, max_pages=None
         assert result == test_data
         mock_fetch_func.assert_called_once_with(0)
-        mock_tqdm.assert_called_once_with(total=1, desc="Fetching pages", unit="page", ncols=80, leave=False, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")
+        mock_tqdm.assert_called_once_with(total=1, desc="Fetching pages", unit="page", ncols=80, leave=False,
+                                          bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]")

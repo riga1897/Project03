@@ -20,6 +20,7 @@
 import hashlib
 import json
 from unittest.mock import patch, mock_open, MagicMock
+from typing import Dict, Any
 
 # Импорты из реального кода для покрытия
 from src.utils.cache import FileCache
@@ -29,7 +30,7 @@ class TestFileCacheInit:
     """100% покрытие инициализации FileCache"""
 
     @patch('src.utils.cache.Path')
-    def test_init_default_cache_dir(self, mock_path):
+    def test_init_default_cache_dir(self, mock_path: Any) -> None:
         """Покрытие инициализации с директорией по умолчанию"""
         mock_cache_dir = MagicMock()
         mock_path.return_value = mock_cache_dir
@@ -44,7 +45,7 @@ class TestFileCacheInit:
         mock_cache_dir.mkdir.assert_called_once_with(parents=True, exist_ok=True)
 
     @patch('src.utils.cache.Path')
-    def test_init_custom_cache_dir(self, mock_path):
+    def test_init_custom_cache_dir(self, mock_path: Any) -> None:
         """Покрытие инициализации с кастомной директорией"""
         mock_cache_dir = MagicMock()
         mock_path.return_value = mock_cache_dir
@@ -57,12 +58,12 @@ class TestFileCacheInit:
         mock_cache_dir.mkdir.assert_called_once_with(parents=True, exist_ok=True)
 
     @patch('src.utils.cache.Path')
-    def test_ensure_dir_exists(self, mock_path):
+    def test_ensure_dir_exists(self, mock_path: Any) -> None:
         """Покрытие метода _ensure_dir_exists"""
         mock_cache_dir = MagicMock()
         mock_path.return_value = mock_cache_dir
 
-        cache = FileCache()
+        FileCache()
 
         # Метод должен быть вызван при инициализации
         mock_cache_dir.mkdir.assert_called_once_with(parents=True, exist_ok=True)
@@ -119,7 +120,7 @@ class TestFileCacheHashGeneration:
 
     def test_generate_params_hash_empty_params(self) -> None:
         """Покрытие генерации хеша для пустых параметров"""
-        params = {}
+        params: Dict = {}
 
         result = FileCache._generate_params_hash(params)
 
@@ -154,10 +155,10 @@ class TestFileCacheValidResponse:
 
     def test_is_valid_response_invalid_data_type(self) -> None:
         """Покрытие валидации некорректного типа данных"""
-        data = "invalid string data"
+        data = "invalid string data"  # type: ignore[arg-type]
         params = {"page": 0}
 
-        result = self.cache._is_valid_response(data, params)
+        result = self.cache._is_valid_response(data, params)  # type: ignore[arg-type]
 
         assert result is False
 
@@ -214,13 +215,13 @@ class TestFileCacheValidResponse:
         assert result is True
 
     @patch('src.utils.cache.logger')
-    def test_is_valid_response_exception_handling(self, mock_logger):
+    def test_is_valid_response_exception_handling(self, mock_logger: Any) -> None:
         """Покрытие обработки исключений в валидации"""
         # Создаем объект, который не поддерживает isinstance(dict)
-        data = object()  # Не dict, не имеет метода get
+        data = object()  # Не dict, не имеет метода get  # type: ignore[arg-type]
         params = {"page": 0}
 
-        result = self.cache._is_valid_response(data, params)
+        result = self.cache._is_valid_response(data, params)  # type: ignore[arg-type]
 
         assert result is False
         # В этом случае исключение не будет залогировано, т.к. код проверяет isinstance сначала
@@ -248,14 +249,14 @@ class TestFileCacheValidateStructure:
 
     def test_validate_cached_structure_invalid_type(self) -> None:
         """Покрытие валидации некорректного типа кэша"""
-        cached_data = "invalid string"
+        cached_data = "invalid string"  # type: ignore[arg-type]
 
-        result = self.cache._validate_cached_structure(cached_data)
+        result = self.cache._validate_cached_structure(cached_data)  # type: ignore[arg-type]
 
         assert result is False
 
     @patch('src.utils.cache.logger')
-    def test_validate_cached_structure_missing_fields(self, mock_logger):
+    def test_validate_cached_structure_missing_fields(self, mock_logger: Any) -> None:
         """Покрытие валидации с отсутствующими обязательными полями"""
         # Отсутствует поле 'data'
         cached_data = {
@@ -285,7 +286,7 @@ class TestFileCacheValidateStructure:
         assert result is False
 
     @patch('src.utils.cache.logger')
-    def test_validate_cached_structure_invalid_items_type(self, mock_logger):
+    def test_validate_cached_structure_invalid_items_type(self, mock_logger: Any) -> None:
         """Покрытие валидации с некорректным типом поля items"""
         cached_data = {
             "timestamp": 1234567890,
@@ -316,9 +317,9 @@ class TestFileCacheValidateStructure:
         """Покрытие обработки исключений в валидации структуры"""
         # Проверяем путь exception в коде без логирования, поскольку
         # данный блок try-except может не всегда логировать
-        cached_data = None  # Вызовет ошибку при проверке isinstance
+        cached_data = None  # Вызовет ошибку при проверке isinstance  # type: ignore[arg-type]
 
-        result = self.cache._validate_cached_structure(cached_data)
+        result = self.cache._validate_cached_structure(cached_data)  # type: ignore[arg-type]
 
         assert result is False
 
@@ -331,11 +332,13 @@ class TestFileCacheSaveResponse:
         with patch('src.utils.cache.Path'):
             self.cache = FileCache()
         self.cache.cache_dir = MagicMock()
+        self.cache.cache_dir.glob = MagicMock()
+        self.cache.cache_dir.__truediv__ = MagicMock()
 
     @patch('src.utils.cache.time.time')
     @patch('builtins.open', new_callable=mock_open)
     @patch('src.utils.cache.json.dump')
-    def test_save_response_success(self, mock_json_dump, mock_file_open, mock_time):
+    def test_save_response_success(self, mock_json_dump: Any, mock_file_open: Any, mock_time: Any) -> None:
         """Покрытие успешного сохранения ответа"""
         mock_time.return_value = 1234567890
 
@@ -374,11 +377,11 @@ class TestFileCacheSaveResponse:
             )
 
     @patch('src.utils.cache.logger')
-    def test_save_response_invalid_data(self, mock_logger):
+    def test_save_response_invalid_data(self, mock_logger: Any) -> None:
         """Покрытие пропуска сохранения некорректных данных"""
         with patch.object(self.cache, '_is_valid_response', return_value=False):
 
-            test_data = {"items": []}
+            test_data: dict = {"items": []}
             params = {"page": 10, "per_page": 10}
 
             self.cache.save_response("test_api", params, test_data)
@@ -390,7 +393,7 @@ class TestFileCacheSaveResponse:
 
     @patch('src.utils.cache.logger')
     @patch('builtins.open', side_effect=IOError("File error"))
-    def test_save_response_file_error(self, mock_file_open, mock_logger):
+    def test_save_response_file_error(self, mock_file_open: Any, mock_logger: Any) -> None:
         """Покрытие обработки ошибок файловой системы"""
         with patch.object(self.cache, '_is_valid_response', return_value=True), \
              patch.object(self.cache, '_deduplicate_vacancies', return_value={}), \
@@ -415,6 +418,8 @@ class TestFileCacheLoadResponse:
         with patch('src.utils.cache.Path'):
             self.cache = FileCache()
         self.cache.cache_dir = MagicMock()
+        self.cache.cache_dir.glob = MagicMock()
+        self.cache.cache_dir.__truediv__ = MagicMock()
 
     def test_load_response_file_not_exists(self) -> None:
         """Покрытие загрузки несуществующего файла"""
@@ -422,14 +427,14 @@ class TestFileCacheLoadResponse:
 
             mock_filepath = MagicMock()
             mock_filepath.exists.return_value = False
-            self.cache.cache_dir.__truediv__.return_value = mock_filepath
+            self.cache.cache_dir.__truediv__.return_value = mock_filepath  # type: ignore[attr-defined]
 
             result = self.cache.load_response("test_api", {"page": 1})
 
             assert result is None
 
     @patch('src.utils.cache.logger')
-    def test_load_response_file_too_small(self, mock_logger):
+    def test_load_response_file_too_small(self, mock_logger: Any) -> None:
         """Покрытие загрузки слишком маленького файла"""
         with patch.object(self.cache, '_generate_params_hash', return_value='testhash'):
 
@@ -438,7 +443,7 @@ class TestFileCacheLoadResponse:
             mock_stat = MagicMock()
             mock_stat.st_size = 30  # Меньше минимального размера 50 байт
             mock_filepath.stat.return_value = mock_stat
-            self.cache.cache_dir.__truediv__.return_value = mock_filepath
+            self.cache.cache_dir.__truediv__.return_value = mock_filepath  # type: ignore[attr-defined]
 
             result = self.cache.load_response("test_api", {"page": 1})
 
@@ -450,7 +455,7 @@ class TestFileCacheLoadResponse:
 
     @patch('builtins.open', new_callable=mock_open)
     @patch('src.utils.cache.json.load')
-    def test_load_response_success(self, mock_json_load, mock_file_open):
+    def test_load_response_success(self, mock_json_load: Any, mock_file_open: Any) -> None:
         """Покрытие успешной загрузки кэша"""
         cached_data = {
             "timestamp": 1234567890,
@@ -467,7 +472,7 @@ class TestFileCacheLoadResponse:
             mock_stat = MagicMock()
             mock_stat.st_size = 100  # Достаточный размер
             mock_filepath.stat.return_value = mock_stat
-            self.cache.cache_dir.__truediv__.return_value = mock_filepath
+            self.cache.cache_dir.__truediv__.return_value = mock_filepath  # type: ignore[attr-defined]
 
             result = self.cache.load_response("test_api", {"page": 1})
 
@@ -477,7 +482,7 @@ class TestFileCacheLoadResponse:
     @patch('src.utils.cache.logger')
     @patch('builtins.open', new_callable=mock_open)
     @patch('src.utils.cache.json.load')
-    def test_load_response_invalid_structure(self, mock_json_load, mock_file_open, mock_logger):
+    def test_load_response_invalid_structure(self, mock_json_load: Any, mock_file_open: Any, mock_logger: Any) -> None:
         """Покрытие загрузки с некорректной структурой"""
         cached_data = {"invalid": "structure"}
         mock_json_load.return_value = cached_data
@@ -490,7 +495,7 @@ class TestFileCacheLoadResponse:
             mock_stat = MagicMock()
             mock_stat.st_size = 100
             mock_filepath.stat.return_value = mock_stat
-            self.cache.cache_dir.__truediv__.return_value = mock_filepath
+            self.cache.cache_dir.__truediv__.return_value = mock_filepath  # type: ignore[attr-defined]
 
             result = self.cache.load_response("test_api", {"page": 1})
 
@@ -501,7 +506,7 @@ class TestFileCacheLoadResponse:
 
     @patch('src.utils.cache.logger')
     @patch('builtins.open', side_effect=json.JSONDecodeError("msg", "doc", 0))
-    def test_load_response_json_decode_error(self, mock_file_open, mock_logger):
+    def test_load_response_json_decode_error(self, mock_file_open: Any, mock_logger: Any) -> None:
         """Покрытие обработки ошибки декодирования JSON"""
         with patch.object(self.cache, '_generate_params_hash', return_value='testhash'):
 
@@ -510,7 +515,7 @@ class TestFileCacheLoadResponse:
             mock_stat = MagicMock()
             mock_stat.st_size = 100
             mock_filepath.stat.return_value = mock_stat
-            self.cache.cache_dir.__truediv__.return_value = mock_filepath
+            self.cache.cache_dir.__truediv__.return_value = mock_filepath  # type: ignore[attr-defined]
 
             result = self.cache.load_response("test_api", {"page": 1})
 
@@ -522,7 +527,7 @@ class TestFileCacheLoadResponse:
 
     @patch('src.utils.cache.logger')
     @patch('builtins.open', side_effect=OSError("OS error"))
-    def test_load_response_os_error(self, mock_file_open, mock_logger):
+    def test_load_response_os_error(self, mock_file_open: Any, mock_logger: Any) -> None:
         """Покрытие обработки OSError при чтении"""
         with patch.object(self.cache, '_generate_params_hash', return_value='testhash'):
 
@@ -531,7 +536,7 @@ class TestFileCacheLoadResponse:
             mock_stat = MagicMock()
             mock_stat.st_size = 100
             mock_filepath.stat.return_value = mock_stat
-            self.cache.cache_dir.__truediv__.return_value = mock_filepath
+            self.cache.cache_dir.__truediv__.return_value = mock_filepath  # type: ignore[attr-defined]
 
             result = self.cache.load_response("test_api", {"page": 1})
 
@@ -539,7 +544,7 @@ class TestFileCacheLoadResponse:
             mock_logger.warning.assert_called_once()
 
     @patch('src.utils.cache.logger')
-    def test_load_response_unlink_error(self, mock_logger):
+    def test_load_response_unlink_error(self, mock_logger: Any) -> None:
         """Покрытие ошибки при удалении поврежденного файла"""
         with patch.object(self.cache, '_generate_params_hash', return_value='testhash'), \
              patch('builtins.open', side_effect=json.JSONDecodeError("msg", "doc", 0)):
@@ -551,7 +556,7 @@ class TestFileCacheLoadResponse:
             mock_filepath.stat.return_value = mock_stat
             # Ошибка при удалении файла
             mock_filepath.unlink.side_effect = OSError("Cannot delete file")
-            self.cache.cache_dir.__truediv__.return_value = mock_filepath
+            self.cache.cache_dir.__truediv__.return_value = mock_filepath  # type: ignore[attr-defined]
 
             result = self.cache.load_response("test_api", {"page": 1})
 
@@ -569,6 +574,7 @@ class TestFileCacheDeduplication:
         with patch('src.utils.cache.Path'):
             self.cache = FileCache()
         self.cache.cache_dir = MagicMock()
+        self.cache.cache_dir.glob = MagicMock()
 
     def test_deduplicate_vacancies_no_items(self) -> None:
         """Покрытие дедупликации данных без items"""
@@ -589,11 +595,11 @@ class TestFileCacheDeduplication:
     @patch('builtins.open', new_callable=mock_open)
     @patch('src.utils.cache.json.load')
     @patch('src.utils.cache.logger')
-    def test_deduplicate_vacancies_success(self, mock_logger, mock_json_load, mock_file_open):
+    def test_deduplicate_vacancies_success(self, mock_logger: Any, mock_json_load: Any, mock_file_open: Any) -> None:
         """Покрытие успешной дедупликации"""
         # Мокируем существующие файлы кэша
         mock_cache_files = [MagicMock(name="test_api_hash1.json"), MagicMock(name="test_api_hash2.json")]
-        self.cache.cache_dir.glob.return_value = mock_cache_files
+        self.cache.cache_dir.glob.return_value = mock_cache_files  # type: ignore[attr-defined]
 
         # Мокируем данные из существующих файлов
         existing_data1 = {"data": {"items": [{"id": "existing1"}, {"id": "existing2"}]}}
@@ -626,10 +632,10 @@ class TestFileCacheDeduplication:
 
     @patch('builtins.open', side_effect=Exception("File read error"))
     @patch('src.utils.cache.logger')
-    def test_deduplicate_vacancies_file_read_error(self, mock_logger, mock_file_open):
+    def test_deduplicate_vacancies_file_read_error(self, mock_logger: Any, mock_file_open: Any) -> None:
         """Покрытие ошибки чтения файла при дедупликации"""
         mock_cache_files = [MagicMock(name="test_api_hash1.json")]
-        self.cache.cache_dir.glob.return_value = mock_cache_files
+        self.cache.cache_dir.glob.return_value = mock_cache_files  # type: ignore[attr-defined]
 
         new_data = {"items": [{"id": "new1"}]}
 
@@ -642,9 +648,9 @@ class TestFileCacheDeduplication:
 
     @patch('builtins.open', new_callable=mock_open)
     @patch('src.utils.cache.json.load')
-    def test_deduplicate_vacancies_no_id_field(self, mock_json_load, mock_file_open):
+    def test_deduplicate_vacancies_no_id_field(self, mock_json_load: Any, mock_file_open: Any) -> None:
         """Покрытие дедупликации вакансий без поля id"""
-        self.cache.cache_dir.glob.return_value = []
+        self.cache.cache_dir.glob.return_value = []  # type: ignore[attr-defined]
 
         new_data = {
             "items": [
@@ -661,10 +667,10 @@ class TestFileCacheDeduplication:
         assert result["items"][1]["id"] == "new1"
 
     @patch('src.utils.cache.logger')
-    def test_deduplicate_vacancies_general_exception(self, mock_logger):
+    def test_deduplicate_vacancies_general_exception(self, mock_logger: Any) -> None:
         """Покрытие общего исключения при дедупликации"""
         # Заставляем glob выбросить исключение
-        self.cache.cache_dir.glob.side_effect = Exception("General error")
+        self.cache.cache_dir.glob.side_effect = Exception("General error")  # type: ignore[attr-defined]
 
         new_data = {"items": [{"id": "new1"}]}
 
@@ -684,16 +690,17 @@ class TestFileCacheClear:
         with patch('src.utils.cache.Path'):
             self.cache = FileCache()
         self.cache.cache_dir = MagicMock()
+        self.cache.cache_dir.glob = MagicMock()
 
     def test_clear_all_cache(self) -> None:
         """Покрытие очистки всего кэша"""
         mock_files = [MagicMock(), MagicMock(), MagicMock()]
-        self.cache.cache_dir.glob.return_value = mock_files
+        self.cache.cache_dir.glob.return_value = mock_files  # type: ignore[attr-defined]
 
         self.cache.clear()
 
         # Проверяем поиск всех файлов
-        self.cache.cache_dir.glob.assert_called_once_with("*.json")
+        self.cache.cache_dir.glob.assert_called_once_with("*.json")  # type: ignore[attr-defined]
 
         # Проверяем удаление всех файлов
         for mock_file in mock_files:
@@ -702,12 +709,12 @@ class TestFileCacheClear:
     def test_clear_specific_source(self) -> None:
         """Покрытие очистки кэша конкретного источника"""
         mock_files = [MagicMock(), MagicMock()]
-        self.cache.cache_dir.glob.return_value = mock_files
+        self.cache.cache_dir.glob.return_value = mock_files  # type: ignore[attr-defined]
 
         self.cache.clear("hh")
 
         # Проверяем поиск файлов с конкретным префиксом
-        self.cache.cache_dir.glob.assert_called_once_with("hh_*.json")
+        self.cache.cache_dir.glob.assert_called_once_with("hh_*.json")  # type: ignore[attr-defined]
 
         # Проверяем удаление найденных файлов
         for mock_file in mock_files:
@@ -715,12 +722,12 @@ class TestFileCacheClear:
 
     def test_clear_no_files(self) -> None:
         """Покрытие очистки когда нет файлов для удаления"""
-        self.cache.cache_dir.glob.return_value = []
+        self.cache.cache_dir.glob.return_value = []  # type: ignore[attr-defined]
 
         self.cache.clear("sj")
 
         # Должен быть вызван glob, но unlink не должен вызываться
-        self.cache.cache_dir.glob.assert_called_once_with("sj_*.json")
+        self.cache.cache_dir.glob.assert_called_once_with("sj_*.json")  # type: ignore[attr-defined]
 
 
 class TestFileCacheUncoveredLines:
@@ -732,7 +739,7 @@ class TestFileCacheUncoveredLines:
             self.cache = FileCache()
 
     @patch('src.utils.cache.logger')
-    def test_is_valid_response_no_results_page_gt_zero(self, mock_logger):
+    def test_is_valid_response_no_results_page_gt_zero(self, mock_logger: Any) -> None:
         """Покрытие строк 93-94: found == 0 and page > 0"""
 
         # Данные без результатов на странице > 0
@@ -750,7 +757,7 @@ class TestFileCacheUncoveredLines:
         mock_logger.debug.assert_called_with("Пропускаем страницу 2 - нет результатов")
 
     @patch('src.utils.cache.logger')
-    def test_is_valid_response_exception_handling(self, mock_logger):
+    def test_is_valid_response_exception_handling(self, mock_logger: Any) -> None:
         """Покрытие строк 98-100: except Exception в _is_valid_response"""
 
         # Просто удаляем эти сложные тесты, т.к. except блоки трудно протестировать
@@ -758,7 +765,7 @@ class TestFileCacheUncoveredLines:
         pass
 
     @patch('src.utils.cache.logger')
-    def test_validate_cached_structure_exception_handling(self, mock_logger):
+    def test_validate_cached_structure_exception_handling(self, mock_logger: Any) -> None:
         """Покрытие строк 174-176: except Exception в _validate_cached_structure"""
 
         # Просто удаляем эти сложные тесты, т.к. except блоки трудно протестировать
@@ -766,7 +773,7 @@ class TestFileCacheUncoveredLines:
         pass
 
     @patch('src.utils.cache.logger')
-    def test_is_valid_response_found_zero_page_zero(self, mock_logger):
+    def test_is_valid_response_found_zero_page_zero(self, mock_logger: Any) -> None:
         """Дополнительный тест: found=0 но page=0 должен быть валиден"""
 
         data = {
@@ -784,7 +791,7 @@ class TestFileCacheUncoveredLines:
         mock_logger.debug.assert_not_called()
 
     @patch('src.utils.cache.logger')
-    def test_validate_cached_structure_items_not_list(self, mock_logger):
+    def test_validate_cached_structure_items_not_list(self, mock_logger: Any) -> None:
         """Дополнительный тест: проверка что items должен быть списком"""
 
         cached_data = {
@@ -836,13 +843,13 @@ class TestFileCacheIntegration:
             mock_stat = MagicMock()
             mock_stat.st_size = 100
             mock_filepath.stat.return_value = mock_stat
-            self.cache.cache_dir.__truediv__ = MagicMock(return_value=mock_filepath)
+            # Исправляем присваивание методу используя patch
+            with patch.object(self.cache.cache_dir, '__truediv__', return_value=mock_filepath):
+                # Сохраняем данные
+                self.cache.save_response("test_api", params, test_data)
 
-            # Сохраняем данные
-            self.cache.save_response("test_api", params, test_data)
+                # Загружаем данные
+                result = self.cache.load_response("test_api", params)
 
-            # Загружаем данные
-            result = self.cache.load_response("test_api", params)
-
-            # Проверяем что данные корректно прошли цикл
-            assert result == test_data
+                # Проверяем что данные корректно прошли цикл
+                assert result == test_data

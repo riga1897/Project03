@@ -15,9 +15,8 @@
 - Логику извлечения данных из разных API форматов
 """
 
-import pytest
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
+from typing import Any, Dict, List
 
 from src.utils.api_data_filter import APIDataFilter
 
@@ -62,7 +61,7 @@ class TestAPIDataFilter:
             {"id": "2", "name": "Manager", "source": "sj"}  # Без поля salary
         ]
 
-        result = filter_instance.filter_by_salary(data, min_salary=50000)
+        result = filter_instance.filter_by_salary(data, min_salary=50000)   # type: ignore[arg-type]
         assert len(result) == 0
 
     def test_filter_by_salary_superjob_format(self) -> None:
@@ -314,7 +313,7 @@ class TestAPIDataFilter:
         assert result[1]["id"] == "2"
 
     @patch('src.utils.data_normalizers.normalize_area_data')
-    def test_filter_by_location_superjob_format(self, mock_normalize):
+    def test_filter_by_location_superjob_format(self, mock_normalize: Any) -> None:
         """Покрытие: формат SuperJob для локации"""
         mock_normalize.return_value = "Москва"
         filter_instance = APIDataFilter()
@@ -341,7 +340,7 @@ class TestAPIDataFilter:
             {"id": "2", "name": "Developer 2", "source": "sj"}  # Без поля локации
         ]
 
-        result = filter_instance.filter_by_location(data, ["Москва"])
+        result = filter_instance.filter_by_location(data, ["Москва"])  # type: ignore[arg-type]
         assert len(result) == 0
 
     def test_filter_by_location_empty_locations(self) -> None:
@@ -417,7 +416,7 @@ class TestAPIDataFilter:
             {"id": "2", "name": "Developer 2", "source": "sj"}
         ]
 
-        result = filter_instance.filter_by_experience(data, ["От 1 года до 3 лет"])
+        result = filter_instance.filter_by_experience(data, ["От 1 года до 3 лет"])  # type: ignore[arg-type]
         assert len(result) == 0
 
     def test_filter_by_experience_empty_levels(self) -> None:
@@ -493,7 +492,7 @@ class TestAPIDataFilter:
             {"id": "2", "name": "Developer 2", "source": "sj"}
         ]
 
-        result = filter_instance.filter_by_employment_type(data, ["Полная занятость"])
+        result = filter_instance.filter_by_employment_type(data, ["Полная занятость"])  # type: ignore[arg-type]
         assert len(result) == 0
 
     def test_filter_by_employment_type_empty_types(self) -> None:
@@ -586,7 +585,7 @@ class TestAPIDataFilter:
             {"id": "2", "name": "Developer 2", "source": "sj"}
         ]
 
-        result = filter_instance.filter_by_company(data, ["Яндекс"])
+        result = filter_instance.filter_by_company(data, ["Яндекс"])  # type: ignore[arg-type]
         assert len(result) == 0
 
     def test_filter_by_company_empty_companies(self) -> None:
@@ -832,7 +831,7 @@ class TestAPIDataFilterPrivateMethods:
         """Покрытие: нет полей"""
         filter_instance = APIDataFilter()
 
-        item = {}
+        item: Dict = {}
         result = filter_instance._get_searchable_text(item)
         assert result == ""
 
@@ -868,7 +867,7 @@ class TestAPIDataFilterPrivateMethods:
         filter_instance = APIDataFilter()
 
         text = "python developer"
-        keywords = []
+        keywords: List = []
         result = filter_instance._contains_keywords(text, keywords)
         assert result is False
 
@@ -904,7 +903,7 @@ class TestAPIDataFilterPrivateMethods:
         """Покрытие: не словарь"""
         filter_instance = APIDataFilter()
 
-        result = filter_instance._extract_location("not a dict")
+        result = filter_instance._extract_location("not a dict")  # type: ignore[arg-type]
         assert result is None
 
     def test_extract_experience_hh_format(self) -> None:
@@ -929,7 +928,7 @@ class TestAPIDataFilterPrivateMethods:
         """Покрытие: не словарь"""
         filter_instance = APIDataFilter()
 
-        result = filter_instance._extract_experience("not a dict")
+        result = filter_instance._extract_experience("not a dict")  # type: ignore[arg-type]
         assert result is None
 
     def test_extract_employment_type_hh_format(self) -> None:
@@ -954,7 +953,7 @@ class TestAPIDataFilterPrivateMethods:
         """Покрытие: не словарь"""
         filter_instance = APIDataFilter()
 
-        result = filter_instance._extract_employment_type("not a dict")
+        result = filter_instance._extract_employment_type("not a dict")  # type: ignore[arg-type]
         assert result is None
 
     def test_extract_company_name_hh_format(self) -> None:
@@ -987,7 +986,7 @@ class TestAPIDataFilterPrivateMethods:
         """Покрытие: не словарь"""
         filter_instance = APIDataFilter()
 
-        result = filter_instance._extract_company_name("not a dict")
+        result = filter_instance._extract_company_name("not a dict")  # type: ignore[arg-type]
         assert result is None
 
 
@@ -1114,7 +1113,7 @@ class TestAPIDataFilterImportErrorCoverage:
         # Более агрессивный патчинг для покрытия except блока
 
         # Мокируем __import__ для первого импорта abstract_filter
-        def mock_import(name, *args, **kwargs):
+        def mock_import(name: Any, *args: Any, **kwargs: Any) -> Any:
             if name == '.abstract_filter' or 'abstract_filter' in name:
                 raise ImportError("Forced ImportError for abstract_filter")
             return original_import(name, *args, **kwargs)
@@ -1134,15 +1133,15 @@ class TestAPIDataFilterImportErrorCoverage:
                     del sys.modules[mod]
 
                 # Теперь импорт должен попасть в except блок
-                spec = importlib.util.find_spec('src.utils.api_data_filter')
+                spec = importlib.util.find_spec('src.utils.api_data_filter')   # type: ignore[attr-defined]
                 if spec:
-                    module = importlib.util.module_from_spec(spec)
+                    module = importlib.util.module_from_spec(spec)  # type: ignore[attr-defined]
                     spec.loader.exec_module(module)
 
                 # Если доходим сюда, то except блок сработал
                 assert True
 
-            except Exception as e:
+            except Exception:
                 # Любой результат приемлем для покрытия
                 assert True
 
@@ -1151,7 +1150,7 @@ class TestAPIDataFilterImportErrorCoverage:
         filter_instance = APIDataFilter()
 
         # Агрессивный патчинг для активации except блока
-        def mock_import(name, *args, **kwargs):
+        def mock_import(name: Any, *args: Any, **kwargs: Any) -> Any:
             if 'utils.data_normalizers' in name and not name.startswith('src.'):
                 raise ImportError("Forced ImportError for utils.data_normalizers")
             return original_import(name, *args, **kwargs)
@@ -1174,7 +1173,7 @@ class TestAPIDataFilterImportErrorCoverage:
             try:
                 result = filter_instance._extract_experience({"experience": {"name": "От 1 года"}})
                 assert result is not None or result is None
-            except:
+            except Exception:
                 # Любой результат приемлем - главное покрыть except блок
                 pass
 
@@ -1187,7 +1186,7 @@ class TestAPIDataFilterImportErrorCoverage:
             try:
                 result = filter_instance._extract_employment_type({"employment": {"name": "Полная"}})
                 assert result is not None or result is None
-            except:
+            except Exception:
                 # Любой результат приемлем - главное покрыть except блок
                 pass
 
@@ -1200,6 +1199,6 @@ class TestAPIDataFilterImportErrorCoverage:
             try:
                 result = filter_instance._extract_company_name({"employer": {"name": "Яндекс"}})
                 assert result is not None or result is None
-            except:
+            except Exception:
                 # Любой результат приемлем - главное покрыть except блок
                 pass

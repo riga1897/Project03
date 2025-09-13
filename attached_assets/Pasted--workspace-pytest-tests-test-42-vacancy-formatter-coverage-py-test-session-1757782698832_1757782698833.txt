@@ -1,0 +1,172 @@
+~/workspace$ pytest tests/test_42_vacancy_formatter_coverage.py 
+===================== test session starts ======================
+platform linux -- Python 3.12.11, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/runner/workspace
+configfile: pyproject.toml
+plugins: mock-3.15.0, cov-6.3.0
+collected 66 items                                             
+
+tests/test_42_vacancy_formatter_coverage.py ...........F [ 18%]
+..............F............F..F..F..................F.   [100%]
+
+=========================== FAILURES ===========================
+_ TestVacancyFormatter.test_extract_company_name_get_name_method _
+
+self = <tests.test_42_vacancy_formatter_coverage.TestVacancyFormatter object at 0x7fc95a4f9be0>
+
+    def test_extract_company_name_get_name_method(self) -> None:
+        """Покрытие: извлечение названия компании с методом get_name()"""
+        formatter = VacancyFormatter()
+    
+        # Тест с методом get_name()
+        employer = MockEmployer("Яндекс", has_get_name=True)
+        vacancy = MockVacancy(employer=employer)
+        result = formatter._extract_company_name(vacancy)
+>       assert result == "Яндекс"
+E       AssertionError: assert 'None' == 'Яндекс'
+E         
+E         - Яндекс
+E         + None
+
+tests/test_42_vacancy_formatter_coverage.py:260: AssertionError
+_ TestVacancyFormatter.test_format_salary_dict_import_success __
+
+self = <tests.test_42_vacancy_formatter_coverage.TestVacancyFormatter object at 0x7fc95a33c3e0>
+
+    def test_format_salary_dict_import_success(self) -> None:
+        """Покрытие: форматирование словаря зарплаты с успешным импортом"""
+        formatter = VacancyFormatter()
+    
+        # Мокируем оба возможных импорта
+        mock_salary_instance = MagicMock()
+        mock_salary_instance = MagicMock(return_value="50000-80000 руб.")
+    
+        # Первый try импорт не сработает, второй сработает
+        with patch('builtins.__import__') as mock_import:
+            # Настраиваем мок для __import__
+            mock_module = MagicMock()
+            mock_module.Salary = MagicMock(return_value=mock_salary_instance)
+            mock_import.return_value = mock_module
+    
+            salary_dict = {"from": 50000, "to": 80000, "currency": "RUR"}
+            result = formatter.format_salary(salary_dict)
+>           assert result == "50000-80000 руб."
+E           assert "<MagicMock id='140502774561344'>" == '50000-80000 руб.'
+
+tests/test_42_vacancy_formatter_coverage.py:440: AssertionError
+__ TestVacancyFormatter.test_format_experience_with_get_name ___
+
+self = <tests.test_42_vacancy_formatter_coverage.TestVacancyFormatter object at 0x7fc95a33d9d0>
+
+    def test_format_experience_with_get_name(self) -> None:
+        """Покрытие: форматирование опыта с методом get_name()"""
+        formatter = VacancyFormatter()
+    
+        experience = MockExperience("от 3 до 6 лет", has_get_name=True)
+        result = formatter.format_experience(experience)
+>       assert result == "от 3 до 6 лет"
+E       AssertionError: assert 'None' == 'от 3 до 6 лет'
+E         
+E         - от 3 до 6 лет
+E         + None
+
+tests/test_42_vacancy_formatter_coverage.py:565: AssertionError
+_ TestVacancyFormatter.test_format_employment_type_with_get_name _
+
+self = <tests.test_42_vacancy_formatter_coverage.TestVacancyFormatter object at 0x7fc95a4f9ca0>
+
+    def test_format_employment_type_with_get_name(self) -> None:
+        """Покрытие: форматирование занятости с методом get_name()"""
+        formatter = VacancyFormatter()
+    
+        employment = MockExperience("полная занятость", has_get_name=True)
+        result = formatter.format_employment_type(employment)
+>       assert result == "полная занятость"
+E       AssertionError: assert 'None' == 'полная занятость'
+E         
+E         - полная занятость
+E         + None
+
+tests/test_42_vacancy_formatter_coverage.py:592: AssertionError
+___ TestVacancyFormatter.test_format_schedule_with_get_name ____
+
+self = <tests.test_42_vacancy_formatter_coverage.TestVacancyFormatter object at 0x7fc95a33d190>
+
+    def test_format_schedule_with_get_name(self) -> None:
+        """Покрытие: форматирование графика с методом get_name()"""
+        formatter = VacancyFormatter()
+    
+        schedule = MockExperience("полный день", has_get_name=True)
+        result = formatter.format_schedule(schedule)
+>       assert result == "полный день"
+E       AssertionError: assert 'None' == 'полный день'
+E         
+E         - полный день
+E         + None
+
+tests/test_42_vacancy_formatter_coverage.py:618: AssertionError
+_ TestVacancyFormatterIntegration.test_full_vacancy_formatting_workflow _
+
+self = <tests.test_42_vacancy_formatter_coverage.TestVacancyFormatterIntegration object at 0x7fc95a4f9d30>
+
+    def test_full_vacancy_formatting_workflow(self) -> None:
+        """Покрытие: полный цикл форматирования сложной вакансии"""
+        # Создаем комплексную вакансию
+        employer = MockEmployer("Яндекс", has_get_name=True)
+        salary = MockSalary("150000-250000 руб.")
+        experience = MockExperience("от 3 до 6 лет", has_get_name=True)
+        employment = MockExperience("полная занятость", has_get_name=True)
+    
+        vacancy = MockVacancy(
+            vacancy_id="yandex_001",
+            title="Senior Python Developer",
+            employer=employer,
+            salary=salary,
+            area="Москва",
+            experience=experience,
+            employment=employment,
+            source="HeadHunter",
+            url="https://hh.ru/vacancy/yandex_001",
+            requirements="Python 3.8+, Django, PostgreSQL, Redis, Docker",
+            responsibilities="Разработка и поддержка высоконагруженных веб-сервисов",
+            description="Мы ищем опытного Python разработчика для работы над интересными проектами",
+            conditions="Удаленная работа, ДМС, корпоративное обучение"
+        )
+    
+        formatter = VacancyFormatter()
+    
+        # Полное форматирование
+        full_result = formatter.format_vacancy_info(vacancy, 1)
+    
+        # Проверяем что все ключевые элементы присутствуют
+        expected_elements = [
+            "1.",
+            "ID: yandex_001",
+            "Название: Senior Python Developer",
+            "Компания: Яндекс",
+            "Зарплата: 150000-250000 руб.",
+            "Регион: Москва",
+            "Опыт: от 3 до 6 лет",
+            "Занятость: полная занятость",
+            "Источник: HeadHunter",
+            "Ссылка: https://hh.ru/vacancy/yandex_001",
+            "Требования: Python 3.8+",
+            "Обязанности: Разработка",
+            "Описание: Мы ищем",
+            "Условия: Удаленная"
+        ]
+    
+        for element in expected_elements:
+>           assert element in full_result
+E           AssertionError: assert 'Компания: Яндекс' in '1.\nID: yandex_001\nНазвание: Senior Python Developer\nКомпания: None\nЗарплата: 150000-250000 руб.\nРегион: Москва\n...тного Python разработчика для работы над интересными проектами\nУсловия: Удаленная работа, ДМС, корпоративное обучение'
+
+tests/test_42_vacancy_formatter_coverage.py:848: AssertionError
+=================== short test summary info ====================
+FAILED tests/test_42_vacancy_formatter_coverage.py::TestVacancyFormatter::test_extract_company_name_get_name_method - AssertionError: assert 'None' == 'Яндекс'
+FAILED tests/test_42_vacancy_formatter_coverage.py::TestVacancyFormatter::test_format_salary_dict_import_success - assert "<MagicMock id='140502774561344'>" == '50000-80000 р...
+FAILED tests/test_42_vacancy_formatter_coverage.py::TestVacancyFormatter::test_format_experience_with_get_name - AssertionError: assert 'None' == 'от 3 до 6 лет'
+FAILED tests/test_42_vacancy_formatter_coverage.py::TestVacancyFormatter::test_format_employment_type_with_get_name - AssertionError: assert 'None' == 'полная занятость'
+FAILED tests/test_42_vacancy_formatter_coverage.py::TestVacancyFormatter::test_format_schedule_with_get_name - AssertionError: assert 'None' == 'полный день'
+FAILED tests/test_42_vacancy_formatter_coverage.py::TestVacancyFormatterIntegration::test_full_vacancy_formatting_workflow - AssertionError: assert 'Компания: Яндекс' in '1.\nID: yande...
+================= 6 failed, 60 passed in 0.57s =================
+~/workspace$ 

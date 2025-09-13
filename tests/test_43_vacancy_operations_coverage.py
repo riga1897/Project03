@@ -17,6 +17,7 @@
 - Важная бизнес-логика обработки вакансий
 """
 
+from typing import Any
 from unittest.mock import patch, MagicMock
 
 from src.utils.vacancy_operations import VacancyOperations
@@ -25,7 +26,7 @@ from src.utils.vacancy_operations import VacancyOperations
 class MockVacancy:
     """Мок-объект вакансии для тестирования"""
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         # Базовые поля
         self.title = kwargs.get('title', 'Test Job')
         self.employer = kwargs.get('employer', 'Test Company')
@@ -44,12 +45,12 @@ class MockVacancy:
 class MockSalary:
     """Мок-объект зарплаты (старый формат)"""
 
-    def __init__(self, salary_from=None, salary_to=None, max_salary=None):
+    def __init__(self, salary_from: Any = None, salary_to: Any = None, max_salary: Any = None) -> None:
         self.salary_from = salary_from
         self.salary_to = salary_to
         self._max_salary = max_salary
 
-    def get_max_salary(self) -> None:
+    def get_max_salary(self) -> Any:
         if self._max_salary is not None:
             return self._max_salary
         if self.salary_from and self.salary_to:
@@ -74,7 +75,7 @@ class TestVacancyOperations:
         vacancy5 = MockVacancy(salary=None)             # Без зарплаты
 
         vacancies = [vacancy1, vacancy2, vacancy3, vacancy4, vacancy5]
-        result = VacancyOperations.get_vacancies_with_salary(vacancies)
+        result = VacancyOperations.get_vacancies_with_salary(vacancies)  # type: ignore[arg-type]
 
         assert len(result) == 3
         assert vacancy1 in result
@@ -92,7 +93,7 @@ class TestVacancyOperations:
         vacancy4 = MockVacancy(salary=MockSalary(None, None))     # Без значений
 
         vacancies = [vacancy1, vacancy2, vacancy3, vacancy4]
-        result = VacancyOperations.get_vacancies_with_salary(vacancies)
+        result = VacancyOperations.get_vacancies_with_salary(vacancies)  # type: ignore[arg-type]
 
         assert len(result) == 3
         assert vacancy1 in result
@@ -106,19 +107,19 @@ class TestVacancyOperations:
         vacancy2 = MockVacancy()  # Без salary атрибута
 
         vacancies = [vacancy1, vacancy2]
-        result = VacancyOperations.get_vacancies_with_salary(vacancies)
+        result = VacancyOperations.get_vacancies_with_salary(vacancies)  # type: ignore[arg-type]
 
         assert len(result) == 0
 
     def test_sort_vacancies_by_salary_descending(self) -> None:
         """Покрытие: сортировка по зарплате по убыванию (default)"""
         # Создаем вакансии с разными зарплатами
-        vacancy1 = MockVacancy(title="Low", salary={"from": 50000, "to": 80000})    # max 80000
-        vacancy2 = MockVacancy(title="High", salary={"from": 150000, "to": 200000}) # max 200000
-        vacancy3 = MockVacancy(title="Medium", salary={"from": 90000, "to": 120000}) # max 120000
+        vacancy1 = MockVacancy(title="Low", salary={"from": 50000, "to": 80000})  # max 80000
+        vacancy2 = MockVacancy(title="High", salary={"from": 150000, "to": 200000})  # max 200000
+        vacancy3 = MockVacancy(title="Medium", salary={"from": 90000, "to": 120000})  # max 120000
 
         vacancies = [vacancy1, vacancy2, vacancy3]
-        result = VacancyOperations.sort_vacancies_by_salary(vacancies)
+        result = VacancyOperations.sort_vacancies_by_salary(vacancies)  # type: ignore[arg-type]
 
         assert len(result) == 3
         assert result[0].title == "High"    # 200000 первая
@@ -132,7 +133,7 @@ class TestVacancyOperations:
         vacancy3 = MockVacancy(title="Medium", salary={"from": 90000})  # 90000
 
         vacancies = [vacancy1, vacancy2, vacancy3]
-        result = VacancyOperations.sort_vacancies_by_salary(vacancies, reverse=False)
+        result = VacancyOperations.sort_vacancies_by_salary(vacancies, reverse=False)  # type: ignore[arg-type]
 
         assert len(result) == 3
         assert result[0].title == "Low"     # 50000 первая
@@ -149,7 +150,7 @@ class TestVacancyOperations:
         vacancy5 = MockVacancy(salary={})                             # Пустой
 
         vacancies = [vacancy1, vacancy2, vacancy3, vacancy4, vacancy5]
-        result = VacancyOperations.sort_vacancies_by_salary(vacancies)
+        result = VacancyOperations.sort_vacancies_by_salary(vacancies)  # type: ignore[arg-type]
 
         # Проверяем что вакансии отсортированы по правильным значениям
         # vacancy1: max(80000, 120000) = 120000
@@ -167,7 +168,7 @@ class TestVacancyOperations:
         vacancy3 = MockVacancy(salary=MockSalary(max_salary=None))  # None возвращает 0
 
         vacancies = [vacancy1, vacancy2, vacancy3]
-        result = VacancyOperations.sort_vacancies_by_salary(vacancies)
+        result = VacancyOperations.sort_vacancies_by_salary(vacancies)  # type: ignore[arg-type]
 
         assert result[0] == vacancy1  # 150000
         assert result[1] == vacancy2  # 100000
@@ -180,7 +181,7 @@ class TestVacancyOperations:
         vacancy3 = MockVacancy(title="C", salary={"from": 100000})
 
         vacancies = [vacancy1, vacancy2, vacancy3]
-        result = VacancyOperations.sort_vacancies_by_salary(vacancies)
+        result = VacancyOperations.sort_vacancies_by_salary(vacancies)  # type: ignore[arg-type]
 
         # Вакансия с зарплатой должна быть первой
         assert result[0] == vacancy3
@@ -189,7 +190,7 @@ class TestVacancyOperations:
         assert result[2] in [vacancy1, vacancy2]
 
     @patch('src.utils.vacancy_operations.logger')
-    def test_filter_vacancies_by_min_salary_dict_format(self, mock_logger):
+    def test_filter_vacancies_by_min_salary_dict_format(self, mock_logger: Any) -> None:
         """Покрытие: фильтрация по минимальной зарплате (dict формат)"""
         # Создаем вакансии с разными зарплатами
         vacancy1 = MockVacancy(title="High", salary={"from": 120000, "to": 180000})  # avg=150000
@@ -199,7 +200,7 @@ class TestVacancyOperations:
         vacancy5 = MockVacancy(title="NoSalary", salary=None)                        # Нет зарплаты
 
         vacancies = [vacancy1, vacancy2, vacancy3, vacancy4, vacancy5]
-        result = VacancyOperations.filter_vacancies_by_min_salary(vacancies, 100000)
+        result = VacancyOperations.filter_vacancies_by_min_salary(vacancies, 100000)  # type: ignore[arg-type]
 
         # Должны остаться только вакансии с зарплатой >= 100000
         assert len(result) == 3
@@ -214,7 +215,7 @@ class TestVacancyOperations:
         assert "Отфильтровано 3 вакансий из 5" in mock_logger.info.call_args[0][0]
 
     @patch('src.utils.vacancy_operations.logger')
-    def test_filter_vacancies_by_min_salary_object_format(self, mock_logger):
+    def test_filter_vacancies_by_min_salary_object_format(self, mock_logger: Any) -> None:
         """Покрытие: фильтрация по минимальной зарплате (объектный формат)"""
         vacancy1 = MockVacancy(salary=MockSalary(120000, 180000))  # avg=150000
         vacancy2 = MockVacancy(salary=MockSalary(60000, None))     # from=60000
@@ -222,7 +223,7 @@ class TestVacancyOperations:
         vacancy4 = MockVacancy(salary=MockSalary(None, None))      # Пустая зарплата
 
         vacancies = [vacancy1, vacancy2, vacancy3, vacancy4]
-        result = VacancyOperations.filter_vacancies_by_min_salary(vacancies, 100000)
+        result = VacancyOperations.filter_vacancies_by_min_salary(vacancies, 100000)  # type: ignore[arg-type]
 
         assert len(result) == 2
         assert vacancy1 in result  # avg=150000
@@ -231,7 +232,7 @@ class TestVacancyOperations:
         assert vacancy4 not in result  # Нет значений
 
     @patch('src.utils.vacancy_operations.logger')
-    def test_filter_vacancies_by_max_salary_dict_format(self, mock_logger):
+    def test_filter_vacancies_by_max_salary_dict_format(self, mock_logger: Any) -> None:
         """Покрытие: фильтрация по максимальной зарплате (dict формат)"""
         vacancy1 = MockVacancy(title="High", salary={"from": 120000, "to": 180000})  # avg=150000
         vacancy2 = MockVacancy(title="Low", salary={"from": 60000, "to": 80000})     # avg=70000
@@ -239,7 +240,7 @@ class TestVacancyOperations:
         vacancy4 = MockVacancy(title="OnlyTo", salary={"to": 110000})                # to=110000
 
         vacancies = [vacancy1, vacancy2, vacancy3, vacancy4]
-        result = VacancyOperations.filter_vacancies_by_max_salary(vacancies, 100000)
+        result = VacancyOperations.filter_vacancies_by_max_salary(vacancies, 100000)  # type: ignore[arg-type]
 
         # Должны остаться только вакансии с зарплатой <= 100000
         assert len(result) == 2
@@ -252,29 +253,29 @@ class TestVacancyOperations:
         mock_logger.info.assert_called_once()
 
     @patch('src.utils.vacancy_operations.logger')
-    def test_filter_vacancies_by_max_salary_object_format(self, mock_logger):
+    def test_filter_vacancies_by_max_salary_object_format(self, mock_logger: Any) -> None:
         """Покрытие: фильтрация по максимальной зарплате (объектный формат)"""
         vacancy1 = MockVacancy(salary=MockSalary(40000, 60000))    # avg=50000
         vacancy2 = MockVacancy(salary=MockSalary(120000, 150000))  # avg=135000
 
         vacancies = [vacancy1, vacancy2]
-        result = VacancyOperations.filter_vacancies_by_max_salary(vacancies, 100000)
+        result = VacancyOperations.filter_vacancies_by_max_salary(vacancies, 100000)  # type: ignore[arg-type]
 
         assert len(result) == 1
         assert vacancy1 in result
         assert vacancy2 not in result
 
     @patch('src.utils.vacancy_operations.logger')
-    def test_filter_vacancies_by_salary_range_dict_format(self, mock_logger):
+    def test_filter_vacancies_by_salary_range_dict_format(self, mock_logger: Any) -> None:
         """Покрытие: фильтрация по диапазону зарплат (dict формат)"""
         vacancy1 = MockVacancy(title="InRange", salary={"from": 80000, "to": 120000})  # avg=100000
         vacancy2 = MockVacancy(title="TooLow", salary={"from": 40000, "to": 60000})    # avg=50000
-        vacancy3 = MockVacancy(title="TooHigh", salary={"from": 150000, "to": 200000}) # avg=175000
+        vacancy3 = MockVacancy(title="TooHigh", salary={"from": 150000, "to": 200000})  # avg=175000
         vacancy4 = MockVacancy(title="EdgeLow", salary={"from": 70000})                # from=70000
         vacancy5 = MockVacancy(title="EdgeHigh", salary={"to": 130000})               # to=130000
 
         vacancies = [vacancy1, vacancy2, vacancy3, vacancy4, vacancy5]
-        result = VacancyOperations.filter_vacancies_by_salary_range(vacancies, 70000, 130000)
+        result = VacancyOperations.filter_vacancies_by_salary_range(vacancies, 70000, 130000)  # type: ignore[arg-type]
 
         # Должны остаться вакансии в диапазоне 70000-130000
         assert len(result) == 3
@@ -289,13 +290,13 @@ class TestVacancyOperations:
         assert "по диапазону 70000-130000" in mock_logger.info.call_args[0][0]
 
     @patch('src.utils.vacancy_operations.logger')
-    def test_filter_vacancies_by_salary_range_object_format(self, mock_logger):
+    def test_filter_vacancies_by_salary_range_object_format(self, mock_logger: Any) -> None:
         """Покрытие: фильтрация по диапазону зарплат (объектный формат)"""
         vacancy1 = MockVacancy(salary=MockSalary(90000, 110000))   # avg=100000
         vacancy2 = MockVacancy(salary=MockSalary(30000, 50000))    # avg=40000
 
         vacancies = [vacancy1, vacancy2]
-        result = VacancyOperations.filter_vacancies_by_salary_range(vacancies, 80000, 120000)
+        result = VacancyOperations.filter_vacancies_by_salary_range(vacancies, 80000, 120000)  # type: ignore[arg-type]
 
         assert len(result) == 1
         assert vacancy1 in result
@@ -311,16 +312,16 @@ class TestVacancyOperations:
         vacancies = [vacancy1, vacancy2, vacancy3, vacancy4]
 
         # Все фильтры должны исключать эти вакансии
-        result_min = VacancyOperations.filter_vacancies_by_min_salary(vacancies, 50000)
-        result_max = VacancyOperations.filter_vacancies_by_max_salary(vacancies, 100000)
-        result_range = VacancyOperations.filter_vacancies_by_salary_range(vacancies, 50000, 100000)
+        result_min = VacancyOperations.filter_vacancies_by_min_salary(vacancies, 50000)  # type: ignore[arg-type]
+        result_max = VacancyOperations.filter_vacancies_by_max_salary(vacancies, 100000)  # type: ignore[arg-type]
+        result_range = VacancyOperations.filter_vacancies_by_salary_range(vacancies, 50000, 100000)  # type: ignore[arg-type]
 
         assert len(result_min) == 0
         assert len(result_max) == 0
         assert len(result_range) == 0
 
     @patch('src.utils.vacancy_operations.logger')
-    def test_filter_vacancies_by_multiple_keywords_deprecated(self, mock_logger):
+    def test_filter_vacancies_by_multiple_keywords_deprecated(self, mock_logger: Any) -> None:
         """Покрытие: устаревший метод множественных ключевых слов"""
         vacancy1 = MockVacancy(title="Python Developer")
         vacancy2 = MockVacancy(title="Java Developer")
@@ -328,7 +329,7 @@ class TestVacancyOperations:
         vacancies = [vacancy1, vacancy2]
         keywords = ["python", "developer"]
 
-        result = VacancyOperations.filter_vacancies_by_multiple_keywords(vacancies, keywords)
+        result = VacancyOperations.filter_vacancies_by_multiple_keywords(vacancies, keywords)  # type: ignore[arg-type]
 
         # Метод устарел и возвращает исходный список
         assert result == vacancies
@@ -338,7 +339,7 @@ class TestVacancyOperations:
         assert "устарел" in mock_logger.warning.call_args[0][0]
 
     @patch('src.utils.vacancy_operations.vacancy_contains_keyword')
-    def test_search_vacancies_advanced_and_operator(self, mock_contains):
+    def test_search_vacancies_advanced_and_operator(self, mock_contains: Any) -> None:
         """Покрытие: продвинутый поиск с оператором AND"""
         vacancy1 = MockVacancy(title="Python Django Developer")
         vacancy2 = MockVacancy(title="Python Flask Developer")
@@ -347,7 +348,7 @@ class TestVacancyOperations:
         vacancies = [vacancy1, vacancy2, vacancy3]
 
         # Мокируем функцию проверки ключевых слов
-        def mock_contains_side_effect(vacancy, keyword):
+        def mock_contains_side_effect(vacancy: Any, keyword: Any) -> bool:
             if keyword.strip() == "Python":
                 return "Python" in vacancy.title
             elif keyword.strip() == "Django":
@@ -357,7 +358,7 @@ class TestVacancyOperations:
         mock_contains.side_effect = mock_contains_side_effect
 
         query = "Python AND Django"
-        result = VacancyOperations.search_vacancies_advanced(vacancies, query)
+        result = VacancyOperations.search_vacancies_advanced(vacancies, query)  # type: ignore[arg-type]
 
         # Должна остаться только вакансия с Python И Django
         assert len(result) == 1
@@ -366,7 +367,7 @@ class TestVacancyOperations:
         assert vacancy3 not in result  # Нет ни Python, ни Django
 
     @patch('src.utils.vacancy_operations.VacancyOperations.filter_vacancies_by_multiple_keywords')
-    def test_search_vacancies_advanced_or_operator(self, mock_filter):
+    def test_search_vacancies_advanced_or_operator(self, mock_filter: Any) -> None:
         """Покрытие: продвинутый поиск с оператором OR"""
         vacancy1 = MockVacancy(title="Python Developer")
         vacancy2 = MockVacancy(title="Java Developer")
@@ -376,48 +377,48 @@ class TestVacancyOperations:
         mock_filter.return_value = expected_result
 
         query = "Python OR Java"
-        result = VacancyOperations.search_vacancies_advanced(vacancies, query)
+        result = VacancyOperations.search_vacancies_advanced(vacancies, query)  # type: ignore[arg-type]
 
         # Проверяем что вызвался правильный метод
         mock_filter.assert_called_once_with(vacancies, ["Python", "Java"])
         assert result == expected_result
 
     @patch('src.utils.vacancy_operations.VacancyOperations.filter_vacancies_by_multiple_keywords')
-    def test_search_vacancies_advanced_comma_separator(self, mock_filter):
+    def test_search_vacancies_advanced_comma_separator(self, mock_filter: Any) -> None:
         """Покрытие: продвинутый поиск с запятой как разделителем"""
         vacancies = [MockVacancy()]
         expected_result = [MockVacancy()]
         mock_filter.return_value = expected_result
 
         query = "Python, Django, Flask"
-        result = VacancyOperations.search_vacancies_advanced(vacancies, query)
+        result = VacancyOperations.search_vacancies_advanced(vacancies, query)  # type: ignore[arg-type]
 
         mock_filter.assert_called_once_with(vacancies, ["Python", "Django", "Flask"])
         assert result == expected_result
 
     @patch('src.utils.vacancy_operations.VacancyOperations.filter_vacancies_by_multiple_keywords')
-    def test_search_vacancies_advanced_space_separator(self, mock_filter):
+    def test_search_vacancies_advanced_space_separator(self, mock_filter: Any) -> None:
         """Покрытие: продвинутый поиск с пробелами как разделителем"""
         vacancies = [MockVacancy()]
         expected_result = [MockVacancy()]
         mock_filter.return_value = expected_result
 
         query = "Python Django Flask"
-        result = VacancyOperations.search_vacancies_advanced(vacancies, query)
+        result = VacancyOperations.search_vacancies_advanced(vacancies, query)  # type: ignore[arg-type]
 
         # Пробелы интерпретируются как OR по умолчанию
         mock_filter.assert_called_once_with(vacancies, ["Python", "Django", "Flask"])
         assert result == expected_result
 
     @patch('src.utils.vacancy_operations.filter_vacancies_by_keyword')
-    def test_search_vacancies_advanced_single_keyword(self, mock_filter):
+    def test_search_vacancies_advanced_single_keyword(self, mock_filter: Any) -> None:
         """Покрытие: продвинутый поиск с одним ключевым словом"""
         vacancies = [MockVacancy()]
         expected_result = [MockVacancy()]
         mock_filter.return_value = expected_result
 
         query = "Python"
-        result = VacancyOperations.search_vacancies_advanced(vacancies, query)
+        result = VacancyOperations.search_vacancies_advanced(vacancies, query)  # type: ignore[arg-type]
 
         # Для одного слова должен использоваться простой поиск
         mock_filter.assert_called_once_with(vacancies, "Python")
@@ -434,7 +435,7 @@ class TestVacancyOperations:
             mock_contains.return_value = True
 
             query = "Senior AND Python AND Backend"
-            result = VacancyOperations.search_vacancies_advanced(vacancies, query)
+            result = VacancyOperations.search_vacancies_advanced(vacancies, query)  # type: ignore[arg-type]
 
             # Должны найти вакансию, так как все слова "найдены"
             assert len(result) == 1
@@ -451,7 +452,8 @@ class TestVacancyOperations:
             mock_filter.return_value = vacancies
 
             query = "Python OR Java OR Go OR Rust"
-            result = VacancyOperations.search_vacancies_advanced(vacancies, query)
+            result = VacancyOperations.search_vacancies_advanced(vacancies, query)  # type: ignore[arg-type]
+            assert result == vacancies
 
             # Проверяем правильный парсинг OR запроса
             mock_filter.assert_called_once_with(vacancies, ["Python", "Java", "Go", "Rust"])
@@ -461,7 +463,7 @@ class TestVacancyOperations:
     # Основная функциональность покрыта на 92%
 
     @patch('builtins.print')
-    def test_debug_vacancy_search(self, mock_print):
+    def test_debug_vacancy_search(self, mock_print: Any) -> None:
         """Покрытие: отладочная функция поиска"""
         vacancy = MockVacancy(
             title="Senior Python Developer",
@@ -473,7 +475,7 @@ class TestVacancyOperations:
         )
 
         with patch('src.utils.vacancy_operations.logger') as mock_logger:
-            VacancyOperations.debug_vacancy_search(vacancy, "Python")
+            VacancyOperations.debug_vacancy_search(vacancy, "Python")  # type: ignore[arg-type]
 
             # Проверяем что print был вызван несколько раз
             assert mock_print.call_count >= 5
@@ -489,7 +491,7 @@ class TestVacancyOperations:
 
     @patch('builtins.print')
     @patch('src.utils.vacancy_operations.logger')
-    def test_debug_vacancy_keywords(self, mock_logger, mock_print):
+    def test_debug_vacancy_keywords(self, mock_logger: Any, mock_print: Any) -> None:
         """Покрытие: отладочная функция ключевых слов"""
         vacancy = MockVacancy(
             title="Data Analyst",
@@ -499,7 +501,7 @@ class TestVacancyOperations:
             responsibilities="Analyze data using R"
         )
 
-        VacancyOperations.debug_vacancy_keywords(vacancy)
+        VacancyOperations.debug_vacancy_keywords(vacancy)  # type: ignore[arg-type]
 
         # Проверяем print вызовы
         assert mock_print.call_count >= 5
@@ -522,7 +524,7 @@ class TestVacancyOperations:
         )
 
         with patch('builtins.print'), patch('src.utils.vacancy_operations.logger') as mock_logger:
-            VacancyOperations.debug_vacancy_keywords(vacancy)
+            VacancyOperations.debug_vacancy_keywords(vacancy)  # type: ignore[arg-type]
 
             # Проверяем что regex поиск нашел ключевые слова
             debug_calls = [str(call[0][0]) for call in mock_logger.debug.call_args_list]
@@ -530,6 +532,7 @@ class TestVacancyOperations:
             # Должны найти некоторые тестовые слова
             excel_found = any("Найдено 'excel'" in call for call in debug_calls)
             r_found = any("Найдено 'r'" in call for call in debug_calls)
+            assert excel_found or r_found
 
             # Excel должен найтись
             assert excel_found
@@ -546,8 +549,8 @@ class TestVacancyOperations:
 
         with patch('builtins.print'), patch('src.utils.vacancy_operations.logger'):
             # Проверяем что функции не падают с пустыми полями
-            VacancyOperations.debug_vacancy_search(vacancy, "test")
-            VacancyOperations.debug_vacancy_keywords(vacancy)
+            VacancyOperations.debug_vacancy_search(vacancy, "test")  # type: ignore[arg-type]
+            VacancyOperations.debug_vacancy_keywords(vacancy)  # type: ignore[arg-type]
 
             # Если дошли до этой точки - функции отработали без ошибок
             assert True
@@ -569,7 +572,7 @@ class TestVacancyOperationsIntegration:
         ]
 
         # 1. Фильтруем только вакансии с зарплатой
-        with_salary = VacancyOperations.get_vacancies_with_salary(vacancies)
+        with_salary = VacancyOperations.get_vacancies_with_salary(vacancies)  # type: ignore[arg-type]
         assert len(with_salary) == 5  # Все кроме NoSalary
 
         # 2. Фильтруем по минимальной зарплате
@@ -604,7 +607,7 @@ class TestVacancyOperationsIntegration:
         with patch('src.utils.vacancy_operations.filter_vacancies_by_keyword') as mock_filter:
             mock_filter.return_value = [vacancies[0], vacancies[2]]  # Python вакансии
 
-            search_results = VacancyOperations.search_vacancies_advanced(vacancies, "Python")
+            search_results = VacancyOperations.search_vacancies_advanced(vacancies, "Python")  # type: ignore[arg-type]
 
             # 2. Фильтрация результатов поиска по зарплате
             filtered_results = VacancyOperations.filter_vacancies_by_min_salary(search_results, 90000)
@@ -623,9 +626,9 @@ class TestVacancyOperationsIntegration:
         ]
 
         # Тестируем различные фильтры
-        range_result = VacancyOperations.filter_vacancies_by_salary_range(vacancies, 50000, 150000)
-        min_result = VacancyOperations.filter_vacancies_by_min_salary(vacancies, 50000)
-        sorted_result = VacancyOperations.sort_vacancies_by_salary(vacancies)
+        range_result = VacancyOperations.filter_vacancies_by_salary_range(vacancies, 50000, 150000)  # type: ignore[arg-type]
+        min_result = VacancyOperations.filter_vacancies_by_min_salary(vacancies, 50000)  # type: ignore[arg-type]
+        sorted_result = VacancyOperations.sort_vacancies_by_salary(vacancies)  # type: ignore[arg-type]
 
         # Проверяем что функции не падают и дают разумные результаты
         assert isinstance(range_result, list)
@@ -642,19 +645,19 @@ class TestVacancyOperationsUncoveredLines:
         vacancies = [MockVacancy(title="Python Developer")]
 
         # Тестируем пустую строку
-        result = VacancyOperations.search_vacancies_by_keyword(vacancies, "")
+        result = VacancyOperations.search_vacancies_by_keyword(vacancies, "")  # type: ignore[arg-type]
         assert result == []
 
         # Тестируем строку только с пробелами
-        result = VacancyOperations.search_vacancies_by_keyword(vacancies, "   ")
+        result = VacancyOperations.search_vacancies_by_keyword(vacancies, "   ")  # type: ignore[arg-type]
         assert result == []
 
         # Тестируем None
-        result = VacancyOperations.search_vacancies_by_keyword(vacancies, None)
+        result = VacancyOperations.search_vacancies_by_keyword(vacancies, None)  # type: ignore[arg-type]
         assert result == []
 
     @patch('src.utils.vacancy_operations.logger')
-    def test_search_vacancies_by_keyword_sql_success(self, mock_logger):
+    def test_search_vacancies_by_keyword_sql_success(self, mock_logger: Any) -> None:
         """Покрытие строк 324-333: успешный SQL поиск"""
         vacancies = [MockVacancy(title="Test")]
         mock_results = [MockVacancy(title="SQL Result")]
@@ -665,14 +668,14 @@ class TestVacancyOperationsUncoveredLines:
             mock_postgres_instance.search_vacancies_batch.return_value = mock_results
             mock_postgres_class.return_value = mock_postgres_instance
 
-            result = VacancyOperations.search_vacancies_by_keyword(vacancies, "python", use_sql=True)
+            result = VacancyOperations.search_vacancies_by_keyword(vacancies, "python", use_sql=True)  # type: ignore[arg-type]
 
             # Должен вернуть результаты SQL поиска
             assert result == mock_results
             mock_postgres_instance.search_vacancies_batch.assert_called_once_with(["python"], limit=1000)
 
     @patch('src.utils.vacancy_operations.logger')
-    def test_search_vacancies_by_keyword_sql_no_results(self, mock_logger):
+    def test_search_vacancies_by_keyword_sql_no_results(self, mock_logger: Any) -> None:
         """Покрытие строк 324-340: SQL поиск без результатов"""
         vacancies = [MockVacancy(title="Test")]
 
@@ -682,13 +685,13 @@ class TestVacancyOperationsUncoveredLines:
             mock_postgres_instance.search_vacancies_batch.return_value = []  # Пустой результат
             mock_postgres_class.return_value = mock_postgres_instance
 
-            result = VacancyOperations.search_vacancies_by_keyword(vacancies, "python", use_sql=True)
+            result = VacancyOperations.search_vacancies_by_keyword(vacancies, "python", use_sql=True)  # type: ignore[arg-type]
 
             # Должен вернуть пустой результат через fallback
             assert result == []
 
     @patch('src.utils.vacancy_operations.logger')
-    def test_search_vacancies_by_keyword_sql_exception(self, mock_logger):
+    def test_search_vacancies_by_keyword_sql_exception(self, mock_logger: Any) -> None:
         """Покрытие строк 334-337: исключение при SQL поиске"""
         vacancies = [MockVacancy(title="Test")]
 
@@ -696,7 +699,7 @@ class TestVacancyOperationsUncoveredLines:
         with patch('src.storage.postgres_saver.PostgresSaver') as mock_postgres_class:
             mock_postgres_class.side_effect = Exception("Database connection failed")
 
-            result = VacancyOperations.search_vacancies_by_keyword(vacancies, "python", use_sql=True)
+            result = VacancyOperations.search_vacancies_by_keyword(vacancies, "python", use_sql=True)  # type: ignore[arg-type]
 
             # Должен вернуть пустой результат и залогировать ошибку
             assert result == []
@@ -708,7 +711,7 @@ class TestVacancyOperationsUncoveredLines:
         vacancies = [MockVacancy(title="Test")]
 
         # Отключаем SQL поиск
-        result = VacancyOperations.search_vacancies_by_keyword(vacancies, "python", use_sql=False)
+        result = VacancyOperations.search_vacancies_by_keyword(vacancies, "python", use_sql=False)  # type: ignore[arg-type]
 
         # Должен сразу вернуть пустой результат
         assert result == []

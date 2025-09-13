@@ -16,6 +16,7 @@
 """
 
 from unittest.mock import patch, MagicMock
+from typing import Any
 
 from src.utils.description_parser import DescriptionParser
 
@@ -35,7 +36,7 @@ class TestDescriptionParser:
         result = DescriptionParser.clean_html("")
         assert result == ""
 
-        result = DescriptionParser.clean_html(None)
+        result = DescriptionParser.clean_html(None)  # type: ignore[arg-type]
         assert result == ""
 
     def test_clean_html_basic_text(self) -> None:
@@ -132,7 +133,7 @@ class TestDescriptionParser:
         assert requirements is None
         assert responsibilities is None
 
-        requirements, responsibilities = DescriptionParser.extract_requirements_and_responsibilities(None)
+        requirements, responsibilities = DescriptionParser.extract_requirements_and_responsibilities(None)  # type: ignore[arg-type]
         assert requirements is None
         assert responsibilities is None
 
@@ -326,7 +327,7 @@ class TestDescriptionParser:
         assert "микросервисов" in responsibilities
 
     @patch('src.utils.description_parser.logger')
-    def test_extract_with_exception(self, mock_logger):
+    def test_extract_with_exception(self, mock_logger: Any) -> None:
         """Покрытие: обработка исключений в extract_requirements_and_responsibilities"""
         # Мокируем re.search чтобы выбросить исключение
         with patch('src.utils.description_parser.re.search', side_effect=Exception("Test error")):
@@ -619,7 +620,7 @@ class TestDescriptionParserMainExecution:
     """Покрытие секции if __name__ == '__main__' (строки 141-177)"""
 
     @patch('builtins.print')  # Мокируем print чтобы не засорять вывод
-    def test_main_execution_coverage(self, mock_print):
+    def test_main_execution_coverage(self, mock_print: Any) -> None:
         """Покрытие: выполнение примеров тестирования в секции __main__"""
         # Импортируем и выполняем код из if __name__ == "__main__"
 
@@ -677,7 +678,7 @@ class TestDescriptionParserExceptionCoverage:
     """100% покрытие строк 100-101: обработка исключений в extract_requirements_and_responsibilities"""
 
     @patch('src.utils.description_parser.logger')
-    def test_extract_requirements_exception_handling(self, mock_logger):
+    def test_extract_requirements_exception_handling(self, mock_logger: Any) -> None:
         """Покрытие строк 100-101: исключение при парсинге"""
 
         # Мокируем re.search чтобы вызвать исключение
@@ -696,7 +697,7 @@ class TestDescriptionParserExceptionCoverage:
             assert "Regex parsing error" in call_args
 
     @patch('src.utils.description_parser.logger')
-    def test_extract_responsibilities_exception_handling(self, mock_logger):
+    def test_extract_responsibilities_exception_handling(self, mock_logger: Any) -> None:
         """Покрытие строк 100-101: исключение при парсинге"""
 
         # Мокируем match.group() чтобы вызвать исключение
@@ -716,7 +717,7 @@ class TestDescriptionParserExceptionCoverage:
             mock_logger.warning.assert_called_once()
 
     @patch('src.utils.description_parser.logger')
-    def test_extract_clean_html_exception_in_parsing(self, mock_logger):
+    def test_extract_clean_html_exception_in_parsing(self, mock_logger: Any) -> None:
         """Покрытие строк 100-101: исключение в clean_html при парсинге"""
 
         # Мокируем clean_html чтобы вызвать исключение
@@ -733,7 +734,7 @@ class TestDescriptionParserExceptionCoverage:
 
     @patch('src.utils.description_parser.logger')
     @patch('src.utils.description_parser.unescape')
-    def test_extract_unescape_exception_handling(self, mock_unescape, mock_logger):
+    def test_extract_unescape_exception_handling(self, mock_unescape: Any, mock_logger: Any) -> None:
         """Покрытие строк 100-101: исключение в unescape"""
 
         # Мокируем unescape чтобы вызвать исключение в clean_html

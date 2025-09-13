@@ -15,8 +15,6 @@
 - normalize_employer_data: данные работодателя
 """
 
-import pytest
-from typing import Dict, Any, Optional, Union
 
 from src.utils.data_normalizers import (
     normalize_area_data,

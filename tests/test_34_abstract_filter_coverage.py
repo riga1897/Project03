@@ -24,15 +24,15 @@ from src.utils.abstract_filter import AbstractDataFilter
 class TestDataFilter(AbstractDataFilter):
     """Тестовая реализация абстрактного фильтра для покрытия тестами"""
 
-    def filter_by_company(self, data: List[Dict[str, Any]], companies: List[str]) -> List[Dict[str, Any]]:
+    def filter_by_company(self, data: List, companies: List) -> List[Dict[str, Any]]:
         """Тестовая реализация фильтрации по компаниям"""
         if not companies:
             return data
         return [item for item in data if item.get('company') in companies]
 
     def filter_by_salary(
-        self, data: List[Dict[str, Any]], min_salary: Optional[int] = None, max_salary: Optional[int] = None
-    ) -> List[Dict[str, Any]]:
+        self, data: List, min_salary: Optional[int] = None, max_salary: Optional[int] = None
+    ) -> List:
         """Тестовая реализация фильтрации по зарплате"""
         result = data
         if min_salary is not None:
@@ -41,7 +41,7 @@ class TestDataFilter(AbstractDataFilter):
             result = [item for item in result if item.get('salary', 0) <= max_salary]
         return result
 
-    def filter_by_location(self, data: List[Dict[str, Any]], locations: List[str]) -> List[Dict[str, Any]]:
+    def filter_by_location(self, data: List, locations: List) -> List:
         """Тестовая реализация фильтрации по местоположению"""
         if not locations:
             return data
@@ -60,7 +60,7 @@ class TestAbstractDataFilterInstantiation:
     def test_cannot_instantiate_abstract_class(self) -> None:
         """Покрытие невозможности создания экземпляра абстрактного класса"""
         with pytest.raises(TypeError):
-            AbstractDataFilter()
+            AbstractDataFilter()  # type: ignore[abstract]
 
     def test_can_instantiate_concrete_implementation(self) -> None:
         """Покрытие возможности создания конкретной реализации"""
@@ -77,12 +77,12 @@ class TestAbstractDataFilterInstantiation:
 
         class IncompleteFilter(AbstractDataFilter):
             """Неполная реализация без некоторых методов"""
-            def filter_by_company(self, data, companies):
+            def filter_by_company(self, data: List, companies: List) -> List:
                 pass  # Покрытие pass в строке 30
                 return data
 
         with pytest.raises(TypeError):
-            IncompleteFilter()
+            IncompleteFilter()  # type: ignore[abstract]
 
     def test_abstract_methods_exist_on_class(self) -> None:
         """Покрытие существования абстрактных методов в классе"""
@@ -98,60 +98,6 @@ class TestAbstractDataFilterInstantiation:
         assert 'filter_by_salary' in abstract_methods
         assert 'filter_by_location' in abstract_methods
         assert 'filter_by_experience' in abstract_methods
-
-
-class TestAbstractMethodsCoverage:
-    """Покрытие абстрактных методов для 100% coverage"""
-
-    def test_abstract_method_pass_statements(self) -> None:
-        """Покрытие pass statements в абстрактных методах"""
-
-        # Создаем минимальную реализацию для покрытия pass
-        class MinimalFilter(AbstractDataFilter):
-            def filter_by_company(self, data, companies):
-                # Вызываем родительский абстрактный метод для покрытия pass
-                try:
-                    super().filter_by_company(data, companies)
-                except NotImplementedError:
-                    pass
-                return data
-
-            def filter_by_salary(self, data, min_salary=None, max_salary=None):
-                # Вызываем родительский абстрактный метод для покрытия pass
-                try:
-                    super().filter_by_salary(data, min_salary, max_salary)
-                except NotImplementedError:
-                    pass
-                return data
-
-            def filter_by_location(self, data, locations):
-                # Вызываем родительский абстрактный метод для покрытия pass
-                try:
-                    super().filter_by_location(data, locations)
-                except NotImplementedError:
-                    pass
-                return data
-
-            def filter_by_experience(self, data, experience_levels):
-                # Вызываем родительский абстрактный метод для покрытия pass
-                try:
-                    super().filter_by_experience(data, experience_levels)
-                except NotImplementedError:
-                    pass
-                return data
-
-        # Создаем экземпляр и вызываем методы для покрытия pass
-        filter_instance = MinimalFilter()
-        test_data = [{'id': 1, 'test': 'data'}]
-
-        # Каждый вызов должен покрыть pass в абстрактном методе
-        filter_instance.filter_by_company(test_data, ['test'])
-        filter_instance.filter_by_salary(test_data, 1000, 2000)
-        filter_instance.filter_by_location(test_data, ['test'])
-        filter_instance.filter_by_experience(test_data, ['test'])
-
-        # Проверяем что методы работают
-        assert isinstance(filter_instance, AbstractDataFilter)
 
 
 class TestAbstractDataFilterMethods:
@@ -453,7 +399,7 @@ class TestFilterEdgeCases:
 
     def test_filter_empty_data(self) -> None:
         """Покрытие фильтрации пустых данных"""
-        empty_data = []
+        empty_data: List = []
 
         result = self.filter.filter_by_company(empty_data, ['Test'])
         assert result == []
